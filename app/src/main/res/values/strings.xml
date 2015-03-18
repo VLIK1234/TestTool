@@ -4,7 +4,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
-    <string name="saving_error">Error while saving to file</string>
+    <string name="saving_error">Error while saving screenshot</string>
+    <string name="saving_success">Screenshot saved</string>
     <string name="capture_screen">Capture screen</string>
 
 </resources>

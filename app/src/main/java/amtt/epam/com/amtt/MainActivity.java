@@ -1,19 +1,17 @@
 package amtt.epam.com.amtt;
 
-import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.FileOutputStream;
+import amtt.epam.com.amtt.image.ImageSavingCallback;
+import amtt.epam.com.amtt.image.ImageSavingResult;
+import amtt.epam.com.amtt.image.ImageSavingTask;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements ImageSavingCallback {
 
     private int mScreenNumber = 1;
 
@@ -26,36 +24,26 @@ public class MainActivity extends ActionBarActivity {
         screenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ImageAsyncSaving().execute();
+                new ImageSavingTask().execute(MainActivity.this);
             }
         });
 
     }
 
-    private class ImageAsyncSaving extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
 
-            View rootView = MainActivity.this.getWindow().getDecorView();
-            rootView.setDrawingCacheEnabled(true);
-            Bitmap bitmap = rootView.getDrawingCache();
-            Rect rect = new Rect();
-            getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-            bitmap = Bitmap.createBitmap(bitmap, 0, rect.top, rect.width(), rect.height());
+    @Override
+    public void onImageSaved(ImageSavingResult result) {
+        int resultMessage = result == ImageSavingResult.ERROR ? R.string.saving_error : R.string.saving_success;
+        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+    }
 
-            try {
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(getCacheDir().getPath() + "/screen " + mScreenNumber + ".png"));
-                mScreenNumber++;
-            } catch (Exception e) {
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, R.string.saving_error, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-            return null;
-        }
+
+    public int getScreenNumber() {
+        return mScreenNumber;
+    }
+
+    public void incrementScreenNumber() {
+        mScreenNumber++;
     }
 
 }
