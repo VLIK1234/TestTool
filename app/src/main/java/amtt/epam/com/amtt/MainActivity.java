@@ -1,39 +1,61 @@
 package amtt.epam.com.amtt;
 
-import android.support.v7.app.ActionBarActivity;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.FileOutputStream;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    private int mScreenNumber = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Button screenButton = (Button) findViewById(R.id.screen_button);
+        screenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ImageAsyncSaving().execute();
+            }
+        });
+
     }
 
+    private class ImageAsyncSaving extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+            View rootView = MainActivity.this.getWindow().getDecorView();
+            rootView.setDrawingCacheEnabled(true);
+            Bitmap bitmap = rootView.getDrawingCache();
+            Rect rect = new Rect();
+            getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+            bitmap = Bitmap.createBitmap(bitmap, 0, rect.top, rect.width(), rect.height());
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            try {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(getCacheDir().getPath() + "/screen " + mScreenNumber + ".png"));
+                mScreenNumber++;
+            } catch (Exception e) {
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, R.string.saving_error, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            return null;
         }
-
-        return super.onOptionsItemSelected(item);
     }
+
 }
