@@ -1,51 +1,50 @@
 package amtt.epam.com.amtt;
 
+import android.app.Application;
 import android.content.ClipData;
 import android.content.ClipDescription;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.zip.Inflater;
+/**
+ * Created by Ivan_Bakach on 19.03.2015.
+ */
+public class CoreApplication extends Application {
 
-import amtt.epam.com.amtt.UI.FloatingActionButton;
-
-
-public class MainActivity extends ActionBarActivity{
-
+    private Button button;
     private String msg;
-    private android.widget.RelativeLayout relativeLayouts;
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        final Context context = getApplicationContext();
+    public void onCreate() {
+        super.onCreate();
 
-        relativeLayouts = (RelativeLayout) findViewById(R.id.relative_layout);
+        button = new Button(this);
+        button.setBackgroundColor(Color.BLUE);
+        button.setText("Button");
+        button.setShadowLayer(3.0f, 2.0f, 3.0f, Color.WHITE);
 
-        final FloatingActionButton fabButton = new FloatingActionButton.Builder(this)
-                .withDrawable(getResources().getDrawable(R.mipmap.ic_action_help))
-                .withButtonColor(Color.WHITE)
-                .withGravity(Gravity.BOTTOM | Gravity.RIGHT)
-                .withMargins(0, 0, 0, 0)
-                .create();
-        fabButton.setOnLongClickListener(new View.OnLongClickListener() {
+
+
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY,
+                WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+                PixelFormat.TRANSLUCENT);
+        params.gravity = Gravity.RIGHT | Gravity.CENTER;
+        params.setTitle("Load Average");
+        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        wm.addView(button, params);
+
+        button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 ClipData.Item item = new ClipData.Item((CharSequence)"Tag");
@@ -55,7 +54,7 @@ public class MainActivity extends ActionBarActivity{
                         mimeTypes, item);
 
                 // Instantiates the drag shadow builder.
-                View.DragShadowBuilder myShadow = new View.DragShadowBuilder(fabButton);
+                View.DragShadowBuilder myShadow = new View.DragShadowBuilder(button);
 
                 // Starts the drag
                 v.startDrag(dragData,  // the data to be dragged
@@ -67,17 +66,8 @@ public class MainActivity extends ActionBarActivity{
             }
         });
 
-        fabButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SecondActivity.class);
-                startActivity(intent);
-            }
-        });
-
         // Create and set the drag event listener for the View
-        relativeLayouts.setOnDragListener(new View.OnDragListener() {
+        button.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View v, DragEvent event) {
                 int x_cord;
@@ -105,8 +95,8 @@ public class MainActivity extends ActionBarActivity{
                         Log.d(msg, "ACTION_DROP event");
                         y_cord = (int) event.getY();
                         x_cord = (int) event.getX();
-                        fabButton.setX(x_cord - fabButton.getWidth() / 2);
-                        fabButton.setY(y_cord - fabButton.getHeight() / 2);
+                        button.setX(x_cord - button.getWidth() / 2);
+                        button.setY(y_cord - button.getHeight() / 2);
                         break;
                     default:
                         break;
@@ -114,29 +104,5 @@ public class MainActivity extends ActionBarActivity{
                 return true;
             }
         });
-    }
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
