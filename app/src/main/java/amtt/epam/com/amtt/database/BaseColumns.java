@@ -1,7 +1,7 @@
 package amtt.epam.com.amtt.database;
 
 /**
- * Created by Artyom on 31.12.2014.
+ * Created by Artsiom_Kaliaha on 19.03.2015.
  */
 public interface BaseColumns extends android.provider.BaseColumns {
 

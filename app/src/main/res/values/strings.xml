@@ -3,9 +3,11 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
-    <string name="saving_error">Error while saving screenshot</string>
-    <string name="saving_success">Screenshot saved</string>
     <string name="capture_screen">Capture screen</string>
+
+    <string name="image_saving_error">Error while saving screenshot</string>
+    <string name="image_saving_success">Screenshot saved</string>
+    <string name="db_saving_error">Error while saving activity info</string>
+    <string name="db_saving_success">Activity info saved</string>
 
 </resources>

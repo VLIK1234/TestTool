@@ -6,12 +6,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import amtt.epam.com.amtt.database.DbSavingCallback;
+import amtt.epam.com.amtt.database.DbSavingResult;
+import amtt.epam.com.amtt.database.DbSavingTask;
 import amtt.epam.com.amtt.image.ImageSavingCallback;
 import amtt.epam.com.amtt.image.ImageSavingResult;
 import amtt.epam.com.amtt.image.ImageSavingTask;
 
 
-public class MainActivity extends ActionBarActivity implements ImageSavingCallback {
+public class MainActivity extends ActionBarActivity implements ImageSavingCallback, DbSavingCallback {
 
     private int mScreenNumber = 1;
 
@@ -25,6 +28,7 @@ public class MainActivity extends ActionBarActivity implements ImageSavingCallba
             @Override
             public void onClick(View v) {
                 new ImageSavingTask().execute(MainActivity.this);
+                new DbSavingTask(MainActivity.this).execute(MainActivity.this);
             }
         });
 
@@ -33,7 +37,13 @@ public class MainActivity extends ActionBarActivity implements ImageSavingCallba
 
     @Override
     public void onImageSaved(ImageSavingResult result) {
-        int resultMessage = result == ImageSavingResult.ERROR ? R.string.saving_error : R.string.saving_success;
+        int resultMessage = result == ImageSavingResult.ERROR ? R.string.image_saving_error : R.string.image_saving_success;
+        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDbInfoSaved(DbSavingResult result) {
+        int resultMessage = result == DbSavingResult.ERROR ? R.string.db_saving_error : R.string.db_saving_success;
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
     }
 

@@ -18,7 +18,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(ActivityMetaTable.CREATE);
+        db.execSQL(ActivityInfoTable.CREATE);
     }
 
     @Override
