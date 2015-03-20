@@ -7,11 +7,21 @@
     android:id="@+id/root_View">
 
     <Button
-        android:id="@+id/save_data_button"
+        android:id="@+id/save_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/save_data"
+        android:text="@string/save_image"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"/>
+
+    <Button
+        android:id="@+id/save_activity_info_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save_activity_info"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/save_image_button"
+        android:layout_marginTop="16dp"/>
 
 </RelativeLayout>

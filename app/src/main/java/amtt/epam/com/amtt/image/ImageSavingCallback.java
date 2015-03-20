@@ -7,4 +7,6 @@ public interface ImageSavingCallback {
 
     void onImageSaved(ImageSavingResult result);
 
+    int getScreenNumber();
+
 }

@@ -1,5 +1,7 @@
 package amtt.epam.com.amtt;
 
+import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -23,11 +25,24 @@ public class MainActivity extends ActionBarActivity implements ImageSavingCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button screenButton = (Button) findViewById(R.id.save_data_button);
+        Button screenButton = (Button) findViewById(R.id.save_image_button);
         screenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ImageSavingTask().execute(MainActivity.this);
+                View rootView = getWindow().getDecorView();
+                rootView.setDrawingCacheEnabled(true);
+                Bitmap bitmap = rootView.getDrawingCache();
+                Rect rect = new Rect();
+                getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+
+                new ImageSavingTask(MainActivity.this,bitmap,rect,getCacheDir().getPath()).execute();
+            }
+        });
+
+        Button activityInfoButton = (Button)findViewById(R.id.save_activity_info_button);
+        activityInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 new DbSavingTask(MainActivity.this).execute(MainActivity.this);
             }
         });
@@ -37,23 +52,20 @@ public class MainActivity extends ActionBarActivity implements ImageSavingCallba
 
     @Override
     public void onImageSaved(ImageSavingResult result) {
+        mScreenNumber++;
         int resultMessage = result == ImageSavingResult.ERROR ? R.string.image_saving_error : R.string.image_saving_success;
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public int getScreenNumber() {
+        return mScreenNumber;
     }
 
     @Override
     public void onDbInfoSaved(DbSavingResult result) {
         int resultMessage = result == DbSavingResult.ERROR ? R.string.db_saving_error : R.string.db_saving_success;
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-    }
-
-
-    public int getScreenNumber() {
-        return mScreenNumber;
-    }
-
-    public void incrementScreenNumber() {
-        mScreenNumber++;
     }
 
 }
