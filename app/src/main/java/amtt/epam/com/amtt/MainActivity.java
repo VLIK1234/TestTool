@@ -5,7 +5,6 @@ import android.content.ClipDescription;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,16 +13,9 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.zip.Inflater;
-
-import amtt.epam.com.amtt.UI.FloatingActionButton;
+import amtt.epam.com.amtt.ui.FloatingActionButton;
 
 
 public class MainActivity extends ActionBarActivity{

@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.UI;
+package amtt.epam.com.amtt.ui;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
