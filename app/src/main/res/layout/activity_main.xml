@@ -7,10 +7,10 @@
     android:id="@+id/root_View">
 
     <Button
-        android:id="@+id/screen_button"
+        android:id="@+id/save_data_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/capture_screen"
+        android:text="@string/save_data"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"/>
 

@@ -1,11 +1,13 @@
 package amtt.epam.com.amtt.database;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Bundle;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +17,7 @@ import amtt.epam.com.amtt.MainActivity;
 /**
  * Created by Artsiom_Kaliaha on 19.03.2015.
  */
-public class DbSavingTask extends AsyncTask<MainActivity, Void, Void> implements ActivityInfoConstants {
+public class DbSavingTask extends AsyncTask<MainActivity, Void, DbSavingResult> implements ActivityInfoConstants {
 
     private static Map<Integer, String> sConfigChanges;
     private static Map<Integer, String> sFlags;
@@ -23,6 +25,7 @@ public class DbSavingTask extends AsyncTask<MainActivity, Void, Void> implements
     private static Map<Integer, String> sPersistableMode;
     private static Map<Integer, String> sScreenOrientation;
     private static Map<Integer, String> sSoftInputMode;
+    private static Map<Integer, String> sUiOptions;
 
     static {
         sConfigChanges = new HashMap<>();
@@ -81,7 +84,7 @@ public class DbSavingTask extends AsyncTask<MainActivity, Void, Void> implements
         sScreenOrientation.put(14,SCREEN_ORIENTATION_LOCKED);
 
         sSoftInputMode = new HashMap<>();
-        sSoftInputMode.put(0,SOFT_INPUT_STATE_UNSPECIFIED); //conflict with SOFT_INPUT_ADJUST_UNSPECIFIED with value SOFT_INPUT_ADJUST_UNSPECIFIED
+        sSoftInputMode.put(0,SOFT_INPUT_STATE_UNSPECIFIED); //conflict with SOFT_INPUT_ADJUST_UNSPECIFIED
         sSoftInputMode.put(1,SOFT_INPUT_STATE_UNCHANGED);
         sSoftInputMode.put(2,SOFT_INPUT_STATE_HIDDEN);
         sSoftInputMode.put(5,SOFT_INPUT_STATE_ALWAYS_VISIBLE);
@@ -89,50 +92,67 @@ public class DbSavingTask extends AsyncTask<MainActivity, Void, Void> implements
         sSoftInputMode.put(16,SOFT_INPUT_ADJUST_RESIZE);
         sSoftInputMode.put(32,SOFT_INPUT_ADJUST_PAN);
 
+        sUiOptions = new HashMap<>();
+        sUiOptions.put(0, UI_OPTIONS_NONE);
+        sUiOptions.put(1, UI_OPTIONS_SPLIT_ACTIONBAR_WHEN_NARROW);
     }
 
     private final Context mContext;
+    private final int mCurrentSdkVersion;
+    private MainActivity mActivity;
 
     public DbSavingTask(Context context) {
         mContext = context;
+        mCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
     }
 
     @Override
-    protected Void doInBackground(MainActivity... params) {
-        MainActivity activity = params[0];
+    protected DbSavingResult doInBackground(MainActivity... params) {
+        mActivity = params[0];
+        ActivityInfo activityInfo;
         try {
-            ActivityInfo activityInfo = mContext
+            activityInfo = mContext
                     .getPackageManager()
-                    .getActivityInfo(activity.getComponentName(), PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
-
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(ActivityInfoTable._ACTIVITY_NAME, activityInfo.name);
-            contentValues.put(ActivityInfoTable._CONFIG_CHANGES, getConfigChange(activityInfo));
-            contentValues.put(ActivityInfoTable._FLAGS, getFlags(activityInfo));
-            contentValues.put(ActivityInfoTable._LAUNCH_MODE, getLaunchMode(activityInfo));
-            contentValues.put(ActivityInfoTable._MAX_RECENTS, activityInfo.maxRecents);
-            contentValues.put(ActivityInfoTable._PARENT_ACTIVITY_NAME, activityInfo.parentActivityName);
-            contentValues.put(ActivityInfoTable._PERMISSION, activityInfo.permission);
-            contentValues.put(ActivityInfoTable._PERSISTABLE_MODE, getPersistableMode(activityInfo));
-            contentValues.put(ActivityInfoTable._SCREEN_ORIENTATION, getScreenOrientation(activityInfo));
-
-            DataBaseManager dataBaseManager = new DataBaseManager(mContext);
-            SQLiteDatabase database = dataBaseManager.getWritableDatabase();
-            try {
-                database.beginTransaction();
-                database.insert(ActivityInfoTable.TABLE_NAME, null, contentValues);
-                database.setTransactionSuccessful();
-            } finally {
-                database.endTransaction();
-                database.close();
-            }
-
-            activity.onDbInfoSaved(DbSavingResult.SUCCESS);
+                    .getActivityInfo(mActivity.getComponentName(), PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
         } catch (PackageManager.NameNotFoundException e) {
-            activity.onDbInfoSaved(DbSavingResult.ERROR);
+            return DbSavingResult.ERROR;
         }
 
-        return null;
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ActivityInfoTable._ACTIVITY_NAME, activityInfo.name);
+        contentValues.put(ActivityInfoTable._CONFIG_CHANGES, getConfigChange(activityInfo));
+        contentValues.put(ActivityInfoTable._FLAGS, getFlags(activityInfo));
+        contentValues.put(ActivityInfoTable._LAUNCH_MODE, getLaunchMode(activityInfo));
+        contentValues.put(ActivityInfoTable._MAX_RECENTS, getMaxRecents(activityInfo));
+        contentValues.put(ActivityInfoTable._PARENT_ACTIVITY_NAME, getParentActivityName(activityInfo));
+        contentValues.put(ActivityInfoTable._PERMISSION, getPermission(activityInfo));
+        contentValues.put(ActivityInfoTable._PERSISTABLE_MODE, getPersistableMode(activityInfo));
+        contentValues.put(ActivityInfoTable._SCREEN_ORIENTATION, getScreenOrientation(activityInfo));
+        contentValues.put(ActivityInfoTable._SOFT_INPUT_MODE, getSoftInputMode(activityInfo));
+        contentValues.put(ActivityInfoTable._TARGET_ACTIVITY_NAME, getTargetActivity(activityInfo));
+        contentValues.put(ActivityInfoTable._TASK_AFFINITY, activityInfo.taskAffinity);
+        contentValues.put(ActivityInfoTable._THEME, getThemeName(mActivity, activityInfo));
+        contentValues.put(ActivityInfoTable._UI_OPTIONS, getUiOptions(activityInfo));
+        contentValues.put(ActivityInfoTable._PROCESS_NAME, activityInfo.processName);
+        contentValues.put(ActivityInfoTable._PACKAGE_NAME, activityInfo.packageName);
+
+        DataBaseManager dataBaseManager = new DataBaseManager(mContext);
+        SQLiteDatabase database = dataBaseManager.getWritableDatabase();
+        try {
+            database.beginTransaction();
+            database.insert(ActivityInfoTable.TABLE_NAME, null, contentValues);
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+            database.close();
+        }
+
+        return DbSavingResult.SUCCESS;
+    }
+
+    @Override
+    protected void onPostExecute(DbSavingResult dbSavingResult) {
+        mActivity.onDbInfoSaved(dbSavingResult);
     }
 
     private String getConfigChange(ActivityInfo activityInfo) {
@@ -147,7 +167,28 @@ public class DbSavingTask extends AsyncTask<MainActivity, Void, Void> implements
         return sLaunchMode.get(activityInfo.launchMode) == null ? UNDEFINED_FIELD : sLaunchMode.get(activityInfo.launchMode);
     }
 
+    private String getMaxRecents(ActivityInfo activityInfo) {
+        if(mCurrentSdkVersion < 21) {
+            return NOT_SUPPORTED;
+        }
+        return Integer.toString(activityInfo.maxRecents);
+    }
+
+    private String getParentActivityName(ActivityInfo activityInfo) {
+        if(mCurrentSdkVersion < 16) {
+            return NOT_SUPPORTED;
+        }
+        return activityInfo.parentActivityName == null ? UNDEFINED_FIELD : activityInfo.parentActivityName;
+    }
+
+    private String getPermission(ActivityInfo activityInfo) {
+        return activityInfo.permission == null ? UNDEFINED_FIELD : activityInfo.permission;
+    }
+
     private String getPersistableMode(ActivityInfo activityInfo) {
+        if (mCurrentSdkVersion < 21) {
+            return NOT_SUPPORTED;
+        }
         return sPersistableMode.get(activityInfo.persistableMode) == null ? UNDEFINED_FIELD : sPersistableMode.get(activityInfo.persistableMode);
     }
 
@@ -157,6 +198,18 @@ public class DbSavingTask extends AsyncTask<MainActivity, Void, Void> implements
 
     private String getSoftInputMode(ActivityInfo activityInfo) {
         return sSoftInputMode.get(activityInfo.softInputMode) == null ? UNDEFINED_FIELD : sSoftInputMode.get(activityInfo.softInputMode);
+    }
+
+    private String getTargetActivity(ActivityInfo activityInfo) {
+        return activityInfo.targetActivity == null ? UNDEFINED_FIELD : activityInfo.targetActivity;
+    }
+
+    private String getThemeName(Activity activity, ActivityInfo activityInfo) {
+        return activityInfo.theme == 0 ? UNDEFINED_FIELD : activity.getResources().getResourceName(activityInfo.theme);
+    }
+
+    private String getUiOptions(ActivityInfo activityInfo) {
+        return sUiOptions.get(activityInfo.uiOptions);
     }
 
 }

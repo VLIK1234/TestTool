@@ -6,6 +6,7 @@ package amtt.epam.com.amtt.database;
 public interface ActivityInfoConstants {
 
     String UNDEFINED_FIELD = "UNDEFINED_FIELD";
+    String NOT_SUPPORTED = "NOT_SUPPORTED";
 
     String CONFIG_FONT_SCALE = "CONFIG_FONT_SCALE";
     String CONFIG_MCC = "CONFIG_MCC";
@@ -64,5 +65,8 @@ public interface ActivityInfoConstants {
     String SOFT_INPUT_ADJUST_UNSPECIFIED = "SOFT_INPUT_ADJUST_UNSPECIFIED";
     String SOFT_INPUT_ADJUST_RESIZE = "SOFT_INPUT_ADJUST_RESIZE";
     String SOFT_INPUT_ADJUST_PAN = "SOFT_INPUT_ADJUST_PAN";
+
+    String UI_OPTIONS_NONE = "UI_OPTIONS_NONE";
+    String UI_OPTIONS_SPLIT_ACTIONBAR_WHEN_NARROW = "UI_OPTIONS_SPLIT_ACTIONBAR_WHEN_NARROW";
 
 }

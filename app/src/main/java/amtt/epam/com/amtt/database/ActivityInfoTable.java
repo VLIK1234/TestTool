@@ -1,16 +1,13 @@
 package amtt.epam.com.amtt.database;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import amtt.epam.com.amtt.util.MultiValueMap;
 
 /**
  * Created by Artsiom_Kaliaha on 18.03.2015.
  */
-public final class ActivityInfoTable implements BaseColumns {
+public final class ActivityInfoTable extends Table {
 
     public static final String TABLE_NAME = "activity_info";
 
@@ -26,18 +23,16 @@ public final class ActivityInfoTable implements BaseColumns {
     public static final String _SOFT_INPUT_MODE = "_soft_input_mode";
     public static final String _TARGET_ACTIVITY_NAME = "_target_activity_name";
     public static final String _TASK_AFFINITY = "_task_affinity";
-    public static final String _THEME_RESOURCE_ID = "_theme_resource_id";
+    public static final String _THEME = "_theme";
     public static final String _UI_OPTIONS = "_ui_options";
     public static final String _PROCESS_NAME = "_process_name";
-    public static final String _META_NAME = "_meta_name";
-    public static final String _META_RESOURCE = "_meta_resource";
-    public static final String _META_VALUE = "_meta_value";
     public static final String _PACKAGE_NAME = "_package_name";
 
-    private static MultiValueMap<String, String> sColoumnsMap;
+    private static MultiValueMap<String, String> sColumnsMap;
 
     static {
-        sColoumnsMap.put(TYPE_TEXT, new ArrayList<String>() {{
+        sColumnsMap = new MultiValueMap<>();
+        sColumnsMap.put(TYPE_TEXT, new ArrayList<String>() {{
             add(_ACTIVITY_NAME);
             add(_CONFIG_CHANGES);
             add(_FLAGS);
@@ -49,34 +44,21 @@ public final class ActivityInfoTable implements BaseColumns {
             add(_SOFT_INPUT_MODE);
             add(_TARGET_ACTIVITY_NAME);
             add(_TASK_AFFINITY);
+            add(_THEME);
             add(_UI_OPTIONS);
             add(_PROCESS_NAME);
-            add(_META_NAME);
-            add(_META_VALUE);
             add(_PACKAGE_NAME);
-        }});
-
-        sColoumnsMap.put(TYPE_INTEGER, new ArrayList<String>() {{
             add(_MAX_RECENTS);
-            add(_THEME_RESOURCE_ID);
-            add(_META_RESOURCE);
         }});
     }
 
-    public String getCreateString() {
-        StringBuilder createQuery = new StringBuilder();
-        createQuery.append(BaseColumns.CREATE).append(TABLE_NAME).append(" ( ");
-
-        Set<Map.Entry<String, List<String>>> keyValuePairs = sColoumnsMap.entrySet();
-
-        for (Map.Entry<String, List<String>> pair : keyValuePairs) {
-            List<String> columns = pair.getValue();
-            for (String column : columns) {
-                createQuery.append(column).append(" ").append(pair.getKey()).append(DIVIDER);
-            }
-        }
-        createQuery.deleteCharAt(createQuery.length() - 2).append(" )");
-        return createQuery.toString();
+    @Override
+    public MultiValueMap<String, String> getColumnsMap() {
+        return sColumnsMap;
     }
 
+    @Override
+    public String getTableName() {
+        return TABLE_NAME;
+    }
 }

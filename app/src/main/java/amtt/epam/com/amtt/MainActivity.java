@@ -23,7 +23,7 @@ public class MainActivity extends ActionBarActivity implements ImageSavingCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button screenButton = (Button) findViewById(R.id.screen_button);
+        Button screenButton = (Button) findViewById(R.id.save_data_button);
         screenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
