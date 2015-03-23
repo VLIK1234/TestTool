@@ -43,10 +43,9 @@ public class MainActivity extends ActionBarActivity implements ImageSavingCallba
         activityInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DbSavingTask(MainActivity.this).execute(MainActivity.this);
+                new DbSavingTask(MainActivity.this, MainActivity.this.getComponentName()).execute();
             }
         });
-
     }
 
 

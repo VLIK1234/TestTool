@@ -16,6 +16,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".contentprovider.AmttContentProvider"
+            android:authorities="amtt.epam.com.amtt.contentprovider"
+            android:exported="false" >
+        </provider>
+
     </application>
 
 </manifest>

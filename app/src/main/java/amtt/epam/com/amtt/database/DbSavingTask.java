@@ -1,23 +1,22 @@
 package amtt.epam.com.amtt.database;
 
-import android.app.Activity;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.os.Bundle;
+import android.os.Build;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import amtt.epam.com.amtt.MainActivity;
+import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 
 /**
  * Created by Artsiom_Kaliaha on 19.03.2015.
  */
-public class DbSavingTask extends AsyncTask<MainActivity, Void, DbSavingResult> implements ActivityInfoConstants {
+public class DbSavingTask extends AsyncTask<Void, Void, DbSavingResult> implements ActivityInfoConstants {
 
     private static Map<Integer, String> sConfigChanges;
     private static Map<Integer, String> sFlags;
@@ -66,31 +65,31 @@ public class DbSavingTask extends AsyncTask<MainActivity, Void, DbSavingResult> 
         sPersistableMode.put(2, PERSIST_ACROSS_REBOOTS);
 
         sScreenOrientation = new HashMap<>();
-        sScreenOrientation.put(-1,SCREEN_ORIENTATION_UNSPECIFIED);
-        sScreenOrientation.put(0,SCREEN_ORIENTATION_LANDSCAPE);
-        sScreenOrientation.put(1,SCREEN_ORIENTATION_PORTRAIT);
-        sScreenOrientation.put(2,SCREEN_ORIENTATION_USER);
-        sScreenOrientation.put(3,SCREEN_ORIENTATION_BEHIND);
-        sScreenOrientation.put(4,SCREEN_ORIENTATION_SENSOR);
-        sScreenOrientation.put(5,SCREEN_ORIENTATION_NOSENSOR);
-        sScreenOrientation.put(6,SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-        sScreenOrientation.put(7,SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-        sScreenOrientation.put(8,SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-        sScreenOrientation.put(9,SCREEN_ORIENTATION_REVERSE_PORTRAIT);
-        sScreenOrientation.put(10,SCREEN_ORIENTATION_FULL_SENSOR);
-        sScreenOrientation.put(11,SCREEN_ORIENTATION_USER_LANDSCAPE);
-        sScreenOrientation.put(12,SCREEN_ORIENTATION_USER_PORTRAIT);
-        sScreenOrientation.put(13,SCREEN_ORIENTATION_FULL_USER);
-        sScreenOrientation.put(14,SCREEN_ORIENTATION_LOCKED);
+        sScreenOrientation.put(-1, SCREEN_ORIENTATION_UNSPECIFIED);
+        sScreenOrientation.put(0, SCREEN_ORIENTATION_LANDSCAPE);
+        sScreenOrientation.put(1, SCREEN_ORIENTATION_PORTRAIT);
+        sScreenOrientation.put(2, SCREEN_ORIENTATION_USER);
+        sScreenOrientation.put(3, SCREEN_ORIENTATION_BEHIND);
+        sScreenOrientation.put(4, SCREEN_ORIENTATION_SENSOR);
+        sScreenOrientation.put(5, SCREEN_ORIENTATION_NOSENSOR);
+        sScreenOrientation.put(6, SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        sScreenOrientation.put(7, SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        sScreenOrientation.put(8, SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+        sScreenOrientation.put(9, SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+        sScreenOrientation.put(10, SCREEN_ORIENTATION_FULL_SENSOR);
+        sScreenOrientation.put(11, SCREEN_ORIENTATION_USER_LANDSCAPE);
+        sScreenOrientation.put(12, SCREEN_ORIENTATION_USER_PORTRAIT);
+        sScreenOrientation.put(13, SCREEN_ORIENTATION_FULL_USER);
+        sScreenOrientation.put(14, SCREEN_ORIENTATION_LOCKED);
 
         sSoftInputMode = new HashMap<>();
-        sSoftInputMode.put(0,SOFT_INPUT_STATE_UNSPECIFIED); //conflict with SOFT_INPUT_ADJUST_UNSPECIFIED
-        sSoftInputMode.put(1,SOFT_INPUT_STATE_UNCHANGED);
-        sSoftInputMode.put(2,SOFT_INPUT_STATE_HIDDEN);
-        sSoftInputMode.put(5,SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        sSoftInputMode.put(4,SOFT_INPUT_STATE_VISIBLE);
-        sSoftInputMode.put(16,SOFT_INPUT_ADJUST_RESIZE);
-        sSoftInputMode.put(32,SOFT_INPUT_ADJUST_PAN);
+        sSoftInputMode.put(0, SOFT_INPUT_STATE_UNSPECIFIED); //conflict with SOFT_INPUT_ADJUST_UNSPECIFIED
+        sSoftInputMode.put(1, SOFT_INPUT_STATE_UNCHANGED);
+        sSoftInputMode.put(2, SOFT_INPUT_STATE_HIDDEN);
+        sSoftInputMode.put(5, SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        sSoftInputMode.put(4, SOFT_INPUT_STATE_VISIBLE);
+        sSoftInputMode.put(16, SOFT_INPUT_ADJUST_RESIZE);
+        sSoftInputMode.put(32, SOFT_INPUT_ADJUST_PAN);
 
         sUiOptions = new HashMap<>();
         sUiOptions.put(0, UI_OPTIONS_NONE);
@@ -99,21 +98,23 @@ public class DbSavingTask extends AsyncTask<MainActivity, Void, DbSavingResult> 
 
     private final Context mContext;
     private final int mCurrentSdkVersion;
-    private MainActivity mActivity;
+    private final DbSavingCallback mCallback;
+    private final ComponentName mComponentName;
 
-    public DbSavingTask(Context context) {
+    public DbSavingTask(Context context, ComponentName componentName) {
         mContext = context;
+        mCallback = (DbSavingCallback) context;
+        mComponentName = componentName;
         mCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
     }
 
     @Override
-    protected DbSavingResult doInBackground(MainActivity... params) {
-        mActivity = params[0];
+    protected DbSavingResult doInBackground(Void... params) {
         ActivityInfo activityInfo;
         try {
             activityInfo = mContext
                     .getPackageManager()
-                    .getActivityInfo(mActivity.getComponentName(), PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
+                    .getActivityInfo(mComponentName, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
         } catch (PackageManager.NameNotFoundException e) {
             return DbSavingResult.ERROR;
         }
@@ -131,28 +132,19 @@ public class DbSavingTask extends AsyncTask<MainActivity, Void, DbSavingResult> 
         contentValues.put(ActivityInfoTable._SOFT_INPUT_MODE, getSoftInputMode(activityInfo));
         contentValues.put(ActivityInfoTable._TARGET_ACTIVITY_NAME, getTargetActivity(activityInfo));
         contentValues.put(ActivityInfoTable._TASK_AFFINITY, activityInfo.taskAffinity);
-        contentValues.put(ActivityInfoTable._THEME, getThemeName(mActivity, activityInfo));
+        contentValues.put(ActivityInfoTable._THEME, getThemeName(activityInfo));
         contentValues.put(ActivityInfoTable._UI_OPTIONS, getUiOptions(activityInfo));
         contentValues.put(ActivityInfoTable._PROCESS_NAME, activityInfo.processName);
         contentValues.put(ActivityInfoTable._PACKAGE_NAME, activityInfo.packageName);
 
-        DataBaseManager dataBaseManager = new DataBaseManager(mContext);
-        SQLiteDatabase database = dataBaseManager.getWritableDatabase();
-        try {
-            database.beginTransaction();
-            database.insert(ActivityInfoTable.TABLE_NAME, null, contentValues);
-            database.setTransactionSuccessful();
-        } finally {
-            database.endTransaction();
-            database.close();
-        }
+        mContext.getContentResolver().insert(AmttContentProvider.ACTIVITY_META_CONTENT_URI, contentValues);
 
         return DbSavingResult.SUCCESS;
     }
 
     @Override
     protected void onPostExecute(DbSavingResult dbSavingResult) {
-        mActivity.onDbInfoSaved(dbSavingResult);
+        mCallback.onDbInfoSaved(dbSavingResult);
     }
 
     private String getConfigChange(ActivityInfo activityInfo) {
@@ -168,14 +160,14 @@ public class DbSavingTask extends AsyncTask<MainActivity, Void, DbSavingResult> 
     }
 
     private String getMaxRecents(ActivityInfo activityInfo) {
-        if(mCurrentSdkVersion < 21) {
+        if (mCurrentSdkVersion < Build.VERSION_CODES.LOLLIPOP) {
             return NOT_SUPPORTED;
         }
         return Integer.toString(activityInfo.maxRecents);
     }
 
     private String getParentActivityName(ActivityInfo activityInfo) {
-        if(mCurrentSdkVersion < 16) {
+        if (mCurrentSdkVersion < Build.VERSION_CODES.JELLY_BEAN) {
             return NOT_SUPPORTED;
         }
         return activityInfo.parentActivityName == null ? UNDEFINED_FIELD : activityInfo.parentActivityName;
@@ -186,7 +178,7 @@ public class DbSavingTask extends AsyncTask<MainActivity, Void, DbSavingResult> 
     }
 
     private String getPersistableMode(ActivityInfo activityInfo) {
-        if (mCurrentSdkVersion < 21) {
+        if (mCurrentSdkVersion < Build.VERSION_CODES.LOLLIPOP) {
             return NOT_SUPPORTED;
         }
         return sPersistableMode.get(activityInfo.persistableMode) == null ? UNDEFINED_FIELD : sPersistableMode.get(activityInfo.persistableMode);
@@ -204,8 +196,8 @@ public class DbSavingTask extends AsyncTask<MainActivity, Void, DbSavingResult> 
         return activityInfo.targetActivity == null ? UNDEFINED_FIELD : activityInfo.targetActivity;
     }
 
-    private String getThemeName(Activity activity, ActivityInfo activityInfo) {
-        return activityInfo.theme == 0 ? UNDEFINED_FIELD : activity.getResources().getResourceName(activityInfo.theme);
+    private String getThemeName(ActivityInfo activityInfo) {
+        return activityInfo.theme == 0 ? UNDEFINED_FIELD : mContext.getResources().getResourceName(activityInfo.theme);
     }
 
     private String getUiOptions(ActivityInfo activityInfo) {

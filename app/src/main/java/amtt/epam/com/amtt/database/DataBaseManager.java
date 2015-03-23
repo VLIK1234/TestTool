@@ -1,8 +1,11 @@
 package amtt.epam.com.amtt.database;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
 
 /**
  * Created by Artsiom_Kaliaha on 18.03.2015.
@@ -25,4 +28,76 @@ public class DataBaseManager extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
+
+    public Cursor query(String tableName, String activityName, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+        queryBuilder.setTables(tableName);
+
+        if (activityName != null) {
+            queryBuilder.appendWhere(ActivityInfoTable._ACTIVITY_NAME + "=" + activityName);
+        }
+
+        Cursor cursor;
+        SQLiteDatabase database = getReadableDatabase();
+
+        try {
+            database.beginTransaction();
+            cursor = queryBuilder.query(getReadableDatabase(), projection, selection, selectionArgs, null, null, sortOrder);
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+            database.close();
+        }
+
+        return cursor;
+    }
+
+    public long insert(String tableName, ContentValues values) {
+        long id;
+
+        SQLiteDatabase database = getWritableDatabase();
+
+        try {
+            database.beginTransaction();
+            id = database.insert(tableName, null, values);
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+            database.close();
+        }
+
+        return id;
+    }
+
+    public int delete(String tableName, String selection, String[] selectionArgs) {
+        int deletedRows;
+        SQLiteDatabase database = getWritableDatabase();
+
+        try {
+            database.beginTransaction();
+            deletedRows = database.delete(tableName, selection, selectionArgs);
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+            database.close();
+        }
+
+        return deletedRows;
+    }
+
+    public int update(String tableName, ContentValues values, String selection, String[] selectionArgs) {
+        int updatedRows;
+
+        SQLiteDatabase database = getWritableDatabase();
+        try {
+            database.beginTransaction();
+            updatedRows = database.update(tableName, values, selection, selectionArgs);
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+            database.close();
+        }
+        return updatedRows;
+    }
+
 }
