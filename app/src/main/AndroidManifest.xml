@@ -25,9 +25,8 @@
         </activity>
 
         <service
-            android:name=".service.HUD"
-            android:enabled="true"
-            android:exported="true" >
+            android:name=".service.TopButtonService"
+            android:exported="false" >
         </service>
     </application>
 

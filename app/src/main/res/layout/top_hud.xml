@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/top_hud"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/abc_search_url_text_normal">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
     <Button
         android:id="@+id/test_top_button"
         android:layout_width="wrap_content"
@@ -11,4 +10,4 @@
         android:background="@color/accent_material_light"
         android:text="Button"/>
 
-</RelativeLayout>
+</FrameLayout>
