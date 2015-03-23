@@ -1,24 +1,14 @@
 package amtt.epam.com.amtt;
 
-import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Intent;
-import android.graphics.Color;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.DragEvent;
-import android.view.Gravity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import amtt.epam.com.amtt.service.TopButtonService;
 
 public class MainActivity extends ActionBarActivity{
-
-    private String msg;
-    private View relativeLayouts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

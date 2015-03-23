@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.view;
 
-import android.app.ActionBar;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
@@ -8,7 +7,6 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;

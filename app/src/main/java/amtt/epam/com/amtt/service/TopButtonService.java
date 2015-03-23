@@ -34,8 +34,6 @@ import amtt.epam.com.amtt.R;
 public class TopButtonService extends Service {
     private TopButtonView mView;
     public final String LOG_TAG = "myLogs";
-    private Button button;
-    private String msg;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -50,10 +48,11 @@ public class TopButtonService extends Service {
 
 
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-        layoutParams.width = 200;
-        layoutParams.height = 200;
+        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         layoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-        layoutParams.flags = WindowManager.LayoutParams.FLAGS_CHANGED;
+        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                            | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         layoutParams.format = PixelFormat.TRANSLUCENT;
         layoutParams.gravity = Gravity.RIGHT | Gravity.CENTER;
 
