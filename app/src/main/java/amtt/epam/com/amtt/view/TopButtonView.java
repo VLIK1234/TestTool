@@ -34,7 +34,7 @@ public class TopButtonView extends FrameLayout {
 
 
     private void initComponent() {
-        Log.e(LOG_TAG, "initComponent");
+        Log.d(LOG_TAG, "initComponent");
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         inflater.inflate(R.layout.top_button_layout, this, true);
