@@ -1,39 +1,22 @@
 package amtt.epam.com.amtt.service;
 
 import android.app.Service;
-import android.content.ClipData;
-import android.content.ClipDescription;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
-import android.util.Log;
-import android.view.DragEvent;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import amtt.epam.com.amtt.view.TopButtonView;
-
-import amtt.epam.com.amtt.CoreApplication;
-import amtt.epam.com.amtt.R;
 
 /**
  * Created by Ivan_Bakach on 20.03.2015.
  */
 public class TopButtonService extends Service {
+    private static final int X_INIT_POSITION = 500;
+    private static final int Y_INIT_POSITION = 1000;
     private TopButtonView mView;
-    public final String LOG_TAG = "myLogs";
+    private final String LOG_TAG = "myLogs";
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -48,10 +31,7 @@ public class TopButtonService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Log.e("test", "onStartCommand");
-
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-
 
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
         layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -61,8 +41,8 @@ public class TopButtonService extends Service {
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
         layoutParams.format = PixelFormat.TRANSLUCENT;
         layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
-        layoutParams.x = 500;
-        layoutParams.y = 1000;
+        layoutParams.x = X_INIT_POSITION;
+        layoutParams.y = Y_INIT_POSITION;
 
         mView = new TopButtonView(this, wm, layoutParams);
         wm.addView(mView, layoutParams);
