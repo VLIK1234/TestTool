@@ -1,31 +1,51 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/relative_layout"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/material_deep_teal_200" tools:context=".MainActivity">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_deep_teal_200"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/save_image_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save_image"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
+
+    <Button
+        android:id="@+id/save_activity_info_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save_activity_info"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/save_image_button"
+        android:layout_marginTop="16dp"/>
 
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="@string/hello_world" />
-<!--
-    <Button
-        android:id="@+id/button_show"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text"
-        android:layout_centerInParent="true"
-        android:text="@string/button_show"/>
-    <Button
-        android:id="@+id/buttons_stop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text"
-        android:layout_toRightOf="@id/button_show"
-        android:layout_toEndOf="@+id/button_show"
-        android:layout_centerInParent="true"
-        android:text="@string/button_stop"/>
--->
+        android:text="@string/hello_world"/>
+    <!--
+        <Button
+            android:id="@+id/button_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text"
+            android:layout_centerInParent="true"
+            android:text="@string/button_show"/>
+        <Button
+            android:id="@+id/buttons_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text"
+            android:layout_toRightOf="@id/button_show"
+            android:layout_toEndOf="@+id/button_show"
+            android:layout_centerInParent="true"
+            android:text="@string/button_stop"/>
+    -->
 </RelativeLayout>

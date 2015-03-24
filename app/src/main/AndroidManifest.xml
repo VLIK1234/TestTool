@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="amtt.epam.com.amtt">
+          package="amtt.epam.com.amtt">
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name=".CoreApplication"
@@ -15,21 +15,29 @@
             android:name=".MainActivity"
             android:label="@string/app_name">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="ca8d47b0e2c3c9351a1eec35690b1719ab1aa869" />
+            android:value="ca8d47b0e2c3c9351a1eec35690b1719ab1aa869"/>
         <activity
             android:name=".SecondActivity"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"/>
 
         <service
             android:name=".service.TopButtonService"
-            android:exported="false" />
+            android:exported="false"/>
+
+        <provider
+            android:name=".contentprovider.AmttContentProvider"
+            android:authorities="amtt.epam.com.amtt.contentprovider"
+            android:exported="false">
+        </provider>
+
     </application>
 
 
