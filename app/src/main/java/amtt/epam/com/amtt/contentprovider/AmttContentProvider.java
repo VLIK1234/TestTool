@@ -34,6 +34,7 @@ public class AmttContentProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher;
     private static Map<Integer, String> sContentType;
     private static Map<Integer, String[]> sProjections;
+    private static DataBaseManager mDataBaseManager;
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -74,7 +75,7 @@ public class AmttContentProvider extends ContentProvider {
 
         String tableName = uri.getPath();
         String activityName = uri.getLastPathSegment();
-        return new DataBaseManager(getContext()).query(tableName, activityName, projection, selection, selectionArgs, sortOrder);
+        return getDataBaseManager().query(tableName, activityName, projection, selection, selectionArgs, sortOrder);
     }
 
     @Override
@@ -86,7 +87,7 @@ public class AmttContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         String tableName = uri.getLastPathSegment();
-        long id = new DataBaseManager(getContext()).insert(tableName, values);
+        long id = getDataBaseManager().insert(tableName, values);
         return ContentUris.withAppendedId(uri, id);
     }
 
@@ -106,7 +107,7 @@ public class AmttContentProvider extends ContentProvider {
         }
 
         String tableName = uri.getPathSegments().size() > 1 ? uri.getLastPathSegment() : uri.getPathSegments().get(0);
-        int deletedRows = new DataBaseManager(getContext()).delete(tableName, selection, selectionArgs);
+        int deletedRows = getDataBaseManager().delete(tableName, selection, selectionArgs);
         getContext().getContentResolver().notifyChange(uri, null);
         return deletedRows;
     }
@@ -127,7 +128,7 @@ public class AmttContentProvider extends ContentProvider {
         }
 
         String tableName = uri.getPathSegments().size() > 1 ? uri.getLastPathSegment() : uri.getPathSegments().get(0);
-        int updatedRows = new DataBaseManager(getContext()).update(tableName, values, selection, selectionArgs);
+        int updatedRows = getDataBaseManager().update(tableName, values, selection, selectionArgs);
         getContext().getContentResolver().notifyChange(uri, null);
         return updatedRows;
     }
@@ -142,6 +143,13 @@ public class AmttContentProvider extends ContentProvider {
             availableProjection = Collections.EMPTY_SET;
         }
         return availableProjection.containsAll(receivedProjection);
+    }
+
+    private DataBaseManager getDataBaseManager() {
+        if (mDataBaseManager == null) {
+            mDataBaseManager = new DataBaseManager(getContext());
+        }
+        return mDataBaseManager;
     }
 
 }
