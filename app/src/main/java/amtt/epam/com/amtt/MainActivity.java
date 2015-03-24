@@ -19,6 +19,7 @@ public class MainActivity extends ActionBarActivity{
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
         startService( new Intent(this, TopButtonService.class));
+//        TopButtonService.show(this);
     }
 
 
