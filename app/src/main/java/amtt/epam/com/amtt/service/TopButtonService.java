@@ -43,6 +43,12 @@ public class TopButtonService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Log.e("test", "onStartCommand");
 
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
 
@@ -50,14 +56,18 @@ public class TopButtonService extends Service {
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
         layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        layoutParams.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
+        layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
         layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-                            | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
         layoutParams.format = PixelFormat.TRANSLUCENT;
-        layoutParams.gravity = Gravity.RIGHT | Gravity.CENTER;
+        layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
+        layoutParams.x = 500;
+        layoutParams.y = 1000;
 
         mView = new TopButtonView(this, wm, layoutParams);
         wm.addView(mView, layoutParams);
+
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -69,5 +79,3 @@ public class TopButtonService extends Service {
         }
     }
 }
-
-

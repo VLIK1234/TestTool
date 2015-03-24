@@ -1,27 +1,26 @@
 package amtt.epam.com.amtt.view;
 
-import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Context;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-public class TopButtonView extends FrameLayout{
+public class TopButtonView extends FrameLayout {
 
     private final static int NO_VIEW_FLAG = 0;
 
     private Button button;
-    private FrameLayout frameLayout;
+    private FrameLayout body;
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
     private final static String LOG_TAG = "TAG";
@@ -31,87 +30,75 @@ public class TopButtonView extends FrameLayout{
         initComponent();
         this.windowManager = windowManager;
         this.layoutParams = layoutParams;
+        body = (FrameLayout) findViewById(R.id.body);
     }
 
 
     private void initComponent() {
+        Log.e(LOG_TAG, "initComponent");
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.top_hud, this);
-        button = (Button) findViewById(R.id.test_top_button);
-        frameLayout = (FrameLayout) findViewById(R.id.top_hud);
-        button.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                ClipData.Item item = new ClipData.Item(LOG_TAG);
 
-                String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-                ClipData dragData = new ClipData(LOG_TAG,
-                        mimeTypes, item);
+        inflater.inflate(R.layout.top_button_layout, this, true);
+    }
 
-                // Instantiates the drag shadow builder.
-                DragShadowBuilder myShadow = new DragShadowBuilder(button);
+    private int firstX;
+    private int firstY;
 
-                // Starts the drag
-                v.startDrag(dragData,  // the data to be dragged
-                        myShadow,  // the drag shadow builder
-                        null,      // no need to use local data
-                        NO_VIEW_FLAG          // flags (not currently used, set to 0)
-                );
-                return true;
-            }
-        });
+    private int lastX;
+    private int lastY;
 
-        button.setOnClickListener(new View.OnClickListener() {
+    public boolean moving;
 
-            @Override
-            public void onClick(View v) {
-                Log.d(LOG_TAG, "TOUCH");
-            }
-        });
+    public int threshold = 10;
 
-        // Create and set the drag event listener for the View
-        frameLayout.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View v, DragEvent event) {
-                int x_cord;
-                int y_cord;
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int totalDeltaX = lastX - firstX;
+        int totalDeltaY = lastY - firstY;
 
-                switch (event.getAction()) {
-                    case DragEvent.ACTION_DRAG_STARTED:
-                        Log.d(LOG_TAG, "Action is DragEvent.ACTION_DRAG_STARTED");
-                        break;
-                    case DragEvent.ACTION_DRAG_ENTERED:
-                        Log.d(LOG_TAG, "Action is DragEvent.ACTION_DRAG_ENTERED");
-                        break;
-                    case DragEvent.ACTION_DRAG_EXITED:
-                        Log.d(LOG_TAG, "Action is DragEvent.ACTION_DRAG_EXITED");
-                        x_cord = (int) event.getX();
-                        y_cord = (int) event.getY();
-                        break;
-                    case DragEvent.ACTION_DRAG_LOCATION:
-                        Log.d(LOG_TAG, "Action is DragEvent.ACTION_DRAG_LOCATION");
-                        x_cord = (int) event.getX();
-                        y_cord = (int) event.getY();
-                        break;
-                    case DragEvent.ACTION_DRAG_ENDED:
-                        Log.d(LOG_TAG, "Action is DragEvent.ACTION_DRAG_ENDED");
-                        y_cord = (int) event.getY();
-                        x_cord = (int) event.getX();
-                        layoutParams.x = (int) event.getX();
-                        layoutParams.y = (int) event.getY();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                lastX = (int) event.getRawX();
+                lastY = (int) event.getRawY();
 
-                        Log.d(LOG_TAG, x_cord+" "+ y_cord);
+                firstX = lastX;
+                firstY = lastY;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                int deltaX = (int) event.getRawX() - lastX;
+                int deltaY = (int) event.getRawY() - lastY;
 
-                        windowManager.updateViewLayout(TopButtonView.this,layoutParams);
-                        break;
-                    case DragEvent.ACTION_DROP:
-                        Log.d(LOG_TAG, "ACTION_DROP event");
-                        break;
-                    default:
-                        break;
+                lastX = (int) event.getRawX();
+                lastY = (int) event.getRawY();
+
+                if (moving
+                        || Math.abs(totalDeltaX) >= threshold
+                        || Math.abs(totalDeltaY) >= threshold) {
+                    moving = true;
+
+                    // update the position of the view
+                    if (event.getPointerCount() == 1) {
+                        layoutParams.x += deltaX;
+                        layoutParams.y += deltaY;
+                    }
+                    windowManager.updateViewLayout(this, layoutParams);
                 }
-                return true;
-            }
-        });
+                break;
+            case MotionEvent.ACTION_UP:
+                moving = false;
+
+                if (event.getPointerCount() == 1) {
+
+                    boolean tap = Math.abs(totalDeltaX) < threshold
+                            && Math.abs(totalDeltaY) < threshold;
+                    if (tap) {
+                        Toast.makeText(getContext(),"Tap button!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                break;
+        }
+
+        return true;
     }
 }
