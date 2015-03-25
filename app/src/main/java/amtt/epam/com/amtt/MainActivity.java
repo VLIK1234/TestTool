@@ -33,9 +33,6 @@ public class MainActivity extends ActionBarActivity implements ImageSavingCallba
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
-        startService(new Intent(this, TopButtonService.class));
-//        TopButtonService.show(this);
-
         Button screenButton = (Button) findViewById(R.id.save_image_button);
         screenButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +57,12 @@ public class MainActivity extends ActionBarActivity implements ImageSavingCallba
     }
 
 
+    public void onClickShow(View view){
+        TopButtonService.show(this);
+    }
+    public void onClickStop(View view){
+        TopButtonService.close(this);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);

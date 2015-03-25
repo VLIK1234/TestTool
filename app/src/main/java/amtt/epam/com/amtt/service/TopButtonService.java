@@ -1,10 +1,12 @@
 package amtt.epam.com.amtt.service;
 
+import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
@@ -18,21 +20,13 @@ public class TopButtonService extends Service {
 
     public static final String ACTION_SHOW = "SHOW";
     public static final String ACTION_CLOSE = "CLOSE";
-    private static final int X_INIT_POSITION = 500;
-    private static final int Y_INIT_POSITION = 1000;
+    private DisplayMetrics displayMetrics;
+    private int xInitPosition;
+    private int yInitPosition;
     private TopButtonView view;
     private WindowManager wm;
     private WindowManager.LayoutParams layoutParams;
     private final String LOG_TAG = "myLogs";
-
-//    public static void start(){
-//        Intent
-//    }
-//
-//    static stop{
-//
-//    }
-
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -43,8 +37,12 @@ public class TopButtonService extends Service {
     public void onCreate() {
         super.onCreate();
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        displayMetrics = getBaseContext().getResources().getDisplayMetrics();
+        xInitPosition = displayMetrics.widthPixels/2;
+        yInitPosition = displayMetrics.heightPixels/2;
         intitLayoutParams();
         view = new TopButtonView(this, wm, layoutParams);
+        wm.addView(view, layoutParams);
     }
 
     private void intitLayoutParams() {
@@ -56,8 +54,8 @@ public class TopButtonService extends Service {
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
         layoutParams.format = PixelFormat.TRANSLUCENT;
         layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
-        layoutParams.x = X_INIT_POSITION;
-        layoutParams.y = Y_INIT_POSITION;
+        layoutParams.x = xInitPosition;
+        layoutParams.y = yInitPosition;
     }
 
     public static Intent getShowIntent(Context context) {
@@ -76,26 +74,24 @@ public class TopButtonService extends Service {
         context.startService(getCloseIntent(context));
     }
 
-    public final void show(Intent name) {
-        startService(name);
+    public final void show() {
     }
 
     public final void close(Intent name) {
         stopService(name);
     }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        wm.addView(view, layoutParams);
+        super.onStartCommand(intent, flags, startId);
 
         if (intent != null) {
             String action = intent.getAction();
-            Context context = getApplicationContext();
 
             if (ACTION_SHOW.equals(action)) {
-                show(intent);
+                show();
             } else if (ACTION_CLOSE.equals(action)) {
                 close(intent);
-
             }
         } else {
             Log.w(LOG_TAG, "Tried to onStartCommand() with a null intent.");
