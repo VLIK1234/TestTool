@@ -63,6 +63,10 @@ public class MainActivity extends ActionBarActivity implements ImageSavingCallba
     public void onClickStop(View view){
         TopButtonService.close(this);
     }
+    public void onClickSecond(View view){
+        Intent intent = new Intent(this, SecondActivity.class);
+        startActivity(intent);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);

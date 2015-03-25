@@ -26,6 +26,7 @@ public class TopButtonService extends Service {
     private TopButtonView view;
     private WindowManager wm;
     private WindowManager.LayoutParams layoutParams;
+    private static Context contextOut;
     private final String LOG_TAG = "myLogs";
 
     @Override
@@ -40,8 +41,8 @@ public class TopButtonService extends Service {
         displayMetrics = getBaseContext().getResources().getDisplayMetrics();
         xInitPosition = displayMetrics.widthPixels/2;
         yInitPosition = displayMetrics.heightPixels/2;
-        intitLayoutParams();
-        view = new TopButtonView(this, wm, layoutParams);
+        intitLayoutParams();wm.getDefaultDisplay();
+        view = new TopButtonView(contextOut, wm, layoutParams);
         wm.addView(view, layoutParams);
     }
 
@@ -67,6 +68,7 @@ public class TopButtonService extends Service {
     }
 
     public static void show(Context context) {
+        contextOut = context;
         context.startService(getShowIntent(context));
     }
 

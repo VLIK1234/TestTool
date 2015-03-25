@@ -1,20 +1,29 @@
 package amtt.epam.com.amtt.view;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import amtt.epam.com.amtt.MainActivity;
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.image.ImageSavingCallback;
+import amtt.epam.com.amtt.image.ImageSavingResult;
+import amtt.epam.com.amtt.image.ImageSavingTask;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-public class TopButtonView extends FrameLayout {
+public class TopButtonView extends FrameLayout implements ImageSavingCallback {
 
     private final static int NO_VIEW_FLAG = 0;
 
@@ -22,10 +31,14 @@ public class TopButtonView extends FrameLayout {
     private FrameLayout body;
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
+    private Context context;
+    private Activity activity;
     private final static String LOG_TAG = "TAG";
+    private int mScreenNumber = 1;
 
     public TopButtonView(Context context, WindowManager windowManager, WindowManager.LayoutParams layoutParams) {
         super(context);
+        activity = (Activity) context;
         initComponent();
         this.windowManager = windowManager;
         this.layoutParams = layoutParams;
@@ -90,7 +103,15 @@ public class TopButtonView extends FrameLayout {
                     boolean tap = Math.abs(totalDeltaX) < threshold
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
-                        Toast.makeText(getContext(), "Tap button!", Toast.LENGTH_SHORT).show();
+                        View rootView = activity.getWindow().getDecorView();
+                        rootView.setDrawingCacheEnabled(true);
+                        Bitmap bitmap = rootView.getDrawingCache();
+                        Rect rect = new Rect();
+                        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+                        new ImageSavingTask(this, bitmap, rect, activity.getExternalCacheDir().getPath()).execute();
+//                        new ImageSavingTask(this, bitmap, rect, activity.getCacheDir().getPath()).execute();
+                        Toast.makeText(getContext(), activity.getExternalCacheDir().getAbsolutePath(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "Tap button!", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
@@ -98,4 +119,15 @@ public class TopButtonView extends FrameLayout {
         return true;
     }
 
+    @Override
+    public void onImageSaved(ImageSavingResult result) {
+        mScreenNumber++;
+        int resultMessage = result == ImageSavingResult.ERROR ? R.string.image_saving_error : R.string.image_saving_success;
+        Toast.makeText(activity, resultMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public int getScreenNumber() {
+        return mScreenNumber;
+    }
 }

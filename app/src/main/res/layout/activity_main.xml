@@ -49,4 +49,11 @@
         android:layout_toRightOf="@id/button_show"
         android:text="@string/button_stop"
         android:onClick="onClickStop"/>
+    <Button
+        android:id="@+id/buttons_second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Second"
+        android:onClick="onClickSecond"/>
 </RelativeLayout>
