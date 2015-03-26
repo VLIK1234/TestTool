@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.service;
 
-import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -9,8 +8,10 @@ import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
 
+import amtt.epam.com.amtt.app.BaseActivity;
 import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
@@ -26,7 +27,6 @@ public class TopButtonService extends Service {
     private TopButtonView view;
     private WindowManager wm;
     private WindowManager.LayoutParams layoutParams;
-    private static Context contextOut;
     private final String LOG_TAG = "myLogs";
 
     @Override
@@ -39,11 +39,12 @@ public class TopButtonService extends Service {
         super.onCreate();
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         displayMetrics = getBaseContext().getResources().getDisplayMetrics();
-        xInitPosition = displayMetrics.widthPixels/2;
-        yInitPosition = displayMetrics.heightPixels/2;
-        intitLayoutParams();wm.getDefaultDisplay();
-        view = new TopButtonView(contextOut, wm, layoutParams);
-        wm.addView(view, layoutParams);
+        xInitPosition = displayMetrics.widthPixels / 2;
+        yInitPosition = displayMetrics.heightPixels / 2;
+        intitLayoutParams();
+        wm.getDefaultDisplay();
+        view = new TopButtonView(getBaseContext(), wm, layoutParams);
+
     }
 
     private void intitLayoutParams() {
@@ -68,7 +69,6 @@ public class TopButtonService extends Service {
     }
 
     public static void show(Context context) {
-        contextOut = context;
         context.startService(getShowIntent(context));
     }
 
@@ -77,15 +77,29 @@ public class TopButtonService extends Service {
     }
 
     public final void show() {
+        wm.addView(view, layoutParams);
     }
 
     public final void close(Intent name) {
+        if (view != null) {
+            ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
+            view = null;
+        }
         stopService(name);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                view.setVisibility(View.GONE);
+                Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
+                sendBroadcast(intentATS);
+                view.setVisibility(View.VISIBLE);
+            }
+        });
 
         if (intent != null) {
             String action = intent.getAction();
@@ -100,15 +114,5 @@ public class TopButtonService extends Service {
         }
         return START_NOT_STICKY;
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (view != null) {
-            ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
-            view = null;
-        }
-    }
-
 
 }

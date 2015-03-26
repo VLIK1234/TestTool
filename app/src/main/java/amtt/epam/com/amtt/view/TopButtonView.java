@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,7 +13,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import amtt.epam.com.amtt.MainActivity;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.image.ImageSavingCallback;
 import amtt.epam.com.amtt.image.ImageSavingResult;
@@ -35,14 +33,15 @@ public class TopButtonView extends FrameLayout implements ImageSavingCallback {
     private Activity activity;
     private final static String LOG_TAG = "TAG";
     private int mScreenNumber = 1;
+    public OnClickListener onClickListener;
 
     public TopButtonView(Context context, WindowManager windowManager, WindowManager.LayoutParams layoutParams) {
         super(context);
-        activity = (Activity) context;
         initComponent();
         this.windowManager = windowManager;
         this.layoutParams = layoutParams;
         body = (FrameLayout) findViewById(R.id.body);
+
     }
 
 
@@ -103,15 +102,10 @@ public class TopButtonView extends FrameLayout implements ImageSavingCallback {
                     boolean tap = Math.abs(totalDeltaX) < threshold
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
-                        View rootView = activity.getWindow().getDecorView();
-                        rootView.setDrawingCacheEnabled(true);
-                        Bitmap bitmap = rootView.getDrawingCache();
-                        Rect rect = new Rect();
-                        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-                        new ImageSavingTask(this, bitmap, rect, activity.getExternalCacheDir().getPath()).execute();
-//                        new ImageSavingTask(this, bitmap, rect, activity.getCacheDir().getPath()).execute();
-                        Toast.makeText(getContext(), activity.getExternalCacheDir().getAbsolutePath(), Toast.LENGTH_SHORT).show();
-//                        Toast.makeText(getContext(), "Tap button!", Toast.LENGTH_SHORT).show();
+                        Log.d(LOG_TAG, "Click");
+                        if(mOnClickListener!=null){
+                            mOnClickListener.onClick(this);
+                        }
                     }
                 }
                 break;
@@ -124,6 +118,14 @@ public class TopButtonView extends FrameLayout implements ImageSavingCallback {
         mScreenNumber++;
         int resultMessage = result == ImageSavingResult.ERROR ? R.string.image_saving_error : R.string.image_saving_success;
         Toast.makeText(activity, resultMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    private OnClickListener mOnClickListener;
+
+    @Override
+    public void setOnClickListener(OnClickListener l) {
+        mOnClickListener = l;
+
     }
 
     @Override

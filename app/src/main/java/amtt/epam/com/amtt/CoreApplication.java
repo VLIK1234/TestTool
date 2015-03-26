@@ -7,6 +7,8 @@ import android.app.Application;
  */
 public class CoreApplication extends Application {
 
+    public static int SCREEN_NUMBER = 1;
+
     @Override
     public void onCreate() {
         super.onCreate();
