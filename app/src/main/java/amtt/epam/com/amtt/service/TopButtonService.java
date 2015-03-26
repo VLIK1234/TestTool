@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
 
+import amtt.epam.com.amtt.app.BaseActivity;
 import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
@@ -18,21 +21,13 @@ public class TopButtonService extends Service {
 
     public static final String ACTION_SHOW = "SHOW";
     public static final String ACTION_CLOSE = "CLOSE";
-    private static final int X_INIT_POSITION = 500;
-    private static final int Y_INIT_POSITION = 1000;
+    private DisplayMetrics displayMetrics;
+    private int xInitPosition;
+    private int yInitPosition;
     private TopButtonView view;
     private WindowManager wm;
     private WindowManager.LayoutParams layoutParams;
     private final String LOG_TAG = "myLogs";
-
-//    public static void start(){
-//        Intent
-//    }
-//
-//    static stop{
-//
-//    }
-
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -43,8 +38,12 @@ public class TopButtonService extends Service {
     public void onCreate() {
         super.onCreate();
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        displayMetrics = getBaseContext().getResources().getDisplayMetrics();
+        xInitPosition = displayMetrics.widthPixels / 2;
+        yInitPosition = displayMetrics.heightPixels / 2;
         intitLayoutParams();
-        view = new TopButtonView(this, wm, layoutParams);
+        wm.getDefaultDisplay();
+        initView();
     }
 
     private void intitLayoutParams() {
@@ -56,8 +55,18 @@ public class TopButtonService extends Service {
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
         layoutParams.format = PixelFormat.TRANSLUCENT;
         layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
-        layoutParams.x = X_INIT_POSITION;
-        layoutParams.y = Y_INIT_POSITION;
+        layoutParams.x = xInitPosition;
+        layoutParams.y = yInitPosition;
+    }
+    private void initView(){
+        view = new TopButtonView(getBaseContext(), wm, layoutParams);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
+                sendBroadcast(intentATS);
+            }
+        });
     }
 
     public static Intent getShowIntent(Context context) {
@@ -76,41 +85,34 @@ public class TopButtonService extends Service {
         context.startService(getCloseIntent(context));
     }
 
-    public final void show(Intent name) {
-        startService(name);
+    public final void show() {
+        wm.addView(view, layoutParams);
     }
 
-    public final void close(Intent name) {
-        stopService(name);
+    public final void close() {
+        if (view != null) {
+            ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
+            view = null;
+        }
+        stopSelf();
     }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        wm.addView(view, layoutParams);
+        super.onStartCommand(intent, flags, startId);
 
         if (intent != null) {
             String action = intent.getAction();
-            Context context = getApplicationContext();
 
             if (ACTION_SHOW.equals(action)) {
-                show(intent);
+                show();
             } else if (ACTION_CLOSE.equals(action)) {
-                close(intent);
-
+                close();
             }
         } else {
             Log.w(LOG_TAG, "Tried to onStartCommand() with a null intent.");
         }
         return START_NOT_STICKY;
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (view != null) {
-            ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
-            view = null;
-        }
-    }
-
 
 }

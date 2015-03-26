@@ -1,5 +1,4 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,45 +6,45 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/save_image_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/save_image"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"/>
-
-    <Button
         android:id="@+id/save_activity_info_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/save_activity_info"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/save_image_button"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:text="@string/save_activity_info" />
 
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="@string/hello_world"/>
-    <!--
-        <Button
-            android:id="@+id/button_show"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text"
-            android:layout_centerInParent="true"
-            android:text="@string/button_show"/>
-        <Button
-            android:id="@+id/buttons_stop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text"
-            android:layout_toRightOf="@id/button_show"
-            android:layout_toEndOf="@+id/button_show"
-            android:layout_centerInParent="true"
-            android:text="@string/button_stop"/>
-    -->
+        android:text="@string/hello_world" />
+
+    <Button
+        android:id="@+id/button_show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text"
+        android:layout_centerInParent="true"
+        android:text="@string/button_show"
+        android:onClick="onClickShow"/>
+
+    <Button
+        android:id="@+id/buttons_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text"
+        android:layout_centerInParent="true"
+        android:layout_toEndOf="@+id/button_show"
+        android:layout_toRightOf="@id/button_show"
+        android:text="@string/button_stop"
+        android:onClick="onClickStop"/>
+    <Button
+        android:id="@+id/buttons_second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Second"
+        android:onClick="onClickSecond"/>
 </RelativeLayout>
