@@ -89,7 +89,7 @@ public class TopButtonService extends Service {
         wm.addView(view, layoutParams);
     }
 
-    public final void close(Intent name) {
+    public final void close() {
         if (view != null) {
             ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
             view = null;
@@ -107,7 +107,7 @@ public class TopButtonService extends Service {
             if (ACTION_SHOW.equals(action)) {
                 show();
             } else if (ACTION_CLOSE.equals(action)) {
-                close(intent);
+                close();
             }
         } else {
             Log.w(LOG_TAG, "Tried to onStartCommand() with a null intent.");

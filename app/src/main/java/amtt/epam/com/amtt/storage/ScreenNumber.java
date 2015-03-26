@@ -12,6 +12,10 @@ public class ScreenNumber {
     public static SharedPreferences setting;
     public static SharedPreferences.Editor editor;
 
+    private ScreenNumber(){
+
+    }
+
     public static void initialize(Context context) {
         setting = context.getSharedPreferences(SCREEN_NUMBER, Context.MODE_PRIVATE);
         editor = setting.edit();
