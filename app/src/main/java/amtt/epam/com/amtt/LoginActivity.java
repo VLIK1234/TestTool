@@ -35,10 +35,10 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
     }
 
     @Override
-    public void onAuthorizationResult(AuthorizationResult result, String token) {
+    public void onAuthorizationResult(AuthorizationResult result) {
 
         String resultMessage = result == AuthorizationResult.AUTHORIZATION_DENIED ? getResources().getString(R.string.authorization_denied) :
-                getResources().getString(R.string.authorization_success) + token;
+                getResources().getString(R.string.authorization_success);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
     }
 }

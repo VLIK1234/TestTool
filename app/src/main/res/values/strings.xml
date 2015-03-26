@@ -6,7 +6,7 @@
     <string name="title_activity_login">Login to Jira</string>
     <string name="login_button">Log in</string>
 
-    <string name="authorization_success">Access token </string>
+    <string name="authorization_success">Authorization is passed</string>
     <string name="authorization_denied">Authorization is not passed</string>
 
 </resources>
