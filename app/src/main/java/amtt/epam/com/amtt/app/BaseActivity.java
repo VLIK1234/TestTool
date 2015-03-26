@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.storage.ScreenNumber;
 import amtt.epam.com.amtt.image.ImageSavingCallback;
 import amtt.epam.com.amtt.image.ImageSavingResult;
 import amtt.epam.com.amtt.image.ImageSavingTask;
@@ -72,6 +73,7 @@ public class BaseActivity extends Activity implements ImageSavingCallback{
     @Override
     public void onImageSaved(ImageSavingResult result) {
         CoreApplication.SCREEN_NUMBER++;
+        ScreenNumber.setNumber(CoreApplication.SCREEN_NUMBER);
         int resultMessage = result == ImageSavingResult.ERROR ? R.string.image_saving_error : R.string.image_saving_success;
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
     }

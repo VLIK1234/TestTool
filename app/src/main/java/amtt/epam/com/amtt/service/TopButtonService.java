@@ -43,8 +43,7 @@ public class TopButtonService extends Service {
         yInitPosition = displayMetrics.heightPixels / 2;
         intitLayoutParams();
         wm.getDefaultDisplay();
-        view = new TopButtonView(getBaseContext(), wm, layoutParams);
-
+        initView();
     }
 
     private void intitLayoutParams() {
@@ -58,6 +57,16 @@ public class TopButtonService extends Service {
         layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
         layoutParams.x = xInitPosition;
         layoutParams.y = yInitPosition;
+    }
+    private void initView(){
+        view = new TopButtonView(getBaseContext(), wm, layoutParams);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
+                sendBroadcast(intentATS);
+            }
+        });
     }
 
     public static Intent getShowIntent(Context context) {
@@ -85,21 +94,12 @@ public class TopButtonService extends Service {
             ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
             view = null;
         }
-        stopService(name);
+        stopSelf();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                view.setVisibility(View.GONE);
-                Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
-                sendBroadcast(intentATS);
-                view.setVisibility(View.VISIBLE);
-            }
-        });
 
         if (intent != null) {
             String action = intent.getAction();
