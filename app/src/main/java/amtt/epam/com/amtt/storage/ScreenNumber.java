@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
  * Created by Ivan_Bakach on 26.03.2015.
  */
 public class ScreenNumber {
-    public static final String SCREEN_NUMBER = "Language setting";
+    public static final String SCREEN_NUMBER = "Screen number";
     public static final String NUMBER = "Number";
     public static SharedPreferences setting;
     public static SharedPreferences.Editor editor;
