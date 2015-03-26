@@ -6,23 +6,22 @@ import android.content.SharedPreferences;
 /**
  * Created by Ivan_Bakach on 26.03.2015.
  */
-public class ScreenNumber {
+public class BaseStorage {
     public static final String SCREEN_NUMBER = "Screen number";
     public static final String NUMBER = "Number";
     public static SharedPreferences setting;
     public static SharedPreferences.Editor editor;
 
-    private ScreenNumber(){
+    private BaseStorage(){
 
     }
 
     public static void initialize(Context context) {
         setting = context.getSharedPreferences(SCREEN_NUMBER, Context.MODE_PRIVATE);
-        editor = setting.edit();
-        editor.apply();
     }
 
     public static void setNumber(int number) {
+        editor = setting.edit();
         editor.putInt(NUMBER, number);
         editor.apply();
     }

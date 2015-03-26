@@ -17,7 +17,7 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.image.ImageSavingCallback;
 import amtt.epam.com.amtt.image.ImageSavingResult;
 import amtt.epam.com.amtt.image.ImageSavingTask;
-import amtt.epam.com.amtt.storage.ScreenNumber;
+import amtt.epam.com.amtt.storage.BaseStorage;
 
 /**
  * Created by Ivan_Bakach on 26.03.2015.
@@ -70,13 +70,13 @@ public class BaseActivity extends Activity implements ImageSavingCallback {
 
     @Override
     public void onImageSaved(ImageSavingResult result) {
-        ScreenNumber.setNumber(ScreenNumber.getNumber() + 1);
+        BaseStorage.setNumber(BaseStorage.getNumber() + 1);
         int resultMessage = result == ImageSavingResult.ERROR ? R.string.image_saving_error : R.string.image_saving_success;
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public int getScreenNumber() {
-        return ScreenNumber.getNumber();
+        return BaseStorage.getNumber();
     }
 }
