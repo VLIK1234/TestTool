@@ -24,6 +24,16 @@
         android:layout_below="@+id/save_image_button"
         android:layout_marginTop="16dp"/>
 
+    <Button
+        android:id="@+id/step_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/step_button"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/save_activity_info_button"
+        android:layout_marginTop="16dp"/>
+
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"

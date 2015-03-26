@@ -20,10 +20,13 @@ import amtt.epam.com.amtt.image.ImageSavingCallback;
 import amtt.epam.com.amtt.image.ImageSavingResult;
 import amtt.epam.com.amtt.image.ImageSavingTask;
 import amtt.epam.com.amtt.service.TopButtonService;
+import amtt.epam.com.amtt.step.StepSavingCallback;
+import amtt.epam.com.amtt.step.StepSavingResult;
+import amtt.epam.com.amtt.step.StepSavingTask;
 import io.fabric.sdk.android.Fabric;
 
 
-public class MainActivity extends ActionBarActivity implements ImageSavingCallback, DbSavingCallback {
+public class MainActivity extends ActionBarActivity implements ImageSavingCallback, DbSavingCallback, StepSavingCallback {
 
     private int mScreenNumber = 1;
 
@@ -55,6 +58,20 @@ public class MainActivity extends ActionBarActivity implements ImageSavingCallba
             @Override
             public void onClick(View v) {
                 new DbSavingTask(MainActivity.this, MainActivity.this.getComponentName()).execute();
+            }
+        });
+
+        Button stepButton = (Button)findViewById(R.id.step_button);
+        stepButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View rootView = getWindow().getDecorView();
+                rootView.setDrawingCacheEnabled(true);
+                Bitmap bitmap = rootView.getDrawingCache();
+                Rect rect = new Rect();
+                getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+
+                new StepSavingTask(MainActivity.this, MainActivity.this, bitmap, rect, MainActivity.this.getComponentName()).execute();
             }
         });
     }
@@ -95,4 +112,9 @@ public class MainActivity extends ActionBarActivity implements ImageSavingCallba
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onStepSaved(StepSavingResult result) {
+        int resultMessage = result == StepSavingResult.ERROR ? R.string.step_saving_error : R.string.step_saving_success;
+        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+    }
 }

@@ -7,10 +7,16 @@
     <string name="button_stop">Stop</string>
     <string name="save_image">Save image</string>
     <string name="save_activity_info">Save activity info</string>
+    <string name="step_button">Save step</string>
 
     <string name="image_saving_error">Error while saving screenshot</string>
     <string name="image_saving_success">Screenshot saved</string>
+
     <string name="db_saving_error">Error while saving activity info</string>
     <string name="db_saving_success">Activity info saved</string>
+
+    <string name="step_saving_error">Error while saving step</string>
+    <string name="step_saving_success">Step saved</string>
+
 
 </resources>
