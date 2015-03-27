@@ -28,6 +28,7 @@ public class TopButtonService extends Service {
     private WindowManager wm;
     private WindowManager.LayoutParams layoutParams;
     private final String LOG_TAG = "myLogs";
+    private boolean addViewState = false;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -86,11 +87,15 @@ public class TopButtonService extends Service {
     }
 
     public final void show() {
-        wm.addView(view, layoutParams);
+        if (!addViewState) {
+            wm.addView(view, layoutParams);
+            addViewState = true;
+        }
     }
 
     public final void close() {
         if (view != null) {
+            addViewState = false;
             ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
             view = null;
         }
