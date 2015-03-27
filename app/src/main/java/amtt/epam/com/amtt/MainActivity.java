@@ -30,9 +30,12 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
+
     }
 
-
+    public void onIssueClick(View view) {
+        startActivity(new Intent(this, TestIssueActivity.class));
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);

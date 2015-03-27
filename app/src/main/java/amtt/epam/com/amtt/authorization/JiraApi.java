@@ -49,7 +49,7 @@ public class JiraApi {
         HttpLogger httpLogger = new HttpLogger();
         httpLogger.printReqestLog(post);
         HttpResponse response = client.execute(post);
-        httpLogger.printResponceLog(response.getStatusLine());
+        httpLogger.printResponceLog(response);
         return response.getStatusLine().getStatusCode();
     }
 

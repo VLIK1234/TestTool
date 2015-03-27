@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -16,10 +15,6 @@ import amtt.epam.com.amtt.R;
  */
 public class TopButtonView extends FrameLayout {
 
-    private final static int NO_VIEW_FLAG = 0;
-
-    private Button button;
-    private FrameLayout body;
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
     private final static String LOG_TAG = "TAG";
@@ -29,12 +24,11 @@ public class TopButtonView extends FrameLayout {
         initComponent();
         this.windowManager = windowManager;
         this.layoutParams = layoutParams;
-        body = (FrameLayout) findViewById(R.id.body);
+
     }
 
 
     private void initComponent() {
-        Log.e(LOG_TAG, "initComponent");
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         inflater.inflate(R.layout.top_button_layout, this, true);
@@ -91,13 +85,25 @@ public class TopButtonView extends FrameLayout {
                     boolean tap = Math.abs(totalDeltaX) < threshold
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
+
                         Toast.makeText(getContext(), "Tap button!", Toast.LENGTH_SHORT).show();
+
+                        Log.d(LOG_TAG, "Click");
+                        if (mOnClickListener != null) {
+                            mOnClickListener.onClick(this);
+                        }
                     }
                 }
-
                 break;
         }
-
         return true;
+    }
+
+    private OnClickListener mOnClickListener;
+
+    @Override
+    public void setOnClickListener(OnClickListener l) {
+        mOnClickListener = l;
+
     }
 }

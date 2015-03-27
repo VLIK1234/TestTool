@@ -5,9 +5,18 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Text"
         android:layout_centerInParent="true" />
+
+    <Button
+        android:id="@+id/buttons_second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Third"
+        android:onClick="onClickThird"/>
 
 </RelativeLayout>

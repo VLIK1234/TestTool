@@ -40,7 +40,11 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:hint="project key" />
+        android:hint="project key"
+        android:text="AMTT"
+        android:singleLine="false"
+        android:editable="false"
+        />
 
     <EditText
         android:layout_width="wrap_content"
@@ -51,7 +55,9 @@
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/et_projectkey"
         android:layout_alignEnd="@+id/et_projectkey"
-        android:hint="issue name" />
+        android:hint="issue name"
+        android:text="Task"
+        android:editable="false" />
 
     <EditText
         android:layout_width="wrap_content"
