@@ -18,12 +18,13 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 
 import amtt.epam.com.amtt.bo.CreateIssue;
+import amtt.epam.com.amtt.bo.CreationIssueCallback;
+import amtt.epam.com.amtt.bo.CreationIssueResult;
 import io.fabric.sdk.android.Fabric;
 
 
-public class TestIssueActivity extends ActionBarActivity implements AuthorizationCallback {
+public class TestIssueActivity extends ActionBarActivity implements CreationIssueCallback {
 
-    private TextView testIssue;
     private EditText etUsername, etPassword, etProjectKey, etIssyeType, etDescription, etSummary;
 
 
@@ -32,7 +33,6 @@ public class TestIssueActivity extends ActionBarActivity implements Authorizatio
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_test_issue);
-        testIssue = (TextView)findViewById(R.id.test_issue);
         etUsername = (EditText)findViewById(R.id.et_username);
         etPassword = (EditText)findViewById(R.id.et_password);
         etProjectKey = (EditText)findViewById(R.id.et_projectkey);
@@ -44,17 +44,18 @@ public class TestIssueActivity extends ActionBarActivity implements Authorizatio
 
     public void onCreateIssueClick(View view) {
         CreateIssue issue = new CreateIssue();
-        //etUsername.getText().toString(), etPassword.getText().toString(),
-        new AuthorizationTask(TestIssueActivity.this, "", "", TestIssueActivity.this).execute();
+        String mProjectKey, mIssyeType, mDescription, mSummary;
+        mProjectKey = etProjectKey.getText().toString();
+        mIssyeType =  etIssyeType.getText().toString();
+        mDescription = etDescription.getText().toString();
+        mSummary = etSummary.getText().toString();
+        new CreateIssueTask(etUsername.getText().toString(), etPassword.getText().toString(),issue.createSimpleIssue(mProjectKey, mIssyeType, mDescription, mSummary), TestIssueActivity.this).execute();
 
-
-        new CreateIssueTask(TestIssueActivity.this, issue.createSimpleIssue(), TestIssueActivity.this).execute();
-      //  testIssue.setText(res);
     }
 
     @Override
-    public void onAuthorizationResult(AuthorizationResult result) {
-        String resultMessage = result == AuthorizationResult.AUTHORIZATION_DENIED ? getResources().getString(R.string.authorization_denied) :
+    public void onCreationIssueResult(CreationIssueResult result) {
+        String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.authorization_denied) :
             getResources().getString(R.string.authorization_success);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
     }

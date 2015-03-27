@@ -5,37 +5,43 @@ import amtt.epam.com.amtt.authorization.AuthorizationResult;
 import amtt.epam.com.amtt.authorization.JiraApi;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
+
 import org.apache.http.auth.AuthenticationException;
 
 /**
  * Created by shiza on 27.03.2015.
  */
-public class CreateIssueTask  extends AsyncTask<Void, Void, AuthorizationResult> {
+public class CreateIssueTask  extends AsyncTask<Void, Void, CreationIssueResult> {
 
-    private final Context mContext;
-    private final AuthorizationCallback mCallback;
+
+    private final CreationIssueCallback mCallback;
     private final String mJson;
+    private final String mUserName;
+    private final String mPassword;
 
-    public CreateIssueTask(Context context, String json, AuthorizationCallback callback) {
-        mContext = context;
+    public CreateIssueTask(String username, String userPassword, String json, CreationIssueCallback callback) {
+        mUserName = username;
+        mPassword = userPassword;
         mCallback = callback;
         mJson = json;
     }
 
     @Override
-    protected AuthorizationResult doInBackground(Void... params) {
+    protected CreationIssueResult doInBackground(Void... params) {
         try {
-            if (JiraApi.STATUS_CREATED != new JiraApi().createIssue(mJson)) {
-                throw new AuthenticationException("illegal user name or pass");
+            if (JiraApi.STATUS_CREATED != new JiraApi().createIssue(mUserName, mPassword, mJson)) {
+                throw new AuthenticationException("issue can`t create");
             }
         } catch (Exception e) {
-            return  AuthorizationResult.AUTHORIZATION_DENIED;
+
+            return  CreationIssueResult.CREATION_UNSUCCESS;
         }
-        return AuthorizationResult.AUTHORIZATION_SUCCESS;
+        return CreationIssueResult.CREATION_SUCCESS;
     }
 
     @Override
-    protected void onPostExecute(AuthorizationResult result) {
-        mCallback.onAuthorizationResult(result);
+    protected void onPostExecute(CreationIssueResult result) {
+        mCallback.onCreationIssueResult(result);
     }
 }

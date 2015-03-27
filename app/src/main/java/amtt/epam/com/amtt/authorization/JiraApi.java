@@ -43,21 +43,15 @@ public class JiraApi {
 
     }
 
-    public static int createIssue(final String json) throws Exception {
+    public int createIssue(final String userName, final String password, final String json) throws Exception {
+        String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
         HttpClient client = new DefaultHttpClient();
         HttpPost post = new HttpPost(ISSUE_PATH);
         StringEntity input = new StringEntity(json);
-        //input.setContentType("application/json");
-       // post.setHeader(AUTH_HEADER, credentials);
+        post.addHeader(AUTH_HEADER, credentials);
         post.addHeader("content-type", "application/json");
-       // post.addHeader(AUTH_HEADER, credentials);
         post.setEntity(input);
         HttpResponse response = client.execute(post);
-       // BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-       // String line = "";
-     //   while ((line = rd.readLine()) != null) {
-     //       System.out.println(line);
-     //   }
         return response.getStatusLine().getStatusCode();
     }
 

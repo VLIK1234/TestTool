@@ -1,6 +1,8 @@
 package amtt.epam.com.amtt.bo;
 
 import amtt.epam.com.amtt.processing.IssueGsonProcessor;
+
+import android.util.EventLogTags;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -10,32 +12,25 @@ import com.google.gson.Gson;
  */
 public class CreateIssue {
 
-    public String createSimpleIssue(){
-        JiraProject project = new JiraProject();
-           // project.setIdProject("id");
-            project.setKeyProject("AMTT");
+    private JiraProject mProject = new JiraProject();
+    private JiraIssueType mIssuetype = new JiraIssueType();
+    private JiraBaseFields mFields = new JiraBaseFields();
+    private JiraBase mBData = new JiraBase();
+    private IssueGsonProcessor<JiraBase> mIssueGsonProcessor = new IssueGsonProcessor<>();
+    private String jsonString = null;
 
-        String summary = "summary";
+    public CreateIssue(){}
 
-        String description = "description";
-
-        JiraIssueType issuetype = new JiraIssueType();
-            //issuetype.setId("id");
-            issuetype.setName("Bug");
-
-            JiraBaseFields fields = new JiraBaseFields();
-            fields.setProject(project);
-            fields.setSummary(summary);
-            fields.setDescription(description);
-            fields.setIssuetype(issuetype);
-
-        JiraBase bData = new JiraBase();
-        bData.setFields(fields);
-        IssueGsonProcessor<JiraBase> issueGsonProcessor = new IssueGsonProcessor<>();
-        String jsonString = null;
-
+    public String createSimpleIssue(String keyProject, String issueTypeName, String summary, String description){
+        mProject.setKeyProject(keyProject);
+        mIssuetype.setName(issueTypeName);
+        mFields.setProject(mProject);
+        mFields.setSummary(summary);
+        mFields.setDescription(description);
+        mFields.setIssuetype(mIssuetype);
+        mBData.setFields(mFields);
         try {
-            jsonString = issueGsonProcessor.process(bData);
+            jsonString = mIssueGsonProcessor.process(mBData);
         } catch (Exception e) {
             e.printStackTrace();
         }
