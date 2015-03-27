@@ -14,12 +14,13 @@
         android:layout_marginTop="16dp"
         android:text="@string/save_activity_info" />
 
-    <TextView
-        android:id="@+id/text"
+    <Button
+        android:id="@+id/login_button"
+        android:text="@string/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/hello_world" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
 
     <Button
         android:id="@+id/button_show"

@@ -11,5 +11,10 @@
     <string name="image_saving_success">Screenshot saved</string>
     <string name="db_saving_error">Error while saving activity info</string>
     <string name="db_saving_success">Activity info saved</string>
+    <string name="title_activity_login">Login to Jira</string>
+    <string name="login_button">Log in</string>
+
+    <string name="authorization_success">Authorization is passed</string>
+    <string name="authorization_denied">Authorization is not passed</string>
 
 </resources>
