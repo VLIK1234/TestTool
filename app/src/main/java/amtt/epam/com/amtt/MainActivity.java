@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
+import amtt.epam.com.amtt.database.DbClearTask;
 import amtt.epam.com.amtt.database.DbSavingCallback;
 import amtt.epam.com.amtt.database.DbSavingResult;
 import amtt.epam.com.amtt.database.DbSavingTask;
@@ -74,6 +75,14 @@ public class MainActivity extends ActionBarActivity implements ImageSavingCallba
                 new StepSavingTask(MainActivity.this, MainActivity.this, bitmap, rect, MainActivity.this.getComponentName()).execute();
             }
         });
+
+        Button clearDbbutton = (Button)findViewById(R.id.clear_db_button);
+        clearDbbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DbClearTask(MainActivity.this).execute();
+            }
+        });
     }
 
 
@@ -117,4 +126,10 @@ public class MainActivity extends ActionBarActivity implements ImageSavingCallba
         int resultMessage = result == StepSavingResult.ERROR ? R.string.step_saving_error : R.string.step_saving_success;
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void incrementScreenNumber() {
+        mScreenNumber++;
+    }
+
 }

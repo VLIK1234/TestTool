@@ -9,4 +9,6 @@ public interface StepSavingCallback {
 
     int getScreenNumber();
 
+    void incrementScreenNumber();
+
 }

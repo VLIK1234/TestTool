@@ -8,6 +8,7 @@
     <string name="save_image">Save image</string>
     <string name="save_activity_info">Save activity info</string>
     <string name="step_button">Save step</string>
+    <string name="clear_db_button">Clear db</string>
 
     <string name="image_saving_error">Error while saving screenshot</string>
     <string name="image_saving_success">Screenshot saved</string>

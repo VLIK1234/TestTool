@@ -123,11 +123,10 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
 
     @Override
     protected StepSavingResult doInBackground(Void... params) {
-        mBitmap = Bitmap.createBitmap(mBitmap, 0, mRect.top, mRect.width(), mRect.height());
-        String screenPath = mPath + "/screen" + mCallback.getScreenNumber() + ".png";
+        String screenPath;
         try {
-            FileOutputStream bitmapPath = new FileOutputStream(screenPath);
-            mBitmap.compress(Bitmap.CompressFormat.PNG, 100, bitmapPath);
+            screenPath = saveScreen();
+            mCallback.incrementScreenNumber();
         } catch (Exception e) {
             return StepSavingResult.ERROR;
         }
@@ -150,31 +149,11 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
                 return StepSavingResult.ERROR;
             }
 
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(ActivityInfoTable._ACTIVITY_NAME, activityInfo.name);
-            contentValues.put(ActivityInfoTable._CONFIG_CHANGES, getConfigChange(activityInfo));
-            contentValues.put(ActivityInfoTable._FLAGS, getFlags(activityInfo));
-            contentValues.put(ActivityInfoTable._LAUNCH_MODE, getLaunchMode(activityInfo));
-            contentValues.put(ActivityInfoTable._MAX_RECENTS, getMaxRecents(activityInfo));
-            contentValues.put(ActivityInfoTable._PARENT_ACTIVITY_NAME, getParentActivityName(activityInfo));
-            contentValues.put(ActivityInfoTable._PERMISSION, getPermission(activityInfo));
-            contentValues.put(ActivityInfoTable._PERSISTABLE_MODE, getPersistableMode(activityInfo));
-            contentValues.put(ActivityInfoTable._SCREEN_ORIENTATION, getScreenOrientation(activityInfo));
-            contentValues.put(ActivityInfoTable._SOFT_INPUT_MODE, getSoftInputMode(activityInfo));
-            contentValues.put(ActivityInfoTable._TARGET_ACTIVITY_NAME, getTargetActivity(activityInfo));
-            contentValues.put(ActivityInfoTable._TASK_AFFINITY, activityInfo.taskAffinity);
-            contentValues.put(ActivityInfoTable._THEME, getThemeName(activityInfo));
-            contentValues.put(ActivityInfoTable._UI_OPTIONS, getUiOptions(activityInfo));
-            contentValues.put(ActivityInfoTable._PROCESS_NAME, activityInfo.processName);
-            contentValues.put(ActivityInfoTable._PACKAGE_NAME, activityInfo.packageName);
-
-            mContext.getContentResolver().insert(AmttContentProvider.ACTIVITY_META_CONTENT_URI, contentValues);
+            saveActivityInfo(activityInfo);
         }
 
-        ContentValues values = new ContentValues();
-        values.put(StepsTable._SCREEN_PATH, screenPath);
-        values.put(StepsTable._ASSOCIATED_ACTIVITY, mComponentName.getClassName());
-        mContext.getContentResolver().insert(AmttContentProvider.STEP_CONTENT_URI, values);
+
+        saveStep(screenPath);
 
         return StepSavingResult.SAVED;
     }
@@ -182,6 +161,44 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
     @Override
     protected void onPostExecute(StepSavingResult result) {
         mCallback.onStepSaved(result);
+    }
+
+
+    private String saveScreen() throws Exception {
+        String screenPath = mPath + "/screen" + mCallback.getScreenNumber() + ".png";
+        mBitmap = Bitmap.createBitmap(mBitmap, 0, mRect.top, mRect.width(), mRect.height());
+        FileOutputStream bitmapPath = new FileOutputStream(screenPath);
+        mBitmap.compress(Bitmap.CompressFormat.PNG, 100, bitmapPath);
+        return screenPath;
+    }
+
+    private void saveActivityInfo(ActivityInfo activityInfo) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ActivityInfoTable._ACTIVITY_NAME, activityInfo.name);
+        contentValues.put(ActivityInfoTable._CONFIG_CHANGES, getConfigChange(activityInfo));
+        contentValues.put(ActivityInfoTable._FLAGS, getFlags(activityInfo));
+        contentValues.put(ActivityInfoTable._LAUNCH_MODE, getLaunchMode(activityInfo));
+        contentValues.put(ActivityInfoTable._MAX_RECENTS, getMaxRecents(activityInfo));
+        contentValues.put(ActivityInfoTable._PARENT_ACTIVITY_NAME, getParentActivityName(activityInfo));
+        contentValues.put(ActivityInfoTable._PERMISSION, getPermission(activityInfo));
+        contentValues.put(ActivityInfoTable._PERSISTABLE_MODE, getPersistableMode(activityInfo));
+        contentValues.put(ActivityInfoTable._SCREEN_ORIENTATION, getScreenOrientation(activityInfo));
+        contentValues.put(ActivityInfoTable._SOFT_INPUT_MODE, getSoftInputMode(activityInfo));
+        contentValues.put(ActivityInfoTable._TARGET_ACTIVITY_NAME, getTargetActivity(activityInfo));
+        contentValues.put(ActivityInfoTable._TASK_AFFINITY, activityInfo.taskAffinity);
+        contentValues.put(ActivityInfoTable._THEME, getThemeName(activityInfo));
+        contentValues.put(ActivityInfoTable._UI_OPTIONS, getUiOptions(activityInfo));
+        contentValues.put(ActivityInfoTable._PROCESS_NAME, activityInfo.processName);
+        contentValues.put(ActivityInfoTable._PACKAGE_NAME, activityInfo.packageName);
+
+        mContext.getContentResolver().insert(AmttContentProvider.ACTIVITY_META_CONTENT_URI, contentValues);
+    }
+
+    private void saveStep(String screenPath) {
+        ContentValues values = new ContentValues();
+        values.put(StepsTable._SCREEN_PATH, screenPath);
+        values.put(StepsTable._ASSOCIATED_ACTIVITY, mComponentName.getClassName());
+        mContext.getContentResolver().insert(AmttContentProvider.STEP_CONTENT_URI, values);
     }
 
 

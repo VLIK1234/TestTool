@@ -71,19 +71,6 @@ public class AmttContentProvider extends ContentProvider {
             throw new IllegalArgumentException("Incorrect projection column(s)");
         }
 
-//        if (TextUtils.isEmpty(selection)) {
-//            //one row for querying is defined in SELECTION
-//            if (uri.getPathSegments().size() > 1) {
-//                //one row for querying is defined in URI
-//                //getContentResolver.delete(AmttContentProvider.ACTIVITY_META_CONTENT_URI
-//                // .buildUpon()
-//                // .appendPath(String.valueOf(ActivityInfoTable._ACTIVITY_NAME))
-//                // .build(), null, null);
-//                String activityName = uri.getLastPathSegment();
-//                selection = ActivityInfoTable._ACTIVITY_NAME + "=" + activityName;
-//            }
-//        }
-
         String tableName = uri.getLastPathSegment();
         return getDataBaseManager().query(tableName, projection, selection, selectionArgs, sortOrder);
     }
@@ -103,19 +90,6 @@ public class AmttContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        if (TextUtils.isEmpty(selection)) {
-            //one row for deleting is defined in SELECTION
-            if (uri.getPathSegments().size() > 1) {
-                //one row for deleting is defined in URI
-                //getContentResolver.delete(AmttContentProvider.ACTIVITY_META_CONTENT_URI
-                // .buildUpon()
-                // .appendPath(String.valueOf(ActivityInfoTable._ACTIVITY_NAME))
-                // .build(), null, null);
-                String activityName = uri.getLastPathSegment();
-                selection = ActivityInfoTable._ACTIVITY_NAME + "=" + activityName;
-            }
-        }
-
         String tableName = uri.getPathSegments().size() > 1 ? uri.getLastPathSegment() : uri.getPathSegments().get(0);
         int deletedRows = getDataBaseManager().delete(tableName, selection, selectionArgs);
         getContext().getContentResolver().notifyChange(uri, null);
@@ -124,19 +98,6 @@ public class AmttContentProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        if (TextUtils.isEmpty(selection)) {
-            //one row for updating is defined in SELECTION
-            if (uri.getPathSegments().size() > 1) {
-                //one row for updating is defined in URI
-                //getContentResolver.delete(AmttContentProvider.ACTIVITY_META_CONTENT_URI
-                // .buildUpon()
-                // .appendPath(String.valueOf(ActivityInfoTable._ACTIVITY_NAME))
-                // .build(), null, null);
-                String activityName = uri.getLastPathSegment();
-                selection = ActivityInfoTable._ACTIVITY_NAME + "=" + activityName;
-            }
-        }
-
         String tableName = uri.getPathSegments().size() > 1 ? uri.getLastPathSegment() : uri.getPathSegments().get(0);
         int updatedRows = getDataBaseManager().update(tableName, values, selection, selectionArgs);
         getContext().getContentResolver().notifyChange(uri, null);
