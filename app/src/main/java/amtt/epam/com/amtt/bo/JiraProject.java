@@ -3,14 +3,15 @@ package amtt.epam.com.amtt.bo;
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
  */
-public class DataProject extends Entity {
+public class JiraProject extends Entity {
+
     private String id;
     private String key;
 
-    public DataProject(){
+    public JiraProject(){
     }
 
-    public DataProject(String id, String key) {
+    public JiraProject(String id, String key) {
         this.id = id;
         this.key = key;
     }

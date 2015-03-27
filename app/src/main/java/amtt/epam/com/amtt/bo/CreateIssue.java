@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.bo;
 
+import amtt.epam.com.amtt.processing.IssueGsonProcessor;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -10,28 +11,35 @@ import com.google.gson.Gson;
 public class CreateIssue {
 
     public String createSimpleIssue(){
-        DataProject project = new DataProject();
-            project.setIdProject("id");
-            project.setKeyProject("key");
+        JiraProject project = new JiraProject();
+           // project.setIdProject("id");
+            project.setKeyProject("AMTT");
 
         String summary = "summary";
 
         String description = "description";
 
-        IssueType issuetype = new IssueType();
-            issuetype.setId("id");
-            issuetype.setName("name");
+        JiraIssueType issuetype = new JiraIssueType();
+            //issuetype.setId("id");
+            issuetype.setName("Bug");
 
-        BaseData.BaseDataFields fields = BaseData.fields;
+            JiraBaseFields fields = new JiraBaseFields();
             fields.setProject(project);
             fields.setSummary(summary);
             fields.setDescription(description);
             fields.setIssuetype(issuetype);
 
-        BaseData bData = new BaseData(fields);
+        JiraBase bData = new JiraBase();
+        bData.setFields(fields);
+        IssueGsonProcessor<JiraBase> issueGsonProcessor = new IssueGsonProcessor<>();
+        String jsonString = null;
 
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(bData);
+        try {
+            jsonString = issueGsonProcessor.process(bData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Log.d("test", jsonString);
         return jsonString;
     }

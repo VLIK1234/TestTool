@@ -5,8 +5,12 @@ import android.util.Base64;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
 import java.net.PasswordAuthentication;
@@ -23,7 +27,10 @@ public class JiraApi {
     private static final String AUTH_HEADER = "Authorization";
     private static final String BASIC_AUTH = "Basic ";
 
+    private static final String ISSUE_PATH = "https://atmmjira.atlassian.net/rest/api/2/issue/";
+
     public static final int STATUS_AUTHORIZED = 200;
+    public static final int STATUS_CREATED = 201;
 
     public int authorize(final String userName, final String password) throws Exception {
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
@@ -36,4 +43,24 @@ public class JiraApi {
 
     }
 
-}
+    public static int createIssue(final String json) throws Exception {
+        HttpClient client = new DefaultHttpClient();
+        HttpPost post = new HttpPost(ISSUE_PATH);
+        StringEntity input = new StringEntity(json);
+        //input.setContentType("application/json");
+       // post.setHeader(AUTH_HEADER, credentials);
+        post.addHeader("content-type", "application/json");
+       // post.addHeader(AUTH_HEADER, credentials);
+        post.setEntity(input);
+        HttpResponse response = client.execute(post);
+       // BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+       // String line = "";
+     //   while ((line = rd.readLine()) != null) {
+     //       System.out.println(line);
+     //   }
+        return response.getStatusLine().getStatusCode();
+    }
+
+    }
+
+
