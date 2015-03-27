@@ -11,5 +11,6 @@
     <string name="image_saving_success">Screenshot saved</string>
     <string name="db_saving_error">Error while saving activity info</string>
     <string name="db_saving_success">Activity info saved</string>
+    <string name="crash_button">Make crash</string>
 
 </resources>

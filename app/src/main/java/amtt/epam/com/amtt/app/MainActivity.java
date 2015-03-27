@@ -33,6 +33,14 @@ public class MainActivity extends BaseActivity implements DbSavingCallback {
                 new DbSavingTask(MainActivity.this, MainActivity.this.getComponentName()).execute();
             }
         });
+
+        Button crashButton = (Button)findViewById(R.id.crash_button);
+        crashButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                throw new IllegalStateException("stakkato caused crash");
+            }
+        });
     }
 
 
