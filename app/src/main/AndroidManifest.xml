@@ -48,6 +48,11 @@
             android:name=".service.TopButtonService"
             android:exported="false" />
 
+        <provider
+            android:authorities="amtt.epam.com.amtt.contentprovider"
+            android:name=".contentprovider.AmttContentProvider"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
