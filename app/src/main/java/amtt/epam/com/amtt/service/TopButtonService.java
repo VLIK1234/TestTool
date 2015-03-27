@@ -1,32 +1,14 @@
 package amtt.epam.com.amtt.service;
 
 import android.app.Service;
-import android.content.ClipData;
-import android.content.ClipDescription;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import amtt.epam.com.amtt.view.TopButtonView;
-
-import amtt.epam.com.amtt.CoreApplication;
-import amtt.epam.com.amtt.R;
 
 /**
  * Created by Ivan_Bakach on 20.03.2015.

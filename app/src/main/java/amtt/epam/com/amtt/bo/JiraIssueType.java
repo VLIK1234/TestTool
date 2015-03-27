@@ -3,12 +3,13 @@ package amtt.epam.com.amtt.bo;
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
  */
-public class JiraIssueType extends Entity{
+public class JiraIssueType extends Entity {
 
     private String id;
     private String name;
 
-    public JiraIssueType(){}
+    public JiraIssueType() {
+    }
 
     public JiraIssueType(String id, String name) {
         this.id = id;

@@ -9,12 +9,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.Authenticator;
-import java.net.HttpURLConnection;
-import java.net.PasswordAuthentication;
-import java.net.URL;
+import amtt.epam.com.amtt.util.HttpLogger;
 
 /**
  * Created by Artsiom_Kaliaha on 24.03.2015.
@@ -51,10 +46,13 @@ public class JiraApi {
         post.addHeader(AUTH_HEADER, credentials);
         post.addHeader("content-type", "application/json");
         post.setEntity(input);
+        HttpLogger httpLogger = new HttpLogger();
+        httpLogger.printReqestLog(post);
         HttpResponse response = client.execute(post);
+        httpLogger.printResponceLog(response.getStatusLine());
         return response.getStatusLine().getStatusCode();
     }
 
-    }
+}
 
 

@@ -29,7 +29,7 @@ public class AuthorizationTask extends AsyncTask<Void, Void, AuthorizationResult
                 throw new AuthenticationException("illegal user name or pass");
             }
         } catch (Exception e) {
-            return  AuthorizationResult.AUTHORIZATION_DENIED;
+            return AuthorizationResult.AUTHORIZATION_DENIED;
         }
         return AuthorizationResult.AUTHORIZATION_SUCCESS;
     }

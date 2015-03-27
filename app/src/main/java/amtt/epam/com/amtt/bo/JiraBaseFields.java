@@ -3,7 +3,7 @@ package amtt.epam.com.amtt.bo;
 /**
  * Created by shiza on 26.03.2015.
  */
-public class JiraBaseFields extends Entity{
+public class JiraBaseFields extends Entity {
 
     private JiraProject project;
     private String summary;
@@ -13,7 +13,8 @@ public class JiraBaseFields extends Entity{
     //private String parent = "parent";
     // customfield_11050
 
-    public JiraBaseFields(){}
+    public JiraBaseFields() {
+    }
 
     public JiraBaseFields(JiraProject project, String summary, String description, JiraIssueType issuetype) {
         this.project = project;
@@ -21,6 +22,7 @@ public class JiraBaseFields extends Entity{
         this.description = description;
         this.issuetype = issuetype;
     }
+
     public JiraProject getProject() {
         return project;
     }

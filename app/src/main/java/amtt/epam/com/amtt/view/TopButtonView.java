@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -92,7 +91,7 @@ public class TopButtonView extends FrameLayout {
                     boolean tap = Math.abs(totalDeltaX) < threshold
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
-                        Toast.makeText(getContext(),"Tap button!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Tap button!", Toast.LENGTH_SHORT).show();
                     }
                 }
 

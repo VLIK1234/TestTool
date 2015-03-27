@@ -7,7 +7,7 @@ public class JiraBase extends Entity {
 
     private JiraBaseFields fields;
 
-    public JiraBase(){
+    public JiraBase() {
     }
 
     public JiraBase(JiraBaseFields fields) {

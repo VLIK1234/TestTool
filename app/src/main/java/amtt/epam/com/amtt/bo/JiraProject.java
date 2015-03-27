@@ -8,7 +8,7 @@ public class JiraProject extends Entity {
     private String id;
     private String key;
 
-    public JiraProject(){
+    public JiraProject() {
     }
 
     public JiraProject(String id, String key) {

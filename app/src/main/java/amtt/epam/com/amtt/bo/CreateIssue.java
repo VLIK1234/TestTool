@@ -1,11 +1,8 @@
 package amtt.epam.com.amtt.bo;
 
-import amtt.epam.com.amtt.processing.IssueGsonProcessor;
-
-import android.util.EventLogTags;
 import android.util.Log;
 
-import com.google.gson.Gson;
+import amtt.epam.com.amtt.processing.IssueGsonProcessor;
 
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
@@ -19,9 +16,10 @@ public class CreateIssue {
     private IssueGsonProcessor<JiraBase> mIssueGsonProcessor = new IssueGsonProcessor<>();
     private String jsonString = null;
 
-    public CreateIssue(){}
+    public CreateIssue() {
+    }
 
-    public String createSimpleIssue(String keyProject, String issueTypeName, String summary, String description){
+    public String createSimpleIssue(String keyProject, String issueTypeName, String summary, String description) {
         mProject.setKeyProject(keyProject);
         mIssuetype.setName(issueTypeName);
         mFields.setProject(mProject);

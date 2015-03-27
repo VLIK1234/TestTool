@@ -9,21 +9,20 @@ import android.view.View;
 import android.widget.Button;
 
 import com.crashlytics.android.Crashlytics;
-import io.fabric.sdk.android.Fabric;
-
 
 import amtt.epam.com.amtt.service.TopButtonService;
+import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends ActionBarActivity{
+public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
-        startService( new Intent(this, TopButtonService.class));
+        startService(new Intent(this, TopButtonService.class));
 
-        Button loginButton = (Button)findViewById(R.id.login_button);
+        Button loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -32,7 +31,6 @@ public class MainActivity extends ActionBarActivity{
             }
         });
     }
-
 
 
     @Override
