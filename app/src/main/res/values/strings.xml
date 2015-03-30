@@ -31,4 +31,13 @@
 
     <string name="step_saving_success">Step saved</string>
     <string name="button_issue">Issue</string>
+    <string name="user_name">Username</string>
+    <string name="password">Password</string>
+    <string name="project_key">Project key</string>
+    <string name="project_key_value">AMTT</string>
+    <string name="issue_name">Issue name</string>
+    <string name="issue_name_value">Task</string>
+    <string name="summary">Summary</string>
+    <string name="description">Description</string>
+    <string name="create_issue">Create</string>
 </resources>

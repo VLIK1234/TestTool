@@ -12,12 +12,12 @@ import java.io.IOException;
 /**
  * Created by Iryna_Monchanka on 3/27/2015.
  */
-public class HttpLogger {
+public class Logger {
 
-    public HttpLogger() {
+    public Logger() {
     }
 
-    public void printReqestLog(HttpPost post) throws IOException {
+    public static void printReqestLog(HttpPost post) throws IOException {
 
         HttpEntity entity = post.getEntity();
 
@@ -31,7 +31,7 @@ public class HttpLogger {
 
     }
 
-    public void printResponceLog(HttpResponse response) throws IOException {
+    public static void printResponceLog(HttpResponse response) throws IOException {
 
         HttpEntity entity = response.getEntity();
         String content = EntityUtils.toString(entity,"UTF-8");
