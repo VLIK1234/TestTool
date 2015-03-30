@@ -47,12 +47,15 @@
         android:layout_alignParentBottom="true"
         android:text="Second"
         android:onClick="onClickSecond"/>
+
     <Button
         android:id="@+id/crash_button"
         android:text="@string/crash_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/save_activity_info_button"/>
+        android:layout_below="@id/save_activity_info_button"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"/>
 
 
 

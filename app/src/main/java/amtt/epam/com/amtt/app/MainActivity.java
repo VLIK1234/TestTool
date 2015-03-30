@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.crash.AmttExceptionHandler;
 import amtt.epam.com.amtt.database.DbSavingCallback;
 import amtt.epam.com.amtt.database.DbSavingResult;
 import amtt.epam.com.amtt.database.DbSavingTask;
@@ -41,6 +42,8 @@ public class MainActivity extends BaseActivity implements DbSavingCallback {
                 throw new IllegalStateException("stakkato caused crash");
             }
         });
+
+        Thread.currentThread().setUncaughtExceptionHandler(new AmttExceptionHandler(this));
     }
 
 
