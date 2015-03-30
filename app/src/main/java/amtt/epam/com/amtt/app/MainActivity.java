@@ -149,4 +149,7 @@ public class MainActivity extends BaseActivity implements DbSavingCallback, Step
         startActivity(intent);
     }
 
+    public void onIssueClick(View view) {
+        startActivity(new Intent(this, CreateIssueActivity.class));
+    }
 }
