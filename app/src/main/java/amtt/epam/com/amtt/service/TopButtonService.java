@@ -1,17 +1,21 @@
 package amtt.epam.com.amtt.service;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 
+import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.BaseActivity;
+import amtt.epam.com.amtt.view.CircleScrollListView;
 import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
@@ -25,6 +29,7 @@ public class TopButtonService extends Service {
     private int xInitPosition;
     private int yInitPosition;
     private TopButtonView view;
+//    private CircleScrollListView view;
     private WindowManager wm;
     private WindowManager.LayoutParams layoutParams;
     private final String LOG_TAG = "myLogs";

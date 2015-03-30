@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.app;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,11 +16,12 @@ public class ThirdActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_second);
-        TextView textView = (TextView) findViewById(R.id.textview);
-        textView.setText("Third");
-        Button button = (Button) findViewById(R.id.buttons_second);
-        button.setVisibility(View.GONE);
+        setContentView(R.layout.activity_third);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setContentView(R.layout.activity_third);
+    }
 }

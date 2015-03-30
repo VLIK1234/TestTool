@@ -24,7 +24,7 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="ca8d47b0e2c3c9351a1eec35690b1719ab1aa869"/>
+            android:value="7f897d0aab2e8ae13009c36be12894a22ad6f168" />
         <activity
             android:name=".app.SecondActivity"
             android:label="@string/app_name"/>
