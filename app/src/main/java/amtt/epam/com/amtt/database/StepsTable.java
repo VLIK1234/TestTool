@@ -13,21 +13,21 @@ public class StepsTable extends Table {
 
     public static final String _STEP = "_step";
     public static final String _SCREEN_PATH = "_screen_path";
-    public static final String _ASSOCIATED_ACTIVITY = "_associated_activity";
+    public static final String _ACTIVITY_NAME = "_activity_name";
 
     private static MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
             _STEP,
             _SCREEN_PATH,
-            _ASSOCIATED_ACTIVITY
+            _ACTIVITY_NAME
     };
 
     static {
         sColumnsMap = new MultiValueMap<>();
         sColumnsMap.put(TYPE_TEXT, new ArrayList<String>() {{
             add(_SCREEN_PATH);
-            add(_ASSOCIATED_ACTIVITY);
+            add(_ACTIVITY_NAME);
         }});
         sColumnsMap.put(TYPE_INTEGER + AUTO_INCREMETN, new ArrayList<String>() {{
             add(_STEP);
