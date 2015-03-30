@@ -21,7 +21,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name=".app.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,11 +35,11 @@
             android:value="ca8d47b0e2c3c9351a1eec35690b1719ab1aa869" />
 
         <activity
-            android:name=".SecondActivity"
+            android:name=".app.SecondActivity"
             android:label="@string/app_name" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".app.LoginActivity"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateHidden" >
         </activity>

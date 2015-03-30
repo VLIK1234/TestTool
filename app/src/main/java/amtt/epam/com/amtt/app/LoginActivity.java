@@ -1,18 +1,16 @@
-package amtt.epam.com.amtt;
+package amtt.epam.com.amtt.app;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.authorization.AuthorizationCallback;
 import amtt.epam.com.amtt.authorization.AuthorizationResult;
 import amtt.epam.com.amtt.authorization.AuthorizationTask;
-import amtt.epam.com.amtt.authorization.JiraApi;
 
 
 public class LoginActivity extends ActionBarActivity implements AuthorizationCallback {
