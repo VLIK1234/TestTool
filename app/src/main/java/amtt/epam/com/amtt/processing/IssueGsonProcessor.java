@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import amtt.epam.com.amtt.bo.Entity;
 
 /**
- * Created by shiza on 26.03.2015.
+ * Created by Irina Monchenko on 26.03.2015.
  */
 public class IssueGsonProcessor<T extends Entity> implements Processor<String, T> {
 

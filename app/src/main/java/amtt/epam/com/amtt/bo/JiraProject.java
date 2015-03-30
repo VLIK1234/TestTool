@@ -9,6 +9,7 @@ public class JiraProject extends Entity {
     private String key;
     private String self;
     private String name;
+    private JiraAvatarUrls avatarUrls;
 
 
     public JiraProject() {

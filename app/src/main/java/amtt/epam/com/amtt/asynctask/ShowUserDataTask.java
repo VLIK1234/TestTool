@@ -8,7 +8,7 @@ import android.util.Log;
 import org.apache.http.auth.AuthenticationException;
 
 /**
- * Created by shiza on 30.03.2015.
+ * Created by Irina Monchenko on 30.03.2015.
  */
 public class ShowUserDataTask  extends AsyncTask<Void, Void, ShowUserDataResult> {
 

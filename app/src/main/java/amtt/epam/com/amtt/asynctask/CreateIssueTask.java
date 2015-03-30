@@ -9,7 +9,7 @@ import org.apache.http.auth.AuthenticationException;
 import amtt.epam.com.amtt.authorization.JiraApi;
 
 /**
- * Created by shiza on 27.03.2015.
+ * Created by Irina Monchenko on 27.03.2015.
  */
 public class CreateIssueTask extends AsyncTask<Void, Void, CreationIssueResult> {
 
