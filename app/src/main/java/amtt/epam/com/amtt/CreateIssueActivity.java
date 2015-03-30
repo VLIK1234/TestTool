@@ -1,7 +1,11 @@
 package amtt.epam.com.amtt;
 
+import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
+import amtt.epam.com.amtt.bo.ShowUserDataResult;
+import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,7 +19,7 @@ import amtt.epam.com.amtt.bo.CreationIssueResult;
 import io.fabric.sdk.android.Fabric;
 
 
-public class CreateIssueActivity extends ActionBarActivity implements CreationIssueCallback {
+public class CreateIssueActivity extends ActionBarActivity implements CreationIssueCallback, ShowUserDataCallback {
 
     private EditText etUsername, etPassword, etProjectKey, etIssyeType, etDescription, etSummary;
 
@@ -41,7 +45,8 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
         mIssyeType = etIssyeType.getText().toString();
         mDescription = etDescription.getText().toString();
         mSummary = etSummary.getText().toString();
-        new CreateIssueTask(etUsername.getText().toString(), etPassword.getText().toString(), issue.createSimpleIssue(mProjectKey, mIssyeType, mDescription, mSummary), CreateIssueActivity.this).execute();
+       // new CreateIssueTask(etUsername.getText().toString(), etPassword.getText().toString(), issue.createSimpleIssue(mProjectKey, mIssyeType, mDescription, mSummary), CreateIssueActivity.this).execute();
+        new ShowUserDataTask(etUsername.getText().toString(), etPassword.getText().toString(), CreateIssueActivity.this).execute();
 
     }
 
@@ -50,5 +55,10 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
         String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
                 getResources().getString(R.string.issue_creating_success);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onShowUserDataResult(ShowUserDataResult result) {
+        Log.i("res", result.toString());
     }
 }

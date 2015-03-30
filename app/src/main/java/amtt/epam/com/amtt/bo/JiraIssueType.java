@@ -7,6 +7,11 @@ public class JiraIssueType extends Entity {
 
     private String id;
     private String name;
+    private String self;
+    private String description;
+    private String iconUrl;
+    private Boolean subtask;
+
 
     public JiraIssueType() {
     }

@@ -23,7 +23,7 @@ public class JiraApi {
     private static final String BASIC_AUTH = "Basic ";
 
     private static final String ISSUE_PATH = "https://atmmjira.atlassian.net/rest/api/2/issue/";
-
+    private static final String USER_PROJECTS_PATH = "https://atmmjira.atlassian.net/rest/api/2/issue/createmeta";
     public static final int STATUS_AUTHORIZED = 200;
     public static final int STATUS_CREATED = 201;
 
@@ -46,10 +46,19 @@ public class JiraApi {
         post.addHeader(AUTH_HEADER, credentials);
         post.addHeader("content-type", "application/json");
         post.setEntity(input);
-        Logger logger = new Logger();
-        logger.printReqestLog(post);
+        Logger.printReqestLog(post);
         HttpResponse response = client.execute(post);
-        logger.printResponceLog(response);
+        Logger.printResponceLog(response);
+        return response.getStatusLine().getStatusCode();
+    }
+
+    public int searchIssue(final String userName, final String password) throws Exception {
+        String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
+        HttpClient client = new DefaultHttpClient();
+        HttpGet get = new HttpGet(USER_PROJECTS_PATH);
+        get.addHeader(AUTH_HEADER, credentials);
+        HttpResponse response = client.execute(get);
+        Logger.printResponceLog(response);
         return response.getStatusLine().getStatusCode();
     }
 
