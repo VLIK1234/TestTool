@@ -47,6 +47,7 @@ public class MainActivity extends BaseActivity implements DbSavingCallback, Step
 
             }
         });
+
         Button screenButton = (Button) findViewById(R.id.save_image_button);
         screenButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,11 +84,19 @@ public class MainActivity extends BaseActivity implements DbSavingCallback, Step
             }
         });
 
-        Button clearDbbutton = (Button) findViewById(R.id.clear_db_button);
-        clearDbbutton.setOnClickListener(new View.OnClickListener() {
+        Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
+        clearDbButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new DbClearTask(MainActivity.this).execute();
+            }
+        });
+
+        Button showStepsButton = (Button)findViewById(R.id.show_steps_button);
+        showStepsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, StepsActivity.class));
             }
         });
     }
