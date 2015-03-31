@@ -58,7 +58,8 @@ public class TopButtonService extends Service {
         layoutParams.x = xInitPosition;
         layoutParams.y = yInitPosition;
     }
-    private void initView(){
+
+    private void initView() {
         view = new TopButtonView(getBaseContext(), wm, layoutParams);
         view.setOnClickListener(new View.OnClickListener() {
             @Override

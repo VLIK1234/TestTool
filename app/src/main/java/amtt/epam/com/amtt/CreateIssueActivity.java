@@ -8,10 +8,10 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
-import amtt.epam.com.amtt.bo.CreateIssue;
 import amtt.epam.com.amtt.asynctask.CreateIssueTask;
-import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
+import amtt.epam.com.amtt.bo.CreateIssue;
 import amtt.epam.com.amtt.bo.CreationIssueResult;
+import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
 import io.fabric.sdk.android.Fabric;
 
 

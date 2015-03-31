@@ -1,16 +1,16 @@
 package amtt.epam.com.amtt.asynctask;
 
+import android.os.AsyncTask;
+import android.util.Log;
+
 import amtt.epam.com.amtt.authorization.JiraApi;
 import amtt.epam.com.amtt.bo.ShowUserDataResult;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
-import android.os.AsyncTask;
-import android.util.Log;
-import org.apache.http.auth.AuthenticationException;
 
 /**
  * Created by Irina Monchenko on 30.03.2015.
  */
-public class ShowUserDataTask  extends AsyncTask<Void, Void, ShowUserDataResult> {
+public class ShowUserDataTask extends AsyncTask<Void, Void, ShowUserDataResult> {
 
 
     private final ShowUserDataCallback mCallback;
@@ -28,7 +28,7 @@ public class ShowUserDataTask  extends AsyncTask<Void, Void, ShowUserDataResult>
         try {
             int i = new JiraApi().searchIssue(mUserName, mPassword);
             Log.d("STATUS", String.valueOf(i));
-                //throw new AuthenticationException("issue can`t be create");
+            //throw new AuthenticationException("issue can`t be create");
 
         } catch (Exception e) {
 

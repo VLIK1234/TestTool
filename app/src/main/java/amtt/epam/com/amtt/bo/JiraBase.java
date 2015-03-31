@@ -1,5 +1,7 @@
 package amtt.epam.com.amtt.bo;
 
+import amtt.epam.com.amtt.bo.issue.issuekey.JiraBaseFields;
+
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
  */

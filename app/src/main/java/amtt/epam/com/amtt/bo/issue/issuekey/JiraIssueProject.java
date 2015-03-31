@@ -1,9 +1,11 @@
-package amtt.epam.com.amtt.bo;
+package amtt.epam.com.amtt.bo.issue.issuekey;
+
+import amtt.epam.com.amtt.bo.JiraAvatarUrls;
 
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
  */
-public class JiraProject extends Entity {
+public class JiraIssueProject {
 
     private String id;
     private String key;
@@ -12,10 +14,10 @@ public class JiraProject extends Entity {
     private JiraAvatarUrls avatarUrls;
 
 
-    public JiraProject() {
+    public JiraIssueProject() {
     }
 
-    public JiraProject(String id, String key) {
+    public JiraIssueProject(String id, String key) {
         this.id = id;
         this.key = key;
     }

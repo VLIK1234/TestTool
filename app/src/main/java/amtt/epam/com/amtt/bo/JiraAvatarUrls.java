@@ -17,5 +17,4 @@ public class JiraAvatarUrls {
     private String avatarMediumUrl;
 
 
-
 }

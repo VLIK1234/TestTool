@@ -1,10 +1,11 @@
-package amtt.epam.com.amtt.bo;
+package amtt.epam.com.amtt.bo.issue.issuekey;
+
+import amtt.epam.com.amtt.bo.JiraAvatarUrls;
 
 /**
  * Created by Irina Monchenko on 30.03.2015.
  */
-public class JiraIssueAssignee {
-
+public class JiraIssueReporter {
     private String key;
     private String self;
     private String name;
@@ -13,5 +14,4 @@ public class JiraIssueAssignee {
     private String displayName;
     private Boolean active;
     private String timeZone;
-
 }

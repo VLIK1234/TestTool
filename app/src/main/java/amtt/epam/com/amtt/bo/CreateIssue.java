@@ -2,6 +2,8 @@ package amtt.epam.com.amtt.bo;
 
 import android.util.Log;
 
+import amtt.epam.com.amtt.bo.issue.issuekey.JiraBaseFields;
+import amtt.epam.com.amtt.bo.issue.issuekey.JiraIssueProject;
 import amtt.epam.com.amtt.processing.IssueGsonProcessor;
 
 /**
@@ -9,8 +11,8 @@ import amtt.epam.com.amtt.processing.IssueGsonProcessor;
  */
 public class CreateIssue {
 
-    private JiraProject mProject = new JiraProject();
-    private JiraIssueType mIssuetype = new JiraIssueType();
+    private JiraIssueProject mProject = new JiraIssueProject();
+    private JiraIssueTypesIssueType mIssuetype = new JiraIssueTypesIssueType();
     private JiraBaseFields mFields = new JiraBaseFields();
     private JiraBase mBData = new JiraBase();
     private IssueGsonProcessor<JiraBase> mIssueGsonProcessor = new IssueGsonProcessor<>();

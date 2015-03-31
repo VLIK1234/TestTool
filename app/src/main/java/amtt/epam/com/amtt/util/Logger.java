@@ -34,7 +34,7 @@ public class Logger {
     public static void printResponceLog(HttpResponse response) throws IOException {
 
         HttpEntity entity = response.getEntity();
-        String content = EntityUtils.toString(entity,"UTF-8");
+        String content = EntityUtils.toString(entity, "UTF-8");
         Log.i("HTTP Logger", "ProtocolVersion : " + response.getStatusLine().getProtocolVersion()
                 + ", StatusCode : " + response.getStatusLine().getStatusCode()
                 + ", ReasonPhrase : " + response.getStatusLine().getReasonPhrase() + ", Body : " + content);

@@ -36,6 +36,7 @@ public class MainActivity extends ActionBarActivity {
     public void onIssueClick(View view) {
         startActivity(new Intent(this, CreateIssueActivity.class));
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);

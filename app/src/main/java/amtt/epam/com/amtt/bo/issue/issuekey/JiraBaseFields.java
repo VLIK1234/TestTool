@@ -1,14 +1,17 @@
-package amtt.epam.com.amtt.bo;
+package amtt.epam.com.amtt.bo.issue.issuekey;
+
+import amtt.epam.com.amtt.bo.Entity;
+import amtt.epam.com.amtt.bo.JiraIssueTypesIssueType;
 
 /**
  * Created by Irina Monchenko on 26.03.2015.
  */
 public class JiraBaseFields extends Entity {
 
-    private JiraProject project;
+    private JiraIssueProject project;
     private String summary;
     private String description;
-    private JiraIssueType issuetype;
+    private JiraIssueTypesIssueType issuetype;
     private String timespent;
     private String[] fixVersions;
     private String aggregatetimespent;
@@ -62,18 +65,18 @@ public class JiraBaseFields extends Entity {
     public JiraBaseFields() {
     }
 
-    public JiraBaseFields(JiraProject project, String summary, String description, JiraIssueType issuetype) {
+    public JiraBaseFields(JiraIssueProject project, String summary, String description, JiraIssueTypesIssueType issuetype) {
         this.project = project;
         this.summary = summary;
         this.description = description;
         this.issuetype = issuetype;
     }
 
-    public JiraProject getProject() {
+    public JiraIssueProject getProject() {
         return project;
     }
 
-    public void setProject(JiraProject project) {
+    public void setProject(JiraIssueProject project) {
         this.project = project;
     }
 
@@ -93,11 +96,11 @@ public class JiraBaseFields extends Entity {
         this.description = description;
     }
 
-    public JiraIssueType getIssuetype() {
+    public JiraIssueTypesIssueType getIssuetype() {
         return issuetype;
     }
 
-    public void setIssuetype(JiraIssueType issuetype) {
+    public void setIssuetype(JiraIssueTypesIssueType issuetype) {
         this.issuetype = issuetype;
     }
 }
