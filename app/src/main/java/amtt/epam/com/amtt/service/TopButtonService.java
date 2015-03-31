@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.opengl.Visibility;
 import android.os.IBinder;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -29,7 +30,6 @@ public class TopButtonService extends Service {
     private int xInitPosition;
     private int yInitPosition;
     private TopButtonView view;
-//    private CircleScrollListView view;
     private WindowManager wm;
     private WindowManager.LayoutParams layoutParams;
     private final String LOG_TAG = "myLogs";

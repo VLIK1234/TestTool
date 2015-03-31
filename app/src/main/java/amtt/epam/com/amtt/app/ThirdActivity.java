@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import amtt.epam.com.amtt.R;
@@ -24,11 +25,11 @@ public class ThirdActivity extends BaseActivity {
                 R.drawable.button_add, R.drawable.button_share, R.drawable.button_auth,
                 R.drawable.button_screen,R.drawable.button_bug_rep
         };
-        Button[] arrayButton = new Button[5];
+        ImageView[] arrayButton = new ImageView[5];
         int counter = 0;
-        for (Button item : arrayButton) {
-            item = new Button(this);
-            item.setText(String.valueOf(counter));
+        for (ImageView item : arrayButton) {
+            item = new ImageView(this);
+            item.setImageResource(buttonDrawableResourceIds[counter]);
             item.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
