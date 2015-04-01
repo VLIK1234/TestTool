@@ -28,7 +28,7 @@ public class StepsActivity extends ActionBarActivity implements LoaderManager.Lo
 
         mListView = (ListView) findViewById(android.R.id.list);
 
-        getLoaderManager().initLoader(CURSOR_LOADER,null, this);
+        getLoaderManager().initLoader(CURSOR_LOADER, null, this);
     }
 
 

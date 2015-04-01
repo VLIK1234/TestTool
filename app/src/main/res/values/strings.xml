@@ -41,4 +41,6 @@
 
     <string name="screenshot_image_description">image view for screenshot</string>
 
+    <string name="step_text">Step</string>
+
 </resources>
