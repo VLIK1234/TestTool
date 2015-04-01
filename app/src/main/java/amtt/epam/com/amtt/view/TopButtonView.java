@@ -1,15 +1,13 @@
 package amtt.epam.com.amtt.view;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import amtt.epam.com.amtt.R;
@@ -32,7 +30,7 @@ public class TopButtonView extends FrameLayout {
         this.windowManager = windowManager;
         this.layoutParams = layoutParams;
         body = (ViewGroup) findViewById(R.id.body);
-        topButtonLayout = (LinearLayout)findViewById(R.id.top_button_layout);
+        topButtonLayout = (LinearLayout) findViewById(R.id.top_button_layout);
 //        topButtonLayout.addView(new ImageView(context).setImageResource(R.id.button_show));
 
     }
@@ -99,10 +97,10 @@ public class TopButtonView extends FrameLayout {
 //                        if (mOnClickListener != null) {
 //                            mOnClickListener.onClick(this);
 //                        }
-                        if (isButtonBarVisible==VISIBLE) {
+                        if (isButtonBarVisible == VISIBLE) {
                             body.setVisibility(GONE);
                             isButtonBarVisible = GONE;
-                        }else{
+                        } else {
                             body.setVisibility(VISIBLE);
                             isButtonBarVisible = VISIBLE;
                         }

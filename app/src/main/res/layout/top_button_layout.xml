@@ -3,7 +3,6 @@
     android:id="@+id/top_button_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/highlighted_text_material_light"
     android:orientation="vertical">
 
     <ImageView
@@ -23,26 +22,31 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/button_add" />
+            android:src="@drawable/button_add"
+            android:onClick="onClickAdd"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/button_auth" />
+            android:src="@drawable/button_auth"
+            android:onClick="onClickAuth"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/button_bug_rep" />
+            android:src="@drawable/button_bug_rep"
+            android:onClick="onClickBugRep"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/button_screen" />
+            android:src="@drawable/button_screen"
+            android:onClick="onClickScreen"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/button_share" />
+            android:src="@drawable/button_share"
+            android:onClick="onClickShare"/>
     </LinearLayout>
 </LinearLayout>

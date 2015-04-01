@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.BaseActivity;
@@ -105,6 +106,26 @@ public class TopButtonService extends Service {
             view = null;
         }
         stopSelf();
+    }
+
+    public void onClickAdd(View view){
+        Toast.makeText(this, "ADD", Toast.LENGTH_LONG).show();
+
+    }
+    public void onClickAuth(View view) {
+        Toast.makeText(this, "AUTH", Toast.LENGTH_LONG).show();
+    }
+
+    public void onClickBugRep(View view) {
+        Toast.makeText(this, "BUG_REP", Toast.LENGTH_LONG).show();
+    }
+
+    public void onClickScreen(View view) {
+        Toast.makeText(this, "SCREEN", Toast.LENGTH_LONG).show();
+    }
+
+    public void onClickShare(View view) {
+        Toast.makeText(this, "SHARE", Toast.LENGTH_LONG).show();
     }
 
     @Override
