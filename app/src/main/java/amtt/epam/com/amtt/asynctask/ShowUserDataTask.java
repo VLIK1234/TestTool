@@ -1,11 +1,10 @@
 package amtt.epam.com.amtt.asynctask;
 
-import android.os.AsyncTask;
-import android.util.Log;
-
 import amtt.epam.com.amtt.authorization.JiraApi;
 import amtt.epam.com.amtt.bo.ShowUserDataResult;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
+import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * Created by Irina Monchenko on 30.03.2015.

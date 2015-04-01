@@ -1,10 +1,10 @@
 package amtt.epam.com.amtt.database;
 
+import amtt.epam.com.amtt.util.MultiValueMap;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import amtt.epam.com.amtt.util.MultiValueMap;
 
 /**
  * Created by Artsiom_Kaliaha on 20.03.2015.

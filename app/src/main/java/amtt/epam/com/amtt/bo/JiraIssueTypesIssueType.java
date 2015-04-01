@@ -1,65 +1,79 @@
 package amtt.epam.com.amtt.bo;
 
-import amtt.epam.com.amtt.bo.issue.createmeta.JITFieldsItem;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
  */
-public class JiraIssueTypesIssueType extends JITFieldsItem {
+public class JiraIssueTypesIssueType {
 
-    private String id;
-    private String name;
-    private String self;
-    private String description;
-    private String iconUrl;
-    private Boolean subtask;
+    @SerializedName("id")
+    private String mId;
+    @SerializedName("name")
+    private String mName;
+    @SerializedName("self")
+    private String mSelf;
+    @SerializedName("description")
+    private String mDescription;
+    @SerializedName("iconUrl")
+    private String mIconUrl;
+    @SerializedName("subtask")
+    private Boolean mSubtask;
 
 
     public JiraIssueTypesIssueType() {
     }
 
     public JiraIssueTypesIssueType(String id, String name) {
-        this.id = id;
-        this.name = name;
+        this.mId = id;
+        this.mName = name;
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String name) {
+        this.mName = name;
     }
 
     public String getId() {
-        return id;
+        return mId;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this.mId = id;
     }
 
     public String getSelf() {
-        return self;
+        return mSelf;
     }
 
     public void setSelf(String self) {
-        this.self = self;
+        this.mSelf = self;
     }
 
     public String getDescription() {
-        return description;
+        return mDescription;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.mDescription = description;
     }
 
     public String getIconUrl() {
-        return iconUrl;
+        return mIconUrl;
     }
 
     public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
+        this.mIconUrl = iconUrl;
     }
 
     public Boolean getSubtask() {
-        return subtask;
+        return mSubtask;
     }
 
     public void setSubtask(Boolean subtask) {
-        this.subtask = subtask;
+        this.mSubtask = subtask;
     }
 }

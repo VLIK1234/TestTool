@@ -1,14 +1,18 @@
 package amtt.epam.com.amtt.bo.issue.issuekey;
 
 import amtt.epam.com.amtt.bo.JiraAvatarUrls;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
  */
 public class JiraIssueProject {
 
-    private String id;
-    private String key;
+
+    @SerializedName("id")
+    private String mId;
+    @SerializedName("key")
+    private String mKey;
     private String self;
     private String name;
     private JiraAvatarUrls avatarUrls;
@@ -18,23 +22,23 @@ public class JiraIssueProject {
     }
 
     public JiraIssueProject(String id, String key) {
-        this.id = id;
-        this.key = key;
+        this.mId = id;
+        this.mKey = key;
     }
 
     public String getIdProject() {
-        return id;
+        return mId;
     }
 
     public void setIdProject(String id) {
-        this.id = id;
+        this.mId = id;
     }
 
     public String getKeyProject() {
-        return key;
+        return mKey;
     }
 
     public void setKeyProject(String key) {
-        this.key = key;
+        this.mKey = key;
     }
 }

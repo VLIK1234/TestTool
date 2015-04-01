@@ -52,6 +52,22 @@ public class JIssueTypes {
         this.mFields = fields;
     }
 
+    public JIssueTypes(String self, int id, String name, String iconUrl) {
+        this.mSelf = self;
+        this.mId = id;
+        this.mName = name;
+        this.mIconUrl = iconUrl;
+    }
+
+    public JIssueTypes(String mSelf, int mId, String mDescription, String mIconUrl, String mName, Boolean mSubtask) {
+        this.mSelf = mSelf;
+        this.mId = mId;
+        this.mDescription = mDescription;
+        this.mIconUrl = mIconUrl;
+        this.mName = mName;
+        this.mSubtask = mSubtask;
+    }
+
     public String getSelf() {
         return mSelf;
     }

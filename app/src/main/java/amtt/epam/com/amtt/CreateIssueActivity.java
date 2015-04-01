@@ -1,17 +1,15 @@
 package amtt.epam.com.amtt;
 
+import amtt.epam.com.amtt.asynctask.CreateIssueTask;
+import amtt.epam.com.amtt.bo.CreateIssue;
+import amtt.epam.com.amtt.bo.CreationIssueResult;
+import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.crashlytics.android.Crashlytics;
-
-import amtt.epam.com.amtt.asynctask.CreateIssueTask;
-import amtt.epam.com.amtt.bo.CreateIssue;
-import amtt.epam.com.amtt.bo.CreationIssueResult;
-import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
 import io.fabric.sdk.android.Fabric;
 
 
@@ -48,7 +46,7 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
     @Override
     public void onCreationIssueResult(CreationIssueResult result) {
         String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
-                getResources().getString(R.string.issue_creating_success);
+            getResources().getString(R.string.issue_creating_success);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
     }
 }

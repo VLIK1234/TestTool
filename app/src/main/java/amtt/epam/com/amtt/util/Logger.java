@@ -1,7 +1,6 @@
 package amtt.epam.com.amtt.util;
 
 import android.util.Log;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -26,8 +25,8 @@ public class Logger {
         //
         String content = EntityUtils.toString(entity);
         Log.i("HTTP Logger", "ProtocolVersion : " + post.getRequestLine().getProtocolVersion()
-                + ", Method : " + post.getRequestLine().getMethod()
-                + ", Uri : " + post.getRequestLine().getUri() + ", Body : " + content);
+            + ", Method : " + post.getRequestLine().getMethod()
+            + ", Uri : " + post.getRequestLine().getUri() + ", Body : " + content);
 
     }
 
@@ -36,8 +35,8 @@ public class Logger {
         HttpEntity entity = response.getEntity();
         String content = EntityUtils.toString(entity, "UTF-8");
         Log.i("HTTP Logger", "ProtocolVersion : " + response.getStatusLine().getProtocolVersion()
-                + ", StatusCode : " + response.getStatusLine().getStatusCode()
-                + ", ReasonPhrase : " + response.getStatusLine().getReasonPhrase() + ", Body : " + content);
+            + ", StatusCode : " + response.getStatusLine().getStatusCode()
+            + ", ReasonPhrase : " + response.getStatusLine().getReasonPhrase() + ", Body : " + content);
         response.getStatusLine().toString();
     }
 

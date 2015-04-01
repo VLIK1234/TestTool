@@ -1,10 +1,9 @@
 package amtt.epam.com.amtt.bo;
 
-import android.util.Log;
-
 import amtt.epam.com.amtt.bo.issue.issuekey.JiraBaseFields;
 import amtt.epam.com.amtt.bo.issue.issuekey.JiraIssueProject;
 import amtt.epam.com.amtt.processing.IssueGsonProcessor;
+import android.util.Log;
 
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
@@ -31,11 +30,12 @@ public class CreateIssue {
         mBData.setFields(mFields);
         try {
             jsonString = mIssueGsonProcessor.process(mBData);
+            Log.d("test", jsonString);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        Log.d("test", jsonString);
+
         return jsonString;
     }
 }

@@ -1,8 +1,7 @@
 package amtt.epam.com.amtt.bo.issue.createmeta;
 
-import com.google.gson.annotations.SerializedName;
-
 import amtt.epam.com.amtt.bo.JiraAvatarUrls;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Iryna_Monchanka on 3/31/2015.
@@ -29,6 +28,15 @@ public class JProjects {
 
     public JProjects(String expand, String self, String id, String key, String name, JiraAvatarUrls avatarUrls, JIssueTypes[] issuetypes) {
         this.mExpand = expand;
+        this.mSelf = self;
+        this.mId = id;
+        this.mKey = key;
+        this.mName = name;
+        this.mAvatarUrls = avatarUrls;
+        this.mIssuetypes = issuetypes;
+    }
+
+    public JProjects(String self, String id, String key, String name, JiraAvatarUrls avatarUrls, JIssueTypes[] issuetypes) {
         this.mSelf = self;
         this.mId = id;
         this.mKey = key;

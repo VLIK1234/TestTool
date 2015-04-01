@@ -1,26 +1,27 @@
 package amtt.epam.com.amtt.bo;
 
 import amtt.epam.com.amtt.bo.issue.issuekey.JiraBaseFields;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
  */
 public class JiraBase extends Entity {
-
-    private JiraBaseFields fields;
+    @SerializedName("fields")
+    private JiraBaseFields mFields;
 
     public JiraBase() {
     }
 
     public JiraBase(JiraBaseFields fields) {
-        this.fields = fields;
+        this.mFields = fields;
     }
 
     public JiraBaseFields getFields() {
-        return fields;
+        return mFields;
     }
 
     public void setFields(JiraBaseFields fields) {
-        this.fields = fields;
+        this.mFields = fields;
     }
 }

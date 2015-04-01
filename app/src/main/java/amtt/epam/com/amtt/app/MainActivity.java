@@ -1,5 +1,10 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.database.DbSavingCallback;
+import amtt.epam.com.amtt.database.DbSavingResult;
+import amtt.epam.com.amtt.database.DbSavingTask;
+import amtt.epam.com.amtt.service.TopButtonService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -7,14 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.crashlytics.android.Crashlytics;
-
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.database.DbSavingCallback;
-import amtt.epam.com.amtt.database.DbSavingResult;
-import amtt.epam.com.amtt.database.DbSavingTask;
-import amtt.epam.com.amtt.service.TopButtonService;
 import io.fabric.sdk.android.Fabric;
 
 

@@ -1,7 +1,7 @@
 package amtt.epam.com.amtt.authorization;
 
+import amtt.epam.com.amtt.util.Logger;
 import android.util.Base64;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -9,21 +9,19 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import amtt.epam.com.amtt.util.Logger;
-
 /**
  * Created by Artsiom_Kaliaha on 24.03.2015.
  */
 public class JiraApi {
 
-    private static final String BASE_PATH = "https://atmmjira.atlassian.net/rest/auth/latest/";
+    private static final String BASE_PATH = "https://fortestsamtt.atlassian.net/rest/auth/latest/";
     private static final String LOGIN_METHOD = BASE_PATH + "session";
 
     private static final String AUTH_HEADER = "Authorization";
     private static final String BASIC_AUTH = "Basic ";
 
-    private static final String ISSUE_PATH = "https://atmmjira.atlassian.net/rest/api/2/issue/";
-    private static final String USER_PROJECTS_PATH = "https://atmmjira.atlassian.net/rest/api/2/issue/createmeta";
+    private static final String ISSUE_PATH = "https://fortestsamtt.atlassian.net/rest/api/2/issue/";
+    private static final String USER_PROJECTS_PATH = "https://fortestsamtt.atlassian.net/rest/api/2/issue/createmeta";
     public static final int STATUS_AUTHORIZED = 200;
     public static final int STATUS_CREATED = 201;
 

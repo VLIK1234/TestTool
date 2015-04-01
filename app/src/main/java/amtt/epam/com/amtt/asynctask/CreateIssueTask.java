@@ -1,12 +1,10 @@
 package amtt.epam.com.amtt.asynctask;
 
-import android.os.AsyncTask;
-
-import org.apache.http.auth.AuthenticationException;
-
 import amtt.epam.com.amtt.authorization.JiraApi;
 import amtt.epam.com.amtt.bo.CreationIssueResult;
 import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
+import android.os.AsyncTask;
+import org.apache.http.auth.AuthenticationException;
 
 /**
  * Created by Irina Monchenko on 27.03.2015.

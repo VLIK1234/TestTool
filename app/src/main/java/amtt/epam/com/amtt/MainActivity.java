@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt;
 
+import amtt.epam.com.amtt.service.TopButtonService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -7,10 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-
 import com.crashlytics.android.Crashlytics;
-
-import amtt.epam.com.amtt.service.TopButtonService;
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends ActionBarActivity {

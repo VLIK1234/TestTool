@@ -1,5 +1,10 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.image.ImageSavingCallback;
+import amtt.epam.com.amtt.image.ImageSavingResult;
+import amtt.epam.com.amtt.image.ImageSavingTask;
+import amtt.epam.com.amtt.storage.BaseStorage;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,12 +17,6 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.image.ImageSavingCallback;
-import amtt.epam.com.amtt.image.ImageSavingResult;
-import amtt.epam.com.amtt.image.ImageSavingTask;
-import amtt.epam.com.amtt.storage.BaseStorage;
 
 /**
  * Created by Ivan_Bakach on 26.03.2015.
@@ -51,8 +50,8 @@ public class BaseActivity extends Activity implements ImageSavingCallback {
                     Rect rect = new Rect();
                     getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
                     final String cachePath =
-                            Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ? getExternalCacheDir().getPath() :
-                                    getCacheDir().getPath();
+                        Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ? getExternalCacheDir().getPath() :
+                            getCacheDir().getPath();
                     new ImageSavingTask((BaseActivity) context, bitmap, rect, cachePath).execute();
                     Toast.makeText(context, cachePath, Toast.LENGTH_SHORT).show();
                 }
