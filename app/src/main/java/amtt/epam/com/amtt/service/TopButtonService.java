@@ -13,10 +13,12 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.BaseActivity;
+import amtt.epam.com.amtt.app.SecondActivity;
 import amtt.epam.com.amtt.view.CircleScrollListView;
 import amtt.epam.com.amtt.view.TopButtonView;
 
@@ -118,10 +120,15 @@ public class TopButtonService extends Service {
 
     public void onClickBugRep(View view) {
         Toast.makeText(this, "BUG_REP", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getBaseContext(), SecondActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplication().startActivity(intent);
     }
 
     public void onClickScreen(View view) {
         Toast.makeText(this, "SCREEN", Toast.LENGTH_LONG).show();
+        Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
+        sendBroadcast(intentATS);
     }
 
     public void onClickShare(View view) {

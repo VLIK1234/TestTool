@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.view;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ public class TopButtonView extends FrameLayout {
     private ViewGroup topButtonLayout;
     private int isButtonBarVisible = GONE;
     private final static String LOG_TAG = "TAG";
+    private DisplayMetrics metrics = new DisplayMetrics();
 
     public TopButtonView(Context context, WindowManager windowManager, WindowManager.LayoutParams layoutParams) {
         super(context);
@@ -79,8 +81,13 @@ public class TopButtonView extends FrameLayout {
 
                     // update the position of the view
                     if (event.getPointerCount() == 1) {
-                        layoutParams.x += deltaX;
+                        if ((layoutParams.x + deltaX)>=0&&(layoutParams.x + deltaX)<=940) {
+                            layoutParams.x += deltaX;
+                        }else{
+                            layoutParams.x += 0;
+                        }
                         layoutParams.y += deltaY;
+                        Log.d(LOG_TAG, layoutParams.x+" "+layoutParams.y);
                     }
                     windowManager.updateViewLayout(this, layoutParams);
                 }
