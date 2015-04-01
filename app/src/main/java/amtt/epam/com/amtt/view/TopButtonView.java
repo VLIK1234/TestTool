@@ -5,11 +5,10 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 
 import amtt.epam.com.amtt.R;
 
@@ -21,10 +20,10 @@ public class TopButtonView extends FrameLayout {
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
     public ViewGroup body;
-    private ViewGroup topButtonLayout;
+    private ImageView imageView;
     private int isButtonBarVisible = GONE;
     private final static String LOG_TAG = "TAG";
-    private DisplayMetrics metrics = new DisplayMetrics();
+    private DisplayMetrics metrics;
 
     public TopButtonView(Context context, WindowManager windowManager, WindowManager.LayoutParams layoutParams) {
         super(context);
@@ -32,9 +31,10 @@ public class TopButtonView extends FrameLayout {
         this.windowManager = windowManager;
         this.layoutParams = layoutParams;
         body = (ViewGroup) findViewById(R.id.body);
-        topButtonLayout = (LinearLayout) findViewById(R.id.top_button_layout);
-//        topButtonLayout.addView(new ImageView(context).setImageResource(R.id.button_show));
-
+        metrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        imageView = (ImageView) findViewById(R.id.plus_button);
+        imageView.setImageResource(R.drawable.ic_top_button);
     }
 
 
@@ -81,13 +81,12 @@ public class TopButtonView extends FrameLayout {
 
                     // update the position of the view
                     if (event.getPointerCount() == 1) {
-                        if ((layoutParams.x + deltaX)>=0&&(layoutParams.x + deltaX)<=940) {
+                        if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - imageView.getWidth())) {
                             layoutParams.x += deltaX;
-                        }else{
-                            layoutParams.x += 0;
                         }
-                        layoutParams.y += deltaY;
-                        Log.d(LOG_TAG, layoutParams.x+" "+layoutParams.y);
+                        if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - imageView.getHeight()*1.5)) {
+                            layoutParams.y += deltaY;
+                        }
                     }
                     windowManager.updateViewLayout(this, layoutParams);
                 }
