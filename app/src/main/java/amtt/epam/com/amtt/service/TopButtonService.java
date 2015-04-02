@@ -62,7 +62,7 @@ public class TopButtonService extends Service {
         layoutParams.y = yInitPosition;
     }
     private void initView(){
-        view = new TopButtonView(getBaseContext(), wm, layoutParams, displayMetrics);
+        view = new TopButtonView(getBaseContext(), layoutParams);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

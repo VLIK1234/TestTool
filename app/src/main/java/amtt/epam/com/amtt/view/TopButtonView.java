@@ -1,7 +1,9 @@
 package amtt.epam.com.amtt.view;
 
 import android.content.Context;
+import android.graphics.PixelFormat;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -22,18 +24,36 @@ public class TopButtonView extends FrameLayout {
     private ViewGroup body;
     private ImageView imageView;
     private DisplayMetrics metrics;
-    private Context context;
     private int orientation;
     private float widthProportion;
     private float heightProportion;
 
-    public TopButtonView(Context context, WindowManager windowManager, WindowManager.LayoutParams layoutParams, DisplayMetrics displayMetrics) {
+    public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
-        this.context = context;
         initComponent();
-        this.windowManager = windowManager;
+        this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        this.metrics = getContext().getResources().getDisplayMetrics();
         this.layoutParams = layoutParams;
-        this.metrics = displayMetrics;
+        orientation = getResources().getConfiguration().orientation;
+        widthProportion = (float) layoutParams.x / metrics.widthPixels;
+        heightProportion = (float) layoutParams.y / metrics.heightPixels;
+    }
+
+    public TopButtonView(Context context) {
+        super(context);
+        initComponent();
+        this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        this.metrics = getContext().getResources().getDisplayMetrics();
+
+        layoutParams = new WindowManager.LayoutParams();
+        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
+        layoutParams.format = PixelFormat.TRANSLUCENT;
+        layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
+
         orientation = getResources().getConfiguration().orientation;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
@@ -141,10 +161,10 @@ public class TopButtonView extends FrameLayout {
 //                        if (mOnClickListener != null) {
 //                            mOnClickListener.onClick(this);
 //                        }
-                        if (body.getVisibility() == GONE) {
-                            body.setVisibility(VISIBLE);
-                        } else if (body.getVisibility() == VISIBLE) {
+                        if (body.getVisibility() == VISIBLE) {
                             body.setVisibility(GONE);
+                        } else {
+                            body.setVisibility(VISIBLE);
                         }
                     }
                 }
