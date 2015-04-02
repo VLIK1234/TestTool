@@ -43,4 +43,6 @@
 
     <string name="step_text">Step</string>
 
+    <string name="empty_list_view">There is no saved steps =(</string>
+
 </resources>

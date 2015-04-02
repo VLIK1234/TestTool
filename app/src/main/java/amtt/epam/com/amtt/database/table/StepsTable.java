@@ -1,7 +1,9 @@
-package amtt.epam.com.amtt.database;
+package amtt.epam.com.amtt.database.table;
 
 import java.util.ArrayList;
 
+import amtt.epam.com.amtt.database.BaseColumns;
+import amtt.epam.com.amtt.database.SqlQueryConstants;
 import amtt.epam.com.amtt.util.MultiValueMap;
 
 /**
@@ -28,7 +30,7 @@ public class StepsTable extends Table {
             add(_SCREEN_PATH);
             add(_ASSOCIATED_ACTIVITY);
         }});
-        sColumnsMap.put(TYPE_INTEGER + AUTO_INCREMETN, new ArrayList<String>() {{
+        sColumnsMap.put(TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);
         }});
     }

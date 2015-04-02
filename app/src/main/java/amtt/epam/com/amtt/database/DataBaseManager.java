@@ -6,10 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import amtt.epam.com.amtt.database.table.ActivityInfoTable;
+import amtt.epam.com.amtt.database.table.StepsTable;
+
 /**
  * Created by Artsiom_Kaliaha on 18.03.2015.
  */
-public class DataBaseManager extends SQLiteOpenHelper implements SqlConstants {
+public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstants {
 
     private static final Integer DATA_BASE_VERSION = 1;
     private static final String DATA_BASE_NAME = "amtt.db";
@@ -50,7 +53,7 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlConstants {
 
         for (int i = 0; i < projection.length; i++) {
             rawQueryBuilder.append(projection[i]);
-            if (i != projection.length -1) {
+            if (i != projection.length - 1) {
                 rawQueryBuilder.append(COMMA);
             }
         }

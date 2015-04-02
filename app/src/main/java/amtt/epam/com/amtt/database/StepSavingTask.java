@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.step;
+package amtt.epam.com.amtt.database;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -15,9 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
-import amtt.epam.com.amtt.database.ActivityInfoConstants;
-import amtt.epam.com.amtt.database.ActivityInfoTable;
-import amtt.epam.com.amtt.database.StepsTable;
+import amtt.epam.com.amtt.database.table.ActivityInfoTable;
+import amtt.epam.com.amtt.database.table.StepsTable;
 
 /**
  * Created by Artsiom_Kaliaha on 26.03.2015.
@@ -31,6 +30,7 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
     private static Map<Integer, String> sScreenOrientation;
     private static Map<Integer, String> sSoftInputMode;
     private static Map<Integer, String> sUiOptions;
+    private static int sStepsCount = 0;
 
     static {
         sConfigChanges = new HashMap<>();
@@ -110,7 +110,7 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
     private final ComponentName mComponentName;
     private final int mCurrentSdkVersion;
 
-    public StepSavingTask(Context context, StepSavingCallback callback, Bitmap bitmap, Rect rect, ComponentName componentName) {
+    public StepSavingTask(Context context, StepSavingCallback callback, Bitmap bitmap, Rect rect, ComponentName componentName, boolean newStepsSequence) {
         mContext = context;
         mCallback = callback;
         mBitmap = bitmap;
@@ -118,6 +118,8 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
         mPath = context.getCacheDir().getPath();
         mComponentName = componentName;
         mCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
+
+        sStepsCount = newStepsSequence ? 1 : sStepsCount + 1;
     }
 
     @Override
@@ -195,6 +197,7 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
 
     private void saveStep(String screenPath) {
         ContentValues values = new ContentValues();
+        values.put(StepsTable._ID, sStepsCount);
         values.put(StepsTable._SCREEN_PATH, screenPath);
         values.put(StepsTable._ASSOCIATED_ACTIVITY, mComponentName.getClassName());
         mContext.getContentResolver().insert(AmttContentProvider.STEP_CONTENT_URI, values);
@@ -203,15 +206,15 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
 
     //ActivityInfoTable methods
     private String getConfigChange(ActivityInfo activityInfo) {
-        return sConfigChanges.get(activityInfo.configChanges) == null ? UNDEFINED_FIELD : sConfigChanges.get(activityInfo.configChanges);
+        return sConfigChanges.get(activityInfo.configChanges) == null ? NOT_AVAILABLE : sConfigChanges.get(activityInfo.configChanges);
     }
 
     private String getFlags(ActivityInfo activityInfo) {
-        return sFlags.get(activityInfo.flags) == null ? UNDEFINED_FIELD : sFlags.get(activityInfo.flags);
+        return sFlags.get(activityInfo.flags) == null ? NOT_AVAILABLE : sFlags.get(activityInfo.flags);
     }
 
     private String getLaunchMode(ActivityInfo activityInfo) {
-        return sLaunchMode.get(activityInfo.launchMode) == null ? UNDEFINED_FIELD : sLaunchMode.get(activityInfo.launchMode);
+        return sLaunchMode.get(activityInfo.launchMode) == null ? NOT_AVAILABLE : sLaunchMode.get(activityInfo.launchMode);
     }
 
     private String getMaxRecents(ActivityInfo activityInfo) {
@@ -225,34 +228,34 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
         if (mCurrentSdkVersion < Build.VERSION_CODES.JELLY_BEAN) {
             return NOT_SUPPORTED;
         }
-        return activityInfo.parentActivityName == null ? UNDEFINED_FIELD : activityInfo.parentActivityName;
+        return activityInfo.parentActivityName == null ? NOT_AVAILABLE : activityInfo.parentActivityName;
     }
 
     private String getPermission(ActivityInfo activityInfo) {
-        return activityInfo.permission == null ? UNDEFINED_FIELD : activityInfo.permission;
+        return activityInfo.permission == null ? NOT_AVAILABLE : activityInfo.permission;
     }
 
     private String getPersistableMode(ActivityInfo activityInfo) {
         if (mCurrentSdkVersion < Build.VERSION_CODES.LOLLIPOP) {
             return NOT_SUPPORTED;
         }
-        return sPersistableMode.get(activityInfo.persistableMode) == null ? UNDEFINED_FIELD : sPersistableMode.get(activityInfo.persistableMode);
+        return sPersistableMode.get(activityInfo.persistableMode) == null ? NOT_AVAILABLE : sPersistableMode.get(activityInfo.persistableMode);
     }
 
     private String getScreenOrientation(ActivityInfo activityInfo) {
-        return sScreenOrientation.get(activityInfo.screenOrientation) == null ? UNDEFINED_FIELD : sScreenOrientation.get(activityInfo.screenOrientation);
+        return sScreenOrientation.get(activityInfo.screenOrientation) == null ? NOT_AVAILABLE : sScreenOrientation.get(activityInfo.screenOrientation);
     }
 
     private String getSoftInputMode(ActivityInfo activityInfo) {
-        return sSoftInputMode.get(activityInfo.softInputMode) == null ? UNDEFINED_FIELD : sSoftInputMode.get(activityInfo.softInputMode);
+        return sSoftInputMode.get(activityInfo.softInputMode) == null ? NOT_AVAILABLE : sSoftInputMode.get(activityInfo.softInputMode);
     }
 
     private String getTargetActivity(ActivityInfo activityInfo) {
-        return activityInfo.targetActivity == null ? UNDEFINED_FIELD : activityInfo.targetActivity;
+        return activityInfo.targetActivity == null ? NOT_AVAILABLE : activityInfo.targetActivity;
     }
 
     private String getThemeName(ActivityInfo activityInfo) {
-        return activityInfo.theme == 0 ? UNDEFINED_FIELD : mContext.getResources().getResourceName(activityInfo.theme);
+        return activityInfo.theme == 0 ? NOT_AVAILABLE : mContext.getResources().getResourceName(activityInfo.theme);
     }
 
     private String getUiOptions(ActivityInfo activityInfo) {

@@ -2,18 +2,18 @@ package amtt.epam.com.amtt.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.database.ActivityInfoTable;
-import amtt.epam.com.amtt.database.StepsTable;
-import amtt.epam.com.amtt.database.StepsWithMetaTable;
+import amtt.epam.com.amtt.database.table.ActivityInfoTable;
+import amtt.epam.com.amtt.database.table.StepsTable;
+import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
 import amtt.epam.com.amtt.loader.InternalStorageImageLoader;
 
 /**
@@ -21,17 +21,17 @@ import amtt.epam.com.amtt.loader.InternalStorageImageLoader;
  */
 public class StepsAdapter extends CursorAdapter {
 
-    private final InternalStorageImageLoader mImageLoader;
-
-    private static class ViewHolder {
-        ImageView mImageView;
-        TextView mActivityInfo;
-        TextView mStep;
+    public static class ViewHolder {
+        public ImageView mImageView;
+        public TextView mActivityInfo;
+        public TextView mStep;
+        public ProgressBar mProgressBar;
     }
+
+    private final InternalStorageImageLoader mImageLoader;
 
     public StepsAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
-
         mImageLoader = new InternalStorageImageLoader();
     }
 
@@ -43,6 +43,7 @@ public class StepsAdapter extends CursorAdapter {
         vh.mImageView = (ImageView) view.findViewById(R.id.screenshot_image);
         vh.mActivityInfo = (TextView) view.findViewById(R.id.activity_info_text);
         vh.mStep = (TextView) view.findViewById(R.id.step_text);
+        vh.mProgressBar = (ProgressBar) view.findViewById(android.R.id.progress);
         view.setTag(vh);
 
         return view;
@@ -54,7 +55,7 @@ public class StepsAdapter extends CursorAdapter {
 
         String activityInfo = "Activity: " + cursor.getString(cursor.getColumnIndex(StepsTable._ASSOCIATED_ACTIVITY)) + "\n" +
                 "Configuration changes: " + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._CONFIG_CHANGES)) + "\n" +
-                "Flags :" + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._FLAGS)) + "\n" +
+                "Flags: " + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._FLAGS)) + "\n" +
                 "Launch mode: " + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._LAUNCH_MODE)) + "\n" +
                 "Max recents: " + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._MAX_RECENTS)) + "\n" +
                 "Parent activity: " + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._PARENT_ACTIVITY_NAME)) + "\n" +
@@ -72,10 +73,11 @@ public class StepsAdapter extends CursorAdapter {
         vh.mActivityInfo.setText(activityInfo);
         vh.mStep.setText("Step " + cursor.getString(cursor.getColumnIndex(StepsWithMetaTable._ID)));
 
-        setBitmap(vh.mImageView, cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH)));
+        setBitmap(vh, cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH)));
     }
 
-    private void setBitmap(ImageView imageView, String path) {
-        mImageLoader.load(imageView, path);
+    private void setBitmap(ViewHolder vh, String path) {
+        mImageLoader.load(vh, path);
     }
+
 }

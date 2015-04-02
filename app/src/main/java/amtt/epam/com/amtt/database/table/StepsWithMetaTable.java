@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.database;
+package amtt.epam.com.amtt.database.table;
 
 import amtt.epam.com.amtt.util.MultiValueMap;
 
@@ -10,7 +10,7 @@ public class StepsWithMetaTable extends Table {
     public static final String TABLE_NAME = "steps_with_meta";
 
     public static final String[] PROJECTION = {
-            StepsTable._ID,
+            _ID,
             StepsTable._SCREEN_PATH,
             StepsTable._ASSOCIATED_ACTIVITY,
             ActivityInfoTable._CONFIG_CHANGES,

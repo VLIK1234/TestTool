@@ -3,7 +3,7 @@ package amtt.epam.com.amtt.database;
 /**
  * Created by Artsiom_Kaliaha on 31.03.2015.
  */
-public interface SqlConstants {
+public interface SqlQueryConstants {
 
     String SELECT = "SELECT ";
     String FROM = " FROM ";

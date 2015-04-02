@@ -15,10 +15,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import amtt.epam.com.amtt.database.ActivityInfoTable;
+import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.DataBaseManager;
-import amtt.epam.com.amtt.database.StepsWithMetaTable;
-import amtt.epam.com.amtt.database.StepsTable;
+import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
+import amtt.epam.com.amtt.database.table.StepsTable;
 
 /**
  * Created by Artsiom_Kaliaha on 23.03.2015.
