@@ -14,15 +14,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.image.ImageSavingCallback;
-import amtt.epam.com.amtt.image.ImageSavingResult;
-import amtt.epam.com.amtt.image.ImageSavingTask;
 import amtt.epam.com.amtt.storage.BaseStorage;
 
 /**
  * Created by Ivan_Bakach on 26.03.2015.
  */
-public class BaseActivity extends Activity implements ImageSavingCallback {
+public class BaseActivity extends Activity {
 
     public static final String LOG_TAG = "TAG";
     public final static String ACTION_TAKE_SCREENSHOT = "amtt.epam.com.amtt.app.TAKESCREENSHOT";
@@ -54,7 +51,7 @@ public class BaseActivity extends Activity implements ImageSavingCallback {
                     final String cachePath =
                             Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ? getExternalCacheDir().getPath() :
                                     getCacheDir().getPath();
-                    new ImageSavingTask((BaseActivity) context, bitmap, rect, cachePath).execute();
+                    //new ImageSavingTask((BaseActivity) context, bitmap, rect, cachePath).execute();
                     Toast.makeText(context, cachePath, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -69,15 +66,15 @@ public class BaseActivity extends Activity implements ImageSavingCallback {
         unregisterReceiver(br);
     }
 
-    @Override
-    public void onImageSaved(ImageSavingResult result) {
-        BaseStorage.setNumber(BaseStorage.getNumber() + 1);
-        int resultMessage = result == ImageSavingResult.ERROR ? R.string.image_saving_error : R.string.image_saving_success;
-        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public int getScreenNumber() {
-        return BaseStorage.getNumber();
-    }
+//    @Override
+//    public void onImageSaved(ImageSavingResult result) {
+//        BaseStorage.setNumber(BaseStorage.getNumber() + 1);
+//        int resultMessage = result == ImageSavingResult.ERROR ? R.string.image_saving_error : R.string.image_saving_success;
+//        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+//    }
+//
+//    @Override
+//    public int getScreenNumber() {
+//        return BaseStorage.getNumber();
+//    }
 }

@@ -5,18 +5,23 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.database.table.ActivityInfoTable;
+import amtt.epam.com.amtt.database.table.StepsTable;
 
 /**
- * Created by Artsiom_Kaliaha on 19.03.2015.
+ * Created by Artsiom_Kaliaha on 26.03.2015.
  */
-public class DbSavingTask extends AsyncTask<Void, Void, DbSavingResult> implements ActivityInfoConstants {
+public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> implements ActivityInfoConstants {
 
     private static Map<Integer, String> sConfigChanges;
     private static Map<Integer, String> sFlags;
@@ -25,6 +30,7 @@ public class DbSavingTask extends AsyncTask<Void, Void, DbSavingResult> implemen
     private static Map<Integer, String> sScreenOrientation;
     private static Map<Integer, String> sSoftInputMode;
     private static Map<Integer, String> sUiOptions;
+    private static int sStepsCount = 0;
 
     static {
         sConfigChanges = new HashMap<>();
@@ -97,28 +103,77 @@ public class DbSavingTask extends AsyncTask<Void, Void, DbSavingResult> implemen
     }
 
     private final Context mContext;
-    private final int mCurrentSdkVersion;
-    private final DbSavingCallback mCallback;
+    private final StepSavingCallback mCallback;
+    private Bitmap mBitmap;
+    private final Rect mRect;
+    private final String mPath;
     private final ComponentName mComponentName;
+    private final int mCurrentSdkVersion;
 
-    public DbSavingTask(Context context, ComponentName componentName) {
+    public StepSavingTask(Context context, StepSavingCallback callback, Bitmap bitmap, Rect rect, ComponentName componentName, boolean newStepsSequence) {
         mContext = context;
-        mCallback = (DbSavingCallback) context;
+        mCallback = callback;
+        mBitmap = bitmap;
+        mRect = rect;
+        mPath = context.getCacheDir().getPath();
         mComponentName = componentName;
         mCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
+
+        sStepsCount = newStepsSequence ? 1 : sStepsCount + 1;
     }
 
     @Override
-    protected DbSavingResult doInBackground(Void... params) {
-        ActivityInfo activityInfo;
+    protected StepSavingResult doInBackground(Void... params) {
+        String screenPath;
         try {
-            activityInfo = mContext
-                    .getPackageManager()
-                    .getActivityInfo(mComponentName, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
-        } catch (PackageManager.NameNotFoundException e) {
-            return DbSavingResult.ERROR;
+            screenPath = saveScreen();
+            mCallback.incrementScreenNumber();
+        } catch (Exception e) {
+            return StepSavingResult.ERROR;
         }
 
+        int existingActivityInfo = mContext.getContentResolver().query(
+                AmttContentProvider.ACTIVITY_META_CONTENT_URI,
+                new String[]{ActivityInfoTable._ACTIVITY_NAME},
+                ActivityInfoTable._ACTIVITY_NAME,
+                new String[]{mComponentName.getClassName()},
+                null).getCount();
+
+        //if there is no records about current activity in db
+        if (existingActivityInfo == 0) {
+            ActivityInfo activityInfo;
+            try {
+                activityInfo = mContext
+                        .getPackageManager()
+                        .getActivityInfo(mComponentName, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
+            } catch (PackageManager.NameNotFoundException e) {
+                return StepSavingResult.ERROR;
+            }
+
+            saveActivityInfo(activityInfo);
+        }
+
+
+        saveStep(screenPath);
+
+        return StepSavingResult.SAVED;
+    }
+
+    @Override
+    protected void onPostExecute(StepSavingResult result) {
+        mCallback.onStepSaved(result);
+    }
+
+
+    private String saveScreen() throws Exception {
+        String screenPath = mPath + "/screen" + mCallback.getScreenNumber() + ".png";
+        mBitmap = Bitmap.createBitmap(mBitmap, 0, mRect.top, mRect.width(), mRect.height());
+        FileOutputStream bitmapPath = new FileOutputStream(screenPath);
+        mBitmap.compress(Bitmap.CompressFormat.PNG, 100, bitmapPath);
+        return screenPath;
+    }
+
+    private void saveActivityInfo(ActivityInfo activityInfo) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ActivityInfoTable._ACTIVITY_NAME, activityInfo.name);
         contentValues.put(ActivityInfoTable._CONFIG_CHANGES, getConfigChange(activityInfo));
@@ -138,25 +193,28 @@ public class DbSavingTask extends AsyncTask<Void, Void, DbSavingResult> implemen
         contentValues.put(ActivityInfoTable._PACKAGE_NAME, activityInfo.packageName);
 
         mContext.getContentResolver().insert(AmttContentProvider.ACTIVITY_META_CONTENT_URI, contentValues);
-
-        return DbSavingResult.SUCCESS;
     }
 
-    @Override
-    protected void onPostExecute(DbSavingResult dbSavingResult) {
-        mCallback.onDbInfoSaved(dbSavingResult);
+    private void saveStep(String screenPath) {
+        ContentValues values = new ContentValues();
+        values.put(StepsTable._ID, sStepsCount);
+        values.put(StepsTable._SCREEN_PATH, screenPath);
+        values.put(StepsTable._ASSOCIATED_ACTIVITY, mComponentName.getClassName());
+        mContext.getContentResolver().insert(AmttContentProvider.STEP_CONTENT_URI, values);
     }
 
+
+    //ActivityInfoTable methods
     private String getConfigChange(ActivityInfo activityInfo) {
-        return sConfigChanges.get(activityInfo.configChanges) == null ? UNDEFINED_FIELD : sConfigChanges.get(activityInfo.configChanges);
+        return sConfigChanges.get(activityInfo.configChanges) == null ? NOT_AVAILABLE : sConfigChanges.get(activityInfo.configChanges);
     }
 
     private String getFlags(ActivityInfo activityInfo) {
-        return sFlags.get(activityInfo.flags) == null ? UNDEFINED_FIELD : sFlags.get(activityInfo.flags);
+        return sFlags.get(activityInfo.flags) == null ? NOT_AVAILABLE : sFlags.get(activityInfo.flags);
     }
 
     private String getLaunchMode(ActivityInfo activityInfo) {
-        return sLaunchMode.get(activityInfo.launchMode) == null ? UNDEFINED_FIELD : sLaunchMode.get(activityInfo.launchMode);
+        return sLaunchMode.get(activityInfo.launchMode) == null ? NOT_AVAILABLE : sLaunchMode.get(activityInfo.launchMode);
     }
 
     private String getMaxRecents(ActivityInfo activityInfo) {
@@ -170,38 +228,37 @@ public class DbSavingTask extends AsyncTask<Void, Void, DbSavingResult> implemen
         if (mCurrentSdkVersion < Build.VERSION_CODES.JELLY_BEAN) {
             return NOT_SUPPORTED;
         }
-        return activityInfo.parentActivityName == null ? UNDEFINED_FIELD : activityInfo.parentActivityName;
+        return activityInfo.parentActivityName == null ? NOT_AVAILABLE : activityInfo.parentActivityName;
     }
 
     private String getPermission(ActivityInfo activityInfo) {
-        return activityInfo.permission == null ? UNDEFINED_FIELD : activityInfo.permission;
+        return activityInfo.permission == null ? NOT_AVAILABLE : activityInfo.permission;
     }
 
     private String getPersistableMode(ActivityInfo activityInfo) {
         if (mCurrentSdkVersion < Build.VERSION_CODES.LOLLIPOP) {
             return NOT_SUPPORTED;
         }
-        return sPersistableMode.get(activityInfo.persistableMode) == null ? UNDEFINED_FIELD : sPersistableMode.get(activityInfo.persistableMode);
+        return sPersistableMode.get(activityInfo.persistableMode) == null ? NOT_AVAILABLE : sPersistableMode.get(activityInfo.persistableMode);
     }
 
     private String getScreenOrientation(ActivityInfo activityInfo) {
-        return sScreenOrientation.get(activityInfo.screenOrientation) == null ? UNDEFINED_FIELD : sScreenOrientation.get(activityInfo.screenOrientation);
+        return sScreenOrientation.get(activityInfo.screenOrientation) == null ? NOT_AVAILABLE : sScreenOrientation.get(activityInfo.screenOrientation);
     }
 
     private String getSoftInputMode(ActivityInfo activityInfo) {
-        return sSoftInputMode.get(activityInfo.softInputMode) == null ? UNDEFINED_FIELD : sSoftInputMode.get(activityInfo.softInputMode);
+        return sSoftInputMode.get(activityInfo.softInputMode) == null ? NOT_AVAILABLE : sSoftInputMode.get(activityInfo.softInputMode);
     }
 
     private String getTargetActivity(ActivityInfo activityInfo) {
-        return activityInfo.targetActivity == null ? UNDEFINED_FIELD : activityInfo.targetActivity;
+        return activityInfo.targetActivity == null ? NOT_AVAILABLE : activityInfo.targetActivity;
     }
 
     private String getThemeName(ActivityInfo activityInfo) {
-        return activityInfo.theme == 0 ? UNDEFINED_FIELD : mContext.getResources().getResourceName(activityInfo.theme);
+        return activityInfo.theme == 0 ? NOT_AVAILABLE : mContext.getResources().getResourceName(activityInfo.theme);
     }
 
     private String getUiOptions(ActivityInfo activityInfo) {
         return sUiOptions.get(activityInfo.uiOptions);
     }
-
 }
