@@ -8,7 +8,7 @@ import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 /**
  * Created by Artsiom_Kaliaha on 27.03.2015.
  */
-public class DbClearTask extends AsyncTask<Void,Void,Void> {
+public class DbClearTask extends AsyncTask<Void, Void, Void> {
 
     private final Context mContext;
 

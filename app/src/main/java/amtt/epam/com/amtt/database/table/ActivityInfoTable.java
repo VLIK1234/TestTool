@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.database;
+package amtt.epam.com.amtt.database.table;
 
 import java.util.ArrayList;
 
