@@ -24,9 +24,9 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-
             android:name=".MainActivity"
             android:label="@string/app_name">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,7 +50,6 @@
             android:name=".service.TopButtonService"
             android:exported="false" />
 
-
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="ca8d47b0e2c3c9351a1eec35690b1719ab1aa869" />
@@ -58,7 +57,6 @@
         <activity
             android:name=".app.SecondActivity"
             android:label="@string/app_name" />
-
         <activity
             android:name=".app.ThirdActivity"
             android:label="@string/app_name" />
@@ -70,15 +68,14 @@
         <provider
             android:name=".contentprovider.AmttContentProvider"
             android:authorities="amtt.epam.com.amtt.contentprovider"
-            android:exported="false"></provider>
-
+            android:exported="false" />
 
         <activity
             android:name=".CreateIssueActivity"
             android:label="@string/title_activity_test_issue">
 
-
         </activity>
+
     </application>
 
 </manifest>

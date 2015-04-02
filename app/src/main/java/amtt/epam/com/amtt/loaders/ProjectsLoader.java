@@ -1,33 +1,31 @@
-package amtt.epam.com.amtt.asynctask;
+package amtt.epam.com.amtt.loaders;
 
 import amtt.epam.com.amtt.authorization.JiraApi;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
-import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.processing.ProjectsToJsonProcessor;
-import android.os.AsyncTask;
+import android.content.Context;
 import android.util.Log;
 import org.apache.http.HttpEntity;
 
+import java.io.IOException;
+
 /**
- * Created by Irina Monchenko on 30.03.2015.
+ * Created by shiza on 02.04.2015.
  */
-public class ShowUserDataTask extends AsyncTask<Void, Void, JMetaResponse> {
+public class ProjectsLoader extends BaseRestLoader<JMetaResponse> {
+    private static String mUserName, mPassword, mUrl;
 
+    public ProjectsLoader(Context ctx, String userName, String password, String url) {
+        super(ctx);
 
-    private final ShowUserDataCallback mCallback;
-    private final String mUserName;
-    private final String mPassword;
-    private final String mUrl;
+        this.mUserName = userName;
+        this.mPassword = password;
+        this.mUrl = url;
 
-    public ShowUserDataTask(String username, String userPassword, String url, ShowUserDataCallback callback) {
-        mUserName = username;
-        mPassword = userPassword;
-        mCallback = callback;
-        mUrl = url;
     }
 
     @Override
-    protected JMetaResponse doInBackground(Void... params) {
+    protected JMetaResponse retrieveResponse() throws IOException {
         HttpEntity i;
         JMetaResponse jMetaResponse;
         try {
@@ -42,10 +40,5 @@ public class ShowUserDataTask extends AsyncTask<Void, Void, JMetaResponse> {
             return jMetaResponse = null;
         }
         return jMetaResponse;
-    }
-
-    @Override
-    protected void onPostExecute(JMetaResponse result) {
-        mCallback.onShowUserDataResult(result);
     }
 }

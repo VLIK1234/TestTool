@@ -13,18 +13,20 @@ public class AuthorizationTask extends AsyncTask<Void, Void, AuthorizationResult
     private final AuthorizationCallback mCallback;
     private final String mUserName;
     private final String mPassword;
+    private final String mUrl;
 
-    public AuthorizationTask(Context context, String userName, String password, AuthorizationCallback callback) {
+    public AuthorizationTask(Context context, String userName, String password, String url, AuthorizationCallback callback) {
         mContext = context;
         mCallback = callback;
         mUserName = userName;
         mPassword = password;
+        mUrl = url;
     }
 
     @Override
     protected AuthorizationResult doInBackground(Void... params) {
         try {
-            if (JiraApi.STATUS_AUTHORIZED != new JiraApi().authorize(mUserName, mPassword)) {
+            if (JiraApi.STATUS_AUTHORIZED != new JiraApi().authorize(mUserName, mPassword, mUrl)) {
                 throw new AuthenticationException("illegal user name or pass");
             }
         } catch (Exception e) {

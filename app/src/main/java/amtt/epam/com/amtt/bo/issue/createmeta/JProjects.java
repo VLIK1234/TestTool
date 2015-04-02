@@ -3,6 +3,8 @@ package amtt.epam.com.amtt.bo.issue.createmeta;
 import amtt.epam.com.amtt.bo.JiraAvatarUrls;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 /**
  * Created by Iryna_Monchanka on 3/31/2015.
  */
@@ -21,12 +23,12 @@ public class JProjects {
     @SerializedName("avatarUrls")
     private JiraAvatarUrls mAvatarUrls;
     @SerializedName("issuetypes")
-    private JIssueTypes[] mIssuetypes;
+    private ArrayList<JIssueTypes> mIssuetypes;
 
     public JProjects() {
     }
 
-    public JProjects(String expand, String self, String id, String key, String name, JiraAvatarUrls avatarUrls, JIssueTypes[] issuetypes) {
+    public JProjects(String expand, String self, String id, String key, String name, JiraAvatarUrls avatarUrls, ArrayList<JIssueTypes> issuetypes) {
         this.mExpand = expand;
         this.mSelf = self;
         this.mId = id;
@@ -36,7 +38,7 @@ public class JProjects {
         this.mIssuetypes = issuetypes;
     }
 
-    public JProjects(String self, String id, String key, String name, JiraAvatarUrls avatarUrls, JIssueTypes[] issuetypes) {
+    public JProjects(String self, String id, String key, String name, JiraAvatarUrls avatarUrls, ArrayList<JIssueTypes> issuetypes) {
         this.mSelf = self;
         this.mId = id;
         this.mKey = key;
@@ -93,11 +95,11 @@ public class JProjects {
         this.mAvatarUrls = avatarUrls;
     }
 
-    public JIssueTypes[] getIssuetypes() {
+    public ArrayList<JIssueTypes> getIssuetypes() {
         return mIssuetypes;
     }
 
-    public void setIssuetypes(JIssueTypes[] issuetypes) {
+    public void setIssuetypes(ArrayList<JIssueTypes> issuetypes) {
         this.mIssuetypes = issuetypes;
     }
 }

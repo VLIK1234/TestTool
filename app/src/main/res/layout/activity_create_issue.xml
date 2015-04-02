@@ -31,7 +31,7 @@
         android:hint="@string/password"
         android:inputType="textPassword" />
 
-    <EditText
+    <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/et_projectkey"
@@ -41,11 +41,10 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:hint="@string/project_key"
-        android:text="@string/project_key_value"
         android:singleLine="false"
         android:editable="false" />
 
-    <EditText
+    <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/et_issue_name"
@@ -55,7 +54,6 @@
         android:layout_alignRight="@+id/et_projectkey"
         android:layout_alignEnd="@+id/et_projectkey"
         android:hint="@string/issue_name"
-        android:text="@string/issue_name_value"
         android:editable="false" />
 
     <EditText
