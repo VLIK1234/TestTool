@@ -2,10 +2,8 @@ package amtt.epam.com.amtt.view;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.OrientationEventListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -17,24 +15,61 @@ import amtt.epam.com.amtt.R;
  * Created by Ivan_Bakach on 23.03.2015.
  */
 public class TopButtonView extends FrameLayout {
+    private final static String LOG_TAG = "TAG";
 
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
-    public ViewGroup body;
+    private ViewGroup body;
     private ImageView imageView;
-    private int isButtonBarVisible = GONE;
-    private final static String LOG_TAG = "TAG";
     private DisplayMetrics metrics;
     private Context context;
-    private int tempVariable;
+    private int orientation;
+    private float widthProportion;
+    private float heightProportion;
 
-    public TopButtonView(Context context, WindowManager windowManager, WindowManager.LayoutParams layoutParams ,DisplayMetrics displayMetrics) {
+    public TopButtonView(Context context, WindowManager windowManager, WindowManager.LayoutParams layoutParams, DisplayMetrics displayMetrics) {
         super(context);
         this.context = context;
         initComponent();
         this.windowManager = windowManager;
         this.layoutParams = layoutParams;
-        metrics = displayMetrics;
+        this.metrics = displayMetrics;
+        orientation = getResources().getConfiguration().orientation;
+        widthProportion = (float) layoutParams.x / metrics.widthPixels;
+        heightProportion = (float) layoutParams.y / metrics.heightPixels;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        int overWidth;
+        int overHeight;
+        if (getResources().getConfiguration().orientation != orientation) {
+            if (Math.round(metrics.widthPixels * widthProportion) + imageView.getWidth() < metrics.widthPixels) {
+                layoutParams.x = Math.round(metrics.widthPixels * widthProportion);
+            } else {
+                overWidth = Math.round(metrics.widthPixels * widthProportion) + imageView.getWidth() - metrics.widthPixels;
+                layoutParams.x = Math.round(metrics.widthPixels * widthProportion) - overWidth - getStatusBarHeight();
+            }
+
+            if (Math.round(metrics.heightPixels * heightProportion) + imageView.getWidth() < metrics.heightPixels - getStatusBarHeight()) {
+                layoutParams.y = Math.round(metrics.heightPixels * heightProportion);
+            } else {
+                overHeight = Math.round(metrics.heightPixels * heightProportion) + imageView.getHeight() - metrics.heightPixels;
+                layoutParams.y = Math.round(metrics.heightPixels * heightProportion) - overHeight - getStatusBarHeight();
+            }
+            windowManager.updateViewLayout(this, layoutParams);
+            orientation = getResources().getConfiguration().orientation;
+        }
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
     private void initComponent() {
@@ -43,15 +78,6 @@ public class TopButtonView extends FrameLayout {
         body = (ViewGroup) findViewById(R.id.body);
         imageView = (ImageView) findViewById(R.id.plus_button);
         imageView.setImageResource(R.drawable.ic_top_button);
-        OrientationEventListener eventListener = new OrientationEventListener(context) {
-            @Override
-            public void onOrientationChanged(int orientation) {
-                Log.d(LOG_TAG, "onOrientationChanged");
-                tempVariable = layoutParams.y;
-                layoutParams.y = layoutParams.x;
-                layoutParams.x = tempVariable;
-            }
-        };
     }
 
     private int firstX;
@@ -94,9 +120,12 @@ public class TopButtonView extends FrameLayout {
                         if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - imageView.getWidth())) {
                             layoutParams.x += deltaX;
                         }
-                        if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - imageView.getHeight()*1.5)) {
+                        if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - imageView.getHeight() * 1.5)) {
                             layoutParams.y += deltaY;
                         }
+
+                        widthProportion = (float) layoutParams.x / metrics.widthPixels;
+                        heightProportion = (float) layoutParams.y / metrics.heightPixels;
                     }
                     windowManager.updateViewLayout(this, layoutParams);
                 }
@@ -109,16 +138,13 @@ public class TopButtonView extends FrameLayout {
                     boolean tap = Math.abs(totalDeltaX) < threshold
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
-                        Log.d(LOG_TAG, "Click");
 //                        if (mOnClickListener != null) {
 //                            mOnClickListener.onClick(this);
 //                        }
-                        if (isButtonBarVisible == VISIBLE) {
-                            body.setVisibility(GONE);
-                            isButtonBarVisible = GONE;
-                        } else {
+                        if (body.getVisibility() == GONE) {
                             body.setVisibility(VISIBLE);
-                            isButtonBarVisible = VISIBLE;
+                        } else if (body.getVisibility() == VISIBLE) {
+                            body.setVisibility(GONE);
                         }
                     }
                 }
