@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.view;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -10,6 +11,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import amtt.epam.com.amtt.R;
 
@@ -27,10 +30,17 @@ public class TopButtonView extends FrameLayout {
     private int orientation;
     private float widthProportion;
     private float heightProportion;
+    private RelativeLayout.LayoutParams reParams;
 
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
         initComponent();
+
+        ((LinearLayout) body).setOrientation(LinearLayout.VERTICAL);
+
+        //        reParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+//                RelativeLayout.LayoutParams.WRAP_CONTENT);
+//        reParams.addRule(RelativeLayout.ALIGN_BOTTOM, body.getId());
         this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         this.metrics = getContext().getResources().getDisplayMetrics();
         this.layoutParams = layoutParams;
@@ -62,6 +72,14 @@ public class TopButtonView extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            ((LinearLayout) body).setOrientation(LinearLayout.HORIZONTAL);
+        }
+        else{
+            ((LinearLayout) body).setOrientation(LinearLayout.VERTICAL);
+        }
+
         int overWidth;
         int overHeight;
         if (getResources().getConfiguration().orientation != orientation) {
