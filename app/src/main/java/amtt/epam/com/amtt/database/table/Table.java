@@ -1,9 +1,10 @@
-package amtt.epam.com.amtt.database;
+package amtt.epam.com.amtt.database.table;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import amtt.epam.com.amtt.database.BaseColumns;
 import amtt.epam.com.amtt.util.MultiValueMap;
 
 /**

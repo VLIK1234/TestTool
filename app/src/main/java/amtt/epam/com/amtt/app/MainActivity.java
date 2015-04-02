@@ -1,6 +1,8 @@
 package amtt.epam.com.amtt.app;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,14 +14,18 @@ import com.crashlytics.android.Crashlytics;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.crash.AmttExceptionHandler;
-import amtt.epam.com.amtt.database.DbSavingCallback;
-import amtt.epam.com.amtt.database.DbSavingResult;
-import amtt.epam.com.amtt.database.DbSavingTask;
+import amtt.epam.com.amtt.database.DbClearTask;
+import amtt.epam.com.amtt.database.StepSavingCallback;
+import amtt.epam.com.amtt.database.StepSavingResult;
+import amtt.epam.com.amtt.database.StepSavingTask;
 import amtt.epam.com.amtt.service.TopButtonService;
 import io.fabric.sdk.android.Fabric;
 
 
-public class MainActivity extends BaseActivity implements DbSavingCallback {
+public class MainActivity extends BaseActivity implements StepSavingCallback {
+
+    private int mScreenNumber = 1;
+    private boolean newStepsSequence = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,15 +33,19 @@ public class MainActivity extends BaseActivity implements DbSavingCallback {
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
-        Button activityInfoButton = (Button) findViewById(R.id.save_activity_info_button);
-        activityInfoButton.setOnClickListener(new View.OnClickListener() {
+        startService(new Intent(this, TopButtonService.class));
+        TopButtonService.show(this);
+        Button loginButton = (Button) findViewById(R.id.login_button);
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DbSavingTask(MainActivity.this, MainActivity.this.getComponentName()).execute();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+
             }
         });
 
-        Button crashButton = (Button)findViewById(R.id.crash_button);
+        Button crashButton = (Button) findViewById(R.id.crash_button);
         crashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,21 +54,51 @@ public class MainActivity extends BaseActivity implements DbSavingCallback {
         });
 
         Thread.currentThread().setUncaughtExceptionHandler(new AmttExceptionHandler(this));
-    }
 
 
-    public void onClickShow(View view) {
-        TopButtonService.show(this);
+        Button stepButton = (Button) findViewById(R.id.step_button);
+        stepButton.setOnClickListener(new View.OnClickListener() {
+                                          @Override
+                                          public void onClick(View v) {
+                                              View rootView = getWindow().getDecorView();
+                                              rootView.setDrawingCacheEnabled(true);
+                                              Bitmap bitmap = rootView.getDrawingCache();
+                                              Rect rect = new Rect();
+                                              getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+
+                                              new StepSavingTask(MainActivity.this, MainActivity.this, bitmap, rect, MainActivity.this.getComponentName(), newStepsSequence).execute();
+                                              newStepsSequence = false;
+                                          }
+                                      }
+
+        );
+
+        Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
+        clearDbButton.setOnClickListener(new View.OnClickListener()
+
+                                         {
+                                             @Override
+                                             public void onClick(View v) {
+                                                 new DbClearTask(MainActivity.this).execute();
+                                             }
+                                         }
+
+        );
+
+        Button showStepsButton = (Button) findViewById(R.id.show_steps_button);
+        showStepsButton.setOnClickListener(new View.OnClickListener()
+
+                                           {
+                                               @Override
+                                               public void onClick(View v) {
+                                                   startActivity(new Intent(MainActivity.this, StepsActivity.class));
+                                                   newStepsSequence = true;
+                                               }
+                                           }
+
+        );
     }
 
-    public void onClickStop(View view) {
-        TopButtonService.close(this);
-    }
-
-    public void onClickSecond(View view) {
-        Intent intent = new Intent(this, SecondActivity.class);
-        startActivity(intent);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -70,17 +110,35 @@ public class MainActivity extends BaseActivity implements DbSavingCallback {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
 
-        return super.onOptionsItemSelected(item);
     }
 
+//    @Override
+//    public void onImageSaved(ImageSavingResult result) {
+//        mScreenNumber++;
+//        int resultMessage = result == ImageSavingResult.ERROR ? R.string.image_saving_error : R.string.image_saving_success;
+//        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+//    }
+
     @Override
-    public void onDbInfoSaved(DbSavingResult result) {
-        int resultMessage = result == DbSavingResult.ERROR ? R.string.db_saving_error : R.string.db_saving_success;
+    public int getScreenNumber() {
+        return mScreenNumber;
+    }
+
+
+    @Override
+    public void onStepSaved(StepSavingResult result) {
+        int resultMessage = result == StepSavingResult.ERROR ? R.string.step_saving_error : R.string.step_saving_success;
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void incrementScreenNumber() {
+        mScreenNumber++;
+    }
+
+    public void onIssueClick(View view) {
+        startActivity(new Intent(this, CreateIssueActivity.class));
+    }
 }

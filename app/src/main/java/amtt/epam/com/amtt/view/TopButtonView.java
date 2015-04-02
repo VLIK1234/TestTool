@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
 
@@ -84,6 +85,9 @@ public class TopButtonView extends FrameLayout {
                     boolean tap = Math.abs(totalDeltaX) < threshold
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
+
+                        Toast.makeText(getContext(), "Tap button!", Toast.LENGTH_SHORT).show();
+
                         Log.d(LOG_TAG, "Click");
                         if (mOnClickListener != null) {
                             mOnClickListener.onClick(this);

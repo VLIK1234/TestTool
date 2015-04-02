@@ -15,4 +15,6 @@ public interface BaseColumns extends android.provider.BaseColumns {
     String CREATE = "CREATE TABLE IF NOT EXISTS ";
     String DROP = "DROP TABLE IF EXISTS ";
 
+    String PRIMARY_KEY = " PRIMARY KEY";
+
 }

@@ -5,8 +5,8 @@ package amtt.epam.com.amtt.database;
  */
 public interface ActivityInfoConstants {
 
-    String UNDEFINED_FIELD = "UNDEFINED_FIELD";
-    String NOT_SUPPORTED = "NOT_SUPPORTED";
+    String NOT_AVAILABLE = "N/A";
+    String NOT_SUPPORTED = "not supported by the API";
 
     String CONFIG_FONT_SCALE = "CONFIG_FONT_SCALE";
     String CONFIG_MCC = "CONFIG_MCC";
