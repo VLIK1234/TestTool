@@ -1,25 +1,19 @@
 package amtt.epam.com.amtt.service;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
-import android.opengl.Visibility;
 import android.os.IBinder;
-import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.BaseActivity;
 import amtt.epam.com.amtt.app.SecondActivity;
-import amtt.epam.com.amtt.view.CircleScrollListView;
 import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
@@ -68,7 +62,7 @@ public class TopButtonService extends Service {
         layoutParams.y = yInitPosition;
     }
     private void initView(){
-        view = new TopButtonView(getBaseContext(), wm, layoutParams);
+        view = new TopButtonView(getBaseContext(), wm, layoutParams, displayMetrics);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +71,7 @@ public class TopButtonService extends Service {
             }
         });
     }
+    
 
     public static Intent getShowIntent(Context context) {
         return new Intent(context, TopButtonService.class).setAction(ACTION_SHOW);

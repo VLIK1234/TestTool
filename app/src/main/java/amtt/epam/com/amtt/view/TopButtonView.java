@@ -5,6 +5,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.OrientationEventListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -24,24 +25,33 @@ public class TopButtonView extends FrameLayout {
     private int isButtonBarVisible = GONE;
     private final static String LOG_TAG = "TAG";
     private DisplayMetrics metrics;
+    private Context context;
+    private int tempVariable;
 
-    public TopButtonView(Context context, WindowManager windowManager, WindowManager.LayoutParams layoutParams) {
+    public TopButtonView(Context context, WindowManager windowManager, WindowManager.LayoutParams layoutParams ,DisplayMetrics displayMetrics) {
         super(context);
+        this.context = context;
         initComponent();
         this.windowManager = windowManager;
         this.layoutParams = layoutParams;
-        body = (ViewGroup) findViewById(R.id.body);
-        metrics = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics(metrics);
-        imageView = (ImageView) findViewById(R.id.plus_button);
-        imageView.setImageResource(R.drawable.ic_top_button);
+        metrics = displayMetrics;
     }
-
 
     private void initComponent() {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         inflater.inflate(R.layout.top_button_layout, this, true);
+        body = (ViewGroup) findViewById(R.id.body);
+        imageView = (ImageView) findViewById(R.id.plus_button);
+        imageView.setImageResource(R.drawable.ic_top_button);
+        OrientationEventListener eventListener = new OrientationEventListener(context) {
+            @Override
+            public void onOrientationChanged(int orientation) {
+                Log.d(LOG_TAG, "onOrientationChanged");
+                tempVariable = layoutParams.y;
+                layoutParams.y = layoutParams.x;
+                layoutParams.x = tempVariable;
+            }
+        };
     }
 
     private int firstX;
@@ -124,4 +134,5 @@ public class TopButtonView extends FrameLayout {
         mOnClickListener = l;
 
     }
+
 }
