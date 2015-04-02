@@ -47,7 +47,7 @@ public class JiraApi {
         post.setEntity(input);
         Logger.printReqestLog(post);
         HttpResponse response = client.execute(post);
-        Logger.printResponceLog(response);
+      //  Logger.printResponceLog(response);
         return response.getStatusLine().getStatusCode();
     }
 

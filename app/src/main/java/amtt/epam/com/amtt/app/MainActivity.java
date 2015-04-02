@@ -1,14 +1,20 @@
 package amtt.epam.com.amtt.app;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
+import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
+import amtt.epam.com.amtt.bo.issue.createmeta.util.CreateMetaUtil;
+import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.database.DbSavingCallback;
 import amtt.epam.com.amtt.database.DbSavingResult;
 import amtt.epam.com.amtt.database.DbSavingTask;
 import amtt.epam.com.amtt.service.TopButtonService;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,10 +29,15 @@ import amtt.epam.com.amtt.step.StepSavingResult;
 import amtt.epam.com.amtt.step.StepSavingTask;
 import io.fabric.sdk.android.Fabric;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
-public class MainActivity extends BaseActivity implements DbSavingCallback, StepSavingCallback {
 
+public class MainActivity extends BaseActivity implements DbSavingCallback, StepSavingCallback, ShowUserDataCallback {
+    private SharedPreferences sharedPreferences;
     private int mScreenNumber = 1;
+    private ArrayList<String> projectsNames = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +159,32 @@ public class MainActivity extends BaseActivity implements DbSavingCallback, Step
     }
 
     public void onIssueClick(View view) {
+        sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
+        String username, password, url;
+        username = sharedPreferences.getString("username", "");
+        password = sharedPreferences.getString("password", "");
+        url = sharedPreferences.getString("url", "");
+        new ShowUserDataTask(username, password, url, MainActivity.this).execute();
+    }
+
+
+    @Override
+    public void onShowUserDataResult(JMetaResponse result) {
+        Log.d("MAIN_ACTIVITY", result.getProjects().get(0).getName());
+
+        CreateMetaUtil createMetaUtil = new CreateMetaUtil();
+
+        projectsNames = createMetaUtil.getProjectsNames(result);
+        Log.d("MAIN_ACTIVITY", String.valueOf(projectsNames.size()));
+        Set pNames = new HashSet();
+        for (int i = 0; i < projectsNames.size(); i++) {
+
+            pNames.add(projectsNames.get(i));
+        }
+        sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
+        SharedPreferences.Editor ed = sharedPreferences.edit();
+        ed.putStringSet("projectsNames", pNames);
+        ed.commit();
         startActivity(new Intent(this, CreateIssueActivity.class));
     }
 }
