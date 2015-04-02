@@ -24,7 +24,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".app.MainActivity"
             android:label="@string/app_name">
 
             <intent-filter>
@@ -37,15 +37,6 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="ca8d47b0e2c3c9351a1eec35690b1719ab1aa869" />
-
-        <activity
-            android:name=".SecondActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-
         <service
             android:name=".service.TopButtonService"
             android:exported="false" />
@@ -57,24 +48,27 @@
         <activity
             android:name=".app.SecondActivity"
             android:label="@string/app_name" />
+
         <activity
             android:name=".app.ThirdActivity"
             android:label="@string/app_name" />
 
+        <activity
+            android:name=".app.CreateIssueActivity"
+            android:label="@string/title_activity_test_issue"/>
+        <activity
+            android:name=".app.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+        </activity>
+
         <service
             android:name=".service.TopButtonService"
             android:exported="false" />
-
         <provider
-            android:name=".contentprovider.AmttContentProvider"
             android:authorities="amtt.epam.com.amtt.contentprovider"
-            android:exported="false" />
-
-        <activity
-            android:name=".CreateIssueActivity"
-            android:label="@string/title_activity_test_issue">
-
-        </activity>
+            android:name=".contentprovider.AmttContentProvider"
+            android:exported="false"/>
 
     </application>
 

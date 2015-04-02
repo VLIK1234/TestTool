@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt;
+package amtt.epam.com.amtt.app;
 
 import amtt.epam.com.amtt.asynctask.CreateIssueTask;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
@@ -14,7 +14,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
-
+import amtt.epam.com.amtt.R;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;

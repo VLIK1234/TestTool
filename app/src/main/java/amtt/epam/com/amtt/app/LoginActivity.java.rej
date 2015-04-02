@@ -1,0 +1,9 @@
+diff a/app/src/main/java/amtt/epam/com/amtt/app/LoginActivity.java b/app/src/main/java/amtt/epam/com/amtt/app/LoginActivity.java	(rejected hunks)
+@@ -0,6 +0,7 @@
+ import amtt.epam.com.amtt.authorization.AuthorizationTask;
+ import android.content.SharedPreferences;
+ import android.os.Bundle;
++=======
+ >>>>>>> 270e624734a2c4d10d1f503938d34ed8e5ca0bdb:app/src/main/java/amtt/epam/com/amtt/app/LoginActivity.java
+ import android.support.v7.app.ActionBarActivity;
+ import android.os.Bundle;

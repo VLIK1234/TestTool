@@ -24,8 +24,9 @@ import android.widget.Toast;
 public class BaseActivity extends Activity implements ImageSavingCallback {
 
     public static final String LOG_TAG = "TAG";
-    protected BroadcastReceiver br;
     public final static String ACTION_TAKE_SCREENSHOT = "amtt.epam.com.amtt.app.TAKESCREENSHOT";
+
+    protected BroadcastReceiver br;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

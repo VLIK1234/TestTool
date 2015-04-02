@@ -6,3 +6,4 @@ package amtt.epam.com.amtt.bo.issue.willrefactored;
 public abstract class Entity {
 
 }
+

@@ -1,5 +1,7 @@
 package amtt.epam.com.amtt;
 
+import amtt.epam.com.amtt.app.CreateIssueActivity;
+import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.util.CreateMetaUtil;

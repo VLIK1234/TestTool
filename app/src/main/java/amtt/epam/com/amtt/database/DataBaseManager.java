@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
 
 /**
  * Created by Artsiom_Kaliaha on 18.03.2015.
@@ -22,6 +21,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(new ActivityInfoTable().getCreateQuery());
+        db.execSQL(new StepsTable().getCreateQuery());
     }
 
     @Override
@@ -29,24 +29,16 @@ public class DataBaseManager extends SQLiteOpenHelper {
 
     }
 
-    public Cursor query(String tableName, String activityName, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
-        queryBuilder.setTables(tableName);
-
-        if (activityName != null) {
-            queryBuilder.appendWhere(ActivityInfoTable._ACTIVITY_NAME + "=" + activityName);
-        }
-
+    public Cursor query(String tableName, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor cursor;
         SQLiteDatabase database = getReadableDatabase();
 
         try {
             database.beginTransaction();
-            cursor = queryBuilder.query(getReadableDatabase(), projection, selection, selectionArgs, null, null, sortOrder);
+            cursor = getReadableDatabase().query(tableName, projection, selection + "=?", selectionArgs, null, null, sortOrder);
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();
-            database.close();
         }
 
         return cursor;

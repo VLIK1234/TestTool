@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt;
+package amtt.epam.com.amtt.app;
 
 import amtt.epam.com.amtt.authorization.AuthorizationCallback;
 import amtt.epam.com.amtt.authorization.AuthorizationResult;
@@ -6,11 +6,15 @@ import amtt.epam.com.amtt.authorization.AuthorizationTask;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.authorization.AuthorizationCallback;
+import amtt.epam.com.amtt.authorization.AuthorizationResult;
+import amtt.epam.com.amtt.authorization.AuthorizationTask;
 
 public class LoginActivity extends ActionBarActivity implements AuthorizationCallback {
 
@@ -27,8 +31,7 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
         userName = (EditText) findViewById(R.id.user_name);
         password = (EditText) findViewById(R.id.password);
         url = (EditText) findViewById(R.id.jira_url);
-
-        Button loginButton = (Button) findViewById(R.id.login_button);
+        Button loginButton = (Button)findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,8 +45,6 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
 
         sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
         SharedPreferences.Editor ed = sharedPreferences.edit();
-
-
         ed.putString("username", userName.getText().toString());
         ed.putString("password", password.getText().toString());
         ed.putString("url", url.getText().toString());
