@@ -1,7 +1,7 @@
-package amtt.epam.com.amtt.bo.issue.issuekey;
+package amtt.epam.com.amtt.bo.issue.willrefactored.issuekey;
 
-import amtt.epam.com.amtt.bo.Entity;
-import amtt.epam.com.amtt.bo.JiraIssueTypesIssueType;
+import amtt.epam.com.amtt.bo.issue.willrefactored.Entity;
+import amtt.epam.com.amtt.bo.issue.willrefactored.JiraIssueTypesIssueType;
 import com.google.gson.annotations.SerializedName;
 
 /**

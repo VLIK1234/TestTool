@@ -34,11 +34,11 @@ public class ShowUserDataTask extends AsyncTask<Void, Void, JMetaResponse> {
             i = new JiraApi().searchIssue(mUserName, mPassword, mUrl);
             ProjectsToJsonProcessor projects = new ProjectsToJsonProcessor();
             jMetaResponse = projects.process(i);
-            Log.d("STATUS", jMetaResponse.getExpand());
+            Log.d("ShowUserDataTask_TRY", jMetaResponse.getExpand());
             //throw new AuthenticationException("issue can`t be create");
 
         } catch (Exception e) {
-            Log.d("STATUS", e.getMessage());
+            Log.d("ShowUserDataTask_ERROR", e.getMessage());
             return jMetaResponse = null;
         }
         return jMetaResponse;

@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.bo.issue.issuekey;
+package amtt.epam.com.amtt.bo.issue.willrefactored.issuekey;
 
 import java.util.ArrayList;
 

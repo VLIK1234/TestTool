@@ -1,7 +1,7 @@
 package amtt.epam.com.amtt.asynctask;
 
 import amtt.epam.com.amtt.authorization.JiraApi;
-import amtt.epam.com.amtt.bo.CreationIssueResult;
+import amtt.epam.com.amtt.bo.issue.willrefactored.CreationIssueResult;
 import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
 import android.os.AsyncTask;
 import org.apache.http.auth.AuthenticationException;

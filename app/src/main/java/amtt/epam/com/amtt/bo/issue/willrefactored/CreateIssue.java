@@ -1,7 +1,7 @@
-package amtt.epam.com.amtt.bo;
+package amtt.epam.com.amtt.bo.issue.willrefactored;
 
-import amtt.epam.com.amtt.bo.issue.issuekey.JiraBaseFields;
-import amtt.epam.com.amtt.bo.issue.issuekey.JiraIssueProject;
+import amtt.epam.com.amtt.bo.issue.willrefactored.issuekey.JiraBaseFields;
+import amtt.epam.com.amtt.bo.issue.willrefactored.issuekey.JiraIssueProject;
 import amtt.epam.com.amtt.processing.IssueGsonProcessor;
 import android.util.Log;
 

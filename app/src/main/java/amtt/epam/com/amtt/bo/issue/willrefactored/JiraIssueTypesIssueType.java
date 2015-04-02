@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.bo;
+package amtt.epam.com.amtt.bo.issue.willrefactored;
 
 import com.google.gson.annotations.SerializedName;
 
