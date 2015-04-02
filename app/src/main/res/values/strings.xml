@@ -3,13 +3,37 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string name="title_activity_login">Login to Jira</string>
+    <string name="login_button">Log in</string>
+
+    <string name="authorization_success">Authorization is passed</string>
+    <string name="authorization_denied">Authorization is not passed</string>
+    <string name="title_activity_test_issue">TestIssueActivity</string>
+    <string name="issue_creating_success">Issue is created</string>
+    <string name="issue_creating_unsuccess">Issue is not created</string>
     <string name="button_show">Show</string>
     <string name="button_stop">Stop</string>
     <string name="save_activity_info">Save activity info</string>
+    <string name="save_image">Save image</string>
+    <string name="step_button">Save step</string>
+    <string name="clear_db_button">Clear db</string>
 
     <string name="image_saving_error">Error while saving screenshot</string>
     <string name="image_saving_success">Screenshot saved</string>
+
     <string name="db_saving_error">Error while saving activity info</string>
     <string name="db_saving_success">Activity info saved</string>
-
+    <string name="step_saving_error">Error while saving step</string>
+    <string name="step_saving_success">Step saved</string>
+    <string name="button_issue">Issue</string>
+    <string name="user_name">Username</string>
+    <string name="password">Password</string>
+    <string name="project_key">Project key</string>
+    <string name="project_key_value">AMTT</string>
+    <string name="issue_name">Issue name</string>
+    <string name="issue_name_value">Task</string>
+    <string name="summary">Summary</string>
+    <string name="description">Description</string>
+    <string name="create_issue">Create</string>
 </resources>
