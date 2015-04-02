@@ -47,7 +47,7 @@ public class JiraApi {
         post.setEntity(input);
         Logger.printReqestLog(post);
         HttpResponse response = client.execute(post);
-      //  Logger.printResponceLog(response);
+        //  Logger.printResponceLog(response);
         return response.getStatusLine().getStatusCode();
     }
 
@@ -58,11 +58,8 @@ public class JiraApi {
         get.addHeader(AUTH_HEADER, credentials);
         HttpResponse httpRsponse = client.execute(get);
         // Logger.printResponceLog(httpRsponse);
-        // URL url = new URL(p);
         // Read all the text returned by the server
         HttpEntity getResponseEntity = httpRsponse.getEntity();
-
-        // InputStream inputStream = getResponseEntity.getContent();
         return getResponseEntity;
     }
 

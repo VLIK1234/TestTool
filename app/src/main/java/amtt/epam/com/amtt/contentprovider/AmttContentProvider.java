@@ -2,16 +2,12 @@ package amtt.epam.com.amtt.contentprovider;
 
 import amtt.epam.com.amtt.database.ActivityInfoTable;
 import amtt.epam.com.amtt.database.DataBaseManager;
+import amtt.epam.com.amtt.database.StepsTable;
 import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import amtt.epam.com.amtt.database.StepsTable;
+
+import java.util.*;
 
 
 /**

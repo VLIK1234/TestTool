@@ -11,7 +11,6 @@ import org.apache.http.auth.AuthenticationException;
  */
 public class CreateIssueTask extends AsyncTask<Void, Void, CreationIssueResult> {
 
-
     private final CreationIssueCallback mCallback;
     private final String mJson;
     private final String mUserName;

@@ -94,7 +94,7 @@ public class TopButtonService extends Service {
     }
 
     public final void close() {
-        if (view != null&&isViewAdd) {
+        if (view != null && isViewAdd) {
             isViewAdd = false;
             ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
             view = null;

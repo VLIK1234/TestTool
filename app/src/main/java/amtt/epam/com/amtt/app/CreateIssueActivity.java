@@ -1,78 +1,65 @@
 package amtt.epam.com.amtt.app;
 
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.CreateIssueTask;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
-import amtt.epam.com.amtt.bo.issue.createmeta.util.CreateMetaUtil;
+import amtt.epam.com.amtt.bo.issue.createmeta.util.CreateMetaObjectsHelper;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreateIssue;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreationIssueResult;
 import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+import android.widget.*;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 
 public class CreateIssueActivity extends ActionBarActivity implements CreationIssueCallback, ShowUserDataCallback {
 
     private EditText etDescription, etSummary;
-    private ArrayList<String> projectsNames = new ArrayList<String>();
-    private ArrayList<String> issueTypesNames = new ArrayList<String>();
-    private ArrayList<String> issueTypesKeys = new ArrayList<String>();
-    private Spinner etProjectKey, etIssyeType;//TODO better rename to 'input***'
-    private ArrayAdapter<String> adapter3;//todo adapter3?
+    private ArrayList<String> projectsNames = new ArrayList<>();
+    private Spinner inputProjectKey, inputIssueType;
     private SharedPreferences sharedPreferences;
-    private JMetaResponse metaResponse;
+    public static final String USER_NAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String URL = "url";
+    public static final String NAME_SP = "data";
+    public static final String VOID = "";
+    public static final String PROJECT_NAMES ="projectsNames";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_create_issue);
-        sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
         //todo move to method getProjectNames and use in proper adapter
-        Set<String> pNames = new HashSet();//todo redundant init
-        pNames = sharedPreferences.getStringSet("projectsNames", null);
+        Set<String> pNames;
+        pNames = sharedPreferences.getStringSet(PROJECT_NAMES, null);
         if (pNames != null) {
             for (String name : pNames) {
-
                 projectsNames.add(name);
-
             }
-            Log.i("CreateIssueActivitySIZE", String.valueOf(projectsNames.size()));//todo why log i ?
         }
-
         etDescription = (EditText) findViewById(R.id.et_description);
         etSummary = (EditText) findViewById(R.id.et_summary);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, projectsNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, projectsNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        etProjectKey = (Spinner) findViewById(R.id.et_projectkey);
-        etProjectKey.setAdapter(adapter);
-        etProjectKey.setPrompt("Project");//todo is this working?
-        etProjectKey.setSelection(0);//todo do this really required?
-        etProjectKey.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        inputProjectKey = (Spinner) findViewById(R.id.et_projectkey);
+        inputProjectKey.setAdapter(adapter);
+        inputProjectKey.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);//todo why? don't you already define this? or maybe this class field is redundant?
                 String username, password, url;
-                username = sharedPreferences.getString("username", "");//todo hardcoded preference key EVERYWHERE
-                password = sharedPreferences.getString("password", "");
-                url = sharedPreferences.getString("url", "");
+                username = sharedPreferences.getString(USER_NAME, VOID);
+                password = sharedPreferences.getString(PASSWORD, VOID);
+                url = sharedPreferences.getString(URL, VOID);
                 new ShowUserDataTask(username, password, url, CreateIssueActivity.this).execute();
             }
 
@@ -85,7 +72,7 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
     }
 
     public int getSelectedItemPositionProject() {
-        return this.etProjectKey.getSelectedItemPosition();
+        return this.inputProjectKey.getSelectedItemPosition();
     }
 
 
@@ -94,13 +81,12 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
         String mProjectKey, mIssyeType, mDescription, mSummary;
         mDescription = etDescription.getText().toString();
         mSummary = etSummary.getText().toString();
-        mIssyeType = etIssyeType.getSelectedItem().toString();
-        mProjectKey = etProjectKey.getSelectedItem().toString();
-        sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
+        mIssyeType = inputIssueType.getSelectedItem().toString();
+        mProjectKey = inputProjectKey.getSelectedItem().toString();
         String username, password, url;
-        username = sharedPreferences.getString("username", "");
-        password = sharedPreferences.getString("password", "");
-        url = sharedPreferences.getString("url", "");
+        username = sharedPreferences.getString(USER_NAME, VOID);
+        password = sharedPreferences.getString(PASSWORD, VOID);
+        url = sharedPreferences.getString(URL, VOID);
         new CreateIssueTask(username, password, url, issue.createSimpleIssue(mProjectKey, mIssyeType, mDescription, mSummary), CreateIssueActivity.this).execute();
 
     }
@@ -116,15 +102,12 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
     public void onShowUserDataResult(JMetaResponse result) {
 
         //todo why util? POJO class should do this.
-        CreateMetaUtil createMetaUtil = new CreateMetaUtil();
         //for example: result.getProjectNames()
-        projectsNames = createMetaUtil.getProjectsNames(result);
-        issueTypesNames = createMetaUtil.getIssueTypesNames(result.getProjects().get(getSelectedItemPositionProject()));
-        adapter3 = new ArrayAdapter<String>(CreateIssueActivity.this, android.R.layout.simple_spinner_item, issueTypesNames);
-        adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        etIssyeType = (Spinner) findViewById(R.id.et_issue_name);
-        etIssyeType.setAdapter(adapter3);
-        etIssyeType.setPrompt("Issue");
-        etIssyeType.setSelection(0);
+        projectsNames = CreateMetaObjectsHelper.getProjectsNames(result);
+        ArrayList<String> issueTypesNames = CreateMetaObjectsHelper.getIssueTypesNames(result.getProjects().get(getSelectedItemPositionProject()));
+        ArrayAdapter<String> issueNames = new ArrayAdapter<>(CreateIssueActivity.this, android.R.layout.simple_spinner_item, issueTypesNames);
+        issueNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        inputIssueType = (Spinner) findViewById(R.id.et_issue_name);
+        inputIssueType.setAdapter(issueNames);
     }
 }

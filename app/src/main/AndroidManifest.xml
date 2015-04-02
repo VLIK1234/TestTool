@@ -55,12 +55,11 @@
 
         <activity
             android:name=".app.CreateIssueActivity"
-            android:label="@string/title_activity_test_issue"/>
+            android:label="@string/title_activity_test_issue" />
         <activity
             android:name=".app.LoginActivity"
             android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
 
         <service
             android:name=".service.TopButtonService"
@@ -68,7 +67,7 @@
         <provider
             android:authorities="amtt.epam.com.amtt.contentprovider"
             android:name=".contentprovider.AmttContentProvider"
-            android:exported="false"/>
+            android:exported="false" />
 
     </application>
 
