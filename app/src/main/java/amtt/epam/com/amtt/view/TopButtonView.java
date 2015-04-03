@@ -2,13 +2,12 @@ package amtt.epam.com.amtt.view;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.PixelFormat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -27,12 +26,19 @@ public class TopButtonView extends FrameLayout {
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
     private ViewGroup body;
+    private int bodyWidth;
+    private int bodyHeight;
     private ImageView imageView;
     private DisplayMetrics metrics;
+    private Display display;
     private int orientation;
     private float widthProportion;
     private float heightProportion;
     private RelativeLayout.LayoutParams reParams;
+
+    public TopButtonView(Context context) {
+        super(context, null);
+    }
 
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
@@ -42,30 +48,19 @@ public class TopButtonView extends FrameLayout {
 
         this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         this.metrics = getContext().getResources().getDisplayMetrics();
-        this.layoutParams = layoutParams;
         orientation = getResources().getConfiguration().orientation;
+        display = windowManager.getDefaultDisplay();
+        this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
     }
 
-    public TopButtonView(Context context) {
-        super(context);
-        initComponent();
-        this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        this.metrics = getContext().getResources().getDisplayMetrics();
-
-        layoutParams = new WindowManager.LayoutParams();
-        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
-        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
-        layoutParams.format = PixelFormat.TRANSLUCENT;
-        layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
-
-        orientation = getResources().getConfiguration().orientation;
-        widthProportion = (float) layoutParams.x / metrics.widthPixels;
-        heightProportion = (float) layoutParams.y / metrics.heightPixels;
+    private void initComponent() {
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.top_button_layout, this, true);
+        body = (ViewGroup) findViewById(R.id.body);
+        imageView = (ImageView) findViewById(R.id.plus_button);
+        imageView.setImageResource(R.drawable.ic_top_button);
     }
 
     @Override
@@ -89,7 +84,7 @@ public class TopButtonView extends FrameLayout {
                 Log.d(LOG_TAG, "Right");
             } else {
                 Log.d(LOG_TAG, "Left");
-                if (x + body.getWidth() > xMax-imageView.getWidth()*1.5) {
+                if (x + bodyWidth > xMax - imageView.getWidth() * 1.5) {
                     layoutParams.x = x - body.getWidth();
                     windowManager.updateViewLayout(this, layoutParams);
                 }
@@ -107,12 +102,16 @@ public class TopButtonView extends FrameLayout {
 //                body.setLayoutParams(reParams);
 //                reParams.addRule(RelativeLayout.BELOW, body.getId());
 //                imageView.setLayoutParams(reParams);
-                if (y + body.getHeight() > yMax - imageView.getHeight()*1.5) {
+                if (y + bodyHeight > yMax - imageView.getHeight() * 1.5) {
                     layoutParams.y = y - body.getHeight();
                     windowManager.updateViewLayout(this, layoutParams);
                 }
-
             }
+        }
+
+        if (body.getHeight() != 0 && body.getWidth() != 0) {
+            bodyHeight = body.getHeight();
+            bodyWidth = body.getWidth();
         }
     }
 
@@ -143,14 +142,6 @@ public class TopButtonView extends FrameLayout {
             result = getResources().getDimensionPixelSize(resourceId);
         }
         return result;
-    }
-
-    private void initComponent() {
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.top_button_layout, this, true);
-        body = (ViewGroup) findViewById(R.id.body);
-        imageView = (ImageView) findViewById(R.id.plus_button);
-        imageView.setImageResource(R.drawable.ic_top_button);
     }
 
     private int firstX;
@@ -199,6 +190,7 @@ public class TopButtonView extends FrameLayout {
                         widthProportion = (float) layoutParams.x / metrics.widthPixels;
                         heightProportion = (float) layoutParams.y / metrics.heightPixels;
                     }
+                    Log.d(LOG_TAG, layoutParams.x + bodyWidth + " " + (layoutParams.y + bodyWidth) + " body: " + bodyWidth + " density: " + metrics.density);
                     windowManager.updateViewLayout(this, layoutParams);
                 }
                 break;
@@ -219,9 +211,7 @@ public class TopButtonView extends FrameLayout {
                         } else {
                             body.setVisibility(VISIBLE);
                         }
-                        Display display = getDisplay();
-//                        metrics.density
-                        Log.d(LOG_TAG, body.getHeight() + "");
+                        Log.d(LOG_TAG, body.getHeight() + " " + ViewConfiguration.get(getContext()).hasPermanentMenuKey());
                     }
                 }
                 break;
