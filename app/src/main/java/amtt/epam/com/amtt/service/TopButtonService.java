@@ -10,8 +10,10 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import amtt.epam.com.amtt.app.BaseActivity;
+import amtt.epam.com.amtt.app.SecondActivity;
 import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
@@ -61,7 +63,7 @@ public class TopButtonService extends Service {
     }
 
     private void initView() {
-        view = new TopButtonView(getBaseContext(), wm, layoutParams);
+        view = new TopButtonView(getBaseContext(), layoutParams);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +72,7 @@ public class TopButtonService extends Service {
             }
         });
     }
+
 
     public static Intent getShowIntent(Context context) {
         return new Intent(context, TopButtonService.class).setAction(ACTION_SHOW);
@@ -101,6 +104,32 @@ public class TopButtonService extends Service {
             view = null;
         }
         stopSelf();
+    }
+
+    public void onClickAdd(View view) {
+        Toast.makeText(this, "ADD", Toast.LENGTH_LONG).show();
+
+    }
+
+    public void onClickAuth(View view) {
+        Toast.makeText(this, "AUTH", Toast.LENGTH_LONG).show();
+    }
+
+    public void onClickBugRep(View view) {
+        Toast.makeText(this, "BUG_REP", Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(getBaseContext(), SecondActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getApplication().startActivity(intent);
+    }
+
+    public void onClickScreen(View view) {
+        Toast.makeText(this, "SCREEN", Toast.LENGTH_LONG).show();
+        Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
+        sendBroadcast(intentATS);
+    }
+
+    public void onClickShare(View view) {
+        Toast.makeText(this, "SHARE", Toast.LENGTH_LONG).show();
     }
 
     @Override

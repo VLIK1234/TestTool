@@ -86,8 +86,8 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
     public String getProjectKey() {
         projectsKeys = getProjectsKeys();
         Log.d(TAG, inputProjectsKey.getSelectedItem().toString());
-        Log.d(TAG, String.valueOf(projectsNames.size() - ((projectsNames.indexOf(inputProjectsKey.getSelectedItem().toString()))+1)));
-        return projectsKeys.get(projectsNames.size() - ((projectsNames.indexOf(inputProjectsKey.getSelectedItem().toString()))+1));
+        Log.d(TAG, String.valueOf(projectsNames.size() - ((projectsNames.indexOf(inputProjectsKey.getSelectedItem().toString())) + 1)));
+        return projectsKeys.get(projectsNames.size() - ((projectsNames.indexOf(inputProjectsKey.getSelectedItem().toString())) + 1));
 
     }
 
@@ -118,7 +118,7 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
 
     @Override
     public void onShowUserDataResult(JMetaResponse result) {
-        int index = result.getProjects().size() - (getSelectedItemPositionProject()+1);
+        int index = result.getProjects().size() - (getSelectedItemPositionProject() + 1);
         //todo why util? POJO class should do this.
         //for example: result.getProjectsNames()
         ArrayList<String> issueTypesNames = CreateMetaObjectsHelper.getIssueTypesNames(result.getProjects().get(index));

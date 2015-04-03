@@ -41,10 +41,6 @@
             android:name=".service.TopButtonService"
             android:exported="false" />
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="ca8d47b0e2c3c9351a1eec35690b1719ab1aa869" />
-
         <activity
             android:name=".app.SecondActivity"
             android:label="@string/app_name" />
@@ -59,16 +55,16 @@
         <activity
             android:name=".app.LoginActivity"
             android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
-        <service
-            android:name=".service.TopButtonService"
-            android:exported="false" />
         <provider
-            android:authorities="amtt.epam.com.amtt.contentprovider"
             android:name=".contentprovider.AmttContentProvider"
+            android:authorities="amtt.epam.com.amtt.contentprovider"
             android:exported="false" />
 
+        <activity
+            android:name=".app.StepsActivity"
+            android:label="@string/title_activity_steps" />
     </application>
 
 </manifest>
