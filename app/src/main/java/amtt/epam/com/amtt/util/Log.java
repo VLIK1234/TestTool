@@ -11,13 +11,13 @@ public final class Log {
     }
 
     public static void d(String mNameClass, String mMessage) {
-        if (!IS_SHOW_LOGS) {
+        if (IS_SHOW_LOGS) {
             android.util.Log.d(mNameClass, mMessage);
         }
     }
 
     public static void i(String mNameClass, String mMessage) {
-        if (!IS_SHOW_LOGS) {
+        if (IS_SHOW_LOGS) {
             android.util.Log.i(mNameClass, mMessage);
         }
     }

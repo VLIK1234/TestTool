@@ -11,7 +11,7 @@
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/spin_project_key"
+        android:id="@+id/spin_projects_key"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
@@ -23,11 +23,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/spin_issue_name"
-        android:layout_below="@+id/spin_project_key"
+        android:layout_below="@+id/spin_projects_key"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/spin_project_key"
-        android:layout_alignEnd="@+id/spin_project_key"
+        android:layout_alignRight="@+id/spin_projects_key"
+        android:layout_alignEnd="@+id/spin_projects_key"
         android:hint="@string/issue_name" />
 
     <EditText

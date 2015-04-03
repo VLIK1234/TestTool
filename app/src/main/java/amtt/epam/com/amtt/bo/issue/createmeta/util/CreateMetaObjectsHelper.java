@@ -30,4 +30,13 @@ public class CreateMetaObjectsHelper {
         }
         return issueTypesNames;
     }
+
+    public static ArrayList<String> getProjectsKeys(JMetaResponse jMetaResponse) {
+        ArrayList<String> projectsKeys = new ArrayList<>();
+        int size = jMetaResponse.getProjects().size();
+        for (int i = 0; i < size; i++) {
+            projectsKeys.add(jMetaResponse.getProjects().get(i).getKey());
+        }
+        return projectsKeys;
+    }
 }

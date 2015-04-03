@@ -14,8 +14,6 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
@@ -32,20 +30,23 @@ import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.step.StepSavingCallback;
 import amtt.epam.com.amtt.step.StepSavingResult;
 import amtt.epam.com.amtt.step.StepSavingTask;
+import amtt.epam.com.amtt.util.Converter;
 import io.fabric.sdk.android.Fabric;
 
 
 public class MainActivity extends BaseActivity implements DbSavingCallback, StepSavingCallback, ShowUserDataCallback {
     private SharedPreferences sharedPreferences;
+    private Boolean accessCreateIssue;
+    private Button issueButton;
     private int mScreenNumber = 1;
     private static final String USER_NAME = "username";
     private static final String PASSWORD = "password";
     private static final String URL = "url";
     private static final String NAME_SP = "data";
     private static final String VOID = "";
-    private static final String PROJECT_NAMES = "projectsNames";
+    private static final String PROJECTS_NAMES = "projectsNames";
     private static final String ACCESS = "access";
-
+    private static final String PROJECTS_KEYS = "projectsKeys";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,13 +109,19 @@ public class MainActivity extends BaseActivity implements DbSavingCallback, Step
             }
         });
         sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
-        Boolean accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
-        Button issueButton = (Button) findViewById(R.id.issue_act_button);
+        accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
+        issueButton = (Button) findViewById(R.id.issue_act_button);
         issueButton.setEnabled(accessCreateIssue);
 
 
     }
-
+    @Override
+    protected void onPostResume(){
+        super.onPostResume();
+        accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
+        issueButton = (Button) findViewById(R.id.issue_act_button);
+        issueButton.setEnabled(accessCreateIssue);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -184,13 +191,10 @@ public class MainActivity extends BaseActivity implements DbSavingCallback, Step
     @Override
     public void onShowUserDataResult(JMetaResponse result) {
         ArrayList<String> projectsNames = CreateMetaObjectsHelper.getProjectsNames(result);
-        Set<String> pNames = new HashSet<>();
-        for (int i = 0; i < projectsNames.size(); i++) {
-
-            pNames.add(projectsNames.get(i));
-        }
+        ArrayList<String> projectsKeys = CreateMetaObjectsHelper.getProjectsKeys(result);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putStringSet(PROJECT_NAMES, pNames);
+        editor.putStringSet(PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
+        editor.putStringSet(PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
         editor.apply();
         startActivity(new Intent(this, CreateIssueActivity.class));
     }
