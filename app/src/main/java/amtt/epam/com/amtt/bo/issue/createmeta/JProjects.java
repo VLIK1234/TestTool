@@ -47,6 +47,14 @@ public class JProjects {
         this.mAvatarUrls = avatarUrls;
         this.mIssueTypes = issueTypes;
     }
+    public ArrayList<String> getIssueTypesNames() {
+        ArrayList<String> issueTypesNames = new ArrayList<>();
+        int size = mIssueTypes.size();
+        for (int i = 0; i < size; i++) {
+            issueTypesNames.add(mIssueTypes.get(i).getName());
+        }
+        return issueTypesNames;
+    }
 
     public String getExpand() {
         return mExpand;

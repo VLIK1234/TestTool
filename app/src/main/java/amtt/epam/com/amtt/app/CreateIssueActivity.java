@@ -16,13 +16,12 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.CreateIssueTask;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
-import amtt.epam.com.amtt.bo.issue.createmeta.util.CreateMetaObjectsHelper;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreateIssue;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreationIssueResult;
 import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.util.Converter;
-import amtt.epam.com.amtt.util.Log;
+import amtt.epam.com.amtt.util.Logger;
 
 
 public class CreateIssueActivity extends ActionBarActivity implements CreationIssueCallback, ShowUserDataCallback {
@@ -85,8 +84,8 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
 
     public String getProjectKey() {
         projectsKeys = getProjectsKeys();
-        Log.d(TAG, inputProjectsKey.getSelectedItem().toString());
-        Log.d(TAG, String.valueOf(projectsNames.size() - ((projectsNames.indexOf(inputProjectsKey.getSelectedItem().toString())) + 1)));
+        Logger.d(TAG, inputProjectsKey.getSelectedItem().toString());
+        Logger.d(TAG, String.valueOf(projectsNames.size() - ((projectsNames.indexOf(inputProjectsKey.getSelectedItem().toString())) + 1)));
         return projectsKeys.get(projectsNames.size() - ((projectsNames.indexOf(inputProjectsKey.getSelectedItem().toString())) + 1));
 
     }
@@ -108,7 +107,7 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
 
     @Override
     public void onCreationIssueResult(CreationIssueResult result) {
-        String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESSFUL ? getResources().getString(R.string.issue_creating_unsuccess) :
+        String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
                 getResources().getString(R.string.issue_creating_success);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
         if (resultMessage.equals(getResources().getString(R.string.issue_creating_success))) {
@@ -118,10 +117,11 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
 
     @Override
     public void onShowUserDataResult(JMetaResponse result) {
-        int index = result.getProjects().size() - (getSelectedItemPositionProject() + 1);
+      //  int index = result.getProjects().size() - (getSelectedItemPositionProject() + 1);
         //todo why util? POJO class should do this.
         //for example: result.getProjectsNames()
-        ArrayList<String> issueTypesNames = CreateMetaObjectsHelper.getIssueTypesNames(result.getProjects().get(index));
+        int index = result.getProjects().size() - (getSelectedItemPositionProject() + 1);
+        ArrayList<String> issueTypesNames = result.getProjects().get(index).getIssueTypesNames();
         ArrayAdapter<String> issueNames = new ArrayAdapter<>(CreateIssueActivity.this, android.R.layout.simple_spinner_item, issueTypesNames);
         issueNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         inputIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);

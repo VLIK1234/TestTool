@@ -38,4 +38,24 @@ public class JMetaResponse {
     public void setProjects(ArrayList<JProjects> projects) {
         this.mProjects = projects;
     }
+
+    public ArrayList<String> getProjectsNames() {
+        ArrayList<String> projectsNames = new ArrayList<>();
+        int size = mProjects.size();
+        for (int i = 0; i < size; i++) {
+            projectsNames.add(mProjects.get(i).getName());
+        }
+        return projectsNames;
+    }
+
+
+
+    public ArrayList<String> getProjectsKeys() {
+        ArrayList<String> projectsKeys = new ArrayList<>();
+        int size = mProjects.size();
+        for (int i = 0; i < size; i++) {
+            projectsKeys.add(mProjects.get(i).getKey());
+        }
+        return projectsKeys;
+    }
 }

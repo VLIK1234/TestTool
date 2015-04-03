@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
-import amtt.epam.com.amtt.bo.issue.createmeta.util.CreateMetaObjectsHelper;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.crash.AmttExceptionHandler;
 import amtt.epam.com.amtt.database.DbClearTask;
@@ -185,8 +184,8 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
 
     @Override
     public void onShowUserDataResult(JMetaResponse result) {
-        ArrayList<String> projectsNames = CreateMetaObjectsHelper.getProjectsNames(result);
-        ArrayList<String> projectsKeys = CreateMetaObjectsHelper.getProjectsKeys(result);
+        ArrayList<String> projectsNames = result.getProjectsNames();
+        ArrayList<String> projectsKeys = result.getProjectsKeys();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putStringSet(PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
         editor.putStringSet(PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));

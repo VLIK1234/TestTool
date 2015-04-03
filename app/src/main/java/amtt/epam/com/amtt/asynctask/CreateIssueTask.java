@@ -35,7 +35,7 @@ public class CreateIssueTask extends AsyncTask<Void, Void, CreationIssueResult> 
             }
         } catch (Exception e) {
 
-            return CreationIssueResult.CREATION_UNSUCCESSFUL;
+            return CreationIssueResult.CREATION_UNSUCCESS;
         }
         return CreationIssueResult.CREATION_SUCCESS;
     }

@@ -21,10 +21,22 @@ public class Logger {
     private static final String BODY = "Body : ";
     private static final String STATUS_CODE = "StatusCode : ";
     private static final String REASON_PHRASE = "ReasonPhrase : ";
+    private static final Boolean IS_SHOW_LOGS = true;
 
     public Logger() {
     }
 
+    public static void d(String mNameClass, String mMessage) {
+        if (IS_SHOW_LOGS) {
+            android.util.Log.d(mNameClass, mMessage);
+        }
+    }
+
+    public static void i(String mNameClass, String mMessage) {
+        if (IS_SHOW_LOGS) {
+            android.util.Log.i(mNameClass, mMessage);
+        }
+    }
     public static void printRequestPost(HttpPost post) throws IOException {
         HttpEntity entity = post.getEntity();
 
@@ -32,27 +44,27 @@ public class Logger {
         // Read the contents of an entity and return it as a String.
         //
         String content = EntityUtils.toString(entity);
-        Log.i(TAG, PROTOCOL_VERSION + post.getRequestLine().getProtocolVersion());
-        Log.i(TAG, METHOD + post.getRequestLine().getMethod());
-        Log.i(TAG, URI + post.getRequestLine().getUri());
-        Log.i(TAG, BODY + content);
+        Logger.i(TAG, PROTOCOL_VERSION + post.getRequestLine().getProtocolVersion());
+        Logger.i(TAG, METHOD + post.getRequestLine().getMethod());
+        Logger.i(TAG, URI + post.getRequestLine().getUri());
+        Logger.i(TAG, BODY + content);
 
     }
 
     public static void printRequestGet(HttpGet get) throws IOException {
-        Log.i(TAG, PROTOCOL_VERSION + get.getRequestLine().getProtocolVersion());
-        Log.i(TAG, METHOD + get.getRequestLine().getMethod());
-        Log.i(TAG, URI + get.getRequestLine().getUri());
+        Logger.i(TAG, PROTOCOL_VERSION + get.getRequestLine().getProtocolVersion());
+        Logger.i(TAG, METHOD + get.getRequestLine().getMethod());
+        Logger.i(TAG, URI + get.getRequestLine().getUri());
 
     }
 
     public static void printResponseLog(HttpResponse response) throws IOException {
         HttpEntity entity = response.getEntity();
         String content = EntityUtils.toString(entity, ENCODING_UTF_8);
-        Log.i(TAG, PROTOCOL_VERSION + response.getStatusLine().getProtocolVersion());
-        Log.i(TAG, STATUS_CODE + response.getStatusLine().getStatusCode());
-        Log.i(TAG, REASON_PHRASE + response.getStatusLine().getReasonPhrase());
-        Log.i(TAG, BODY + content);
+        Logger.i(TAG, PROTOCOL_VERSION + response.getStatusLine().getProtocolVersion());
+        Logger.i(TAG, STATUS_CODE + response.getStatusLine().getStatusCode());
+        Logger.i(TAG, REASON_PHRASE + response.getStatusLine().getReasonPhrase());
+        Logger.i(TAG, BODY + content);
     }
 
 }

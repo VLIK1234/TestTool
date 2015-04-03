@@ -6,5 +6,5 @@ package amtt.epam.com.amtt.bo.issue.willrefactored;
 public enum CreationIssueResult {
 
     CREATION_SUCCESS,
-    CREATION_UNSUCCESSFUL
+    CREATION_UNSUCCESS
 }
