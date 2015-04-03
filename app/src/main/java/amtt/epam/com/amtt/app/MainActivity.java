@@ -42,6 +42,8 @@ public class MainActivity extends BaseActivity implements DbSavingCallback, Step
     public static final String NAME_SP = "data";
     public static final String VOID = "";
     public static final String PROJECT_NAMES ="projectsNames";
+    public static final String ACCESS = "access";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +106,11 @@ public class MainActivity extends BaseActivity implements DbSavingCallback, Step
             }
         });
         sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
+        Boolean accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
+        Button issueButton = (Button) findViewById(R.id.issue_act_button);
+        issueButton.setEnabled(accessCreateIssue);
+
+
     }
 
 

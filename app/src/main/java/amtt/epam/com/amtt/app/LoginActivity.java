@@ -21,6 +21,7 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
     public static final String PASSWORD = "password";
     public static final String URL = "url";
     public static final String NAME_SP = "data";
+    public static final String ACCESS = "access";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +43,18 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
     @Override
     public void onAuthorizationResult(AuthorizationResult result) {
 
-        SharedPreferences sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(USER_NAME, userName.getText().toString());
-        editor.putString(PASSWORD, password.getText().toString());
-        editor.putString(URL, url.getText().toString());
-        editor.apply();
-
         String resultMessage = result == AuthorizationResult.AUTHORIZATION_DENIED ? getResources().getString(R.string.authorization_denied) :
-            getResources().getString(R.string.authorization_success);
+                getResources().getString(R.string.authorization_success);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+        if (resultMessage.equals(getResources().getString(R.string.authorization_success))) {
+            SharedPreferences sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(USER_NAME, userName.getText().toString());
+            editor.putString(PASSWORD, password.getText().toString());
+            editor.putString(URL, url.getText().toString());
+            editor.putBoolean(ACCESS, true);
+            editor.apply();
+            finish();
+        }
     }
 }

@@ -78,16 +78,16 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
 
     public void onCreateIssueClick(View view) {
         CreateIssue issue = new CreateIssue();
-        String mProjectKey, mIssyeType, mDescription, mSummary;
+        String mProjectKey, mIssueType, mDescription, mSummary;
         mDescription = etDescription.getText().toString();
         mSummary = etSummary.getText().toString();
-        mIssyeType = inputIssueType.getSelectedItem().toString();
+        mIssueType = inputIssueType.getSelectedItem().toString();
         mProjectKey = inputProjectKey.getSelectedItem().toString();
         String username, password, url;
         username = sharedPreferences.getString(USER_NAME, VOID);
         password = sharedPreferences.getString(PASSWORD, VOID);
         url = sharedPreferences.getString(URL, VOID);
-        new CreateIssueTask(username, password, url, issue.createSimpleIssue(mProjectKey, mIssyeType, mDescription, mSummary), CreateIssueActivity.this).execute();
+        new CreateIssueTask(username, password, url, issue.createSimpleIssue(mProjectKey, mIssueType, mDescription, mSummary), CreateIssueActivity.this).execute();
 
     }
 
@@ -96,6 +96,9 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
         String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
             getResources().getString(R.string.issue_creating_success);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+        if(resultMessage.equals(getResources().getString(R.string.issue_creating_success))){
+            finish();
+        }
     }
 
     @Override
