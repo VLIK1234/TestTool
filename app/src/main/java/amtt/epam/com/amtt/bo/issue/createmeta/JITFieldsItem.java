@@ -2,6 +2,8 @@ package amtt.epam.com.amtt.bo.issue.createmeta;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 /**
  * Created by Iryna_Monchanka on 3/31/2015.
  */
@@ -16,14 +18,14 @@ public abstract class JITFieldsItem {
     @SerializedName("name")
     private String mName;
     @SerializedName("operations")
-    private String[] mOperations;
+    private ArrayList<String> mOperations;
     @SerializedName("allowedValues")
     private JITFieldsItemAllowedValues mAllowedValues;
 
     protected JITFieldsItem() {
     }
 
-    protected JITFieldsItem(Boolean required, JITFieldsItemSchema schema, Boolean hasDefaultValue, String name, String[] operations, JITFieldsItemAllowedValues allowedValues) {
+    protected JITFieldsItem(Boolean required, JITFieldsItemSchema schema, Boolean hasDefaultValue, String name, ArrayList<String> operations, JITFieldsItemAllowedValues allowedValues) {
         this.mRequired = required;
         this.mSchema = schema;
         this.mHasDefaultValue = hasDefaultValue;
@@ -64,11 +66,11 @@ public abstract class JITFieldsItem {
         this.mName = name;
     }
 
-    public String[] getOperations() {
+    public ArrayList<String> getOperations() {
         return mOperations;
     }
 
-    public void setOperations(String[] operations) {
+    public void setOperations(ArrayList<String> operations) {
         this.mOperations = operations;
     }
 

@@ -1,9 +1,10 @@
 package amtt.epam.com.amtt.bo.issue.createmeta;
 
-import amtt.epam.com.amtt.bo.issue.willrefactored.JiraAvatarUrls;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+
+import amtt.epam.com.amtt.bo.issue.willrefactored.JiraAvatarUrls;
 
 /**
  * Created by Iryna_Monchanka on 3/31/2015.
@@ -23,28 +24,28 @@ public class JProjects {
     @SerializedName("avatarUrls")
     private JiraAvatarUrls mAvatarUrls;
     @SerializedName("issuetypes")
-    private ArrayList<JIssueTypes> mIssuetypes;
+    private ArrayList<JIssueTypes> mIssueTypes;
 
     public JProjects() {
     }
 
-    public JProjects(String expand, String self, String id, String key, String name, JiraAvatarUrls avatarUrls, ArrayList<JIssueTypes> issuetypes) {
+    public JProjects(String expand, String self, String id, String key, String name, JiraAvatarUrls avatarUrls, ArrayList<JIssueTypes> issueTypes) {
         this.mExpand = expand;
         this.mSelf = self;
         this.mId = id;
         this.mKey = key;
         this.mName = name;
         this.mAvatarUrls = avatarUrls;
-        this.mIssuetypes = issuetypes;
+        this.mIssueTypes = issueTypes;
     }
 
-    public JProjects(String self, String id, String key, String name, JiraAvatarUrls avatarUrls, ArrayList<JIssueTypes> issuetypes) {
+    public JProjects(String self, String id, String key, String name, JiraAvatarUrls avatarUrls, ArrayList<JIssueTypes> issueTypes) {
         this.mSelf = self;
         this.mId = id;
         this.mKey = key;
         this.mName = name;
         this.mAvatarUrls = avatarUrls;
-        this.mIssuetypes = issuetypes;
+        this.mIssueTypes = issueTypes;
     }
 
     public String getExpand() {
@@ -95,11 +96,11 @@ public class JProjects {
         this.mAvatarUrls = avatarUrls;
     }
 
-    public ArrayList<JIssueTypes> getIssuetypes() {
-        return mIssuetypes;
+    public ArrayList<JIssueTypes> getIssueTypes() {
+        return mIssueTypes;
     }
 
-    public void setIssuetypes(ArrayList<JIssueTypes> issuetypes) {
-        this.mIssuetypes = issuetypes;
+    public void setIssueTypes(ArrayList<JIssueTypes> issueTypes) {
+        this.mIssueTypes = issueTypes;
     }
 }

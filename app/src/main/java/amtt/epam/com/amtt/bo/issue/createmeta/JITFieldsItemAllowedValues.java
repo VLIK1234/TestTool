@@ -1,7 +1,8 @@
 package amtt.epam.com.amtt.bo.issue.createmeta;
 
-import amtt.epam.com.amtt.bo.issue.willrefactored.JiraAvatarUrls;
 import com.google.gson.annotations.SerializedName;
+
+import amtt.epam.com.amtt.bo.issue.willrefactored.JiraAvatarUrls;
 
 /**
  * Created by Iryna_Monchanka on 3/31/2015.
@@ -24,12 +25,12 @@ public class JITFieldsItemAllowedValues {
     @SerializedName("self")
     private String mSelf;
     @SerializedName("subtask")
-    private Boolean mSubtask;
+    private Boolean mSubTask;
 
     public JITFieldsItemAllowedValues() {
     }
 
-    public JITFieldsItemAllowedValues(JiraAvatarUrls avatarUrls, String description, String iconUrl, String id, String key, String name, String self, Boolean subtask) {
+    public JITFieldsItemAllowedValues(JiraAvatarUrls avatarUrls, String description, String iconUrl, String id, String key, String name, String self, Boolean subTask) {
         this.mAvatarUrls = avatarUrls;
         this.mDescription = description;
         this.mIconUrl = iconUrl;
@@ -37,7 +38,7 @@ public class JITFieldsItemAllowedValues {
         this.mKey = key;
         this.mName = name;
         this.mSelf = self;
-        this.mSubtask = subtask;
+        this.mSubTask = subTask;
     }
 
     public JiraAvatarUrls getAvatarUrls() {
@@ -96,11 +97,11 @@ public class JITFieldsItemAllowedValues {
         this.mSelf = self;
     }
 
-    public Boolean getSubtask() {
-        return mSubtask;
+    public Boolean getSubTask() {
+        return mSubTask;
     }
 
-    public void setSubtask(Boolean subtask) {
-        this.mSubtask = subtask;
+    public void setSubTask(Boolean subTask) {
+        this.mSubTask = subTask;
     }
 }

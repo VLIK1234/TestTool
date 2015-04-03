@@ -1,5 +1,18 @@
 package amtt.epam.com.amtt.app;
 
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Set;
+
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.CreateIssueTask;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
@@ -9,14 +22,6 @@ import amtt.epam.com.amtt.bo.issue.willrefactored.CreateIssue;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreationIssueResult;
 import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.view.View;
-import android.widget.*;
-
-import java.util.ArrayList;
-import java.util.Set;
 
 
 public class CreateIssueActivity extends ActionBarActivity implements CreationIssueCallback, ShowUserDataCallback {
@@ -25,12 +30,12 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
     private ArrayList<String> projectsNames = new ArrayList<>();
     private Spinner inputProjectKey, inputIssueType;
     private SharedPreferences sharedPreferences;
-    public static final String USER_NAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String URL = "url";
-    public static final String NAME_SP = "data";
-    public static final String VOID = "";
-    public static final String PROJECT_NAMES ="projectsNames";
+    private static final String USER_NAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String URL = "url";
+    private static final String NAME_SP = "data";
+    private static final String VOID = "";
+    private static final String PROJECT_NAMES = "projectsNames";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +63,12 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
             public void onNothingSelected(AdapterView<?> arg0) {
             }
         });
-
-
     }
 
     public int getSelectedItemPositionProject() {
         return this.inputProjectKey.getSelectedItemPosition();
     }
-    
+
     public ArrayList<String> getProjectNames() {
         Set<String> pNames;
         pNames = sharedPreferences.getStringSet(PROJECT_NAMES, null);
@@ -94,10 +97,10 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
 
     @Override
     public void onCreationIssueResult(CreationIssueResult result) {
-        String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
-            getResources().getString(R.string.issue_creating_success);
+        String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESSFUL ? getResources().getString(R.string.issue_creating_unsuccess) :
+                getResources().getString(R.string.issue_creating_success);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-        if(resultMessage.equals(getResources().getString(R.string.issue_creating_success))){
+        if (resultMessage.equals(getResources().getString(R.string.issue_creating_success))) {
             finish();
         }
     }

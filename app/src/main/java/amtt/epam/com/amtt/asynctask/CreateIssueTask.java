@@ -1,10 +1,12 @@
 package amtt.epam.com.amtt.asynctask;
 
+import android.os.AsyncTask;
+
+import org.apache.http.auth.AuthenticationException;
+
 import amtt.epam.com.amtt.authorization.JiraApi;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreationIssueResult;
 import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
-import android.os.AsyncTask;
-import org.apache.http.auth.AuthenticationException;
 
 /**
  * Created by Irina Monchenko on 27.03.2015.
@@ -33,7 +35,7 @@ public class CreateIssueTask extends AsyncTask<Void, Void, CreationIssueResult> 
             }
         } catch (Exception e) {
 
-            return CreationIssueResult.CREATION_UNSUCCESS;
+            return CreationIssueResult.CREATION_UNSUCCESSFUL;
         }
         return CreationIssueResult.CREATION_SUCCESS;
     }

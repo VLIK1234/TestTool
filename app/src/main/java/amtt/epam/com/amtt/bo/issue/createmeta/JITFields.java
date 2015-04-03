@@ -34,7 +34,7 @@ public class JITFields {
     @SerializedName("project")
     private JITProject mProject;
     @SerializedName("issuetype")
-    private JITIssueType mIssuetype;
+    private JITIssueType mIssueType;
     @SerializedName("priority")
     private JITPriority mPriority;
 
@@ -42,12 +42,12 @@ public class JITFields {
 
     }
 
-    public JITFields(JITSummary summary, JITAttachment attachment, JITDescription description, JITProject project, JITIssueType issuetype, JITPriority priority) {
+    public JITFields(JITSummary summary, JITAttachment attachment, JITDescription description, JITProject project, JITIssueType issueType, JITPriority priority) {
         this.mSummary = summary;
         this.mAttachment = attachment;
         this.mDescription = description;
         this.mProject = project;
-        this.mIssuetype = issuetype;
+        this.mIssueType = issueType;
         this.mPriority = priority;
     }
 
@@ -83,12 +83,12 @@ public class JITFields {
         this.mProject = project;
     }
 
-    public JITIssueType getIssuetype() {
-        return mIssuetype;
+    public JITIssueType getIssueType() {
+        return mIssueType;
     }
 
-    public void setIssuetype(JITIssueType issuetype) {
-        this.mIssuetype = issuetype;
+    public void setIssueType(JITIssueType issueType) {
+        this.mIssueType = issueType;
     }
 
     public JITPriority getPriority() {

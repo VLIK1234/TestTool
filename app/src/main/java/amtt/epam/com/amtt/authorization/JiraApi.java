@@ -1,7 +1,7 @@
 package amtt.epam.com.amtt.authorization;
 
-import amtt.epam.com.amtt.util.Logger;
 import android.util.Base64;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -9,6 +9,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+
+import amtt.epam.com.amtt.util.Logger;
 
 /**
  * Created by Artsiom_Kaliaha on 24.03.2015.
@@ -45,9 +47,9 @@ public class JiraApi {
         post.addHeader(AUTH_HEADER, credentials);
         post.addHeader("content-type", "application/json");
         post.setEntity(input);
-        Logger.printReqestLog(post);
+        Logger.printRequestPost(post);
         HttpResponse response = client.execute(post);
-        //  Logger.printResponceLog(response);
+        Logger.printResponseLog(response);
         return response.getStatusLine().getStatusCode();
     }
 
@@ -57,7 +59,7 @@ public class JiraApi {
         HttpGet get = new HttpGet(mUrl + USER_PROJECTS_PATH);
         get.addHeader(AUTH_HEADER, credentials);
         HttpResponse httpRsponse = client.execute(get);
-        // Logger.printResponceLog(httpRsponse);
+        // Logger.printResponseLog(httpRsponse);
         // Read all the text returned by the server
         HttpEntity getResponseEntity = httpRsponse.getEntity();
         return getResponseEntity;

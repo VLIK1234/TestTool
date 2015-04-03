@@ -1,7 +1,8 @@
 package amtt.epam.com.amtt.bo.issue.willrefactored.issuekey;
 
-import amtt.epam.com.amtt.bo.issue.willrefactored.JiraAvatarUrls;
 import com.google.gson.annotations.SerializedName;
+
+import amtt.epam.com.amtt.bo.issue.willrefactored.JiraAvatarUrls;
 
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
@@ -14,16 +15,17 @@ public class JiraIssueProject {
     @SerializedName("key")
     private String mKey;
     private String self;
-    private String name;
+    @SerializedName("name")
+    private String mName;
     private JiraAvatarUrls avatarUrls;
 
 
     public JiraIssueProject() {
     }
 
-    public JiraIssueProject(String id, String key) {
+    public JiraIssueProject(String id, String name) {
         this.mId = id;
-        this.mKey = key;
+        this.mName = name;
     }
 
     public String getIdProject() {
@@ -40,5 +42,13 @@ public class JiraIssueProject {
 
     public void setKeyProject(String key) {
         this.mKey = key;
+    }
+
+    public String getNameProject() {
+        return mName;
+    }
+
+    public void setNameProject(String mName) {
+        this.mName = mName;
     }
 }

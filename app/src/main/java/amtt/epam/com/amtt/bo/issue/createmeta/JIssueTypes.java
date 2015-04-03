@@ -32,7 +32,7 @@ public class JIssueTypes {
     @SerializedName("name")
     private String mName;
     @SerializedName("subtask")
-    private Boolean mSubtask;
+    private Boolean mSubTask;
     @SerializedName("expand")
     private String mExpand;
     @SerializedName("fields")
@@ -41,13 +41,13 @@ public class JIssueTypes {
     public JIssueTypes() {
     }
 
-    public JIssueTypes(String self, int id, String description, String iconUrl, String name, Boolean subtask, String expand, JITFields fields) {
+    public JIssueTypes(String self, int id, String description, String iconUrl, String name, Boolean subTask, String expand, JITFields fields) {
         this.mSelf = self;
         this.mId = id;
         this.mDescription = description;
         this.mIconUrl = iconUrl;
         this.mName = name;
-        this.mSubtask = subtask;
+        this.mSubTask = subTask;
         this.mExpand = expand;
         this.mFields = fields;
     }
@@ -59,13 +59,13 @@ public class JIssueTypes {
         this.mIconUrl = iconUrl;
     }
 
-    public JIssueTypes(String mSelf, int mId, String mDescription, String mIconUrl, String mName, Boolean mSubtask) {
+    public JIssueTypes(String mSelf, int mId, String mDescription, String mIconUrl, String mName, Boolean mSubTask) {
         this.mSelf = mSelf;
         this.mId = mId;
         this.mDescription = mDescription;
         this.mIconUrl = mIconUrl;
         this.mName = mName;
-        this.mSubtask = mSubtask;
+        this.mSubTask = mSubTask;
     }
 
     public String getSelf() {
@@ -108,12 +108,12 @@ public class JIssueTypes {
         this.mName = name;
     }
 
-    public Boolean getSubtask() {
-        return mSubtask;
+    public Boolean getSubTask() {
+        return mSubTask;
     }
 
-    public void setSubtask(Boolean subtask) {
-        this.mSubtask = subtask;
+    public void setSubTask(Boolean subTask) {
+        this.mSubTask = subTask;
     }
 
     public String getExpand() {

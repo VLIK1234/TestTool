@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.view;
 
-import amtt.epam.com.amtt.R;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +7,8 @@ import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import amtt.epam.com.amtt.R;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
@@ -64,8 +65,8 @@ public class TopButtonView extends FrameLayout {
                 lastY = (int) event.getRawY();
 
                 if (moving
-                    || Math.abs(totalDeltaX) >= threshold
-                    || Math.abs(totalDeltaY) >= threshold) {
+                        || Math.abs(totalDeltaX) >= threshold
+                        || Math.abs(totalDeltaY) >= threshold) {
                     moving = true;
 
                     // update the position of the view
@@ -82,7 +83,7 @@ public class TopButtonView extends FrameLayout {
                 if (event.getPointerCount() == 1) {
 
                     boolean tap = Math.abs(totalDeltaX) < threshold
-                        && Math.abs(totalDeltaY) < threshold;
+                            && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
 
                         Toast.makeText(getContext(), "Tap button!", Toast.LENGTH_SHORT).show();

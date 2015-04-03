@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.database;
 
-import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,6 +10,8 @@ import android.os.Build;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 
 /**
  * Created by Artsiom_Kaliaha on 19.03.2015.
@@ -112,8 +113,8 @@ public class DbSavingTask extends AsyncTask<Void, Void, DbSavingResult> implemen
         ActivityInfo activityInfo;
         try {
             activityInfo = mContext
-                .getPackageManager()
-                .getActivityInfo(mComponentName, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
+                    .getPackageManager()
+                    .getActivityInfo(mComponentName, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
         } catch (PackageManager.NameNotFoundException e) {
             return DbSavingResult.ERROR;
         }

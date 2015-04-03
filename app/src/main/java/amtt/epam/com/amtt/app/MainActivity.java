@@ -1,5 +1,22 @@
 package amtt.epam.com.amtt.app;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.crashlytics.android.Crashlytics;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
@@ -15,34 +32,19 @@ import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.step.StepSavingCallback;
 import amtt.epam.com.amtt.step.StepSavingResult;
 import amtt.epam.com.amtt.step.StepSavingTask;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 
 public class MainActivity extends BaseActivity implements DbSavingCallback, StepSavingCallback, ShowUserDataCallback {
     private SharedPreferences sharedPreferences;
     private int mScreenNumber = 1;
-    public static final String USER_NAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String URL = "url";
-    public static final String NAME_SP = "data";
-    public static final String VOID = "";
-    public static final String PROJECT_NAMES ="projectsNames";
-    public static final String ACCESS = "access";
+    private static final String USER_NAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String URL = "url";
+    private static final String NAME_SP = "data";
+    private static final String VOID = "";
+    private static final String PROJECT_NAMES = "projectsNames";
+    private static final String ACCESS = "access";
 
 
     @Override

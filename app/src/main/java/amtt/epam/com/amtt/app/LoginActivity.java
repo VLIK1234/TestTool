@@ -1,9 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.authorization.AuthorizationCallback;
-import amtt.epam.com.amtt.authorization.AuthorizationResult;
-import amtt.epam.com.amtt.authorization.AuthorizationTask;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -12,16 +8,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.authorization.AuthorizationCallback;
+import amtt.epam.com.amtt.authorization.AuthorizationResult;
+import amtt.epam.com.amtt.authorization.AuthorizationTask;
+
 public class LoginActivity extends ActionBarActivity implements AuthorizationCallback {
 
     private EditText userName;
     private EditText password;
     private EditText url;
-    public static final String USER_NAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String URL = "url";
-    public static final String NAME_SP = "data";
-    public static final String ACCESS = "access";
+    private static final String USER_NAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String URL = "url";
+    private static final String NAME_SP = "data";
+    private static final String ACCESS = "access";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
