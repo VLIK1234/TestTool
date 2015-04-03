@@ -51,7 +51,7 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, projectsNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        inputProjectKey = (Spinner) findViewById(R.id.et_projectkey);
+        inputProjectKey = (Spinner) findViewById(R.id.spin_project_key);
         inputProjectKey.setAdapter(adapter);
         inputProjectKey.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -107,7 +107,7 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
         ArrayList<String> issueTypesNames = CreateMetaObjectsHelper.getIssueTypesNames(result.getProjects().get(getSelectedItemPositionProject()));
         ArrayAdapter<String> issueNames = new ArrayAdapter<>(CreateIssueActivity.this, android.R.layout.simple_spinner_item, issueTypesNames);
         issueNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        inputIssueType = (Spinner) findViewById(R.id.et_issue_name);
+        inputIssueType = (Spinner) findViewById(R.id.spin_issue_name);
         inputIssueType.setAdapter(issueNames);
     }
 }

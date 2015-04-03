@@ -83,6 +83,7 @@
         android:layout_alignRight="@+id/step_button"
         android:layout_alignEnd="@+id/step_button"
         android:layout_marginTop="16dp"
-        android:onClick="onIssueClick" />
+        android:onClick="onIssueClick"
+        android:enabled="false" />
 
 </RelativeLayout>

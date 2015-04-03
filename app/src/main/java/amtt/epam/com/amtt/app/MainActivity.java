@@ -34,7 +34,7 @@ import java.util.Set;
 
 
 public class MainActivity extends BaseActivity implements DbSavingCallback, StepSavingCallback, ShowUserDataCallback {
-    private SharedPreferences sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
+    private SharedPreferences sharedPreferences;
     private int mScreenNumber = 1;
     public static final String USER_NAME = "username";
     public static final String PASSWORD = "password";
@@ -103,6 +103,7 @@ public class MainActivity extends BaseActivity implements DbSavingCallback, Step
                 new DbClearTask(MainActivity.this).execute();
             }
         });
+        sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
     }
 
 

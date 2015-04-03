@@ -12,7 +12,7 @@
         android:id="@+id/jira_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="URL"
+        android:hint="@string/url"
         android:inputType="textUri" />
 
     <EditText
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/jira_url"
-        android:hint="Username" />
+        android:hint="@string/user_name" />
 
     <EditText
         android:id="@+id/password"
@@ -29,7 +29,7 @@
         android:layout_below="@+id/user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Password" />
+        android:hint="@string/password" />
 
 
     <Button
