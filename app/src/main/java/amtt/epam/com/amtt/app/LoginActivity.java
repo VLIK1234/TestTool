@@ -40,6 +40,7 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
             @Override
             public void onClick(View v) {
                 new AuthorizationTask(LoginActivity.this, userName.getText().toString(), password.getText().toString(), url.getText().toString(), LoginActivity.this).execute();
+                findViewById(R.id.progress).setVisibility(View.VISIBLE);
             }
         });
     }
@@ -58,6 +59,7 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
             editor.putString(URL, url.getText().toString());
             editor.putBoolean(ACCESS, true);
             editor.apply();
+            findViewById(R.id.progress).setVisibility(View.GONE);
             finish();
         }
     }

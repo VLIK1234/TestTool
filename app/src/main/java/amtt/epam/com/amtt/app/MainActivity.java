@@ -179,11 +179,13 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         password = sharedPreferences.getString(PASSWORD, VOID);
         url = sharedPreferences.getString(URL, VOID);
         new ShowUserDataTask(username, password, url, MainActivity.this).execute();
+        findViewById(R.id.progress).setVisibility(View.VISIBLE);
     }
 
 
     @Override
     public void onShowUserDataResult(JMetaResponse result) {
+        findViewById(R.id.progress).setVisibility(View.GONE);
         ArrayList<String> projectsNames = result.getProjectsNames();
         ArrayList<String> projectsKeys = result.getProjectsKeys();
         SharedPreferences.Editor editor = sharedPreferences.edit();
