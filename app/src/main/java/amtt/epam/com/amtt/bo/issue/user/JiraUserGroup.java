@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.bo.issue.willrefactored.issuekey;
+package amtt.epam.com.amtt.bo.issue.user;
 
 import java.util.ArrayList;
 
@@ -10,14 +10,7 @@ public class JiraUserGroup {
     private int size;
     private ArrayList<JiraUserGroupItem> items;
 
-    public class JiraUserGroupItem {
 
-        private String name;
-
-        public JiraUserGroupItem() {
-        }
-
-    }
 
 
 }
