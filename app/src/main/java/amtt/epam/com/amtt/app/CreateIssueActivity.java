@@ -117,9 +117,6 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
 
     @Override
     public void onShowUserDataResult(JMetaResponse result) {
-      //  int index = result.getProjects().size() - (getSelectedItemPositionProject() + 1);
-        //todo why util? POJO class should do this.
-        //for example: result.getProjectsNames()
         int index = result.getProjects().size() - (getSelectedItemPositionProject() + 1);
         ArrayList<String> issueTypesNames = result.getProjects().get(index).getIssueTypesNames();
         ArrayAdapter<String> issueNames = new ArrayAdapter<>(CreateIssueActivity.this, android.R.layout.simple_spinner_item, issueTypesNames);
