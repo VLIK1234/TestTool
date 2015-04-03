@@ -38,18 +38,9 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
 
         setContentView(R.layout.activity_create_issue);
         sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
-        //todo move to method getProjectNames and use in proper adapter
-        Set<String> pNames;
-        pNames = sharedPreferences.getStringSet(PROJECT_NAMES, null);
-        if (pNames != null) {
-            for (String name : pNames) {
-                projectsNames.add(name);
-            }
-        }
         etDescription = (EditText) findViewById(R.id.et_description);
         etSummary = (EditText) findViewById(R.id.et_summary);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, projectsNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getProjectNames());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         inputProjectKey = (Spinner) findViewById(R.id.spin_project_key);
         inputProjectKey.setAdapter(adapter);
@@ -74,7 +65,17 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
     public int getSelectedItemPositionProject() {
         return this.inputProjectKey.getSelectedItemPosition();
     }
-
+    
+    public ArrayList<String> getProjectNames() {
+        Set<String> pNames;
+        pNames = sharedPreferences.getStringSet(PROJECT_NAMES, null);
+        if (pNames != null) {
+            for (String name : pNames) {
+                projectsNames.add(name);
+            }
+        }
+        return projectsNames;
+    }
 
     public void onCreateIssueClick(View view) {
         CreateIssue issue = new CreateIssue();
