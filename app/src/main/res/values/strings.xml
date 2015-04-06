@@ -10,7 +10,7 @@
 
     <string name="authorization_success">Authorization is passed</string>
     <string name="authorization_denied">Authorization is not passed</string>
-    <string name="title_activity_test_issue">TestIssueActivity</string>
+    <string name="title_activity_create_issue">Creating issue</string>
     <string name="issue_creating_success">Issue is created</string>
     <string name="issue_creating_unsuccess">Issue is not created</string>
     <string name="button_show">Show</string>
@@ -40,6 +40,8 @@
     <string name="summary">Summary</string>
     <string name="description">Description</string>
     <string name="create_issue">Create</string>
+    <string name="title_activity_user_info">UserInfoActivity</string>
+    <string name="url">URL</string>
     <string name="title_activity_steps">StepsActivity</string>
 
     <string name="screenshot_image_description">image view for screenshot</string>

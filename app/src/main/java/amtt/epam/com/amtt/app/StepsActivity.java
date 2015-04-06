@@ -32,7 +32,7 @@ public class StepsActivity extends ActionBarActivity implements LoaderManager.Lo
 
         mListView = (ListView) findViewById(android.R.id.list);
         mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
-        mEmptyText = (TextView)findViewById(android.R.id.empty);
+        mEmptyText = (TextView) findViewById(android.R.id.empty);
         getLoaderManager().initLoader(CURSOR_LOADER, null, this);
     }
 

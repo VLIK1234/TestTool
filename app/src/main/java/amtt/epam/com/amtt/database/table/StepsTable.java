@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.database.table;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.database.BaseColumns;
-import amtt.epam.com.amtt.database.SqlQueryConstants;
 import amtt.epam.com.amtt.util.MultiValueMap;
 
 /**

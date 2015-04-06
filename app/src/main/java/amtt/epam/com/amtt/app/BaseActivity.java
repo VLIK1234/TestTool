@@ -13,9 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.storage.BaseStorage;
-
 /**
  * Created by Ivan_Bakach on 26.03.2015.
  */

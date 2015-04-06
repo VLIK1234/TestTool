@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Created by Artsiom_Kaliaha on 30.03.2015.
  */
-public class CrashInfoSavingTask extends AsyncTask<Void,Void,Void> {
+public class CrashInfoSavingTask extends AsyncTask<Void, Void, Void> {
 
     private final String mPath;
     private final String mData;

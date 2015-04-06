@@ -23,30 +23,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/button_add"
-            android:onClick="onClickAdd"/>
+            android:onClick="onClickAdd" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/button_auth"
-            android:onClick="onClickAuth"/>
+            android:onClick="onClickAuth" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/button_bug_rep"
-            android:onClick="onClickBugRep"/>
+            android:onClick="onClickBugRep" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/button_screen"
-            android:onClick="onClickScreen"/>
+            android:onClick="onClickScreen" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/button_share"
-            android:onClick="onClickShare"/>
+            android:onClick="onClickShare" />
     </LinearLayout>
 </LinearLayout>

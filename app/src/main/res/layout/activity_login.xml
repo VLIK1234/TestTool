@@ -9,17 +9,28 @@
     tools:context="amtt.epam.com.amtt.app.LoginActivity">
 
     <EditText
+        android:id="@+id/jira_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/url"
+        android:inputType="textUri" />
+
+    <EditText
         android:id="@+id/user_name"
         android:inputType="textEmailAddress"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/jira_url"
+        android:hint="@string/user_name" />
 
     <EditText
         android:id="@+id/password"
         android:inputType="textPassword"
         android:layout_below="@+id/user_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:hint="@string/password" />
+
 
     <Button
         android:id="@+id/login_button"

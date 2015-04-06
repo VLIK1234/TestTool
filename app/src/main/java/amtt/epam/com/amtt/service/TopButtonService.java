@@ -61,7 +61,8 @@ public class TopButtonService extends Service {
         layoutParams.x = xInitPosition;
         layoutParams.y = yInitPosition;
     }
-    private void initView(){
+
+    private void initView() {
         view = new TopButtonView(getBaseContext(), layoutParams);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +72,7 @@ public class TopButtonService extends Service {
             }
         });
     }
-    
+
 
     public static Intent getShowIntent(Context context) {
         return new Intent(context, TopButtonService.class).setAction(ACTION_SHOW);
@@ -97,7 +98,7 @@ public class TopButtonService extends Service {
     }
 
     public final void close() {
-        if (view != null&&isViewAdd) {
+        if (view != null && isViewAdd) {
             isViewAdd = false;
             ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
             view = null;
@@ -105,10 +106,11 @@ public class TopButtonService extends Service {
         stopSelf();
     }
 
-    public void onClickAdd(View view){
+    public void onClickAdd(View view) {
         Toast.makeText(this, "ADD", Toast.LENGTH_LONG).show();
 
     }
+
     public void onClickAuth(View view) {
         Toast.makeText(this, "AUTH", Toast.LENGTH_LONG).show();
     }

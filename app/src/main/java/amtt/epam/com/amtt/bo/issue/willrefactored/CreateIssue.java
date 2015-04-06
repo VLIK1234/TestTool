@@ -1,7 +1,9 @@
-package amtt.epam.com.amtt.bo;
+package amtt.epam.com.amtt.bo.issue.willrefactored;
 
 import android.util.Log;
 
+import amtt.epam.com.amtt.bo.issue.willrefactored.issuekey.JiraBaseFields;
+import amtt.epam.com.amtt.bo.issue.willrefactored.issuekey.JiraIssueProject;
 import amtt.epam.com.amtt.processing.IssueGsonProcessor;
 
 /**
@@ -9,8 +11,9 @@ import amtt.epam.com.amtt.processing.IssueGsonProcessor;
  */
 public class CreateIssue {
 
-    private JiraProject mProject = new JiraProject();
-    private JiraIssueType mIssuetype = new JiraIssueType();
+    private final String TAG = this.getClass().getSimpleName();
+    private JiraIssueProject mProject = new JiraIssueProject();
+    private JiraIssueTypesIssueType mIssueType = new JiraIssueTypesIssueType();
     private JiraBaseFields mFields = new JiraBaseFields();
     private JiraBase mBData = new JiraBase();
     private IssueGsonProcessor<JiraBase> mIssueGsonProcessor = new IssueGsonProcessor<>();
@@ -21,19 +24,19 @@ public class CreateIssue {
 
     public String createSimpleIssue(String keyProject, String issueTypeName, String summary, String description) {
         mProject.setKeyProject(keyProject);
-        mIssuetype.setName(issueTypeName);
+        mIssueType.setName(issueTypeName);
         mFields.setProject(mProject);
         mFields.setSummary(summary);
         mFields.setDescription(description);
-        mFields.setIssuetype(mIssuetype);
+        mFields.setIssuetype(mIssueType);
         mBData.setFields(mFields);
         try {
             jsonString = mIssueGsonProcessor.process(mBData);
+            Log.d(TAG, jsonString);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        Log.d("test", jsonString);
         return jsonString;
     }
 }
