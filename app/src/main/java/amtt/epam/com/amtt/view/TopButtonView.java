@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -26,8 +25,6 @@ public class TopButtonView extends FrameLayout {
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
     private ViewGroup body;
-    private int bodyWidth;
-    private int bodyHeight;
     private ImageView imageView;
     private DisplayMetrics metrics;
     private Display display;
@@ -67,25 +64,30 @@ public class TopButtonView extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
+        Log.d(LOG_TAG, "Show body:" + body.getWidth() + " " + body.getHeight());
+//        checkFreeSpace(layoutParams.x,layoutParams.y, getWidth(), getHeight());
         if (getResources().getConfiguration().orientation != orientation) {
             changeProportinalPosition();
             body.setVisibility(GONE);
         }
     }
 
-    private void checkFreeSpace(int x, int y, int xMax, int yMax) {
+    private void checkFreeSpace(int x, int y, int bodyWeight, int bodyHeight) {
+        Log.d(LOG_TAG, "Init:" + body.getWidth() + " " + body.getHeight() + " " + bodyWeight + " " + bodyHeight);
         reParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             ((LinearLayout) body).setOrientation(LinearLayout.HORIZONTAL);
             reParams.addRule(RelativeLayout.RIGHT_OF, imageView.getId());
             body.setLayoutParams(reParams);
-            if (x < xMax / 2) {
+            if (x < metrics.widthPixels / 2) {
                 Log.d(LOG_TAG, "Right");
             } else {
                 Log.d(LOG_TAG, "Left");
-                if (x + bodyWidth > xMax - imageView.getWidth() * 1.5) {
-                    layoutParams.x = x - body.getWidth();
+                Log.d(LOG_TAG, x + " " + body.getWidth() + " " + body.getHeight() + " " + metrics.widthPixels);
+                if (x + getWidth() - getHeight() > metrics.widthPixels) {
+                    Log.d(LOG_TAG, (x + getWidth() - getHeight()) + " > " + metrics.widthPixels + " x = " + x);
+                    layoutParams.x = x - getWidth() - getHeight();
                     windowManager.updateViewLayout(this, layoutParams);
                 }
             }
@@ -93,7 +95,7 @@ public class TopButtonView extends FrameLayout {
             ((LinearLayout) body).setOrientation(LinearLayout.VERTICAL);
             reParams.addRule(RelativeLayout.BELOW, imageView.getId());
             body.setLayoutParams(reParams);
-            if (y < yMax / 2) {
+            if (y < metrics.heightPixels / 2) {
                 Log.d(LOG_TAG, "Down");
             } else {
                 Log.d(LOG_TAG, "Up");
@@ -102,16 +104,11 @@ public class TopButtonView extends FrameLayout {
 //                body.setLayoutParams(reParams);
 //                reParams.addRule(RelativeLayout.BELOW, body.getId());
 //                imageView.setLayoutParams(reParams);
-                if (y + bodyHeight > yMax - imageView.getHeight() * 1.5) {
-                    layoutParams.y = y - body.getHeight();
+                if (y + getHeight() > metrics.heightPixels - getHeight() - getWidth() * 1.5) {
+                    layoutParams.y = y - getHeight();
                     windowManager.updateViewLayout(this, layoutParams);
                 }
             }
-        }
-
-        if (body.getHeight() != 0 && body.getWidth() != 0) {
-            bodyHeight = body.getHeight();
-            bodyWidth = body.getWidth();
         }
     }
 
@@ -181,16 +178,25 @@ public class TopButtonView extends FrameLayout {
 
                     // update the position of the view
                     if (event.getPointerCount() == 1) {
-                        if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - imageView.getWidth())) {
-                            layoutParams.x += deltaX;
+                        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                            if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
+                                layoutParams.x += deltaX;
+                            }
+                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getWidth() / 2)) {
+                                layoutParams.y += deltaY;
+                            }
+                        } else {
+                            if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
+                                layoutParams.x += deltaX;
+                            }
+                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() * 1.5)) {
+                                layoutParams.y += deltaY;
+                            }
                         }
-                        if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - imageView.getHeight() * 1.5)) {
-                            layoutParams.y += deltaY;
-                        }
+
                         widthProportion = (float) layoutParams.x / metrics.widthPixels;
                         heightProportion = (float) layoutParams.y / metrics.heightPixels;
                     }
-                    Log.d(LOG_TAG, layoutParams.x + bodyWidth + " " + (layoutParams.y + bodyWidth) + " body: " + bodyWidth + " density: " + metrics.density);
                     windowManager.updateViewLayout(this, layoutParams);
                 }
                 break;
@@ -205,13 +211,13 @@ public class TopButtonView extends FrameLayout {
 //                        if (mOnClickListener != null) {
 //                            mOnClickListener.onClick(this);
 //                        }
-                        checkFreeSpace(layoutParams.x, layoutParams.y, metrics.widthPixels, metrics.heightPixels);
                         if (body.getVisibility() == VISIBLE) {
                             body.setVisibility(GONE);
                         } else {
                             body.setVisibility(VISIBLE);
+                            Log.d(LOG_TAG, "Show body:" + body.getWidth() + " " + body.getHeight());
+                            checkFreeSpace(layoutParams.x, layoutParams.y, body.getWidth(), body.getHeight());
                         }
-                        Log.d(LOG_TAG, body.getHeight() + " " + ViewConfiguration.get(getContext()).hasPermanentMenuKey());
                     }
                 }
                 break;
