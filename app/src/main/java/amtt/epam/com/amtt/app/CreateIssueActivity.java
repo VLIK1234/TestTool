@@ -19,7 +19,7 @@ import android.widget.*;
 import java.util.ArrayList;
 
 
-public class CreateIssueActivity extends ActionBarActivity implements CreationIssueCallback, ShowUserDataCallback {
+public class CreateIssueActivity extends BaseActivity implements CreationIssueCallback, ShowUserDataCallback {
 
     private final String TAG = this.getClass().getSimpleName();
     private EditText etDescription, etSummary;
@@ -54,7 +54,9 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
                 username = sharedPreferences.getString(USER_NAME, VOID);
                 password = sharedPreferences.getString(PASSWORD, VOID);
                 url = sharedPreferences.getString(URL, VOID);
+                showProgress(true, R.id.progress);
                 new ShowUserDataTask(username, password, url, CreateIssueActivity.this).execute();
+
             }
 
             @Override
@@ -96,6 +98,7 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
         username = sharedPreferences.getString(USER_NAME, VOID);
         password = sharedPreferences.getString(PASSWORD, VOID);
         url = sharedPreferences.getString(URL, VOID);
+        showProgress(true, R.id.progress);
         new CreateIssueTask(username, password, url, issue.createSimpleIssue(mProjectKey, mIssueType, mDescription, mSummary), CreateIssueActivity.this).execute();
 
     }
@@ -104,9 +107,11 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
     public void onCreationIssueResult(CreationIssueResult result) {
         String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
             getResources().getString(R.string.issue_creating_success);
+        showProgress(false, R.id.progress);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
         if (resultMessage.equals(getResources().getString(R.string.issue_creating_success))) {
             finish();
+
         }
     }
 
@@ -118,5 +123,8 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
         issueNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         inputIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
         inputIssueTypes.setAdapter(issueNames);
+        showProgress(false, R.id.progress);
     }
+
+
 }

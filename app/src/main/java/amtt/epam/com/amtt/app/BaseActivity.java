@@ -76,7 +76,7 @@ public class BaseActivity extends Activity {
 //        return BaseStorage.getNumber();
 //    }
 
-    private void showProgress(boolean show, int idProgress){
+    protected void showProgress(boolean show, int idProgress){
         findViewById(idProgress).setVisibility(show ? View.VISIBLE : View.GONE);
     }
 }

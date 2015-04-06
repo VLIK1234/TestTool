@@ -30,7 +30,7 @@ import java.util.ArrayList;
 public class MainActivity extends BaseActivity implements StepSavingCallback, ShowUserDataCallback {
     private SharedPreferences sharedPreferences;
     private Boolean accessCreateIssue;
-    private Button issueButton;
+    private Button issueButton, userInfoButton;
     private int mScreenNumber = 1;
     private boolean newStepsSequence = false;
     private static final String USER_NAME = "username";
@@ -82,6 +82,8 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
         issueButton = (Button) findViewById(R.id.issue_act_button);
         issueButton.setEnabled(accessCreateIssue);
+        userInfoButton= (Button) findViewById(R.id.user_info_btn);
+        userInfoButton.setEnabled(accessCreateIssue);
         Button stepButton = (Button) findViewById(R.id.step_button);
         stepButton.setOnClickListener(new View.OnClickListener() {
                                           @Override
@@ -131,6 +133,8 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
         issueButton = (Button) findViewById(R.id.issue_act_button);
         issueButton.setEnabled(accessCreateIssue);
+        userInfoButton = (Button) findViewById(R.id.user_info_btn);
+        userInfoButton.setEnabled(accessCreateIssue);
     }
 
     @Override
@@ -176,7 +180,9 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         username = sharedPreferences.getString(USER_NAME, VOID);
         password = sharedPreferences.getString(PASSWORD, VOID);
         url = sharedPreferences.getString(URL, VOID);
+        showProgress(true, R.id.progress);
         new ShowUserDataTask(username, password, url, MainActivity.this).execute();
+
     }
 
 
@@ -188,10 +194,12 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         editor.putStringSet(PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
         editor.putStringSet(PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
         editor.apply();
+        showProgress(false, R.id.progress);
         startActivity(new Intent(this, CreateIssueActivity.class));
     }
 
     public void onUserInfoClick(View view) {
         startActivity(new Intent(this, UserInfoActivity.class));
+
     }
 }

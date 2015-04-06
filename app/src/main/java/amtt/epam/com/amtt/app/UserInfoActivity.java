@@ -25,15 +25,13 @@ public class UserInfoActivity extends  BaseActivity implements ShowUserInfoCallb
     private static final String COLON = " : ";
 
 
-    private TextView self, name, emailAddress, displayName, timeZone, locale, size;
+    private TextView name, emailAddress, displayName, timeZone, locale, size;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
         SharedPreferences sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
-
-        self = (TextView) findViewById(R.id.tv_self);
         name = (TextView) findViewById(R.id.tv_name);
         emailAddress = (TextView) findViewById(R.id.tv_email_address);
         displayName = (TextView) findViewById(R.id.tv_display_name);
@@ -43,6 +41,7 @@ public class UserInfoActivity extends  BaseActivity implements ShowUserInfoCallb
         String username = sharedPreferences.getString(USER_NAME, VOID);
         String password = sharedPreferences.getString(PASSWORD, VOID);
         String url = sharedPreferences.getString(URL, VOID);
+        showProgress(true, R.id.progress);
         new ShowUserInfoTask(username, password, url, UserInfoActivity.this).execute();
 
 
@@ -50,12 +49,13 @@ public class UserInfoActivity extends  BaseActivity implements ShowUserInfoCallb
 
     @Override
     public void onShowUserInfoResult(JiraUserInfo result) {
-        self.setText(getResources().getString(R.string.self) +COLON+ result.getSelf());
+
         name.setText(getResources().getString(R.string.user_name) +COLON+ result.getName());
         emailAddress.setText(getResources().getString(R.string.user_email)+COLON +result.getEmailAddress());
         displayName.setText(result.getDisplayName());
         timeZone.setText(getResources().getString(R.string.time_zone)+COLON +result.getTimeZone());
         locale.setText(getResources().getString(R.string.locale)+COLON +result.getLocale());
-        size.setText(String.valueOf(result.getGroups().getSize()));
+        size.setText(getResources().getString(R.string.size)+COLON +String.valueOf(result.getGroups().getSize()));
+        showProgress(false, R.id.progress);
     }
 }

@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class LoginActivity extends ActionBarActivity implements AuthorizationCallback {
+public class LoginActivity extends BaseActivity implements AuthorizationCallback {
 
     private EditText userName;
     private EditText password;
@@ -38,7 +38,9 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showProgress(true, R.id.progress);
                 new AuthorizationTask(LoginActivity.this, userName.getText().toString(), password.getText().toString(), url.getText().toString(), LoginActivity.this).execute();
+
             }
         });
     }
@@ -49,6 +51,7 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
         String resultMessage = result == AuthorizationResult.AUTHORIZATION_DENIED ? getResources().getString(R.string.authorization_denied) :
             getResources().getString(R.string.authorization_success);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+        showProgress(false, R.id.progress);
         if (resultMessage.equals(getResources().getString(R.string.authorization_success))) {
             SharedPreferences sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -60,4 +63,5 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
             finish();
         }
     }
+
 }
