@@ -47,6 +47,8 @@ public class TopButtonService extends Service {
         intitLayoutParams();
         wm.getDefaultDisplay();
         initView();
+
+
     }
 
     private void intitLayoutParams() {
