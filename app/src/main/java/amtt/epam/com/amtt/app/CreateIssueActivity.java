@@ -59,8 +59,9 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
                 username = sharedPreferences.getString(USER_NAME, VOID);
                 password = sharedPreferences.getString(PASSWORD, VOID);
                 url = sharedPreferences.getString(URL, VOID);
+                setVisibleProgress();
                 new ShowUserDataTask(username, password, url, CreateIssueActivity.this).execute();
-                findViewById(R.id.progress).setVisibility(View.VISIBLE);
+
             }
 
             @Override
@@ -102,8 +103,9 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
         username = sharedPreferences.getString(USER_NAME, VOID);
         password = sharedPreferences.getString(PASSWORD, VOID);
         url = sharedPreferences.getString(URL, VOID);
+        setVisibleProgress();
         new CreateIssueTask(username, password, url, issue.createSimpleIssue(mProjectKey, mIssueType, mDescription, mSummary), CreateIssueActivity.this).execute();
-        findViewById(R.id.progress).setVisibility(View.VISIBLE);
+
     }
 
     @Override
@@ -112,8 +114,9 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
                 getResources().getString(R.string.issue_creating_success);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
         if (resultMessage.equals(getResources().getString(R.string.issue_creating_success))) {
+            setInisibleProgress();
             finish();
-            findViewById(R.id.progress).setVisibility(View.GONE);
+
         }
     }
 
@@ -125,6 +128,14 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
         issueNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         inputIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
         inputIssueTypes.setAdapter(issueNames);
+        setInisibleProgress();
+    }
+
+    private void setVisibleProgress(){
+        findViewById(R.id.progress).setVisibility(View.VISIBLE);
+    }
+    private void setInisibleProgress(){
         findViewById(R.id.progress).setVisibility(View.GONE);
     }
+
 }

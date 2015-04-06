@@ -178,20 +178,28 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         username = sharedPreferences.getString(USER_NAME, VOID);
         password = sharedPreferences.getString(PASSWORD, VOID);
         url = sharedPreferences.getString(URL, VOID);
+        setVisibleProgress();
         new ShowUserDataTask(username, password, url, MainActivity.this).execute();
-        findViewById(R.id.progress).setVisibility(View.VISIBLE);
+
     }
 
 
     @Override
     public void onShowUserDataResult(JMetaResponse result) {
-        findViewById(R.id.progress).setVisibility(View.GONE);
         ArrayList<String> projectsNames = result.getProjectsNames();
         ArrayList<String> projectsKeys = result.getProjectsKeys();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putStringSet(PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
         editor.putStringSet(PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
         editor.apply();
+        setInisibleProgress();
         startActivity(new Intent(this, CreateIssueActivity.class));
+    }
+
+    private void setVisibleProgress(){
+        findViewById(R.id.progress).setVisibility(View.VISIBLE);
+    }
+    private void setInisibleProgress(){
+        findViewById(R.id.progress).setVisibility(View.GONE);
     }
 }
