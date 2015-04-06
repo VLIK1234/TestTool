@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -27,7 +27,6 @@ public class TopButtonView extends FrameLayout {
     private ViewGroup body;
     private ImageView imageView;
     private DisplayMetrics metrics;
-    private Display display;
     private int orientation;
     private float widthProportion;
     private float heightProportion;
@@ -46,7 +45,6 @@ public class TopButtonView extends FrameLayout {
         this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         this.metrics = getContext().getResources().getDisplayMetrics();
         orientation = getResources().getConfiguration().orientation;
-        display = windowManager.getDefaultDisplay();
         this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
@@ -58,58 +56,64 @@ public class TopButtonView extends FrameLayout {
         body = (ViewGroup) findViewById(R.id.body);
         imageView = (ImageView) findViewById(R.id.plus_button);
         imageView.setImageResource(R.drawable.ic_top_button);
+        body.setVisibility(GONE);
+
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-
-        Log.d(LOG_TAG, "Show body:" + body.getWidth() + " " + body.getHeight());
-//        checkFreeSpace(layoutParams.x,layoutParams.y, getWidth(), getHeight());
         if (getResources().getConfiguration().orientation != orientation) {
             changeProportinalPosition();
             body.setVisibility(GONE);
         }
     }
 
-    private void checkFreeSpace(int x, int y, int bodyWeight, int bodyHeight) {
-        Log.d(LOG_TAG, "Init:" + body.getWidth() + " " + body.getHeight() + " " + bodyWeight + " " + bodyHeight);
+    private void checkFreeSpace() {
         reParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
+
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             ((LinearLayout) body).setOrientation(LinearLayout.HORIZONTAL);
             reParams.addRule(RelativeLayout.RIGHT_OF, imageView.getId());
             body.setLayoutParams(reParams);
-            if (x < metrics.widthPixels / 2) {
-                Log.d(LOG_TAG, "Right");
-            } else {
-                Log.d(LOG_TAG, "Left");
-                Log.d(LOG_TAG, x + " " + body.getWidth() + " " + body.getHeight() + " " + metrics.widthPixels);
-                if (x + getWidth() - getHeight() > metrics.widthPixels) {
-                    Log.d(LOG_TAG, (x + getWidth() - getHeight()) + " > " + metrics.widthPixels + " x = " + x);
-                    layoutParams.x = x - getWidth() - getHeight();
-                    windowManager.updateViewLayout(this, layoutParams);
-                }
-            }
         } else {
             ((LinearLayout) body).setOrientation(LinearLayout.VERTICAL);
             reParams.addRule(RelativeLayout.BELOW, imageView.getId());
             body.setLayoutParams(reParams);
-            if (y < metrics.heightPixels / 2) {
-                Log.d(LOG_TAG, "Down");
-            } else {
-                Log.d(LOG_TAG, "Up");
-//                reParams.addRule(RelativeLayout.BELOW, 0);
-//                reParams.addRule(RelativeLayout.ALIGN_TOP);
-//                body.setLayoutParams(reParams);
-//                reParams.addRule(RelativeLayout.BELOW, body.getId());
-//                imageView.setLayoutParams(reParams);
-                if (y + getHeight() > metrics.heightPixels - getHeight() - getWidth() * 1.5) {
-                    layoutParams.y = y - getHeight();
-                    windowManager.updateViewLayout(this, layoutParams);
-                }
-            }
         }
+
+        ViewTreeObserver vto = body.getViewTreeObserver();
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                body.getViewTreeObserver().removeOnPreDrawListener(this);
+
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    if (layoutParams.x < metrics.widthPixels / 2) {
+                        //Right
+                    } else {
+                        //Left
+                        if (layoutParams.x + body.getWidth() > metrics.widthPixels) {
+                            layoutParams.x -= (layoutParams.x + body.getWidth() - metrics.widthPixels+body.getHeight());
+                            windowManager.updateViewLayout(TopButtonView.this, layoutParams);
+
+                        }
+                    }
+                } else {
+                    if (layoutParams.y < metrics.heightPixels / 2) {
+                        //Down
+                    } else {
+                        //Up
+                        if (layoutParams.y + body.getHeight() > metrics.heightPixels) {
+                            layoutParams.y -= (layoutParams.y + body.getHeight() - metrics.heightPixels+body.getWidth()*1.5);
+                            windowManager.updateViewLayout(TopButtonView.this, layoutParams);
+                        }
+                    }
+                }
+                return true;
+            }
+        });
+
     }
 
     private void changeProportinalPosition() {
@@ -215,8 +219,7 @@ public class TopButtonView extends FrameLayout {
                             body.setVisibility(GONE);
                         } else {
                             body.setVisibility(VISIBLE);
-                            Log.d(LOG_TAG, "Show body:" + body.getWidth() + " " + body.getHeight());
-                            checkFreeSpace(layoutParams.x, layoutParams.y, body.getWidth(), body.getHeight());
+                            checkFreeSpace();
                         }
                     }
                 }
