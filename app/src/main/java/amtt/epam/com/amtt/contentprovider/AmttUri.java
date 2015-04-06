@@ -8,6 +8,8 @@ public enum AmttUri {
     ACTIVITY_META,
     ACTIVITY_META_BY_NAME,
     STEP,
-    STEP_ID
+    STEP_ID,
+    STEP_WITH_META,
+    STEP_WITH_META_ID
 
 }

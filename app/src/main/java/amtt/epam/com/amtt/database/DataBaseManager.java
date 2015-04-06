@@ -6,10 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import amtt.epam.com.amtt.database.table.ActivityInfoTable;
+import amtt.epam.com.amtt.database.table.StepsTable;
+
 /**
  * Created by Artsiom_Kaliaha on 18.03.2015.
  */
-public class DataBaseManager extends SQLiteOpenHelper {
+public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstants {
 
     private static final Integer DATA_BASE_VERSION = 1;
     private static final String DATA_BASE_NAME = "amtt.db";
@@ -36,6 +39,39 @@ public class DataBaseManager extends SQLiteOpenHelper {
         try {
             database.beginTransaction();
             cursor = getReadableDatabase().query(tableName, projection, selection + "=?", selectionArgs, null, null, sortOrder);
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+        }
+
+        return cursor;
+    }
+
+    public Cursor joinQuery(String[] tablesName, String[] projection, String[] connectionColumns) {
+        StringBuilder rawQueryBuilder = new StringBuilder();
+        rawQueryBuilder.append(SELECT);
+
+        for (int i = 0; i < projection.length; i++) {
+            rawQueryBuilder.append(projection[i]);
+            if (i != projection.length - 1) {
+                rawQueryBuilder.append(COMMA);
+            }
+        }
+
+        final String firstTable = tablesName[0];
+        final String secondTable = tablesName[1];
+        rawQueryBuilder.append(FROM).append(firstTable)
+                .append(JOIN).append(secondTable)
+                .append(ON).append(firstTable).append(DOT).append(connectionColumns[0])
+                .append(EQUALS)
+                .append(secondTable).append(DOT).append(connectionColumns[1]);
+
+        Cursor cursor;
+        SQLiteDatabase database = getReadableDatabase();
+
+        try {
+            database.beginTransaction();
+            cursor = getReadableDatabase().rawQuery(rawQueryBuilder.toString(), null);
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();

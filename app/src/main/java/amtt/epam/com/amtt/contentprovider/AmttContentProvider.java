@@ -7,7 +7,6 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
-import android.text.TextUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,9 +15,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import amtt.epam.com.amtt.database.ActivityInfoTable;
 import amtt.epam.com.amtt.database.DataBaseManager;
-import amtt.epam.com.amtt.database.StepsTable;
+import amtt.epam.com.amtt.database.table.ActivityInfoTable;
+import amtt.epam.com.amtt.database.table.StepsTable;
+import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
+
 
 /**
  * Created by Artsiom_Kaliaha on 23.03.2015.
@@ -29,11 +30,14 @@ public class AmttContentProvider extends ContentProvider {
 
     public static final Uri ACTIVITY_META_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + ActivityInfoTable.TABLE_NAME);
     public static final Uri STEP_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + StepsTable.TABLE_NAME);
+    public static final Uri STEP_WITH_META_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + StepsWithMetaTable.TABLE_NAME);
 
     public static final String ACTIVITY_META_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + ActivityInfoTable.TABLE_NAME;
     public static final String ACTIVITY_META_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + ActivityInfoTable.TABLE_NAME;
     public static final String STEP_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsTable.TABLE_NAME;
     public static final String STEP_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsTable.TABLE_NAME;
+    public static final String STEP_WITH_META_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsWithMetaTable.TABLE_NAME;
+    public static final String STEP_WITH_META_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsWithMetaTable.TABLE_NAME;
 
     private static final UriMatcher sUriMatcher;
     private static Map<Integer, String> sContentType;
@@ -46,18 +50,24 @@ public class AmttContentProvider extends ContentProvider {
         sUriMatcher.addURI(AUTHORITY, ActivityInfoTable.TABLE_NAME + "/#", AmttUri.ACTIVITY_META_BY_NAME.ordinal());
         sUriMatcher.addURI(AUTHORITY, StepsTable.TABLE_NAME, AmttUri.STEP.ordinal());
         sUriMatcher.addURI(AUTHORITY, StepsTable.TABLE_NAME + "/#", AmttUri.STEP_ID.ordinal());
+        sUriMatcher.addURI(AUTHORITY, StepsWithMetaTable.TABLE_NAME, AmttUri.STEP_WITH_META.ordinal());
+        sUriMatcher.addURI(AUTHORITY, StepsWithMetaTable.TABLE_NAME + "/#", AmttUri.STEP_WITH_META_ID.ordinal());
 
         sContentType = new HashMap<>();
         sContentType.put(AmttUri.ACTIVITY_META.ordinal(), ACTIVITY_META_CONTENT_TYPE);
         sContentType.put(AmttUri.ACTIVITY_META_BY_NAME.ordinal(), ACTIVITY_META_CONTENT_ITEM_TYPE);
         sContentType.put(AmttUri.STEP.ordinal(), STEP_CONTENT_TYPE);
         sContentType.put(AmttUri.STEP_ID.ordinal(), STEP_CONTENT_ITEM_TYPE);
+        sContentType.put(AmttUri.STEP_WITH_META.ordinal(), STEP_WITH_META_CONTENT_TYPE);
+        sContentType.put(AmttUri.STEP_WITH_META_ID.ordinal(), STEP_WITH_META_CONTENT_ITEM_TYPE);
 
         sProjections = new HashMap<>();
         sProjections.put(AmttUri.ACTIVITY_META.ordinal(), ActivityInfoTable.PROJECTION);
         sProjections.put(AmttUri.ACTIVITY_META_BY_NAME.ordinal(), ActivityInfoTable.PROJECTION);
         sProjections.put(AmttUri.STEP.ordinal(), StepsTable.PROJECTION);
         sProjections.put(AmttUri.STEP_ID.ordinal(), StepsTable.PROJECTION);
+        sProjections.put(AmttUri.STEP_WITH_META.ordinal(), StepsWithMetaTable.PROJECTION);
+        sProjections.put(AmttUri.STEP_WITH_META_ID.ordinal(), StepsWithMetaTable.PROJECTION);
     }
 
     @Override
@@ -67,12 +77,23 @@ public class AmttContentProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        if (!isProjectionCorrect(sUriMatcher.match(uri), projection)) {
+        int matchedUri = sUriMatcher.match(uri);
+        if (!isProjectionCorrect(matchedUri, projection)) {
             throw new IllegalArgumentException("Incorrect projection column(s)");
         }
 
-        String tableName = uri.getLastPathSegment();
-        return getDataBaseManager().query(tableName, projection, selection, selectionArgs, sortOrder);
+        Cursor cursor;
+        if (matchedUri == AmttUri.STEP_WITH_META.ordinal() || matchedUri == AmttUri.STEP_WITH_META_ID.ordinal()) {
+            String[] tablesName = {StepsTable.TABLE_NAME, ActivityInfoTable.TABLE_NAME};
+            cursor = getDataBaseManager().joinQuery(tablesName,
+                    StepsWithMetaTable.PROJECTION,
+                    new String[]{StepsTable._ASSOCIATED_ACTIVITY, ActivityInfoTable._ACTIVITY_NAME});
+        } else {
+            String tableName = uri.getLastPathSegment();
+            cursor = getDataBaseManager().query(tableName, projection, selection, selectionArgs, sortOrder);
+        }
+
+        return cursor;
     }
 
     @Override

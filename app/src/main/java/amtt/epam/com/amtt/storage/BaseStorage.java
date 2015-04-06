@@ -13,7 +13,7 @@ public class BaseStorage {
     public static SharedPreferences setting;
     public static SharedPreferences.Editor editor;
 
-    private BaseStorage(){
+    private BaseStorage() {
 
     }
 

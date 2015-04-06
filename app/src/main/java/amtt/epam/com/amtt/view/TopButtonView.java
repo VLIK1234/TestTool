@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.view;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import amtt.epam.com.amtt.R;
  * Created by Ivan_Bakach on 23.03.2015.
  */
 public class TopButtonView extends FrameLayout {
+    
     private final static String LOG_TAG = "TAG";
 
     private WindowManager windowManager;
@@ -93,21 +93,16 @@ public class TopButtonView extends FrameLayout {
                         //Right
                     } else {
                         //Left
-                        if (layoutParams.x + body.getWidth() > metrics.widthPixels) {
-                            layoutParams.x -= (layoutParams.x + body.getWidth() - metrics.widthPixels+body.getHeight());
-                            windowManager.updateViewLayout(TopButtonView.this, layoutParams);
-
-                        }
+                        layoutParams.x -= (layoutParams.x + body.getWidth() - metrics.widthPixels + body.getHeight());
+                        windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                     }
                 } else {
-                    if (layoutParams.y < metrics.heightPixels / 2) {
+                    if (layoutParams.y + body.getWidth()/2 < metrics.heightPixels / 2 ) {
                         //Down
                     } else {
                         //Up
-                        if (layoutParams.y + body.getHeight() > metrics.heightPixels) {
-                            layoutParams.y -= (layoutParams.y + body.getHeight() - metrics.heightPixels+body.getWidth()*1.5);
-                            windowManager.updateViewLayout(TopButtonView.this, layoutParams);
-                        }
+                        layoutParams.y -= (layoutParams.y + body.getHeight() - metrics.heightPixels + body.getWidth() * 1.5);
+                        windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                     }
                 }
                 return true;

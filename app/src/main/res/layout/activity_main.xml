@@ -1,5 +1,5 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/material_deep_teal_200">
@@ -10,54 +10,62 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true" />
 
     <Button
         android:id="@+id/save_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/save_image"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/login_button"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/login_button" />
 
     <Button
         android:id="@+id/save_activity_info_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/save_activity_info"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/save_image_button"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/save_image_button" />
 
     <Button
         android:id="@+id/step_button"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:text="@string/step_button"
         android:layout_marginTop="16dp"
-        android:layout_below="@+id/save_activity_info_button"/>
+        android:layout_below="@+id/save_activity_info_button" />
+    android:layout_below="@+id/show_steps_button"/>
 
     <Button
         android:id="@+id/clear_db_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/clear_db_button"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
+        android:layout_marginTop="16dp"
         android:layout_below="@+id/step_button"
-        android:layout_marginTop="16dp"/>
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
 
-    <TextView
-        android:id="@+id/text"
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/hello_world"/>
+        android:text="@string/button_issue"
+        android:id="@+id/issue_act_button"
+        android:layout_below="@id/login_button"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="onIssueClick"
+        android:enabled="false" />
+
+    <Button
+        android:id="@+id/show_steps_button"
+        android:text="@string/show_steps_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
     <!--
         <Button
             android:id="@+id/button_show"
@@ -76,16 +84,19 @@
             android:layout_centerInParent="true"
             android:text="@string/button_stop"/>
     -->
+    android:layout_alignParentStart="true"
+    android:layout_alignParentLeft="true"/>
 
     <Button
+        android:id="@+id/crash_button"
+        android:text="@string/crash_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button_issue"
-        android:id="@+id/issue_act_button"
-        android:layout_below="@+id/clear_db_button"
         android:layout_alignRight="@+id/step_button"
         android:layout_alignEnd="@+id/step_button"
         android:layout_marginTop="16dp"
-        android:onClick="onIssueClick"/>
+        android:onClick="onIssueClick"
+        android:layout_below="@+id/clear_db_button" />
+
 
 </RelativeLayout>

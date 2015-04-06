@@ -17,6 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:text="Third"
-        android:onClick="onClickThird"/>
+        android:onClick="onClickThird" />
 
 </RelativeLayout>

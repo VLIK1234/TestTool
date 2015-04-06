@@ -1,4 +1,3 @@
-
 package amtt.epam.com.amtt.view;
 
 import android.content.Context;
@@ -36,9 +35,9 @@ public class CircleScrollListView extends SurfaceView implements SurfaceHolder.C
 
     private ArrayList<CircleDrawItem> datas = new ArrayList<CircleDrawItem>();
 
-    int[] buttonDrawableResourceIds = new int[] {
+    int[] buttonDrawableResourceIds = new int[]{
             R.drawable.button_add, R.drawable.button_share, R.drawable.button_auth,
-            R.drawable.button_screen,R.drawable.button_bug_rep
+            R.drawable.button_screen, R.drawable.button_bug_rep
     };
 
     public int mCenterX;
@@ -69,7 +68,7 @@ public class CircleScrollListView extends SurfaceView implements SurfaceHolder.C
     }
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth,
-            int reqHeight) {
+                                            int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -93,7 +92,7 @@ public class CircleScrollListView extends SurfaceView implements SurfaceHolder.C
     }
 
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId, int reqWidth,
-            int reqHeight) {
+                                                         int reqHeight) {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -141,12 +140,12 @@ public class CircleScrollListView extends SurfaceView implements SurfaceHolder.C
             datas.add(circleDrawItem);
         }
 
-       resume();
+        resume();
 
         mThread.start();
     }
 
-    public void resume(){
+    public void resume() {
         Log.d(LOG_TAG, "THREAD START");
         mThread = new Thread(new Runnable() {
             @Override
@@ -158,7 +157,7 @@ public class CircleScrollListView extends SurfaceView implements SurfaceHolder.C
         });
     }
 
-    public void pause(){
+    public void pause() {
         Log.d(LOG_TAG, "THREAD STOP");
         mThread.interrupt();
     }

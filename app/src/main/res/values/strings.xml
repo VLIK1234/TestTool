@@ -6,10 +6,11 @@
 
     <string name="title_activity_login">Login to Jira</string>
     <string name="login_button">Log in</string>
+    <string name="show_steps_button">Show steps</string>
 
     <string name="authorization_success">Authorization is passed</string>
     <string name="authorization_denied">Authorization is not passed</string>
-    <string name="title_activity_test_issue">TestIssueActivity</string>
+    <string name="title_activity_create_issue">Creating issue</string>
     <string name="issue_creating_success">Issue is created</string>
     <string name="issue_creating_unsuccess">Issue is not created</string>
     <string name="button_show">Show</string>
@@ -24,6 +25,9 @@
 
     <string name="db_saving_error">Error while saving activity info</string>
     <string name="db_saving_success">Activity info saved</string>
+
+    <string name="crash_button">Make crash</string>
+
     <string name="step_saving_error">Error while saving step</string>
     <string name="step_saving_success">Step saved</string>
     <string name="button_issue">Issue</string>
@@ -36,4 +40,14 @@
     <string name="summary">Summary</string>
     <string name="description">Description</string>
     <string name="create_issue">Create</string>
+    <string name="title_activity_user_info">UserInfoActivity</string>
+    <string name="url">URL</string>
+    <string name="title_activity_steps">StepsActivity</string>
+
+    <string name="screenshot_image_description">image view for screenshot</string>
+
+    <string name="step_text">Step</string>
+
+    <string name="empty_list_view">There is no saved steps =(</string>
+
 </resources>
