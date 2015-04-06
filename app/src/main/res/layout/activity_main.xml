@@ -98,5 +98,12 @@
         android:onClick="onIssueClick"
         android:layout_below="@+id/clear_db_button" />
 
+    <Button
+        android:id="@+id/show_crash_info"
+        android:text="@string/show_crash_info_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/crash_button"/>
+
 
 </RelativeLayout>
