@@ -44,11 +44,14 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     private static final String ACCESS = "access";
     private static final String PROJECTS_KEYS = "projectsKeys";
 
+    private static int sStepNumber;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
+        new DbClearTask(MainActivity.this).execute();
 
         startService(new Intent(this, TopButtonService.class));
         TopButtonService.show(this);
@@ -86,45 +89,30 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         issueButton.setEnabled(accessCreateIssue);
         Button stepButton = (Button) findViewById(R.id.step_button);
         stepButton.setOnClickListener(new View.OnClickListener() {
-                                          @Override
-                                          public void onClick(View v) {
-                                              View rootView = getWindow().getDecorView();
-                                              rootView.setDrawingCacheEnabled(true);
-                                              Bitmap bitmap = rootView.getDrawingCache();
-                                              Rect rect = new Rect();
-                                              getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
+            @Override
+            public void onClick(View v) {
+                View rootView = getWindow().getDecorView();
+                rootView.setDrawingCacheEnabled(true);
+                Bitmap bitmap = rootView.getDrawingCache();
+                Rect rect = new Rect();
+                getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
 
-                                              new StepSavingTask(MainActivity.this, MainActivity.this, bitmap, rect, MainActivity.this.getComponentName(), newStepsSequence).execute();
-                                              newStepsSequence = false;
-                                          }
-                                      }
-
-        );
-
-        Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
-        clearDbButton.setOnClickListener(new View.OnClickListener()
-
-                                         {
-                                             @Override
-                                             public void onClick(View v) {
-                                                 new DbClearTask(MainActivity.this).execute();
-                                             }
-                                         }
-
-        );
+                sStepNumber++;
+                new StepSavingTask(MainActivity.this, MainActivity.this, bitmap, rect, MainActivity.this.getComponentName(), sStepNumber).execute();
+                newStepsSequence = false;
+            }
+        });
 
         Button showStepsButton = (Button) findViewById(R.id.show_steps_button);
         showStepsButton.setOnClickListener(new View.OnClickListener()
 
-                                           {
-                                               @Override
-                                               public void onClick(View v) {
-                                                   startActivity(new Intent(MainActivity.this, StepsActivity.class));
-                                                   newStepsSequence = true;
-                                               }
-                                           }
-
-        );
+        {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, StepsActivity.class));
+                newStepsSequence = true;
+            }
+        });
     }
 
     @Override

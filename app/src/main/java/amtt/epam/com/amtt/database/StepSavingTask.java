@@ -30,7 +30,7 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
     private static Map<Integer, String> sScreenOrientation;
     private static Map<Integer, String> sSoftInputMode;
     private static Map<Integer, String> sUiOptions;
-    private static int sStepsCount = 0;
+    private int mStepNumber;
 
     static {
         sConfigChanges = new HashMap<>();
@@ -110,7 +110,7 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
     private final ComponentName mComponentName;
     private final int mCurrentSdkVersion;
 
-    public StepSavingTask(Context context, StepSavingCallback callback, Bitmap bitmap, Rect rect, ComponentName componentName, boolean newStepsSequence) {
+    public StepSavingTask(Context context, StepSavingCallback callback, Bitmap bitmap, Rect rect, ComponentName componentName, int stepNumber) {
         mContext = context;
         mCallback = callback;
         mBitmap = bitmap;
@@ -118,8 +118,7 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
         mPath = context.getCacheDir().getPath();
         mComponentName = componentName;
         mCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
-
-        sStepsCount = newStepsSequence ? 1 : sStepsCount + 1;
+        mStepNumber = stepNumber;
     }
 
     @Override
@@ -197,7 +196,7 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
 
     private void saveStep(String screenPath) {
         ContentValues values = new ContentValues();
-        values.put(StepsTable._ID, sStepsCount);
+        values.put(StepsTable._ID, mStepNumber);
         values.put(StepsTable._SCREEN_PATH, screenPath);
         values.put(StepsTable._ASSOCIATED_ACTIVITY, mComponentName.getClassName());
         mContext.getContentResolver().insert(AmttContentProvider.STEP_CONTENT_URI, values);

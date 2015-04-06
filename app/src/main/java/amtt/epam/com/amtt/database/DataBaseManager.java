@@ -6,16 +6,27 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
+import amtt.epam.com.amtt.database.table.Table;
 
 /**
  * Created by Artsiom_Kaliaha on 18.03.2015.
  */
-public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstants {
+public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstants, BaseColumns {
 
-    private static final Integer DATA_BASE_VERSION = 1;
+    private static final Integer DATA_BASE_VERSION = 2;
     private static final String DATA_BASE_NAME = "amtt.db";
+    private static final List<Class> sTables;
+
+    static {
+        sTables = new ArrayList<>();
+        sTables.add(ActivityInfoTable.class);
+        sTables.add(StepsTable.class);
+    }
 
     public DataBaseManager(Context context) {
         super(context, DATA_BASE_NAME, null, DATA_BASE_VERSION);
@@ -23,13 +34,37 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(new ActivityInfoTable().getCreateQuery());
-        db.execSQL(new StepsTable().getCreateQuery());
+        createTables(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        dropTables(db);
+        createTables(db);
+    }
 
+    private void createTables(SQLiteDatabase db) {
+        try {
+            for (Class table : sTables) {
+                db.execSQL(((Table) table.newInstance()).getCreateQuery());
+            }
+        } catch (IllegalAccessException e) {
+            //ignored
+        } catch (InstantiationException e) {
+            //ignored
+        }
+    }
+
+    private void dropTables(SQLiteDatabase db) {
+        try {
+            for (Class table : sTables) {
+                db.execSQL(DROP + ((Table)table.newInstance()).getTableName());
+            }
+        } catch (IllegalAccessException e) {
+            //ignored
+        } catch (InstantiationException e) {
+            //ignored
+        }
     }
 
     public Cursor query(String tableName, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
