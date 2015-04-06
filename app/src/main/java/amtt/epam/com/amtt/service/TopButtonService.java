@@ -1,10 +1,12 @@
 package amtt.epam.com.amtt.service;
 
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.BaseActivity;
 import amtt.epam.com.amtt.app.SecondActivity;
 import amtt.epam.com.amtt.view.TopButtonView;
@@ -23,14 +26,14 @@ public class TopButtonService extends Service {
 
     public static final String ACTION_SHOW = "SHOW";
     public static final String ACTION_CLOSE = "CLOSE";
-    private DisplayMetrics displayMetrics;
+    private static final String LOG_TAG = "Log";
     private int xInitPosition;
     private int yInitPosition;
     private TopButtonView view;
     private WindowManager wm;
     private WindowManager.LayoutParams layoutParams;
-    private final String LOG_TAG = "myLogs";
     private boolean isViewAdd = false;
+    private NotificationManager notifiManager;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -41,14 +44,12 @@ public class TopButtonService extends Service {
     public void onCreate() {
         super.onCreate();
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        displayMetrics = getBaseContext().getResources().getDisplayMetrics();
+        DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
         xInitPosition = displayMetrics.widthPixels / 2;
         yInitPosition = displayMetrics.heightPixels / 2;
         intitLayoutParams();
-        wm.getDefaultDisplay();
         initView();
-
-
+        notifiManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
 
     private void intitLayoutParams() {
@@ -143,6 +144,7 @@ public class TopButtonService extends Service {
 
             if (ACTION_SHOW.equals(action)) {
                 show();
+                sendNotif();
             } else if (ACTION_CLOSE.equals(action)) {
                 close();
             }
@@ -150,6 +152,15 @@ public class TopButtonService extends Service {
             Log.w(LOG_TAG, "Tried to onStartCommand() with a null intent.");
         }
         return START_NOT_STICKY;
+    }
+
+    private void sendNotif() {
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_notification)
+                        .setContentTitle("My notification")
+                        .setContentText("Hello World!");
+        notifiManager.notify(01, builder.build());
     }
 
 }

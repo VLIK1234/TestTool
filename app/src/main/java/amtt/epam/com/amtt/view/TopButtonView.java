@@ -19,7 +19,7 @@ import amtt.epam.com.amtt.R;
  * Created by Ivan_Bakach on 23.03.2015.
  */
 public class TopButtonView extends FrameLayout {
-    
+
     private final static String LOG_TAG = "TAG";
 
     private WindowManager windowManager;
