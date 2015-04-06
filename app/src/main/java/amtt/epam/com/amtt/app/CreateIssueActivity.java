@@ -1,17 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.CreateIssueTask;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
@@ -22,6 +10,13 @@ import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.Logger;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+import android.widget.*;
+
+import java.util.ArrayList;
 
 
 public class CreateIssueActivity extends ActionBarActivity implements CreationIssueCallback, ShowUserDataCallback {
@@ -108,7 +103,7 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
     @Override
     public void onCreationIssueResult(CreationIssueResult result) {
         String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
-                getResources().getString(R.string.issue_creating_success);
+            getResources().getString(R.string.issue_creating_success);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
         if (resultMessage.equals(getResources().getString(R.string.issue_creating_success))) {
             finish();

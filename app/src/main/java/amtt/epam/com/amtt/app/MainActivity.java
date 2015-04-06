@@ -1,20 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import com.crashlytics.android.Crashlytics;
-
-import java.util.ArrayList;
-
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
@@ -26,7 +11,20 @@ import amtt.epam.com.amtt.database.StepSavingResult;
 import amtt.epam.com.amtt.database.StepSavingTask;
 import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.Converter;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends BaseActivity implements StepSavingCallback, ShowUserDataCallback {
@@ -191,5 +189,9 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         editor.putStringSet(PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
         editor.apply();
         startActivity(new Intent(this, CreateIssueActivity.class));
+    }
+
+    public void onUserInfoClick(View view) {
+        startActivity(new Intent(this, UserInfoActivity.class));
     }
 }

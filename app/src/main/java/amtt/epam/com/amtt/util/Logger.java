@@ -37,6 +37,7 @@ public class Logger {
             android.util.Log.i(mNameClass, mMessage);
         }
     }
+
     public static void printRequestPost(HttpPost post) throws IOException {
         HttpEntity entity = post.getEntity();
 

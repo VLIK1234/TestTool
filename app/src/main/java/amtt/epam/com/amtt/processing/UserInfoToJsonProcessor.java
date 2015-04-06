@@ -1,6 +1,6 @@
 package amtt.epam.com.amtt.processing;
 
-import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
+import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.http.HttpEntity;
@@ -11,13 +11,13 @@ import org.apache.http.util.EntityUtils;
 /**
  * Created by Irina Monchenko on 01.04.2015.
  */
-public class ProjectsToJsonProcessor implements Processor<JMetaResponse, HttpEntity> {
+public class UserInfoToJsonProcessor implements Processor<JiraUserInfo, HttpEntity> {
 
     @Override
-    public JMetaResponse process(HttpEntity inputStream) throws Exception {
+    public JiraUserInfo process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
         Gson gson = new GsonBuilder().create();
-        return gson.fromJson(_response, JMetaResponse.class);
+        return gson.fromJson(_response, JiraUserInfo.class);
     }
 }
 

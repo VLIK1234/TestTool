@@ -1,5 +1,9 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.authorization.AuthorizationCallback;
+import amtt.epam.com.amtt.authorization.AuthorizationResult;
+import amtt.epam.com.amtt.authorization.AuthorizationTask;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -7,11 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.authorization.AuthorizationCallback;
-import amtt.epam.com.amtt.authorization.AuthorizationResult;
-import amtt.epam.com.amtt.authorization.AuthorizationTask;
 
 public class LoginActivity extends ActionBarActivity implements AuthorizationCallback {
 
@@ -48,7 +47,7 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
     public void onAuthorizationResult(AuthorizationResult result) {
 
         String resultMessage = result == AuthorizationResult.AUTHORIZATION_DENIED ? getResources().getString(R.string.authorization_denied) :
-                getResources().getString(R.string.authorization_success);
+            getResources().getString(R.string.authorization_success);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
         if (resultMessage.equals(getResources().getString(R.string.authorization_success))) {
             SharedPreferences sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);

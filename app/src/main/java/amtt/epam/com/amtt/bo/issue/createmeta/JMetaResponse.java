@@ -49,7 +49,6 @@ public class JMetaResponse {
     }
 
 
-
     public ArrayList<String> getProjectsKeys() {
         ArrayList<String> projectsKeys = new ArrayList<>();
         int size = mProjects.size();

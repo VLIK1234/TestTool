@@ -1,10 +1,9 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-
-import amtt.epam.com.amtt.R;
 
 /**
  * Created by Ivan_Bakach on 19.03.2015.

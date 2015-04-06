@@ -1,17 +1,12 @@
 package amtt.epam.com.amtt.view;
 
+import amtt.epam.com.amtt.R;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
-import amtt.epam.com.amtt.R;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
@@ -50,7 +45,7 @@ public class TopButtonView extends FrameLayout {
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
         layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
+            | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
         layoutParams.format = PixelFormat.TRANSLUCENT;
         layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
 
@@ -131,8 +126,8 @@ public class TopButtonView extends FrameLayout {
                 lastY = (int) event.getRawY();
 
                 if (moving
-                        || Math.abs(totalDeltaX) >= threshold
-                        || Math.abs(totalDeltaY) >= threshold) {
+                    || Math.abs(totalDeltaX) >= threshold
+                    || Math.abs(totalDeltaY) >= threshold) {
                     moving = true;
 
                     // update the position of the view
@@ -156,7 +151,7 @@ public class TopButtonView extends FrameLayout {
                 if (event.getPointerCount() == 1) {
 
                     boolean tap = Math.abs(totalDeltaX) < threshold
-                            && Math.abs(totalDeltaY) < threshold;
+                        && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
 //                        if (mOnClickListener != null) {
 //                            mOnClickListener.onClick(this);

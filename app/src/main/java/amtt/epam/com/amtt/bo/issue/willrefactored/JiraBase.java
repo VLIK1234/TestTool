@@ -1,8 +1,7 @@
 package amtt.epam.com.amtt.bo.issue.willrefactored;
 
-import com.google.gson.annotations.SerializedName;
-
 import amtt.epam.com.amtt.bo.issue.willrefactored.issuekey.JiraBaseFields;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Iryna_Monchanka on 3/26/2015.

@@ -49,5 +49,13 @@
     <string name="step_text">Step</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
+    <string name="display_name">Display Name</string>
+    <string name="user_email">Email</string>
+    <string name="time_zone">Time zone</string>
+    <string name="locale">Locale</string>
+    <string name="groups">Groups</string>
+    <string name="size">Size</string>
+    <string name="user_info">User info</string>
+    <string name="self">Self</string>
 
 </resources>

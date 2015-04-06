@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.R;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -46,8 +47,8 @@ public class BaseActivity extends Activity {
                     Rect rect = new Rect();
                     getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
                     final String cachePath =
-                            Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ? getExternalCacheDir().getPath() :
-                                    getCacheDir().getPath();
+                        Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ? getExternalCacheDir().getPath() :
+                            getCacheDir().getPath();
                     //new ImageSavingTask((BaseActivity) context, bitmap, rect, cachePath).execute();
                     Toast.makeText(context, cachePath, Toast.LENGTH_SHORT).show();
                 }
@@ -74,4 +75,8 @@ public class BaseActivity extends Activity {
 //    public int getScreenNumber() {
 //        return BaseStorage.getNumber();
 //    }
+
+    private void showProgress(boolean show, int idProgress){
+        findViewById(idProgress).setVisibility(show ? View.VISIBLE : View.GONE);
+    }
 }

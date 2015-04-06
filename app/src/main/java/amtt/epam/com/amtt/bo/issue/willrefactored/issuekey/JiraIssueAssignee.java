@@ -1,6 +1,6 @@
 package amtt.epam.com.amtt.bo.issue.willrefactored.issuekey;
 
-import amtt.epam.com.amtt.bo.issue.willrefactored.JiraAvatarUrls;
+import amtt.epam.com.amtt.bo.issue.user.JiraAvatarUrls;
 
 /**
  * Created by Irina Monchenko on 30.03.2015.

@@ -1,7 +1,7 @@
 package amtt.epam.com.amtt.authorization;
 
+import amtt.epam.com.amtt.util.Logger;
 import android.util.Base64;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -9,8 +9,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-
-import amtt.epam.com.amtt.util.Logger;
 
 /**
  * Created by Artsiom_Kaliaha on 24.03.2015.
@@ -25,6 +23,7 @@ public class JiraApi {
 
     private static final String ISSUE_PATH = "/rest/api/2/issue/";
     private static final String USER_PROJECTS_PATH = "/rest/api/2/issue/createmeta";
+    private static final String USER_INFO_PATH = "/rest/api/2/user?username=";
     public static final int STATUS_AUTHORIZED = 200;
     public static final int STATUS_CREATED = 201;
 
@@ -61,8 +60,16 @@ public class JiraApi {
         HttpResponse httpRsponse = client.execute(get);
         // Logger.printResponseLog(httpRsponse);
         // Read all the text returned by the server
-        HttpEntity getResponseEntity = httpRsponse.getEntity();
-        return getResponseEntity;
+        return httpRsponse.getEntity();
+    }
+
+    public HttpEntity searchUserInfo(final String userName, final String password, final String mUrl) throws Exception {
+        String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
+        HttpClient client = new DefaultHttpClient();
+        HttpGet get = new HttpGet(mUrl + USER_INFO_PATH + userName);
+        get.addHeader(AUTH_HEADER, credentials);
+        HttpResponse httpRsponse = client.execute(get);
+        return httpRsponse.getEntity();
     }
 
 }
