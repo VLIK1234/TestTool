@@ -1,6 +1,6 @@
 package amtt.epam.com.amtt.service;
 
-import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -26,13 +26,15 @@ public class TopButtonService extends Service {
     public static final String ACTION_CLOSE = "CLOSE";
     private static final String LOG_TAG = "Log";
     public static final int ID = 7;
+    public static final String ACTION_HIDE_VIEW = "HIDE_VIEW";
     private int xInitPosition;
     private int yInitPosition;
     private TopButtonView view;
     private WindowManager wm;
     private WindowManager.LayoutParams layoutParams;
     private boolean isViewAdd = false;
-    private NotificationManager notifiManager;
+    private NotificationCompat.Action action;
+    private NotificationCompat.Builder builder;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -48,7 +50,10 @@ public class TopButtonService extends Service {
         yInitPosition = displayMetrics.heightPixels / 2;
         intitLayoutParams();
         initView();
-        notifiManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        action = new NotificationCompat.Action(
+                R.drawable.ic_stat_action_visibility_off,
+                getString(R.string.button_hide),
+                PendingIntent.getService(this, 0, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_HIDE_VIEW), PendingIntent.FLAG_UPDATE_CURRENT));
     }
 
     private void intitLayoutParams() {
@@ -107,6 +112,20 @@ public class TopButtonService extends Service {
         stopSelf();
     }
 
+    public final void setVisibilityView() {
+        if (view.getVisibility() == View.VISIBLE) {
+            view.setVisibility(View.GONE);
+            action.icon = R.drawable.ic_stat_action_visibility;
+            action.title = getString(R.string.button_show);
+            startForeground(ID, builder.build());
+        } else {
+            view.setVisibility(View.VISIBLE);
+            action.icon = R.drawable.ic_stat_action_visibility_off;
+            action.title = getString(R.string.button_hide);
+            startForeground(ID, builder.build());
+        }
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
@@ -119,6 +138,8 @@ public class TopButtonService extends Service {
                 startForegroundNotifi();
             } else if (ACTION_CLOSE.equals(action)) {
                 close();
+            } else if (ACTION_HIDE_VIEW.equals(action)) {
+                setVisibilityView();
             }
         } else {
             Log.w(LOG_TAG, "Tried to onStartCommand() with a null intent.");
@@ -127,12 +148,13 @@ public class TopButtonService extends Service {
     }
 
     private void startForegroundNotifi() {
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_notification)
-                        .setContentTitle("AMTT")
-                        .setOngoing(true)
-                        .setContentText("Button-assistant is running.");
+        builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("AMTT")
+                .setOngoing(true)
+                .setContentText("Button-assistant is running.");
+
+        builder.addAction(action);
         startForeground(ID, builder.build());
     }
 
