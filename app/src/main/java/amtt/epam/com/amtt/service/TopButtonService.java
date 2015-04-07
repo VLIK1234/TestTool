@@ -50,10 +50,6 @@ public class TopButtonService extends Service {
         yInitPosition = displayMetrics.heightPixels / 2;
         intitLayoutParams();
         initView();
-        action = new NotificationCompat.Action(
-                R.drawable.ic_stat_action_visibility_off,
-                getString(R.string.button_hide),
-                PendingIntent.getService(this, 0, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_HIDE_VIEW), PendingIntent.FLAG_UPDATE_CURRENT));
     }
 
     private void intitLayoutParams() {
@@ -153,6 +149,11 @@ public class TopButtonService extends Service {
                 .setContentTitle("AMTT")
                 .setOngoing(true)
                 .setContentText("Button-assistant is running.");
+
+        action = new NotificationCompat.Action(
+                R.drawable.ic_stat_action_visibility_off,
+                getString(R.string.button_hide),
+                PendingIntent.getService(this, 0, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_HIDE_VIEW), PendingIntent.FLAG_UPDATE_CURRENT));
 
         builder.addAction(action);
         startForeground(ID, builder.build());
