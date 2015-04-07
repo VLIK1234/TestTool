@@ -10,6 +10,7 @@ import amtt.epam.com.amtt.database.StepSavingCallback;
 import amtt.epam.com.amtt.database.StepSavingResult;
 import amtt.epam.com.amtt.database.StepSavingTask;
 import amtt.epam.com.amtt.service.TopButtonService;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,16 +34,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     private Button issueButton, userInfoButton;
     private int mScreenNumber = 1;
     private boolean newStepsSequence = false;
-    private static final String USER_NAME = "username";
-    private static final String PASSWORD = "password";
-    private static final String URL = "url";
-    private static final String NAME_SP = "data";
-    private static final String VOID = "";
-    private static final String PROJECTS_NAMES = "projectsNames";
-    private static final String ACCESS = "access";
-    private static final String PROJECTS_KEYS = "projectsKeys";
-    private final String typeSearchData = "SearchIssue";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +63,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
 
         Thread.currentThread().setUncaughtExceptionHandler(new AmttExceptionHandler(this));
 
-
+        //TODO double initialization
         Button clearDbbutton = (Button) findViewById(R.id.clear_db_button);
         clearDbbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,12 +71,17 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                 new DbClearTask(MainActivity.this).execute();
             }
         });
-        sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
-        accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
+        sharedPreferences = getSharedPreferences(Constants.NAME_SP, MODE_PRIVATE);
+
+        //TODO we update it in onPostResume method, why we have this lines here?
+        //start
+        accessCreateIssue = sharedPreferences.getBoolean(Constants.ACCESS, false);
         issueButton = (Button) findViewById(R.id.issue_act_button);
         issueButton.setEnabled(accessCreateIssue);
-        userInfoButton= (Button) findViewById(R.id.user_info_btn);
+        userInfoButton = (Button) findViewById(R.id.user_info_btn);
         userInfoButton.setEnabled(accessCreateIssue);
+        //end
+
         Button stepButton = (Button) findViewById(R.id.step_button);
         stepButton.setOnClickListener(new View.OnClickListener() {
                                           @Override
@@ -95,7 +91,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                                               Bitmap bitmap = rootView.getDrawingCache();
                                               Rect rect = new Rect();
                                               getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-
+                                              //TODO Do we need to save screenshot here?
                                               new StepSavingTask(MainActivity.this, MainActivity.this, bitmap, rect, MainActivity.this.getComponentName(), newStepsSequence).execute();
                                               newStepsSequence = false;
                                           }
@@ -103,6 +99,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
 
         );
 
+        //TODO double initialization
         Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
         clearDbButton.setOnClickListener(new View.OnClickListener()
 
@@ -132,7 +129,8 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
+        //TODO do we need this fields as members? We do the same lines on create?
+        accessCreateIssue = sharedPreferences.getBoolean(Constants.ACCESS, false);
         issueButton = (Button) findViewById(R.id.issue_act_button);
         issueButton.setEnabled(accessCreateIssue);
         userInfoButton = (Button) findViewById(R.id.user_info_btn);
@@ -177,13 +175,14 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         mScreenNumber++;
     }
 
+    //TODO we set OnClickListener from code for some buttons and here you set from xml. Why?
     public void onIssueClick(View view) {
         String username, password, url;
-        username = sharedPreferences.getString(USER_NAME, VOID);
-        password = sharedPreferences.getString(PASSWORD, VOID);
-        url = sharedPreferences.getString(URL, VOID);
+        username = sharedPreferences.getString(Constants.USER_NAME, Constants.VOID);
+        password = sharedPreferences.getString(Constants.PASSWORD, Constants.VOID);
+        url = sharedPreferences.getString(Constants.URL, Constants.VOID);
         showProgress(true, R.id.progress);
-        new ShowUserDataTask(username, password, url, typeSearchData, MainActivity.this).execute();
+        new ShowUserDataTask(username, password, url, Constants.typeSearchData, MainActivity.this).execute();
 
     }
 
@@ -193,8 +192,8 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         ArrayList<String> projectsNames = result.getProjectsNames();
         ArrayList<String> projectsKeys = result.getProjectsKeys();
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putStringSet(PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
-        editor.putStringSet(PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
+        editor.putStringSet(Constants.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
+        editor.putStringSet(Constants.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
         editor.apply();
         showProgress(false, R.id.progress);
         startActivity(new Intent(this, CreateIssueActivity.class));

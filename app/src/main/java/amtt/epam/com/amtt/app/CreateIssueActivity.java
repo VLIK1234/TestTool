@@ -8,11 +8,11 @@ import amtt.epam.com.amtt.bo.issue.willrefactored.CreateIssue;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreationIssueResult;
 import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.Logger;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.*;
 
@@ -27,21 +27,13 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     private ArrayList<String> projectsKeys = new ArrayList<>();
     private Spinner inputProjectsKey, inputIssueTypes;
     private SharedPreferences sharedPreferences;
-    private static final String USER_NAME = "username";
-    private static final String PASSWORD = "password";
-    private static final String URL = "url";
-    private static final String NAME_SP = "data";
-    private static final String VOID = "";
-    private static final String PROJECTS_NAMES = "projectsNames";
-    private static final String PROJECTS_KEYS = "projectsKeys";
-    private final String typeSearchData = "SearchIssue";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_create_issue);
-        sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(Constants.NAME_SP, MODE_PRIVATE);
         etDescription = (EditText) findViewById(R.id.et_description);
         etSummary = (EditText) findViewById(R.id.et_summary);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getProjectsNames());
@@ -52,11 +44,11 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String username, password, url;
-                username = sharedPreferences.getString(USER_NAME, VOID);
-                password = sharedPreferences.getString(PASSWORD, VOID);
-                url = sharedPreferences.getString(URL, VOID);
+                username = sharedPreferences.getString(Constants.USER_NAME, Constants.VOID);
+                password = sharedPreferences.getString(Constants.PASSWORD, Constants.VOID);
+                url = sharedPreferences.getString(Constants.URL, Constants.VOID);
                 showProgress(true, R.id.progress);
-                new ShowUserDataTask(username, password, url, typeSearchData, CreateIssueActivity.this).execute();
+                new ShowUserDataTask(username, password, url, Constants.typeSearchData, CreateIssueActivity.this).execute();
 
             }
 
@@ -71,18 +63,19 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     }
 
     public ArrayList<String> getProjectsNames() {
-        projectsNames = Converter.setToArrayList(sharedPreferences.getStringSet(PROJECTS_NAMES, null));
+        projectsNames = Converter.setToArrayList(sharedPreferences.getStringSet(Constants.PROJECTS_NAMES, null));
         return projectsNames;
     }
 
     public ArrayList<String> getProjectsKeys() {
-        projectsKeys = Converter.setToArrayList(sharedPreferences.getStringSet(PROJECTS_KEYS, null));
+        projectsKeys = Converter.setToArrayList(sharedPreferences.getStringSet(Constants.PROJECTS_KEYS, null));
         return projectsKeys;
     }
 
     public String getProjectKey() {
         projectsKeys = getProjectsKeys();
         Logger.d(TAG, inputProjectsKey.getSelectedItem().toString());
+        //TODO wtf?
         Logger.d(TAG, String.valueOf(projectsNames.size() - ((projectsNames.indexOf(inputProjectsKey.getSelectedItem().toString())) + 1)));
         return projectsKeys.get(projectsNames.size() - ((projectsNames.indexOf(inputProjectsKey.getSelectedItem().toString())) + 1));
 
@@ -90,15 +83,18 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
 
     public void onCreateIssueClick(View view) {
         CreateIssue issue = new CreateIssue();
+        //TODO when it's correct use of object names?
         String mProjectKey, mIssueType, mDescription, mSummary;
         mDescription = etDescription.getText().toString();
         mSummary = etSummary.getText().toString();
+        //TODO what if we click button before "new ShowUserDataTask()" will finish its work?
         mIssueType = inputIssueTypes.getSelectedItem().toString();
         mProjectKey = getProjectKey();
+        //TODO we use this credentials many times in project.
         String username, password, url;
-        username = sharedPreferences.getString(USER_NAME, VOID);
-        password = sharedPreferences.getString(PASSWORD, VOID);
-        url = sharedPreferences.getString(URL, VOID);
+        username = sharedPreferences.getString(Constants.USER_NAME, Constants.VOID);
+        password = sharedPreferences.getString(Constants.PASSWORD, Constants.VOID);
+        url = sharedPreferences.getString(Constants.URL, Constants.VOID);
         showProgress(true, R.id.progress);
         new CreateIssueTask(username, password, url, issue.createSimpleIssue(mProjectKey, mIssueType, mDescription, mSummary), CreateIssueActivity.this).execute();
 
@@ -126,6 +122,5 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
         inputIssueTypes.setAdapter(issueNames);
         showProgress(false, R.id.progress);
     }
-
 
 }

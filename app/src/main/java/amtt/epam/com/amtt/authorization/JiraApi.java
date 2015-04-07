@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.authorization;
 import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
 import amtt.epam.com.amtt.util.Logger;
 import android.util.Base64;
-import android.widget.Switch;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -11,8 +10,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-
-import static java.lang.String.*;
 
 /**
  * Created by Artsiom_Kaliaha on 24.03.2015.
@@ -33,13 +30,16 @@ public class JiraApi {
     public static final int STATUS_AUTHORIZED = 200;
     public static final int STATUS_CREATED = 201;
 
+    //TODO OAUTH?
     public int authorize(final String userName, final String password, final String mUrl) throws Exception {
+        //TODO don't save password, you can save credentials instead
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
-
+        //TODO Do we need to create http client for every api call?
         HttpClient client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(mUrl + LOGIN_METHOD);
         httpGet.setHeader(AUTH_HEADER, credentials);
         HttpResponse response = client.execute(httpGet);
+        //TODO return status, not code
         return response.getStatusLine().getStatusCode();
 
     }
@@ -55,10 +55,11 @@ public class JiraApi {
         Logger.printRequestPost(post);
         HttpResponse response = client.execute(post);
         Logger.printResponseLog(response);
+        //TODO return status, not code
         return response.getStatusLine().getStatusCode();
     }
 
-   public HttpEntity searchIssue(final String userName, final String password, final String mUrl) throws Exception {
+    public HttpEntity searchIssue(final String userName, final String password, final String mUrl) throws Exception {
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
         HttpClient client = new DefaultHttpClient();
         HttpGet get = new HttpGet(mUrl + USER_PROJECTS_PATH);
@@ -79,13 +80,13 @@ public class JiraApi {
     }
 
     public HttpEntity searchData(final String userName, final String password, final String mUrl, final String typeData) throws Exception {
-        TypeSearchedData  request = TypeSearchedData .getType(typeData);
+        TypeSearchedData request = TypeSearchedData.getType(typeData);
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
         HttpClient client = new DefaultHttpClient();
         HttpGet get = new HttpGet();
         Logger.d(TAG, String.valueOf(request));
         if (request != null) {
-            switch(request) {
+            switch (request) {
 
                 case SEARCH_ISSUE:
                     get = new HttpGet(mUrl + USER_PROJECTS_PATH);

@@ -1,49 +1,35 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.ShowUserInfoTask;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.callbacks.ShowUserInfoCallback;
+import amtt.epam.com.amtt.util.Constants;
 import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import amtt.epam.com.amtt.R;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 public class UserInfoActivity extends BaseActivity implements ShowUserInfoCallback {
 
     private final String TAG = this.getClass().getSimpleName();
-
-    private static final String USER_NAME = "username";
-    private static final String PASSWORD = "password";
-    private static final String URL = "url";
-    private static final String NAME_SP = "data";
-    private static final String VOID = "";
-    private static final String COLON = " : ";
-    private final String typeSearchData = "SearchUserInfo";
-
-
     private TextView name, emailAddress, displayName, timeZone, locale, size;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
-        SharedPreferences sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.NAME_SP, MODE_PRIVATE);
         name = (TextView) findViewById(R.id.tv_name);
         emailAddress = (TextView) findViewById(R.id.tv_email_address);
         displayName = (TextView) findViewById(R.id.tv_display_name);
         timeZone = (TextView) findViewById(R.id.tv_time_zone);
         locale = (TextView) findViewById(R.id.tv_locale);
         size = (TextView) findViewById(R.id.tv_size);
-        String username = sharedPreferences.getString(USER_NAME, VOID);
-        String password = sharedPreferences.getString(PASSWORD, VOID);
-        String url = sharedPreferences.getString(URL, VOID);
+        String username = sharedPreferences.getString(Constants.USER_NAME, Constants.VOID);
+        String password = sharedPreferences.getString(Constants.PASSWORD, Constants.VOID);
+        String url = sharedPreferences.getString(Constants.URL, Constants.VOID);
         showProgress(true, R.id.progress);
-        new ShowUserInfoTask(username, password, url, typeSearchData, UserInfoActivity.this).execute();
+        new ShowUserInfoTask(username, password, url, Constants.typeSearchInfo, UserInfoActivity.this).execute();
 
 
     }
@@ -51,12 +37,12 @@ public class UserInfoActivity extends BaseActivity implements ShowUserInfoCallba
     @Override
     public void onShowUserInfoResult(JiraUserInfo result) {
 
-        name.setText(getResources().getString(R.string.user_name) +COLON+ result.getName());
-        emailAddress.setText(getResources().getString(R.string.user_email)+COLON +result.getEmailAddress());
+        name.setText(getResources().getString(R.string.user_name) + Constants.COLON + result.getName());
+        emailAddress.setText(getResources().getString(R.string.user_email) + Constants.COLON + result.getEmailAddress());
         displayName.setText(result.getDisplayName());
-        timeZone.setText(getResources().getString(R.string.time_zone)+COLON +result.getTimeZone());
-        locale.setText(getResources().getString(R.string.locale)+COLON +result.getLocale());
-        size.setText(getResources().getString(R.string.size)+COLON + String.valueOf(result.getGroups().getSize()));
+        timeZone.setText(getResources().getString(R.string.time_zone) + Constants.COLON + result.getTimeZone());
+        locale.setText(getResources().getString(R.string.locale) + Constants.COLON + result.getLocale());
+        size.setText(getResources().getString(R.string.size) + Constants.COLON + String.valueOf(result.getGroups().getSize()));
         showProgress(false, R.id.progress);
     }
 }

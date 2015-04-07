@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="amtt.epam.com.amtt" >
+    package="amtt.epam.com.amtt">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -22,10 +22,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".app.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -65,8 +65,7 @@
             android:label="@string/title_activity_steps" />
         <activity
             android:name=".app.UserInfoActivity"
-            android:label="@string/title_activity_user_info" >
-        </activity>
+            android:label="@string/title_activity_user_info"></activity>
     </application>
 
 </manifest>

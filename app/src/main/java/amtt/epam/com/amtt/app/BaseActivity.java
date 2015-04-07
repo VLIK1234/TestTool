@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import amtt.epam.com.amtt.R;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -36,24 +35,29 @@ public class BaseActivity extends Activity {
     }
 
     private void initBroadcastReceiver() {
+        //TODO why do we need to recreate receiver every time when onResume is called?
         br = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(ACTION_TAKE_SCREENSHOT)) {
                     Log.d(LOG_TAG, getLocalClassName());
+                    //TODO You need to make screenshot of current visible app, not your activity
                     View rootView = getWindow().getDecorView();
                     rootView.setDrawingCacheEnabled(true);
+                    //TODO setDrawingCacheEnabled(false) wasn't called, do we really need to call?
                     Bitmap bitmap = rootView.getDrawingCache();
                     Rect rect = new Rect();
                     getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
                     final String cachePath =
                         Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ? getExternalCacheDir().getPath() :
                             getCacheDir().getPath();
+                    //TODO commented line, feature is not ready for master
                     //new ImageSavingTask((BaseActivity) context, bitmap, rect, cachePath).execute();
                     Toast.makeText(context, cachePath, Toast.LENGTH_SHORT).show();
                 }
             }
         };
+        //TODO try to use correct names to be able to search items later
         IntentFilter intFilt = new IntentFilter(ACTION_TAKE_SCREENSHOT);
         registerReceiver(br, intFilt);
     }
@@ -64,6 +68,7 @@ public class BaseActivity extends Activity {
         unregisterReceiver(br);
     }
 
+    //TODO remove unused code or put comment why do we need it in master branch
 //    @Override
 //    public void onImageSaved(ImageSavingResult result) {
 //        BaseStorage.setNumber(BaseStorage.getNumber() + 1);
@@ -76,7 +81,7 @@ public class BaseActivity extends Activity {
 //        return BaseStorage.getNumber();
 //    }
 
-    protected void showProgress(boolean show, int idProgress){
+    protected void showProgress(boolean show, int idProgress) {
         findViewById(idProgress).setVisibility(show ? View.VISIBLE : View.GONE);
     }
 }

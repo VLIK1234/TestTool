@@ -1,7 +1,6 @@
 package amtt.epam.com.amtt.asynctask;
 
 import amtt.epam.com.amtt.authorization.JiraApi;
-import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.processing.ProjectsToJsonProcessor;
@@ -19,7 +18,7 @@ public class ShowUserDataTask extends AsyncTask<Void, Void, JMetaResponse> {
     private final String mUrl;
     private final String mTypeSearchData;
 
-    public ShowUserDataTask(String username, String userPassword, String url,  String typeSearchData, ShowUserDataCallback callback) {
+    public ShowUserDataTask(String username, String userPassword, String url, String typeSearchData, ShowUserDataCallback callback) {
         mUserName = username;
         mPassword = userPassword;
         mCallback = callback;
@@ -33,7 +32,7 @@ public class ShowUserDataTask extends AsyncTask<Void, Void, JMetaResponse> {
         JMetaResponse jMetaResponse;
         try {
 
-            i = new JiraApi().searchData(mUserName, mPassword, mUrl,  mTypeSearchData);
+            i = new JiraApi().searchData(mUserName, mPassword, mUrl, mTypeSearchData);
             ProjectsToJsonProcessor projects = new ProjectsToJsonProcessor();
             jMetaResponse = projects.process(i);
 

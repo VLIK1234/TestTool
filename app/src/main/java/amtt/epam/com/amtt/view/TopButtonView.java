@@ -1,19 +1,14 @@
 package amtt.epam.com.amtt.view;
 
+import amtt.epam.com.amtt.R;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
-import amtt.epam.com.amtt.R;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
@@ -97,7 +92,7 @@ public class TopButtonView extends FrameLayout {
                         windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                     }
                 } else {
-                    if (layoutParams.y + body.getWidth()/2 < metrics.heightPixels / 2 ) {
+                    if (layoutParams.y + body.getWidth() / 2 < metrics.heightPixels / 2) {
                         //Down
                     } else {
                         //Up

@@ -8,7 +8,7 @@ import android.os.AsyncTask;
 import org.apache.http.HttpEntity;
 
 /**
- * Created by shiza on 06.04.2015.
+ * Created by Irina Monchenko on 06.04.2015.
  */
 public class ShowUserInfoTask extends AsyncTask<Void, Void, JiraUserInfo> {
 

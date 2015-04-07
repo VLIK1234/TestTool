@@ -1,5 +1,4 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="@string/display_name"
         android:id="@+id/tv_display_name"
-        android:textSize="@dimen/font_english_like_headline"/>
+        android:textSize="@dimen/font_english_like_headline" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -38,7 +37,7 @@
         android:text="@string/time_zone"
         android:id="@+id/tv_time_zone"
         android:layout_below="@+id/tv_email_address"
-        android:textSize="@dimen/font_english_like_subhead"/>
+        android:textSize="@dimen/font_english_like_subhead" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -46,7 +45,7 @@
         android:text="@string/locale"
         android:id="@+id/tv_locale"
         android:layout_below="@+id/tv_time_zone"
-        android:textSize="@dimen/font_english_like_subhead"/>
+        android:textSize="@dimen/font_english_like_subhead" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -54,7 +53,7 @@
         android:text="@string/groups"
         android:id="@+id/tv_groups"
         android:layout_below="@+id/tv_locale"
-        android:textSize="@dimen/font_english_like_subhead"/>
+        android:textSize="@dimen/font_english_like_subhead" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -71,6 +70,6 @@
         android:layout_width="wrap_content"
         android:id="@+id/progress"
         android:visibility="gone"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>
