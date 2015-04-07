@@ -4,8 +4,10 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,8 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +25,6 @@ import com.crashlytics.android.Crashlytics;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,6 +60,9 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
 
     private PopupWindow mPopupWindow;
     private View mPopupLayout;
+    private TextView mCrashHeadTextView;
+    private TextView mCrashTextView;
+    private String mCrashFilePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,9 +150,11 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         showCrashInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setPopupWindowComponents();
+                setPopupWindow();
             }
         });
+
+        mCrashFilePath = getFilesDir().getPath() + "/crash.txt";
     }
 
     @Override
@@ -216,46 +223,78 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         startActivity(new Intent(this, CreateIssueActivity.class));
     }
 
-    private void setPopupWindowComponents() {
+    private void setPopupWindow() {
         if (mPopupWindow == null) {
-            ViewGroup viewGroup = (RelativeLayout) findViewById(R.id.popup_window);
-            mPopupLayout = LayoutInflater.from(MainActivity.this).inflate(R.layout.popup_window_crash_info, viewGroup);
-            mPopupWindow = new PopupWindow(mPopupLayout, ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT, true);
-            mPopupWindow.setFocusable(false);
-        }
-        mPopupWindow.showAtLocation(mPopupLayout, Gravity.CENTER, 0, 0);
-
-        final String crashFilePath = getFilesDir().getPath() + "/crash.txt";
-        StringBuilder crashText = new StringBuilder();
-        String buffer;
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(crashFilePath));
-            while ((buffer = bufferedReader.readLine()) != null) {
-                crashText.append(buffer);
-            }
-        } catch (FileNotFoundException e) {
-
-        } catch (IOException e) {
-
+            setPopupLayout();
         }
 
-        TextView crashTextView = (TextView) mPopupLayout.findViewById(R.id.crash_text);
-        crashTextView.setText(crashText);
-        Button closeButton = (Button) mPopupLayout.findViewById(R.id.close_button);
-        closeButton.setOnClickListener(new View.OnClickListener() {
+        if (setPopupCrashText()) {
+            return;
+        }
+
+        setPopupLayoutDimension();
+    }
+
+    private void setPopupLayout() {
+        ViewGroup viewGroup = (LinearLayout) findViewById(R.id.popup_window);
+        mPopupLayout = LayoutInflater.from(MainActivity.this).inflate(R.layout.popup_window_crash_info, viewGroup);
+        mPopupWindow = new PopupWindow(mPopupLayout, ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT, true);
+        mPopupWindow.setFocusable(true);
+        mPopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_window_drawable));
+
+        Button popupCloseButton = (Button) mPopupLayout.findViewById(R.id.close_button);
+        popupCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mPopupWindow.dismiss();
             }
         });
-        Button deleteCrashButton = (Button) mPopupLayout.findViewById(R.id.delete_crash_button);
-        deleteCrashButton.setOnClickListener(new View.OnClickListener() {
+
+        Button popupDeleteButton = (Button) mPopupLayout.findViewById(R.id.delete_crash_button);
+        popupDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File crashFile = new File(crashFilePath);
+                File crashFile = new File(mCrashFilePath);
                 crashFile.delete();
+                mPopupWindow.dismiss();
             }
         });
+
+        mCrashHeadTextView = (TextView) mPopupLayout.findViewById(R.id.crash_text_head);
+        mCrashTextView = (TextView) mPopupLayout.findViewById(R.id.crash_text);
+    }
+
+    private boolean setPopupCrashText() {
+        String crashHeadText;
+        StringBuilder crashText = new StringBuilder();
+        String buffer;
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(mCrashFilePath));
+            crashHeadText = bufferedReader.readLine();
+            while ((buffer = bufferedReader.readLine()) != null) {
+                crashText.append(buffer);
+            }
+        } catch (IOException e) {
+            Toast.makeText(MainActivity.this, R.string.lack_of_crashes_text, Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        mCrashHeadTextView.setText(crashHeadText);
+        mCrashTextView.setText(crashText);
+        return false;
+    }
+
+    private void setPopupLayoutDimension() {
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y;
+
+        mPopupLayout.findViewById(R.id.scroll_container).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height / 2));
+        mPopupWindow.showAtLocation(mPopupLayout, Gravity.CENTER, 0, 0);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams((int)(width * 0.9), ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPopupLayout.setLayoutParams(layoutParams);
     }
 
 }

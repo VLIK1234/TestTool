@@ -50,7 +50,8 @@
 
     <string name="empty_list_view">There is no saved steps =(</string>
     <string name="close_button">Close</string>
-    <string name="delete_crash_button">Delete crash info</string>
+    <string name="delete_crash_button">Delete and close</string>
     <string name="show_crash_info_text">Show crash info</string>
+    <string name="lack_of_crashes_text">There were no crashes recently</string>
 
 </resources>
