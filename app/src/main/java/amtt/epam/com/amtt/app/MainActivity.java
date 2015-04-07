@@ -178,7 +178,9 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         username = sharedPreferences.getString(USER_NAME, VOID);
         password = sharedPreferences.getString(PASSWORD, VOID);
         url = sharedPreferences.getString(URL, VOID);
+        setVisibleProgress();
         new ShowUserDataTask(username, password, url, MainActivity.this).execute();
+
     }
 
 
@@ -190,6 +192,14 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         editor.putStringSet(PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
         editor.putStringSet(PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
         editor.apply();
+        setInisibleProgress();
         startActivity(new Intent(this, CreateIssueActivity.class));
+    }
+
+    private void setVisibleProgress(){
+        findViewById(R.id.progress).setVisibility(View.VISIBLE);
+    }
+    private void setInisibleProgress(){
+        findViewById(R.id.progress).setVisibility(View.GONE);
     }
 }

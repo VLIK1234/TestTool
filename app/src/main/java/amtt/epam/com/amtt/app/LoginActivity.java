@@ -39,7 +39,9 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setVisibleProgress();
                 new AuthorizationTask(LoginActivity.this, userName.getText().toString(), password.getText().toString(), url.getText().toString(), LoginActivity.this).execute();
+
             }
         });
     }
@@ -58,7 +60,15 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
             editor.putString(URL, url.getText().toString());
             editor.putBoolean(ACCESS, true);
             editor.apply();
+            setInisibleProgress();
             finish();
         }
+    }
+
+    private void setVisibleProgress(){
+        findViewById(R.id.progress).setVisibility(View.VISIBLE);
+    }
+    private void setInisibleProgress(){
+        findViewById(R.id.progress).setVisibility(View.GONE);
     }
 }
