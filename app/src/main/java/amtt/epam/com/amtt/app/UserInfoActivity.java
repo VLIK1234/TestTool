@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class UserInfoActivity extends  BaseActivity implements ShowUserInfoCallback {
+public class UserInfoActivity extends BaseActivity implements ShowUserInfoCallback {
 
     private final String TAG = this.getClass().getSimpleName();
 
@@ -23,6 +23,7 @@ public class UserInfoActivity extends  BaseActivity implements ShowUserInfoCallb
     private static final String NAME_SP = "data";
     private static final String VOID = "";
     private static final String COLON = " : ";
+    private final String typeSearchData = "SearchUserInfo";
 
 
     private TextView name, emailAddress, displayName, timeZone, locale, size;
@@ -42,7 +43,7 @@ public class UserInfoActivity extends  BaseActivity implements ShowUserInfoCallb
         String password = sharedPreferences.getString(PASSWORD, VOID);
         String url = sharedPreferences.getString(URL, VOID);
         showProgress(true, R.id.progress);
-        new ShowUserInfoTask(username, password, url, UserInfoActivity.this).execute();
+        new ShowUserInfoTask(username, password, url, typeSearchData, UserInfoActivity.this).execute();
 
 
     }
@@ -55,7 +56,7 @@ public class UserInfoActivity extends  BaseActivity implements ShowUserInfoCallb
         displayName.setText(result.getDisplayName());
         timeZone.setText(getResources().getString(R.string.time_zone)+COLON +result.getTimeZone());
         locale.setText(getResources().getString(R.string.locale)+COLON +result.getLocale());
-        size.setText(getResources().getString(R.string.size)+COLON +String.valueOf(result.getGroups().getSize()));
+        size.setText(getResources().getString(R.string.size)+COLON + String.valueOf(result.getGroups().getSize()));
         showProgress(false, R.id.progress);
     }
 }

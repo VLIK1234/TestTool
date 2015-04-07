@@ -31,9 +31,6 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
         userName = (EditText) findViewById(R.id.user_name);
         password = (EditText) findViewById(R.id.password);
         url = (EditText) findViewById(R.id.jira_url);
-
-        url.setText("https://fortestsamtt.atlassian.net");
-
         Button loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override

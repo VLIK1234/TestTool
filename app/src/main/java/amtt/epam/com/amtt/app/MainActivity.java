@@ -41,6 +41,8 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     private static final String PROJECTS_NAMES = "projectsNames";
     private static final String ACCESS = "access";
     private static final String PROJECTS_KEYS = "projectsKeys";
+    private final String typeSearchData = "SearchIssue";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,7 +183,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         password = sharedPreferences.getString(PASSWORD, VOID);
         url = sharedPreferences.getString(URL, VOID);
         showProgress(true, R.id.progress);
-        new ShowUserDataTask(username, password, url, MainActivity.this).execute();
+        new ShowUserDataTask(username, password, url, typeSearchData, MainActivity.this).execute();
 
     }
 

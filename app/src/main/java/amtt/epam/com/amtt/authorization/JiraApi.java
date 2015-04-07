@@ -1,7 +1,9 @@
 package amtt.epam.com.amtt.authorization;
 
+import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
 import amtt.epam.com.amtt.util.Logger;
 import android.util.Base64;
+import android.widget.Switch;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -10,10 +12,14 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import static java.lang.String.*;
+
 /**
  * Created by Artsiom_Kaliaha on 24.03.2015.
  */
 public class JiraApi {
+
+    private static final String TAG = JiraApi.class.getSimpleName();
 
     private static final String BASE_PATH = "/rest/auth/latest/";
     private static final String LOGIN_METHOD = BASE_PATH + "session";
@@ -52,7 +58,7 @@ public class JiraApi {
         return response.getStatusLine().getStatusCode();
     }
 
-    public HttpEntity searchIssue(final String userName, final String password, final String mUrl) throws Exception {
+   public HttpEntity searchIssue(final String userName, final String password, final String mUrl) throws Exception {
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
         HttpClient client = new DefaultHttpClient();
         HttpGet get = new HttpGet(mUrl + USER_PROJECTS_PATH);
@@ -67,6 +73,28 @@ public class JiraApi {
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
         HttpClient client = new DefaultHttpClient();
         HttpGet get = new HttpGet(mUrl + USER_INFO_PATH + userName);
+        get.addHeader(AUTH_HEADER, credentials);
+        HttpResponse httpRsponse = client.execute(get);
+        return httpRsponse.getEntity();
+    }
+
+    public HttpEntity searchData(final String userName, final String password, final String mUrl, final String typeData) throws Exception {
+        TypeSearchedData  request = TypeSearchedData .getType(typeData);
+        String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
+        HttpClient client = new DefaultHttpClient();
+        HttpGet get = new HttpGet();
+        Logger.d(TAG, String.valueOf(request));
+        if (request != null) {
+            switch(request) {
+
+                case SEARCH_ISSUE:
+                    get = new HttpGet(mUrl + USER_PROJECTS_PATH);
+                    break;
+                case SEARCH_USER_INFO:
+                    get = new HttpGet(mUrl + USER_INFO_PATH + userName);
+                    break;
+            }
+        }
         get.addHeader(AUTH_HEADER, credentials);
         HttpResponse httpRsponse = client.execute(get);
         return httpRsponse.getEntity();

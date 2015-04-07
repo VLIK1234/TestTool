@@ -34,6 +34,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     private static final String VOID = "";
     private static final String PROJECTS_NAMES = "projectsNames";
     private static final String PROJECTS_KEYS = "projectsKeys";
+    private final String typeSearchData = "SearchIssue";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
                 password = sharedPreferences.getString(PASSWORD, VOID);
                 url = sharedPreferences.getString(URL, VOID);
                 showProgress(true, R.id.progress);
-                new ShowUserDataTask(username, password, url, CreateIssueActivity.this).execute();
+                new ShowUserDataTask(username, password, url, typeSearchData, CreateIssueActivity.this).execute();
 
             }
 
