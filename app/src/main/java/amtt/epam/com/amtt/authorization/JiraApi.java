@@ -28,13 +28,16 @@ public class JiraApi {
     public static final int STATUS_AUTHORIZED = 200;
     public static final int STATUS_CREATED = 201;
 
+    //TODO OAUTH?
     public int authorize(final String userName, final String password, final String mUrl) throws Exception {
+        //TODO don't save password, you can save credentials instead
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
-
+        //TODO Do we need to create http client for every api call?
         HttpClient client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(mUrl + LOGIN_METHOD);
         httpGet.setHeader(AUTH_HEADER, credentials);
         HttpResponse response = client.execute(httpGet);
+        //TODO return status, not code
         return response.getStatusLine().getStatusCode();
 
     }
@@ -50,6 +53,7 @@ public class JiraApi {
         Logger.printRequestPost(post);
         HttpResponse response = client.execute(post);
         Logger.printResponseLog(response);
+        //TODO return status, not code
         return response.getStatusLine().getStatusCode();
     }
 

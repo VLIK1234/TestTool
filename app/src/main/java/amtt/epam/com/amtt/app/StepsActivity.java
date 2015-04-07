@@ -47,10 +47,12 @@ public class StepsActivity extends ActionBarActivity implements LoaderManager.Lo
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.getCount() != 0) {
             if (mAdapter == null) {
+                //TODO why do you init adapter with null and then call swapCursor?
                 mAdapter = new StepsAdapter(StepsActivity.this, null, 0);
                 mListView.setAdapter(mAdapter);
             }
             mAdapter.swapCursor(data);
+            //TODO progress is hidden in both cases
             mProgressBar.setVisibility(View.GONE);
         } else {
             mProgressBar.setVisibility(View.GONE);

@@ -35,6 +35,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     private Button issueButton;
     private int mScreenNumber = 1;
     private boolean newStepsSequence = false;
+    //TODO the same constants used with preferences are defined twice
     private static final String USER_NAME = "username";
     private static final String PASSWORD = "password";
     private static final String URL = "url";
@@ -72,7 +73,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
 
         Thread.currentThread().setUncaughtExceptionHandler(new AmttExceptionHandler(this));
 
-
+        //TODO double initialization
         Button clearDbbutton = (Button) findViewById(R.id.clear_db_button);
         clearDbbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,9 +82,14 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
             }
         });
         sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
+
+        //TODO we update it in onPostResume method, why we have this lines here?
+        //start
         accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
         issueButton = (Button) findViewById(R.id.issue_act_button);
         issueButton.setEnabled(accessCreateIssue);
+        //end
+
         Button stepButton = (Button) findViewById(R.id.step_button);
         stepButton.setOnClickListener(new View.OnClickListener() {
                                           @Override
@@ -93,7 +99,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                                               Bitmap bitmap = rootView.getDrawingCache();
                                               Rect rect = new Rect();
                                               getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-
+                                                //TODO Do we need to save screenshot here?
                                               new StepSavingTask(MainActivity.this, MainActivity.this, bitmap, rect, MainActivity.this.getComponentName(), newStepsSequence).execute();
                                               newStepsSequence = false;
                                           }
@@ -101,6 +107,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
 
         );
 
+        //TODO double initialization
         Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
         clearDbButton.setOnClickListener(new View.OnClickListener()
 
@@ -130,6 +137,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     @Override
     protected void onPostResume() {
         super.onPostResume();
+        //TODO do we need this fields as members? We do the same lines on create?
         accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
         issueButton = (Button) findViewById(R.id.issue_act_button);
         issueButton.setEnabled(accessCreateIssue);
@@ -173,6 +181,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         mScreenNumber++;
     }
 
+    //TODO we set OnClickListener from code for some buttons and here you set from xml. Why?
     public void onIssueClick(View view) {
         String username, password, url;
         username = sharedPreferences.getString(USER_NAME, VOID);
@@ -192,6 +201,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         editor.putStringSet(PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
         editor.putStringSet(PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
         editor.apply();
+        //TODO What does "Inisible" means?
         setInisibleProgress();
         startActivity(new Intent(this, CreateIssueActivity.class));
     }
