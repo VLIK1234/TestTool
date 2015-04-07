@@ -12,11 +12,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.BaseActivity;
-import amtt.epam.com.amtt.app.SecondActivity;
 import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
@@ -27,6 +25,7 @@ public class TopButtonService extends Service {
     public static final String ACTION_SHOW = "SHOW";
     public static final String ACTION_CLOSE = "CLOSE";
     private static final String LOG_TAG = "Log";
+    public static final int ID = 7;
     private int xInitPosition;
     private int yInitPosition;
     private TopButtonView view;
@@ -76,7 +75,6 @@ public class TopButtonService extends Service {
         });
     }
 
-
     public static Intent getShowIntent(Context context) {
         return new Intent(context, TopButtonService.class).setAction(ACTION_SHOW);
     }
@@ -109,32 +107,6 @@ public class TopButtonService extends Service {
         stopSelf();
     }
 
-    public void onClickAdd(View view) {
-        Toast.makeText(this, "ADD", Toast.LENGTH_LONG).show();
-
-    }
-
-    public void onClickAuth(View view) {
-        Toast.makeText(this, "AUTH", Toast.LENGTH_LONG).show();
-    }
-
-    public void onClickBugRep(View view) {
-        Toast.makeText(this, "BUG_REP", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(getBaseContext(), SecondActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getApplication().startActivity(intent);
-    }
-
-    public void onClickScreen(View view) {
-        Toast.makeText(this, "SCREEN", Toast.LENGTH_LONG).show();
-        Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
-        sendBroadcast(intentATS);
-    }
-
-    public void onClickShare(View view) {
-        Toast.makeText(this, "SHARE", Toast.LENGTH_LONG).show();
-    }
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
@@ -144,7 +116,7 @@ public class TopButtonService extends Service {
 
             if (ACTION_SHOW.equals(action)) {
                 show();
-                sendNotif();
+                startForegroundNotifi();
             } else if (ACTION_CLOSE.equals(action)) {
                 close();
             }
@@ -154,13 +126,14 @@ public class TopButtonService extends Service {
         return START_NOT_STICKY;
     }
 
-    private void sendNotif() {
+    private void startForegroundNotifi() {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_notification)
-                        .setContentTitle("My notification")
-                        .setContentText("Hello World!");
-        notifiManager.notify(01, builder.build());
+                        .setContentTitle("AMTT")
+                        .setOngoing(true)
+                        .setContentText("Button-assistant is running.");
+        startForeground(ID, builder.build());
     }
 
 }

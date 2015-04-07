@@ -1,19 +1,23 @@
 package amtt.epam.com.amtt.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.ViewGroup;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.app.BaseActivity;
+import amtt.epam.com.amtt.app.SecondActivity;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
@@ -24,13 +28,13 @@ public class TopButtonView extends FrameLayout {
 
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
-    private ViewGroup body;
-    private ImageView imageView;
+    private LinearLayout buttonsBar;
+    private ImageView mainButton;
     private DisplayMetrics metrics;
-    private int orientation;
+    private int currentOrientation;
     private float widthProportion;
     private float heightProportion;
-    private RelativeLayout.LayoutParams reParams;
+    private RelativeLayout.LayoutParams topButtonLayoutParams;
 
     public TopButtonView(Context context) {
         super(context, null);
@@ -40,11 +44,11 @@ public class TopButtonView extends FrameLayout {
         super(context);
         initComponent();
 
-        ((LinearLayout) body).setOrientation(LinearLayout.VERTICAL);
+        buttonsBar.setOrientation(LinearLayout.VERTICAL);
 
         this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         this.metrics = getContext().getResources().getDisplayMetrics();
-        orientation = getResources().getConfiguration().orientation;
+        currentOrientation = getResources().getConfiguration().orientation;
         this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
@@ -53,55 +57,96 @@ public class TopButtonView extends FrameLayout {
     private void initComponent() {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.top_button_layout, this, true);
-        body = (ViewGroup) findViewById(R.id.body);
-        imageView = (ImageView) findViewById(R.id.plus_button);
-        imageView.setImageResource(R.drawable.ic_top_button);
-        body.setVisibility(GONE);
+        buttonsBar = (LinearLayout) findViewById(R.id.buttons_bar);
+        mainButton = (ImageView) findViewById(R.id.plus_button);
+        mainButton.setImageResource(R.drawable.ic_top_button);
+        buttonsBar.setVisibility(GONE);
+
+        ImageView buttonAdd = (ImageView) findViewById(R.id.button_add);
+        buttonAdd.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "ADD", Toast.LENGTH_LONG).show();
+            }
+        });
+        ImageView buttonAuth = (ImageView) findViewById(R.id.button_auth);
+        buttonAuth.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "AUTH", Toast.LENGTH_LONG).show();
+            }
+        });
+        ImageView buttonBugRep = (ImageView) findViewById(R.id.button_bug_rep);
+        buttonBugRep.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "BUG_REP", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), SecondActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intent);
+            }
+        });
+        ImageView buttonScreen = (ImageView) findViewById(R.id.button_screen);
+        buttonScreen.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "SCREEN", Toast.LENGTH_LONG).show();
+                Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
+                getContext().sendBroadcast(intentATS);
+            }
+        });
+        ImageView buttonShare = (ImageView) findViewById(R.id.button_share);
+        buttonShare.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "SHARE", Toast.LENGTH_LONG).show();
+            }
+        });
 
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (getResources().getConfiguration().orientation != orientation) {
+        if (getResources().getConfiguration().orientation != currentOrientation) {
             changeProportinalPosition();
-            body.setVisibility(GONE);
+            buttonsBar.setVisibility(GONE);
         }
     }
 
     private void checkFreeSpace() {
-        reParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+        topButtonLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            ((LinearLayout) body).setOrientation(LinearLayout.HORIZONTAL);
-            reParams.addRule(RelativeLayout.RIGHT_OF, imageView.getId());
-            body.setLayoutParams(reParams);
+            buttonsBar.setOrientation(LinearLayout.HORIZONTAL);
+            topButtonLayoutParams.addRule(RelativeLayout.RIGHT_OF, mainButton.getId());
+            buttonsBar.setLayoutParams(topButtonLayoutParams);
         } else {
-            ((LinearLayout) body).setOrientation(LinearLayout.VERTICAL);
-            reParams.addRule(RelativeLayout.BELOW, imageView.getId());
-            body.setLayoutParams(reParams);
+            buttonsBar.setOrientation(LinearLayout.VERTICAL);
+            topButtonLayoutParams.addRule(RelativeLayout.BELOW, mainButton.getId());
+            buttonsBar.setLayoutParams(topButtonLayoutParams);
         }
 
-        ViewTreeObserver vto = body.getViewTreeObserver();
+        ViewTreeObserver vto = buttonsBar.getViewTreeObserver();
         vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
-                body.getViewTreeObserver().removeOnPreDrawListener(this);
+                buttonsBar.getViewTreeObserver().removeOnPreDrawListener(this);
 
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     if (layoutParams.x < metrics.widthPixels / 2) {
                         //Right
                     } else {
                         //Left
-                        layoutParams.x -= (layoutParams.x + body.getWidth() - metrics.widthPixels + body.getHeight());
+                        layoutParams.x -= (layoutParams.x + buttonsBar.getWidth() - metrics.widthPixels + buttonsBar.getHeight());
                         windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                     }
                 } else {
-                    if (layoutParams.y + body.getWidth()/2 < metrics.heightPixels / 2 ) {
+                    if (layoutParams.y + buttonsBar.getWidth() / 2 < metrics.heightPixels / 2) {
                         //Down
                     } else {
                         //Up
-                        layoutParams.y -= (layoutParams.y + body.getHeight() - metrics.heightPixels + body.getWidth() * 1.5);
+                        layoutParams.y -= (layoutParams.y + buttonsBar.getHeight() - metrics.heightPixels + buttonsBar.getWidth() * 1.5);
                         windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                     }
                 }
@@ -114,21 +159,21 @@ public class TopButtonView extends FrameLayout {
     private void changeProportinalPosition() {
         int overWidth;
         int overHeight;
-        if (Math.round(metrics.widthPixels * widthProportion) + imageView.getWidth() < metrics.widthPixels) {
+        if (Math.round(metrics.widthPixels * widthProportion) + mainButton.getWidth() < metrics.widthPixels) {
             layoutParams.x = Math.round(metrics.widthPixels * widthProportion);
         } else {
-            overWidth = Math.round(metrics.widthPixels * widthProportion) + imageView.getWidth() - metrics.widthPixels;
+            overWidth = Math.round(metrics.widthPixels * widthProportion) + mainButton.getWidth() - metrics.widthPixels;
             layoutParams.x = Math.round(metrics.widthPixels * widthProportion) - overWidth - getStatusBarHeight();
         }
 
-        if (Math.round(metrics.heightPixels * heightProportion) + imageView.getWidth() < metrics.heightPixels - getStatusBarHeight()) {
+        if (Math.round(metrics.heightPixels * heightProportion) + mainButton.getWidth() < metrics.heightPixels - getStatusBarHeight()) {
             layoutParams.y = Math.round(metrics.heightPixels * heightProportion);
         } else {
-            overHeight = Math.round(metrics.heightPixels * heightProportion) + imageView.getHeight() - metrics.heightPixels;
+            overHeight = Math.round(metrics.heightPixels * heightProportion) + mainButton.getHeight() - metrics.heightPixels;
             layoutParams.y = Math.round(metrics.heightPixels * heightProportion) - overHeight - getStatusBarHeight();
         }
         windowManager.updateViewLayout(this, layoutParams);
-        orientation = getResources().getConfiguration().orientation;
+        currentOrientation = getResources().getConfiguration().orientation;
     }
 
     public int getStatusBarHeight() {
@@ -207,13 +252,10 @@ public class TopButtonView extends FrameLayout {
                     boolean tap = Math.abs(totalDeltaX) < threshold
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
-//                        if (mOnClickListener != null) {
-//                            mOnClickListener.onClick(this);
-//                        }
-                        if (body.getVisibility() == VISIBLE) {
-                            body.setVisibility(GONE);
+                        if (buttonsBar.getVisibility() == VISIBLE) {
+                            buttonsBar.setVisibility(GONE);
                         } else {
-                            body.setVisibility(VISIBLE);
+                            buttonsBar.setVisibility(VISIBLE);
                             checkFreeSpace();
                         }
                     }
@@ -222,13 +264,4 @@ public class TopButtonView extends FrameLayout {
         }
         return true;
     }
-
-    private OnClickListener mOnClickListener;
-
-    @Override
-    public void setOnClickListener(OnClickListener l) {
-        mOnClickListener = l;
-
-    }
-
 }
