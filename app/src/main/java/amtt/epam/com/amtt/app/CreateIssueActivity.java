@@ -32,6 +32,8 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
     private ArrayList<String> projectsKeys = new ArrayList<>();
     private Spinner inputProjectsKey, inputIssueTypes;
     private SharedPreferences sharedPreferences;
+
+    //TODO the same constants used with preferences are defined twice
     private static final String USER_NAME = "username";
     private static final String PASSWORD = "password";
     private static final String URL = "url";
@@ -87,6 +89,7 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
     public String getProjectKey() {
         projectsKeys = getProjectsKeys();
         Logger.d(TAG, inputProjectsKey.getSelectedItem().toString());
+        //TODO wtf?
         Logger.d(TAG, String.valueOf(projectsNames.size() - ((projectsNames.indexOf(inputProjectsKey.getSelectedItem().toString())) + 1)));
         return projectsKeys.get(projectsNames.size() - ((projectsNames.indexOf(inputProjectsKey.getSelectedItem().toString())) + 1));
 
@@ -94,11 +97,14 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
 
     public void onCreateIssueClick(View view) {
         CreateIssue issue = new CreateIssue();
+        //TODO when it's correct use of object names?
         String mProjectKey, mIssueType, mDescription, mSummary;
         mDescription = etDescription.getText().toString();
         mSummary = etSummary.getText().toString();
+        //TODO what if we click button before "new ShowUserDataTask()" will finish its work?
         mIssueType = inputIssueTypes.getSelectedItem().toString();
         mProjectKey = getProjectKey();
+        //TODO we use this credentials many times in project.
         String username, password, url;
         username = sharedPreferences.getString(USER_NAME, VOID);
         password = sharedPreferences.getString(PASSWORD, VOID);
@@ -128,9 +134,11 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
         issueNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         inputIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
         inputIssueTypes.setAdapter(issueNames);
+        //TODO misprint
         setInisibleProgress();
     }
 
+    //TODO why not to move to common base activity?
     private void setVisibleProgress(){
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
     }
