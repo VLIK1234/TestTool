@@ -45,16 +45,16 @@ public class AmttExceptionHandler implements Thread.UncaughtExceptionHandler {
 
         Date date = new Date();
         mStringBuilder.append(mFileName = sDateFormat.format(date))
-            .append("\n\nProcess: ")
-            .append(processName)
-            .append(", PID: ")
-            .append(android.os.Process.myPid())
-            .append("\n")
-            .append(ex.toString());
+                .append("\n\nProcess: ")
+                .append(processName)
+                .append(", PID: ")
+                .append(android.os.Process.myPid())
+                .append("\n")
+                .append(ex.toString());
 
         for (StackTraceElement element : ex.getStackTrace()) {
             mStringBuilder.append("\nat ")
-                .append(element.toString());
+                    .append(element.toString());
         }
 
         new CrashInfoSavingTask(mContext.getFilesDir().getPath() + "/crash.txt", mStringBuilder.toString()).execute();

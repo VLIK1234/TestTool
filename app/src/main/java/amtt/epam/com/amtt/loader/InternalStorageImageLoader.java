@@ -1,11 +1,12 @@
 package amtt.epam.com.amtt.loader;
 
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.adapter.StepsAdapter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.LruCache;
 import android.widget.ImageView;
+
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.adapter.StepsAdapter;
 
 /**
  * Created by Artsiom_Kaliaha on 01.04.2015.

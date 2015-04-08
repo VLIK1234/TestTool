@@ -1,11 +1,13 @@
 package amtt.epam.com.amtt.processing;
 
-import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+
+import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 
 
 /**

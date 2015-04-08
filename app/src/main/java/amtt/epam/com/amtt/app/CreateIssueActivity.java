@@ -1,5 +1,15 @@
 package amtt.epam.com.amtt.app;
 
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.CreateIssueTask;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
@@ -10,13 +20,7 @@ import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
-import amtt.epam.com.amtt.util.Logger;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.*;
-
-import java.util.ArrayList;
+import amtt.epam.com.amtt.util.PreferenceUtils;
 
 
 public class CreateIssueActivity extends BaseActivity implements CreationIssueCallback, ShowUserDataCallback {
@@ -26,14 +30,12 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     private ArrayList<String> projectsNames = new ArrayList<>();
     private ArrayList<String> projectsKeys = new ArrayList<>();
     private Spinner inputProjectsKey, inputIssueTypes;
-    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_create_issue);
-        sharedPreferences = getSharedPreferences(Constants.NAME_SP, MODE_PRIVATE);
         etDescription = (EditText) findViewById(R.id.et_description);
         etSummary = (EditText) findViewById(R.id.et_summary);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getProjectsNames());
@@ -44,9 +46,9 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String username, password, url;
-                username = sharedPreferences.getString(Constants.USER_NAME, Constants.VOID);
-                password = sharedPreferences.getString(Constants.PASSWORD, Constants.VOID);
-                url = sharedPreferences.getString(Constants.URL, Constants.VOID);
+                username = PreferenceUtils.getString(Constants.USER_NAME, Constants.VOID, CreateIssueActivity.this);
+                password = PreferenceUtils.getString(Constants.PASSWORD, Constants.VOID, CreateIssueActivity.this);
+                url = PreferenceUtils.getString(Constants.URL, Constants.VOID, CreateIssueActivity.this);
                 showProgress(true, R.id.progress);
                 new ShowUserDataTask(username, password, url, Constants.typeSearchData, CreateIssueActivity.this).execute();
 
@@ -63,47 +65,43 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     }
 
     public ArrayList<String> getProjectsNames() {
-        projectsNames = Converter.setToArrayList(sharedPreferences.getStringSet(Constants.PROJECTS_NAMES, null));
+        projectsNames = Converter.setToArrayList(PreferenceUtils.getSet(Constants.PROJECTS_NAMES, null, CreateIssueActivity.this));
         return projectsNames;
     }
 
     public ArrayList<String> getProjectsKeys() {
-        projectsKeys = Converter.setToArrayList(sharedPreferences.getStringSet(Constants.PROJECTS_KEYS, null));
+        projectsKeys = Converter.setToArrayList(PreferenceUtils.getSet(Constants.PROJECTS_KEYS, null, CreateIssueActivity.this));
         return projectsKeys;
     }
 
     public String getProjectKey() {
         projectsKeys = getProjectsKeys();
-        Logger.d(TAG, inputProjectsKey.getSelectedItem().toString());
-        //TODO wtf?
-        Logger.d(TAG, String.valueOf(projectsNames.size() - ((projectsNames.indexOf(inputProjectsKey.getSelectedItem().toString())) + 1)));
         return projectsKeys.get(projectsNames.size() - ((projectsNames.indexOf(inputProjectsKey.getSelectedItem().toString())) + 1));
 
     }
 
     public void onCreateIssueClick(View view) {
         CreateIssue issue = new CreateIssue();
-        //TODO when it's correct use of object names?
-        String mProjectKey, mIssueType, mDescription, mSummary;
-        mDescription = etDescription.getText().toString();
-        mSummary = etSummary.getText().toString();
+        String projectKey, issueType, description, summary;
+        description = etDescription.getText().toString();
+        summary = etSummary.getText().toString();
         //TODO what if we click button before "new ShowUserDataTask()" will finish its work?
-        mIssueType = inputIssueTypes.getSelectedItem().toString();
-        mProjectKey = getProjectKey();
+        issueType = inputIssueTypes.getSelectedItem().toString();
+        projectKey = getProjectKey();
         //TODO we use this credentials many times in project.
         String username, password, url;
-        username = sharedPreferences.getString(Constants.USER_NAME, Constants.VOID);
-        password = sharedPreferences.getString(Constants.PASSWORD, Constants.VOID);
-        url = sharedPreferences.getString(Constants.URL, Constants.VOID);
+        username = PreferenceUtils.getString(Constants.USER_NAME, Constants.VOID, CreateIssueActivity.this);
+        password = PreferenceUtils.getString(Constants.PASSWORD, Constants.VOID, CreateIssueActivity.this);
+        url = PreferenceUtils.getString(Constants.URL, Constants.VOID, CreateIssueActivity.this);
         showProgress(true, R.id.progress);
-        new CreateIssueTask(username, password, url, issue.createSimpleIssue(mProjectKey, mIssueType, mDescription, mSummary), CreateIssueActivity.this).execute();
+        new CreateIssueTask(username, password, url, issue.createSimpleIssue(projectKey, issueType, description, summary), CreateIssueActivity.this).execute();
 
     }
 
     @Override
     public void onCreationIssueResult(CreationIssueResult result) {
         String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
-            getResources().getString(R.string.issue_creating_success);
+                getResources().getString(R.string.issue_creating_success);
         showProgress(false, R.id.progress);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
         if (resultMessage.equals(getResources().getString(R.string.issue_creating_success))) {

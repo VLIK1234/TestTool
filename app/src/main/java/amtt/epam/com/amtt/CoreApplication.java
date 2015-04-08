@@ -1,7 +1,8 @@
 package amtt.epam.com.amtt;
 
-import amtt.epam.com.amtt.storage.BaseStorage;
 import android.app.Application;
+
+import amtt.epam.com.amtt.util.PreferenceUtils;
 
 /**
  * Created by Ivan_Bakach on 19.03.2015.
@@ -11,6 +12,6 @@ public class CoreApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        BaseStorage.initialize(this);
+        PreferenceUtils.initDefaultPreference(this);
     }
 }

@@ -1,8 +1,7 @@
 package amtt.epam.com.amtt.authorization;
 
-import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
-import amtt.epam.com.amtt.util.Logger;
 import android.util.Base64;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -10,6 +9,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+
+import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
+import amtt.epam.com.amtt.util.Logger;
 
 /**
  * Created by Artsiom_Kaliaha on 24.03.2015.
@@ -59,26 +61,27 @@ public class JiraApi {
         return response.getStatusLine().getStatusCode();
     }
 
-    public HttpEntity searchIssue(final String userName, final String password, final String mUrl) throws Exception {
-        String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
-        HttpClient client = new DefaultHttpClient();
-        HttpGet get = new HttpGet(mUrl + USER_PROJECTS_PATH);
-        get.addHeader(AUTH_HEADER, credentials);
-        HttpResponse httpRsponse = client.execute(get);
-        // Logger.printResponseLog(httpRsponse);
-        // Read all the text returned by the server
-        return httpRsponse.getEntity();
-    }
+    /*
+        public HttpEntity searchIssue(final String userName, final String password, final String mUrl) throws Exception {
+            String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
+            HttpClient client = new DefaultHttpClient();
+            HttpGet get = new HttpGet(mUrl + USER_PROJECTS_PATH);
+            get.addHeader(AUTH_HEADER, credentials);
+            HttpResponse httpRsponse = client.execute(get);
+            // Logger.printResponseLog(httpRsponse);
+            // Read all the text returned by the server
+            return httpRsponse.getEntity();
+        }
 
-    public HttpEntity searchUserInfo(final String userName, final String password, final String mUrl) throws Exception {
-        String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
-        HttpClient client = new DefaultHttpClient();
-        HttpGet get = new HttpGet(mUrl + USER_INFO_PATH + userName);
-        get.addHeader(AUTH_HEADER, credentials);
-        HttpResponse httpRsponse = client.execute(get);
-        return httpRsponse.getEntity();
-    }
-
+        public HttpEntity searchUserInfo(final String userName, final String password, final String mUrl) throws Exception {
+            String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
+            HttpClient client = new DefaultHttpClient();
+            HttpGet get = new HttpGet(mUrl + USER_INFO_PATH + userName);
+            get.addHeader(AUTH_HEADER, credentials);
+            HttpResponse httpRsponse = client.execute(get);
+            return httpRsponse.getEntity();
+        }
+    */
     public HttpEntity searchData(final String userName, final String password, final String mUrl, final String typeData) throws Exception {
         TypeSearchedData request = TypeSearchedData.getType(typeData);
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);

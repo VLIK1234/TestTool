@@ -49,8 +49,8 @@ public class BaseActivity extends Activity {
                     Rect rect = new Rect();
                     getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
                     final String cachePath =
-                        Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ? getExternalCacheDir().getPath() :
-                            getCacheDir().getPath();
+                            Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ? getExternalCacheDir().getPath() :
+                                    getCacheDir().getPath();
                     //TODO commented line, feature is not ready for master
                     //new ImageSavingTask((BaseActivity) context, bitmap, rect, cachePath).execute();
                     Toast.makeText(context, cachePath, Toast.LENGTH_SHORT).show();

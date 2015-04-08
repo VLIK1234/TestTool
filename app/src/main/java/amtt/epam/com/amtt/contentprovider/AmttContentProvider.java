@@ -1,14 +1,24 @@
 package amtt.epam.com.amtt.contentprovider;
 
+import android.content.ContentProvider;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.UriMatcher;
+import android.database.Cursor;
+import android.net.Uri;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import amtt.epam.com.amtt.database.DataBaseManager;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
-import android.content.*;
-import android.database.Cursor;
-import android.net.Uri;
-
-import java.util.*;
 
 
 /**
@@ -76,8 +86,8 @@ public class AmttContentProvider extends ContentProvider {
         if (matchedUri == AmttUri.STEP_WITH_META.ordinal() || matchedUri == AmttUri.STEP_WITH_META_ID.ordinal()) {
             String[] tablesName = {StepsTable.TABLE_NAME, ActivityInfoTable.TABLE_NAME};
             cursor = getDataBaseManager().joinQuery(tablesName,
-                StepsWithMetaTable.PROJECTION,
-                new String[]{StepsTable._ASSOCIATED_ACTIVITY, ActivityInfoTable._ACTIVITY_NAME});
+                    StepsWithMetaTable.PROJECTION,
+                    new String[]{StepsTable._ASSOCIATED_ACTIVITY, ActivityInfoTable._ACTIVITY_NAME});
         } else {
             String tableName = uri.getLastPathSegment();
             cursor = getDataBaseManager().query(tableName, projection, selection, selectionArgs, sortOrder);

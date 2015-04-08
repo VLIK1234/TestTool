@@ -1,11 +1,13 @@
 package amtt.epam.com.amtt.asynctask;
 
+import android.os.AsyncTask;
+
+import org.apache.http.HttpEntity;
+
 import amtt.epam.com.amtt.authorization.JiraApi;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.callbacks.ShowUserInfoCallback;
 import amtt.epam.com.amtt.processing.UserInfoToJsonProcessor;
-import android.os.AsyncTask;
-import org.apache.http.HttpEntity;
 
 /**
  * Created by Irina Monchenko on 06.04.2015.

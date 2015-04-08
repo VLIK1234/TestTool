@@ -1,5 +1,19 @@
 package amtt.epam.com.amtt.app;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.crashlytics.android.Crashlytics;
+
+import java.util.ArrayList;
+
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
@@ -12,26 +26,15 @@ import amtt.epam.com.amtt.database.StepSavingTask;
 import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-import com.crashlytics.android.Crashlytics;
+import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.util.PreferenceUtils;
 import io.fabric.sdk.android.Fabric;
-
-import java.util.ArrayList;
 
 
 public class MainActivity extends BaseActivity implements StepSavingCallback, ShowUserDataCallback {
-    private SharedPreferences sharedPreferences;
+
     private Boolean accessCreateIssue;
-    private Button issueButton, userInfoButton;
+    private Button createIssueButton, userInfoButton;
     private int mScreenNumber = 1;
     private boolean newStepsSequence = false;
 
@@ -71,16 +74,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                 new DbClearTask(MainActivity.this).execute();
             }
         });
-        sharedPreferences = getSharedPreferences(Constants.NAME_SP, MODE_PRIVATE);
-
-        //TODO we update it in onPostResume method, why we have this lines here?
-        //start
-        accessCreateIssue = sharedPreferences.getBoolean(Constants.ACCESS, false);
-        issueButton = (Button) findViewById(R.id.issue_act_button);
-        issueButton.setEnabled(accessCreateIssue);
-        userInfoButton = (Button) findViewById(R.id.user_info_btn);
-        userInfoButton.setEnabled(accessCreateIssue);
-        //end
 
         Button stepButton = (Button) findViewById(R.id.step_button);
         stepButton.setOnClickListener(new View.OnClickListener() {
@@ -124,16 +117,43 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                                            }
 
         );
+
+        createIssueButton = (Button) findViewById(R.id.issue_act_button);
+        createIssueButton.setOnClickListener(new View.OnClickListener()
+
+                                             {
+                                                 @Override
+                                                 public void onClick(View v) {
+                                                     String username, password, url;
+                                                     username = CredentialsManager.getInstance().getUserName(MainActivity.this);
+                                                     password = CredentialsManager.getInstance().getPassword(MainActivity.this);
+                                                     url = CredentialsManager.getInstance().getUrl(MainActivity.this);
+                                                     showProgress(true, R.id.progress);
+                                                     new ShowUserDataTask(username, password, url, Constants.typeSearchData, MainActivity.this).execute();
+                                                 }
+                                             }
+
+        );
+
+        userInfoButton = (Button) findViewById(R.id.user_info_btn);
+        userInfoButton.setOnClickListener(new View.OnClickListener()
+
+                                          {
+                                              @Override
+                                              public void onClick(View v) {
+                                                  startActivity(new Intent(MainActivity.this, UserInfoActivity.class));
+                                              }
+                                          }
+
+        );
+
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        //TODO do we need this fields as members? We do the same lines on create?
-        accessCreateIssue = sharedPreferences.getBoolean(Constants.ACCESS, false);
-        issueButton = (Button) findViewById(R.id.issue_act_button);
-        issueButton.setEnabled(accessCreateIssue);
-        userInfoButton = (Button) findViewById(R.id.user_info_btn);
+        accessCreateIssue = CredentialsManager.getInstance().getAccess(MainActivity.this);
+        createIssueButton.setEnabled(accessCreateIssue);
         userInfoButton.setEnabled(accessCreateIssue);
     }
 
@@ -150,13 +170,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
 
     }
-
-//    @Override
-//    public void onImageSaved(ImageSavingResult result) {
-//        mScreenNumber++;
-//        int resultMessage = result == ImageSavingResult.ERROR ? R.string.image_saving_error : R.string.image_saving_success;
-//        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-//    }
 
     @Override
     public int getScreenNumber() {
@@ -175,32 +188,14 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         mScreenNumber++;
     }
 
-    //TODO we set OnClickListener from code for some buttons and here you set from xml. Why?
-    public void onIssueClick(View view) {
-        String username, password, url;
-        username = sharedPreferences.getString(Constants.USER_NAME, Constants.VOID);
-        password = sharedPreferences.getString(Constants.PASSWORD, Constants.VOID);
-        url = sharedPreferences.getString(Constants.URL, Constants.VOID);
-        showProgress(true, R.id.progress);
-        new ShowUserDataTask(username, password, url, Constants.typeSearchData, MainActivity.this).execute();
-
-    }
-
-
     @Override
     public void onShowUserDataResult(JMetaResponse result) {
         ArrayList<String> projectsNames = result.getProjectsNames();
         ArrayList<String> projectsKeys = result.getProjectsKeys();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putStringSet(Constants.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
-        editor.putStringSet(Constants.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
-        editor.apply();
+        PreferenceUtils.putSet(Constants.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames), MainActivity.this);
+        PreferenceUtils.putSet(Constants.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys), MainActivity.this);
         showProgress(false, R.id.progress);
         startActivity(new Intent(this, CreateIssueActivity.class));
     }
 
-    public void onUserInfoClick(View view) {
-        startActivity(new Intent(this, UserInfoActivity.class));
-
-    }
 }

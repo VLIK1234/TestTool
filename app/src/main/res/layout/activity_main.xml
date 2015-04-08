@@ -56,7 +56,6 @@
         android:layout_below="@id/login_button"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:onClick="onIssueClick"
         android:enabled="false" />
 
     <Button
@@ -95,7 +94,6 @@
         android:layout_alignRight="@+id/step_button"
         android:layout_alignEnd="@+id/step_button"
         android:layout_marginTop="16dp"
-        android:onClick="onIssueClick"
         android:layout_below="@+id/clear_db_button" />
 
     <Button
@@ -103,7 +101,6 @@
         android:text="@string/user_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="onUserInfoClick"
         android:layout_below="@+id/issue_act_button"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
