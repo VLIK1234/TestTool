@@ -1,7 +1,7 @@
 package amtt.epam.com.amtt.loader;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.LruCache;
 import android.widget.ImageView;
 
@@ -17,7 +17,7 @@ public class InternalStorageImageLoader implements ImageLoadingCallback {
 
     private final LruCache<String, Bitmap> mCache;
     private final AmttExecutor mExecutor;
-    private static final Map<String,ImageView> mLoadedImages;
+    private static final Map<String, ImageView> mLoadedImages;
     private final int mImageViewWidth;
     private final int mImageViewHeight;
 
@@ -48,7 +48,7 @@ public class InternalStorageImageLoader implements ImageLoadingCallback {
         } else {
             if (!isImageLoaded(path)) {
                 putImageToLoaded(path, imageView);
-                mExecutor.execute(new ImageLoadingTask(path,mImageViewWidth, mImageViewHeight, this));
+                new ImageLoadingTask(path, imageView, mImageViewWidth, mImageViewHeight, this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
             }
         }
     }
@@ -60,24 +60,16 @@ public class InternalStorageImageLoader implements ImageLoadingCallback {
     }
 
     private void putImageToLoaded(String path, ImageView imageView) {
-        mLoadedImages.put(path,imageView);
+        mLoadedImages.put(path, imageView);
     }
 
 
     //ImageLoadingCallback implementation
     @Override
     public void onLoadingFinished(String path, final Bitmap bitmap) {
-        if (mLoadedImages.get(path) != null) {
-            final ImageView targetImageView = mLoadedImages.remove(path);
-            targetImageView.post(new Runnable() {
-                @Override
-                public void run() {
-                    targetImageView.setImageBitmap(bitmap);
-                }
-            });
-            synchronized (mCache) {
-                mCache.put(path,bitmap);
-            }
+        mLoadedImages.remove(path);
+        synchronized (mCache) {
+            mCache.put(path, bitmap);
         }
     }
 

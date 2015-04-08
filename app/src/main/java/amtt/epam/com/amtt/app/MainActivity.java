@@ -87,16 +87,13 @@ public class MainActivity extends BaseActivity implements StepSavingCallback {
 
         Button showStepsButton = (Button) findViewById(R.id.show_steps_button);
         showStepsButton.setOnClickListener(new View.OnClickListener()
-
-                                           {
-                                               @Override
-                                               public void onClick(View v) {
-                                                   startActivity(new Intent(MainActivity.this, StepsActivity.class));
-                                                   newStepsSequence = true;
-                                               }
-                                           }
-
-        );
+        {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, StepsActivity.class));
+                newStepsSequence = true;
+            }
+        });
     }
 
 

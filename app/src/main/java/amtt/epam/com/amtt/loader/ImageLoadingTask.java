@@ -2,26 +2,30 @@ package amtt.epam.com.amtt.loader;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.widget.ImageView;
 
 /**
  * Created by Artsiom_Kaliaha on 03.04.2015.
  */
-public class ImageLoadingTask implements Runnable {
+public class ImageLoadingTask extends AsyncTask<Void, Void, Bitmap> {
 
     private final String mPath;
+    private final ImageView mImageView;
     private final ImageLoadingCallback mCallback;
     private final int mImageViewWidth;
     private final int mImageViewHeight;
 
-    public ImageLoadingTask(String path, int imageViewWidth, int imageViewHeight, ImageLoadingCallback callback) {
+    public ImageLoadingTask(String path, ImageView imageView, int imageViewWidth, int imageViewHeight, ImageLoadingCallback callback) {
         mPath = path;
+        mImageView = imageView;
         mImageViewWidth = imageViewWidth;
         mImageViewHeight = imageViewHeight;
         mCallback = callback;
     }
 
     @Override
-    public void run() {
+    protected Bitmap doInBackground(Void... params) {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(mPath, options);
@@ -30,6 +34,13 @@ public class ImageLoadingTask implements Runnable {
 
         final Bitmap bitmap = BitmapFactory.decodeFile(mPath, options);
         mCallback.onLoadingFinished(mPath, bitmap);
+
+        return bitmap;
+    }
+
+    @Override
+    protected void onPostExecute(Bitmap bitmap) {
+        mImageView.setImageBitmap(bitmap);
     }
 
     private int calculateInSampleSize(BitmapFactory.Options options) {
