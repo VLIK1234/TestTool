@@ -37,7 +37,7 @@ public class CredentialsManager {
         return mUrl;
     }
 
-    public Boolean getAccess(Context context) {
+    public Boolean getAccessState(Context context) {
         mAccess = PreferenceUtils.getBoolean(Constants.ACCESS, false, context);
         return mAccess;
     }

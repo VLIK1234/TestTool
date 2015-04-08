@@ -33,7 +33,6 @@ import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends BaseActivity implements StepSavingCallback, ShowUserDataCallback {
 
-    private Boolean accessCreateIssue;
     private Button createIssueButton, userInfoButton;
     private int mScreenNumber = 1;
     private boolean newStepsSequence = false;
@@ -152,7 +151,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        accessCreateIssue = CredentialsManager.getInstance().getAccess(MainActivity.this);
+        Boolean accessCreateIssue = CredentialsManager.getInstance().getAccessState(MainActivity.this);
         createIssueButton.setEnabled(accessCreateIssue);
         userInfoButton.setEnabled(accessCreateIssue);
     }

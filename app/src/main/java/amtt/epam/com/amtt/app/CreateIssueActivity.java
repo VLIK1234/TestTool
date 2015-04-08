@@ -20,6 +20,7 @@ import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
+import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 
 
@@ -30,12 +31,17 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     private ArrayList<String> projectsNames = new ArrayList<>();
     private ArrayList<String> projectsKeys = new ArrayList<>();
     private Spinner inputProjectsKey, inputIssueTypes;
+    private String username, password, url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_create_issue);
+
+        username = CredentialsManager.getInstance().getUserName(CreateIssueActivity.this);
+        password = CredentialsManager.getInstance().getPassword(CreateIssueActivity.this);
+        url = CredentialsManager.getInstance().getUrl(CreateIssueActivity.this);
         etDescription = (EditText) findViewById(R.id.et_description);
         etSummary = (EditText) findViewById(R.id.et_summary);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getProjectsNames());
@@ -45,10 +51,6 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
         inputProjectsKey.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String username, password, url;
-                username = PreferenceUtils.getString(Constants.USER_NAME, Constants.VOID, CreateIssueActivity.this);
-                password = PreferenceUtils.getString(Constants.PASSWORD, Constants.VOID, CreateIssueActivity.this);
-                url = PreferenceUtils.getString(Constants.URL, Constants.VOID, CreateIssueActivity.this);
                 showProgress(true, R.id.progress);
                 new ShowUserDataTask(username, password, url, Constants.typeSearchData, CreateIssueActivity.this).execute();
 
@@ -88,11 +90,6 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
         //TODO what if we click button before "new ShowUserDataTask()" will finish its work?
         issueType = inputIssueTypes.getSelectedItem().toString();
         projectKey = getProjectKey();
-        //TODO we use this credentials many times in project.
-        String username, password, url;
-        username = PreferenceUtils.getString(Constants.USER_NAME, Constants.VOID, CreateIssueActivity.this);
-        password = PreferenceUtils.getString(Constants.PASSWORD, Constants.VOID, CreateIssueActivity.this);
-        url = PreferenceUtils.getString(Constants.URL, Constants.VOID, CreateIssueActivity.this);
         showProgress(true, R.id.progress);
         new CreateIssueTask(username, password, url, issue.createSimpleIssue(projectKey, issueType, description, summary), CreateIssueActivity.this).execute();
 
