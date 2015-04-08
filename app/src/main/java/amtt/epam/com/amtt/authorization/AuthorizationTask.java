@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.authorization;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthenticationException;
 
 /**
@@ -15,6 +16,7 @@ public class AuthorizationTask extends AsyncTask<Void, Void, AuthorizationResult
     private final String mUserName;
     private final String mPassword;
     private final String mUrl;
+    private String mExceptionDescription;
 
     public AuthorizationTask(Context context, String userName, String password, String url, AuthorizationCallback callback) {
         mContext = context;
@@ -27,10 +29,9 @@ public class AuthorizationTask extends AsyncTask<Void, Void, AuthorizationResult
     @Override
     protected AuthorizationResult doInBackground(Void... params) {
         try {
-            if (JiraApi.STATUS_AUTHORIZED != new JiraApi().authorize(mUserName, mPassword, mUrl)) {
-                throw new AuthenticationException("illegal user name or pass");
-            }
+            new JiraApi().authorize(mUserName, mPassword, mUrl);
         } catch (Exception e) {
+            mExceptionDescription = e.toString();
             return AuthorizationResult.AUTHORIZATION_DENIED;
         }
         return AuthorizationResult.AUTHORIZATION_SUCCESS;
@@ -38,6 +39,6 @@ public class AuthorizationTask extends AsyncTask<Void, Void, AuthorizationResult
 
     @Override
     protected void onPostExecute(AuthorizationResult result) {
-        mCallback.onAuthorizationResult(result);
+        mCallback.onAuthorizationResult(result, mExceptionDescription);
     }
 }
