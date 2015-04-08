@@ -131,7 +131,7 @@ public class TopButtonService extends Service {
 
             if (ACTION_SHOW.equals(action)) {
                 show();
-                startForegroundNotifi();
+                showNotification();
             } else if (ACTION_CLOSE.equals(action)) {
                 close();
             } else if (ACTION_HIDE_VIEW.equals(action)) {
@@ -143,7 +143,7 @@ public class TopButtonService extends Service {
         return START_NOT_STICKY;
     }
 
-    private void startForegroundNotifi() {
+    private void showNotification() {
         builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle("AMTT")

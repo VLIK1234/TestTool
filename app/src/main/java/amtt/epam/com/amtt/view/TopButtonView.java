@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.BaseActivity;
 import amtt.epam.com.amtt.app.SecondActivity;
+import amtt.epam.com.amtt.app.StepsActivity;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
@@ -62,21 +64,40 @@ public class TopButtonView extends FrameLayout {
         mainButton.setImageResource(R.drawable.ic_top_button);
         buttonsBar.setVisibility(GONE);
 
-        ImageView buttonAdd = (ImageView) findViewById(R.id.button_add);
-        buttonAdd.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "ADD", Toast.LENGTH_LONG).show();
-            }
-        });
-        ImageView buttonAuth = (ImageView) findViewById(R.id.button_auth);
+        Button buttonAuth = (Button) findViewById(R.id.button_auth);
         buttonAuth.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "AUTH", Toast.LENGTH_LONG).show();
             }
         });
-        ImageView buttonBugRep = (ImageView) findViewById(R.id.button_bug_rep);
+        Button buttonUserInfo = (Button) findViewById(R.id.button_user_info);
+        buttonUserInfo.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "INFO", Toast.LENGTH_LONG).show();
+            }
+        });
+        Button buttonAddStep = (Button) findViewById(R.id.button_add_step);
+        buttonAddStep.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "STEP", Toast.LENGTH_LONG).show();
+                Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
+                getContext().sendBroadcast(intentATS);
+            }
+        });
+        Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
+        buttonShowStep.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "SHOW", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), StepsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intent);
+            }
+        });
+        Button buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
         buttonBugRep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,23 +107,6 @@ public class TopButtonView extends FrameLayout {
                 getContext().getApplicationContext().startActivity(intent);
             }
         });
-        ImageView buttonScreen = (ImageView) findViewById(R.id.button_screen);
-        buttonScreen.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "SCREEN", Toast.LENGTH_LONG).show();
-                Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
-                getContext().sendBroadcast(intentATS);
-            }
-        });
-        ImageView buttonShare = (ImageView) findViewById(R.id.button_share);
-        buttonShare.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "SHARE", Toast.LENGTH_LONG).show();
-            }
-        });
-
     }
 
     @Override

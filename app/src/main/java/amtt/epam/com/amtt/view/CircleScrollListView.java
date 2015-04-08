@@ -36,8 +36,8 @@ public class CircleScrollListView extends SurfaceView implements SurfaceHolder.C
     private ArrayList<CircleDrawItem> datas = new ArrayList<CircleDrawItem>();
 
     int[] buttonDrawableResourceIds = new int[]{
-            R.drawable.button_add, R.drawable.button_share, R.drawable.button_auth,
-            R.drawable.button_screen, R.drawable.button_bug_rep
+            R.drawable.button_login, R.drawable.button_show_step, R.drawable.button_auth,
+            R.drawable.button_add_step, R.drawable.button_bug_rep
     };
 
     public int mCenterX;
