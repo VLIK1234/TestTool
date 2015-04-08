@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.util;
 
 import android.content.Context;
+import android.util.Base64;
 
 /**
  * Created by Iryna_Monchanka on 4/8/2015.
@@ -8,11 +9,6 @@ import android.content.Context;
 public class CredentialsManager {
 
     private static final CredentialsManager INSTANCE = new CredentialsManager();
-
-    private String mUserName;
-    private String mPassword;
-    private String mUrl;
-    private Boolean mAccess;
 
 
     private CredentialsManager() {
@@ -23,31 +19,19 @@ public class CredentialsManager {
     }
 
     public String getUserName(Context context) {
-        mUserName = PreferenceUtils.getString(Constants.USER_NAME, Constants.VOID, context);
-        return mUserName;
-    }
-
-    public String getPassword(Context context) {
-        mPassword = PreferenceUtils.getString(Constants.PASSWORD, Constants.VOID, context);
-        return mPassword;
+        return PreferenceUtils.getString(Constants.USER_NAME, Constants.VOID, context);
     }
 
     public String getUrl(Context context) {
-        mUrl = PreferenceUtils.getString(Constants.URL, Constants.VOID, context);
-        return mUrl;
+        return PreferenceUtils.getString(Constants.URL, Constants.VOID, context);
     }
 
     public Boolean getAccessState(Context context) {
-        mAccess = PreferenceUtils.getBoolean(Constants.ACCESS, false, context);
-        return mAccess;
+        return PreferenceUtils.getBoolean(Constants.ACCESS, false, context);
     }
 
     public void setUserName(String userName, Context context) {
         PreferenceUtils.putString(Constants.USER_NAME, userName, context);
-    }
-
-    public void setPassword(String password, Context context) {
-        PreferenceUtils.putString(Constants.PASSWORD, password, context);
     }
 
     public void setUrl(String url, Context context) {
@@ -56,6 +40,15 @@ public class CredentialsManager {
 
     public void setAccess(Boolean url, Context context) {
         PreferenceUtils.putBoolean(Constants.ACCESS, url, context);
+    }
+
+    public void setCredentials(String userName, String password, Context context) {
+        String credentials = Constants.BASIC_AUTH + Base64.encodeToString((userName + Constants.COLON + password).getBytes(), Base64.NO_WRAP);
+        PreferenceUtils.putString(Constants.CREDENTIALS, credentials, context);
+    }
+
+    public String getCredentials(Context context) {
+        return PreferenceUtils.getString(Constants.CREDENTIALS, Constants.VOID, context);
     }
 }
 

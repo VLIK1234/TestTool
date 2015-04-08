@@ -14,8 +14,8 @@ public class Constants {
     public static final String PROJECTS_KEYS = "projectsKeys";
     public static final String typeSearchData = "SearchIssue";
     public static final String ACCESS = "access";
-    public static final String COLON = " : ";
+    public static final String COLON = ":";
     public static final String typeSearchInfo = "SearchUserInfo";
-
-
+    public static final String CREDENTIALS = "credentials";
+    public static final String BASIC_AUTH = "Basic ";
 }

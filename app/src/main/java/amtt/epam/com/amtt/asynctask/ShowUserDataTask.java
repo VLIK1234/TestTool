@@ -16,13 +16,13 @@ public class ShowUserDataTask extends AsyncTask<Void, Void, JMetaResponse> {
 
     private final ShowUserDataCallback mCallback;
     private final String mUserName;
-    private final String mPassword;
+    private final String mCredentials;
     private final String mUrl;
     private final String mTypeSearchData;
 
-    public ShowUserDataTask(String username, String userPassword, String url, String typeSearchData, ShowUserDataCallback callback) {
+    public ShowUserDataTask(String username, String credentials, String url, String typeSearchData, ShowUserDataCallback callback) {
         mUserName = username;
-        mPassword = userPassword;
+        mCredentials = credentials;
         mCallback = callback;
         mUrl = url;
         mTypeSearchData = typeSearchData;
@@ -34,7 +34,7 @@ public class ShowUserDataTask extends AsyncTask<Void, Void, JMetaResponse> {
         JMetaResponse jMetaResponse;
         try {
 
-            i = new JiraApi().searchData(mUserName, mPassword, mUrl, mTypeSearchData);
+            i = new JiraApi().searchData(mUserName, mCredentials, mUrl, mTypeSearchData);
             ProjectsToJsonProcessor projects = new ProjectsToJsonProcessor();
             jMetaResponse = projects.process(i);
 

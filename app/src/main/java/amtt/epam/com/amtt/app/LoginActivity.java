@@ -31,7 +31,8 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
             @Override
             public void onClick(View v) {
                 showProgress(true, R.id.progress);
-                new AuthorizationTask(LoginActivity.this, userName.getText().toString(), password.getText().toString(), url.getText().toString(), LoginActivity.this).execute();
+                CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString(), LoginActivity.this);
+                new AuthorizationTask(CredentialsManager.getInstance().getCredentials(LoginActivity.this), url.getText().toString(), LoginActivity.this).execute();
 
             }
         });
@@ -46,7 +47,7 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
         showProgress(false, R.id.progress);
         if (result == AuthorizationResult.AUTHORIZATION_SUCCESS) {
             CredentialsManager.getInstance().setUserName(userName.getText().toString(), LoginActivity.this);
-            CredentialsManager.getInstance().setPassword(password.getText().toString(), LoginActivity.this);
+          //  CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString(), LoginActivity.this);
             CredentialsManager.getInstance().setUrl(url.getText().toString(), LoginActivity.this);
             CredentialsManager.getInstance().setAccess(true, LoginActivity.this);
             finish();

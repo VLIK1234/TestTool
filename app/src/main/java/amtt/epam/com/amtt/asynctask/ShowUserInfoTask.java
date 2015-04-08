@@ -16,13 +16,13 @@ public class ShowUserInfoTask extends AsyncTask<Void, Void, JiraUserInfo> {
 
     private final ShowUserInfoCallback mCallback;
     private final String mUserName;
-    private final String mPassword;
+    private final String mCredentials;
     private final String mUrl;
     private final String mTypeSearchData;
 
-    public ShowUserInfoTask(String username, String userPassword, String url, String typeSearchData, ShowUserInfoCallback callback) {
+    public ShowUserInfoTask(String username, String credentials, String url, String typeSearchData, ShowUserInfoCallback callback) {
         mUserName = username;
-        mPassword = userPassword;
+        mCredentials = credentials;
         mCallback = callback;
         mUrl = url;
         mTypeSearchData = typeSearchData;
@@ -33,7 +33,7 @@ public class ShowUserInfoTask extends AsyncTask<Void, Void, JiraUserInfo> {
         HttpEntity i;
         JiraUserInfo jiraUserInfo;
         try {
-            i = new JiraApi().searchData(mUserName, mPassword, mUrl, mTypeSearchData);
+            i = new JiraApi().searchData(mUserName, mCredentials, mUrl, mTypeSearchData);
             UserInfoToJsonProcessor projects = new UserInfoToJsonProcessor();
             jiraUserInfo = projects.process(i);
 

@@ -123,12 +123,12 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                                              {
                                                  @Override
                                                  public void onClick(View v) {
-                                                     String username, password, url;
+                                                     String username, credentials, url;
                                                      username = CredentialsManager.getInstance().getUserName(MainActivity.this);
-                                                     password = CredentialsManager.getInstance().getPassword(MainActivity.this);
+                                                     credentials = CredentialsManager.getInstance().getCredentials(MainActivity.this);
                                                      url = CredentialsManager.getInstance().getUrl(MainActivity.this);
                                                      showProgress(true, R.id.progress);
-                                                     new ShowUserDataTask(username, password, url, Constants.typeSearchData, MainActivity.this).execute();
+                                                     new ShowUserDataTask(username, credentials, url, Constants.typeSearchData, MainActivity.this).execute();
                                                  }
                                              }
 

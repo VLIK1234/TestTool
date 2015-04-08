@@ -31,7 +31,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     private ArrayList<String> projectsNames = new ArrayList<>();
     private ArrayList<String> projectsKeys = new ArrayList<>();
     private Spinner inputProjectsKey, inputIssueTypes;
-    private String username, password, url;
+    private String username, credentials, url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
         setContentView(R.layout.activity_create_issue);
 
         username = CredentialsManager.getInstance().getUserName(CreateIssueActivity.this);
-        password = CredentialsManager.getInstance().getPassword(CreateIssueActivity.this);
+        credentials = CredentialsManager.getInstance().getCredentials(CreateIssueActivity.this);
         url = CredentialsManager.getInstance().getUrl(CreateIssueActivity.this);
         etDescription = (EditText) findViewById(R.id.et_description);
         etSummary = (EditText) findViewById(R.id.et_summary);
@@ -52,7 +52,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 showProgress(true, R.id.progress);
-                new ShowUserDataTask(username, password, url, Constants.typeSearchData, CreateIssueActivity.this).execute();
+                new ShowUserDataTask(username, credentials, url, Constants.typeSearchData, CreateIssueActivity.this).execute();
 
             }
 
@@ -91,7 +91,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
         issueType = inputIssueTypes.getSelectedItem().toString();
         projectKey = getProjectKey();
         showProgress(true, R.id.progress);
-        new CreateIssueTask(username, password, url, issue.createSimpleIssue(projectKey, issueType, description, summary), CreateIssueActivity.this).execute();
+        new CreateIssueTask(credentials, url, issue.createSimpleIssue(projectKey, issueType, description, summary), CreateIssueActivity.this).execute();
 
     }
 
