@@ -1,5 +1,8 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.util.Constants;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,11 +15,14 @@ import amtt.epam.com.amtt.authorization.AuthorizationResult;
 import amtt.epam.com.amtt.authorization.AuthorizationTask;
 import amtt.epam.com.amtt.util.CredentialsManager;
 
+import java.util.Objects;
+
 public class LoginActivity extends BaseActivity implements AuthorizationCallback {
 
     private EditText userName;
     private EditText password;
     private EditText url;
+    private String toastText = Constants.Keys.VOID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +34,37 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
         //TODO check inputs before login
         Button loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
-                showProgress(true);
-                CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString(), LoginActivity.this);
-                new AuthorizationTask(CredentialsManager.getInstance().getCredentials(LoginActivity.this), url.getText().toString(), LoginActivity.this).execute();
 
+                if((Objects.equals(userName.getText().toString(), null))||(Objects.equals(userName.getText().toString(), ""))) {
+                    toastText.concat("Input username");
+                    if((Objects.equals(password.getText().toString(), null))||(Objects.equals(password.getText().toString(), ""))){
+                        toastText.concat( "Input password\n");
+                        if((!Objects.equals(url.getText().toString(), null))&&(!Objects.equals(url.getText().toString(), ""))){
+                            showProgress(true);
+                            CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString(), LoginActivity.this);
+                            new AuthorizationTask(CredentialsManager.getInstance().getCredentials(LoginActivity.this), url.getText().toString(), LoginActivity.this).execute();
+
+                        }
+                        else{
+                            toastText += "Input URL\n";
+                        }
+
+                    }
+                    else{
+                       
+                    }
+
+                }
+                else{
+
+                }
+
+                if(!Objects.equals(toastText, Constants.Keys.VOID)){
+                    Toast.makeText(LoginActivity.this, toastText, Toast.LENGTH_LONG );
+                }
             }
         });
     }

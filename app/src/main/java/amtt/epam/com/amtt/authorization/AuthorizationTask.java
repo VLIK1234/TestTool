@@ -21,8 +21,10 @@ public class AuthorizationTask extends AsyncTask<Void, Void, AuthorizationResult
 
     @Override
     protected AuthorizationResult doInBackground(Void... params) {
+        //TODO update for amtt/epam/com/amtt/authorization/JiraApi.java:42
         try {
-            if (JiraApi.STATUS_AUTHORIZED != new JiraApi().authorize(mCredentials, mUrl)) {
+            new JiraApi();
+            if (JiraApi.STATUS_AUTHORIZED != JiraApi.authorize(mCredentials, mUrl)) {
                 throw new AuthenticationException("illegal user name or pass");
             }
         } catch (Exception e) {

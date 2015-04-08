@@ -14,6 +14,7 @@ import amtt.epam.com.amtt.util.Logger;
 /**
  * Created by Artsiom_Kaliaha on 24.03.2015.
  */
+//TODO wrong package
 public class JiraApi {
 
     private static final String TAG = JiraApi.class.getSimpleName();
@@ -36,10 +37,11 @@ public class JiraApi {
 
 
     //TODO OAUTH?
-    public int authorize(final String credentials, final String mUrl) throws Exception {
-        httpGet = new HttpGet(mUrl + LOGIN_METHOD);
+    public static int authorize(final String credentials, final String mUrl) throws Exception {
+        HttpClient client = new DefaultHttpClient();
+        HttpGet httpGet = new HttpGet(mUrl + LOGIN_METHOD);
         httpGet.setHeader(AUTH_HEADER, credentials);
-        response = client.execute(httpGet);
+        HttpResponse  response = client.execute(httpGet);
         //TODO return status, not code
         return response.getStatusLine().getStatusCode();
 
@@ -58,27 +60,6 @@ public class JiraApi {
         return response.getStatusLine().getStatusCode();
     }
 
-    /*
-        public HttpEntity searchIssue(final String userName, final String password, final String mUrl) throws Exception {
-            String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
-            HttpClient client = new DefaultHttpClient();
-            HttpGet get = new HttpGet(mUrl + USER_PROJECTS_PATH);
-            get.addHeader(AUTH_HEADER, credentials);
-            HttpResponse httpRsponse = client.execute(get);
-            // Logger.printResponseLog(httpRsponse);
-            // Read all the text returned by the server
-            return httpRsponse.getEntity();
-        }
-
-        public HttpEntity searchUserInfo(final String userName, final String password, final String mUrl) throws Exception {
-            String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
-            HttpClient client = new DefaultHttpClient();
-            HttpGet get = new HttpGet(mUrl + USER_INFO_PATH + userName);
-            get.addHeader(AUTH_HEADER, credentials);
-            HttpResponse httpRsponse = client.execute(get);
-            return httpRsponse.getEntity();
-        }
-    */
     public HttpEntity searchData(final String userName, final String credentials, final String mUrl, final String typeData) throws Exception {
         TypeSearchedData request = TypeSearchedData.getType(typeData);
         Logger.d(TAG, String.valueOf(request));

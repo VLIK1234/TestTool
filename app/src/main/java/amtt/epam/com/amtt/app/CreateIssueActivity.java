@@ -2,11 +2,7 @@ package amtt.epam.com.amtt.app;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.*;
 
 import java.util.ArrayList;
 
@@ -32,6 +28,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     private ArrayList<String> projectsKeys = new ArrayList<>();
     private Spinner inputProjectsKey, inputIssueTypes;
     private String username, credentials, url;
+    private Button createIssue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +57,24 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
             public void onNothingSelected(AdapterView<?> arg0) {
             }
         });
+        createIssue = (Button) findViewById(R.id.btn_create);
+        createIssue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CreateIssue issue = new CreateIssue();
+                String projectKey, issueType, description, summary;
+                description = etDescription.getText().toString();
+                summary = etSummary.getText().toString();
+                issueType = inputIssueTypes.getSelectedItem().toString();
+                projectKey = getProjectKey();
+                showProgress(true);
+                createIssue.setVisibility(View.GONE);
+                new CreateIssueTask(credentials, url, issue.createSimpleIssue(projectKey, issueType, description, summary), CreateIssueActivity.this).execute();
+
+            }
+        });
+
+
     }
 
     public int getSelectedItemPositionProject() {
@@ -82,24 +97,12 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
 
     }
 
-    public void onCreateIssueClick(View view) {
-        CreateIssue issue = new CreateIssue();
-        String projectKey, issueType, description, summary;
-        description = etDescription.getText().toString();
-        summary = etSummary.getText().toString();
-        //TODO what if we click button before "new ShowUserDataTask()" will finish its work?
-        issueType = inputIssueTypes.getSelectedItem().toString();
-        projectKey = getProjectKey();
-        showProgress(true);
-        new CreateIssueTask(credentials, url, issue.createSimpleIssue(projectKey, issueType, description, summary), CreateIssueActivity.this).execute();
-
-    }
-
     @Override
     public void onCreationIssueResult(CreationIssueResult result) {
         String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
                 getResources().getString(R.string.issue_creating_success);
         showProgress(false);
+        createIssue.setVisibility(View.VISIBLE);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
         if (resultMessage.equals(getResources().getString(R.string.issue_creating_success))) {
             finish();
