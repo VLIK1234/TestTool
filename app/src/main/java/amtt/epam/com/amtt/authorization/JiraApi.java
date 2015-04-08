@@ -1,7 +1,5 @@
 package amtt.epam.com.amtt.authorization;
 
-import android.util.Base64;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -11,7 +9,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
-import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Logger;
 
 /**

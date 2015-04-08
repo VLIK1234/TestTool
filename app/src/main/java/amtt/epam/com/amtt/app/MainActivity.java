@@ -127,7 +127,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                                                      username = CredentialsManager.getInstance().getUserName(MainActivity.this);
                                                      credentials = CredentialsManager.getInstance().getCredentials(MainActivity.this);
                                                      url = CredentialsManager.getInstance().getUrl(MainActivity.this);
-                                                     showProgress(true, R.id.progress);
+                                                     showProgress(true);
                                                      new ShowUserDataTask(username, credentials, url, Constants.typeSearchData, MainActivity.this).execute();
                                                  }
                                              }
@@ -191,9 +191,9 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     public void onShowUserDataResult(JMetaResponse result) {
         ArrayList<String> projectsNames = result.getProjectsNames();
         ArrayList<String> projectsKeys = result.getProjectsKeys();
-        PreferenceUtils.putSet(Constants.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames), MainActivity.this);
-        PreferenceUtils.putSet(Constants.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys), MainActivity.this);
-        showProgress(false, R.id.progress);
+        PreferenceUtils.putSet(Constants.Keys.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames), MainActivity.this);
+        PreferenceUtils.putSet(Constants.Keys.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys), MainActivity.this);
+        showProgress(false);
         startActivity(new Intent(this, CreateIssueActivity.class));
     }
 

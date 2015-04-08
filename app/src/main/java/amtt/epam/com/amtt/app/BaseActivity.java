@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import amtt.epam.com.amtt.R;
+
 /**
  * Created by Ivan_Bakach on 26.03.2015.
  */
@@ -81,7 +83,11 @@ public class BaseActivity extends Activity {
 //        return BaseStorage.getNumber();
 //    }
 
-    protected void showProgress(boolean show, int idProgress) {
-        findViewById(idProgress).setVisibility(show ? View.VISIBLE : View.GONE);
+    public void showProgress(boolean show) {
+        findViewById(getProgressViewId()).setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    protected int getProgressViewId() {
+        return R.id.progress;
     }
 }

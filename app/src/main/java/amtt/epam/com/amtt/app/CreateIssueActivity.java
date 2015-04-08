@@ -51,7 +51,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
         inputProjectsKey.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                showProgress(true, R.id.progress);
+                showProgress(true);
                 new ShowUserDataTask(username, credentials, url, Constants.typeSearchData, CreateIssueActivity.this).execute();
 
             }
@@ -67,12 +67,12 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     }
 
     public ArrayList<String> getProjectsNames() {
-        projectsNames = Converter.setToArrayList(PreferenceUtils.getSet(Constants.PROJECTS_NAMES, null, CreateIssueActivity.this));
+        projectsNames = Converter.setToArrayList(PreferenceUtils.getSet(Constants.Keys.PROJECTS_NAMES, null, CreateIssueActivity.this));
         return projectsNames;
     }
 
     public ArrayList<String> getProjectsKeys() {
-        projectsKeys = Converter.setToArrayList(PreferenceUtils.getSet(Constants.PROJECTS_KEYS, null, CreateIssueActivity.this));
+        projectsKeys = Converter.setToArrayList(PreferenceUtils.getSet(Constants.Keys.PROJECTS_KEYS, null, CreateIssueActivity.this));
         return projectsKeys;
     }
 
@@ -90,7 +90,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
         //TODO what if we click button before "new ShowUserDataTask()" will finish its work?
         issueType = inputIssueTypes.getSelectedItem().toString();
         projectKey = getProjectKey();
-        showProgress(true, R.id.progress);
+        showProgress(true);
         new CreateIssueTask(credentials, url, issue.createSimpleIssue(projectKey, issueType, description, summary), CreateIssueActivity.this).execute();
 
     }
@@ -99,7 +99,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     public void onCreationIssueResult(CreationIssueResult result) {
         String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
                 getResources().getString(R.string.issue_creating_success);
-        showProgress(false, R.id.progress);
+        showProgress(false);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
         if (resultMessage.equals(getResources().getString(R.string.issue_creating_success))) {
             finish();
@@ -115,7 +115,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
         issueNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         inputIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
         inputIssueTypes.setAdapter(issueNames);
-        showProgress(false, R.id.progress);
+        showProgress(false);
     }
 
 }

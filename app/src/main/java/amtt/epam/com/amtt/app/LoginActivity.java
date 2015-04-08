@@ -30,7 +30,7 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showProgress(true, R.id.progress);
+                showProgress(true);
                 CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString(), LoginActivity.this);
                 new AuthorizationTask(CredentialsManager.getInstance().getCredentials(LoginActivity.this), url.getText().toString(), LoginActivity.this).execute();
 
@@ -44,10 +44,10 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
         String resultMessage = result == AuthorizationResult.AUTHORIZATION_DENIED ? getResources().getString(R.string.authorization_denied) :
                 getResources().getString(R.string.authorization_success);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-        showProgress(false, R.id.progress);
+        showProgress(false);
         if (result == AuthorizationResult.AUTHORIZATION_SUCCESS) {
             CredentialsManager.getInstance().setUserName(userName.getText().toString(), LoginActivity.this);
-          //  CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString(), LoginActivity.this);
+            //  CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString(), LoginActivity.this);
             CredentialsManager.getInstance().setUrl(url.getText().toString(), LoginActivity.this);
             CredentialsManager.getInstance().setAccess(true, LoginActivity.this);
             finish();

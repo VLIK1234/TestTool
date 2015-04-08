@@ -22,7 +22,7 @@ public class AuthorizationTask extends AsyncTask<Void, Void, AuthorizationResult
     @Override
     protected AuthorizationResult doInBackground(Void... params) {
         try {
-            if (JiraApi.STATUS_AUTHORIZED != new JiraApi().authorize(mCredentials,mUrl)) {
+            if (JiraApi.STATUS_AUTHORIZED != new JiraApi().authorize(mCredentials, mUrl)) {
                 throw new AuthenticationException("illegal user name or pass");
             }
         } catch (Exception e) {

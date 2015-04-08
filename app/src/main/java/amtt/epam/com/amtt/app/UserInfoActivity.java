@@ -28,7 +28,7 @@ public class UserInfoActivity extends BaseActivity implements ShowUserInfoCallba
         String username = CredentialsManager.getInstance().getUserName(UserInfoActivity.this);
         String credentials = CredentialsManager.getInstance().getCredentials(UserInfoActivity.this);
         String url = CredentialsManager.getInstance().getUrl(UserInfoActivity.this);
-        showProgress(true, R.id.progress);
+        showProgress(true);
         new ShowUserInfoTask(username, credentials, url, Constants.typeSearchInfo, UserInfoActivity.this).execute();
 
 
@@ -36,12 +36,12 @@ public class UserInfoActivity extends BaseActivity implements ShowUserInfoCallba
 
     @Override
     public void onShowUserInfoResult(JiraUserInfo result) {
-        name.setText(getResources().getString(R.string.user_name) + Constants.COLON + result.getName());
-        emailAddress.setText(getResources().getString(R.string.user_email) + Constants.COLON + result.getEmailAddress());
+        name.setText(getResources().getString(R.string.user_name) + Constants.Keys.COLON + result.getName());
+        emailAddress.setText(getResources().getString(R.string.user_email) + Constants.Keys.COLON + result.getEmailAddress());
         displayName.setText(result.getDisplayName());
-        timeZone.setText(getResources().getString(R.string.time_zone) + Constants.COLON + result.getTimeZone());
-        locale.setText(getResources().getString(R.string.locale) + Constants.COLON + result.getLocale());
-        size.setText(getResources().getString(R.string.size) + Constants.COLON + String.valueOf(result.getGroups().getSize()));
-        showProgress(false, R.id.progress);
+        timeZone.setText(getResources().getString(R.string.time_zone) + Constants.Keys.COLON + result.getTimeZone());
+        locale.setText(getResources().getString(R.string.locale) + Constants.Keys.COLON + result.getLocale());
+        size.setText(getResources().getString(R.string.size) + Constants.Keys.COLON + String.valueOf(result.getGroups().getSize()));
+        showProgress(false);
     }
 }
