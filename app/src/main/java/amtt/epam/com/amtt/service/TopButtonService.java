@@ -1,19 +1,20 @@
 package amtt.epam.com.amtt.service;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
+import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.BaseActivity;
-import amtt.epam.com.amtt.app.SecondActivity;
 import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
@@ -23,14 +24,17 @@ public class TopButtonService extends Service {
 
     public static final String ACTION_SHOW = "SHOW";
     public static final String ACTION_CLOSE = "CLOSE";
-    private DisplayMetrics displayMetrics;
+    private static final String LOG_TAG = "Log";
+    public static final int ID = 7;
+    public static final String ACTION_HIDE_VIEW = "HIDE_VIEW";
     private int xInitPosition;
     private int yInitPosition;
     private TopButtonView view;
     private WindowManager wm;
     private WindowManager.LayoutParams layoutParams;
-    private final String LOG_TAG = "myLogs";
     private boolean isViewAdd = false;
+    private NotificationCompat.Action action;
+    private NotificationCompat.Builder builder;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -41,14 +45,11 @@ public class TopButtonService extends Service {
     public void onCreate() {
         super.onCreate();
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        displayMetrics = getBaseContext().getResources().getDisplayMetrics();
+        DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
         xInitPosition = displayMetrics.widthPixels / 2;
         yInitPosition = displayMetrics.heightPixels / 2;
         intitLayoutParams();
-        wm.getDefaultDisplay();
         initView();
-
-
     }
 
     private void intitLayoutParams() {
@@ -74,7 +75,6 @@ public class TopButtonService extends Service {
             }
         });
     }
-
 
     public static Intent getShowIntent(Context context) {
         return new Intent(context, TopButtonService.class).setAction(ACTION_SHOW);
@@ -108,30 +108,18 @@ public class TopButtonService extends Service {
         stopSelf();
     }
 
-    public void onClickAdd(View view) {
-        Toast.makeText(this, "ADD", Toast.LENGTH_LONG).show();
-
-    }
-
-    public void onClickAuth(View view) {
-        Toast.makeText(this, "AUTH", Toast.LENGTH_LONG).show();
-    }
-
-    public void onClickBugRep(View view) {
-        Toast.makeText(this, "BUG_REP", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(getBaseContext(), SecondActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getApplication().startActivity(intent);
-    }
-
-    public void onClickScreen(View view) {
-        Toast.makeText(this, "SCREEN", Toast.LENGTH_LONG).show();
-        Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
-        sendBroadcast(intentATS);
-    }
-
-    public void onClickShare(View view) {
-        Toast.makeText(this, "SHARE", Toast.LENGTH_LONG).show();
+    public final void setVisibilityView() {
+        if (view.getVisibility() == View.VISIBLE) {
+            view.setVisibility(View.GONE);
+            action.icon = R.drawable.ic_stat_action_visibility;
+            action.title = getString(R.string.button_show);
+            startForeground(ID, builder.build());
+        } else {
+            view.setVisibility(View.VISIBLE);
+            action.icon = R.drawable.ic_stat_action_visibility_off;
+            action.title = getString(R.string.button_hide);
+            startForeground(ID, builder.build());
+        }
     }
 
     @Override
@@ -143,13 +131,32 @@ public class TopButtonService extends Service {
 
             if (ACTION_SHOW.equals(action)) {
                 show();
+                showNotification();
             } else if (ACTION_CLOSE.equals(action)) {
                 close();
+            } else if (ACTION_HIDE_VIEW.equals(action)) {
+                setVisibilityView();
             }
         } else {
             Log.w(LOG_TAG, "Tried to onStartCommand() with a null intent.");
         }
         return START_NOT_STICKY;
+    }
+
+    private void showNotification() {
+        builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("AMTT")
+                .setOngoing(true)
+                .setContentText("Button-assistant is running.");
+
+        action = new NotificationCompat.Action(
+                R.drawable.ic_stat_action_visibility_off,
+                getString(R.string.button_hide),
+                PendingIntent.getService(this, 0, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_HIDE_VIEW), PendingIntent.FLAG_UPDATE_CURRENT));
+
+        builder.addAction(action);
+        startForeground(ID, builder.build());
     }
 
 }

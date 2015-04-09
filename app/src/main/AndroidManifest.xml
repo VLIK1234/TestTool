@@ -46,10 +46,6 @@
             android:label="@string/app_name" />
 
         <activity
-            android:name=".app.ThirdActivity"
-            android:label="@string/app_name" />
-
-        <activity
             android:name=".app.CreateIssueActivity"
             android:label="@string/title_activity_create_issue" />
         <activity
