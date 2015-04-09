@@ -22,7 +22,7 @@ import amtt.epam.com.amtt.database.StepSavingTask;
 public class BaseActivity extends Activity implements StepSavingCallback{
 
     public static final String LOG_TAG = "TAG";
-    public final static String ACTION_TAKE_SCREENSHOT = "amtt.epam.com.amtt.app.TAKESCREENSHOT";
+    public final static String ACTION_SAVE_STEP = "amtt.epam.com.amtt.app.TAKESCREENSHOT";
 
     protected BroadcastReceiver br;
 
@@ -35,7 +35,7 @@ public class BaseActivity extends Activity implements StepSavingCallback{
         br = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(ACTION_TAKE_SCREENSHOT)) {
+                if (intent.getAction().equals(ACTION_SAVE_STEP)) {
                     newStepsSequence = true;
                     View rootView = getWindow().getDecorView();
                     rootView.setDrawingCacheEnabled(true);
@@ -58,7 +58,7 @@ public class BaseActivity extends Activity implements StepSavingCallback{
     private void initBroadcastReceiver() {
         //TODO why do we need to recreate receiver every time when onResume is called?
 
-        IntentFilter intentFilterBroadcast = new IntentFilter(ACTION_TAKE_SCREENSHOT);
+        IntentFilter intentFilterBroadcast = new IntentFilter(ACTION_SAVE_STEP);
         registerReceiver(br, intentFilterBroadcast);
     }
 
