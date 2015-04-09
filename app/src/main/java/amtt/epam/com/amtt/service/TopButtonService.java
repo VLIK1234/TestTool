@@ -1,8 +1,5 @@
 package amtt.epam.com.amtt.service;
 
-import amtt.epam.com.amtt.app.BaseActivity;
-import amtt.epam.com.amtt.app.SecondActivity;
-import amtt.epam.com.amtt.view.TopButtonView;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +11,10 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import amtt.epam.com.amtt.app.BaseActivity;
+import amtt.epam.com.amtt.app.SecondActivity;
+import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
  * Created by Ivan_Bakach on 20.03.2015.
@@ -56,7 +57,7 @@ public class TopButtonService extends Service {
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
         layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-            | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
+                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
         layoutParams.format = PixelFormat.TRANSLUCENT;
         layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
         layoutParams.x = xInitPosition;

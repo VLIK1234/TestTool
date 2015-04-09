@@ -57,5 +57,8 @@
     <string name="size">Size</string>
     <string name="user_info">User info</string>
     <string name="self">Self</string>
+    <string name="names_groups">Names groups</string>
+    <string name="title_activity_create_issue2">CreateIssue2Activity</string>
+    <string name="project_name">Project name</string>
 
 </resources>

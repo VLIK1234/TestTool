@@ -15,8 +15,11 @@ public class Converter {
             for (String name : inputSetString) {
                 outputArrayList.add(name);
             }
+            return outputArrayList;
+        } else {
+            return null;
         }
-        return null;
+
     }
 
     public static Set<String> arrayListToSet(ArrayList<String> inputArrayList) {
@@ -26,7 +29,8 @@ public class Converter {
                 outputSetString.add(inputArrayList.get(i));
             }
             return outputSetString;
+        } else {
+            return null;
         }
-        return null;
     }
 }

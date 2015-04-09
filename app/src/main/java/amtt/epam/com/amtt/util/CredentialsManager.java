@@ -19,36 +19,36 @@ public class CredentialsManager {
     }
 
     public String getUserName(Context context) {
-        return PreferenceUtils.getString(Constants.Keys.USER_NAME, Constants.Keys.VOID, context);
+        return PreferenceUtils.getString(Constants.SharedPreferenceKeys.USER_NAME, Constants.SharedPreferenceKeys.VOID, context);
     }
 
     public String getUrl(Context context) {
-        return PreferenceUtils.getString(Constants.Keys.URL, Constants.Keys.VOID, context);
+        return PreferenceUtils.getString(Constants.SharedPreferenceKeys.URL, Constants.SharedPreferenceKeys.VOID, context);
     }
 
     public Boolean getAccessState(Context context) {
-        return PreferenceUtils.getBoolean(Constants.Keys.ACCESS, false, context);
+        return PreferenceUtils.getBoolean(Constants.SharedPreferenceKeys.ACCESS, false, context);
     }
 
     public void setUserName(String userName, Context context) {
-        PreferenceUtils.putString(Constants.Keys.USER_NAME, userName, context);
+        PreferenceUtils.putString(Constants.SharedPreferenceKeys.USER_NAME, userName, context);
     }
 
     public void setUrl(String url, Context context) {
-        PreferenceUtils.putString(Constants.Keys.URL, url, context);
+        PreferenceUtils.putString(Constants.SharedPreferenceKeys.URL, url, context);
     }
 
     public void setAccess(Boolean url, Context context) {
-        PreferenceUtils.putBoolean(Constants.Keys.ACCESS, url, context);
+        PreferenceUtils.putBoolean(Constants.SharedPreferenceKeys.ACCESS, url, context);
     }
 
     public void setCredentials(String userName, String password, Context context) {
-        String credentials = Constants.BASIC_AUTH + Base64.encodeToString((userName + Constants.Keys.COLON + password).getBytes(), Base64.NO_WRAP);
-        PreferenceUtils.putString(Constants.Keys.CREDENTIALS, credentials, context);
+        String credentials = Constants.UrlKeys.BASIC_AUTH + Base64.encodeToString((userName + Constants.SharedPreferenceKeys.COLON + password).getBytes(), Base64.NO_WRAP);
+        PreferenceUtils.putString(Constants.SharedPreferenceKeys.CREDENTIALS, credentials, context);
     }
 
     public String getCredentials(Context context) {
-        return PreferenceUtils.getString(Constants.Keys.CREDENTIALS, Constants.Keys.VOID, context);
+        return PreferenceUtils.getString(Constants.SharedPreferenceKeys.CREDENTIALS, Constants.SharedPreferenceKeys.VOID, context);
     }
 }
 

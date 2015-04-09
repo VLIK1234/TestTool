@@ -1,14 +1,19 @@
 package amtt.epam.com.amtt.view;
 
-import amtt.epam.com.amtt.R;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import amtt.epam.com.amtt.R;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
@@ -66,7 +71,7 @@ public class TopButtonView extends FrameLayout {
 
     private void checkFreeSpace() {
         reParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-            RelativeLayout.LayoutParams.WRAP_CONTENT);
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             ((LinearLayout) body).setOrientation(LinearLayout.HORIZONTAL);
@@ -166,8 +171,8 @@ public class TopButtonView extends FrameLayout {
                 lastY = (int) event.getRawY();
 
                 if (moving
-                    || Math.abs(totalDeltaX) >= threshold
-                    || Math.abs(totalDeltaY) >= threshold) {
+                        || Math.abs(totalDeltaX) >= threshold
+                        || Math.abs(totalDeltaY) >= threshold) {
                     moving = true;
 
                     // update the position of the view
@@ -200,7 +205,7 @@ public class TopButtonView extends FrameLayout {
                 if (event.getPointerCount() == 1) {
 
                     boolean tap = Math.abs(totalDeltaX) < threshold
-                        && Math.abs(totalDeltaY) < threshold;
+                            && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
 //                        if (mOnClickListener != null) {
 //                            mOnClickListener.onClick(this);

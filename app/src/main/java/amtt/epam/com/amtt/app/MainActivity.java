@@ -1,7 +1,22 @@
 package amtt.epam.com.amtt.app;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.crashlytics.android.Crashlytics;
+
+import java.util.ArrayList;
+
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
+import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.crash.AmttExceptionHandler;
@@ -14,19 +29,7 @@ import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.PreferenceUtils;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
-
-import java.util.ArrayList;
 
 
 public class MainActivity extends BaseActivity implements StepSavingCallback, ShowUserDataCallback {
@@ -126,7 +129,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                                                      credentials = CredentialsManager.getInstance().getCredentials(MainActivity.this);
                                                      url = CredentialsManager.getInstance().getUrl(MainActivity.this);
                                                      showProgress(true);
-                                                     new ShowUserDataTask(username, credentials, url, Constants.typeSearchData, MainActivity.this).execute();
+                                                     new ShowUserDataTask(username, credentials, url, TypeSearchedData.SEARCH_ISSUE, MainActivity.this).execute();
                                                  }
                                              }
 
@@ -189,8 +192,8 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     public void onShowUserDataResult(JMetaResponse result) {
         ArrayList<String> projectsNames = result.getProjectsNames();
         ArrayList<String> projectsKeys = result.getProjectsKeys();
-        PreferenceUtils.putSet(Constants.Keys.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames), MainActivity.this);
-        PreferenceUtils.putSet(Constants.Keys.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys), MainActivity.this);
+        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames), MainActivity.this);
+        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys), MainActivity.this);
         showProgress(false);
         startActivity(new Intent(this, CreateIssueActivity.class));
     }

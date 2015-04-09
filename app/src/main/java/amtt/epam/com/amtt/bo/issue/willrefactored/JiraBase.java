@@ -1,12 +1,13 @@
 package amtt.epam.com.amtt.bo.issue.willrefactored;
 
-import amtt.epam.com.amtt.bo.issue.willrefactored.issuekey.JiraBaseFields;
 import com.google.gson.annotations.SerializedName;
+
+import amtt.epam.com.amtt.bo.issue.willrefactored.issuekey.JiraBaseFields;
 
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
  */
-public class JiraBase extends Entity {
+public class JiraBase {
     @SerializedName("fields")
     private JiraBaseFields mFields;
 

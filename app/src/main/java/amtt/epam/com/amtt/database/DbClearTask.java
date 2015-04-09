@@ -1,8 +1,9 @@
 package amtt.epam.com.amtt.database;
 
-import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import android.content.Context;
 import android.os.AsyncTask;
+
+import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 
 /**
  * Created by Artsiom_Kaliaha on 27.03.2015.

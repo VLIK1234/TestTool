@@ -1,8 +1,8 @@
 package amtt.epam.com.amtt.database.table;
 
-import amtt.epam.com.amtt.util.MultiValueMap;
-
 import java.util.ArrayList;
+
+import amtt.epam.com.amtt.util.MultiValueMap;
 
 /**
  * Created by Artsiom_Kaliaha on 18.03.2015.
@@ -31,22 +31,22 @@ public final class ActivityInfoTable extends Table {
     private static MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
-        _ACTIVITY_NAME,
-        _CONFIG_CHANGES,
-        _FLAGS,
-        _LAUNCH_MODE,
-        _MAX_RECENTS,
-        _PARENT_ACTIVITY_NAME,
-        _PERMISSION,
-        _PERSISTABLE_MODE,
-        _SCREEN_ORIENTATION,
-        _SOFT_INPUT_MODE,
-        _TARGET_ACTIVITY_NAME,
-        _TASK_AFFINITY,
-        _THEME,
-        _UI_OPTIONS,
-        _PROCESS_NAME,
-        _PACKAGE_NAME
+            _ACTIVITY_NAME,
+            _CONFIG_CHANGES,
+            _FLAGS,
+            _LAUNCH_MODE,
+            _MAX_RECENTS,
+            _PARENT_ACTIVITY_NAME,
+            _PERMISSION,
+            _PERSISTABLE_MODE,
+            _SCREEN_ORIENTATION,
+            _SOFT_INPUT_MODE,
+            _TARGET_ACTIVITY_NAME,
+            _TASK_AFFINITY,
+            _THEME,
+            _UI_OPTIONS,
+            _PROCESS_NAME,
+            _PACKAGE_NAME
     };
 
     static {

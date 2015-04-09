@@ -1,8 +1,5 @@
 package amtt.epam.com.amtt.database;
 
-import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
-import amtt.epam.com.amtt.database.table.ActivityInfoTable;
-import amtt.epam.com.amtt.database.table.StepsTable;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -16,6 +13,10 @@ import android.os.Build;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.database.table.ActivityInfoTable;
+import amtt.epam.com.amtt.database.table.StepsTable;
 
 /**
  * Created by Artsiom_Kaliaha on 26.03.2015.
@@ -132,19 +133,19 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
         }
 
         int existingActivityInfo = mContext.getContentResolver().query(
-            AmttContentProvider.ACTIVITY_META_CONTENT_URI,
-            new String[]{ActivityInfoTable._ACTIVITY_NAME},
-            ActivityInfoTable._ACTIVITY_NAME,
-            new String[]{mComponentName.getClassName()},
-            null).getCount();
+                AmttContentProvider.ACTIVITY_META_CONTENT_URI,
+                new String[]{ActivityInfoTable._ACTIVITY_NAME},
+                ActivityInfoTable._ACTIVITY_NAME,
+                new String[]{mComponentName.getClassName()},
+                null).getCount();
 
         //if there is no records about current activity in db
         if (existingActivityInfo == 0) {
             ActivityInfo activityInfo;
             try {
                 activityInfo = mContext
-                    .getPackageManager()
-                    .getActivityInfo(mComponentName, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
+                        .getPackageManager()
+                        .getActivityInfo(mComponentName, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
             } catch (PackageManager.NameNotFoundException e) {
                 return StepSavingResult.ERROR;
             }

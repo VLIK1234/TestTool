@@ -1,11 +1,12 @@
 package amtt.epam.com.amtt.util;
 
-import amtt.epam.com.amtt.R;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import java.util.Set;
+
+import amtt.epam.com.amtt.R;
 
 public class PreferenceUtils {
 
@@ -56,24 +57,4 @@ public class PreferenceUtils {
         PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
     }
 
-
-    public static long getLong(String key, long defaultValue, Context context) {
-        return getPref(context).getLong(key, defaultValue);
-    }
-
-    public static int getInt(String key, int defaultValue, Context context) {
-        return getPref(context).getInt(key, defaultValue);
-    }
-
-    public static void putLong(String key, long value, Context context) {
-        SharedPreferences.Editor editor = getPref(context).edit();
-        editor.putLong(key, value);
-        editor.apply();
-    }
-
-    public static void putInt(String key, int value, Context context) {
-        SharedPreferences.Editor editor = getPref(context).edit();
-        editor.putInt(key, value);
-        editor.apply();
-    }
 }

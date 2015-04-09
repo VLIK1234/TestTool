@@ -65,6 +65,16 @@
         android:layout_toRightOf="@+id/tv_groups"
         android:layout_toEndOf="@+id/tv_groups" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/names_groups"
+        android:id="@+id/tv_names"
+        android:textSize="@dimen/font_english_like_subhead"
+        android:layout_below="@+id/tv_size"
+        android:layout_toRightOf="@+id/tv_groups"
+        android:layout_toEndOf="@+id/tv_groups" />
+
     <ProgressBar
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"

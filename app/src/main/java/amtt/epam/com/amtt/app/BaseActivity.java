@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import amtt.epam.com.amtt.R;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,6 +12,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import amtt.epam.com.amtt.R;
 
 /**
  * Created by Ivan_Bakach on 26.03.2015.
@@ -50,8 +51,8 @@ public class BaseActivity extends Activity {
                     Rect rect = new Rect();
                     getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
                     final String cachePath =
-                        Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ? getExternalCacheDir().getPath() :
-                            getCacheDir().getPath();
+                            Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ? getExternalCacheDir().getPath() :
+                                    getCacheDir().getPath();
                     //TODO commented line, feature is not ready for master
                     //new ImageSavingTask((BaseActivity) context, bitmap, rect, cachePath).execute();
                     Toast.makeText(context, cachePath, Toast.LENGTH_SHORT).show();

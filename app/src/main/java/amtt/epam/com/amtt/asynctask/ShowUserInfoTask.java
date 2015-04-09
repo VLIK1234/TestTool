@@ -1,11 +1,14 @@
 package amtt.epam.com.amtt.asynctask;
 
+import android.os.AsyncTask;
+
+import org.apache.http.HttpEntity;
+
 import amtt.epam.com.amtt.authorization.JiraApi;
+import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.callbacks.ShowUserInfoCallback;
 import amtt.epam.com.amtt.processing.UserInfoToJsonProcessor;
-import android.os.AsyncTask;
-import org.apache.http.HttpEntity;
 
 /**
  * Created by Irina Monchenko on 06.04.2015.
@@ -16,9 +19,9 @@ public class ShowUserInfoTask extends AsyncTask<Void, Void, JiraUserInfo> {
     private final String mUserName;
     private final String mCredentials;
     private final String mUrl;
-    private final String mTypeSearchData;
+    private final TypeSearchedData mTypeSearchData;
 
-    public ShowUserInfoTask(String username, String credentials, String url, String typeSearchData, ShowUserInfoCallback callback) {
+    public ShowUserInfoTask(String username, String credentials, String url, TypeSearchedData typeSearchData, ShowUserInfoCallback callback) {
         mUserName = username;
         mCredentials = credentials;
         mCallback = callback;

@@ -1,9 +1,9 @@
 package amtt.epam.com.amtt.database.table;
 
+import java.util.ArrayList;
+
 import amtt.epam.com.amtt.database.BaseColumns;
 import amtt.epam.com.amtt.util.MultiValueMap;
-
-import java.util.ArrayList;
 
 /**
  * Created by Artsiom_Kaliaha on 26.03.2015.
@@ -18,9 +18,9 @@ public class StepsTable extends Table {
     private static MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
-        _ID,
-        _SCREEN_PATH,
-        _ASSOCIATED_ACTIVITY
+            _ID,
+            _SCREEN_PATH,
+            _ASSOCIATED_ACTIVITY
     };
 
     static {

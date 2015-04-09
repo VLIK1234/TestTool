@@ -10,26 +10,31 @@ import java.util.ArrayList;
 public class JiraUserGroup {
 
     @SerializedName("size")
-    private int size;
+    private int mSize;
     @SerializedName("items")
-    private ArrayList<JiraUserGroupItem> items;
+    private ArrayList<JiraUserGroupItem> mItems;
 
     public JiraUserGroup() {
     }
 
+    public JiraUserGroup(int size, ArrayList<JiraUserGroupItem> items) {
+        this.mSize = size;
+        this.mItems = items;
+    }
+
     public int getSize() {
-        return size;
+        return mSize;
     }
 
     public void setSize(int size) {
-        this.size = size;
+        this.mSize = size;
     }
 
     public ArrayList<JiraUserGroupItem> getItems() {
-        return items;
+        return mItems;
     }
 
     public void setItems(ArrayList<JiraUserGroupItem> items) {
-        this.items = items;
+        this.mItems = items;
     }
 }

@@ -1,8 +1,20 @@
 package amtt.epam.com.amtt.app;
 
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.CreateIssueTask;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
+import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreateIssue;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreationIssueResult;
@@ -12,11 +24,6 @@ import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.PreferenceUtils;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.*;
-
-import java.util.ArrayList;
 
 
 public class CreateIssueActivity extends BaseActivity implements CreationIssueCallback, ShowUserDataCallback {
@@ -32,9 +39,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_create_issue);
-
         username = CredentialsManager.getInstance().getUserName(CreateIssueActivity.this);
         credentials = CredentialsManager.getInstance().getCredentials(CreateIssueActivity.this);
         url = CredentialsManager.getInstance().getUrl(CreateIssueActivity.this);
@@ -48,7 +53,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 showProgress(true);
-                new ShowUserDataTask(username, credentials, url, Constants.typeSearchData, CreateIssueActivity.this).execute();
+                new ShowUserDataTask(username, credentials, url, TypeSearchedData.SEARCH_ISSUE, CreateIssueActivity.this).execute();
 
             }
 
@@ -81,12 +86,12 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     }
 
     public ArrayList<String> getProjectsNames() {
-        projectsNames = Converter.setToArrayList(PreferenceUtils.getSet(Constants.Keys.PROJECTS_NAMES, null, CreateIssueActivity.this));
+        projectsNames = Converter.setToArrayList(PreferenceUtils.getSet(Constants.SharedPreferenceKeys.PROJECTS_NAMES, null, CreateIssueActivity.this));
         return projectsNames;
     }
 
     public ArrayList<String> getProjectsKeys() {
-        projectsKeys = Converter.setToArrayList(PreferenceUtils.getSet(Constants.Keys.PROJECTS_KEYS, null, CreateIssueActivity.this));
+        projectsKeys = Converter.setToArrayList(PreferenceUtils.getSet(Constants.SharedPreferenceKeys.PROJECTS_KEYS, null, CreateIssueActivity.this));
         return projectsKeys;
     }
 
@@ -99,7 +104,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     @Override
     public void onCreationIssueResult(CreationIssueResult result) {
         String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
-            getResources().getString(R.string.issue_creating_success);
+                getResources().getString(R.string.issue_creating_success);
         showProgress(false);
         createIssue.setVisibility(View.VISIBLE);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();

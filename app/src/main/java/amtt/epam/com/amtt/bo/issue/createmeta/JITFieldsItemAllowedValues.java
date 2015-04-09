@@ -1,7 +1,8 @@
 package amtt.epam.com.amtt.bo.issue.createmeta;
 
-import amtt.epam.com.amtt.bo.issue.user.JiraAvatarUrls;
 import com.google.gson.annotations.SerializedName;
+
+import amtt.epam.com.amtt.bo.issue.user.JiraAvatarUrls;
 
 /**
  * Created by Iryna_Monchanka on 3/31/2015.
