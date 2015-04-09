@@ -7,6 +7,8 @@ import android.widget.ImageView;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import amtt.epam.com.amtt.R;
 
@@ -20,6 +22,7 @@ public class InternalStorageImageLoader implements ImageLoadingCallback {
     private static final Map<String, ImageView> mLoadedImages;
     private final int mImageViewWidth;
     private final int mImageViewHeight;
+
 
     static {
         mLoadedImages = new HashMap<>();
@@ -48,7 +51,7 @@ public class InternalStorageImageLoader implements ImageLoadingCallback {
         } else {
             if (!isImageLoaded(path)) {
                 putImageToLoaded(path, imageView);
-                new ImageLoadingTask(path, imageView, mImageViewWidth, mImageViewHeight, this).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+                new ImageLoadingTask(path, imageView, mImageViewWidth, mImageViewHeight, this).executeOnExecutor(mExecutor);
             }
         }
     }

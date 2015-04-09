@@ -1,5 +1,8 @@
 package amtt.epam.com.amtt.loader;
 
+import android.support.annotation.NonNull;
+
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -7,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Artsiom_Kaliaha on 03.04.2015.
  */
-public class AmttExecutor {
+public class AmttExecutor implements Executor {
 
     private static final int CPU_COUNT;
     private static final int CORE_SIZE = 0;
@@ -34,7 +37,7 @@ public class AmttExecutor {
                 new BlockingStack<Runnable>());
     }
 
-    public void execute(Runnable runnable) {
+    public void execute(@NonNull Runnable runnable) {
         sExecutorService.execute(runnable);
     }
 
