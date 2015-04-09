@@ -6,6 +6,7 @@ package amtt.epam.com.amtt.authorization;
 public enum AuthorizationResult {
 
     AUTHORIZATION_SUCCESS,
-    AUTHORIZATION_DENIED
+    AUTHORIZATION_DENIED_WRONG_HOST,
+    AUTHORIZATION_DENIED_UNKNOWN_REASON
 
 }

@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.authorization.AuthorizationCallback;
 import amtt.epam.com.amtt.authorization.AuthorizationResult;
@@ -24,6 +27,15 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
     private static final String URL = "url";
     private static final String NAME_SP = "data";
     private static final String ACCESS = "access";
+
+    private static final Map<AuthorizationResult, String> sAuthorizationResults;
+
+    static {
+        sAuthorizationResults = new HashMap<>();
+        sAuthorizationResults.put(AuthorizationResult.AUTHORIZATION_SUCCESS, "Authorization is passed");
+        sAuthorizationResults.put(AuthorizationResult.AUTHORIZATION_DENIED_WRONG_HOST, "Authorization isn't passed because of the wrong host");
+        sAuthorizationResults.put(AuthorizationResult.AUTHORIZATION_DENIED_WRONG_HOST, "Authorization isn't passed because of an unknown issue");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +60,8 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
     }
 
     @Override
-    public void onAuthorizationResult(AuthorizationResult result, String exceptionDescription) {
-        String resultMessage = result == AuthorizationResult.AUTHORIZATION_DENIED ? exceptionDescription :
-                getResources().getString(R.string.authorization_success);
+    public void onAuthorizationResult(AuthorizationResult result) {
+        String resultMessage = sAuthorizationResults.get(result);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
         //TODO check "result == AuthorizationResult.AUTHORIZATION_SUCCESS" is better, no?
         if (resultMessage.equals(getResources().getString(R.string.authorization_success))) {

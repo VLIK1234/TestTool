@@ -6,6 +6,10 @@ import android.os.AsyncTask;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthenticationException;
 
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by Artsiom_Kaliaha on 25.03.2015.
  */
@@ -16,7 +20,12 @@ public class AuthorizationTask extends AsyncTask<Void, Void, AuthorizationResult
     private final String mUserName;
     private final String mPassword;
     private final String mUrl;
-    private String mExceptionDescription;
+    private static final Map<Class,AuthorizationResult> sAuthorizationResults;
+
+    static {
+        sAuthorizationResults = new HashMap<>();
+        sAuthorizationResults.put(UnknownHostException.class,AuthorizationResult.AUTHORIZATION_DENIED_WRONG_HOST);
+    }
 
     public AuthorizationTask(Context context, String userName, String password, String url, AuthorizationCallback callback) {
         mContext = context;
@@ -31,14 +40,16 @@ public class AuthorizationTask extends AsyncTask<Void, Void, AuthorizationResult
         try {
             new JiraApi().authorize(mUserName, mPassword, mUrl);
         } catch (Exception e) {
-            mExceptionDescription = e.toString();
-            return AuthorizationResult.AUTHORIZATION_DENIED;
+            if (sAuthorizationResults.get(e.getClass()) != null) {
+                return sAuthorizationResults.get(e.getClass());
+            }
+            return AuthorizationResult.AUTHORIZATION_DENIED_UNKNOWN_REASON;
         }
         return AuthorizationResult.AUTHORIZATION_SUCCESS;
     }
 
     @Override
     protected void onPostExecute(AuthorizationResult result) {
-        mCallback.onAuthorizationResult(result, mExceptionDescription);
+        mCallback.onAuthorizationResult(result);
     }
 }
