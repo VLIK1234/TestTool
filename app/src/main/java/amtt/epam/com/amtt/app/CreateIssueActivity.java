@@ -1,11 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.*;
-
-import java.util.ArrayList;
-
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.CreateIssueTask;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
@@ -18,6 +12,11 @@ import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.PreferenceUtils;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.*;
+
+import java.util.ArrayList;
 
 
 public class CreateIssueActivity extends BaseActivity implements CreationIssueCallback, ShowUserDataCallback {
@@ -100,7 +99,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     @Override
     public void onCreationIssueResult(CreationIssueResult result) {
         String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
-                getResources().getString(R.string.issue_creating_success);
+            getResources().getString(R.string.issue_creating_success);
         showProgress(false);
         createIssue.setVisibility(View.VISIBLE);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();

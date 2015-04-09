@@ -1,12 +1,11 @@
 package amtt.epam.com.amtt.util;
 
+import amtt.epam.com.amtt.R;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import java.util.Set;
-
-import amtt.epam.com.amtt.R;
 
 public class PreferenceUtils {
 

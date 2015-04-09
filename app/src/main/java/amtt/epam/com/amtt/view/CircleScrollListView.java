@@ -1,12 +1,9 @@
 package amtt.epam.com.amtt.view;
 
+import amtt.epam.com.amtt.R;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.PorterDuff.Mode;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -20,11 +17,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import amtt.epam.com.amtt.R;
-
 
 public class CircleScrollListView extends SurfaceView implements SurfaceHolder.Callback,
-        OnGestureListener {
+    OnGestureListener {
 
     private static final String TAG = "CircleScrollListView";
     public static final String LOG_TAG = "TAG";
@@ -36,8 +31,8 @@ public class CircleScrollListView extends SurfaceView implements SurfaceHolder.C
     private ArrayList<CircleDrawItem> datas = new ArrayList<CircleDrawItem>();
 
     int[] buttonDrawableResourceIds = new int[]{
-            R.drawable.button_add, R.drawable.button_share, R.drawable.button_auth,
-            R.drawable.button_screen, R.drawable.button_bug_rep
+        R.drawable.button_add, R.drawable.button_share, R.drawable.button_auth,
+        R.drawable.button_screen, R.drawable.button_bug_rep
     };
 
     public int mCenterX;
@@ -135,7 +130,7 @@ public class CircleScrollListView extends SurfaceView implements SurfaceHolder.C
         for (int i = 0; i < buttonDrawableResourceIds.length; i++) {
             CircleDrawItem circleDrawItem = new CircleDrawItem();
             circleDrawItem.mIconBitmap = decodeSampledBitmapFromResource(getResources(),
-                    buttonDrawableResourceIds[i], 50, 50);
+                buttonDrawableResourceIds[i], 50, 50);
             circleDrawItem.mAngle = mStartAngleInRadian - i * Math.PI / 4;
             datas.add(circleDrawItem);
         }
@@ -181,7 +176,7 @@ public class CircleScrollListView extends SurfaceView implements SurfaceHolder.C
             double x = mCenterX + Math.cos(item.mAngle) * mRadius;
             double y = mCenterY - Math.sin(item.mAngle) * mRadius;
             canvas.drawBitmap(item.mIconBitmap, (int) x - item.mIconBitmap.getWidth() / 2, (int) y
-                    - item.mIconBitmap.getHeight() / 2, paint);
+                - item.mIconBitmap.getHeight() / 2, paint);
             canvas.restore();
         }
         canvas.restore();
@@ -243,7 +238,7 @@ public class CircleScrollListView extends SurfaceView implements SurfaceHolder.C
 
             if (e.getX() >= startX && e.getX() <= endX && e.getY() >= startY && e.getY() <= endY) {
                 Toast.makeText(getContext(), "position: " + (i + 1) + " is clicked!",
-                        Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_SHORT).show();
                 break;
             }
         }

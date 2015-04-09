@@ -1,5 +1,9 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.adapter.StepsAdapter;
+import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -10,11 +14,6 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.adapter.StepsAdapter;
-import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
-import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
 
 public class StepsActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 

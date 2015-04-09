@@ -1,19 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import com.crashlytics.android.Crashlytics;
-
-import java.util.ArrayList;
-
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
@@ -28,7 +14,19 @@ import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.PreferenceUtils;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends BaseActivity implements StepSavingCallback, ShowUserDataCallback {

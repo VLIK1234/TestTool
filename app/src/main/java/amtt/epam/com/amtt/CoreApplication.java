@@ -1,8 +1,7 @@
 package amtt.epam.com.amtt;
 
-import android.app.Application;
-
 import amtt.epam.com.amtt.util.PreferenceUtils;
+import android.app.Application;
 
 /**
  * Created by Ivan_Bakach on 19.03.2015.

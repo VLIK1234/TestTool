@@ -1,5 +1,7 @@
 package amtt.epam.com.amtt.authorization;
 
+import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
+import amtt.epam.com.amtt.util.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -7,9 +9,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-
-import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
-import amtt.epam.com.amtt.util.Logger;
 
 /**
  * Created by Artsiom_Kaliaha on 24.03.2015.
@@ -41,7 +40,7 @@ public class JiraApi {
         HttpClient client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(mUrl + LOGIN_METHOD);
         httpGet.setHeader(AUTH_HEADER, credentials);
-        HttpResponse  response = client.execute(httpGet);
+        HttpResponse response = client.execute(httpGet);
         //TODO return status, not code
         return response.getStatusLine().getStatusCode();
 

@@ -1,13 +1,12 @@
 package amtt.epam.com.amtt.database;
 
+import amtt.epam.com.amtt.database.table.ActivityInfoTable;
+import amtt.epam.com.amtt.database.table.StepsTable;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import amtt.epam.com.amtt.database.table.ActivityInfoTable;
-import amtt.epam.com.amtt.database.table.StepsTable;
 
 /**
  * Created by Artsiom_Kaliaha on 18.03.2015.
@@ -61,10 +60,10 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
         final String firstTable = tablesName[0];
         final String secondTable = tablesName[1];
         rawQueryBuilder.append(FROM).append(firstTable)
-                .append(JOIN).append(secondTable)
-                .append(ON).append(firstTable).append(DOT).append(connectionColumns[0])
-                .append(EQUALS)
-                .append(secondTable).append(DOT).append(connectionColumns[1]);
+            .append(JOIN).append(secondTable)
+            .append(ON).append(firstTable).append(DOT).append(connectionColumns[0])
+            .append(EQUALS)
+            .append(secondTable).append(DOT).append(connectionColumns[1]);
 
         Cursor cursor;
         SQLiteDatabase database = getReadableDatabase();

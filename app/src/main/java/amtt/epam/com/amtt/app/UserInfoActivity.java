@@ -1,14 +1,13 @@
 package amtt.epam.com.amtt.app;
 
-import android.os.Bundle;
-import android.widget.TextView;
-
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.ShowUserInfoTask;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.callbacks.ShowUserInfoCallback;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
+import android.os.Bundle;
+import android.widget.TextView;
 
 public class UserInfoActivity extends BaseActivity implements ShowUserInfoCallback {
 
