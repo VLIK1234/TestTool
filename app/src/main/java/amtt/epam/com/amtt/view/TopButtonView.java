@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.BaseActivity;
+import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.app.SecondActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 
@@ -69,6 +70,9 @@ public class TopButtonView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "AUTH", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intent);
             }
         });
         Button buttonUserInfo = (Button) findViewById(R.id.button_user_info);
@@ -83,7 +87,7 @@ public class TopButtonView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "STEP", Toast.LENGTH_LONG).show();
-                Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
+                Intent intentATS = new Intent(BaseActivity.ACTION_SAVE_STEP);
                 getContext().sendBroadcast(intentATS);
             }
         });

@@ -70,7 +70,7 @@ public class TopButtonService extends Service {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
+                Intent intentATS = new Intent(BaseActivity.ACTION_SAVE_STEP);
                 sendBroadcast(intentATS);
             }
         });
