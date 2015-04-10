@@ -57,4 +57,11 @@ public class PreferenceUtils {
         PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
     }
 
+    public static void registerListener(SharedPreferences.OnSharedPreferenceChangeListener listener, Context context) {
+        getPref(context).registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public static void unregisterListener(SharedPreferences.OnSharedPreferenceChangeListener listener, Context context) {
+        getPref(context).unregisterOnSharedPreferenceChangeListener(listener);
+    }
 }
