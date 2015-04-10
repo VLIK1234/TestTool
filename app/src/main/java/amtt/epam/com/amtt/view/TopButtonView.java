@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.view;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -36,9 +37,11 @@ public class TopButtonView extends FrameLayout {
     private int currentOrientation;
     private float widthProportion;
     private float heightProportion;
+    //TODO you can convert it field to local variable
     private RelativeLayout.LayoutParams topButtonLayoutParams;
 
     public TopButtonView(Context context) {
+        //TODO what happen if you try use this constructor?
         super(context, null);
     }
 
@@ -49,7 +52,9 @@ public class TopButtonView extends FrameLayout {
         buttonsBar.setOrientation(LinearLayout.VERTICAL);
 
         this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        //TODO why you use operator "this" in one case
         this.metrics = getContext().getResources().getDisplayMetrics();
+        //TODO and don't use in the same
         currentOrientation = getResources().getConfiguration().orientation;
         this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
@@ -131,13 +136,14 @@ public class TopButtonView extends FrameLayout {
             topButtonLayoutParams.addRule(RelativeLayout.BELOW, mainButton.getId());
             buttonsBar.setLayoutParams(topButtonLayoutParams);
         }
-
+        //TODO please give friendly name for variable
         ViewTreeObserver vto = buttonsBar.getViewTreeObserver();
         vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 buttonsBar.getViewTreeObserver().removeOnPreDrawListener(this);
 
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    //TODO every time you do extra checks. If you don't use first "if", please move logic from "else" to "if"
                     if (layoutParams.x < metrics.widthPixels / 2) {
                         //Right
                     } else {
@@ -150,6 +156,7 @@ public class TopButtonView extends FrameLayout {
                         //Down
                     } else {
                         //Up
+                        //TODO what is the coefficient 1.5?
                         layoutParams.y -= (layoutParams.y + buttonsBar.getHeight() - metrics.heightPixels + buttonsBar.getWidth() * 1.5);
                         windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                     }
@@ -160,6 +167,7 @@ public class TopButtonView extends FrameLayout {
 
     }
 
+    //TODO please give method more firendly name
     private void changeProportinalPosition() {
         int overWidth;
         int overHeight;
@@ -189,6 +197,7 @@ public class TopButtonView extends FrameLayout {
         return result;
     }
 
+    //TODO why you declare variables on this place?
     private int firstX;
     private int firstY;
 
@@ -237,6 +246,7 @@ public class TopButtonView extends FrameLayout {
                             if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
                                 layoutParams.x += deltaX;
                             }
+                            //TODO what is the coefficient 1.5?
                             if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() * 1.5)) {
                                 layoutParams.y += deltaY;
                             }

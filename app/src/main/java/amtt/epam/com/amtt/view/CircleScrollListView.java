@@ -25,7 +25,7 @@ import amtt.epam.com.amtt.R;
 
 public class CircleScrollListView extends SurfaceView implements SurfaceHolder.Callback,
         OnGestureListener {
-
+    //TODO why you create 2 variables TAG?
     private static final String TAG = "CircleScrollListView";
     public static final String LOG_TAG = "TAG";
 
@@ -33,8 +33,10 @@ public class CircleScrollListView extends SurfaceView implements SurfaceHolder.C
 
     private static Thread mThread;
 
+    //TODO please rename this field
     private ArrayList<CircleDrawItem> datas = new ArrayList<CircleDrawItem>();
 
+    //TODO why you don't use any access modifier (private, protected, public )?
     int[] buttonDrawableResourceIds = new int[]{
             R.drawable.button_login, R.drawable.button_show_step, R.drawable.button_auth,
             R.drawable.button_add_step, R.drawable.button_bug_rep
@@ -46,6 +48,7 @@ public class CircleScrollListView extends SurfaceView implements SurfaceHolder.C
 
     public int mRadius;
 
+    //TODO what is the coefficient 4?
     public double mStartAngleInRadian = Math.PI / 4;
 
     private boolean isStop = false;
@@ -118,17 +121,21 @@ public class CircleScrollListView extends SurfaceView implements SurfaceHolder.C
     public void surfaceCreated(SurfaceHolder holder) {
 
         setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-
+        //TODO why you use class Global for constants?
         Global.density = getResources().getDisplayMetrics().density;
         Global.dw = getResources().getDisplayMetrics().widthPixels;
         Global.dh = getResources().getDisplayMetrics().heightPixels;
+        //TODO what is the coefficient 1.5?
         Global.dp = Global.density / 1.5f;
 
         // For circle data
+        //TODO what is the coefficient 200?
         mCenterX = (int) (Global.dp * 200);
         mCenterY = (int) (Global.dh / 2.0f);
+        //TODO please remove don't used code or comment why it's code commented
 //        mCenterX = (int) (-Globalization.dp/4);
 //        mCenterY = (int) (Globalization.dh/4);
+        //TODO what is the coefficient 150?
         mRadius = (int) (150 * Global.dp);
         mStartAngleInRadian = Math.PI / buttonDrawableResourceIds.length;
 
@@ -145,6 +152,7 @@ public class CircleScrollListView extends SurfaceView implements SurfaceHolder.C
         mThread.start();
     }
 
+    //TODO please rename this method.
     public void resume() {
         Log.d(LOG_TAG, "THREAD START");
         mThread = new Thread(new Runnable() {

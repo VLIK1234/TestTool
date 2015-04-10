@@ -52,6 +52,7 @@ public class TopButtonService extends Service {
         initView();
     }
 
+    //TODO please give method name without mistakes
     private void intitLayoutParams() {
         layoutParams = new WindowManager.LayoutParams();
         layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -70,20 +71,24 @@ public class TopButtonService extends Service {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO please use friendly name for intent
                 Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
                 sendBroadcast(intentATS);
             }
         });
     }
 
+    //TODO why this method public? Can we move this login to show method?
     public static Intent getShowIntent(Context context) {
         return new Intent(context, TopButtonService.class).setAction(ACTION_SHOW);
     }
 
+    //TODO why this method public?
     public static Intent getCloseIntent(Context context) {
         return new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE);
     }
 
+    //TODO please sort method. For example static method in one place, serviceLifeCycle in another place ...
     public static void show(Context context) {
         context.startService(getShowIntent(context));
     }
@@ -92,6 +97,7 @@ public class TopButtonService extends Service {
         context.startService(getCloseIntent(context));
     }
 
+    //TODO you have 2 method show. But there are method do different things.
     public final void show() {
         if (!isViewAdd) {
             wm.addView(view, layoutParams);
@@ -99,6 +105,7 @@ public class TopButtonService extends Service {
         }
     }
 
+    //TODO you have 2 method close. But there are method do different things.
     public final void close() {
         if (view != null && isViewAdd) {
             isViewAdd = false;
@@ -108,9 +115,11 @@ public class TopButtonService extends Service {
         stopSelf();
     }
 
+    //TODO method name does not match the logic of the method
     public final void setVisibilityView() {
         if (view.getVisibility() == View.VISIBLE) {
             view.setVisibility(View.GONE);
+            //TODO why you create foldres drawable-hdpi/ drawable-hdpi-v11, drawable-mdpi/drawable-mdpi-v11 .....?
             action.icon = R.drawable.ic_stat_action_visibility;
             action.title = getString(R.string.button_show);
             startForeground(ID, builder.build());
@@ -138,6 +147,7 @@ public class TopButtonService extends Service {
                 setVisibilityView();
             }
         } else {
+            //TODO why you don't stop service?
             Log.w(LOG_TAG, "Tried to onStartCommand() with a null intent.");
         }
         return START_NOT_STICKY;
@@ -146,8 +156,10 @@ public class TopButtonService extends Service {
     private void showNotification() {
         builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification)
+                //TODO hardcoded title
                 .setContentTitle("AMTT")
                 .setOngoing(true)
+                //TODO hardcoded text
                 .setContentText("Button-assistant is running.");
 
         action = new NotificationCompat.Action(

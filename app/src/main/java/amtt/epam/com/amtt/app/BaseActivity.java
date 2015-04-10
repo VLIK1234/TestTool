@@ -74,6 +74,7 @@ public class BaseActivity extends Activity implements StepSavingCallback{
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
     }
 
+    //TODO what happen if I forgot override this method? I think it's bad solution overide getScreenNumber in every activity
     @Override
     public int getScreenNumber() {
         return 0;
