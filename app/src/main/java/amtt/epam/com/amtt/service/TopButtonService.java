@@ -23,7 +23,7 @@ import amtt.epam.com.amtt.view.TopButtonView;
  */
 public class TopButtonService extends Service{
 
-    public static final String ACTION_SHOW = "SHOW";
+    public static final String ACTION_START = "SHOW";
     public static final String ACTION_CLOSE = "CLOSE";
     private static final String LOG_TAG = "Log";
     public static final int ID = 7;
@@ -56,7 +56,7 @@ public class TopButtonService extends Service{
         DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
         xInitPosition = displayMetrics.widthPixels / 2;
         yInitPosition = displayMetrics.heightPixels / 2;
-        intitLayoutParams();
+        initLayoutParams();
         initView();
 
         isAccess = false;
@@ -76,7 +76,7 @@ public class TopButtonService extends Service{
         setting.registerOnSharedPreferenceChangeListener(listener);
     }
 
-    private void intitLayoutParams() {
+    private void initLayoutParams() {
         layoutParams = new WindowManager.LayoutParams();
         layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -94,21 +94,22 @@ public class TopButtonService extends Service{
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentATS = new Intent(BaseActivity.ACTION_SAVE_STEP);
-                sendBroadcast(intentATS);
+                Intent intentSendAction = new Intent(BaseActivity.ACTION_SAVE_STEP);
+                sendBroadcast(intentSendAction);
             }
         });
     }
 
-    public static Intent getShowIntent(Context context) {
-        return new Intent(context, TopButtonService.class).setAction(ACTION_SHOW);
+    private static Intent getShowIntent(Context context) {
+        return new Intent(context, TopButtonService.class).setAction(ACTION_START);
     }
 
-    public static Intent getCloseIntent(Context context) {
+    private static Intent getCloseIntent(Context context) {
         return new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE);
     }
 
-    public static void show(Context context) {
+    //TODO please sort method. For example static method in one place, serviceLifeCycle in another place ...
+    public static void start(Context context) {
         context.startService(getShowIntent(context));
     }
 
@@ -116,14 +117,14 @@ public class TopButtonService extends Service{
         context.startService(getCloseIntent(context));
     }
 
-    public final void show() {
+    private void addView() {
         if (!isViewAdd) {
             wm.addView(view, layoutParams);
             isViewAdd = true;
         }
     }
 
-    public final void close() {
+    private void closeService() {
         if (view != null && isViewAdd) {
             isViewAdd = false;
             ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
@@ -132,6 +133,7 @@ public class TopButtonService extends Service{
         stopSelf();
     }
 
+    //TODO method name does not match the logic of the method
     public final void setVisibilityView() {
         if (view.getVisibility() == View.VISIBLE) {
             view.setVisibility(View.GONE);
@@ -153,15 +155,16 @@ public class TopButtonService extends Service{
         if (intent != null) {
             String action = intent.getAction();
 
-            if (ACTION_SHOW.equals(action)) {
-                show();
+            if (ACTION_START.equals(action)) {
+                addView();
                 showNotification();
             } else if (ACTION_CLOSE.equals(action)) {
-                close();
+                closeService();
             } else if (ACTION_HIDE_VIEW.equals(action)) {
                 setVisibilityView();
             }
         } else {
+            //TODO why you don't stop service?
             Log.w(LOG_TAG, "Tried to onStartCommand() with a null intent.");
         }
         return START_NOT_STICKY;
@@ -170,9 +173,9 @@ public class TopButtonService extends Service{
     private void showNotification() {
         builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("AMTT")
+                .setContentTitle(getString(R.string.notification_title))
                 .setOngoing(true)
-                .setContentText("Button-assistant is running.");
+                .setContentText(getString(R.string.notification_text));
 
         action = new NotificationCompat.Action(
                 R.drawable.ic_stat_action_visibility_off,
