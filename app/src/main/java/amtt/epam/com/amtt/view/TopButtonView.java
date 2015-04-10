@@ -21,6 +21,7 @@ import amtt.epam.com.amtt.app.BaseActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.app.SecondActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
+import amtt.epam.com.amtt.service.TopButtonService;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
@@ -38,6 +39,10 @@ public class TopButtonView extends FrameLayout {
     private float widthProportion;
     private float heightProportion;
     private RelativeLayout.LayoutParams topButtonLayoutParams;
+    private boolean isAccess = false;
+    public Button buttonAuth;
+    public Button buttonBugRep;
+    public Button buttonUserInfo;
 
     public TopButtonView(Context context) {
         super(context, null);
@@ -65,7 +70,7 @@ public class TopButtonView extends FrameLayout {
         mainButton.setImageResource(R.drawable.ic_top_button);
         buttonsBar.setVisibility(GONE);
 
-        Button buttonAuth = (Button) findViewById(R.id.button_auth);
+        buttonAuth = (Button) findViewById(R.id.button_auth);
         buttonAuth.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,9 +78,11 @@ public class TopButtonView extends FrameLayout {
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intent);
+                isAccess = true;
+                TopButtonService.setting.edit().putBoolean("Number", isAccess).apply();
             }
         });
-        Button buttonUserInfo = (Button) findViewById(R.id.button_user_info);
+        buttonUserInfo = (Button) findViewById(R.id.button_user_info);
         buttonUserInfo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,7 +108,7 @@ public class TopButtonView extends FrameLayout {
                 getContext().getApplicationContext().startActivity(intent);
             }
         });
-        Button buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
+        buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
         buttonBugRep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

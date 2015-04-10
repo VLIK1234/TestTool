@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -20,7 +21,7 @@ import amtt.epam.com.amtt.view.TopButtonView;
 /**
  * Created by Ivan_Bakach on 20.03.2015.
  */
-public class TopButtonService extends Service {
+public class TopButtonService extends Service{
 
     public static final String ACTION_SHOW = "SHOW";
     public static final String ACTION_CLOSE = "CLOSE";
@@ -36,6 +37,13 @@ public class TopButtonService extends Service {
     private NotificationCompat.Action action;
     private NotificationCompat.Builder builder;
 
+    public static SharedPreferences setting;
+    public static SharedPreferences.Editor editor;
+    public static final String SCREEN_NUMBER = "Screen number";
+    public static final String NUMBER = "Number";
+    private boolean isAccess;
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -50,6 +58,22 @@ public class TopButtonService extends Service {
         yInitPosition = displayMetrics.heightPixels / 2;
         intitLayoutParams();
         initView();
+
+        isAccess = false;
+        setting = getBaseContext().getSharedPreferences(SCREEN_NUMBER, Context.MODE_PRIVATE);
+        setting.edit().putBoolean(NUMBER, isAccess).apply();
+
+        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                Log.e(LOG_TAG, "Shared Preference is changed");
+                view.buttonAuth.setBackgroundResource(R.drawable.button_logout);
+                view.buttonBugRep.setBackgroundResource(R.drawable.button_bug_rep);
+                view.buttonBugRep.setEnabled(true);
+                view.buttonUserInfo.setBackgroundResource(R.drawable.button_info);
+                view.buttonUserInfo.setEnabled(true);
+            }
+        };
+        setting.registerOnSharedPreferenceChangeListener(listener);
     }
 
     private void intitLayoutParams() {
@@ -158,5 +182,4 @@ public class TopButtonService extends Service {
         builder.addAction(action);
         startForeground(ID, builder.build());
     }
-
 }

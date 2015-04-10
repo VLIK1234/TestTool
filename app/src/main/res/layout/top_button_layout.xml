@@ -28,7 +28,8 @@
             android:id="@+id/button_user_info"
             android:layout_width="@dimen/button_small_size"
             android:layout_height="@dimen/button_small_size"
-            android:background="@drawable/button_auth"/>
+            android:enabled="false"
+            android:background="@drawable/button_info_off"/>
 
         <Button
             android:id="@+id/button_add_step"
@@ -46,6 +47,7 @@
             android:id="@+id/button_bug_rep"
             android:layout_width="@dimen/button_small_size"
             android:layout_height="@dimen/button_small_size"
-            android:background="@drawable/button_bug_rep" />
+            android:enabled="false"
+            android:background="@drawable/button_bug_rep_off" />
     </LinearLayout>
 </RelativeLayout>
