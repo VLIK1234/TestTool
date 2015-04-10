@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
@@ -28,15 +27,6 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
     private static final String NAME_SP = "data";
     private static final String ACCESS = "access";
 
-    private static final Map<AuthorizationResult, String> sAuthorizationResults;
-
-    static {
-        sAuthorizationResults = new HashMap<>();
-        sAuthorizationResults.put(AuthorizationResult.AUTHORIZATION_SUCCESS, "Authorization is passed");
-        sAuthorizationResults.put(AuthorizationResult.AUTHORIZATION_DENIED_WRONG_HOST, "Authorization isn't passed because of the wrong host");
-        sAuthorizationResults.put(AuthorizationResult.AUTHORIZATION_DENIED_WRONG_HOST, "Authorization isn't passed because of an unknown issue");
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,44 +36,44 @@ public class LoginActivity extends ActionBarActivity implements AuthorizationCal
         password = (EditText) findViewById(R.id.password);
         url = (EditText) findViewById(R.id.jira_url);
         //TODO hardcoded
-        url.setText("https://fortestsamtt.atlassian.net");
+        url.setText("https://jiraprojectthree.atlassian.net");
         //TODO check inputs before login
         Button loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setVisibleProgress();
-                new AuthorizationTask(LoginActivity.this, userName.getText().toString(), password.getText().toString(), url.getText().toString(), LoginActivity.this).execute();
+                new AuthorizationTask(userName.getText().toString(), password.getText().toString(), url.getText().toString(), LoginActivity.this).execute();
 
             }
         });
     }
 
     @Override
-    public void onAuthorizationResult(AuthorizationResult result) {
-        String resultMessage = sAuthorizationResults.get(result);
-        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-        //TODO check "result == AuthorizationResult.AUTHORIZATION_SUCCESS" is better, no?
-        if (resultMessage.equals(getResources().getString(R.string.authorization_success))) {
-            SharedPreferences sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(USER_NAME, userName.getText().toString());
-            //TODO we store password?
-            editor.putString(PASSWORD, password.getText().toString());
-            editor.putString(URL, url.getText().toString());
-            editor.putBoolean(ACCESS, true);
-            editor.apply();
-            //TODO misprint
-            setInisibleProgress();
-            finish();
-        }
+    public void onAuthorizationResult(String responseString, Exception e) {
+        Toast.makeText(this, responseString, Toast.LENGTH_SHORT).show();
+//        //TODO check "result == AuthorizationResult.AUTHORIZATION_SUCCESS" is better, no?
+//        if (resultMessage.equals(getResources().getString(R.string.authorization_success))) {
+//            SharedPreferences sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
+//            SharedPreferences.Editor editor = sharedPreferences.edit();
+//            editor.putString(USER_NAME, userName.getText().toString());
+//            //TODO we store password?
+//            editor.putString(PASSWORD, password.getText().toString());
+//            editor.putString(URL, url.getText().toString());
+//            editor.putBoolean(ACCESS, true);
+//            editor.apply();
+//            //TODO misprint
+//            setInisibleProgress();
+//            finish();
+//        }
     }
 
     //TODO why not to move to common base activity?
-    private void setVisibleProgress(){
+    private void setVisibleProgress() {
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
     }
-    private void setInisibleProgress(){
+
+    private void setInisibleProgress() {
         findViewById(R.id.progress).setVisibility(View.GONE);
     }
 }

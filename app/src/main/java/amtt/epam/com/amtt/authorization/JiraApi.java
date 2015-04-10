@@ -10,6 +10,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
+
+import amtt.epam.com.amtt.authorization.exceptions.AuthHostException;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -27,6 +31,7 @@ public class JiraApi {
     private static final String USER_PROJECTS_PATH = "/rest/api/2/issue/createmeta";
     public static final int STATUS_AUTHORIZED = 200;
     public static final int STATUS_CREATED = 201;
+    public static final int BAD_GATE_WAY = 502;
 
     private static HttpClient mHttpClient;
 
@@ -35,24 +40,31 @@ public class JiraApi {
     }
 
     //TODO OAUTH?
-    public HttpResponse authorize(final String userName, final String password, final String mUrl) throws Exception {
+    public HttpResponse authorize(final String userName, final String password, final String url) throws Exception {
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
-        HttpGet httpGet = new HttpGet(mUrl + LOGIN_METHOD);
+        HttpGet httpGet = new HttpGet(url + LOGIN_METHOD);
         httpGet.setHeader(AUTH_HEADER, credentials);
-        return mHttpClient.execute(httpGet);
 
+        HttpResponse response = null;
+        try {
+            response = mHttpClient.execute(httpGet);
+        } catch (IOException e) {
+            if (e instanceof UnknownHostException) {
+                throw new AuthHostException();
+            }
+        }
+        return response;
     }
 
     public int createIssue(final String userName, final String password, final String mUrl, final String json) throws Exception {
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
-        HttpClient client = new DefaultHttpClient();
         HttpPost post = new HttpPost(mUrl + ISSUE_PATH);
         StringEntity input = new StringEntity(json);
         post.addHeader(AUTH_HEADER, credentials);
         post.addHeader("content-type", "application/json");
         post.setEntity(input);
         Logger.printRequestPost(post);
-        HttpResponse response = client.execute(post);
+        HttpResponse response = mHttpClient.execute(post);
         Logger.printResponseLog(response);
         //TODO return status, not code
         return response.getStatusLine().getStatusCode();
@@ -60,10 +72,9 @@ public class JiraApi {
 
     public HttpEntity searchIssue(final String userName, final String password, final String mUrl) throws Exception {
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
-        HttpClient client = new DefaultHttpClient();
         HttpGet get = new HttpGet(mUrl + USER_PROJECTS_PATH);
         get.addHeader(AUTH_HEADER, credentials);
-        HttpResponse httpRsponse = client.execute(get);
+        HttpResponse httpRsponse = mHttpClient.execute(get);
         // Logger.printResponseLog(httpRsponse);
         // Read all the text returned by the server
         HttpEntity getResponseEntity = httpRsponse.getEntity();
