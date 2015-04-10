@@ -12,7 +12,7 @@ public interface Constants {
         String PROJECTS_NAMES = "projectsNames";
         String PROJECTS_KEYS = "projectsKeys";
         String ACCESS = "access";
-        String COLON = " : ";
+        String COLON = ":";
         String CREDENTIALS = "credentials";
 
     }

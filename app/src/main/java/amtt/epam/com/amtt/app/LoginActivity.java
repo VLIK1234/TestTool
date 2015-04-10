@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.util.Logger;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
     private EditText url;
     private String toastText = Constants.SharedPreferenceKeys.VOID;
     private Button loginButton;
+    private final String TAG = this.getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,8 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
             @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
+
+
                 if (InputsChecker.isVoid(userName.getText().toString())) {
                     toastText += (Constants.DialogKeys.INPUT_USERNAME + Constants.DialogKeys.NEW_LINE);
                 }
@@ -45,6 +49,11 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
                 if (InputsChecker.isVoid(url.getText().toString())) {
                     toastText += (Constants.DialogKeys.INPUT_URL);
                 } else {
+                    Logger.d(TAG, InputsChecker.isVoid(userName.getText().toString()).toString());
+                    Logger.d(TAG, InputsChecker.isVoid(password.getText().toString()).toString());
+                    Logger.d(TAG, InputsChecker.isVoid(url.getText().toString()).toString());
+
+
                     showProgress(true);
                     CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString(), LoginActivity.this);
                     new AuthorizationTask(CredentialsManager.getInstance().getCredentials(LoginActivity.this), url.getText().toString(), LoginActivity.this).execute();
