@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.database;
+package amtt.epam.com.amtt.database.task;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import amtt.epam.com.amtt.database.constant.BaseColumns;
+import amtt.epam.com.amtt.database.constant.SqlQueryConstants;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.Table;

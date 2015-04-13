@@ -20,10 +20,11 @@ import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.crash.AmttExceptionHandler;
-import amtt.epam.com.amtt.database.DbClearTask;
-import amtt.epam.com.amtt.database.StepSavingCallback;
-import amtt.epam.com.amtt.database.StepSavingResult;
-import amtt.epam.com.amtt.database.StepSavingTask;
+import amtt.epam.com.amtt.database.task.DataBaseTask;
+import amtt.epam.com.amtt.database.task.DbClearTask;
+import amtt.epam.com.amtt.database.task.StepSavingCallback;
+import amtt.epam.com.amtt.database.task.StepSavingResult;
+import amtt.epam.com.amtt.database.task.StepSavingTask;
 import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.Converter;
 import io.fabric.sdk.android.Fabric;
@@ -34,7 +35,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     private Boolean accessCreateIssue;
     private Button issueButton;
     private int mScreenNumber = 1;
-    private boolean newStepsSequence = false;
     private static final String USER_NAME = "username";
     private static final String PASSWORD = "password";
     private static final String URL = "url";
@@ -45,6 +45,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     private static final String PROJECTS_KEYS = "projectsKeys";
 
     private static int sStepNumber;
+    private static DataBaseTask sDataBaseTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +81,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         clearDbbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DbClearTask(MainActivity.this).execute();
+                getDataBaseTask().clear();
             }
         });
         sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
@@ -98,8 +99,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                 getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
 
                 sStepNumber++;
-                new StepSavingTask(MainActivity.this, MainActivity.this, bitmap, rect, MainActivity.this.getComponentName(), sStepNumber).execute();
-                newStepsSequence = false;
+                getDataBaseTask().saveStep(MainActivity.this, MainActivity.this, bitmap, rect, MainActivity.this.getComponentName(), sStepNumber);
             }
         });
 
@@ -110,7 +110,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, StepsActivity.class));
-                newStepsSequence = true;
             }
         });
     }
@@ -137,12 +136,12 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
 
     }
 
-//    @Override
-//    public void onImageSaved(ImageSavingResult result) {
-//        mScreenNumber++;
-//        int resultMessage = result == ImageSavingResult.ERROR ? R.string.image_saving_error : R.string.image_saving_success;
-//        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-//    }
+    private DataBaseTask getDataBaseTask() {
+        if(sDataBaseTask == null) {
+            sDataBaseTask = DataBaseTask.getInstance(this);
+        }
+        return sDataBaseTask;
+    }
 
     @Override
     public int getScreenNumber() {

@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.database;
+package amtt.epam.com.amtt.database.task;
 
 /**
  * Created by Artsiom_Kaliaha on 26.03.2015.

@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.database;
+package amtt.epam.com.amtt.database.task;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 
