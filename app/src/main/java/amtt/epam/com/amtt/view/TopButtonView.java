@@ -143,16 +143,14 @@ public class TopButtonView extends FrameLayout {
         viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 buttonsBar.getViewTreeObserver().removeOnPreDrawListener(this);
-
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    if (!(layoutParams.x < metrics.widthPixels / 2)) {
-                        layoutParams.x -= (layoutParams.x + buttonsBar.getWidth() - metrics.widthPixels + buttonsBar.getHeight());
+                    if (layoutParams.x+mainButton.getWidth()+buttonsBar.getWidth() > metrics.widthPixels) {
+                        layoutParams.x -= (layoutParams.x + mainButton.getWidth()+ buttonsBar.getWidth() - metrics.widthPixels);
                         windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                     }
                 } else {
-                    if (!(layoutParams.y + buttonsBar.getWidth() / 2 < metrics.heightPixels / 2)) {
-                        //TODO what is the coefficient 1.5?
-                        layoutParams.y -= (layoutParams.y + buttonsBar.getHeight() - metrics.heightPixels + buttonsBar.getWidth() * 1.5);
+                    if (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
+                        layoutParams.y -= (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() - metrics.heightPixels + getStatusBarHeight());
                         windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                     }
                 }
@@ -223,15 +221,14 @@ public class TopButtonView extends FrameLayout {
                             if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
                                 layoutParams.x += deltaX;
                             }
-                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getWidth() / 2)) {
+                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
                                 layoutParams.y += deltaY;
                             }
                         } else {
                             if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
                                 layoutParams.x += deltaX;
                             }
-                            //TODO what is the coefficient 1.5?
-                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() * 1.5)) {
+                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
                                 layoutParams.y += deltaY;
                             }
                         }
