@@ -1,24 +1,18 @@
 package amtt.epam.com.amtt.app;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -40,6 +34,8 @@ import amtt.epam.com.amtt.database.StepSavingResult;
 import amtt.epam.com.amtt.database.StepSavingTask;
 import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.Converter;
+import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.view.popup.Popup;
 import io.fabric.sdk.android.Fabric;
 
 
@@ -58,10 +54,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     private static final String ACCESS = "access";
     private static final String PROJECTS_KEYS = "projectsKeys";
 
-    private PopupWindow mPopupWindow;
-    private View mPopupLayout;
-    private TextView mCrashHeadTextView;
-    private TextView mCrashTextView;
+    private Popup mPopup;
     private String mCrashFilePath;
 
     @Override
@@ -150,7 +143,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         showCrashInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setPopupWindow();
+                setPopup();
             }
         });
 
@@ -178,13 +171,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
 
     }
-
-//    @Override
-//    public void onImageSaved(ImageSavingResult result) {
-//        mScreenNumber++;
-//        int resultMessage = result == ImageSavingResult.ERROR ? R.string.image_saving_error : R.string.image_saving_success;
-//        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-//    }
 
     @Override
     public int getScreenNumber() {
@@ -223,78 +209,53 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         startActivity(new Intent(this, CreateIssueActivity.class));
     }
 
-    private void setPopupWindow() {
-        if (mPopupWindow == null) {
-            setPopupLayout();
-        }
-
-        if (setPopupCrashText()) {
-            return;
-        }
-
-        setPopupLayoutDimension();
-    }
-
-    private void setPopupLayout() {
-        ViewGroup viewGroup = (LinearLayout) findViewById(R.id.popup_window);
-        mPopupLayout = LayoutInflater.from(MainActivity.this).inflate(R.layout.popup_window_crash_info, viewGroup);
-        mPopupWindow = new PopupWindow(mPopupLayout, ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT, true);
-        mPopupWindow.setFocusable(true);
-        mPopupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_window_drawable));
-
-        Button popupCloseButton = (Button) mPopupLayout.findViewById(R.id.close_button);
-        popupCloseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPopupWindow.dismiss();
-            }
-        });
-
-        Button popupDeleteButton = (Button) mPopupLayout.findViewById(R.id.delete_crash_button);
-        popupDeleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                File crashFile = new File(mCrashFilePath);
-                crashFile.delete();
-                mPopupWindow.dismiss();
-            }
-        });
-
-        mCrashHeadTextView = (TextView) mPopupLayout.findViewById(R.id.crash_text_head);
-        mCrashTextView = (TextView) mPopupLayout.findViewById(R.id.crash_text);
-    }
-
-    private boolean setPopupCrashText() {
-        String crashHeadText;
+    private void setPopup() {
+        BufferedReader bufferedReader = null;
+        String crashHeadText = null;
         StringBuilder crashText = new StringBuilder();
         String buffer;
         try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(mCrashFilePath));
+            bufferedReader = new BufferedReader(new FileReader(mCrashFilePath));
             crashHeadText = bufferedReader.readLine();
             while ((buffer = bufferedReader.readLine()) != null) {
                 crashText.append(buffer);
             }
         } catch (IOException e) {
             Toast.makeText(MainActivity.this, R.string.lack_of_crashes_text, Toast.LENGTH_SHORT).show();
-            return true;
+            return;
+        } finally {
+            if (bufferedReader != null) {
+                IOUtils.close(bufferedReader);
+            }
         }
 
-        mCrashHeadTextView.setText(crashHeadText);
-        mCrashTextView.setText(crashText);
-        return false;
-    }
+        if (mPopup == null) {
+            ViewGroup viewGroup = (LinearLayout) findViewById(R.id.popup_window);
+            View popupLayout = LayoutInflater.from(MainActivity.this).inflate(R.layout.popup_window_crash_info, viewGroup);
+            Drawable background = getResources().getDrawable(R.drawable.popup_window_drawable);
+            mPopup = new Popup(popupLayout, background);
+            mPopup.setButton(popupLayout.findViewById(R.id.close_button), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mPopup.close();
+                }
+            });
+            mPopup.setButton(popupLayout.findViewById(R.id.delete_crash_button), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    File crashFile = new File(mCrashFilePath);
+                    crashFile.delete();
+                    mPopup.close();
+                }
+            });
+            mPopup.setHeaderTextView(popupLayout.findViewById(R.id.crash_text_head));
+            mPopup.setBodyTextView(popupLayout.findViewById(R.id.crash_text));
+        }
 
-    private void setPopupLayoutDimension() {
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
+        mPopup.setHeaderText(crashHeadText);
+        mPopup.setBodyText(crashText.toString());
 
-        mPopupLayout.findViewById(R.id.scroll_container).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height / 2));
-        mPopupWindow.showAtLocation(mPopupLayout, Gravity.CENTER, 0, 0);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams((int)(width * 0.9), ViewGroup.LayoutParams.WRAP_CONTENT);
-        mPopupLayout.setLayoutParams(layoutParams);
+        mPopup.show(getWindowManager().getDefaultDisplay());
     }
 
 }
