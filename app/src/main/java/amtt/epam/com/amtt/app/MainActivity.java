@@ -20,11 +20,11 @@ import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.crash.AmttExceptionHandler;
+import amtt.epam.com.amtt.database.task.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DbClearTask;
 import amtt.epam.com.amtt.database.task.StepSavingCallback;
-import amtt.epam.com.amtt.database.task.StepSavingResult;
-import amtt.epam.com.amtt.database.task.StepSavingTask;
+import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
 import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.Converter;
 import io.fabric.sdk.android.Fabric;
@@ -45,14 +45,19 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     private static final String PROJECTS_KEYS = "projectsKeys";
 
     private static int sStepNumber;
-    private static DataBaseTask sDataBaseTask;
+    private DataBaseTask mDataBaseClearTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
-        new DbClearTask(MainActivity.this).execute();
+
+        mDataBaseClearTask = new DataBaseTask.Builder()
+                .setOperationType(DataBaseOperationType.CLEAR)
+                .setContext(MainActivity.this)
+                .create();
+        mDataBaseClearTask.execute();
 
         startService(new Intent(this, TopButtonService.class));
         TopButtonService.show(this);
@@ -77,17 +82,19 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         Thread.currentThread().setUncaughtExceptionHandler(new AmttExceptionHandler(this));
 
 
-        Button clearDbbutton = (Button) findViewById(R.id.clear_db_button);
-        clearDbbutton.setOnClickListener(new View.OnClickListener() {
+        Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
+        clearDbButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getDataBaseTask().clear();
+                sStepNumber = 0;
+                mDataBaseClearTask.execute();
             }
         });
         sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
         accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
         issueButton = (Button) findViewById(R.id.issue_act_button);
         issueButton.setEnabled(accessCreateIssue);
+        
         Button stepButton = (Button) findViewById(R.id.step_button);
         stepButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,9 +104,17 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                 Bitmap bitmap = rootView.getDrawingCache();
                 Rect rect = new Rect();
                 getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-
                 sStepNumber++;
-                getDataBaseTask().saveStep(MainActivity.this, MainActivity.this, bitmap, rect, MainActivity.this.getComponentName(), sStepNumber);
+
+                new DataBaseTask.Builder()
+                        .setOperationType(DataBaseOperationType.SAVE_STEP)
+                        .setContext(MainActivity.this)
+                        .setBitmap(bitmap)
+                        .setRect(rect)
+                        .setComponentName(MainActivity.this.getComponentName())
+                        .setStepNumber(sStepNumber)
+                        .create()
+                        .execute();
             }
         });
 
@@ -136,13 +151,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
 
     }
 
-    private DataBaseTask getDataBaseTask() {
-        if(sDataBaseTask == null) {
-            sDataBaseTask = DataBaseTask.getInstance(this);
-        }
-        return sDataBaseTask;
-    }
-
     @Override
     public int getScreenNumber() {
         return mScreenNumber;
@@ -150,8 +158,8 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
 
 
     @Override
-    public void onStepSaved(StepSavingResult result) {
-        int resultMessage = result == StepSavingResult.ERROR ? R.string.step_saving_error : R.string.step_saving_success;
+    public void onDataBaseActionDone(DataBaseTaskResult result) {
+        int resultMessage = result == DataBaseTaskResult.ERROR ? R.string.data_base_action_error : R.string.data_base_action_done;
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
     }
 
