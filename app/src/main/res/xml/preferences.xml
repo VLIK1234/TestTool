@@ -3,7 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <PreferenceCategory android:title="@string/action_settings">
-
-    </PreferenceCategory>
+        <EditTextPreference
+            android:summary="@string/user_name"
+            android:defaultValue="user"
+            android:title="@string/user_name"
+            android:key="@string/user_name"/>
+        <EditTextPreference
+            android:summary="@string/credentials"
+            android:defaultValue="blabla"
+            android:title="@string/credentials"
+            android:key="@string/credentials"/>
+        <EditTextPreference
+            android:summary="@string/access"
+            android:defaultValue="false"
+            android:title="@string/access"
+            android:key="@string/access" />
 </PreferenceScreen>
