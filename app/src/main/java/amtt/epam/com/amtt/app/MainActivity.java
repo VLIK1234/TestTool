@@ -66,9 +66,8 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
 
         Thread.currentThread().setUncaughtExceptionHandler(new AmttExceptionHandler(this));
 
-        //TODO double initialization
-        Button clearDbbutton = (Button) findViewById(R.id.clear_db_button);
-        clearDbbutton.setOnClickListener(new View.OnClickListener() {
+        Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
+        clearDbButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new DbClearTask(MainActivity.this).execute();
@@ -89,19 +88,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                                               newStepsSequence = false;
                                           }
                                       }
-
-        );
-
-        //TODO double initialization
-        Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
-        clearDbButton.setOnClickListener(new View.OnClickListener()
-
-                                         {
-                                             @Override
-                                             public void onClick(View v) {
-                                                 new DbClearTask(MainActivity.this).execute();
-                                             }
-                                         }
 
         );
 

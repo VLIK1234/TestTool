@@ -17,7 +17,7 @@ public interface Constants {
 
     }
 
-    public interface UrlKeys {
+    public interface UrlKeys {//todo move to jiraapi
 
         String BASIC_AUTH = "Basic ";
         String BASE_PATH = "/rest/auth/latest/";

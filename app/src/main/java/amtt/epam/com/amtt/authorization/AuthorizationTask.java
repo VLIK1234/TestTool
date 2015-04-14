@@ -12,7 +12,7 @@ public class AuthorizationTask extends AsyncTask<Void, Void, AuthorizationResult
     private final AuthorizationCallback mCallback;
     private final String mUrl;
 
-    public AuthorizationTask(String url, AuthorizationCallback callback) {
+    public AuthorizationTask(String url, AuthorizationCallback callback) {//todo remove url
         mCallback = callback;
         mUrl = url;
     }
@@ -20,6 +20,7 @@ public class AuthorizationTask extends AsyncTask<Void, Void, AuthorizationResult
     @Override
     protected AuthorizationResult doInBackground(Void... params) {
         //TODO update for amtt/epam/com/amtt/authorization/JiraApi.java:42
+        //todo simplify: remove exception throw
         try {
             if (JiraApi.STATUS_AUTHORIZED != JiraApi.authorize(mUrl)) {
                 throw new AuthenticationException("illegal user name or pass");

@@ -32,9 +32,9 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     private EditText etDescription, etSummary;
     private ArrayList<String> projectsNames = new ArrayList<>();
     private ArrayList<String> projectsKeys = new ArrayList<>();
-    private Spinner inputProjectsKey, inputIssueTypes;
+    private Spinner inputProjectsKey, inputIssueTypes;//todo rename
     private String username, url;
-    private Button createIssue;
+    private Button createIssue;//todo rename
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

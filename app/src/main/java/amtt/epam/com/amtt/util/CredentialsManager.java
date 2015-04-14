@@ -9,11 +9,13 @@ import android.util.Base64;
 public class CredentialsManager {
 
     private static final CredentialsManager INSTANCE = new CredentialsManager();
-    private String credentials;
+    private String credentials;//todo remove
 
 
     private CredentialsManager() {
     }
+
+    //TODO remove context from methods params and use some ContextHolder
 
     public static CredentialsManager getInstance() {
         return INSTANCE;
@@ -28,6 +30,7 @@ public class CredentialsManager {
     }
 
     public Boolean getAccessState(Context context) {
+        // todo check for username and password
         return PreferenceUtils.getBoolean(Constants.SharedPreferenceKeys.ACCESS, false, context);
     }
 
@@ -44,7 +47,8 @@ public class CredentialsManager {
     }
 
     public void setCredentials(String userName, String password) {
-        credentials = Constants.UrlKeys.BASIC_AUTH + Base64.encodeToString((userName + Constants.SharedPreferenceKeys.COLON + password).getBytes(), Base64.NO_WRAP);
+        //todo save name to prefs, pass to field
+        credentials = Constants.UrlKeys.BASIC_AUTH + Base64.encodeToString((userName + Constants.SharedPreferenceKeys.COLON + password).getBytes(), Base64.NO_WRAP);//todo move to jiraapi
     }
 
     public String getCredentials() {

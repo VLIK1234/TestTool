@@ -20,7 +20,7 @@ public class ShowUserDataTask extends AsyncTask<Void, Void, JMetaResponse> {
     private final String mUrl;
     private final TypeSearchedData mTypeSearchData;
 
-    public ShowUserDataTask(String username, String url, TypeSearchedData typeSearchData, ShowUserDataCallback callback) {
+    public ShowUserDataTask(String username, String url, TypeSearchedData typeSearchData, ShowUserDataCallback callback) {//todo remove username and url
         mUserName = username;
         mCallback = callback;
         mUrl = url;

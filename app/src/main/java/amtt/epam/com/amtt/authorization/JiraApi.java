@@ -19,17 +19,18 @@ import amtt.epam.com.amtt.util.Logger;
 //TODO wrong package
 public class JiraApi {
 
+    //TODO singleton
     private static final String TAG = JiraApi.class.getSimpleName();
     public static final int STATUS_AUTHORIZED = 200;
     public static final int STATUS_CREATED = 201;
     private HttpClient client = new DefaultHttpClient();
-    private HttpGet httpGet;
-    private HttpPost post;
+    private HttpGet httpGet;//todo as local var
+    private HttpPost post;//todo as local var
     private HttpResponse response;
 
-    //TODO OAUTH?
-    public static int authorize(final String mUrl) throws Exception {
-        HttpClient client = new DefaultHttpClient();
+    //TODO OAUTH?, not static
+    public static int authorize(final String mUrl) throws Exception {//todo remove url from all methods, take from prefs
+        HttpClient client = new DefaultHttpClient();//todo remove var client
         HttpGet httpGet = new HttpGet(mUrl + Constants.UrlKeys.LOGIN_METHOD);
         httpGet.setHeader(Constants.UrlKeys.AUTH_HEADER, CredentialsManager.getInstance().getCredentials());
         HttpResponse response = client.execute(httpGet);
@@ -38,7 +39,7 @@ public class JiraApi {
 
     }
 
-    public int createIssue(final String mUrl, final String json) throws Exception {
+    public int createIssue(final String mUrl, final String json) throws Exception {//todo remove url from all methods, take from prefs
         post = new HttpPost(mUrl + Constants.UrlKeys.ISSUE_PATH);
         StringEntity input = new StringEntity(json);
         post.addHeader(Constants.UrlKeys.AUTH_HEADER, CredentialsManager.getInstance().getCredentials());
@@ -51,7 +52,7 @@ public class JiraApi {
         return response.getStatusLine().getStatusCode();
     }
 
-    public HttpEntity searchData(final String userName, final String mUrl, final TypeSearchedData typeData) throws Exception {
+    public HttpEntity searchData(final String userName, final String mUrl, final TypeSearchedData typeData) throws Exception {//todo remove url from all methods, take from prefs
 
         if (typeData != null) {
             switch (typeData) {
