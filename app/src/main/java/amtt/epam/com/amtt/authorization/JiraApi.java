@@ -40,7 +40,6 @@ public class JiraApi {
         mHttpClient = new DefaultHttpClient();
     }
 
-    //TODO OAUTH?
     public HttpResponse authorize(final String userName, final String password, final String url) throws AuthHostException {
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
         HttpGet httpGet = new HttpGet(url + LOGIN_METHOD);
@@ -57,7 +56,7 @@ public class JiraApi {
         return response;
     }
 
-    public HttpResponse createIssue(final String userName, final String password, final String mUrl, final String json) throws UnsupportedEncodingException, IOException, AuthHostException {
+    public HttpResponse createIssue(final String userName, final String password, final String mUrl, final String json) throws IOException, AuthHostException {
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
         HttpPost post = new HttpPost(mUrl + ISSUE_PATH);
         StringEntity input = new StringEntity(json);

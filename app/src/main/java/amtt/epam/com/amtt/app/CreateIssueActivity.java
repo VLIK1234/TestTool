@@ -114,16 +114,22 @@ public class CreateIssueActivity extends ActionBarActivity implements CreationIs
 
     }
 
-    @Override
-    public void onCreationIssueResult(CreationIssueResult result) {
-        String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
-                getResources().getString(R.string.issue_creating_success);
-        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-        if (resultMessage.equals(getResources().getString(R.string.issue_creating_success))) {
-            setInisibleProgress();
-            finish();
+//    @Override
+//    public void onCreationIssueResult(CreationIssueResult result) {
+//        String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
+//                getResources().getString(R.string.issue_creating_success);
+//        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+//        if (resultMessage.equals(getResources().getString(R.string.issue_creating_success))) {
+//            setInisibleProgress();
+//            finish();
+//
+//        }
+//    }
 
-        }
+
+    @Override
+    public void onCreationIssueResult(String responseMessage) {
+
     }
 
     @Override
