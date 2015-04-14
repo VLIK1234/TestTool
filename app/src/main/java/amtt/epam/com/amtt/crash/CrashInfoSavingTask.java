@@ -34,7 +34,6 @@ public class CrashInfoSavingTask extends AsyncTask<Void, Void, Void> {
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            //TODO why?
             //ignored
         }
         return null;

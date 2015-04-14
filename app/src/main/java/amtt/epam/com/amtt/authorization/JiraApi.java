@@ -15,7 +15,6 @@ import amtt.epam.com.amtt.util.Logger;
 /**
  * Created by Artsiom_Kaliaha on 24.03.2015.
  */
-//TODO wrong package
 public class JiraApi {
 
     private static final String BASE_PATH = "/rest/auth/latest/";
@@ -30,7 +29,6 @@ public class JiraApi {
     public static final int STATUS_CREATED = 201;
 
     //TODO OAUTH?
-    //TODO why not static?
     public int authorize(final String userName, final String password, final String mUrl) throws Exception {
         //TODO don't save password, you can save credentials instead
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);

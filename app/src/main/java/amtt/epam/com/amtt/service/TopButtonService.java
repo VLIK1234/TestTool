@@ -42,6 +42,13 @@ public class TopButtonService extends Service{
     public static final String NUMBER = "Number";
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
 
+    public static SharedPreferences setting;
+    public static SharedPreferences.Editor editor;
+    public static final String SCREEN_NUMBER = "Screen number";
+    public static final String NUMBER = "Number";
+    private boolean isAccess;
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -61,6 +68,22 @@ public class TopButtonService extends Service{
         boolean isAccess = false;
         setting = getBaseContext().getSharedPreferences(SCREEN_NUMBER, Context.MODE_PRIVATE);
         setting.edit().putBoolean(NUMBER, isAccess).apply();
+        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                Log.e(LOG_TAG, "Shared Preference is changed");
+                view.buttonAuth.setBackgroundResource(R.drawable.button_logout);
+                view.buttonBugRep.setBackgroundResource(R.drawable.button_bug_rep);
+                view.buttonBugRep.setEnabled(true);
+                view.buttonUserInfo.setBackgroundResource(R.drawable.button_info);
+                view.buttonUserInfo.setEnabled(true);
+            }
+        };
+        setting.registerOnSharedPreferenceChangeListener(listener);
+
+        isAccess = false;
+        setting = getBaseContext().getSharedPreferences(SCREEN_NUMBER, Context.MODE_PRIVATE);
+        setting.edit().putBoolean(NUMBER, isAccess).apply();
+
         listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
                 Log.e(LOG_TAG, "Shared Preference is changed");
@@ -94,6 +117,8 @@ public class TopButtonService extends Service{
             public void onClick(View v) {
                 Intent intentSendAction = new Intent(BaseActivity.ACTION_SAVE_STEP);
                 sendBroadcast(intentSendAction);
+                Intent intentATS = new Intent(BaseActivity.ACTION_SAVE_STEP);
+                sendBroadcast(intentATS);
             }
         });
     }
@@ -166,7 +191,6 @@ public class TopButtonService extends Service{
         builder.addAction(action);
         startForeground(ID, builder.build());
     }
-
     public final void changeVisibilityView() {
         if (view.getVisibility() == View.VISIBLE) {
             view.setVisibility(View.GONE);
