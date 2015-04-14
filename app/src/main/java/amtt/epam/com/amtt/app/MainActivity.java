@@ -24,7 +24,6 @@ import amtt.epam.com.amtt.database.DbClearTask;
 import amtt.epam.com.amtt.database.StepSavingCallback;
 import amtt.epam.com.amtt.database.StepSavingResult;
 import amtt.epam.com.amtt.database.StepSavingTask;
-import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.Converter;
 import io.fabric.sdk.android.Fabric;
 
@@ -51,8 +50,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
-        startService(new Intent(this, TopButtonService.class));
-        TopButtonService.show(this);
         Button loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,13 +153,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
 
     }
-
-//    @Override
-//    public void onImageSaved(ImageSavingResult result) {
-//        mScreenNumber++;
-//        int resultMessage = result == ImageSavingResult.ERROR ? R.string.image_saving_error : R.string.image_saving_success;
-//        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-//    }
 
     @Override
     public int getScreenNumber() {

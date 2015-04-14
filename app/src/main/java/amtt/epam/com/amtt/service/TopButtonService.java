@@ -119,16 +119,59 @@ public class TopButtonService extends Service{
                 sendBroadcast(intentSendAction);
                 Intent intentATS = new Intent(BaseActivity.ACTION_SAVE_STEP);
                 sendBroadcast(intentATS);
+                Intent intentSendAction = new Intent(BaseActivity.ACTION_SAVE_STEP);
+                sendBroadcast(intentSendAction);
             }
         });
     }
 
+    public static void start(Context context) {
+    private static Intent getShowIntent(Context context) {
+        return new Intent(context, TopButtonService.class).setAction(ACTION_START);
+    }
+
+    private static Intent getCloseIntent(Context context) {
+        return new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE);
+    }
+
+    //TODO please sort method. For example static method in one place, serviceLifeCycle in another place ...
     public static void start(Context context) {
         context.startService(getShowIntent(context));
     }
 
     public static void close(Context context) {
         context.startService(getCloseIntent(context));
+    }
+
+    private void addView() {
+        if (!isViewAdd) {
+            wm.addView(view, layoutParams);
+            isViewAdd = true;
+        }
+    }
+
+    private void closeService() {
+        if (view != null && isViewAdd) {
+            isViewAdd = false;
+            ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
+            view = null;
+        }
+        stopSelf();
+    }
+
+    //TODO method name does not match the logic of the method
+    public final void setVisibilityView() {
+        if (view.getVisibility() == View.VISIBLE) {
+            view.setVisibility(View.GONE);
+            action.icon = R.drawable.ic_stat_action_visibility;
+            action.title = getString(R.string.button_show);
+            startForeground(ID, builder.build());
+        } else {
+            view.setVisibility(View.VISIBLE);
+            action.icon = R.drawable.ic_stat_action_visibility_off;
+            action.title = getString(R.string.button_hide);
+            startForeground(ID, builder.build());
+        }
     }
 
     @Override
