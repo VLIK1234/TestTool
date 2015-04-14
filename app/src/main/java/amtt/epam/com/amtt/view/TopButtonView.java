@@ -44,11 +44,6 @@ public class TopButtonView extends FrameLayout {
     private int lastY;
     public boolean moving;
 
-    public TopButtonView(Context context) {
-        //TODO what happen if you try use this constructor?
-        super(context, null);
-    }
-
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
         initComponent();
