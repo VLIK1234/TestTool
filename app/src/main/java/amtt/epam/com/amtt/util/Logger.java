@@ -26,9 +26,6 @@ public class Logger {
     public Logger() {
     }
 
-    public Logger(String tag, String s) {
-    }
-
     public static void d(String mNameClass, String mMessage) {
         if (IS_SHOW_LOGS) {
             android.util.Log.d(mNameClass, mMessage);

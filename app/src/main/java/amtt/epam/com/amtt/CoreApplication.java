@@ -12,6 +12,5 @@ public class CoreApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        PreferenceUtils.initDefaultPreference(this);
     }
 }

@@ -84,7 +84,9 @@ public class BaseActivity extends Activity {
 //    }
 
     public void showProgress(boolean show) {
-        findViewById(getProgressViewId()).setVisibility(show ? View.VISIBLE : View.GONE);
+        if (findViewById(getProgressViewId())!=null) {
+            findViewById(getProgressViewId()).setVisibility(show ? View.VISIBLE : View.GONE);
+        }
     }
 
     protected int getProgressViewId() {

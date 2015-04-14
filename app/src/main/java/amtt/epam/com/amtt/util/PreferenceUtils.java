@@ -52,11 +52,6 @@ public class PreferenceUtils {
         return mSharedPreferences;
     }
 
-
-    public static void initDefaultPreference(Context context) {
-        PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
-    }
-
     public static void registerListener(SharedPreferences.OnSharedPreferenceChangeListener listener, Context context) {
         getPref(context).registerOnSharedPreferenceChangeListener(listener);
     }
