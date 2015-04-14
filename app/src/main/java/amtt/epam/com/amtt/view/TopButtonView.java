@@ -80,9 +80,6 @@ public class TopButtonView extends FrameLayout {
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intent);
-                Intent intent = new Intent(getContext(), LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().getApplicationContext().startActivity(intent);
                 isAccess = true;
                 TopButtonService.setting.edit().putBoolean("Number", isAccess).apply();
             }

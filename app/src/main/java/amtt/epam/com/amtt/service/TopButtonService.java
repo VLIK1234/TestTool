@@ -38,11 +38,6 @@ public class TopButtonService extends Service{
     private NotificationCompat.Builder builder;
 
     public static SharedPreferences setting;
-    public static final String SCREEN_NUMBER = "Screen number";
-    public static final String NUMBER = "Number";
-    private SharedPreferences.OnSharedPreferenceChangeListener listener;
-
-    public static SharedPreferences setting;
     public static SharedPreferences.Editor editor;
     public static final String SCREEN_NUMBER = "Screen number";
     public static final String NUMBER = "Number";
@@ -117,24 +112,10 @@ public class TopButtonService extends Service{
             public void onClick(View v) {
                 Intent intentSendAction = new Intent(BaseActivity.ACTION_SAVE_STEP);
                 sendBroadcast(intentSendAction);
-                Intent intentATS = new Intent(BaseActivity.ACTION_SAVE_STEP);
-                sendBroadcast(intentATS);
-                Intent intentSendAction = new Intent(BaseActivity.ACTION_SAVE_STEP);
-                sendBroadcast(intentSendAction);
             }
         });
     }
 
-    public static void start(Context context) {
-    private static Intent getShowIntent(Context context) {
-        return new Intent(context, TopButtonService.class).setAction(ACTION_START);
-    }
-
-    private static Intent getCloseIntent(Context context) {
-        return new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE);
-    }
-
-    //TODO please sort method. For example static method in one place, serviceLifeCycle in another place ...
     public static void start(Context context) {
         context.startService(getShowIntent(context));
     }
@@ -143,36 +124,6 @@ public class TopButtonService extends Service{
         context.startService(getCloseIntent(context));
     }
 
-    private void addView() {
-        if (!isViewAdd) {
-            wm.addView(view, layoutParams);
-            isViewAdd = true;
-        }
-    }
-
-    private void closeService() {
-        if (view != null && isViewAdd) {
-            isViewAdd = false;
-            ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
-            view = null;
-        }
-        stopSelf();
-    }
-
-    //TODO method name does not match the logic of the method
-    public final void setVisibilityView() {
-        if (view.getVisibility() == View.VISIBLE) {
-            view.setVisibility(View.GONE);
-            action.icon = R.drawable.ic_stat_action_visibility;
-            action.title = getString(R.string.button_show);
-            startForeground(ID, builder.build());
-        } else {
-            view.setVisibility(View.VISIBLE);
-            action.icon = R.drawable.ic_stat_action_visibility_off;
-            action.title = getString(R.string.button_hide);
-            startForeground(ID, builder.build());
-        }
-    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
