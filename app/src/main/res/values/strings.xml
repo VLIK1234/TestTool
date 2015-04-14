@@ -54,4 +54,7 @@
     <string name="show_crash_info_text">Show crash info</string>
     <string name="lack_of_crashes_text">There were no crashes recently</string>
 
+    <string name="file_deleted">Deletion done</string>
+    <string name="file_not_deleted">Deletion hasn\'t been done</string>
+
 </resources>

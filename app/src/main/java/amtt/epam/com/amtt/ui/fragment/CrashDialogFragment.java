@@ -5,15 +5,18 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import java.io.File;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.util.task.DeleteFileTask;
+import amtt.epam.com.amtt.util.task.DeletionCallback;
 
 /**
  * Created by Artsiom_Kaliaha on 14.04.2015.
  */
-public class CrashDialogFragment extends DialogFragment {
+public class CrashDialogFragment extends DialogFragment implements DeletionCallback {
 
     public static final String KEY_PATH = "key_path";
     public static final String KEY_TITLE = "key_title";
@@ -22,11 +25,11 @@ public class CrashDialogFragment extends DialogFragment {
     public CrashDialogFragment() {
     }
 
-    public static CrashDialogFragment newInstance(String title, String message, String path) {
+    public static CrashDialogFragment newInstance(String rawString, String path) {
         CrashDialogFragment fragment = new CrashDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(KEY_TITLE, title);
-        bundle.putString(KEY_CONTENT, message);
+        bundle.putString(KEY_TITLE, rawString.substring(0,19));
+        bundle.putString(KEY_CONTENT, rawString.substring(19));
         bundle.putString(KEY_PATH, path);
         fragment.setArguments(bundle);
         return fragment;
@@ -51,12 +54,15 @@ public class CrashDialogFragment extends DialogFragment {
                 .setNeutralButton(R.string.delete_crash_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        File crashFile = new File(path);
-                        crashFile.delete();
-                        dismiss();
+                        new DeleteFileTask(path, CrashDialogFragment.this).execute();
                     }
                 });
 
         return builder.create();
+    }
+
+    @Override
+    public void onDeletionDone(boolean isDeleted) {
+        Toast.makeText(getActivity(), isDeleted ? getString(R.string.file_deleted) : getString(R.string.file_not_deleted), Toast.LENGTH_SHORT).show();
     }
 }

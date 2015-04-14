@@ -46,7 +46,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     private static final String ACCESS = "access";
     private static final String PROJECTS_KEYS = "projectsKeys";
 
-    private CrashDialogFragment mCrashDialogFragment;
     private String mCrashFilePath;
     private static final String CRASH_DIALOG_TAG = "crash_dialog_tag";
 
@@ -136,10 +135,10 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         showCrashInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] crashData = loadCrashData();
-                if (crashData != null) {
-                    CrashDialogFragment mCrashDialogFragment = CrashDialogFragment.newInstance(crashData[0], crashData[1], mCrashFilePath);
-                    mCrashDialogFragment.show(getFragmentManager(), CRASH_DIALOG_TAG);
+                String rawString = loadCrashData();
+                if (rawString != null) {
+                    CrashDialogFragment crashDialogFragment = CrashDialogFragment.newInstance(rawString, mCrashFilePath);
+                    crashDialogFragment.show(getFragmentManager(), CRASH_DIALOG_TAG);
                 }
             }
         });
@@ -206,14 +205,14 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         startActivity(new Intent(this, CreateIssueActivity.class));
     }
 
-    private String[] loadCrashData() {
-        String[] dialogContent = null;
+    private String loadCrashData() {
+        String rawString = null;
         try {
-            dialogContent = IOUtils.loadCrashDialogData(mCrashFilePath);
+            rawString = IOUtils.loadStringData(mCrashFilePath);
         } catch (Exception e) {
             Toast.makeText(MainActivity.this, R.string.lack_of_crashes_text, Toast.LENGTH_SHORT).show();
         }
-        return dialogContent;
+        return rawString;
     }
 
 }
