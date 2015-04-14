@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -20,9 +21,9 @@ import amtt.epam.com.amtt.view.TopButtonView;
 /**
  * Created by Ivan_Bakach on 20.03.2015.
  */
-public class TopButtonService extends Service {
+public class TopButtonService extends Service{
 
-    public static final String ACTION_SHOW = "SHOW";
+    public static final String ACTION_START = "SHOW";
     public static final String ACTION_CLOSE = "CLOSE";
     private static final String LOG_TAG = "Log";
     public static final int ID = 7;
@@ -36,6 +37,11 @@ public class TopButtonService extends Service {
     private NotificationCompat.Action action;
     private NotificationCompat.Builder builder;
 
+    public static SharedPreferences setting;
+    public static final String SCREEN_NUMBER = "Screen number";
+    public static final String NUMBER = "Number";
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -48,12 +54,27 @@ public class TopButtonService extends Service {
         DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
         xInitPosition = displayMetrics.widthPixels / 2;
         yInitPosition = displayMetrics.heightPixels / 2;
-        intitLayoutParams();
+        initLayoutParams();
         initView();
+
+        //TODO change on real realization
+        boolean isAccess = false;
+        setting = getBaseContext().getSharedPreferences(SCREEN_NUMBER, Context.MODE_PRIVATE);
+        setting.edit().putBoolean(NUMBER, isAccess).apply();
+        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                Log.e(LOG_TAG, "Shared Preference is changed");
+                view.buttonAuth.setBackgroundResource(R.drawable.button_logout);
+                view.buttonBugRep.setBackgroundResource(R.drawable.button_bug_rep);
+                view.buttonBugRep.setEnabled(true);
+                view.buttonUserInfo.setBackgroundResource(R.drawable.button_info);
+                view.buttonUserInfo.setEnabled(true);
+            }
+        };
+        setting.registerOnSharedPreferenceChangeListener(listener);
     }
 
-    //TODO please give method name without mistakes
-    private void intitLayoutParams() {
+    private void initLayoutParams() {
         layoutParams = new WindowManager.LayoutParams();
         layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -71,64 +92,18 @@ public class TopButtonService extends Service {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO please use friendly name for intent
-                Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
-                sendBroadcast(intentATS);
+                Intent intentSendAction = new Intent(BaseActivity.ACTION_SAVE_STEP);
+                sendBroadcast(intentSendAction);
             }
         });
     }
 
-    //TODO why this method public? Can we move this login to show method?
-    public static Intent getShowIntent(Context context) {
-        return new Intent(context, TopButtonService.class).setAction(ACTION_SHOW);
-    }
-
-    //TODO why this method public?
-    public static Intent getCloseIntent(Context context) {
-        return new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE);
-    }
-
-    //TODO please sort method. For example static method in one place, serviceLifeCycle in another place ...
-    public static void show(Context context) {
+    public static void start(Context context) {
         context.startService(getShowIntent(context));
     }
 
     public static void close(Context context) {
         context.startService(getCloseIntent(context));
-    }
-
-    //TODO you have 2 method show. But there are method do different things.
-    public final void show() {
-        if (!isViewAdd) {
-            wm.addView(view, layoutParams);
-            isViewAdd = true;
-        }
-    }
-
-    //TODO you have 2 method close. But there are method do different things.
-    public final void close() {
-        if (view != null && isViewAdd) {
-            isViewAdd = false;
-            ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
-            view = null;
-        }
-        stopSelf();
-    }
-
-    //TODO method name does not match the logic of the method
-    public final void setVisibilityView() {
-        if (view.getVisibility() == View.VISIBLE) {
-            view.setVisibility(View.GONE);
-            //TODO why you create foldres drawable-hdpi/ drawable-hdpi-v11, drawable-mdpi/drawable-mdpi-v11 .....?
-            action.icon = R.drawable.ic_stat_action_visibility;
-            action.title = getString(R.string.button_show);
-            startForeground(ID, builder.build());
-        } else {
-            view.setVisibility(View.VISIBLE);
-            action.icon = R.drawable.ic_stat_action_visibility_off;
-            action.title = getString(R.string.button_hide);
-            startForeground(ID, builder.build());
-        }
     }
 
     @Override
@@ -138,29 +113,50 @@ public class TopButtonService extends Service {
         if (intent != null) {
             String action = intent.getAction();
 
-            if (ACTION_SHOW.equals(action)) {
-                show();
+            if (ACTION_START.equals(action)) {
+                addView();
                 showNotification();
             } else if (ACTION_CLOSE.equals(action)) {
-                close();
+                closeService();
             } else if (ACTION_HIDE_VIEW.equals(action)) {
-                setVisibilityView();
+                changeVisibilityView();
             }
         } else {
-            //TODO why you don't stop service?
-            Log.w(LOG_TAG, "Tried to onStartCommand() with a null intent.");
+            stopSelf();
         }
         return START_NOT_STICKY;
+    }
+
+    private static Intent getShowIntent(Context context) {
+        return new Intent(context, TopButtonService.class).setAction(ACTION_START);
+    }
+
+    private static Intent getCloseIntent(Context context) {
+        return new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE);
+    }
+
+    private void addView() {
+        if (!isViewAdd) {
+            wm.addView(view, layoutParams);
+            isViewAdd = true;
+        }
+    }
+
+    private void closeService() {
+        if (view != null && isViewAdd) {
+            isViewAdd = false;
+            ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
+            view = null;
+        }
+        stopSelf();
     }
 
     private void showNotification() {
         builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification)
-                //TODO hardcoded title
-                .setContentTitle("AMTT")
+                .setContentTitle(getString(R.string.notification_title))
                 .setOngoing(true)
-                //TODO hardcoded text
-                .setContentText("Button-assistant is running.");
+                .setContentText(getString(R.string.notification_text));
 
         action = new NotificationCompat.Action(
                 R.drawable.ic_stat_action_visibility_off,
@@ -171,4 +167,17 @@ public class TopButtonService extends Service {
         startForeground(ID, builder.build());
     }
 
+    public final void changeVisibilityView() {
+        if (view.getVisibility() == View.VISIBLE) {
+            view.setVisibility(View.GONE);
+            action.icon = R.drawable.ic_stat_action_visibility;
+            action.title = getString(R.string.button_show);
+            startForeground(ID, builder.build());
+        } else {
+            view.setVisibility(View.VISIBLE);
+            action.icon = R.drawable.ic_stat_action_visibility_off;
+            action.title = getString(R.string.button_hide);
+            startForeground(ID, builder.build());
+        }
+    }
 }

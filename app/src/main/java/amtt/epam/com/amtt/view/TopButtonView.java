@@ -37,8 +37,12 @@ public class TopButtonView extends FrameLayout {
     private int currentOrientation;
     private float widthProportion;
     private float heightProportion;
-    //TODO you can convert it field to local variable
-    private RelativeLayout.LayoutParams topButtonLayoutParams;
+
+    private int firstX;
+    private int firstY;
+    private int lastX;
+    private int lastY;
+    public boolean moving;
 
     public TopButtonView(Context context) {
         //TODO what happen if you try use this constructor?
@@ -51,10 +55,8 @@ public class TopButtonView extends FrameLayout {
 
         buttonsBar.setOrientation(LinearLayout.VERTICAL);
 
-        this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        //TODO why you use operator "this" in one case
-        this.metrics = getContext().getResources().getDisplayMetrics();
-        //TODO and don't use in the same
+        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        metrics = getContext().getResources().getDisplayMetrics();
         currentOrientation = getResources().getConfiguration().orientation;
         this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
@@ -118,13 +120,13 @@ public class TopButtonView extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (getResources().getConfiguration().orientation != currentOrientation) {
-            changeProportinalPosition();
+            savePositionAfterTurnScreen();
             buttonsBar.setVisibility(GONE);
         }
     }
 
     private void checkFreeSpace() {
-        topButtonLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+        RelativeLayout.LayoutParams topButtonLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -136,26 +138,19 @@ public class TopButtonView extends FrameLayout {
             topButtonLayoutParams.addRule(RelativeLayout.BELOW, mainButton.getId());
             buttonsBar.setLayoutParams(topButtonLayoutParams);
         }
-        //TODO please give friendly name for variable
-        ViewTreeObserver vto = buttonsBar.getViewTreeObserver();
-        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+
+        ViewTreeObserver viewTreeObserver = buttonsBar.getViewTreeObserver();
+        viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 buttonsBar.getViewTreeObserver().removeOnPreDrawListener(this);
 
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    //TODO every time you do extra checks. If you don't use first "if", please move logic from "else" to "if"
-                    if (layoutParams.x < metrics.widthPixels / 2) {
-                        //Right
-                    } else {
-                        //Left
+                    if (!(layoutParams.x < metrics.widthPixels / 2)) {
                         layoutParams.x -= (layoutParams.x + buttonsBar.getWidth() - metrics.widthPixels + buttonsBar.getHeight());
                         windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                     }
                 } else {
-                    if (layoutParams.y + buttonsBar.getWidth() / 2 < metrics.heightPixels / 2) {
-                        //Down
-                    } else {
-                        //Up
+                    if (!(layoutParams.y + buttonsBar.getWidth() / 2 < metrics.heightPixels / 2)) {
                         //TODO what is the coefficient 1.5?
                         layoutParams.y -= (layoutParams.y + buttonsBar.getHeight() - metrics.heightPixels + buttonsBar.getWidth() * 1.5);
                         windowManager.updateViewLayout(TopButtonView.this, layoutParams);
@@ -167,8 +162,7 @@ public class TopButtonView extends FrameLayout {
 
     }
 
-    //TODO please give method more firendly name
-    private void changeProportinalPosition() {
+    private void savePositionAfterTurnScreen() {
         int overWidth;
         int overHeight;
         if (Math.round(metrics.widthPixels * widthProportion) + mainButton.getWidth() < metrics.widthPixels) {
@@ -197,19 +191,9 @@ public class TopButtonView extends FrameLayout {
         return result;
     }
 
-    //TODO why you declare variables on this place?
-    private int firstX;
-    private int firstY;
-
-    private int lastX;
-    private int lastY;
-
-    public boolean moving;
-
-    public int threshold = 10;
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        int threshold = 10;
         int totalDeltaX = lastX - firstX;
         int totalDeltaY = lastY - firstY;
 
