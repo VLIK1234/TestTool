@@ -33,7 +33,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     private ArrayList<String> projectsNames = new ArrayList<>();
     private ArrayList<String> projectsKeys = new ArrayList<>();
     private Spinner inputProjectsKey, inputIssueTypes;
-    private String username, credentials, url;
+    private String username, url;
     private Button createIssue;
 
     @Override
@@ -41,7 +41,6 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
         username = CredentialsManager.getInstance().getUserName(CreateIssueActivity.this);
-        credentials = CredentialsManager.getInstance().getCredentials(CreateIssueActivity.this);
         url = CredentialsManager.getInstance().getUrl(CreateIssueActivity.this);
         etDescription = (EditText) findViewById(R.id.et_description);
         etSummary = (EditText) findViewById(R.id.et_summary);
@@ -53,7 +52,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 showProgress(true);
-                new ShowUserDataTask(username, credentials, url, TypeSearchedData.SEARCH_ISSUE, CreateIssueActivity.this).execute();
+                new ShowUserDataTask(username, url, TypeSearchedData.SEARCH_ISSUE, CreateIssueActivity.this).execute();
 
             }
 
@@ -73,7 +72,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
                 projectKey = getProjectKey();
                 showProgress(true);
                 createIssue.setVisibility(View.GONE);
-                new CreateIssueTask(credentials, url, issue.createSimpleIssue(projectKey, issueType, description, summary), CreateIssueActivity.this).execute();
+                new CreateIssueTask(url, issue.createSimpleIssue(projectKey, issueType, description, summary), CreateIssueActivity.this).execute();
 
             }
         });

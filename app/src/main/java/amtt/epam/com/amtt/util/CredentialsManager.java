@@ -9,6 +9,7 @@ import android.util.Base64;
 public class CredentialsManager {
 
     private static final CredentialsManager INSTANCE = new CredentialsManager();
+    private String credentials;
 
 
     private CredentialsManager() {
@@ -42,13 +43,12 @@ public class CredentialsManager {
         PreferenceUtils.putBoolean(Constants.SharedPreferenceKeys.ACCESS, url, context);
     }
 
-    public void setCredentials(String userName, String password, Context context) {
-        String credentials = Constants.UrlKeys.BASIC_AUTH + Base64.encodeToString((userName + Constants.SharedPreferenceKeys.COLON + password).getBytes(), Base64.NO_WRAP);
-        PreferenceUtils.putString(Constants.SharedPreferenceKeys.CREDENTIALS, credentials, context);
+    public void setCredentials(String userName, String password) {
+        credentials = Constants.UrlKeys.BASIC_AUTH + Base64.encodeToString((userName + Constants.SharedPreferenceKeys.COLON + password).getBytes(), Base64.NO_WRAP);
     }
 
-    public String getCredentials(Context context) {
-        return PreferenceUtils.getString(Constants.SharedPreferenceKeys.CREDENTIALS, Constants.SharedPreferenceKeys.VOID, context);
+    public String getCredentials() {
+        return credentials;
     }
 }
 

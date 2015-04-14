@@ -8,11 +8,10 @@ import java.util.Objects;
 /**
  * Created by shiza on 09.04.2015.
  */
-public class InputsChecker {
+public class TextUtils {
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static Boolean isVoid(String data) {
-        if ((Objects.equals(data, null)) || (Objects.equals(data, ""))) {
+    public static Boolean isEmpty(String data) {
+        if (data == null || data == "") {
             return true;
         } else {
             return false;

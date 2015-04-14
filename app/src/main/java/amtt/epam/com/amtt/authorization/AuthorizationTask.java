@@ -10,12 +10,10 @@ import org.apache.http.auth.AuthenticationException;
 public class AuthorizationTask extends AsyncTask<Void, Void, AuthorizationResult> {
 
     private final AuthorizationCallback mCallback;
-    private final String mCredentials;
     private final String mUrl;
 
-    public AuthorizationTask(String credentials, String url, AuthorizationCallback callback) {
+    public AuthorizationTask(String url, AuthorizationCallback callback) {
         mCallback = callback;
-        mCredentials = credentials;
         mUrl = url;
     }
 
@@ -24,7 +22,7 @@ public class AuthorizationTask extends AsyncTask<Void, Void, AuthorizationResult
         //TODO update for amtt/epam/com/amtt/authorization/JiraApi.java:42
         try {
             new JiraApi();
-            if (JiraApi.STATUS_AUTHORIZED != JiraApi.authorize(mCredentials, mUrl)) {
+            if (JiraApi.STATUS_AUTHORIZED != JiraApi.authorize(mUrl)) {
                 throw new AuthenticationException("illegal user name or pass");
             }
         } catch (Exception e) {

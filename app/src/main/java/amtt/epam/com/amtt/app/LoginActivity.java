@@ -15,7 +15,7 @@ import amtt.epam.com.amtt.authorization.AuthorizationResult;
 import amtt.epam.com.amtt.authorization.AuthorizationTask;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
-import amtt.epam.com.amtt.util.InputsChecker;
+import amtt.epam.com.amtt.util.TextUtils;
 
 public class LoginActivity extends BaseActivity implements AuthorizationCallback {
 
@@ -40,26 +40,26 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
             public void onClick(View v) {
 
 
-                if (InputsChecker.isVoid(userName.getText().toString())) {
+                if (TextUtils.isEmpty(userName.getText().toString())) {
                     toastText += (Constants.DialogKeys.INPUT_USERNAME + Constants.DialogKeys.NEW_LINE);
                 }
-                if (InputsChecker.isVoid(password.getText().toString())) {
+                if (TextUtils.isEmpty(password.getText().toString())) {
                     toastText += (Constants.DialogKeys.INPUT_PASSWORD + Constants.DialogKeys.NEW_LINE);
                 }
-                if (InputsChecker.isVoid(url.getText().toString())) {
+                if (TextUtils.isEmpty(url.getText().toString())) {
                     toastText += (Constants.DialogKeys.INPUT_URL);
                 } else {
-                    Logger.d(TAG, InputsChecker.isVoid(userName.getText().toString()).toString());
-                    Logger.d(TAG, InputsChecker.isVoid(password.getText().toString()).toString());
-                    Logger.d(TAG, InputsChecker.isVoid(url.getText().toString()).toString());
+                    Logger.d(TAG, TextUtils.isEmpty(userName.getText().toString()).toString());
+                    Logger.d(TAG, TextUtils.isEmpty(password.getText().toString()).toString());
+                    Logger.d(TAG, TextUtils.isEmpty(url.getText().toString()).toString());
 
 
                     showProgress(true);
-                    CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString(), LoginActivity.this);
-                    new AuthorizationTask(CredentialsManager.getInstance().getCredentials(LoginActivity.this), url.getText().toString(), LoginActivity.this).execute();
+                    CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString());
+                    new AuthorizationTask(url.getText().toString(), LoginActivity.this).execute();
                     loginButton.setVisibility(View.GONE);
                 }
-                if (!InputsChecker.isVoid(toastText)) {
+                if (!TextUtils.isEmpty(toastText)) {
                     Toast.makeText(LoginActivity.this, toastText, Toast.LENGTH_LONG).show();
                 }
             }
