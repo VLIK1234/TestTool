@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.ui.fragment;
+package amtt.epam.com.amtt.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

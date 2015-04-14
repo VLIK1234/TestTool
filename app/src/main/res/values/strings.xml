@@ -4,6 +4,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <string name="button_hide">Hide</string>
+    <string name="button_show">Show</string>
+
     <string name="title_activity_login">Login to Jira</string>
     <string name="login_button">Log in</string>
     <string name="show_steps_button">Show steps</string>
@@ -13,8 +16,6 @@
     <string name="title_activity_create_issue">Creating issue</string>
     <string name="issue_creating_success">Issue is created</string>
     <string name="issue_creating_unsuccess">Issue is not created</string>
-    <string name="button_show">Show</string>
-    <string name="button_stop">Stop</string>
     <string name="save_activity_info">Save activity info</string>
     <string name="save_image">Save image</string>
     <string name="step_button">Save step</string>

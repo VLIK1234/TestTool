@@ -139,7 +139,7 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
                 new String[]{mComponentName.getClassName()},
                 null).getCount();
 
-        //if there is no records about current activity in db
+        //if there is no records about current app in db
         if (existingActivityInfo == 0) {
             ActivityInfo activityInfo;
             try {

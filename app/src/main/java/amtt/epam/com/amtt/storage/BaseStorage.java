@@ -10,9 +10,12 @@ public class BaseStorage {
     //this storage for variable
     public static final String SCREEN_NUMBER = "Screen number";
     public static final String NUMBER = "Number";
+
+    //TODO - what for do we need this fields?
     public static SharedPreferences setting;
     public static SharedPreferences.Editor editor;
 
+    //TODO - what for do we need this class?
     private BaseStorage() {
 
     }

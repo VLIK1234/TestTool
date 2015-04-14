@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.ui.activity;
+package amtt.epam.com.amtt.app;
 
 import android.os.Bundle;
 import android.view.ViewGroup;
@@ -20,8 +20,8 @@ public class ThirdActivity extends BaseActivity {
         setContentView(R.layout.custom_view_layout);
         linearLayout = (LinearLayout) findViewById(R.id.custom_linear);
         int[] buttonDrawableResourceIds = new int[]{
-                R.drawable.button_add, R.drawable.button_share, R.drawable.button_auth,
-                R.drawable.button_screen, R.drawable.button_bug_rep
+                R.drawable.button_add_step, R.drawable.button_login, R.drawable.button_auth,
+                R.drawable.button_logout, R.drawable.button_bug_rep
         };
         ImageView[] arrayButton = new ImageView[5];
         int counter = 0;

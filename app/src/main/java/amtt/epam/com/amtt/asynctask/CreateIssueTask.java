@@ -20,6 +20,7 @@ public class CreateIssueTask extends AsyncTask<Void, Void, CreationIssueResult> 
     private final String mUrl;
 
     public CreateIssueTask(String username, String userPassword, String url, String json, CreationIssueCallback callback) {
+        //TODO see amtt/epam/com/amtt/authorization/JiraApi.java:35 comment
         mUserName = username;
         mPassword = userPassword;
         mCallback = callback;
@@ -29,6 +30,7 @@ public class CreateIssueTask extends AsyncTask<Void, Void, CreationIssueResult> 
 
     @Override
     protected CreationIssueResult doInBackground(Void... params) {
+        //TODO update for amtt/epam/com/amtt/authorization/JiraApi.java:58
         try {
             if (JiraApi.STATUS_CREATED != new JiraApi().createIssue(mUserName, mPassword, mUrl, mJson)) {
                 throw new AuthenticationException("issue can`t be create");
@@ -42,6 +44,7 @@ public class CreateIssueTask extends AsyncTask<Void, Void, CreationIssueResult> 
 
     @Override
     protected void onPostExecute(CreationIssueResult result) {
+        //TODO can mCallback be null?
         mCallback.onCreationIssueResult(result);
     }
 }

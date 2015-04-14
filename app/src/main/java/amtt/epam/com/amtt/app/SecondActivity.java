@@ -1,6 +1,5 @@
-package amtt.epam.com.amtt.ui.activity;
+package amtt.epam.com.amtt.app;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -17,7 +16,7 @@ public class SecondActivity extends BaseActivity {
     }
 
     public void onClickThird(View view) {
-        Intent intent = new Intent(this, ThirdActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, ThirdActivity.class);
+//        startActivity(intent);
     }
 }

@@ -20,6 +20,7 @@ public class ShowUserDataTask extends AsyncTask<Void, Void, JMetaResponse> {
     private final String mUrl;
 
     public ShowUserDataTask(String username, String userPassword, String url, ShowUserDataCallback callback) {
+        //TODO see amtt/epam/com/amtt/authorization/JiraApi.java:35 comment
         mUserName = username;
         mPassword = userPassword;
         mCallback = callback;
