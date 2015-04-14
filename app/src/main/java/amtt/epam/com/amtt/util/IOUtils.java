@@ -22,6 +22,9 @@ public class IOUtils {
         }
     }
 
+    /**
+     * Method for retrieving string data from internal storage
+     */
     public static String loadStringData(String filePath) throws IOException {
         BufferedReader bufferedReader = null;
         StringBuilder crashText = new StringBuilder();
@@ -32,9 +35,7 @@ public class IOUtils {
                 crashText.append(buffer);
             }
         } finally {
-            if (bufferedReader != null) {
-                IOUtils.close(bufferedReader);
-            }
+            IOUtils.close(bufferedReader);
         }
         return crashText.toString();
     }

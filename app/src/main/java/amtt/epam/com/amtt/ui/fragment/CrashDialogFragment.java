@@ -4,19 +4,38 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import java.io.File;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.util.task.DeleteFileTask;
-import amtt.epam.com.amtt.util.task.DeletionCallback;
 
 /**
  * Created by Artsiom_Kaliaha on 14.04.2015.
  */
-public class CrashDialogFragment extends DialogFragment implements DeletionCallback {
+public class CrashDialogFragment extends DialogFragment {
+
+    class DeleteFileTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mFilePath;
+
+        public DeleteFileTask(String filePath) {
+            mFilePath = filePath;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            return new File(mFilePath).delete();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isDeleted) {
+            Toast.makeText(getActivity(), isDeleted ? getString(R.string.file_deleted) : getString(R.string.file_not_deleted), Toast.LENGTH_SHORT).show();
+        }
+
+    }
 
     public static final String KEY_PATH = "key_path";
     public static final String KEY_TITLE = "key_title";
@@ -28,7 +47,7 @@ public class CrashDialogFragment extends DialogFragment implements DeletionCallb
     public static CrashDialogFragment newInstance(String rawString, String path) {
         CrashDialogFragment fragment = new CrashDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(KEY_TITLE, rawString.substring(0,19));
+        bundle.putString(KEY_TITLE, rawString.substring(0, 19));
         bundle.putString(KEY_CONTENT, rawString.substring(19));
         bundle.putString(KEY_PATH, path);
         fragment.setArguments(bundle);
@@ -54,15 +73,11 @@ public class CrashDialogFragment extends DialogFragment implements DeletionCallb
                 .setNeutralButton(R.string.delete_crash_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new DeleteFileTask(path, CrashDialogFragment.this).execute();
+                        new DeleteFileTask(path).execute();
                     }
                 });
 
         return builder.create();
     }
 
-    @Override
-    public void onDeletionDone(boolean isDeleted) {
-        Toast.makeText(getActivity(), isDeleted ? getString(R.string.file_deleted) : getString(R.string.file_not_deleted), Toast.LENGTH_SHORT).show();
-    }
 }
