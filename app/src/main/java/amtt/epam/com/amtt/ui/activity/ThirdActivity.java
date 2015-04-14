@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.app;
+package amtt.epam.com.amtt.ui.activity;
 
 import android.os.Bundle;
 import android.view.ViewGroup;

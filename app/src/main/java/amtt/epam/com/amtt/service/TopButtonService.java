@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import amtt.epam.com.amtt.app.BaseActivity;
-import amtt.epam.com.amtt.app.SecondActivity;
+import amtt.epam.com.amtt.ui.activity.BaseActivity;
+import amtt.epam.com.amtt.ui.activity.SecondActivity;
 import amtt.epam.com.amtt.view.TopButtonView;
 
 /**

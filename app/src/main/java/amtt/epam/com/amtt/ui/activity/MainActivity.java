@@ -1,26 +1,18 @@
-package amtt.epam.com.amtt.app;
+package amtt.epam.com.amtt.ui.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
@@ -33,9 +25,9 @@ import amtt.epam.com.amtt.database.StepSavingCallback;
 import amtt.epam.com.amtt.database.StepSavingResult;
 import amtt.epam.com.amtt.database.StepSavingTask;
 import amtt.epam.com.amtt.service.TopButtonService;
+import amtt.epam.com.amtt.ui.fragment.CrashDialogFragment;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.IOUtils;
-import amtt.epam.com.amtt.view.popup.Popup;
 import io.fabric.sdk.android.Fabric;
 
 
@@ -54,8 +46,9 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     private static final String ACCESS = "access";
     private static final String PROJECTS_KEYS = "projectsKeys";
 
-    private Popup mPopup;
+    private CrashDialogFragment mCrashDialogFragment;
     private String mCrashFilePath;
+    private static final String CRASH_DIALOG_TAG = "crash_dialog_tag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,7 +136,11 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         showCrashInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setPopup();
+                String[] crashData = loadCrashData();
+                if (crashData != null) {
+                    CrashDialogFragment mCrashDialogFragment = CrashDialogFragment.newInstance(crashData[0], crashData[1], mCrashFilePath);
+                    mCrashDialogFragment.show(getFragmentManager(), CRASH_DIALOG_TAG);
+                }
             }
         });
 
@@ -209,53 +206,14 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         startActivity(new Intent(this, CreateIssueActivity.class));
     }
 
-    private void setPopup() {
-        BufferedReader bufferedReader = null;
-        String crashHeadText = null;
-        StringBuilder crashText = new StringBuilder();
-        String buffer;
+    private String[] loadCrashData() {
+        String[] dialogContent = null;
         try {
-            bufferedReader = new BufferedReader(new FileReader(mCrashFilePath));
-            crashHeadText = bufferedReader.readLine();
-            while ((buffer = bufferedReader.readLine()) != null) {
-                crashText.append(buffer);
-            }
-        } catch (IOException e) {
+            dialogContent = IOUtils.loadCrashDialogData(mCrashFilePath);
+        } catch (Exception e) {
             Toast.makeText(MainActivity.this, R.string.lack_of_crashes_text, Toast.LENGTH_SHORT).show();
-            return;
-        } finally {
-            if (bufferedReader != null) {
-                IOUtils.close(bufferedReader);
-            }
         }
-
-        if (mPopup == null) {
-            ViewGroup viewGroup = (LinearLayout) findViewById(R.id.popup_window);
-            View popupLayout = LayoutInflater.from(MainActivity.this).inflate(R.layout.popup_window_crash_info, viewGroup);
-            Drawable background = getResources().getDrawable(R.drawable.popup_window_drawable);
-            mPopup = new Popup(popupLayout, background);
-            mPopup.setButton(popupLayout.findViewById(R.id.close_button), new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mPopup.close();
-                }
-            });
-            mPopup.setButton(popupLayout.findViewById(R.id.delete_crash_button), new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    File crashFile = new File(mCrashFilePath);
-                    crashFile.delete();
-                    mPopup.close();
-                }
-            });
-            mPopup.setHeaderTextView(popupLayout.findViewById(R.id.crash_text_head));
-            mPopup.setBodyTextView(popupLayout.findViewById(R.id.crash_text));
-        }
-
-        mPopup.setHeaderText(crashHeadText);
-        mPopup.setBodyText(crashText.toString());
-
-        mPopup.show(getWindowManager().getDefaultDisplay());
+        return dialogContent;
     }
 
 }

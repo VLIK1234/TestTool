@@ -24,7 +24,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".app.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:label="@string/app_name">
 
             <intent-filter>
@@ -42,18 +42,18 @@
             android:exported="false" />
 
         <activity
-            android:name=".app.SecondActivity"
+            android:name=".ui.activity.SecondActivity"
             android:label="@string/app_name" />
 
         <activity
-            android:name=".app.ThirdActivity"
+            android:name=".ui.activity.ThirdActivity"
             android:label="@string/app_name" />
 
         <activity
-            android:name=".app.CreateIssueActivity"
+            android:name=".ui.activity.CreateIssueActivity"
             android:label="@string/title_activity_create_issue" />
         <activity
-            android:name=".app.LoginActivity"
+            android:name=".ui.activity.LoginActivity"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
@@ -63,7 +63,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".app.StepsActivity"
+            android:name=".ui.activity.StepsActivity"
             android:label="@string/title_activity_steps" />
     </application>
 
