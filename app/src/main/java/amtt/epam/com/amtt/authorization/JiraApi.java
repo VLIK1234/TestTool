@@ -11,6 +11,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
 
 import amtt.epam.com.amtt.authorization.exceptions.AuthHostException;
@@ -40,7 +41,7 @@ public class JiraApi {
     }
 
     //TODO OAUTH?
-    public HttpResponse authorize(final String userName, final String password, final String url) throws Exception {
+    public HttpResponse authorize(final String userName, final String password, final String url) throws AuthHostException {
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
         HttpGet httpGet = new HttpGet(url + LOGIN_METHOD);
         httpGet.setHeader(AUTH_HEADER, credentials);
@@ -56,7 +57,7 @@ public class JiraApi {
         return response;
     }
 
-    public int createIssue(final String userName, final String password, final String mUrl, final String json) throws Exception {
+    public HttpResponse createIssue(final String userName, final String password, final String mUrl, final String json) throws UnsupportedEncodingException, IOException, AuthHostException {
         String credentials = BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
         HttpPost post = new HttpPost(mUrl + ISSUE_PATH);
         StringEntity input = new StringEntity(json);
@@ -64,10 +65,18 @@ public class JiraApi {
         post.addHeader("content-type", "application/json");
         post.setEntity(input);
         Logger.printRequestPost(post);
-        HttpResponse response = mHttpClient.execute(post);
-        Logger.printResponseLog(response);
-        //TODO return status, not code
-        return response.getStatusLine().getStatusCode();
+
+        HttpResponse response = null;
+        try {
+            response = mHttpClient.execute(post);
+            Logger.printResponseLog(response);
+        } catch (IOException e) {
+            if (e instanceof UnknownHostException) {
+                throw new AuthHostException();
+            }
+        }
+
+        return response;
     }
 
     public HttpEntity searchIssue(final String userName, final String password, final String mUrl) throws Exception {

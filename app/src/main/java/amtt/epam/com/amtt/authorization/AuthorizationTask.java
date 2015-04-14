@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import amtt.epam.com.amtt.authorization.exceptions.AuthGateWayException;
+import amtt.epam.com.amtt.authorization.exceptions.AuthHostException;
 import amtt.epam.com.amtt.processing.AuthResponseProcessor;
 
 /**
@@ -39,7 +40,7 @@ public class AuthorizationTask extends AsyncTask<Void, Void, String> {
         HttpResponse httpResponse;
         try {
             httpResponse = new JiraApi().authorize(mUserName, mPassword, mUrl);
-        } catch (Exception e) {
+        } catch (AuthHostException e) {
             mAuthException = e;
             return null;
         }

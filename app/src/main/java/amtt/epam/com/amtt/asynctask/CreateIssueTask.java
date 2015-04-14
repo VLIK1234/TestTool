@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.asynctask;
 
 import android.os.AsyncTask;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthenticationException;
 
 import amtt.epam.com.amtt.authorization.JiraApi;
@@ -29,10 +30,12 @@ public class CreateIssueTask extends AsyncTask<Void, Void, CreationIssueResult> 
 
     @Override
     protected CreationIssueResult doInBackground(Void... params) {
+        HttpResponse httpResponse;
         try {
-            if (JiraApi.STATUS_CREATED != new JiraApi().createIssue(mUserName, mPassword, mUrl, mJson)) {
-                throw new AuthenticationException("issue can`t be create");
-            }
+            httpResponse = new JiraApi().createIssue(mUserName, mPassword, mUrl, mJson);
+//            if (JiraApi.STATUS_CREATED != new JiraApi().createIssue(mUserName, mPassword, mUrl, mJson)) {
+//                throw new AuthenticationException("issue can`t be create");
+//            }
         } catch (Exception e) {
 
             return CreationIssueResult.CREATION_UNSUCCESS;
