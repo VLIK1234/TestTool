@@ -6,46 +6,46 @@
 
     <ImageView
         android:id="@+id/plus_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:gravity="center"
         android:src="@drawable/ic_top_button" />
 
     <LinearLayout
-        android:id="@+id/body"
-        android:layout_width="40dp"
-        android:layout_height="240dp"
+        android:id="@+id/buttons_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/button_add"
-            android:onClick="onClickAdd" />
+        <Button
+            android:id="@+id/button_auth"
+            android:layout_width="@dimen/button_small_size"
+            android:layout_height="@dimen/button_small_size"
+            android:background="@drawable/button_login" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/button_auth"
-            android:onClick="onClickAuth" />
+        <Button
+            android:id="@+id/button_user_info"
+            android:layout_width="@dimen/button_small_size"
+            android:layout_height="@dimen/button_small_size"
+            android:background="@drawable/button_auth"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/button_bug_rep"
-            android:onClick="onClickBugRep" />
+        <Button
+            android:id="@+id/button_add_step"
+            android:layout_width="@dimen/button_small_size"
+            android:layout_height="@dimen/button_small_size"
+            android:background="@drawable/button_add_step"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/button_screen"
-            android:onClick="onClickScreen" />
+        <Button
+            android:id="@+id/button_show_step"
+            android:layout_width="@dimen/button_small_size"
+            android:layout_height="@dimen/button_small_size"
+            android:background="@drawable/button_show_step" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/button_share"
-            android:onClick="onClickShare" />
+        <Button
+            android:id="@+id/button_bug_rep"
+            android:layout_width="@dimen/button_small_size"
+            android:layout_height="@dimen/button_small_size"
+            android:background="@drawable/button_bug_rep" />
     </LinearLayout>
 </RelativeLayout>
