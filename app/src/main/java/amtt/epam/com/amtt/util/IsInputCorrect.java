@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Created by shiza on 09.04.2015.
  */
-public class TextUtils {
+public class IsInputCorrect {
 
     public static Boolean isEmpty(String data) {
         if (data == null || data == "") {

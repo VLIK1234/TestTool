@@ -4,11 +4,13 @@ import android.os.AsyncTask;
 
 import org.apache.http.HttpEntity;
 
-import amtt.epam.com.amtt.authorization.JiraApi;
+import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.processing.ProjectsToJsonProcessor;
+import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.util.Kontext;
 
 /**
  * Created by Irina Monchenko on 30.03.2015.
@@ -16,14 +18,11 @@ import amtt.epam.com.amtt.processing.ProjectsToJsonProcessor;
 public class ShowUserDataTask extends AsyncTask<Void, Void, JMetaResponse> {
 
     private final ShowUserDataCallback mCallback;
-    private final String mUserName;
-    private final String mUrl;
+    private final String mUserName = CredentialsManager.getInstance().getUserName();
     private final TypeSearchedData mTypeSearchData;
 
-    public ShowUserDataTask(String username, String url, TypeSearchedData typeSearchData, ShowUserDataCallback callback) {//todo remove username and url
-        mUserName = username;
+    public ShowUserDataTask(TypeSearchedData typeSearchData, ShowUserDataCallback callback) {
         mCallback = callback;
-        mUrl = url;
         mTypeSearchData = typeSearchData;
     }
 
@@ -33,7 +32,7 @@ public class ShowUserDataTask extends AsyncTask<Void, Void, JMetaResponse> {
         JMetaResponse jMetaResponse;
         try {
 
-            i = new JiraApi().searchData(mUserName, mUrl, mTypeSearchData);
+            i = JiraApi.INSTANCE.searchData(mUserName, mTypeSearchData);
             ProjectsToJsonProcessor projects = new ProjectsToJsonProcessor();
             jMetaResponse = projects.process(i);
 

@@ -111,10 +111,10 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                                                  @Override
                                                  public void onClick(View v) {
                                                      String username, url;
-                                                     username = CredentialsManager.getInstance().getUserName(MainActivity.this);
-                                                     url = CredentialsManager.getInstance().getUrl(MainActivity.this);
+                                                     username = CredentialsManager.getInstance().getUserName();
+                                                     url = CredentialsManager.getInstance().getUrl();
                                                      showProgress(true);
-                                                     new ShowUserDataTask(username, url, TypeSearchedData.SEARCH_ISSUE, MainActivity.this).execute();
+                                                     new ShowUserDataTask(TypeSearchedData.SEARCH_ISSUE, MainActivity.this).execute();
                                                  }
                                              }
 
@@ -137,7 +137,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        Boolean accessCreateIssue = CredentialsManager.getInstance().getAccessState(MainActivity.this);
+        boolean accessCreateIssue = CredentialsManager.getInstance().getAccessState();
         createIssueButton.setEnabled(accessCreateIssue);
         userInfoButton.setEnabled(accessCreateIssue);
     }
@@ -177,8 +177,8 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     public void onShowUserDataResult(JMetaResponse result) {
         ArrayList<String> projectsNames = result.getProjectsNames();
         ArrayList<String> projectsKeys = result.getProjectsKeys();
-        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames), MainActivity.this);
-        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys), MainActivity.this);
+        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
+        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
         showProgress(false);
         startActivity(new Intent(this, CreateIssueActivity.class));
     }

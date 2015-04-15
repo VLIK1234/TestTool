@@ -15,48 +15,48 @@ public class PreferenceUtils {
     public PreferenceUtils() {
     }
 
-    public static boolean getBoolean(String key, boolean defaultValue, Context context) {
-        return getPref(context).getBoolean(key, defaultValue);
+    public static boolean getBoolean(String key, boolean defaultValue) {
+        return getPref().getBoolean(key, defaultValue);
     }
 
-    public static String getString(String key, String defaultValue, Context context) {
-        return getPref(context).getString(key, defaultValue);
+    public static String getString(String key, String defaultValue) {
+        return getPref().getString(key, defaultValue);
     }
 
-    public static Set<String> getSet(String key, Set<String> defaultValue, Context context) {
-        return getPref(context).getStringSet(key, defaultValue);
+    public static Set<String> getSet(String key, Set<String> defaultValue) {
+        return getPref().getStringSet(key, defaultValue);
     }
 
-    public static void putSet(String key, Set<String> value, Context context) {
-        SharedPreferences.Editor editor = getPref(context).edit();
+    public static void putSet(String key, Set<String> value) {
+        SharedPreferences.Editor editor = getPref().edit();
         editor.putStringSet(key, value);
         editor.apply();
     }
 
-    public static void putBoolean(String key, boolean value, Context context) {
-        SharedPreferences.Editor editor = getPref(context).edit();
+    public static void putBoolean(String key, boolean value) {
+        SharedPreferences.Editor editor = getPref().edit();
         editor.putBoolean(key, value);
         editor.apply();
     }
 
-    public static void putString(String key, String value, Context context) {
-        SharedPreferences.Editor editor = getPref(context).edit();
+    public static void putString(String key, String value) {
+        SharedPreferences.Editor editor = getPref().edit();
         editor.putString(key, value);
         editor.apply();
     }
 
-    public static SharedPreferences getPref(Context context) {
+    public static SharedPreferences getPref() {
         if (mSharedPreferences == null) {
-            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(Kontext.getKontext());
         }
         return mSharedPreferences;
     }
 
-    public static void registerListener(SharedPreferences.OnSharedPreferenceChangeListener listener, Context context) {
-        getPref(context).registerOnSharedPreferenceChangeListener(listener);
+    public static void registerListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        getPref().registerOnSharedPreferenceChangeListener(listener);
     }
 
-    public static void unregisterListener(SharedPreferences.OnSharedPreferenceChangeListener listener, Context context) {
-        getPref(context).unregisterOnSharedPreferenceChangeListener(listener);
+    public static void unregisterListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        getPref().unregisterOnSharedPreferenceChangeListener(listener);
     }
 }

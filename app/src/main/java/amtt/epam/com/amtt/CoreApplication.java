@@ -2,6 +2,7 @@ package amtt.epam.com.amtt;
 
 import android.app.Application;
 
+import amtt.epam.com.amtt.util.Kontext;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 
 /**
@@ -12,5 +13,6 @@ public class CoreApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Kontext.setKontext(getApplicationContext());
     }
 }

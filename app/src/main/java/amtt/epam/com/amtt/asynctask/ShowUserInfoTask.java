@@ -4,11 +4,13 @@ import android.os.AsyncTask;
 
 import org.apache.http.HttpEntity;
 
-import amtt.epam.com.amtt.authorization.JiraApi;
+import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.callbacks.ShowUserInfoCallback;
 import amtt.epam.com.amtt.processing.UserInfoToJsonProcessor;
+import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.util.Kontext;
 
 /**
  * Created by Irina Monchenko on 06.04.2015.
@@ -16,14 +18,11 @@ import amtt.epam.com.amtt.processing.UserInfoToJsonProcessor;
 public class ShowUserInfoTask extends AsyncTask<Void, Void, JiraUserInfo> {
 
     private final ShowUserInfoCallback mCallback;
-    private final String mUserName;
-    private final String mUrl;
+    private final String mUserName = CredentialsManager.getInstance().getUserName();
     private final TypeSearchedData mTypeSearchData;
 
-    public ShowUserInfoTask(String username, String url, TypeSearchedData typeSearchData, ShowUserInfoCallback callback) {
-        mUserName = username;
+    public ShowUserInfoTask(TypeSearchedData typeSearchData, ShowUserInfoCallback callback) {
         mCallback = callback;
-        mUrl = url;
         mTypeSearchData = typeSearchData;
     }
 
@@ -32,7 +31,7 @@ public class ShowUserInfoTask extends AsyncTask<Void, Void, JiraUserInfo> {
         HttpEntity i;
         JiraUserInfo jiraUserInfo;
         try {
-            i = new JiraApi().searchData(mUserName, mUrl, mTypeSearchData);
+            i = JiraApi.INSTANCE.searchData(mUserName, mTypeSearchData);
             UserInfoToJsonProcessor projects = new UserInfoToJsonProcessor();
             jiraUserInfo = projects.process(i);
 

@@ -3,56 +3,52 @@ package amtt.epam.com.amtt.util;
 import android.content.Context;
 import android.util.Base64;
 
+import amtt.epam.com.amtt.api.JiraApi;
+
 /**
  * Created by Iryna_Monchanka on 4/8/2015.
  */
 public class CredentialsManager {
 
     private static final CredentialsManager INSTANCE = new CredentialsManager();
-    private String credentials;//todo remove
-
+    private String password;
 
     private CredentialsManager() {
     }
-
-    //TODO remove context from methods params and use some ContextHolder
 
     public static CredentialsManager getInstance() {
         return INSTANCE;
     }
 
-    public String getUserName(Context context) {
-        return PreferenceUtils.getString(Constants.SharedPreferenceKeys.USER_NAME, Constants.SharedPreferenceKeys.VOID, context);
+    public String getUserName() {
+        return PreferenceUtils.getString(Constants.SharedPreferenceKeys.USER_NAME, Constants.SharedPreferenceKeys.VOID);
     }
 
-    public String getUrl(Context context) {
-        return PreferenceUtils.getString(Constants.SharedPreferenceKeys.URL, Constants.SharedPreferenceKeys.VOID, context);
+    public String getUrl() {
+        return PreferenceUtils.getString(Constants.SharedPreferenceKeys.URL, Constants.SharedPreferenceKeys.VOID);
     }
 
-    public Boolean getAccessState(Context context) {
+    public boolean getAccessState() {
         // todo check for username and password
-        return PreferenceUtils.getBoolean(Constants.SharedPreferenceKeys.ACCESS, false, context);
+//        return PreferenceUtils.getBoolean(Constants.SharedPreferenceKeys.ACCESS, false);
+        return getUrl() != null && password != null;
     }
 
-    public void setUserName(String userName, Context context) {
-        PreferenceUtils.putString(Constants.SharedPreferenceKeys.USER_NAME, userName, context);
+    public void setUserName(String userName) {
+        PreferenceUtils.putString(Constants.SharedPreferenceKeys.USER_NAME, userName);
     }
 
-    public void setUrl(String url, Context context) {
-        PreferenceUtils.putString(Constants.SharedPreferenceKeys.URL, url, context);
+    public void setUrl(String url) {
+        PreferenceUtils.putString(Constants.SharedPreferenceKeys.URL, url);
     }
 
-    public void setAccess(Boolean url, Context context) {
-        PreferenceUtils.putBoolean(Constants.SharedPreferenceKeys.ACCESS, url, context);
+    public void setAccess(Boolean url) {
+        PreferenceUtils.putBoolean(Constants.SharedPreferenceKeys.ACCESS, url);
     }
 
     public void setCredentials(String userName, String password) {
-        //todo save name to prefs, pass to field
-        credentials = Constants.UrlKeys.BASIC_AUTH + Base64.encodeToString((userName + Constants.SharedPreferenceKeys.COLON + password).getBytes(), Base64.NO_WRAP);//todo move to jiraapi
-    }
-
-    public String getCredentials() {
-        return credentials;
+        this.password = password;
+        setUserName(userName);
     }
 }
 

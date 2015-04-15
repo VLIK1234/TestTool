@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.util.Logger;
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -15,7 +16,7 @@ import amtt.epam.com.amtt.authorization.AuthorizationResult;
 import amtt.epam.com.amtt.authorization.AuthorizationTask;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
-import amtt.epam.com.amtt.util.TextUtils;
+import amtt.epam.com.amtt.util.IsInputCorrect;
 
 public class LoginActivity extends BaseActivity implements AuthorizationCallback {
 
@@ -40,26 +41,28 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
             public void onClick(View v) {
 
 
-                if (TextUtils.isEmpty(userName.getText().toString())) {
+                if (IsInputCorrect.isEmpty(userName.getText().toString())) {
                     toastText += (Constants.DialogKeys.INPUT_USERNAME + Constants.DialogKeys.NEW_LINE);
                 }
-                if (TextUtils.isEmpty(password.getText().toString())) {
+                if (IsInputCorrect.isEmpty(password.getText().toString())) {
                     toastText += (Constants.DialogKeys.INPUT_PASSWORD + Constants.DialogKeys.NEW_LINE);
                 }
-                if (TextUtils.isEmpty(url.getText().toString())) {
+                if (IsInputCorrect.isEmpty(url.getText().toString())) {
                     toastText += (Constants.DialogKeys.INPUT_URL);
                 } else {
-                    Logger.d(TAG, TextUtils.isEmpty(userName.getText().toString()).toString());
-                    Logger.d(TAG, TextUtils.isEmpty(password.getText().toString()).toString());
-                    Logger.d(TAG, TextUtils.isEmpty(url.getText().toString()).toString());
+                    Logger.d(TAG, IsInputCorrect.isEmpty(userName.getText().toString()).toString());
+                    Logger.d(TAG, IsInputCorrect.isEmpty(password.getText().toString()).toString());
+                    Logger.d(TAG, IsInputCorrect.isEmpty(url.getText().toString()).toString());
 
 
                     showProgress(true);
+                    CredentialsManager.getInstance().setUrl(url.getText().toString());
                     CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString());
-                    new AuthorizationTask(url.getText().toString(), LoginActivity.this).execute();
+                    JiraApi.setCredential(userName.getText().toString(), password.getText().toString());
+                    new AuthorizationTask(LoginActivity.this).execute();
                     loginButton.setVisibility(View.GONE);
                 }
-                if (!TextUtils.isEmpty(toastText)) {
+                if (!IsInputCorrect.isEmpty(toastText)) {
                     Toast.makeText(LoginActivity.this, toastText, Toast.LENGTH_LONG).show();
                 }
             }
@@ -75,9 +78,9 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
         showProgress(false);
         loginButton.setVisibility(View.VISIBLE);
         if (result == AuthorizationResult.AUTHORIZATION_SUCCESS) {
-            CredentialsManager.getInstance().setUserName(userName.getText().toString(), LoginActivity.this);
-            CredentialsManager.getInstance().setUrl(url.getText().toString(), LoginActivity.this);
-            CredentialsManager.getInstance().setAccess(true, LoginActivity.this);
+            CredentialsManager.getInstance().setUserName(userName.getText().toString());
+            CredentialsManager.getInstance().setUrl(url.getText().toString());
+            CredentialsManager.getInstance().setAccess(true);
             finish();
         }
     }
