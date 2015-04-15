@@ -31,7 +31,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     private EditText etDescription, etSummary;
     private ArrayList<String> projectsNames = new ArrayList<>();
     private ArrayList<String> projectsKeys = new ArrayList<>();
-    private Spinner spinnerInputProjectsKey, spinnerInputIssueTypes;
+    private Spinner spinnerProjectsKey, spinnerIssueTypes;
     private Button buttonCreateIssue;
 
     @Override
@@ -42,9 +42,9 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
         etSummary = (EditText) findViewById(R.id.et_summary);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getProjectsNames());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerInputProjectsKey = (Spinner) findViewById(R.id.spin_projects_key);
-        spinnerInputProjectsKey.setAdapter(adapter);
-        spinnerInputProjectsKey.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinnerProjectsKey = (Spinner) findViewById(R.id.spin_projects_key);
+        spinnerProjectsKey.setAdapter(adapter);
+        spinnerProjectsKey.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 showProgress(true);
@@ -64,7 +64,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
                 String projectKey, issueType, description, summary;
                 description = etDescription.getText().toString();
                 summary = etSummary.getText().toString();
-                issueType = spinnerInputIssueTypes.getSelectedItem().toString();
+                issueType = spinnerIssueTypes.getSelectedItem().toString();
                 projectKey = getProjectKey();
                 showProgress(true);
                 buttonCreateIssue.setVisibility(View.GONE);
@@ -77,7 +77,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     }
 
     public int getSelectedItemPositionProject() {
-        return this.spinnerInputProjectsKey.getSelectedItemPosition();
+        return this.spinnerProjectsKey.getSelectedItemPosition();
     }
 
     public ArrayList<String> getProjectsNames() {
@@ -92,7 +92,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
 
     public String getProjectKey() {
         projectsKeys = getProjectsKeys();
-        return projectsKeys.get(projectsNames.size() - ((projectsNames.indexOf(spinnerInputProjectsKey.getSelectedItem().toString())) + 1));
+        return projectsKeys.get(projectsNames.size() - ((projectsNames.indexOf(spinnerProjectsKey.getSelectedItem().toString())) + 1));
 
     }
 
@@ -115,8 +115,8 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
         ArrayList<String> issueTypesNames = result.getProjects().get(index).getIssueTypesNames();
         ArrayAdapter<String> issueNames = new ArrayAdapter<>(CreateIssueActivity.this, android.R.layout.simple_spinner_item, issueTypesNames);
         issueNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerInputIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
-        spinnerInputIssueTypes.setAdapter(issueNames);
+        spinnerIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
+        spinnerIssueTypes.setAdapter(issueNames);
         showProgress(false);
     }
 

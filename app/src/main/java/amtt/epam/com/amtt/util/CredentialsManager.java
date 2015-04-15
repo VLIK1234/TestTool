@@ -1,10 +1,5 @@
 package amtt.epam.com.amtt.util;
 
-import android.content.Context;
-import android.util.Base64;
-
-import amtt.epam.com.amtt.api.JiraApi;
-
 /**
  * Created by Iryna_Monchanka on 4/8/2015.
  */
@@ -31,7 +26,7 @@ public class CredentialsManager {
     public boolean getAccessState() {
         // todo check for username and password
 //        return PreferenceUtils.getBoolean(Constants.SharedPreferenceKeys.ACCESS, false);
-        return getUrl() != null && password != null;
+        return getUrl() != null && password != null;//todo why get url? should be username. Use TextUtils.isEmpty()
     }
 
     public void setUserName(String userName) {

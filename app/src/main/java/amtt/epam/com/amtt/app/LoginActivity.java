@@ -1,7 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import amtt.epam.com.amtt.api.JiraApi;
-import amtt.epam.com.amtt.util.Logger;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,12 +9,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.authorization.AuthorizationCallback;
 import amtt.epam.com.amtt.authorization.AuthorizationResult;
 import amtt.epam.com.amtt.authorization.AuthorizationTask;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.IsInputCorrect;
+import amtt.epam.com.amtt.util.Logger;
 
 public class LoginActivity extends BaseActivity implements AuthorizationCallback {
 
@@ -58,7 +58,7 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
                     showProgress(true);
                     CredentialsManager.getInstance().setUrl(url.getText().toString());
                     CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString());
-                    JiraApi.setCredential(userName.getText().toString(), password.getText().toString());
+                    JiraApi.setCredential(userName.getText().toString(), password.getText().toString());//todo you've already saved creds with manager
                     new AuthorizationTask(LoginActivity.this).execute();
                     loginButton.setVisibility(View.GONE);
                 }

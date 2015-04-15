@@ -27,7 +27,7 @@ public class UserInfoActivity extends BaseActivity implements ShowUserInfoCallba
         locale = (TextView) findViewById(R.id.tv_locale);
         size = (TextView) findViewById(R.id.tv_size);
         namesGroups = (TextView) findViewById(R.id.tv_names);
-        String username = CredentialsManager.getInstance().getUserName();
+        String username = CredentialsManager.getInstance().getUserName();//todo remove unused
         String url = CredentialsManager.getInstance().getUrl();
         showProgress(true);
         new ShowUserInfoTask(TypeSearchedData.SEARCH_USER_INFO, UserInfoActivity.this).execute();
