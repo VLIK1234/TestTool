@@ -47,7 +47,9 @@ public enum JiraApi {
     private HttpClient client = new DefaultHttpClient();
     private HttpResponse response;
     final private String mUrl = CredentialsManager.getInstance().getUrl();
-    private static String credential;
+
+    private static String credential = JiraApi.BASIC_AUTH + Base64.encodeToString((CredentialsManager.getInstance().getUserName() +
+            Constants.SharedPreferenceKeys.COLON + CredentialsManager.getInstance().getPassword()).getBytes(), Base64.NO_WRAP);
 
     //TODO OAUTH?
     public AuthorizationResult authorize(){
@@ -66,8 +68,6 @@ public enum JiraApi {
             e.printStackTrace();
             return AuthorizationResult.AUTHORIZATION_SUCCESS;
         }
-
-
     }
 
     public CreationIssueResult createIssue(final String json){
@@ -112,10 +112,6 @@ public enum JiraApi {
         httpGet.addHeader(AUTH_HEADER, getCredential());
         response = client.execute(httpGet);
         return response.getEntity();
-    }
-
-    public static void setCredential(String userName, String password){
-        credential = JiraApi.BASIC_AUTH + Base64.encodeToString((userName + Constants.SharedPreferenceKeys.COLON + password).getBytes(), Base64.NO_WRAP);
     }
 
     public String getCredential(){

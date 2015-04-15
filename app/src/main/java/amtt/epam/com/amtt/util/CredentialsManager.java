@@ -1,5 +1,7 @@
 package amtt.epam.com.amtt.util;
 
+import android.text.TextUtils;
+
 /**
  * Created by Iryna_Monchanka on 4/8/2015.
  */
@@ -24,9 +26,7 @@ public class CredentialsManager {
     }
 
     public boolean getAccessState() {
-        // todo check for username and password
-//        return PreferenceUtils.getBoolean(Constants.SharedPreferenceKeys.ACCESS, false);
-        return getUrl() != null && password != null;//todo why get url? should be username. Use TextUtils.isEmpty()
+        return !TextUtils.isEmpty(getUserName())&& !TextUtils.isEmpty(password);
     }
 
     public void setUserName(String userName) {
@@ -44,6 +44,9 @@ public class CredentialsManager {
     public void setCredentials(String userName, String password) {
         this.password = password;
         setUserName(userName);
+    }
+    public String getPassword(){
+        return password;
     }
 }
 

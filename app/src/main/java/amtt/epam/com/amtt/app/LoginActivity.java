@@ -3,7 +3,9 @@ package amtt.epam.com.amtt.app;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,7 +17,6 @@ import amtt.epam.com.amtt.authorization.AuthorizationResult;
 import amtt.epam.com.amtt.authorization.AuthorizationTask;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
-import amtt.epam.com.amtt.util.IsInputCorrect;
 import amtt.epam.com.amtt.util.Logger;
 
 public class LoginActivity extends BaseActivity implements AuthorizationCallback {
@@ -41,28 +42,27 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
             public void onClick(View v) {
 
 
-                if (IsInputCorrect.isEmpty(userName.getText().toString())) {
+                if (TextUtils.isEmpty(userName.getText().toString())) {
                     toastText += (Constants.DialogKeys.INPUT_USERNAME + Constants.DialogKeys.NEW_LINE);
                 }
-                if (IsInputCorrect.isEmpty(password.getText().toString())) {
+                if (TextUtils.isEmpty(password.getText().toString())) {
                     toastText += (Constants.DialogKeys.INPUT_PASSWORD + Constants.DialogKeys.NEW_LINE);
                 }
-                if (IsInputCorrect.isEmpty(url.getText().toString())) {
+                if (TextUtils.isEmpty(url.getText().toString())) {
                     toastText += (Constants.DialogKeys.INPUT_URL);
                 } else {
-                    Logger.d(TAG, IsInputCorrect.isEmpty(userName.getText().toString()).toString());
-                    Logger.d(TAG, IsInputCorrect.isEmpty(password.getText().toString()).toString());
-                    Logger.d(TAG, IsInputCorrect.isEmpty(url.getText().toString()).toString());
+                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(userName.getText().toString())));
+                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(password.getText().toString())));
+                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(url.getText().toString())));
 
 
                     showProgress(true);
                     CredentialsManager.getInstance().setUrl(url.getText().toString());
                     CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString());
-                    JiraApi.setCredential(userName.getText().toString(), password.getText().toString());//todo you've already saved creds with manager
                     new AuthorizationTask(LoginActivity.this).execute();
                     loginButton.setVisibility(View.GONE);
                 }
-                if (!IsInputCorrect.isEmpty(toastText)) {
+                if (!TextUtils.isEmpty(toastText)) {
                     Toast.makeText(LoginActivity.this, toastText, Toast.LENGTH_LONG).show();
                 }
             }
