@@ -52,6 +52,17 @@
     <string name="empty_list_view">There is no saved steps =(</string>
     <string name="notification_title">AMTT</string>
     <string name="notification_text">Button-assistant is running.</string>
+    <string name="display_name">Display Name</string>
+    <string name="user_email">Email</string>
+    <string name="time_zone">Time zone</string>
+    <string name="locale">Locale</string>
+    <string name="groups">Groups</string>
+    <string name="size">Size</string>
+    <string name="user_info">User info</string>
+    <string name="self">Self</string>
+    <string name="names_groups">Names groups</string>
+    <string name="title_activity_create_issue2">CreateIssue2Activity</string>
+    <string name="project_name">Project name</string>
     <string name="credentials">Credentials</string>
     <string name="access">Access</string>
 

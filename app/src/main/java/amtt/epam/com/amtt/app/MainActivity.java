@@ -24,7 +24,6 @@ import amtt.epam.com.amtt.database.DbClearTask;
 import amtt.epam.com.amtt.database.StepSavingCallback;
 import amtt.epam.com.amtt.database.StepSavingResult;
 import amtt.epam.com.amtt.database.StepSavingTask;
-import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.CredentialsManager;
@@ -43,9 +42,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
-
-        startService(new Intent(this, TopButtonService.class));
-        TopButtonService.show(this);
         Button loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,9 +106,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                                              {
                                                  @Override
                                                  public void onClick(View v) {
-                                                     String username, url;
-                                                     username = CredentialsManager.getInstance().getUserName();
-                                                     url = CredentialsManager.getInstance().getUrl();
                                                      showProgress(true);
                                                      new ShowUserDataTask(TypeSearchedData.SEARCH_ISSUE, MainActivity.this).execute();
                                                  }

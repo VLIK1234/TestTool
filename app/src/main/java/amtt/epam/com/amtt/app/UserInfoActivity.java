@@ -9,7 +9,6 @@ import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.callbacks.ShowUserInfoCallback;
 import amtt.epam.com.amtt.util.Constants;
-import amtt.epam.com.amtt.util.CredentialsManager;
 
 public class UserInfoActivity extends BaseActivity implements ShowUserInfoCallback {
 
@@ -27,8 +26,6 @@ public class UserInfoActivity extends BaseActivity implements ShowUserInfoCallba
         locale = (TextView) findViewById(R.id.tv_locale);
         size = (TextView) findViewById(R.id.tv_size);
         namesGroups = (TextView) findViewById(R.id.tv_names);
-        String username = CredentialsManager.getInstance().getUserName();//todo remove unused
-        String url = CredentialsManager.getInstance().getUrl();
         showProgress(true);
         new ShowUserInfoTask(TypeSearchedData.SEARCH_USER_INFO, UserInfoActivity.this).execute();
 

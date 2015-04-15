@@ -36,7 +36,7 @@
         android:layout_alignParentStart="true"
         android:text="@string/step_button"
         android:layout_marginTop="16dp"
-        android:layout_below="@+id/show_steps_button"/>
+        android:layout_below="@+id/show_steps_button" />
 
     <Button
         android:id="@+id/clear_db_button"
@@ -56,7 +56,6 @@
         android:layout_below="@id/login_button"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:onClick="onIssueClick"
         android:enabled="false" />
 
     <Button
@@ -66,9 +65,9 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"/>
+        android:layout_alignParentLeft="true" />
 
-    <Button
+      <Button
         android:id="@+id/crash_button"
         android:text="@string/crash_button"
         android:layout_width="wrap_content"
@@ -76,14 +75,23 @@
         android:layout_alignRight="@+id/step_button"
         android:layout_alignEnd="@+id/step_button"
         android:layout_marginTop="16dp"
-        android:onClick="onIssueClick"
         android:layout_below="@+id/clear_db_button" />
+
+    <Button
+        android:id="@+id/user_info_btn"
+        android:text="@string/user_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/issue_act_button"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <ProgressBar
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:id="@+id/progress"
         android:visibility="gone"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true" />
+
 
 </RelativeLayout>
