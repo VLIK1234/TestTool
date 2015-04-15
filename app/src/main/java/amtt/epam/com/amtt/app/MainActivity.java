@@ -1,7 +1,6 @@
 package amtt.epam.com.amtt.app;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -17,6 +16,7 @@ import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
+import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.crash.AmttExceptionHandler;
@@ -24,25 +24,19 @@ import amtt.epam.com.amtt.database.DbClearTask;
 import amtt.epam.com.amtt.database.StepSavingCallback;
 import amtt.epam.com.amtt.database.StepSavingResult;
 import amtt.epam.com.amtt.database.StepSavingTask;
+import amtt.epam.com.amtt.service.TopButtonService;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
+import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.util.PreferenceUtils;
 import io.fabric.sdk.android.Fabric;
 
 
 public class MainActivity extends BaseActivity implements StepSavingCallback, ShowUserDataCallback {
-    private SharedPreferences sharedPreferences;
-    private Boolean accessCreateIssue;
-    private Button issueButton;
+
+    private Button createIssueButton, userInfoButton;
     private int mScreenNumber = 1;
     private boolean newStepsSequence = false;
-    //TODO the same constants used with preferences are defined twice
-    private static final String USER_NAME = "username";
-    private static final String PASSWORD = "password";
-    private static final String URL = "url";
-    private static final String NAME_SP = "data";
-    private static final String VOID = "";
-    private static final String PROJECTS_NAMES = "projectsNames";
-    private static final String ACCESS = "access";
-    private static final String PROJECTS_KEYS = "projectsKeys";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +44,8 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
+        startService(new Intent(this, TopButtonService.class));
+        TopButtonService.show(this);
         Button loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,22 +66,13 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
 
         Thread.currentThread().setUncaughtExceptionHandler(new AmttExceptionHandler(this));
 
-        //TODO double initialization
-        Button clearDbbutton = (Button) findViewById(R.id.clear_db_button);
-        clearDbbutton.setOnClickListener(new View.OnClickListener() {
+        Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
+        clearDbButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new DbClearTask(MainActivity.this).execute();
             }
         });
-        sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
-
-        //TODO we update it in onPostResume method, why we have this lines here?
-        //start
-        accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
-        issueButton = (Button) findViewById(R.id.issue_act_button);
-        issueButton.setEnabled(accessCreateIssue);
-        //end
 
         Button stepButton = (Button) findViewById(R.id.step_button);
         stepButton.setOnClickListener(new View.OnClickListener() {
@@ -96,24 +83,11 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                                               Bitmap bitmap = rootView.getDrawingCache();
                                               Rect rect = new Rect();
                                               getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-                                                //TODO Do we need to save screenshot here?
+                                              //TODO Do we need to save screenshot here?
                                               new StepSavingTask(MainActivity.this, MainActivity.this, bitmap, rect, MainActivity.this.getComponentName(), newStepsSequence).execute();
                                               newStepsSequence = false;
                                           }
                                       }
-
-        );
-
-        //TODO double initialization
-        Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
-        clearDbButton.setOnClickListener(new View.OnClickListener()
-
-                                         {
-                                             @Override
-                                             public void onClick(View v) {
-                                                 new DbClearTask(MainActivity.this).execute();
-                                             }
-                                         }
 
         );
 
@@ -129,15 +103,43 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                                            }
 
         );
+
+        createIssueButton = (Button) findViewById(R.id.issue_act_button);
+        createIssueButton.setOnClickListener(new View.OnClickListener()
+
+                                             {
+                                                 @Override
+                                                 public void onClick(View v) {
+                                                     String username, url;
+                                                     username = CredentialsManager.getInstance().getUserName();
+                                                     url = CredentialsManager.getInstance().getUrl();
+                                                     showProgress(true);
+                                                     new ShowUserDataTask(TypeSearchedData.SEARCH_ISSUE, MainActivity.this).execute();
+                                                 }
+                                             }
+
+        );
+
+        userInfoButton = (Button) findViewById(R.id.user_info_btn);
+        userInfoButton.setOnClickListener(new View.OnClickListener()
+
+                                          {
+                                              @Override
+                                              public void onClick(View v) {
+                                                  startActivity(new Intent(MainActivity.this, UserInfoActivity.class));
+                                              }
+                                          }
+
+        );
+
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        //TODO do we need this fields as members? We do the same lines on create?
-        accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
-        issueButton = (Button) findViewById(R.id.issue_act_button);
-        issueButton.setEnabled(accessCreateIssue);
+        boolean accessCreateIssue = CredentialsManager.getInstance().getAccessState();
+        createIssueButton.setEnabled(accessCreateIssue);
+        userInfoButton.setEnabled(accessCreateIssue);
     }
 
     @Override
@@ -171,35 +173,14 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         mScreenNumber++;
     }
 
-    //TODO we set OnClickListener from code for some buttons and here you set from xml. Why?
-    public void onIssueClick(View view) {
-        String username, password, url;
-        username = sharedPreferences.getString(USER_NAME, VOID);
-        password = sharedPreferences.getString(PASSWORD, VOID);
-        url = sharedPreferences.getString(URL, VOID);
-        setVisibleProgress();
-        new ShowUserDataTask(username, password, url, MainActivity.this).execute();
-
-    }
-
-
     @Override
     public void onShowUserDataResult(JMetaResponse result) {
         ArrayList<String> projectsNames = result.getProjectsNames();
         ArrayList<String> projectsKeys = result.getProjectsKeys();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putStringSet(PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
-        editor.putStringSet(PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
-        editor.apply();
-        //TODO What does "Inisible" means?
-        setInisibleProgress();
+        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
+        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
+        showProgress(false);
         startActivity(new Intent(this, CreateIssueActivity.class));
     }
 
-    private void setVisibleProgress(){
-        findViewById(R.id.progress).setVisibility(View.VISIBLE);
-    }
-    private void setInisibleProgress(){
-        findViewById(R.id.progress).setVisibility(View.GONE);
-    }
 }

@@ -9,6 +9,7 @@ import amtt.epam.com.amtt.processing.IssueGsonProcessor;
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
  */
+//todo Irina refactor after discuss with Alex D
 public class CreateIssue {
 
     private final String TAG = this.getClass().getSimpleName();

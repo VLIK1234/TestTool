@@ -52,5 +52,7 @@
     <string name="empty_list_view">There is no saved steps =(</string>
     <string name="notification_title">AMTT</string>
     <string name="notification_text">Button-assistant is running.</string>
+    <string name="credentials">Credentials</string>
+    <string name="access">Access</string>
 
 </resources>
