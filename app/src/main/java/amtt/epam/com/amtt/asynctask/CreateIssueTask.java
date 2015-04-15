@@ -32,7 +32,7 @@ public class CreateIssueTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... params) {
-        HttpResponse httpResponse;
+        String httpResponse;
         try {
             httpResponse = new JiraApi().createIssue(mUserName, mPassword, mUrl, mJson);
 //            if (JiraApi.STATUS_CREATED != new JiraApi().createIssue(mUserName, mPassword, mUrl, mJson)) {

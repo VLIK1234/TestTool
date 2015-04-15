@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
-import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
+import amtt.epam.com.amtt.bo.issue.createmeta.JiraMetaResponse;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.crash.AmttExceptionHandler;
 import amtt.epam.com.amtt.database.DbClearTask;
@@ -194,7 +194,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
 
 
     @Override
-    public void onShowUserDataResult(JMetaResponse result) {
+    public void onShowUserDataResult(JiraMetaResponse result) {
         ArrayList<String> projectsNames = result.getProjectsNames();
         ArrayList<String> projectsKeys = result.getProjectsKeys();
         SharedPreferences.Editor editor = sharedPreferences.edit();

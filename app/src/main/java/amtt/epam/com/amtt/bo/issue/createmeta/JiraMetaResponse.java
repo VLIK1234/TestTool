@@ -7,18 +7,18 @@ import java.util.ArrayList;
 /**
  * Created by Iryna_Monchanka on 3/31/2015.
  */
-public class JMetaResponse {
+public class JiraMetaResponse {
 
     @SerializedName("expand")
     private String mExpand;
     @SerializedName("projects")
     private ArrayList<JProjects> mProjects;
 
-    public JMetaResponse() {
+    public JiraMetaResponse() {
 
     }
 
-    public JMetaResponse(String expand, ArrayList<JProjects> projects) {
+    public JiraMetaResponse(String expand, ArrayList<JProjects> projects) {
         this.mExpand = expand;
         this.mProjects = projects;
     }

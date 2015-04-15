@@ -5,6 +5,6 @@ package amtt.epam.com.amtt.authorization;
  */
 public interface AuthorizationCallback {
 
-    void onAuthorizationResult(String responseMessage, Exception e);
+    void onAuthorizationResult(AuthorizationResult result, String responseMessage);
 
 }

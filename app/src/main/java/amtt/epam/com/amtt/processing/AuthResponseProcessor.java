@@ -16,7 +16,7 @@ import amtt.epam.com.amtt.bo.auth.AuthResponseDeserializer;
 /**
  * Created by Artsiom_Kaliaha on 10.04.2015.
  */
-public class AuthResponseProcessor implements Processor<String, HttpResponse> {
+public class AuthResponseProcessor extends ResponseProcessor {
 
     @Override
     public String process(HttpResponse httpResponse) throws Exception {
