@@ -1,13 +1,11 @@
 package amtt.epam.com.amtt.api;
 
-import android.net.Credentials;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -15,7 +13,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 import amtt.epam.com.amtt.authorization.AuthorizationResult;
 import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
@@ -47,9 +44,6 @@ public enum JiraApi {
     private HttpClient client = new DefaultHttpClient();
     private HttpResponse response;
     final private String mUrl = CredentialsManager.getInstance().getUrl();
-
-    private static String credential = JiraApi.BASIC_AUTH + Base64.encodeToString((CredentialsManager.getInstance().getUserName() +
-            Constants.SharedPreferenceKeys.COLON + CredentialsManager.getInstance().getPassword()).getBytes(), Base64.NO_WRAP);
 
     //TODO OAUTH?
     public AuthorizationResult authorize(){
@@ -115,7 +109,8 @@ public enum JiraApi {
     }
 
     public String getCredential(){
-        return credential;
+        return JiraApi.BASIC_AUTH + Base64.encodeToString((CredentialsManager.getInstance().getUserName() +
+                Constants.SharedPreferenceKeys.COLON + CredentialsManager.getInstance().getPassword()).getBytes(), Base64.NO_WRAP);
     }
 
 }
