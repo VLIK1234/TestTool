@@ -16,6 +16,8 @@ import android.view.WindowManager;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.BaseActivity;
+import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.util.PreferenceUtils;
 import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
@@ -38,10 +40,6 @@ public class TopButtonService extends Service{
     private NotificationCompat.Builder builder;
 
     public static SharedPreferences setting;
-    public static SharedPreferences.Editor editor;
-    public static final String SCREEN_NUMBER = "Screen number";
-    public static final String NUMBER = "Number";
-    private boolean isAccess;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
 
     @Override
@@ -59,29 +57,10 @@ public class TopButtonService extends Service{
         initLayoutParams();
         initView();
 
-        //TODO change on real realization
-        boolean isAccess = false;
-        setting = getBaseContext().getSharedPreferences(SCREEN_NUMBER, Context.MODE_PRIVATE);
-        setting.edit().putBoolean(NUMBER, isAccess).apply();
+        setting = PreferenceUtils.getPref();
         listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                Log.e(LOG_TAG, "Shared Preference is changed");
-                view.buttonAuth.setBackgroundResource(R.drawable.button_logout);
-                view.buttonBugRep.setBackgroundResource(R.drawable.button_bug_rep);
-                view.buttonBugRep.setEnabled(true);
-                view.buttonUserInfo.setBackgroundResource(R.drawable.button_info);
-                view.buttonUserInfo.setEnabled(true);
-            }
-        };
-        setting.registerOnSharedPreferenceChangeListener(listener);
-
-        isAccess = false;
-        setting = getBaseContext().getSharedPreferences(SCREEN_NUMBER, Context.MODE_PRIVATE);
-        setting.edit().putBoolean(NUMBER, isAccess).apply();
-
-        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                Log.e(LOG_TAG, "Shared Preference is changed");
+                Log.d(LOG_TAG, "Shared Preference is changed");
                 view.buttonAuth.setBackgroundResource(R.drawable.button_logout);
                 view.buttonBugRep.setBackgroundResource(R.drawable.button_bug_rep);
                 view.buttonBugRep.setEnabled(true);

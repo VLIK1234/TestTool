@@ -17,17 +17,29 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.BaseActivity;
+import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.app.SecondActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
+import amtt.epam.com.amtt.app.UserInfoActivity;
+import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
+import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
+import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
+import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.service.TopButtonService;
+import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.util.Converter;
+import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.util.PreferenceUtils;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-public class TopButtonView extends FrameLayout {
+public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
 
     private final static String LOG_TAG = "TAG";
 
@@ -76,19 +88,21 @@ public class TopButtonView extends FrameLayout {
         buttonAuth.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "AUTH", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getContext(), LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().getApplicationContext().startActivity(intent);
-                isAccess = true;
-                TopButtonService.setting.edit().putBoolean("Number", isAccess).apply();
+                if (!CredentialsManager.getInstance().getAccessState()) {
+                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().getApplicationContext().startActivity(intent);
+                }else{
+                }
             }
         });
         buttonUserInfo = (Button) findViewById(R.id.button_user_info);
         buttonUserInfo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "INFO", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), UserInfoActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intent);
             }
         });
         Button buttonAddStep = (Button) findViewById(R.id.button_add_step);
@@ -96,8 +110,8 @@ public class TopButtonView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "STEP", Toast.LENGTH_LONG).show();
-                Intent intentATS = new Intent(BaseActivity.ACTION_SAVE_STEP);
-                getContext().sendBroadcast(intentATS);
+//                Intent intentATS = new Intent(BaseActivity.ACTION_SAVE_STEP);
+//                getContext().sendBroadcast(intentATS);
             }
         });
         Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
@@ -105,19 +119,16 @@ public class TopButtonView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "SHOW", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getContext(), StepsActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().getApplicationContext().startActivity(intent);
+//                Intent intent = new Intent(getContext(), StepsActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                getContext().getApplicationContext().startActivity(intent);
             }
         });
         buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
         buttonBugRep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "BUG_REP", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getContext(), SecondActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().getApplicationContext().startActivity(intent);
+                new ShowUserDataTask(TypeSearchedData.SEARCH_ISSUE, TopButtonView.this).execute();
             }
         });
     }
@@ -264,5 +275,16 @@ public class TopButtonView extends FrameLayout {
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void onShowUserDataResult(JMetaResponse result) {
+        ArrayList<String> projectsNames = result.getProjectsNames();
+        ArrayList<String> projectsKeys = result.getProjectsKeys();
+        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
+        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
+        Intent intent = new Intent(getContext(), CreateIssueActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getContext().getApplicationContext().startActivity(intent);
     }
 }
