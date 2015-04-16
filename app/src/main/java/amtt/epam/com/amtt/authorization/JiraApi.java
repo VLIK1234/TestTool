@@ -7,6 +7,7 @@ import org.apache.http.HttpEntity;
 import java.util.HashMap;
 import java.util.Map;
 
+import amtt.epam.com.amtt.bo.issue.willrefactored.CreationIssueResult;
 import amtt.epam.com.amtt.processing.AuthResponseProcessor;
 
 /**
@@ -14,8 +15,7 @@ import amtt.epam.com.amtt.processing.AuthResponseProcessor;
  */
 public class JiraApi {
 
-    private AuthorizationResult mAuthResult;
-
+    @SuppressWarnings("unchecked")
     public RestResponse authorize(final String userName, final String password, final String url) {
         String credentials = JiraApiConst.BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
         Map<String, String> headers = new HashMap<>();
@@ -23,7 +23,7 @@ public class JiraApi {
 
         RestResponse<AuthorizationResult> restResponse;
         try {
-            restResponse = new RestMethod.Builder()
+            restResponse = new RestMethod.Builder<AuthorizationResult>()
                     .setType(RestMethodType.GET)
                     .setUrl(url + JiraApiConst.LOGIN_PATH)
                     .setHeadersMap(headers)
@@ -31,32 +31,32 @@ public class JiraApi {
                     .create()
                     .execute();
         } catch (Exception e) {
-            mAuthResult = AuthorizationResult.DENIED;
-            restResponse = new RestResponse<AuthorizationResult>();
-            restResponse.setResult();
+            restResponse = new RestResponse<>();
+            restResponse.setResult(AuthorizationResult.DENIED);
             restResponse.setMessage("Authorization isn't passed: " + e.getMessage());
             return restResponse;
         }
 
         //Bad gate way is considered as a httpResponse, not an exception
-        if (restResponse != null && restResponse.getStatusCode() == JiraApiConst.BAD_GATE_WAY) {
+        if (restResponse.getStatusCode() == JiraApiConst.BAD_GATE_WAY) {
             restResponse.setMessage("Authorization isn't passed: bad gateway");
             return restResponse;
         }
 
-        mAuthResult = AuthorizationResult.SUCCESS;
+        restResponse.setResult(AuthorizationResult.SUCCESS);
         return restResponse;
     }
 
+    @SuppressWarnings("unchecked")
     public RestResponse createIssue(final String userName, final String password, final String url, final String jsonString) {
         String credentials = JiraApiConst.BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, credentials);
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
 
-        RestResponse restResponse;
+        RestResponse<CreationIssueResult> restResponse;
         try {
-            restResponse = new RestMethod.Builder()
+            restResponse = new RestMethod.Builder<CreationIssueResult>()
                     .setType(RestMethodType.POST)
                     .setUrl(url + JiraApiConst.ISSUE_PATH)
                     .setHeadersMap(headers)
@@ -65,7 +65,7 @@ public class JiraApi {
                     .create()
                     .execute();
         } catch (Exception e) {
-            restResponse = new RestResponse();
+            restResponse = new RestResponse<>();
             restResponse.setMessage("Authorization isn't passed: " + e.getMessage());
         }
         return restResponse;

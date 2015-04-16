@@ -5,14 +5,12 @@ import android.os.AsyncTask;
 /**
  * Created by Artsiom_Kaliaha on 25.03.2015.
  */
-public class AuthorizationTask extends AsyncTask<Void, Void, String> {
+public class AuthorizationTask extends AsyncTask<Void, Void, RestResponse> {
 
     private final AuthorizationCallback mCallback;
     private final String mUserName;
     private final String mPassword;
     private final String mUrl;
-
-    private AuthorizationResult mAuthResult;
 
     public AuthorizationTask(String userName, String password, String url, AuthorizationCallback callback) {
         mCallback = callback;
@@ -22,14 +20,12 @@ public class AuthorizationTask extends AsyncTask<Void, Void, String> {
     }
 
     @Override
-    protected String doInBackground(Void... params) {
-        JiraApi api = new JiraApi();
-        RestResponse restResponse = api.authorize(mUserName, mPassword, mUrl);
-        return restResponse.getMessage();
+    protected RestResponse doInBackground(Void... params) {
+        return new JiraApi().authorize(mUserName, mPassword, mUrl);
     }
 
     @Override
-    protected void onPostExecute(String responseMessage) {
-        mCallback.onAuthorizationResult(mAuthResult, responseMessage);
+    protected void onPostExecute(RestResponse restResponse) {
+        mCallback.onAuthorizationResult(restResponse);
     }
 }

@@ -15,9 +15,9 @@ import amtt.epam.com.amtt.processing.ResponseProcessor;
 /**
  * Created by Artsiom_Kaliaha on 15.04.2015.
  */
-public class RestMethod {
+public class RestMethod<ResultType> {
 
-    public static class Builder {
+    public static class Builder<ResultType> {
 
         private RestMethodType mRestMethodType;
         private Map<String, String> mHeaders;
@@ -55,7 +55,7 @@ public class RestMethod {
         }
 
         public RestMethod create() {
-            RestMethod restMethod = new RestMethod();
+            RestMethod<ResultType> restMethod = new RestMethod<>();
             restMethod.mRestMethodType = this.mRestMethodType;
             restMethod.mHeaders = this.mHeaders;
             restMethod.mUrl = this.mUrl;
@@ -78,7 +78,7 @@ public class RestMethod {
         mHttpClient = new DefaultHttpClient();
     }
 
-    private RestMethod() {
+    public RestMethod() {
     }
 
     private HttpResponse get() throws IOException {
@@ -98,7 +98,7 @@ public class RestMethod {
         return mHttpClient.execute(httpPost);
     }
 
-    public RestResponse execute() throws IOException {
+    public RestResponse<ResultType> execute() throws IOException {
         HttpResponse httpResponse = null;
 
         switch (mRestMethodType) {
@@ -107,16 +107,19 @@ public class RestMethod {
                 break;
             case POST:
                 httpResponse = post();
+                break;
         }
 
-        String responseMessage;
-        try {
-            responseMessage = mProcessor.process(httpResponse);
-        } catch (Exception e) {
-            responseMessage = "response is illegible=(";
+        String responseMessage = null;
+        if (mProcessor != null) {
+            try {
+                responseMessage = mProcessor.process(httpResponse);
+            } catch (Exception e) {
+                responseMessage = "response is illegible=(";
+            }
         }
 
-        RestResponse restResponse = new RestResponse();
+        RestResponse<ResultType> restResponse = new RestResponse<>();
         restResponse.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         restResponse.setMessage(responseMessage);
         restResponse.setEntity(httpResponse.getEntity());
