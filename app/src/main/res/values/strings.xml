@@ -65,6 +65,6 @@
     <string name="project_name">Project name</string>
     <string name="credentials">Credentials</string>
     <string name="access">Access</string>
-    <string name="button_close_service">Close service</string>
+    <string name="button_close_service">Close</string>
 
 </resources>

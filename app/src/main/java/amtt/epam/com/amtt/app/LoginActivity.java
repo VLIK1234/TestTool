@@ -67,6 +67,7 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
                 if (!TextUtils.isEmpty(toastText)) {
                     Toast.makeText(LoginActivity.this, toastText, Toast.LENGTH_LONG).show();
                 }
+                toastText = "";
             }
         });
     }
