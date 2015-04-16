@@ -15,9 +15,11 @@ import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.authorization.AuthorizationCallback;
 import amtt.epam.com.amtt.authorization.AuthorizationResult;
 import amtt.epam.com.amtt.authorization.AuthorizationTask;
+import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.view.TopButtonView;
 
 public class LoginActivity extends BaseActivity implements AuthorizationCallback {
 
@@ -81,6 +83,11 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
             CredentialsManager.getInstance().setUserName(userName.getText().toString());
             CredentialsManager.getInstance().setUrl(url.getText().toString());
             CredentialsManager.getInstance().setAccess(true);
+            TopButtonService.view.buttonAuth.setBackgroundResource(R.drawable.button_logout);
+            TopButtonService.view.buttonBugRep.setBackgroundResource(R.drawable.button_bug_rep);
+            TopButtonService.view.buttonBugRep.setEnabled(true);
+            TopButtonService.view.buttonUserInfo.setBackgroundResource(R.drawable.button_info);
+            TopButtonService.view.buttonUserInfo.setEnabled(true);
             finish();
         }
     }

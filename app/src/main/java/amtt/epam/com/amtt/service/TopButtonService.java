@@ -4,20 +4,15 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.app.BaseActivity;
-import amtt.epam.com.amtt.util.CredentialsManager;
-import amtt.epam.com.amtt.util.PreferenceUtils;
 import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
@@ -32,15 +27,20 @@ public class TopButtonService extends Service{
     public static final String ACTION_HIDE_VIEW = "HIDE_VIEW";
     private int xInitPosition;
     private int yInitPosition;
-    private TopButtonView view;
+    public static TopButtonView view;
     private WindowManager wm;
     private WindowManager.LayoutParams layoutParams;
     private boolean isViewAdd = false;
     private NotificationCompat.Action action;
     private NotificationCompat.Builder builder;
 
-    public static SharedPreferences setting;
-    private SharedPreferences.OnSharedPreferenceChangeListener listener;
+    public static void start(Context context) {
+        context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_START));
+    }
+
+    public static void close(Context context) {
+        context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE));
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -55,54 +55,8 @@ public class TopButtonService extends Service{
         xInitPosition = displayMetrics.widthPixels / 2;
         yInitPosition = displayMetrics.heightPixels / 2;
         initLayoutParams();
-        initView();
-
-        setting = PreferenceUtils.getPref();
-        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-                Log.d(LOG_TAG, "Shared Preference is changed");
-                view.buttonAuth.setBackgroundResource(R.drawable.button_logout);
-                view.buttonBugRep.setBackgroundResource(R.drawable.button_bug_rep);
-                view.buttonBugRep.setEnabled(true);
-                view.buttonUserInfo.setBackgroundResource(R.drawable.button_info);
-                view.buttonUserInfo.setEnabled(true);
-            }
-        };
-        setting.registerOnSharedPreferenceChangeListener(listener);
-    }
-
-    private void initLayoutParams() {
-        layoutParams = new WindowManager.LayoutParams();
-        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
-        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
-        layoutParams.format = PixelFormat.TRANSLUCENT;
-        layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
-        layoutParams.x = xInitPosition;
-        layoutParams.y = yInitPosition;
-    }
-
-    private void initView() {
         view = new TopButtonView(getBaseContext(), layoutParams);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentSendAction = new Intent(BaseActivity.ACTION_SAVE_STEP);
-                sendBroadcast(intentSendAction);
-            }
-        });
     }
-
-    public static void start(Context context) {
-        context.startService(getShowIntent(context));
-    }
-
-    public static void close(Context context) {
-        context.startService(getCloseIntent(context));
-    }
-
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -117,7 +71,7 @@ public class TopButtonService extends Service{
             } else if (ACTION_CLOSE.equals(action)) {
                 closeService();
             } else if (ACTION_HIDE_VIEW.equals(action)) {
-                changeVisibilityView();
+                changeStateNotificationAction();
             }
         } else {
             stopSelf();
@@ -125,12 +79,17 @@ public class TopButtonService extends Service{
         return START_NOT_STICKY;
     }
 
-    private static Intent getShowIntent(Context context) {
-        return new Intent(context, TopButtonService.class).setAction(ACTION_START);
-    }
-
-    private static Intent getCloseIntent(Context context) {
-        return new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE);
+    private void initLayoutParams() {
+        layoutParams = new WindowManager.LayoutParams();
+        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
+        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
+        layoutParams.format = PixelFormat.TRANSLUCENT;
+        layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
+        layoutParams.x = xInitPosition;
+        layoutParams.y = yInitPosition;
     }
 
     private void addView() {
@@ -164,7 +123,8 @@ public class TopButtonService extends Service{
         builder.addAction(action);
         startForeground(ID, builder.build());
     }
-    public final void changeVisibilityView() {
+
+    public final void changeStateNotificationAction() {
         if (view.getVisibility() == View.VISIBLE) {
             view.setVisibility(View.GONE);
             action.icon = R.drawable.ic_stat_action_visibility;

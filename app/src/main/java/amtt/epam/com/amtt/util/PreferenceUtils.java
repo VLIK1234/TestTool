@@ -28,21 +28,15 @@ public class PreferenceUtils {
     }
 
     public static void putSet(String key, Set<String> value) {
-        SharedPreferences.Editor editor = getPref().edit();
-        editor.putStringSet(key, value);
-        editor.apply();
+        getPref().edit().putStringSet(key, value).apply();
     }
 
     public static void putBoolean(String key, boolean value) {
-        SharedPreferences.Editor editor = getPref().edit();
-        editor.putBoolean(key, value);
-        editor.apply();
+        getPref().edit().putBoolean(key, value).apply();
     }
 
     public static void putString(String key, String value) {
-        SharedPreferences.Editor editor = getPref().edit();
-        editor.putString(key, value);
-        editor.apply();
+        getPref().edit().putString(key, value).apply();
     }
 
     public static SharedPreferences getPref() {

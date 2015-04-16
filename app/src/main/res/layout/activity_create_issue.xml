@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,16 +6,13 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="amtt.epam.com.amtt.app.CreateIssueActivity">
 
     <Spinner
+        android:id="@+id/spin_projects_key"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/spin_projects_key"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:hint="@string/project_key"
         android:singleLine="false" />
 
@@ -23,52 +20,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/spin_issue_name"
-        android:layout_below="@+id/spin_projects_key"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/spin_projects_key"
-        android:layout_alignEnd="@+id/spin_projects_key"
         android:hint="@string/issue_name" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_summary"
-        android:layout_below="@+id/spin_issue_name"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:hint="@string/summary" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_description"
-        android:layout_below="@+id/et_summary"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignRight="@+id/et_summary"
-        android:layout_alignEnd="@+id/et_summary"
         android:hint="@string/description" />
 
     <Button
+        android:id="@+id/btn_create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_issue"
-        android:id="@+id/btn_create"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="onCreateIssueClick" />
+        android:layout_gravity="end"
+        android:text="@string/create_issue"/>
 
     <ProgressBar
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:id="@+id/progress"
-        android:visibility="gone"
-        android:layout_centerInParent="true"/>
+        android:visibility="gone"/>
 
-</RelativeLayout>
+</LinearLayout>
