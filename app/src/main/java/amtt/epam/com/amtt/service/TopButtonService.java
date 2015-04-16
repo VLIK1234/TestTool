@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.service;
 
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -120,21 +121,28 @@ public class TopButtonService extends Service{
                 getString(R.string.button_hide),
                 PendingIntent.getService(this, 0, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_HIDE_VIEW), PendingIntent.FLAG_UPDATE_CURRENT));
 
+        NotificationCompat.Action closeService = new NotificationCompat.Action(
+                R.drawable.ic_close_service,
+                getString(R.string.button_close_service),
+                PendingIntent.getService(this, 0, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE), PendingIntent.FLAG_UPDATE_CURRENT));
+
         builder.addAction(action);
+        builder.addAction(closeService);
         startForeground(ID, builder.build());
     }
 
     public final void changeStateNotificationAction() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (view.getVisibility() == View.VISIBLE) {
             view.setVisibility(View.GONE);
             action.icon = R.drawable.ic_stat_action_visibility;
             action.title = getString(R.string.button_show);
-            startForeground(ID, builder.build());
+            notificationManager.notify(ID, builder.build());
         } else {
             view.setVisibility(View.VISIBLE);
             action.icon = R.drawable.ic_stat_action_visibility_off;
             action.title = getString(R.string.button_hide);
-            startForeground(ID, builder.build());
+            notificationManager.notify(ID, builder.build());
         }
     }
 }
