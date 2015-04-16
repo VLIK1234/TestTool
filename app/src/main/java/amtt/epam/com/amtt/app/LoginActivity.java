@@ -83,11 +83,7 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
             CredentialsManager.getInstance().setUserName(userName.getText().toString());
             CredentialsManager.getInstance().setUrl(url.getText().toString());
             CredentialsManager.getInstance().setAccess(true);
-            TopButtonService.view.buttonAuth.setBackgroundResource(R.drawable.button_logout);
-            TopButtonService.view.buttonBugRep.setBackgroundResource(R.drawable.button_bug_rep);
-            TopButtonService.view.buttonBugRep.setEnabled(true);
-            TopButtonService.view.buttonUserInfo.setBackgroundResource(R.drawable.button_info);
-            TopButtonService.view.buttonUserInfo.setEnabled(true);
+            TopButtonService.authSuccess(this);
             finish();
         }
     }

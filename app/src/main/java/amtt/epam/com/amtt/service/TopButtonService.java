@@ -26,9 +26,10 @@ public class TopButtonService extends Service{
     private static final String LOG_TAG = "Log";
     public static final int ID = 7;
     public static final String ACTION_HIDE_VIEW = "HIDE_VIEW";
+    public static final String ACTION_AUTH_SUCCESS = "AUTHORIZATION_SUCCESS";
     private int xInitPosition;
     private int yInitPosition;
-    public static TopButtonView view;
+    private TopButtonView view;
     private WindowManager wm;
     private WindowManager.LayoutParams layoutParams;
     private boolean isViewAdd = false;
@@ -41,6 +42,10 @@ public class TopButtonService extends Service{
 
     public static void close(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE));
+    }
+
+    public static void authSuccess(Context context) {
+        context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_AUTH_SUCCESS));
     }
 
     @Override
@@ -66,13 +71,20 @@ public class TopButtonService extends Service{
         if (intent != null) {
             String action = intent.getAction();
 
-            if (ACTION_START.equals(action)) {
-                addView();
-                showNotification();
-            } else if (ACTION_CLOSE.equals(action)) {
-                closeService();
-            } else if (ACTION_HIDE_VIEW.equals(action)) {
-                changeStateNotificationAction();
+            switch (action) {
+                case ACTION_START:
+                    addView();
+                    showNotification();
+                    break;
+                case ACTION_CLOSE:
+                    closeService();
+                    break;
+                case ACTION_HIDE_VIEW:
+                    changeStateNotificationAction();
+                    break;
+                case ACTION_AUTH_SUCCESS:
+                    changeUiAuthSuccess();
+                    break;
             }
         } else {
             stopSelf();
@@ -107,6 +119,14 @@ public class TopButtonService extends Service{
             view = null;
         }
         stopSelf();
+    }
+
+    private void changeUiAuthSuccess(){
+        view.buttonAuth.setBackgroundResource(R.drawable.button_logout);
+        view.buttonBugRep.setBackgroundResource(R.drawable.button_bug_rep);
+        view.buttonBugRep.setEnabled(true);
+        view.buttonUserInfo.setBackgroundResource(R.drawable.button_info);
+        view.buttonUserInfo.setEnabled(true);
     }
 
     private void showNotification() {
