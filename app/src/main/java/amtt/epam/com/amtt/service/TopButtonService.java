@@ -1,36 +1,52 @@
 package amtt.epam.com.amtt.service;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
-import amtt.epam.com.amtt.app.BaseActivity;
-import amtt.epam.com.amtt.app.SecondActivity;
+import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
  * Created by Ivan_Bakach on 20.03.2015.
  */
-public class TopButtonService extends Service {
+public class TopButtonService extends Service{
 
-    public static final String ACTION_SHOW = "SHOW";
+    public static final String ACTION_START = "SHOW";
     public static final String ACTION_CLOSE = "CLOSE";
-    private DisplayMetrics displayMetrics;
+    private static final String LOG_TAG = "Log";
+    public static final int ID = 7;
+    public static final String ACTION_HIDE_VIEW = "HIDE_VIEW";
+    public static final String ACTION_AUTH_SUCCESS = "AUTHORIZATION_SUCCESS";
     private int xInitPosition;
     private int yInitPosition;
     private TopButtonView view;
     private WindowManager wm;
     private WindowManager.LayoutParams layoutParams;
-    private final String LOG_TAG = "myLogs";
     private boolean isViewAdd = false;
+    private NotificationCompat.Action action;
+    private NotificationCompat.Builder builder;
+
+    public static void start(Context context) {
+        context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_START));
+    }
+
+    public static void close(Context context) {
+        context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE));
+    }
+
+    public static void authSuccess(Context context) {
+        context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_AUTH_SUCCESS));
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -41,17 +57,42 @@ public class TopButtonService extends Service {
     public void onCreate() {
         super.onCreate();
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        displayMetrics = getBaseContext().getResources().getDisplayMetrics();
+        DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
         xInitPosition = displayMetrics.widthPixels / 2;
         yInitPosition = displayMetrics.heightPixels / 2;
-        intitLayoutParams();
-        wm.getDefaultDisplay();
-        initView();
-
-
+        initLayoutParams();
+        view = new TopButtonView(getBaseContext(), layoutParams);
     }
 
-    private void intitLayoutParams() {
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+
+        if (intent != null) {
+            String action = intent.getAction();
+
+            switch (action) {
+                case ACTION_START:
+                    addView();
+                    showNotification();
+                    break;
+                case ACTION_CLOSE:
+                    closeService();
+                    break;
+                case ACTION_HIDE_VIEW:
+                    changeStateNotificationAction();
+                    break;
+                case ACTION_AUTH_SUCCESS:
+                    changeUiAuthSuccess();
+                    break;
+            }
+        } else {
+            stopSelf();
+        }
+        return START_NOT_STICKY;
+    }
+
+    private void initLayoutParams() {
         layoutParams = new WindowManager.LayoutParams();
         layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -64,42 +105,14 @@ public class TopButtonService extends Service {
         layoutParams.y = yInitPosition;
     }
 
-    private void initView() {
-        view = new TopButtonView(getBaseContext(), layoutParams);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
-                sendBroadcast(intentATS);
-            }
-        });
-    }
-
-
-    public static Intent getShowIntent(Context context) {
-        return new Intent(context, TopButtonService.class).setAction(ACTION_SHOW);
-    }
-
-    public static Intent getCloseIntent(Context context) {
-        return new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE);
-    }
-
-    public static void show(Context context) {
-        context.startService(getShowIntent(context));
-    }
-
-    public static void close(Context context) {
-        context.startService(getCloseIntent(context));
-    }
-
-    public final void show() {
+    private void addView() {
         if (!isViewAdd) {
             wm.addView(view, layoutParams);
             isViewAdd = true;
         }
     }
 
-    public final void close() {
+    private void closeService() {
         if (view != null && isViewAdd) {
             isViewAdd = false;
             ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
@@ -108,48 +121,46 @@ public class TopButtonService extends Service {
         stopSelf();
     }
 
-    public void onClickAdd(View view) {
-        Toast.makeText(this, "ADD", Toast.LENGTH_LONG).show();
-
+    private void changeUiAuthSuccess(){
+        view.buttonAuth.setBackgroundResource(R.drawable.button_logout);
+        view.buttonBugRep.setEnabled(true);
+        view.buttonUserInfo.setEnabled(true);
     }
 
-    public void onClickAuth(View view) {
-        Toast.makeText(this, "AUTH", Toast.LENGTH_LONG).show();
+    private void showNotification() {
+        builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle(getString(R.string.notification_title))
+                .setOngoing(true)
+                .setContentText(getString(R.string.notification_text));
+
+        action = new NotificationCompat.Action(
+                R.drawable.ic_stat_action_visibility_off,
+                getString(R.string.button_hide),
+                PendingIntent.getService(this, 0, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_HIDE_VIEW), PendingIntent.FLAG_UPDATE_CURRENT));
+
+        NotificationCompat.Action closeService = new NotificationCompat.Action(
+                R.drawable.ic_close_service,
+                getString(R.string.button_close_service),
+                PendingIntent.getService(this, 0, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE), PendingIntent.FLAG_UPDATE_CURRENT));
+
+        builder.addAction(action);
+        builder.addAction(closeService);
+        startForeground(ID, builder.build());
     }
 
-    public void onClickBugRep(View view) {
-        Toast.makeText(this, "BUG_REP", Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(getBaseContext(), SecondActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getApplication().startActivity(intent);
-    }
-
-    public void onClickScreen(View view) {
-        Toast.makeText(this, "SCREEN", Toast.LENGTH_LONG).show();
-        Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
-        sendBroadcast(intentATS);
-    }
-
-    public void onClickShare(View view) {
-        Toast.makeText(this, "SHARE", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
-
-        if (intent != null) {
-            String action = intent.getAction();
-
-            if (ACTION_SHOW.equals(action)) {
-                show();
-            } else if (ACTION_CLOSE.equals(action)) {
-                close();
-            }
+    public final void changeStateNotificationAction() {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (view.getVisibility() == View.VISIBLE) {
+            view.setVisibility(View.GONE);
+            action.icon = R.drawable.ic_stat_action_visibility;
+            action.title = getString(R.string.button_show);
+            notificationManager.notify(ID, builder.build());
         } else {
-            Log.w(LOG_TAG, "Tried to onStartCommand() with a null intent.");
+            view.setVisibility(View.VISIBLE);
+            action.icon = R.drawable.ic_stat_action_visibility_off;
+            action.title = getString(R.string.button_hide);
+            notificationManager.notify(ID, builder.build());
         }
-        return START_NOT_STICKY;
     }
-
 }

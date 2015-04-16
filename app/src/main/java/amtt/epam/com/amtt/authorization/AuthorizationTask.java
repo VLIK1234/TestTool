@@ -6,7 +6,6 @@ import android.os.AsyncTask;
  * Created by Artsiom_Kaliaha on 25.03.2015.
  */
 public class AuthorizationTask extends AsyncTask<Void, Void, RestResponse> {
-
     private final AuthorizationCallback mCallback;
     private final String mUserName;
     private final String mPassword;

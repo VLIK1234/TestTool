@@ -10,6 +10,8 @@ public interface JiraApiConst {
     String LOGIN_PATH = BASE_PATH + "session";
     String ISSUE_PATH = "/rest/api/2/issue/";
     String USER_PROJECTS_PATH = "/rest/api/2/issue/createmeta";
+    String USER_INFO_PATH = "/rest/api/2/user?username=";
+    String EXPAND_GROUPS = "&expand=groups";
 
     //Header keys
     String AUTH = "Authorization";
