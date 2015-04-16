@@ -127,15 +127,6 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
         });
     }
 
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        if (getResources().getConfiguration().orientation != currentOrientation) {
-            savePositionAfterTurnScreen();
-            buttonsBar.setVisibility(GONE);
-        }
-    }
-
     private void checkFreeSpace() {
         RelativeLayout.LayoutParams topButtonLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -281,4 +272,15 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getContext().getApplicationContext().startActivity(intent);
     }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (newConfig.orientation != currentOrientation) {
+            savePositionAfterTurnScreen();
+            buttonsBar.setVisibility(GONE);
+        }
+    }
+
 }
