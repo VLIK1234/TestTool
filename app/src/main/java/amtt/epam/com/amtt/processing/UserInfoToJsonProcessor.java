@@ -22,4 +22,3 @@ public class UserInfoToJsonProcessor implements Processor<JiraUserInfo, HttpEnti
         return gson.fromJson(_response, JiraUserInfo.class);
     }
 }
-

@@ -8,4 +8,3 @@ public enum TypeSearchedData {
     SEARCH_ISSUE,
     SEARCH_USER_INFO
 }
-

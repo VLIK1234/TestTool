@@ -5,14 +5,6 @@
     android:background="@color/material_deep_teal_200">
 
     <Button
-        android:id="@+id/login_button"
-        android:text="@string/login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true" />
-
-    <Button
         android:id="@+id/save_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,16 +41,6 @@
         android:layout_alignParentRight="true" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_issue"
-        android:id="@+id/issue_act_button"
-        android:layout_below="@id/login_button"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:enabled="false" />
-
-    <Button
         android:id="@+id/show_steps_button"
         android:text="@string/show_steps_button"
         android:layout_width="wrap_content"
@@ -66,27 +48,8 @@
         android:layout_centerInParent="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true" />
-    <!--
-        <Button
-            android:id="@+id/button_show"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text"
-            android:layout_centerInParent="true"
-            android:text="@string/button_show"/>
-        <Button
-            android:id="@+id/buttons_stop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text"
-            android:layout_toRightOf="@id/button_show"
-            android:layout_toEndOf="@+id/button_show"
-            android:layout_centerInParent="true"
-            android:text="@string/button_stop"/>
-    -->
 
-
-    <Button
+      <Button
         android:id="@+id/crash_button"
         android:text="@string/crash_button"
         android:layout_width="wrap_content"
@@ -95,16 +58,6 @@
         android:layout_alignEnd="@+id/step_button"
         android:layout_marginTop="16dp"
         android:layout_below="@+id/clear_db_button" />
-
-    <Button
-        android:id="@+id/user_info_btn"
-        android:text="@string/user_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/issue_act_button"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
     <ProgressBar
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"

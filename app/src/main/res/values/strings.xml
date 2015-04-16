@@ -34,7 +34,7 @@
     <string name="button_issue">Issue</string>
     <string name="user_name">Username</string>
     <string name="password">Password</string>
-    <string name="project_key">Project mKey</string>
+    <string name="project_key">Project key</string>
     <string name="project_key_value">AMTT</string>
     <string name="issue_name">Issue name</string>
     <string name="issue_name_value">Task</string>
@@ -50,6 +50,8 @@
     <string name="step_text">Step</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
+    <string name="notification_title">AMTT</string>
+    <string name="notification_text">Button-assistant is running.</string>
     <string name="display_name">Display Name</string>
     <string name="user_email">Email</string>
     <string name="time_zone">Time zone</string>
@@ -63,5 +65,6 @@
     <string name="project_name">Project name</string>
     <string name="credentials">Credentials</string>
     <string name="access">Access</string>
+    <string name="button_close_service">Close</string>
 
 </resources>

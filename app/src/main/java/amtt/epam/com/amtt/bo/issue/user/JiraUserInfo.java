@@ -135,7 +135,3 @@ public class JiraUserInfo {
         this.mExpand = expand;
     }
 }
-
-
-
-

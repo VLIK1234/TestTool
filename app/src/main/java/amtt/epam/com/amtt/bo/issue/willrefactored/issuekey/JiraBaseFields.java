@@ -2,12 +2,13 @@ package amtt.epam.com.amtt.bo.issue.willrefactored.issuekey;
 
 import com.google.gson.annotations.SerializedName;
 
+import amtt.epam.com.amtt.bo.issue.willrefactored.Entity;
 import amtt.epam.com.amtt.bo.issue.willrefactored.JiraIssueTypesIssueType;
 
 /**
  * Created by Irina Monchenko on 26.03.2015.
  */
-public class JiraBaseFields{
+public class JiraBaseFields extends Entity {
 
     @SerializedName("project")
     private JiraIssueProject mProject;

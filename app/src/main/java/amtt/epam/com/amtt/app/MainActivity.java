@@ -12,29 +12,18 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
-import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
-import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
-import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
-import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.crash.AmttExceptionHandler;
 import amtt.epam.com.amtt.database.DbClearTask;
 import amtt.epam.com.amtt.database.StepSavingCallback;
 import amtt.epam.com.amtt.database.StepSavingResult;
 import amtt.epam.com.amtt.database.StepSavingTask;
-import amtt.epam.com.amtt.service.TopButtonService;
-import amtt.epam.com.amtt.util.Constants;
-import amtt.epam.com.amtt.util.Converter;
-import amtt.epam.com.amtt.util.CredentialsManager;
-import amtt.epam.com.amtt.util.PreferenceUtils;
 import io.fabric.sdk.android.Fabric;
 
 
-public class MainActivity extends BaseActivity implements StepSavingCallback, ShowUserDataCallback {
+public class MainActivity extends BaseActivity implements StepSavingCallback{
 
-    private Button createIssueButton, userInfoButton;
     private int mScreenNumber = 1;
     private boolean newStepsSequence = false;
 
@@ -43,18 +32,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
-
-        startService(new Intent(this, TopButtonService.class));
-        TopButtonService.show(this);
-        Button loginButton = (Button) findViewById(R.id.login_button);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-
-            }
-        });
 
         Button crashButton = (Button) findViewById(R.id.crash_button);
         crashButton.setOnClickListener(new View.OnClickListener() {
@@ -104,42 +81,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
 
         );
 
-        createIssueButton = (Button) findViewById(R.id.issue_act_button);
-        createIssueButton.setOnClickListener(new View.OnClickListener()
-
-                                             {
-                                                 @Override
-                                                 public void onClick(View v) {
-                                                     String username, url;
-                                                     username = CredentialsManager.getInstance().getUserName();
-                                                     url = CredentialsManager.getInstance().getUrl();
-                                                     showProgress(true);
-                                                     new ShowUserDataTask(TypeSearchedData.SEARCH_ISSUE, MainActivity.this).execute();
-                                                 }
-                                             }
-
-        );
-
-        userInfoButton = (Button) findViewById(R.id.user_info_btn);
-        userInfoButton.setOnClickListener(new View.OnClickListener()
-
-                                          {
-                                              @Override
-                                              public void onClick(View v) {
-                                                  startActivity(new Intent(MainActivity.this, UserInfoActivity.class));
-                                              }
-                                          }
-
-        );
-
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        boolean accessCreateIssue = CredentialsManager.getInstance().getAccessState();
-        createIssueButton.setEnabled(accessCreateIssue);
-        userInfoButton.setEnabled(accessCreateIssue);
     }
 
     @Override
@@ -171,16 +112,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     @Override
     public void incrementScreenNumber() {
         mScreenNumber++;
-    }
-
-    @Override
-    public void onShowUserDataResult(JMetaResponse result) {
-        ArrayList<String> projectsNames = result.getProjectsNames();
-        ArrayList<String> projectsKeys = result.getProjectsKeys();
-        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
-        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
-        showProgress(false);
-        startActivity(new Intent(this, CreateIssueActivity.class));
     }
 
 }

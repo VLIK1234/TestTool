@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.view;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -17,15 +16,25 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.app.BaseActivity;
-import amtt.epam.com.amtt.app.SecondActivity;
-import amtt.epam.com.amtt.app.StepsActivity;
+import amtt.epam.com.amtt.app.CreateIssueActivity;
+import amtt.epam.com.amtt.app.LoginActivity;
+import amtt.epam.com.amtt.app.UserInfoActivity;
+import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
+import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
+import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
+import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
+import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.util.Converter;
+import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.util.PreferenceUtils;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-public class TopButtonView extends FrameLayout {
+public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
 
     private final static String LOG_TAG = "TAG";
 
@@ -37,13 +46,15 @@ public class TopButtonView extends FrameLayout {
     private int currentOrientation;
     private float widthProportion;
     private float heightProportion;
-    //TODO you can convert it field to local variable
-    private RelativeLayout.LayoutParams topButtonLayoutParams;
+    public Button buttonAuth;
+    public Button buttonBugRep;
+    public Button buttonUserInfo;
 
-    public TopButtonView(Context context) {
-        //TODO what happen if you try use this constructor?
-        super(context, null);
-    }
+    private int firstX;
+    private int firstY;
+    private int lastX;
+    private int lastY;
+    public boolean moving;
 
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
@@ -51,10 +62,8 @@ public class TopButtonView extends FrameLayout {
 
         buttonsBar.setOrientation(LinearLayout.VERTICAL);
 
-        this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        //TODO why you use operator "this" in one case
-        this.metrics = getContext().getResources().getDisplayMetrics();
-        //TODO and don't use in the same
+        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        metrics = getContext().getResources().getDisplayMetrics();
         currentOrientation = getResources().getConfiguration().orientation;
         this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
@@ -69,18 +78,25 @@ public class TopButtonView extends FrameLayout {
         mainButton.setImageResource(R.drawable.ic_top_button);
         buttonsBar.setVisibility(GONE);
 
-        Button buttonAuth = (Button) findViewById(R.id.button_auth);
+        buttonAuth = (Button) findViewById(R.id.button_auth);
         buttonAuth.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "AUTH", Toast.LENGTH_LONG).show();
+                if (!CredentialsManager.getInstance().getAccessState()) {
+                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().getApplicationContext().startActivity(intent);
+                }else{
+                }
             }
         });
-        Button buttonUserInfo = (Button) findViewById(R.id.button_user_info);
+        buttonUserInfo = (Button) findViewById(R.id.button_user_info);
         buttonUserInfo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "INFO", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getContext(), UserInfoActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intent);
             }
         });
         Button buttonAddStep = (Button) findViewById(R.id.button_add_step);
@@ -88,8 +104,8 @@ public class TopButtonView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "STEP", Toast.LENGTH_LONG).show();
-                Intent intentATS = new Intent(BaseActivity.ACTION_TAKE_SCREENSHOT);
-                getContext().sendBroadcast(intentATS);
+//                Intent intentATS = new Intent(BaseActivity.ACTION_SAVE_STEP);
+//                getContext().sendBroadcast(intentATS);
             }
         });
         Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
@@ -97,34 +113,22 @@ public class TopButtonView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "SHOW", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getContext(), StepsActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().getApplicationContext().startActivity(intent);
+//                Intent intent = new Intent(getContext(), StepsActivity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                getContext().getApplicationContext().startActivity(intent);
             }
         });
-        Button buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
+        buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
         buttonBugRep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "BUG_REP", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getContext(), SecondActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().getApplicationContext().startActivity(intent);
+                new ShowUserDataTask(TypeSearchedData.SEARCH_ISSUE, TopButtonView.this).execute();
             }
         });
     }
 
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        if (getResources().getConfiguration().orientation != currentOrientation) {
-            changeProportinalPosition();
-            buttonsBar.setVisibility(GONE);
-        }
-    }
-
     private void checkFreeSpace() {
-        topButtonLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+        RelativeLayout.LayoutParams topButtonLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -136,28 +140,19 @@ public class TopButtonView extends FrameLayout {
             topButtonLayoutParams.addRule(RelativeLayout.BELOW, mainButton.getId());
             buttonsBar.setLayoutParams(topButtonLayoutParams);
         }
-        //TODO please give friendly name for variable
-        ViewTreeObserver vto = buttonsBar.getViewTreeObserver();
-        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+
+        ViewTreeObserver viewTreeObserver = buttonsBar.getViewTreeObserver();
+        viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 buttonsBar.getViewTreeObserver().removeOnPreDrawListener(this);
-
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    //TODO every time you do extra checks. If you don't use first "if", please move logic from "else" to "if"
-                    if (layoutParams.x < metrics.widthPixels / 2) {
-                        //Right
-                    } else {
-                        //Left
-                        layoutParams.x -= (layoutParams.x + buttonsBar.getWidth() - metrics.widthPixels + buttonsBar.getHeight());
+                    if (layoutParams.x+mainButton.getWidth()+buttonsBar.getWidth() > metrics.widthPixels) {
+                        layoutParams.x -= (layoutParams.x + mainButton.getWidth()+ buttonsBar.getWidth() - metrics.widthPixels);
                         windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                     }
                 } else {
-                    if (layoutParams.y + body.getWidth() / 2 < metrics.heightPixels / 2) {
-                        //Down
-                    } else {
-                        //Up
-                        //TODO what is the coefficient 1.5?
-                        layoutParams.y -= (layoutParams.y + buttonsBar.getHeight() - metrics.heightPixels + buttonsBar.getWidth() * 1.5);
+                    if (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
+                        layoutParams.y -= (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() - metrics.heightPixels + getStatusBarHeight());
                         windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                     }
                 }
@@ -167,8 +162,7 @@ public class TopButtonView extends FrameLayout {
 
     }
 
-    //TODO please give method more firendly name
-    private void changeProportinalPosition() {
+    private void savePositionAfterTurnScreen() {
         int overWidth;
         int overHeight;
         if (Math.round(metrics.widthPixels * widthProportion) + mainButton.getWidth() < metrics.widthPixels) {
@@ -197,19 +191,9 @@ public class TopButtonView extends FrameLayout {
         return result;
     }
 
-    //TODO why you declare variables on this place?
-    private int firstX;
-    private int firstY;
-
-    private int lastX;
-    private int lastY;
-
-    public boolean moving;
-
-    public int threshold = 10;
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        int threshold = 10;
         int totalDeltaX = lastX - firstX;
         int totalDeltaY = lastY - firstY;
 
@@ -239,15 +223,14 @@ public class TopButtonView extends FrameLayout {
                             if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
                                 layoutParams.x += deltaX;
                             }
-                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getWidth() / 2)) {
+                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
                                 layoutParams.y += deltaY;
                             }
                         } else {
                             if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
                                 layoutParams.x += deltaX;
                             }
-                            //TODO what is the coefficient 1.5?
-                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() * 1.5)) {
+                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
                                 layoutParams.y += deltaY;
                             }
                         }
@@ -278,4 +261,26 @@ public class TopButtonView extends FrameLayout {
         }
         return true;
     }
+
+    @Override
+    public void onShowUserDataResult(JMetaResponse result) {
+        ArrayList<String> projectsNames = result.getProjectsNames();
+        ArrayList<String> projectsKeys = result.getProjectsKeys();
+        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
+        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
+        Intent intent = new Intent(getContext(), CreateIssueActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getContext().getApplicationContext().startActivity(intent);
+    }
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (newConfig.orientation != currentOrientation) {
+            savePositionAfterTurnScreen();
+            buttonsBar.setVisibility(GONE);
+        }
+    }
+
 }

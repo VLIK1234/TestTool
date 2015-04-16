@@ -9,28 +9,28 @@ import java.util.Set;
  */
 public class Converter {
 
+    //TODO do we need constructor here?
+    public Converter() {
+    }
+
     public static ArrayList<String> setToArrayList(Set<String> inputSetString) {
+        //TODO check input data before create any objects
+        ArrayList<String> outputArrayList = new ArrayList<>();
         if (inputSetString != null) {
-            ArrayList<String> outputArrayList = new ArrayList<>();
             for (String name : inputSetString) {
                 outputArrayList.add(name);
             }
-            return outputArrayList;
-        } else {
-            return null;
         }
-
+        return outputArrayList;
     }
 
     public static Set<String> arrayListToSet(ArrayList<String> inputArrayList) {
-        if (inputArrayList != null) {
-            Set<String> outputSetString = new HashSet<>();
-            for (int i = 0; i < inputArrayList.size(); i++) {
-                outputSetString.add(inputArrayList.get(i));
-            }
-            return outputSetString;
-        } else {
-            return null;
+        //TODO check input data before create any objects
+        Set<String> outputSetString = new HashSet<>();
+        for (int i = 0; i < inputArrayList.size(); i++) {
+            outputSetString.add(inputArrayList.get(i));
         }
+        return outputSetString;
     }
+
 }

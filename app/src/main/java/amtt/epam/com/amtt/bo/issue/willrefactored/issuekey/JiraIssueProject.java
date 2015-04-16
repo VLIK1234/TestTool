@@ -2,7 +2,7 @@ package amtt.epam.com.amtt.bo.issue.willrefactored.issuekey;
 
 import com.google.gson.annotations.SerializedName;
 
-import amtt.epam.com.amtt.bo.issue.user.JiraAvatarUrls;
+import amtt.epam.com.amtt.bo.issue.willrefactored.JiraAvatarUrls;
 
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
