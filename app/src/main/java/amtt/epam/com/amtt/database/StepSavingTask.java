@@ -9,9 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
 
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +23,7 @@ import amtt.epam.com.amtt.database.table.StepsTable;
  */
 public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> implements ActivityInfoConstants {
 
+    private static final String SCREENSHOT_COMMAND = "/system/bin/screencap -p ";
     private static Map<Integer, String> sConfigChanges;
     private static Map<Integer, String> sFlags;
     private static Map<Integer, String> sLaunchMode;
@@ -168,17 +167,13 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
 
 
     private String saveScreen() throws Exception {
+        String screenPath;
         Process process = Runtime.getRuntime().exec("su", null,null);
         OutputStream os = process.getOutputStream();
-        os.write(("/system/bin/screencap -p " + Environment.getExternalStorageDirectory().getPath() + "/img.png").getBytes("ASCII"));
+        os.write((SCREENSHOT_COMMAND + (screenPath = mPath + "/screen" + mCallback.getScreenNumber() + ".png")).getBytes("ASCII"));
         os.flush();
         os.close();
-        process.waitFor();
-
-        String screenPath = mPath + "/screen" + mCallback.getScreenNumber() + ".png";
-        mBitmap = Bitmap.createBitmap(mBitmap, 0, mRect.top, mRect.width(), mRect.height());
-        FileOutputStream bitmapPath = new FileOutputStream(screenPath);
-        mBitmap.compress(Bitmap.CompressFormat.PNG, 100, bitmapPath);
+        process.destroy();
         return screenPath;
     }
 
