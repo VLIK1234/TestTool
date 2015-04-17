@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.database;
+package amtt.epam.com.amtt.database.constant;
 
 /**
  * Created by Artsiom_Kaliaha on 31.03.2015.
