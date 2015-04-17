@@ -14,12 +14,11 @@ import com.crashlytics.android.Crashlytics;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.crash.AmttExceptionHandler;
-import amtt.epam.com.amtt.database.DbClearTask;
-import amtt.epam.com.amtt.database.StepSavingCallback;
-import amtt.epam.com.amtt.database.StepSavingResult;
-import amtt.epam.com.amtt.database.StepSavingTask;
+import amtt.epam.com.amtt.database.task.DataBaseOperationType;
+import amtt.epam.com.amtt.database.task.DataBaseTask;
+import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
+import amtt.epam.com.amtt.database.task.StepSavingCallback;
 import amtt.epam.com.amtt.fragment.CrashDialogFragment;
-import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.IOUtils;
 import io.fabric.sdk.android.Fabric;
 
@@ -27,10 +26,10 @@ import io.fabric.sdk.android.Fabric;
 public class MainActivity extends BaseActivity implements StepSavingCallback {
 
     private int mScreenNumber = 1;
-    private boolean newStepsSequence = false;
-
     private String mCrashFilePath;
     private static final String CRASH_DIALOG_TAG = "crash_dialog_tag";
+    private static int sStepNumber;
+    private DataBaseTask mDataBaseClearTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +47,19 @@ public class MainActivity extends BaseActivity implements StepSavingCallback {
 
         Thread.currentThread().setUncaughtExceptionHandler(new AmttExceptionHandler(this));
 
+
+        mDataBaseClearTask = new DataBaseTask.Builder()
+                .setOperationType(DataBaseOperationType.CLEAR)
+                .setContext(MainActivity.this)
+                .create();
+        mDataBaseClearTask.execute();
+
         Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
         clearDbButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DbClearTask(MainActivity.this).execute();
+                sStepNumber = 0;
+                mDataBaseClearTask.execute();
             }
         });
 
@@ -60,25 +67,22 @@ public class MainActivity extends BaseActivity implements StepSavingCallback {
         stepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                View rootView = getWindow().getDecorView();
-                rootView.setDrawingCacheEnabled(true);
-                Bitmap bitmap = rootView.getDrawingCache();
-                Rect rect = new Rect();
-                getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-                //TODO Do we need to save screenshot here?
-                new StepSavingTask(MainActivity.this, MainActivity.this, bitmap, rect, MainActivity.this.getComponentName(), newStepsSequence).execute();
-                newStepsSequence = false;
+                sStepNumber++;
+                new DataBaseTask.Builder()
+                        .setOperationType(DataBaseOperationType.SAVE_STEP)
+                        .setContext(MainActivity.this)
+                        .setComponentName(MainActivity.this.getComponentName())
+                        .setStepNumber(sStepNumber)
+                        .create()
+                        .execute();
             }
         });
 
         Button showStepsButton = (Button) findViewById(R.id.show_steps_button);
-        showStepsButton.setOnClickListener(new View.OnClickListener()
-
-        {
+        showStepsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, StepsActivity.class));
-                newStepsSequence = true;
             }
         });
 
@@ -95,7 +99,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback {
         });
 
         mCrashFilePath = getFilesDir().getPath() + "/crash.txt";
-
     }
 
     @Override
@@ -119,8 +122,8 @@ public class MainActivity extends BaseActivity implements StepSavingCallback {
 
 
     @Override
-    public void onStepSaved(StepSavingResult result) {
-        int resultMessage = result == StepSavingResult.ERROR ? R.string.step_saving_error : R.string.step_saving_success;
+    public void onDataBaseActionDone(DataBaseTaskResult result) {
+        int resultMessage = result == DataBaseTaskResult.ERROR ? R.string.data_base_action_error : R.string.data_base_action_done;
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
     }
 

@@ -9,16 +9,12 @@ import android.os.Bundle;
 import android.view.View;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.database.StepSavingCallback;
-import amtt.epam.com.amtt.database.StepSavingResult;
-import amtt.epam.com.amtt.database.StepSavingTask;
 
 /**
  * Created by Ivan_Bakach on 26.03.2015.
  */
 public class BaseActivity extends Activity{
 
-    public static final String LOG_TAG = "TAG";
     public final static String ACTION_SAVE_STEP = "amtt.epam.com.amtt.app.TAKESCREENSHOT";
 
     protected BroadcastReceiver br;
