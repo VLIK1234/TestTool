@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.crash;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -34,8 +35,7 @@ public class CrashInfoSavingTask extends AsyncTask<Void, Void, Void> {
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            //TODO why?
-            //ignored
+            Log.d("TAG", e.getStackTrace().toString());
         }
         return null;
     }
