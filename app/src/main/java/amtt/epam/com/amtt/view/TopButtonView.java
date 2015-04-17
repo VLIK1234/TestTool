@@ -9,6 +9,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -41,7 +43,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
     private LinearLayout buttonsBar;
-    private ImageView mainButton;
+    public ImageView mainButton;
     private DisplayMetrics metrics;
     private int currentOrientation;
     private float widthProportion;
@@ -55,6 +57,8 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
     private int lastX;
     private int lastY;
     public boolean moving;
+    private Button buttonAddStep;
+    private Button buttonShowStep;
 
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
@@ -99,7 +103,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
                 getContext().getApplicationContext().startActivity(intent);
             }
         });
-        Button buttonAddStep = (Button) findViewById(R.id.button_add_step);
+        buttonAddStep = (Button) findViewById(R.id.button_add_step);
         buttonAddStep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,7 +112,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
 //                getContext().sendBroadcast(intentATS);
             }
         });
-        Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
+        buttonShowStep = (Button) findViewById(R.id.button_show_step);
         buttonShowStep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -250,9 +254,25 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
                         if (buttonsBar.getVisibility() == VISIBLE) {
+                            Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
+                            animation.setRepeatMode(Animation.REVERSE);
+                            mainButton.startAnimation(animation);
                             buttonsBar.setVisibility(GONE);
                         } else {
                             buttonsBar.setVisibility(VISIBLE);
+                            Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
+                            mainButton.startAnimation(animation);
+                            Animation loadAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.alpha);
+                            loadAnimation.setDuration(300);
+                            buttonAuth.startAnimation(loadAnimation);
+                            loadAnimation.setDuration(450);
+                            buttonUserInfo.startAnimation(loadAnimation);
+                            loadAnimation.setDuration(600);
+                            buttonAddStep.startAnimation(loadAnimation);
+                            loadAnimation.setDuration(750);
+                            buttonShowStep.startAnimation(loadAnimation);
+                            loadAnimation.setDuration(900);
+                            buttonBugRep.startAnimation(loadAnimation);
                             checkFreeSpace();
                         }
                     }

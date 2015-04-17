@@ -32,5 +32,7 @@
     <dimen name="font_english_like_button">14sp</dimen>
     <dimen name="button_small_size">48dp</dimen>
     <dimen name="button_text_size">12sp</dimen>
-    <dimen name="circle_padding">8dp</dimen>
+    <dimen name="circle_padding">3dp</dimen>
+    <dimen name="rectangle_text_padding">3dp</dimen>
+    <dimen name="rectangle_text_radius">4dp</dimen>
 </resources>

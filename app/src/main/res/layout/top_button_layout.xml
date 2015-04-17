@@ -10,7 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:gravity="center"
-        android:src="@drawable/ic_top_button" />
+        android:src="@drawable/ic_top_button"
+        android:animateLayoutChanges="true"
+        android:layoutAnimation="@anim/abc_fade_in" />
 
     <LinearLayout
         android:id="@+id/buttons_bar"
@@ -18,40 +20,122 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button_auth"
-            android:layout_width="@dimen/button_small_size"
-            android:layout_height="@dimen/button_small_size"
-            android:focusableInTouchMode="true"
-            android:text="@string/login"
-            android:textSize="@dimen/button_text_size"
-            android:textColor="@color/green"
-            android:background="@drawable/background_circle" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button_user_info"
-            android:layout_width="@dimen/button_small_size"
-            android:layout_height="@dimen/button_small_size"
-            android:enabled="false"
-            android:background="@drawable/state_user_info"/>
+            <Button
+                android:id="@+id/button_auth"
+                android:layout_width="@dimen/button_small_size"
+                android:layout_height="@dimen/button_small_size"
+                android:background="@drawable/background_circle"
+                android:focusableInTouchMode="true"
+                android:text="@string/login"
+                android:textColor="@color/green"
+                android:textSize="@dimen/button_text_size" />
 
-        <Button
-            android:id="@+id/button_add_step"
-            android:layout_width="@dimen/button_small_size"
-            android:layout_height="@dimen/button_small_size"
-            android:background="@drawable/button_add_step"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/background_text"
+                android:text="Authorization"
+                android:textColor="@color/black" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/button_show_step"
-            android:layout_width="@dimen/button_small_size"
-            android:layout_height="@dimen/button_small_size"
-            android:background="@drawable/button_show_step" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button_bug_rep"
-            android:layout_width="@dimen/button_small_size"
-            android:layout_height="@dimen/button_small_size"
-            android:enabled="false"
-            android:background="@drawable/state_bug_rep" />
+            <Button
+                android:id="@+id/button_user_info"
+                android:layout_width="@dimen/button_small_size"
+                android:layout_height="@dimen/button_small_size"
+                android:background="@drawable/state_user_info"
+                android:enabled="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/background_text"
+                android:text="User info"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_add_step"
+                android:layout_width="@dimen/button_small_size"
+                android:layout_height="@dimen/button_small_size"
+                android:background="@drawable/button_add_step" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/background_text"
+                android:text="Add step"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_show_step"
+                android:layout_width="@dimen/button_small_size"
+                android:layout_height="@dimen/button_small_size"
+                android:background="@drawable/button_show_step" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/background_text"
+                android:text="Show step"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_bug_rep"
+                android:layout_width="@dimen/button_small_size"
+                android:layout_height="@dimen/button_small_size"
+                android:background="@drawable/state_bug_rep"
+                android:enabled="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/background_text"
+                android:text="Create issue"
+                android:textColor="@color/black" />
+        </LinearLayout>
     </LinearLayout>
+
+
 </RelativeLayout>
