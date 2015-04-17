@@ -25,7 +25,7 @@ public class IOUtils {
     /**
      * Method for retrieving string data from internal storage
      */
-    public static String loadStringData(String filePath) throws IOException {
+    public static String loadStringFromInternalStorage(String filePath) throws IOException {
         BufferedReader bufferedReader = null;
         StringBuilder crashText = new StringBuilder();
         String buffer;

@@ -221,7 +221,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
     private String loadCrashData() {
         String rawString = null;
         try {
-            rawString = IOUtils.loadStringData(mCrashFilePath);
+            rawString = IOUtils.loadStringFromInternalStorage(mCrashFilePath);
         } catch (Exception e) {
             Toast.makeText(MainActivity.this, R.string.lack_of_crashes_text, Toast.LENGTH_SHORT).show();
         }
