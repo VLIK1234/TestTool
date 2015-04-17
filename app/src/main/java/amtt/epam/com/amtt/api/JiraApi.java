@@ -43,6 +43,7 @@ public enum JiraApi {
     public static final int STATUS_CREATED = 201;
     private HttpClient client = new DefaultHttpClient();
     private HttpResponse response;
+    //TODO What if url is changed?
     final private String mUrl = CredentialsManager.getInstance().getUrl();
 
     //TODO OAUTH?
@@ -59,6 +60,7 @@ public enum JiraApi {
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
             e.printStackTrace();
+            //TODO if exception - we think it is success O_O
             return AuthorizationResult.AUTHORIZATION_SUCCESS;
         }
     }
@@ -66,6 +68,7 @@ public enum JiraApi {
     public CreationIssueResult createIssue(final String json){
 
         try {
+            //TODO is it ok to set headers and entity when request is executed?
             HttpPost post = new HttpPost(mUrl + ISSUE_PATH);
             StringEntity input = new StringEntity(json);
             Logger.printRequestPost(post);
@@ -101,12 +104,15 @@ public enum JiraApi {
                     break;
             }
         }
+        //TODO and what if typeData is null?
+
         httpGet.addHeader(AUTH_HEADER, getCredential());
         response = client.execute(httpGet);
         return response.getEntity();
     }
 
     public String getCredential(){
+        //TODO why do we encode this line every time?
         return JiraApi.BASIC_AUTH + Base64.encodeToString((CredentialsManager.getInstance().getUserName() +
                 Constants.SharedPreferenceKeys.COLON + CredentialsManager.getInstance().getPassword()).getBytes(), Base64.NO_WRAP);
     }

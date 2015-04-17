@@ -62,6 +62,6 @@ public class StepsActivity extends ActionBarActivity implements LoaderManager.Lo
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        //TODO do we need additional logic
     }
 }

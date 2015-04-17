@@ -64,6 +64,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
                 String projectKey, issueType, description, summary;
                 description = etDescription.getText().toString();
                 summary = etSummary.getText().toString();
+                //TODO is it possible to click create issue before spinnerIssueTypes are inited?
                 issueType = spinnerIssueTypes.getSelectedItem().toString();
                 projectKey = getProjectKey();
                 showProgress(true);
@@ -92,6 +93,8 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
 
     public String getProjectKey() {
         projectsKeys = getProjectsKeys();
+        //TODO unreadable string
+        //too many fields in line. Why do you get position from end of the list
         return projectsKeys.get(projectsNames.size() - ((projectsNames.indexOf(spinnerProjectsKey.getSelectedItem().toString())) + 1));
 
     }

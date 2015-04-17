@@ -37,6 +37,7 @@ public class ShowUserDataTask extends AsyncTask<Void, Void, JMetaResponse> {
             jMetaResponse = projects.process(i);
 
         } catch (Exception e) {
+            //TODO if we get exception with processing, what shall happen to HttpEntity?
             jMetaResponse = null;
         }
         return jMetaResponse;
@@ -44,6 +45,7 @@ public class ShowUserDataTask extends AsyncTask<Void, Void, JMetaResponse> {
 
     @Override
     protected void onPostExecute(JMetaResponse result) {
+        //TODO What if someone passes callback and nulls it while processing?
         mCallback.onShowUserDataResult(result);
     }
 }

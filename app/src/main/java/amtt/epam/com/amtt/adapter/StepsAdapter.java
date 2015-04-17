@@ -52,7 +52,7 @@ public class StepsAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         final ViewHolder vh = (ViewHolder) view.getTag();
-
+        //TODO hardcoded text
         String activityInfo = "Activity: " + cursor.getString(cursor.getColumnIndex(StepsTable._ASSOCIATED_ACTIVITY)) + "\n" +
                 "Configuration changes: " + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._CONFIG_CHANGES)) + "\n" +
                 "Flags: " + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._FLAGS)) + "\n" +
