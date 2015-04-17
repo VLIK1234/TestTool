@@ -23,7 +23,7 @@ import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
-import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
+import amtt.epam.com.amtt.bo.issue.JiraSearchType;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.util.Constants;
@@ -122,7 +122,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
         buttonBugRep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ShowUserDataTask(TypeSearchedData.SEARCH_ISSUE, TopButtonView.this).execute();
+                new ShowUserDataTask(JiraSearchType.ISSUE, TopButtonView.this).execute();
             }
         });
     }

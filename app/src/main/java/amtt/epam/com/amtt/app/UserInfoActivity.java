@@ -5,14 +5,13 @@ import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.asynctask.ShowUserInfoTask;
-import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
+import amtt.epam.com.amtt.bo.issue.JiraSearchType;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.callbacks.ShowUserInfoCallback;
 import amtt.epam.com.amtt.util.Constants;
 
 public class UserInfoActivity extends BaseActivity implements ShowUserInfoCallback {
 
-    private final String TAG = this.getClass().getSimpleName();
     private TextView name, emailAddress, displayName, timeZone, locale, size, namesGroups;
 
     @Override
@@ -27,7 +26,7 @@ public class UserInfoActivity extends BaseActivity implements ShowUserInfoCallba
         size = (TextView) findViewById(R.id.tv_size);
         namesGroups = (TextView) findViewById(R.id.tv_names);
         showProgress(true);
-        new ShowUserInfoTask(TypeSearchedData.SEARCH_USER_INFO, UserInfoActivity.this).execute();
+        new ShowUserInfoTask(JiraSearchType.USER_INFO, UserInfoActivity.this).execute();
 
 
     }

@@ -2,15 +2,13 @@ package amtt.epam.com.amtt.authorization;
 
 import android.util.Base64;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.HttpGet;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
+import amtt.epam.com.amtt.bo.issue.JiraSearchType;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreationIssueResult;
 import amtt.epam.com.amtt.processing.AuthResponseProcessor;
+import amtt.epam.com.amtt.processing.ProjectsToJsonProcessor;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
 
@@ -22,7 +20,7 @@ public class JiraApi {
     final private String mUrl = CredentialsManager.getInstance().getUrl();
 
     @SuppressWarnings("unchecked")
-    public RestResponse authorize(final String userName, final String password, final String url) {
+    public RestResponse authorize() {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, getCredential());
 
@@ -30,7 +28,7 @@ public class JiraApi {
         try {
             restResponse = new RestMethod.Builder<AuthorizationResult>()
                     .setType(RestMethodType.GET)
-                    .setUrl(url + JiraApiConst.LOGIN_PATH)
+                    .setUrl(mUrl + JiraApiConst.LOGIN_PATH)
                     .setHeadersMap(headers)
                     .setResponseProcessor(new AuthResponseProcessor())
                     .create()
@@ -53,8 +51,7 @@ public class JiraApi {
     }
 
     @SuppressWarnings("unchecked")
-    public RestResponse createIssue(final String userName, final String password, final String url, final String jsonString) {
-        String credentials = JiraApiConst.BASIC_AUTH + Base64.encodeToString((userName + ":" + password).getBytes(), Base64.NO_WRAP);
+    public RestResponse createIssue(final String jsonString) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, getCredential());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
@@ -79,7 +76,7 @@ public class JiraApi {
         return restResponse;
     }
 
-//    public HttpEntity searchIssue(final String userName, final TypeSearchedData typeSearchData) throws Exception {
+//    public HttpEntity searchIssue(final String userName, final JiraSearchType typeSearchData) throws Exception {
 //        Map<String, String> headers = new HashMap<>();
 //        headers.put(JiraApiConst.AUTH, getCredential());
 //
@@ -98,15 +95,15 @@ public class JiraApi {
 //        return restResponse.getEntity();
 //    }
 
-    public HttpEntity searchData(final String userName, final TypeSearchedData typeData) throws Exception {
+    public RestResponse searchData(final String userName, final JiraSearchType typeData) {
         String url = null;
         if (typeData != null) {
             switch (typeData) {
-                case SEARCH_ISSUE: {
+                case ISSUE: {
                     url = mUrl + JiraApiConst.USER_PROJECTS_PATH;
                     break;
                 }
-                case SEARCH_USER_INFO:
+                case USER_INFO:
                     url = mUrl + JiraApiConst.USER_INFO_PATH + userName + JiraApiConst.EXPAND_GROUPS;
                     break;
             }
@@ -123,14 +120,16 @@ public class JiraApi {
                     .setHeadersMap(headers)
                     .create()
                     .execute();
+
+            restResponse.setJiraMetaResponse(new ProjectsToJsonProcessor().process(restResponse.getEntity()));
         } catch (Exception e) {
             restResponse = new RestResponse();
             restResponse.setMessage(e);
         }
-        return restResponse.getEntity();
+        return restResponse;
     }
 
-    public String getCredential(){
+    public String getCredential() {
         return JiraApiConst.BASIC_AUTH + Base64.encodeToString((CredentialsManager.getInstance().getUserName() +
                 Constants.SharedPreferenceKeys.COLON + CredentialsManager.getInstance().getPassword()).getBytes(), Base64.NO_WRAP);
     }

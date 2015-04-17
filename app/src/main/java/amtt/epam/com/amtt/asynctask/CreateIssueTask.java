@@ -21,7 +21,7 @@ public class CreateIssueTask extends AsyncTask<Void, Void, RestResponse> {
 
     @Override
     protected RestResponse doInBackground(Void... params) {
-        return new JiraApi().createIssue(null, null, null, mJson);
+        return new JiraApi().createIssue(mJson);
     }
 
     @Override

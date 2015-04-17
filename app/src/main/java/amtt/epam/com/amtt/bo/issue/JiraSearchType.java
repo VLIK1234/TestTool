@@ -3,8 +3,8 @@ package amtt.epam.com.amtt.bo.issue;
 /**
  * Created by Iryna_Monchanka on 06.04.2015.
  */
-public enum TypeSearchedData {
+public enum JiraSearchType {
 
-    SEARCH_ISSUE,
-    SEARCH_USER_INFO
+    ISSUE,
+    USER_INFO
 }

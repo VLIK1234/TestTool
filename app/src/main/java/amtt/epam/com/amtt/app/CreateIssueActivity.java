@@ -12,23 +12,20 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.asynctask.CreateIssueTask;
-import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
+import amtt.epam.com.amtt.api.JiraCallback;
+import amtt.epam.com.amtt.api.JiraOperationType;
+import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.authorization.RestResponse;
-import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
-import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
+import amtt.epam.com.amtt.bo.issue.JiraSearchType;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreateIssue;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreationIssueResult;
-import amtt.epam.com.amtt.callbacks.CreationIssueCallback;
-import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 
 
-public class CreateIssueActivity extends BaseActivity implements CreationIssueCallback, ShowUserDataCallback {
+public class CreateIssueActivity extends BaseActivity implements JiraCallback {
 
-    private final String TAG = this.getClass().getSimpleName();
     private EditText etDescription, etSummary;
     private ArrayList<String> projectsNames = new ArrayList<>();
     private ArrayList<String> projectsKeys = new ArrayList<>();
@@ -36,6 +33,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
     private Button buttonCreateIssue;
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
@@ -49,8 +47,13 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 showProgress(true);
-                new ShowUserDataTask(TypeSearchedData.SEARCH_ISSUE, CreateIssueActivity.this).execute();
-
+                //new ShowUserDataTask(JiraSearchType.ISSUE, CreateIssueActivity.this).execute();
+                new JiraTask.Builder<>()
+                        .setOperationType(JiraOperationType.SEARCH)
+                        .setSearchType(JiraSearchType.USER_INFO)
+                        .setCallback(CreateIssueActivity.this)
+                        .create()
+                        .execute();
             }
 
             @Override
@@ -69,12 +72,16 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
                 projectKey = getProjectKey();
                 showProgress(true);
                 buttonCreateIssue.setVisibility(View.GONE);
-                new CreateIssueTask(issue.createSimpleIssue(projectKey, issueType, description, summary), CreateIssueActivity.this).execute();
 
+                //new CreateIssueTask(issue.createSimpleIssue(projectKey, issueType, description, summary), CreateIssueActivity.this).execute();
+                new JiraTask.Builder<CreationIssueResult>()
+                        .setOperationType(JiraOperationType.CREATE_ISSUE)
+                        .setCallback(CreateIssueActivity.this)
+                        .setJson(issue.createSimpleIssue(projectKey, issueType, description, summary))
+                        .create()
+                        .execute();
             }
         });
-
-
     }
 
     public int getSelectedItemPositionProject() {
@@ -97,38 +104,27 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
 
     }
 
-//    @Override
-//    public void onCreationIssueResult(CreationIssueResult result) {
-//        String resultMessage = result == CreationIssueResult.CREATION_UNSUCCESS ? getResources().getString(R.string.issue_creating_unsuccess) :
-//                getResources().getString(R.string.issue_creating_success);
-//        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-//        if (resultMessage.equals(getResources().getString(R.string.issue_creating_success))) {
-//            setInisibleProgress();
-//            finish();
-//
-//        }
-//    }
-
 
     @Override
-    public void onCreationIssueResult(RestResponse restResponse) {
-        Toast.makeText(this, restResponse.getMessage(), Toast.LENGTH_SHORT).show();
-        if (restResponse.getResult() == CreationIssueResult.CREATION_SUCCESS ) {
-            finish();
+    public void onJiraRequestPerformed(RestResponse restResponse) {
+        if (restResponse.getResult() instanceof CreationIssueResult) {
+            Toast.makeText(this, restResponse.getMessage(), Toast.LENGTH_SHORT).show();
+            if (restResponse.getResult() == CreationIssueResult.CREATION_SUCCESS ) {
+                finish();
+            }
+            buttonCreateIssue.setVisibility(View.VISIBLE);
+        } else {
+            if (restResponse.getJiraMetaResponse() == null) {
+                Toast.makeText(this, restResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            int index = restResponse.getJiraMetaResponse().getProjects().size() - (getSelectedItemPositionProject() + 1);
+            ArrayList<String> issueTypesNames = restResponse.getJiraMetaResponse().getProjects().get(index).getIssueTypesNames();
+            ArrayAdapter<String> issueNames = new ArrayAdapter<>(CreateIssueActivity.this, android.R.layout.simple_spinner_item, issueTypesNames);
+            issueNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
+            spinnerIssueTypes.setAdapter(issueNames);
         }
-        showProgress(false);
-        buttonCreateIssue.setVisibility(View.VISIBLE);
-
-    }
-
-    @Override
-    public void onShowUserDataResult(JMetaResponse result) {
-        int index = result.getProjects().size() - (getSelectedItemPositionProject() + 1);
-        ArrayList<String> issueTypesNames = result.getProjects().get(index).getIssueTypesNames();
-        ArrayAdapter<String> issueNames = new ArrayAdapter<>(CreateIssueActivity.this, android.R.layout.simple_spinner_item, issueTypesNames);
-        issueNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
-        spinnerIssueTypes.setAdapter(issueNames);
         showProgress(false);
     }
 

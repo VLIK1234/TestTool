@@ -12,10 +12,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import java.io.IOException;
-
-import amtt.epam.com.amtt.authorization.AuthorizationResult;
-import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
+import amtt.epam.com.amtt.bo.issue.JiraSearchType;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreationIssueResult;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
@@ -89,16 +86,16 @@ public enum JiraApi {
         }
     }
 
-    public HttpEntity searchData(final String userName, final TypeSearchedData typeData) throws Exception {
+    public HttpEntity searchData(final String userName, final JiraSearchType typeData) throws Exception {
         HttpGet httpGet = new HttpGet();
 
         if (typeData != null) {
             switch (typeData) {
-                case SEARCH_ISSUE: {
+                case ISSUE: {
                     httpGet = new HttpGet(mUrl + USER_PROJECTS_PATH);
                     break;
                 }
-                case SEARCH_USER_INFO:
+                case USER_INFO:
                     httpGet = new HttpGet(mUrl + USER_INFO_PATH + userName + EXPAND_GROUPS);
                     break;
             }

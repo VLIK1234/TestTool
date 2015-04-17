@@ -20,7 +20,8 @@ public class AuthorizationTask extends AsyncTask<Void, Void, RestResponse> {
 
     @Override
     protected RestResponse doInBackground(Void... params) {
-        return new JiraApi().authorize(mUserName, mPassword, mUrl);
+        //return new JiraApi().authorize(mUserName, mPassword, mUrl);
+        return null;
     }
 
     @Override
