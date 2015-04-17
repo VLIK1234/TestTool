@@ -15,10 +15,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import amtt.epam.com.amtt.database.task.DataBaseManager;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
-import amtt.epam.com.amtt.database.DataBaseManager;
-import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
+import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
+
 
 /**
  * Created by Artsiom_Kaliaha on 23.03.2015.
@@ -86,7 +87,7 @@ public class AmttContentProvider extends ContentProvider {
             String[] tablesName = {StepsTable.TABLE_NAME, ActivityInfoTable.TABLE_NAME};
             cursor = getDataBaseManager().joinQuery(tablesName,
                     StepsWithMetaTable.PROJECTION,
-                    new String[] {StepsTable._ASSOCIATED_ACTIVITY, ActivityInfoTable._ACTIVITY_NAME});
+                    new String[]{StepsTable._ASSOCIATED_ACTIVITY, ActivityInfoTable._ACTIVITY_NAME});
         } else {
             String tableName = uri.getLastPathSegment();
             cursor = getDataBaseManager().query(tableName, projection, selection, selectionArgs, sortOrder);

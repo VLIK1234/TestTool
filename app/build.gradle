@@ -24,7 +24,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 21
         versionCode 4
-        versionName "1.0.3"
+        versionName "1.0.5"
     }
     buildTypes {
         release {
@@ -49,7 +49,6 @@ dependencies {
         transitive = true;
     }
     compile 'com.android.support:appcompat-v7:22.0.0'
-    compile 'com.google.android.gms:play-services:7.0.0'
     compile 'com.google.code.gson:gson:2.3.1'
 
 }

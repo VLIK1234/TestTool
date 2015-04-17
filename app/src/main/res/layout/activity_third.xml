@@ -1,6 +1,0 @@
-<amtt.epam.com.amtt.view.CircleScrollListView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".BaseActivity" >
-</amtt.epam.com.amtt.view.CircleScrollListView>
