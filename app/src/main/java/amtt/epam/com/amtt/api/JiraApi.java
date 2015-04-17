@@ -57,7 +57,6 @@ public enum JiraApi {
                 default: return AuthorizationResult.AUTHORIZATION_DENIED;
             }
         } catch (IOException e) {
-            Toast.makeText(Kontext.getKontext(),e.getMessage(),Toast.LENGTH_LONG).show();
             Log.e(TAG, e.getMessage());
             e.printStackTrace();
             return AuthorizationResult.AUTHORIZATION_SUCCESS;
@@ -82,7 +81,6 @@ public enum JiraApi {
                 default: return CreationIssueResult.CREATION_UNSUCCESS;
             }
         } catch (Exception e) {
-            Toast.makeText(Kontext.getKontext(),e.getMessage(),Toast.LENGTH_LONG).show();
             Log.e(TAG, e.getMessage());
             e.printStackTrace();
             return CreationIssueResult.CREATION_UNSUCCESS;

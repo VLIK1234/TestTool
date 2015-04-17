@@ -122,7 +122,8 @@ public class TopButtonService extends Service{
     }
 
     private void changeUiAuthSuccess(){
-        view.buttonAuth.setAuthStatee(true);
+        view.buttonAuth.setText(R.string.logout);
+        view.buttonAuth.setTextColor(getResources().getColor(R.color.red));
         view.buttonBugRep.setEnabled(true);
         view.buttonUserInfo.setEnabled(true);
     }

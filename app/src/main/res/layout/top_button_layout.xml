@@ -18,12 +18,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <amtt.epam.com.amtt.view.AuthButton
+        <Button
             android:id="@+id/button_auth"
             android:layout_width="@dimen/button_small_size"
             android:layout_height="@dimen/button_small_size"
             android:focusableInTouchMode="true"
-            android:background="@drawable/state_login" />
+            android:text="@string/login"
+            android:textSize="@dimen/button_text_size"
+            android:textColor="@color/green"
+            android:background="@drawable/background_circle" />
 
         <Button
             android:id="@+id/button_user_info"

@@ -46,7 +46,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
     private int currentOrientation;
     private float widthProportion;
     private float heightProportion;
-    public AuthButton buttonAuth;
+    public Button buttonAuth;
     public Button buttonBugRep;
     public Button buttonUserInfo;
 
@@ -78,7 +78,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
         mainButton.setImageResource(R.drawable.ic_top_button);
         buttonsBar.setVisibility(GONE);
 
-        buttonAuth = (AuthButton) findViewById(R.id.button_auth);
+        buttonAuth = (Button) findViewById(R.id.button_auth);
         buttonAuth.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

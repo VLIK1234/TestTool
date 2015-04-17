@@ -31,4 +31,5 @@
     <dimen name="font_english_like_caption">12sp</dimen>
     <dimen name="font_english_like_button">14sp</dimen>
     <dimen name="button_small_size">48dp</dimen>
+    <dimen name="button_text_size">12sp</dimen>
 </resources>
