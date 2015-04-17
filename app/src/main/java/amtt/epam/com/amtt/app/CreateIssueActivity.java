@@ -118,6 +118,7 @@ public class CreateIssueActivity extends BaseActivity implements CreationIssueCa
         spinnerIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
         spinnerIssueTypes.setAdapter(issueNames);
         showProgress(false);
+
     }
 
 }

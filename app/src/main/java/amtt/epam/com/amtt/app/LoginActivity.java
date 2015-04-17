@@ -88,4 +88,5 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
             finish();
         }
     }
+
 }
