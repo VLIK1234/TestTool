@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_focused="true"
-        android:drawable="@drawable/button_login"/>
-    <item android:state_focused="false"
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/amtt.epam.com.amtt">>
+    <item app:state_auth="true"
         android:drawable="@drawable/button_logout"/>
+    <item
+        android:drawable="@drawable/button_login"/>
 </selector>

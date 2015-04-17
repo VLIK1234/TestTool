@@ -122,7 +122,7 @@ public class TopButtonService extends Service{
     }
 
     private void changeUiAuthSuccess(){
-        view.buttonAuth.setBackgroundResource(R.drawable.button_logout);
+        view.buttonAuth.setAuthStatee(true);
         view.buttonBugRep.setEnabled(true);
         view.buttonUserInfo.setEnabled(true);
     }
