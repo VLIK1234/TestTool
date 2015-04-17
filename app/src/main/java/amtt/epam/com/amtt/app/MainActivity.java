@@ -1,7 +1,6 @@
 package amtt.epam.com.amtt.app;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -13,37 +12,22 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
-import java.util.ArrayList;
-
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
-import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
-import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.crash.AmttExceptionHandler;
 import amtt.epam.com.amtt.database.task.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
-import amtt.epam.com.amtt.database.task.DbClearTask;
-import amtt.epam.com.amtt.database.task.StepSavingCallback;
 import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
-import amtt.epam.com.amtt.service.TopButtonService;
-import amtt.epam.com.amtt.util.Converter;
+import amtt.epam.com.amtt.database.task.StepSavingCallback;
+import amtt.epam.com.amtt.fragment.CrashDialogFragment;
+import amtt.epam.com.amtt.util.IOUtils;
 import io.fabric.sdk.android.Fabric;
 
 
-public class MainActivity extends BaseActivity implements StepSavingCallback, ShowUserDataCallback {
-    private SharedPreferences sharedPreferences;
-    private Boolean accessCreateIssue;
-    private Button issueButton;
-    private int mScreenNumber = 1;
-    private static final String USER_NAME = "username";
-    private static final String PASSWORD = "password";
-    private static final String URL = "url";
-    private static final String NAME_SP = "data";
-    private static final String VOID = "";
-    private static final String PROJECTS_NAMES = "projectsNames";
-    private static final String ACCESS = "access";
-    private static final String PROJECTS_KEYS = "projectsKeys";
+public class MainActivity extends BaseActivity implements StepSavingCallback {
 
+    private int mScreenNumber = 1;
+    private String mCrashFilePath;
+    private static final String CRASH_DIALOG_TAG = "crash_dialog_tag";
     private static int sStepNumber;
     private DataBaseTask mDataBaseClearTask;
 
@@ -52,24 +36,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
-
-        mDataBaseClearTask = new DataBaseTask.Builder()
-                .setOperationType(DataBaseOperationType.CLEAR)
-                .setContext(MainActivity.this)
-                .create();
-        mDataBaseClearTask.execute();
-
-        startService(new Intent(this, TopButtonService.class));
-        TopButtonService.show(this);
-        Button loginButton = (Button) findViewById(R.id.login_button);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-
-            }
-        });
 
         Button crashButton = (Button) findViewById(R.id.crash_button);
         crashButton.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +48,12 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         Thread.currentThread().setUncaughtExceptionHandler(new AmttExceptionHandler(this));
 
 
+        mDataBaseClearTask = new DataBaseTask.Builder()
+                .setOperationType(DataBaseOperationType.CLEAR)
+                .setContext(MainActivity.this)
+                .create();
+        mDataBaseClearTask.execute();
+
         Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
         clearDbButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,11 +62,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                 mDataBaseClearTask.execute();
             }
         });
-        sharedPreferences = getSharedPreferences(NAME_SP, MODE_PRIVATE);
-        accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
-        issueButton = (Button) findViewById(R.id.issue_act_button);
-        issueButton.setEnabled(accessCreateIssue);
-        
+
         Button stepButton = (Button) findViewById(R.id.step_button);
         stepButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,14 +95,21 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
                 startActivity(new Intent(MainActivity.this, StepsActivity.class));
             }
         });
-    }
 
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        accessCreateIssue = sharedPreferences.getBoolean(ACCESS, false);
-        issueButton = (Button) findViewById(R.id.issue_act_button);
-        issueButton.setEnabled(accessCreateIssue);
+
+        final Button showCrashInfoButton = (Button) findViewById(R.id.show_crash_info);
+        showCrashInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String rawString = loadCrashData();
+                if (rawString != null) {
+                    CrashDialogFragment crashDialogFragment = CrashDialogFragment.newInstance(rawString, mCrashFilePath);
+                    crashDialogFragment.show(getFragmentManager(), CRASH_DIALOG_TAG);
+                }
+            }
+        });
+
+        mCrashFilePath = getFilesDir().getPath() + "/crash.txt";
     }
 
     @Override
@@ -168,23 +143,15 @@ public class MainActivity extends BaseActivity implements StepSavingCallback, Sh
         mScreenNumber++;
     }
 
-    public void onIssueClick(View view) {
-        String username, password, url;
-        username = sharedPreferences.getString(USER_NAME, VOID);
-        password = sharedPreferences.getString(PASSWORD, VOID);
-        url = sharedPreferences.getString(URL, VOID);
-        new ShowUserDataTask(username, password, url, MainActivity.this).execute();
+
+    private String loadCrashData() {
+        String rawString = null;
+        try {
+            rawString = IOUtils.loadStringFromInternalStorage(mCrashFilePath);
+        } catch (Exception e) {
+            Toast.makeText(MainActivity.this, R.string.lack_of_crashes_text, Toast.LENGTH_SHORT).show();
+        }
+        return rawString;
     }
 
-
-    @Override
-    public void onShowUserDataResult(JMetaResponse result) {
-        ArrayList<String> projectsNames = result.getProjectsNames();
-        ArrayList<String> projectsKeys = result.getProjectsKeys();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putStringSet(PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
-        editor.putStringSet(PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
-        editor.apply();
-        startActivity(new Intent(this, CreateIssueActivity.class));
-    }
 }

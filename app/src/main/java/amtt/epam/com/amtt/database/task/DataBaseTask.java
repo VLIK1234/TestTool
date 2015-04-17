@@ -9,9 +9,11 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -189,7 +191,8 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         mCallback = (StepSavingCallback) context;
     }
 
-    public DataBaseTask() { }
+    public DataBaseTask() {
+    }
 
     @Override
     protected DataBaseTaskResult doInBackground(Void... params) {
@@ -225,7 +228,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
                 new String[]{mComponentName.getClassName()},
                 null).getCount();
 
-        //if there is no records about current activity in db
+        //if there is no records about current app in db
         if (existingActivityInfo == 0) {
             ActivityInfo activityInfo;
             try {
@@ -252,6 +255,13 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     }
 
     private String saveScreen() throws Exception {
+        Process process = Runtime.getRuntime().exec("su", null, null);
+        OutputStream os = process.getOutputStream();
+        os.write(("/system/bin/screencap -p " + Environment.getExternalStorageDirectory().getPath() + "/img.png").getBytes("ASCII"));
+        os.flush();
+        os.close();
+        process.waitFor();
+
         String screenPath = mPath + "/screen" + mCallback.getScreenNumber() + ".png";
         mBitmap = Bitmap.createBitmap(mBitmap, 0, mRect.top, mRect.width(), mRect.height());
         FileOutputStream bitmapPath = new FileOutputStream(screenPath);
