@@ -7,4 +7,5 @@
         android:right="@dimen/rectangle_text_padding"
         android:bottom="@dimen/rectangle_text_padding" />
     <corners android:radius="@dimen/rectangle_text_radius" />
+    <stroke android:color="@android:color/darker_gray" android:width="1dp"/>
 </shape>

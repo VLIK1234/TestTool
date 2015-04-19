@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-    <solid android:color="@color/blue_grey"/>
-    <padding android:left="@dimen/circle_padding"
-        android:top="@dimen/circle_padding"
-        android:right="@dimen/circle_padding"
-        android:bottom="@dimen/circle_padding" />
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/shape">
+        <shape
+            android:dither="true"
+            android:shape="oval">
+            <padding android:bottom="1dp"/>
+            <gradient
+                android:angle="315.0"
+                android:startColor="@color/light_grey"
+                android:endColor="@color/grey"
+                android:gradientRadius="100"
+                android:type="linear" />
+        </shape>
+    </item>
+    <item android:id="@+id/shape">
+        <shape
+            android:dither="true"
+            android:shape="oval">
+            <padding
+                android:bottom="@dimen/margin_background_circle"
+                android:left="@dimen/margin_background_circle"
+                android:right="@dimen/margin_background_circle"
+                android:top="@dimen/margin_background_circle" />
+            <solid android:color="@color/blue_grey" />
+        </shape>
+    </item>
+</layer-list>

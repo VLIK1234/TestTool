@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
     private int currentOrientation;
     private float widthProportion;
     private float heightProportion;
+    private Button[] buttonsArray;
     public Button buttonAuth;
     public Button buttonBugRep;
     public Button buttonUserInfo;
@@ -57,8 +59,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
     private int lastX;
     private int lastY;
     public boolean moving;
-    private Button buttonAddStep;
-    private Button buttonShowStep;
+    private TextView[] textViewArray;
 
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
@@ -79,8 +80,13 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
         inflater.inflate(R.layout.top_button_layout, this, true);
         buttonsBar = (LinearLayout) findViewById(R.id.buttons_bar);
         mainButton = (ImageView) findViewById(R.id.plus_button);
-        mainButton.setImageResource(R.drawable.ic_top_button);
         buttonsBar.setVisibility(GONE);
+        TextView textAuth = (TextView) findViewById(R.id.text_auth);
+        TextView textUserInfo = (TextView) findViewById(R.id.text_user_info);
+        TextView textAddStep = (TextView) findViewById(R.id.text_add_step);
+        TextView textShowStep = (TextView) findViewById(R.id.text_show_step);
+        TextView textBugRep = (TextView) findViewById(R.id.text_bug_rep);
+        textViewArray = new TextView[]{textAuth, textUserInfo, textAddStep, textShowStep, textBugRep};
 
         buttonAuth = (Button) findViewById(R.id.button_auth);
         buttonAuth.setOnClickListener(new OnClickListener() {
@@ -103,7 +109,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
                 getContext().getApplicationContext().startActivity(intent);
             }
         });
-        buttonAddStep = (Button) findViewById(R.id.button_add_step);
+        Button buttonAddStep = (Button) findViewById(R.id.button_add_step);
         buttonAddStep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +118,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
 //                getContext().sendBroadcast(intentATS);
             }
         });
-        buttonShowStep = (Button) findViewById(R.id.button_show_step);
+        Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
         buttonShowStep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,6 +135,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
                 new ShowUserDataTask(TypeSearchedData.SEARCH_ISSUE, TopButtonView.this).execute();
             }
         });
+        buttonsArray = new Button[]{buttonAuth, buttonUserInfo, buttonAddStep, buttonShowStep, buttonBugRep};
     }
 
     private void checkFreeSpace() {
@@ -254,25 +261,30 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
                         if (buttonsBar.getVisibility() == VISIBLE) {
-                            Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
-                            animation.setRepeatMode(Animation.REVERSE);
-                            mainButton.startAnimation(animation);
+                            Animation reverseRotate = AnimationUtils.loadAnimation(getContext(), R.anim.reverse_rotate);
+                            mainButton.startAnimation(reverseRotate);
+                            reverseRotate.setFillAfter(true);
                             buttonsBar.setVisibility(GONE);
                         } else {
                             buttonsBar.setVisibility(VISIBLE);
-                            Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
-                            mainButton.startAnimation(animation);
-                            Animation loadAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.alpha);
-                            loadAnimation.setDuration(300);
-                            buttonAuth.startAnimation(loadAnimation);
-                            loadAnimation.setDuration(450);
-                            buttonUserInfo.startAnimation(loadAnimation);
-                            loadAnimation.setDuration(600);
-                            buttonAddStep.startAnimation(loadAnimation);
-                            loadAnimation.setDuration(750);
-                            buttonShowStep.startAnimation(loadAnimation);
-                            loadAnimation.setDuration(900);
-                            buttonBugRep.startAnimation(loadAnimation);
+                            Animation rotate = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
+                            rotate.setFillAfter(true);
+                            mainButton.startAnimation(rotate);
+                            Animation translate = AnimationUtils.loadAnimation(getContext(), R.anim.translate);
+                            buttonsBar.startAnimation(translate);
+                            Animation combination = AnimationUtils.loadAnimation(getContext(), R.anim.combination);
+                            long durationAnimation = combination.getDuration();
+                            for (int i = 0; i < buttonsArray.length; i++, durationAnimation+=100) {
+                                combination.setDuration(durationAnimation);
+                                buttonsArray[i].startAnimation(combination);
+                            }
+                            Animation alpha = AnimationUtils.loadAnimation(getContext(), R.anim.alpha);
+                            durationAnimation = 300;
+                            for (int i = 0; i < textViewArray.length; i++, durationAnimation+=100) {
+                                alpha.setDuration(durationAnimation);
+                                textViewArray[i].startAnimation(alpha);
+                            }
+
                             checkFreeSpace();
                         }
                     }

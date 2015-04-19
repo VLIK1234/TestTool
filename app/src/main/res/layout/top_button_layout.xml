@@ -9,10 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:gravity="center"
-        android:src="@drawable/ic_top_button"
-        android:animateLayoutChanges="true"
-        android:layoutAnimation="@anim/abc_fade_in" />
+        android:background="@drawable/background_main_button"/>
 
     <LinearLayout
         android:id="@+id/buttons_bar"
@@ -23,116 +20,125 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/margin_buttons_bar"
+            android:layout_marginLeft="@dimen/margin_buttons_bar">
 
             <Button
                 android:id="@+id/button_auth"
                 android:layout_width="@dimen/button_small_size"
                 android:layout_height="@dimen/button_small_size"
+                android:layout_margin="@dimen/margin_buttons_bar"
                 android:background="@drawable/background_circle"
-                android:focusableInTouchMode="true"
                 android:text="@string/login"
                 android:textColor="@color/green"
                 android:textSize="@dimen/button_text_size" />
 
             <TextView
+                android:id="@+id/text_auth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginTop="@dimen/margin_first_text_view"
                 android:background="@drawable/background_text"
-                android:text="Authorization"
+                android:text="@string/button_authorization"
                 android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/margin_buttons_bar"
+            android:layout_marginLeft="@dimen/margin_buttons_bar">
 
             <Button
                 android:id="@+id/button_user_info"
                 android:layout_width="@dimen/button_small_size"
                 android:layout_height="@dimen/button_small_size"
-                android:background="@drawable/state_user_info"
+                android:layout_margin="@dimen/margin_buttons_bar"
+                android:background="@drawable/background_user_info"
                 android:enabled="false" />
 
             <TextView
+                android:id="@+id/text_user_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginTop="@dimen/margin_buttons_bar"
                 android:background="@drawable/background_text"
-                android:text="User info"
+                android:text="@string/button_user_info"
                 android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="@dimen/margin_buttons_bar">
 
             <Button
                 android:id="@+id/button_add_step"
                 android:layout_width="@dimen/button_small_size"
                 android:layout_height="@dimen/button_small_size"
-                android:background="@drawable/button_add_step" />
+                android:layout_margin="@dimen/margin_buttons_bar"
+                android:background="@drawable/background_add_step" />
 
             <TextView
+                android:id="@+id/text_add_step"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginTop="@dimen/margin_buttons_bar"
                 android:background="@drawable/background_text"
-                android:text="Add step"
+                android:text="@string/button_add_step"
                 android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/margin_buttons_bar"
+            android:layout_marginLeft="@dimen/margin_buttons_bar">
 
             <Button
                 android:id="@+id/button_show_step"
                 android:layout_width="@dimen/button_small_size"
                 android:layout_height="@dimen/button_small_size"
-                android:background="@drawable/button_show_step" />
+                android:layout_margin="@dimen/margin_buttons_bar"
+                android:background="@drawable/background_show_step" />
 
             <TextView
+                android:id="@+id/text_show_step"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginTop="@dimen/margin_buttons_bar"
                 android:background="@drawable/background_text"
-                android:text="Show step"
+                android:text="@string/button_show_step"
                 android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginStart="@dimen/margin_buttons_bar"
+            android:layout_marginLeft="@dimen/margin_buttons_bar">
 
             <Button
                 android:id="@+id/button_bug_rep"
                 android:layout_width="@dimen/button_small_size"
                 android:layout_height="@dimen/button_small_size"
-                android:background="@drawable/state_bug_rep"
+                android:layout_margin="@dimen/margin_buttons_bar"
+                android:background="@drawable/background_bug_rep"
                 android:enabled="false" />
 
             <TextView
+                android:id="@+id/text_bug_rep"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginTop="@dimen/margin_buttons_bar"
                 android:background="@drawable/background_text"
-                android:text="Create issue"
+                android:text="@string/button_bug_rep"
                 android:textColor="@color/black" />
         </LinearLayout>
     </LinearLayout>

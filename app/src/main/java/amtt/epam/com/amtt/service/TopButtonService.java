@@ -12,9 +12,6 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.view.TopButtonView;
