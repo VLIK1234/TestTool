@@ -87,9 +87,19 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
         TextView textShowStep = (TextView) findViewById(R.id.text_show_step);
         TextView textBugRep = (TextView) findViewById(R.id.text_bug_rep);
         textViewArray = new TextView[]{textAuth, textUserInfo, textAddStep, textShowStep, textBugRep};
+        LinearLayout layoutAuth = (LinearLayout) findViewById(R.id.layout_auth);
+        LinearLayout layoutUserInfo = (LinearLayout) findViewById(R.id.layout_user_info);
+        LinearLayout layoutAddStep = (LinearLayout) findViewById(R.id.layout_add_step);
+        LinearLayout layoutShowStep = (LinearLayout) findViewById(R.id.layout_show_step);
+        LinearLayout layoutBugRep = (LinearLayout) findViewById(R.id.layout_bug_rep);
 
         buttonAuth = (Button) findViewById(R.id.button_auth);
-        buttonAuth.setOnClickListener(new OnClickListener() {
+        buttonUserInfo = (Button) findViewById(R.id.button_user_info);
+        Button buttonAddStep = (Button) findViewById(R.id.button_add_step);
+        Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
+        buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
+        buttonsArray = new Button[]{buttonAuth, buttonUserInfo, buttonAddStep, buttonShowStep, buttonBugRep};
+        layoutAuth.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!CredentialsManager.getInstance().getAccessState()) {
@@ -100,8 +110,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
                 }
             }
         });
-        buttonUserInfo = (Button) findViewById(R.id.button_user_info);
-        buttonUserInfo.setOnClickListener(new OnClickListener() {
+        layoutUserInfo.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), UserInfoActivity.class);
@@ -109,8 +118,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
                 getContext().getApplicationContext().startActivity(intent);
             }
         });
-        Button buttonAddStep = (Button) findViewById(R.id.button_add_step);
-        buttonAddStep.setOnClickListener(new OnClickListener() {
+        layoutAddStep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "STEP", Toast.LENGTH_LONG).show();
@@ -118,8 +126,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
 //                getContext().sendBroadcast(intentATS);
             }
         });
-        Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
-        buttonShowStep.setOnClickListener(new OnClickListener() {
+        layoutShowStep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "SHOW", Toast.LENGTH_LONG).show();
@@ -128,14 +135,12 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
 //                getContext().getApplicationContext().startActivity(intent);
             }
         });
-        buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
-        buttonBugRep.setOnClickListener(new OnClickListener() {
+        layoutBugRep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 new ShowUserDataTask(TypeSearchedData.SEARCH_ISSUE, TopButtonView.this).execute();
             }
         });
-        buttonsArray = new Button[]{buttonAuth, buttonUserInfo, buttonAddStep, buttonShowStep, buttonBugRep};
     }
 
     private void checkFreeSpace() {
