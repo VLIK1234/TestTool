@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.database.task;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.support.annotation.NonNull;
 
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
@@ -29,9 +31,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
 
         private DataBaseOperationType mOperationType;
         private Context mContext;
-        private Bitmap mBitmap;
-        private Rect mRect;
-        private ComponentName mComponentName;
+        private StepSavingCallback mCallback;
         private int mStepNumber;
 
         public Builder() {
@@ -47,8 +47,8 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             return this;
         }
 
-        public Builder setComponentName(@NonNull ComponentName componentName) {
-            mComponentName = componentName;
+        public Builder setCallback(@NonNull StepSavingCallback callback) {
+            mCallback = callback;
             return this;
         }
 
@@ -61,8 +61,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             DataBaseTask dataBaseTask = new DataBaseTask();
             dataBaseTask.mOperationType = this.mOperationType;
             dataBaseTask.mContext = this.mContext;
-            dataBaseTask.mCallback = (StepSavingCallback) mContext;
-            dataBaseTask.mComponentName = this.mComponentName;
+            dataBaseTask.mCallback = this.mCallback;
             dataBaseTask.mStepNumber = this.mStepNumber;
             dataBaseTask.mPath = mContext.getCacheDir().getPath();
             dataBaseTask.mCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
@@ -155,15 +154,13 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     private Context mContext;
     private StepSavingCallback mCallback;
     private String mPath;
-    private ComponentName mComponentName;
     private int mCurrentSdkVersion;
 
-    public DataBaseTask(DataBaseOperationType operationType, Context context, Bitmap bitmap, Rect rect, ComponentName componentName, int stepNumber) {
+    public DataBaseTask(DataBaseOperationType operationType, Context context, int stepNumber) {
         mOperationType = operationType;
         mContext = context;
         mCallback = (StepSavingCallback) context;
         mPath = context.getCacheDir().getPath();
-        mComponentName = componentName;
         mCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
         mStepNumber = stepNumber;
     }
@@ -204,11 +201,13 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             return DataBaseTaskResult.ERROR;
         }
 
+        ComponentName topActivity = getTopActivity();
+
         int existingActivityInfo = mContext.getContentResolver().query(
                 AmttContentProvider.ACTIVITY_META_CONTENT_URI,
                 new String[]{ActivityInfoTable._ACTIVITY_NAME},
                 ActivityInfoTable._ACTIVITY_NAME,
-                new String[]{mComponentName.getClassName()},
+                new String[]{topActivity.getClassName()},
                 null).getCount();
 
         //if there is no records about current app in db
@@ -217,7 +216,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             try {
                 activityInfo = mContext
                         .getPackageManager()
-                        .getActivityInfo(mComponentName, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
+                        .getActivityInfo(topActivity, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
             } catch (PackageManager.NameNotFoundException e) {
                 return DataBaseTaskResult.ERROR;
             }
@@ -225,7 +224,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             saveActivityInfo(activityInfo);
         }
 
-        saveStep(screenPath);
+        saveStep(screenPath, topActivity);
 
         return DataBaseTaskResult.DONE;
     }
@@ -236,6 +235,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         return DataBaseTaskResult.DONE;
     }
 
+
     private String saveScreen() throws Exception {
         String screenPath;
         Process process = Runtime.getRuntime().exec("su", null, null);
@@ -245,6 +245,13 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         os.close();
         process.destroy();
         return screenPath;
+    }
+
+    private ComponentName getTopActivity() {
+        ActivityManager activityManager = (ActivityManager)mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
+        ActivityManager.RunningTaskInfo lastActivity = tasks.get(0);
+        return lastActivity.topActivity;
     }
 
     private void saveActivityInfo(ActivityInfo activityInfo) {
@@ -261,7 +268,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         contentValues.put(ActivityInfoTable._SOFT_INPUT_MODE, getSoftInputMode(activityInfo));
         contentValues.put(ActivityInfoTable._TARGET_ACTIVITY_NAME, getTargetActivity(activityInfo));
         contentValues.put(ActivityInfoTable._TASK_AFFINITY, activityInfo.taskAffinity);
-        contentValues.put(ActivityInfoTable._THEME, getThemeName(activityInfo));
+        //contentValues.put(ActivityInfoTable._THEME, getThemeName(activityInfo));
         contentValues.put(ActivityInfoTable._UI_OPTIONS, getUiOptions(activityInfo));
         contentValues.put(ActivityInfoTable._PROCESS_NAME, activityInfo.processName);
         contentValues.put(ActivityInfoTable._PACKAGE_NAME, activityInfo.packageName);
@@ -269,11 +276,11 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         mContext.getContentResolver().insert(AmttContentProvider.ACTIVITY_META_CONTENT_URI, contentValues);
     }
 
-    private void saveStep(String screenPath) {
+    private void saveStep(String screenPath, ComponentName componentName) {
         ContentValues values = new ContentValues();
         values.put(StepsTable._ID, mStepNumber);
         values.put(StepsTable._SCREEN_PATH, screenPath);
-        values.put(StepsTable._ASSOCIATED_ACTIVITY, mComponentName.getClassName());
+        values.put(StepsTable._ASSOCIATED_ACTIVITY, componentName.getClassName());
         mContext.getContentResolver().insert(AmttContentProvider.STEP_CONTENT_URI, values);
     }
 

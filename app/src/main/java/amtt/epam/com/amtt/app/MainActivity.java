@@ -1,8 +1,6 @@
 package amtt.epam.com.amtt.app;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +27,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback {
     private String mCrashFilePath;
     private static final String CRASH_DIALOG_TAG = "crash_dialog_tag";
     private static int sStepNumber;
-    private DataBaseTask mDataBaseClearTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,18 +45,24 @@ public class MainActivity extends BaseActivity implements StepSavingCallback {
         Thread.currentThread().setUncaughtExceptionHandler(new AmttExceptionHandler(this));
 
 
-        mDataBaseClearTask = new DataBaseTask.Builder()
+        new DataBaseTask.Builder()
                 .setOperationType(DataBaseOperationType.CLEAR)
                 .setContext(MainActivity.this)
-                .create();
-        mDataBaseClearTask.execute();
+                .setCallback(MainActivity.this)
+                .create()
+                .execute();
 
         Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
         clearDbButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sStepNumber = 0;
-                mDataBaseClearTask.execute();
+                new DataBaseTask.Builder()
+                        .setOperationType(DataBaseOperationType.CLEAR)
+                        .setContext(MainActivity.this)
+                        .setCallback(MainActivity.this)
+                        .create()
+                        .execute();
             }
         });
 
@@ -71,7 +74,7 @@ public class MainActivity extends BaseActivity implements StepSavingCallback {
                 new DataBaseTask.Builder()
                         .setOperationType(DataBaseOperationType.SAVE_STEP)
                         .setContext(MainActivity.this)
-                        .setComponentName(MainActivity.this.getComponentName())
+                        .setCallback(MainActivity.this)
                         .setStepNumber(sStepNumber)
                         .create()
                         .execute();

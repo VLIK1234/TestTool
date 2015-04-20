@@ -31,16 +31,15 @@ public class ImageLoadingTask extends AsyncTask<Void, Void, Bitmap> {
         BitmapFactory.decodeFile(mPath, options);
         options.inSampleSize = calculateInSampleSize(options);
         options.inJustDecodeBounds = false;
-
-        final Bitmap bitmap = BitmapFactory.decodeFile(mPath, options);
-        mCallback.onLoadingFinished(mPath, bitmap);
-
-        return bitmap;
+        return BitmapFactory.decodeFile(mPath, options);
     }
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        mImageView.setImageBitmap(bitmap);
+        if (mImageView != null) {
+            mImageView.setImageBitmap(bitmap);
+        }
+        mCallback.onLoadingFinished(mPath, bitmap);
     }
 
     private int calculateInSampleSize(BitmapFactory.Options options) {
