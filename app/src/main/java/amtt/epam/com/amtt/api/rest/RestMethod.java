@@ -1,5 +1,6 @@
-package amtt.epam.com.amtt.authorization;
+package amtt.epam.com.amtt.api.rest;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -10,19 +11,29 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.util.Map;
 
+import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.processing.ResponseProcessor;
 
 /**
+ * Class for performing REST methods to Jira api
  * Created by Artsiom_Kaliaha on 15.04.2015.
  */
-public class RestMethod<ResultType> {
+public class RestMethod<ResultType, ResultObjectType> {
 
-    public static class Builder<ResultType> {
+    public enum RestMethodType {
+
+        GET,
+        POST
+
+    }
+
+    public static class Builder<ResultType, ResultObjectType> {
 
         private RestMethodType mRestMethodType;
         private Map<String, String> mHeaders;
         private String mUrl;
-        private ResponseProcessor mProcessor;
+        private ResponseProcessor mResponseProcessor; //processor for retrieving String messages from Json responses
+        private Processor<ResultObjectType, HttpEntity> mObjectProcessor; //processor for retrieving Objects from Json responses
         private String mJsonString;
 
         public Builder setType(RestMethodType methodType) {
@@ -45,9 +56,15 @@ public class RestMethod<ResultType> {
         }
 
         public Builder setResponseProcessor(ResponseProcessor processor) {
-            mProcessor = processor;
+            mResponseProcessor = processor;
             return this;
         }
+
+        public Builder setObjectProcessor(Processor<ResultObjectType, HttpEntity> processor) {
+            mObjectProcessor = processor;
+            return this;
+        }
+
 
         public Builder setJsonString(String jsonString) {
             mJsonString = jsonString;
@@ -55,11 +72,12 @@ public class RestMethod<ResultType> {
         }
 
         public RestMethod create() {
-            RestMethod<ResultType> restMethod = new RestMethod<>();
+            RestMethod<ResultType, ResultObjectType> restMethod = new RestMethod<>();
             restMethod.mRestMethodType = this.mRestMethodType;
             restMethod.mHeaders = this.mHeaders;
             restMethod.mUrl = this.mUrl;
-            restMethod.mProcessor = this.mProcessor;
+            restMethod.mResponseProcessor = this.mResponseProcessor;
+            restMethod.mObjectProcessor = this.mObjectProcessor;
             restMethod.mJsonString = this.mJsonString;
             return restMethod;
         }
@@ -70,7 +88,8 @@ public class RestMethod<ResultType> {
     private RestMethodType mRestMethodType;
     private Map<String, String> mHeaders;
     private String mUrl;
-    private ResponseProcessor mProcessor;
+    private ResponseProcessor mResponseProcessor;
+    private Processor<ResultObjectType, HttpEntity> mObjectProcessor;
     private String mJsonString;
 
 
@@ -98,7 +117,7 @@ public class RestMethod<ResultType> {
         return mHttpClient.execute(httpPost);
     }
 
-    public RestResponse<ResultType> execute() throws IOException {
+    public RestResponse<ResultType, ResultObjectType> execute() throws IOException {
         HttpResponse httpResponse = null;
 
         switch (mRestMethodType) {
@@ -111,18 +130,28 @@ public class RestMethod<ResultType> {
         }
 
         String responseMessage = null;
-        if (mProcessor != null) {
+        if (mResponseProcessor != null) {
             try {
-                responseMessage = mProcessor.process(httpResponse);
+                responseMessage = mResponseProcessor.process(httpResponse);
             } catch (Exception e) {
-                responseMessage = "response is illegible=(";
+                responseMessage = "response message is illegible=(";
             }
         }
 
-        RestResponse<ResultType> restResponse = new RestResponse<>();
+        ResultObjectType resultObject = null;
+        if (mObjectProcessor != null) {
+            try {
+                resultObject = mObjectProcessor.process(httpResponse.getEntity());
+            } catch (Exception e) {
+                responseMessage = "response object is illegible=(";
+            }
+        }
+
+        RestResponse<ResultType, ResultObjectType> restResponse = new RestResponse<>();
         restResponse.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         restResponse.setMessage(responseMessage);
         restResponse.setEntity(httpResponse.getEntity());
+        restResponse.setResultObject(resultObject);
         return restResponse;
     }
 

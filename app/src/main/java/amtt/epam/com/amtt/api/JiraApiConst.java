@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.authorization;
+package amtt.epam.com.amtt.api;
 
 /**
  * Created by Artsiom_Kaliaha on 15.04.2015.

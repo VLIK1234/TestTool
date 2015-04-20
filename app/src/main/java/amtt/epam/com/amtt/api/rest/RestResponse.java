@@ -1,19 +1,20 @@
-package amtt.epam.com.amtt.authorization;
+package amtt.epam.com.amtt.api.rest;
 
 import org.apache.http.HttpEntity;
 
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 
 /**
+ * Class providing access to REST method responses
  * Created by Artsiom_Kaliaha on 15.04.2015.
  */
-public class RestResponse<ResultType> {
+public class RestResponse<ResultType,ResultObjectType> {
 
     private String mResponseMessage;
     private int mStatusCode;
     private HttpEntity mEntity;
     private ResultType mResult;
-    private JMetaResponse mJMetaResponse;
+    private ResultObjectType mObject;
 
     public RestResponse() {
     }
@@ -38,9 +39,10 @@ public class RestResponse<ResultType> {
         mResult = result;
     }
 
-    public void setJiraMetaResponse(JMetaResponse jiraMetaResponse) {
-        mJMetaResponse = jiraMetaResponse;
+    public void setResultObject(ResultObjectType object) {
+        mObject = object;
     }
+
 
     public String getMessage() {
         return mResponseMessage;
@@ -58,8 +60,8 @@ public class RestResponse<ResultType> {
         return mResult;
     }
 
-    public JMetaResponse getJiraMetaResponse() {
-        return mJMetaResponse;
+    public ResultObjectType getResultObject() {
+        return mObject;
     }
 
 }

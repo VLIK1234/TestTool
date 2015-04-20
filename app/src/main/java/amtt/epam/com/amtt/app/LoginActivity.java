@@ -5,24 +5,22 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.api.JiraApi;
-import amtt.epam.com.amtt.authorization.AuthorizationCallback;
-import amtt.epam.com.amtt.authorization.AuthorizationResult;
-import amtt.epam.com.amtt.authorization.AuthorizationTask;
-import amtt.epam.com.amtt.authorization.RestResponse;
+import amtt.epam.com.amtt.api.JiraCallback;
+import amtt.epam.com.amtt.api.JiraTask;
+import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
+import amtt.epam.com.amtt.api.result.AuthorizationResult;
+import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.Logger;
-import amtt.epam.com.amtt.view.TopButtonView;
 
-public class LoginActivity extends BaseActivity implements AuthorizationCallback {
+public class LoginActivity extends BaseActivity implements JiraCallback<AuthorizationResult,Void> {
 
     private EditText userName;
     private EditText password;
@@ -32,12 +30,16 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
     private final String TAG = this.getClass().getSimpleName();
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         userName = (EditText) findViewById(R.id.user_name);
         password = (EditText) findViewById(R.id.password);
         url = (EditText) findViewById(R.id.jira_url);
+
+        url.setText("https://amttpr.atlassian.net");
+        userName.setText("artsiom_kaliaha");
 
         loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +63,12 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
                     showProgress(true);
                     CredentialsManager.getInstance().setUrl(url.getText().toString());
                     CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString());
-                    new AuthorizationTask(userName.getText().toString(), password.getText().toString(), url.getText().toString(), LoginActivity.this).execute();
+                    new JiraTask.Builder<AuthorizationResult,Void>()
+                            .setOperationType(JiraTaskType.AUTH)
+                            .setCallback(LoginActivity.this)
+                            .create()
+                            .execute();
+
                     loginButton.setVisibility(View.GONE);
                 }
                 if (!TextUtils.isEmpty(toastText)) {
@@ -73,7 +80,7 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
     }
 
     @Override
-    public void onAuthorizationResult(RestResponse restResponse) {
+    public void onJiraRequestPerformed(RestResponse<AuthorizationResult,Void> restResponse) {
         Toast.makeText(this, restResponse.getMessage(), Toast.LENGTH_SHORT).show();
         showProgress(false);
         loginButton.setVisibility(View.VISIBLE);
@@ -85,5 +92,4 @@ public class LoginActivity extends BaseActivity implements AuthorizationCallback
             finish();
         }
     }
-
 }

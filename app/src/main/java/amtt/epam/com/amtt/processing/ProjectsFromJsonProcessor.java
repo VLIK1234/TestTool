@@ -13,7 +13,7 @@ import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 /**
  * Created by Irina Monchenko on 01.04.2015.
  */
-public class ProjectsToJsonProcessor implements Processor<JMetaResponse, HttpEntity> {
+public class ProjectsFromJsonProcessor implements Processor<JMetaResponse, HttpEntity> {
 
     @Override
     public JMetaResponse process(HttpEntity inputStream) throws Exception {

@@ -13,12 +13,13 @@ import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraCallback;
-import amtt.epam.com.amtt.api.JiraOperationType;
 import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.authorization.RestResponse;
-import amtt.epam.com.amtt.bo.issue.JiraSearchType;
+import amtt.epam.com.amtt.api.JiraTask.JiraSearchType;
+import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
+import amtt.epam.com.amtt.api.rest.RestResponse;
+import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreateIssue;
-import amtt.epam.com.amtt.bo.issue.willrefactored.CreationIssueResult;
+import amtt.epam.com.amtt.api.result.CreateIssueResult;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.PreferenceUtils;
@@ -47,10 +48,9 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 showProgress(true);
-                //new ShowUserDataTask(JiraSearchType.ISSUE, CreateIssueActivity.this).execute();
                 new JiraTask.Builder<>()
-                        .setOperationType(JiraOperationType.SEARCH)
-                        .setSearchType(JiraSearchType.USER_INFO)
+                        .setOperationType(JiraTaskType.SEARCH)
+                        .setSearchType(JiraSearchType.ISSUE)
                         .setCallback(CreateIssueActivity.this)
                         .create()
                         .execute();
@@ -73,9 +73,8 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
                 showProgress(true);
                 buttonCreateIssue.setVisibility(View.GONE);
 
-                //new CreateIssueTask(issue.createSimpleIssue(projectKey, issueType, description, summary), CreateIssueActivity.this).execute();
-                new JiraTask.Builder<CreationIssueResult>()
-                        .setOperationType(JiraOperationType.CREATE_ISSUE)
+                new JiraTask.Builder<CreateIssueResult,Void>()
+                        .setOperationType(JiraTaskType.CREATE_ISSUE)
                         .setCallback(CreateIssueActivity.this)
                         .setJson(issue.createSimpleIssue(projectKey, issueType, description, summary))
                         .create()
@@ -106,20 +105,22 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onJiraRequestPerformed(RestResponse restResponse) {
-        if (restResponse.getResult() instanceof CreationIssueResult) {
+        if (restResponse.getResult() instanceof CreateIssueResult) {
             Toast.makeText(this, restResponse.getMessage(), Toast.LENGTH_SHORT).show();
-            if (restResponse.getResult() == CreationIssueResult.CREATION_SUCCESS ) {
+            if (restResponse.getResult() == CreateIssueResult.SUCCESS) {
                 finish();
             }
             buttonCreateIssue.setVisibility(View.VISIBLE);
         } else {
-            if (restResponse.getJiraMetaResponse() == null) {
+            if (restResponse.getResultObject() == null) {
                 Toast.makeText(this, restResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 return;
             }
-            int index = restResponse.getJiraMetaResponse().getProjects().size() - (getSelectedItemPositionProject() + 1);
-            ArrayList<String> issueTypesNames = restResponse.getJiraMetaResponse().getProjects().get(index).getIssueTypesNames();
+            JMetaResponse jMetaResponse = ((RestResponse<Void, JMetaResponse>) restResponse).getResultObject();
+            int index = jMetaResponse.getProjects().size() - (getSelectedItemPositionProject() + 1);
+            ArrayList<String> issueTypesNames = jMetaResponse.getProjects().get(index).getIssueTypesNames();
             ArrayAdapter<String> issueNames = new ArrayAdapter<>(CreateIssueActivity.this, android.R.layout.simple_spinner_item, issueTypesNames);
             issueNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
