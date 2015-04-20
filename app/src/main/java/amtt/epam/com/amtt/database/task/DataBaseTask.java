@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +64,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             dataBaseTask.mContext = this.mContext;
             dataBaseTask.mCallback = this.mCallback;
             dataBaseTask.mStepNumber = this.mStepNumber;
-            dataBaseTask.mPath = mContext.getCacheDir().getPath();
+            dataBaseTask.mPath = mContext.getFilesDir().getPath() + SCREENSHOT_FOLDER;
             dataBaseTask.mCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
             return dataBaseTask;
         }
@@ -71,6 +72,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     }
 
     private static final String SCREENSHOT_COMMAND = "/system/bin/screencap -p ";
+    private static final String SCREENSHOT_FOLDER = "/screenshot";
     private static Map<Integer, String> sConfigChanges;
     private static Map<Integer, String> sFlags;
     private static Map<Integer, String> sLaunchMode;
@@ -232,6 +234,15 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     private DataBaseTaskResult performCleaning() {
         mContext.getContentResolver().delete(AmttContentProvider.ACTIVITY_META_CONTENT_URI, null, null);
         mContext.getContentResolver().delete(AmttContentProvider.STEP_CONTENT_URI, null, null);
+
+        File screenshotDirectory = new File(mPath);
+        if (!screenshotDirectory.exists()) {
+            screenshotDirectory.mkdir();
+        } else {
+            for (File screenshot : screenshotDirectory.listFiles()) {
+                screenshot.delete();
+            }
+        }
         return DataBaseTaskResult.DONE;
     }
 
@@ -268,7 +279,6 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         contentValues.put(ActivityInfoTable._SOFT_INPUT_MODE, getSoftInputMode(activityInfo));
         contentValues.put(ActivityInfoTable._TARGET_ACTIVITY_NAME, getTargetActivity(activityInfo));
         contentValues.put(ActivityInfoTable._TASK_AFFINITY, activityInfo.taskAffinity);
-        //contentValues.put(ActivityInfoTable._THEME, getThemeName(activityInfo));
         contentValues.put(ActivityInfoTable._UI_OPTIONS, getUiOptions(activityInfo));
         contentValues.put(ActivityInfoTable._PROCESS_NAME, activityInfo.processName);
         contentValues.put(ActivityInfoTable._PACKAGE_NAME, activityInfo.packageName);
@@ -333,10 +343,6 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
 
     private String getTargetActivity(ActivityInfo activityInfo) {
         return activityInfo.targetActivity == null ? NOT_AVAILABLE : activityInfo.targetActivity;
-    }
-
-    private String getThemeName(ActivityInfo activityInfo) {
-        return activityInfo.theme == 0 ? NOT_AVAILABLE : mContext.getResources().getResourceName(activityInfo.theme);
     }
 
     private String getUiOptions(ActivityInfo activityInfo) {
