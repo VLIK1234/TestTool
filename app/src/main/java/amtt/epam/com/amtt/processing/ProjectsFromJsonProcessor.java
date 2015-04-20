@@ -18,6 +18,7 @@ public class ProjectsFromJsonProcessor implements Processor<JMetaResponse, HttpE
     @Override
     public JMetaResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
+        //TODO can we use gson as singleton?
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(_response, JMetaResponse.class);
     }

@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.database;
+package amtt.epam.com.amtt.database.task;
 
 import android.content.Context;
 import android.os.AsyncTask;

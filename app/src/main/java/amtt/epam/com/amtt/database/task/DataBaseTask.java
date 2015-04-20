@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.database;
+package amtt.epam.com.amtt.database.task;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -9,20 +9,69 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.annotation.NonNull;
 
-import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 
 /**
  * Created by Artsiom_Kaliaha on 26.03.2015.
  */
-public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> implements ActivityInfoConstants {
+public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> implements ActivityInfoConstants {
 
+    public static class Builder {
+
+        private DataBaseOperationType mOperationType;
+        private Context mContext;
+        private Bitmap mBitmap;
+        private Rect mRect;
+        private ComponentName mComponentName;
+        private int mStepNumber;
+
+        public Builder() {
+        }
+
+        public Builder setOperationType(DataBaseOperationType operationType) {
+            mOperationType = operationType;
+            return this;
+        }
+
+        public Builder setContext(@NonNull Context context) {
+            mContext = context;
+            return this;
+        }
+
+        public Builder setComponentName(@NonNull ComponentName componentName) {
+            mComponentName = componentName;
+            return this;
+        }
+
+        public Builder setStepNumber(int stepNumber) {
+            mStepNumber = stepNumber;
+            return this;
+        }
+
+        public DataBaseTask create() {
+            DataBaseTask dataBaseTask = new DataBaseTask();
+            dataBaseTask.mOperationType = this.mOperationType;
+            dataBaseTask.mContext = this.mContext;
+            dataBaseTask.mCallback = (StepSavingCallback) mContext;
+            dataBaseTask.mComponentName = this.mComponentName;
+            dataBaseTask.mStepNumber = this.mStepNumber;
+            dataBaseTask.mPath = mContext.getCacheDir().getPath();
+            dataBaseTask.mCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
+            return dataBaseTask;
+        }
+
+    }
+
+    private static final String SCREENSHOT_COMMAND = "/system/bin/screencap -p ";
     private static Map<Integer, String> sConfigChanges;
     private static Map<Integer, String> sFlags;
     private static Map<Integer, String> sLaunchMode;
@@ -30,7 +79,7 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
     private static Map<Integer, String> sScreenOrientation;
     private static Map<Integer, String> sSoftInputMode;
     private static Map<Integer, String> sUiOptions;
-    private static int sStepsCount = 0;
+    private int mStepNumber;
 
     static {
         sConfigChanges = new HashMap<>();
@@ -102,34 +151,57 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
         sUiOptions.put(1, UI_OPTIONS_SPLIT_ACTIONBAR_WHEN_NARROW);
     }
 
-    private final Context mContext;
-    private final StepSavingCallback mCallback;
-    private Bitmap mBitmap;
-    private final Rect mRect;
-    private final String mPath;
-    private final ComponentName mComponentName;
-    private final int mCurrentSdkVersion;
+    private DataBaseOperationType mOperationType;
+    private Context mContext;
+    private StepSavingCallback mCallback;
+    private String mPath;
+    private ComponentName mComponentName;
+    private int mCurrentSdkVersion;
 
-    public StepSavingTask(Context context, StepSavingCallback callback, Bitmap bitmap, Rect rect, ComponentName componentName, boolean newStepsSequence) {
+    public DataBaseTask(DataBaseOperationType operationType, Context context, Bitmap bitmap, Rect rect, ComponentName componentName, int stepNumber) {
+        mOperationType = operationType;
         mContext = context;
-        mCallback = callback;
-        mBitmap = bitmap;
-        mRect = rect;
+        mCallback = (StepSavingCallback) context;
         mPath = context.getCacheDir().getPath();
         mComponentName = componentName;
         mCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
+        mStepNumber = stepNumber;
+    }
 
-        sStepsCount = newStepsSequence ? 1 : sStepsCount + 1;
+    public DataBaseTask(DataBaseOperationType operationType, Context context) {
+        mOperationType = operationType;
+        mContext = context;
+        mCallback = (StepSavingCallback) context;
+    }
+
+    public DataBaseTask() {
     }
 
     @Override
-    protected StepSavingResult doInBackground(Void... params) {
+    protected DataBaseTaskResult doInBackground(Void... params) {
+        switch (mOperationType) {
+            case SAVE_STEP:
+                return performStepSaving();
+            case CLEAR:
+                return performCleaning();
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    protected void onPostExecute(DataBaseTaskResult result) {
+        mCallback.onDataBaseActionDone(result);
+    }
+
+
+    private DataBaseTaskResult performStepSaving() {
         String screenPath;
         try {
             screenPath = saveScreen();
             mCallback.incrementScreenNumber();
         } catch (Exception e) {
-            return StepSavingResult.ERROR;
+            return DataBaseTaskResult.ERROR;
         }
 
         int existingActivityInfo = mContext.getContentResolver().query(
@@ -139,7 +211,7 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
                 new String[]{mComponentName.getClassName()},
                 null).getCount();
 
-        //if there is no records about current activity in db
+        //if there is no records about current app in db
         if (existingActivityInfo == 0) {
             ActivityInfo activityInfo;
             try {
@@ -147,29 +219,31 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
                         .getPackageManager()
                         .getActivityInfo(mComponentName, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
             } catch (PackageManager.NameNotFoundException e) {
-                return StepSavingResult.ERROR;
+                return DataBaseTaskResult.ERROR;
             }
 
             saveActivityInfo(activityInfo);
         }
 
-
         saveStep(screenPath);
 
-        return StepSavingResult.SAVED;
+        return DataBaseTaskResult.DONE;
     }
 
-    @Override
-    protected void onPostExecute(StepSavingResult result) {
-        mCallback.onStepSaved(result);
+    private DataBaseTaskResult performCleaning() {
+        mContext.getContentResolver().delete(AmttContentProvider.ACTIVITY_META_CONTENT_URI, null, null);
+        mContext.getContentResolver().delete(AmttContentProvider.STEP_CONTENT_URI, null, null);
+        return DataBaseTaskResult.DONE;
     }
-
 
     private String saveScreen() throws Exception {
-        String screenPath = mPath + "/screen" + mCallback.getScreenNumber() + ".png";
-        mBitmap = Bitmap.createBitmap(mBitmap, 0, mRect.top, mRect.width(), mRect.height());
-        FileOutputStream bitmapPath = new FileOutputStream(screenPath);
-        mBitmap.compress(Bitmap.CompressFormat.PNG, 100, bitmapPath);
+        String screenPath;
+        Process process = Runtime.getRuntime().exec("su", null, null);
+        OutputStream os = process.getOutputStream();
+        os.write((SCREENSHOT_COMMAND + (screenPath = mPath + "/screen" + mCallback.getScreenNumber() + ".png")).getBytes("ASCII"));
+        os.flush();
+        os.close();
+        process.destroy();
         return screenPath;
     }
 
@@ -197,7 +271,7 @@ public class StepSavingTask extends AsyncTask<Void, Void, StepSavingResult> impl
 
     private void saveStep(String screenPath) {
         ContentValues values = new ContentValues();
-        values.put(StepsTable._ID, sStepsCount);
+        values.put(StepsTable._ID, mStepNumber);
         values.put(StepsTable._SCREEN_PATH, screenPath);
         values.put(StepsTable._ASSOCIATED_ACTIVITY, mComponentName.getClassName());
         mContext.getContentResolver().insert(AmttContentProvider.STEP_CONTENT_URI, values);

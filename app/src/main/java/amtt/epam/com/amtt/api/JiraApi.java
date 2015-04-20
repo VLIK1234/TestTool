@@ -21,9 +21,9 @@ import amtt.epam.com.amtt.api.rest.RestMethod.RestMethodType;
 /**
  * Created by Artsiom_Kaliaha on 24.03.2015.
  */
+
 @SuppressWarnings("unchecked")
 public class JiraApi {
-
     final private String mUrl = CredentialsManager.getInstance().getUrl();
 
     public RestResponse authorize() {

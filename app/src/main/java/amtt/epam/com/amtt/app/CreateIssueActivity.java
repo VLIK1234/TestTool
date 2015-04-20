@@ -68,6 +68,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
                 String projectKey, issueType, description, summary;
                 description = etDescription.getText().toString();
                 summary = etSummary.getText().toString();
+                //TODO is it possible to click create issue before spinnerIssueTypes are inited?
                 issueType = spinnerIssueTypes.getSelectedItem().toString();
                 projectKey = getProjectKey();
                 showProgress(true);
@@ -99,6 +100,8 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
 
     public String getProjectKey() {
         projectsKeys = getProjectsKeys();
+        //TODO unreadable string
+        //too many fields in line. Why do you get position from end of the list
         return projectsKeys.get(projectsNames.size() - ((projectsNames.indexOf(spinnerProjectsKey.getSelectedItem().toString())) + 1));
 
     }
@@ -127,6 +130,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
             spinnerIssueTypes.setAdapter(issueNames);
         }
         showProgress(false);
+
     }
 
 }
