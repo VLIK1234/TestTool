@@ -32,6 +32,7 @@ public class RestMethod<ResultType, ResultObjectType> {
         private RestMethodType mRestMethodType;
         private Map<String, String> mHeaders;
         private String mUrl;
+        //TODO Why do we need two processors?
         private ResponseProcessor mResponseProcessor; //processor for retrieving String messages from Json responses
         private Processor<ResultObjectType, HttpEntity> mObjectProcessor; //processor for retrieving Objects from Json responses
         private String mJsonString;
@@ -59,13 +60,13 @@ public class RestMethod<ResultType, ResultObjectType> {
             mResponseProcessor = processor;
             return this;
         }
-
+        //TODO Why do we need two processors?
         public Builder setObjectProcessor(Processor<ResultObjectType, HttpEntity> processor) {
             mObjectProcessor = processor;
             return this;
         }
 
-
+        //TODO is it post request body? why is it called so?
         public Builder setJsonString(String jsonString) {
             mJsonString = jsonString;
             return this;
@@ -134,6 +135,7 @@ public class RestMethod<ResultType, ResultObjectType> {
             try {
                 responseMessage = mResponseProcessor.process(httpResponse);
             } catch (Exception e) {
+                //TODO WTF? see notes to RestResponse
                 responseMessage = "response message is illegible=(";
             }
         }
@@ -147,6 +149,8 @@ public class RestMethod<ResultType, ResultObjectType> {
             }
         }
 
+        //TODO I think it would be a good idea to have status code, headers, error and result.
+        //TODO don't set entity. process it and close as soon it is not used later
         RestResponse<ResultType, ResultObjectType> restResponse = new RestResponse<>();
         restResponse.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         restResponse.setMessage(responseMessage);
