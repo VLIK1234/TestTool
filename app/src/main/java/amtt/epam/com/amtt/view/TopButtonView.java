@@ -280,7 +280,36 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
                             Animation reverseRotate = AnimationUtils.loadAnimation(getContext(), R.anim.reverse_rotate);
                             mainButton.startAnimation(reverseRotate);
                             reverseRotate.setFillAfter(true);
-                            buttonsBar.setVisibility(GONE);
+                            Animation translateUp = AnimationUtils.loadAnimation(getContext(), R.anim.translate_up);
+                            translateUp.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
+
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    buttonsBar.setVisibility(GONE);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+
+                                }
+                            });
+                            buttonsBar.startAnimation(translateUp);
+                            Animation combination = AnimationUtils.loadAnimation(getContext(), R.anim.combination_reverse);
+                            long durationAnimation = combination.getDuration();
+                            for (int i = 0; i < buttonsArray.length; i++, durationAnimation+=100) {
+                                combination.setDuration(durationAnimation);
+                                buttonsArray[i].startAnimation(combination);
+                            }
+                            Animation alpha = AnimationUtils.loadAnimation(getContext(), R.anim.alpha_back);
+                            durationAnimation = 300;
+                            for (int i = 0; i < textViewArray.length; i++, durationAnimation+=100) {
+                                alpha.setDuration(durationAnimation);
+                                textViewArray[i].startAnimation(alpha);
+                            }
                         } else {
                             buttonsBar.setVisibility(VISIBLE);
                             Animation rotate = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
