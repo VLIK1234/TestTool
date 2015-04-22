@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,7 +43,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback {
 
         Thread.currentThread().setUncaughtExceptionHandler(new AmttExceptionHandler(this));
 
-
         new DataBaseTask.Builder()
                 .setOperationType(DataBaseOperationType.CLEAR)
                 .setContext(MainActivity.this)
@@ -63,29 +61,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback {
                         .setCallback(MainActivity.this)
                         .create()
                         .execute();
-            }
-        });
-
-        Button stepButton = (Button) findViewById(R.id.step_button);
-        stepButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sStepNumber++;
-                new DataBaseTask.Builder()
-                        .setOperationType(DataBaseOperationType.SAVE_STEP)
-                        .setContext(MainActivity.this)
-                        .setCallback(MainActivity.this)
-                        .setStepNumber(sStepNumber)
-                        .create()
-                        .execute();
-            }
-        });
-
-        Button showStepsButton = (Button) findViewById(R.id.show_steps_button);
-        showStepsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, StepsActivity.class));
             }
         });
 

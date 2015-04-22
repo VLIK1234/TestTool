@@ -72,6 +72,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     }
 
     private static final String SCREENSHOT_COMMAND = "/system/bin/screencap -p ";
+    private static final String CHANGE_PERMISSION_COMMAND = "chmod 777 ";
     private static final String SCREENSHOT_FOLDER = "/screenshot";
     private static Map<Integer, String> sConfigChanges;
     private static Map<Integer, String> sFlags;
@@ -249,12 +250,19 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
 
     private String saveScreen() throws Exception {
         String screenPath;
-        Process process = Runtime.getRuntime().exec("su", null, null);
-        OutputStream os = process.getOutputStream();
-        os.write((SCREENSHOT_COMMAND + (screenPath = mPath + "/screen" + mCallback.getScreenNumber() + ".png")).getBytes("ASCII"));
-        os.flush();
-        os.close();
-        process.destroy();
+        Process fileSavingProcess = Runtime.getRuntime().exec("su");
+        OutputStream fileSavingStream = fileSavingProcess.getOutputStream();
+        fileSavingStream.write((SCREENSHOT_COMMAND + (screenPath = mPath + "/screen" + mStepNumber + ".png")).getBytes("ASCII"));
+        fileSavingStream.flush();
+        fileSavingStream.close();
+        fileSavingProcess.destroy();
+
+        Process changeModeProcess = Runtime.getRuntime().exec("su");
+        OutputStream changeModeStream =  changeModeProcess.getOutputStream();
+        changeModeStream.write((CHANGE_PERMISSION_COMMAND + screenPath + "\n").getBytes("ASCII"));
+        changeModeStream.flush();
+        changeModeStream.close();
+        changeModeProcess.destroy();
         return screenPath;
     }
 

@@ -36,9 +36,6 @@ public class ImageLoadingTask extends AsyncTask<Void, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        if (mImageView != null) {
-            mImageView.setImageBitmap(bitmap);
-        }
         mCallback.onLoadingFinished(mPath, bitmap);
     }
 

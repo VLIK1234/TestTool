@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
+import amtt.epam.com.amtt.app.MainActivity;
+import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
 import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
@@ -119,18 +121,15 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback, 
                         .setStepNumber(sStepNumber)
                         .create()
                         .execute();
-//                Intent intentATS = new Intent(BaseActivity.ACTION_SAVE_STEP);
-//                getContext().sendBroadcast(intentATS);
             }
         });
         Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
         buttonShowStep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "SHOW", Toast.LENGTH_LONG).show();
-//                Intent intent = new Intent(getContext(), StepsActivity.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                getContext().getApplicationContext().startActivity(intent);
+                Intent intent = new Intent(getContext(), StepsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intent);
             }
         });
         buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
