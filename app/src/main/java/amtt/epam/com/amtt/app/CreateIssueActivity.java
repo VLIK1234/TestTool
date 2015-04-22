@@ -64,16 +64,14 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
         buttonCreateIssue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CreateIssue issue = new CreateIssue();
+                buttonCreateIssue.setEnabled(false);
                 String projectKey, issueType, description, summary;
                 description = etDescription.getText().toString();
                 summary = etSummary.getText().toString();
-                //TODO is it possible to click create issue before spinnerIssueTypes are inited?
                 issueType = spinnerIssueTypes.getSelectedItem().toString();
                 projectKey = getProjectKey();
                 showProgress(true);
-                buttonCreateIssue.setVisibility(View.GONE);
-
+                CreateIssue issue = new CreateIssue();
                 new JiraTask.Builder<CreateIssueResult,Void>()
                         .setOperationType(JiraTaskType.CREATE_ISSUE)
                         .setCallback(CreateIssueActivity.this)
@@ -115,7 +113,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
             if (restResponse.getResult() == CreateIssueResult.SUCCESS) {
                 finish();
             }
-            buttonCreateIssue.setVisibility(View.VISIBLE);
+            buttonCreateIssue.setEnabled(true);
         } else {
             if (restResponse.getResultObject() == null) {
                 Toast.makeText(this, restResponse.getMessage(), Toast.LENGTH_SHORT).show();
@@ -128,6 +126,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
             issueNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
             spinnerIssueTypes.setAdapter(issueNames);
+            buttonCreateIssue.setEnabled(true);
         }
         showProgress(false);
 
