@@ -9,10 +9,6 @@ import java.util.Set;
  */
 public class Converter {
 
-    //TODO do we need constructor here?
-    public Converter() {
-    }
-
     public static ArrayList<String> setToArrayList(Set<String> inputSetString) {
         //TODO check input data before create any objects
         ArrayList<String> outputArrayList = new ArrayList<>();
