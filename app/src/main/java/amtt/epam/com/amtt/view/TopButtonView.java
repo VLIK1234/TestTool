@@ -19,19 +19,21 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.api.JiraCallback;
+import amtt.epam.com.amtt.api.JiraTask;
+import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.app.MainActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
-import amtt.epam.com.amtt.asynctask.ShowUserDataTask;
-import amtt.epam.com.amtt.bo.issue.TypeSearchedData;
+import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
-import amtt.epam.com.amtt.callbacks.ShowUserDataCallback;
 import amtt.epam.com.amtt.database.task.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
 import amtt.epam.com.amtt.database.task.StepSavingCallback;
+import amtt.epam.com.amtt.api.result.UserDataResult;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.CredentialsManager;
@@ -40,7 +42,7 @@ import amtt.epam.com.amtt.util.PreferenceUtils;
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-public class TopButtonView extends FrameLayout implements ShowUserDataCallback, StepSavingCallback {
+public class TopButtonView extends FrameLayout implements JiraCallback<UserDataResult, JMetaResponse>, StepSavingCallback {
 
     private final static String LOG_TAG = "TAG";
 
@@ -80,6 +82,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback, 
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
     }
 
+    @SuppressWarnings("unchecked")
     private void initComponent() {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.top_button_layout, this, true);
@@ -136,7 +139,12 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback, 
         buttonBugRep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ShowUserDataTask(TypeSearchedData.SEARCH_ISSUE, TopButtonView.this).execute();
+                new JiraTask.Builder<UserDataResult,JMetaResponse>()
+                        .setOperationType(JiraTaskType.SEARCH)
+                        .setSearchType(JiraTask.JiraSearchType.ISSUE)
+                        .setCallback(TopButtonView.this)
+                        .create()
+                        .execute();
             }
         });
 
@@ -279,14 +287,19 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback, 
     }
 
     @Override
-    public void onShowUserDataResult(JMetaResponse result) {
-        ArrayList<String> projectsNames = result.getProjectsNames();
-        ArrayList<String> projectsKeys = result.getProjectsKeys();
-        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
-        PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
-        Intent intent = new Intent(getContext(), CreateIssueActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getContext().getApplicationContext().startActivity(intent);
+    public void onJiraRequestPerformed(RestResponse<UserDataResult,JMetaResponse> restResponse) {
+        if (restResponse.getResult() == UserDataResult.SUCCESS) {
+            JMetaResponse jiraMetaResponse = restResponse.getResultObject();
+            ArrayList<String> projectsNames = jiraMetaResponse.getProjectsNames();
+            ArrayList<String> projectsKeys = jiraMetaResponse.getProjectsKeys();
+            PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
+            PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
+            Intent intent = new Intent(getContext(), CreateIssueActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().getApplicationContext().startActivity(intent);
+        } else {
+            Toast.makeText(getContext(), restResponse.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
