@@ -60,11 +60,12 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
     private int lastY;
     public boolean moving;
     private TextView[] textViewArray;
+    public TextView textUserInfo;
+    public TextView textBugRep;
 
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
         initComponent();
-
         buttonsBar.setOrientation(LinearLayout.VERTICAL);
 
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -82,16 +83,11 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
         mainButton = (ImageView) findViewById(R.id.plus_button);
         buttonsBar.setVisibility(GONE);
         TextView textAuth = (TextView) findViewById(R.id.text_auth);
-        TextView textUserInfo = (TextView) findViewById(R.id.text_user_info);
+        textUserInfo = (TextView) findViewById(R.id.text_user_info);
         TextView textAddStep = (TextView) findViewById(R.id.text_add_step);
         TextView textShowStep = (TextView) findViewById(R.id.text_show_step);
-        TextView textBugRep = (TextView) findViewById(R.id.text_bug_rep);
+        textBugRep = (TextView) findViewById(R.id.text_bug_rep);
         textViewArray = new TextView[]{textAuth, textUserInfo, textAddStep, textShowStep, textBugRep};
-        LinearLayout layoutAuth = (LinearLayout) findViewById(R.id.layout_auth);
-        LinearLayout layoutUserInfo = (LinearLayout) findViewById(R.id.layout_user_info);
-        LinearLayout layoutAddStep = (LinearLayout) findViewById(R.id.layout_add_step);
-        LinearLayout layoutShowStep = (LinearLayout) findViewById(R.id.layout_show_step);
-        LinearLayout layoutBugRep = (LinearLayout) findViewById(R.id.layout_bug_rep);
 
         buttonAuth = (Button) findViewById(R.id.button_auth);
         buttonUserInfo = (Button) findViewById(R.id.button_user_info);
@@ -99,7 +95,8 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
         Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
         buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
         buttonsArray = new Button[]{buttonAuth, buttonUserInfo, buttonAddStep, buttonShowStep, buttonBugRep};
-        layoutAuth.setOnClickListener(new OnClickListener() {
+
+        OnClickListener listenerAuth = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!CredentialsManager.getInstance().getAccessState()) {
@@ -107,26 +104,35 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().getApplicationContext().startActivity(intent);
                 }else{
+                    //logout logic
                 }
             }
-        });
-        layoutUserInfo.setOnClickListener(new OnClickListener() {
+        };
+        buttonAuth.setOnClickListener(listenerAuth);
+        textAuth.setOnClickListener(listenerAuth);
+        OnClickListener listenerUserInfo = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), UserInfoActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intent);
             }
-        });
-        layoutAddStep.setOnClickListener(new OnClickListener() {
+        };
+        buttonUserInfo.setOnClickListener(listenerUserInfo);
+        textUserInfo.setOnClickListener(listenerUserInfo);
+
+        OnClickListener listenerAddStep = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "STEP", Toast.LENGTH_LONG).show();
 //                Intent intentATS = new Intent(BaseActivity.ACTION_SAVE_STEP);
 //                getContext().sendBroadcast(intentATS);
             }
-        });
-        layoutShowStep.setOnClickListener(new OnClickListener() {
+        };
+        buttonAddStep.setOnClickListener(listenerAddStep);
+        textAddStep.setOnClickListener(listenerAddStep);
+
+        OnClickListener listnerShowStep = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "SHOW", Toast.LENGTH_LONG).show();
@@ -134,13 +140,18 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
 //                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                getContext().getApplicationContext().startActivity(intent);
             }
-        });
-        layoutBugRep.setOnClickListener(new OnClickListener() {
+        };
+        buttonShowStep.setOnClickListener(listnerShowStep);
+        textShowStep.setOnClickListener(listnerShowStep);
+
+        OnClickListener listenerBugRep = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 new ShowUserDataTask(TypeSearchedData.SEARCH_ISSUE, TopButtonView.this).execute();
             }
-        });
+        };
+        buttonBugRep.setOnClickListener(listenerBugRep);
+        textBugRep.setOnClickListener(listenerBugRep);
     }
 
     private void checkFreeSpace() {
