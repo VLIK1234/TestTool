@@ -11,6 +11,7 @@ import amtt.epam.com.amtt.util.CredentialsManager;
  */
 public class JiraTask<ResultType,ResultObjectType> extends AsyncTask<Object, Void, RestResponse<ResultType,ResultObjectType>> {
 
+    //TODO we use this class only outside
     public enum JiraSearchType {
 
         ISSUE,
@@ -30,6 +31,7 @@ public class JiraTask<ResultType,ResultObjectType> extends AsyncTask<Object, Voi
 
         private JiraTaskType mOperationType;
         private JiraCallback<ResultType,ResultObjectType> mCallback;
+        //TODO what is the purpose of json. rename
         private String mJson;
         private JiraSearchType mSearchType;
 
@@ -43,6 +45,7 @@ public class JiraTask<ResultType,ResultObjectType> extends AsyncTask<Object, Voi
             return this;
         }
 
+        //TODO what is the purpose of json. rename
         public Builder setJson(String json) {
             mJson = json;
             return this;
@@ -79,6 +82,7 @@ public class JiraTask<ResultType,ResultObjectType> extends AsyncTask<Object, Voi
 
         switch (mOperationType) {
             case AUTH:
+                //TODO we create class everyTime we perform call? Why do you are afraid of singltones?
                 restResponse = new JiraApi().authorize();
                 break;
             case CREATE_ISSUE:
