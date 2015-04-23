@@ -26,17 +26,24 @@ public class Logger {
     public Logger() {
     }
 
-    public static void d(String mNameClass, String mMessage) {
+    public static void d(String className, String message) {
         if (IS_SHOW_LOGS) {
-            android.util.Log.d(mNameClass, mMessage);
+            android.util.Log.d(className, message);
         }
     }
 
-    public static void i(String mNameClass, String mMessage) {
+    public static void i(String className, String message) {
         if (IS_SHOW_LOGS) {
-            android.util.Log.i(mNameClass, mMessage);
+            android.util.Log.i(className, message);
         }
     }
+
+    public static void e(String className, String message) {
+        if (IS_SHOW_LOGS) {
+            android.util.Log.e(className, message);
+        }
+    }
+
     public static void printRequestPost(HttpPost post) throws IOException {
         HttpEntity entity = post.getEntity();
 

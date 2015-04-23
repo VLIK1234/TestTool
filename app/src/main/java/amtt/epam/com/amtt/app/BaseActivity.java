@@ -9,18 +9,16 @@ import android.os.Bundle;
 import android.view.View;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.database.StepSavingCallback;
-import amtt.epam.com.amtt.database.StepSavingResult;
-import amtt.epam.com.amtt.database.StepSavingTask;
 
 /**
  * Created by Ivan_Bakach on 26.03.2015.
  */
 public class BaseActivity extends Activity{
 
-    public static final String LOG_TAG = "TAG";
+    //TODO SAVE_STEP != TAKESCREENSHOT, call constants carefully
     public final static String ACTION_SAVE_STEP = "amtt.epam.com.amtt.app.TAKESCREENSHOT";
 
+    //TODO who is br?
     protected BroadcastReceiver br;
     private IntentFilter intentFilterBroadcast;
 
@@ -55,11 +53,11 @@ public class BaseActivity extends Activity{
     }
 
     public void showProgress(boolean show) {
+        //TODO why do we need to seek twice?
         if (findViewById(getProgressViewId())!=null) {
             findViewById(getProgressViewId()).setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
-
     protected int getProgressViewId() {
         return R.id.progress;
     }

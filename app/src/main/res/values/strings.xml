@@ -29,8 +29,8 @@
 
     <string name="crash_button">Make crash</string>
 
-    <string name="step_saving_error">Error while saving step</string>
-    <string name="step_saving_success">Step saved</string>
+    <string name="data_base_action_error">Error has occurred</string>
+    <string name="data_base_action_done">Done</string>
     <string name="button_issue">Issue</string>
     <string name="user_name">Username</string>
     <string name="password">Password</string>
@@ -50,6 +50,15 @@
     <string name="step_text">Step</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
+
+    <string name="close_button">Close</string>
+    <string name="delete_crash_button">Delete and close</string>
+    <string name="show_crash_info_text">Show crash info</string>
+    <string name="lack_of_crashes_text">There were no crashes recently</string>
+
+    <string name="file_deleted">Deletion done</string>
+    <string name="file_not_deleted">Deletion hasn\'t been done</string>
+
     <string name="notification_title">AMTT</string>
     <string name="notification_text">Button-assistant is running.</string>
     <string name="display_name">Display Name</string>
@@ -73,5 +82,6 @@
     <string name="button_add_step">Add step</string>
     <string name="button_show_step">Show step</string>
     <string name="button_bug_rep">Create issue</string>
+
 
 </resources>

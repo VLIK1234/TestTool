@@ -13,7 +13,7 @@ import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 /**
  * Created by Irina Monchenko on 01.04.2015.
  */
-public class UserInfoToJsonProcessor implements Processor<JiraUserInfo, HttpEntity> {
+public class UserInfoFromJsonProcessor implements Processor<JiraUserInfo, HttpEntity> {
 
     @Override
     public JiraUserInfo process(HttpEntity inputStream) throws Exception {

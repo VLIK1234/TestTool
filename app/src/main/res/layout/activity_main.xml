@@ -49,6 +49,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true" />
 
+
       <Button
         android:id="@+id/crash_button"
         android:text="@string/crash_button"
@@ -58,6 +59,14 @@
         android:layout_alignEnd="@+id/step_button"
         android:layout_marginTop="16dp"
         android:layout_below="@+id/clear_db_button" />
+
+    <Button
+        android:id="@+id/show_crash_info"
+        android:text="@string/show_crash_info_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/crash_button"/>
+
     <ProgressBar
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
