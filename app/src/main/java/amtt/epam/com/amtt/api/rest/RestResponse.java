@@ -1,20 +1,15 @@
 package amtt.epam.com.amtt.api.rest;
 
-import org.apache.http.HttpEntity;
-
-import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
-
 /**
  * Class providing access to REST method responses
  * Created by Artsiom_Kaliaha on 15.04.2015.
  */
-public class RestResponse<ResultType,ResultObjectType> {
+public class RestResponse<ResultType, ResultObjectType> {
 
     private String mResponseMessage;
-    private int mStatusCode;
-    private HttpEntity mEntity;
     private ResultType mResult;
     private ResultObjectType mObject;
+    private Exception mException;
 
     public RestResponse() {
     }
@@ -27,14 +22,6 @@ public class RestResponse<ResultType,ResultObjectType> {
         mResponseMessage = e.getMessage();
     }
 
-    public void setStatusCode(int statusCode) {
-        mStatusCode = statusCode;
-    }
-
-    public void setEntity(HttpEntity httpEntity) {
-        mEntity = httpEntity;
-    }
-
     public void setResult(ResultType result) {
         mResult = result;
     }
@@ -43,17 +30,13 @@ public class RestResponse<ResultType,ResultObjectType> {
         mObject = object;
     }
 
+    public void setException(Exception e) {
+        mException = e;
+    }
+
 
     public String getMessage() {
         return mResponseMessage;
-    }
-
-    public int getStatusCode() {
-        return mStatusCode;
-    }
-
-    public HttpEntity getEntity() {
-        return mEntity;
     }
 
     public ResultType getResult() {
@@ -62,6 +45,11 @@ public class RestResponse<ResultType,ResultObjectType> {
 
     public ResultObjectType getResultObject() {
         return mObject;
+    }
+
+
+    public Exception getException() {
+        return mException;
     }
 
 }

@@ -2,6 +2,8 @@ package amtt.epam.com.amtt.api.rest;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.auth.AuthenticationException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -60,6 +62,7 @@ public class RestMethod<ResultType, ResultObjectType> {
             mResponseProcessor = processor;
             return this;
         }
+
         //TODO Why do we need two processors?
         public Builder setObjectProcessor(Processor<ResultObjectType, HttpEntity> processor) {
             mObjectProcessor = processor;
@@ -130,6 +133,13 @@ public class RestMethod<ResultType, ResultObjectType> {
                 break;
         }
 
+        int statusCode = httpResponse.getStatusLine().getStatusCode();
+        if (statusCode == HttpStatus.SC_NOT_FOUND || statusCode == HttpStatus.SC_BAD_GATEWAY) {
+            throw new AuthenticationException("wrong path to jira");
+        } else if (statusCode == HttpStatus.SC_UNAUTHORIZED) {
+            throw new AuthenticationException("wrong password or user name");
+        }
+
         String responseMessage = null;
         if (mResponseProcessor != null) {
             responseMessage = mResponseProcessor.process(httpResponse);
@@ -137,19 +147,11 @@ public class RestMethod<ResultType, ResultObjectType> {
 
         ResultObjectType resultObject = null;
         if (mObjectProcessor != null) {
-            try {
-                resultObject = mObjectProcessor.process(httpResponse.getEntity());
-            } catch (Exception e) {
-                responseMessage = "response object is illegible=(";
-            }
+            resultObject = mObjectProcessor.process(httpResponse.getEntity());
         }
 
-        //TODO I think it would be a good idea to have status code, headers, error and result.
-        //TODO don't set entity. process it and close as soon it is not used later
         RestResponse<ResultType, ResultObjectType> restResponse = new RestResponse<>();
-        restResponse.setStatusCode(httpResponse.getStatusLine().getStatusCode());
         restResponse.setMessage(responseMessage);
-        restResponse.setEntity(httpResponse.getEntity());
         restResponse.setResultObject(resultObject);
         return restResponse;
     }

@@ -7,18 +7,20 @@ import org.apache.http.HttpEntity;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
+import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 
 
 /**
  * Created by Irina Monchenko on 01.04.2015.
  */
-public class UserInfoFromJsonProcessor implements Processor<JiraUserInfo, HttpEntity> {
+public class ProjectsProcessor implements Processor<JMetaResponse, HttpEntity> {
 
     @Override
-    public JiraUserInfo process(HttpEntity inputStream) throws Exception {
+    public JMetaResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
+        //TODO can we use gson as singleton?
         Gson gson = new GsonBuilder().create();
-        return gson.fromJson(_response, JiraUserInfo.class);
+        return gson.fromJson(_response, JMetaResponse.class);
     }
 }
+

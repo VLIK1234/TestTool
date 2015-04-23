@@ -3,6 +3,8 @@ package amtt.epam.com.amtt.api;
 import android.os.AsyncTask;
 
 import amtt.epam.com.amtt.api.rest.RestResponse;
+import amtt.epam.com.amtt.processing.ProjectsProcessor;
+import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.util.CredentialsManager;
 
 /**
@@ -11,7 +13,6 @@ import amtt.epam.com.amtt.util.CredentialsManager;
  */
 public class JiraTask<ResultType,ResultObjectType> extends AsyncTask<Object, Void, RestResponse<ResultType,ResultObjectType>> {
 
-    //TODO we use this class only outside
     public enum JiraSearchType {
 
         ISSUE,
@@ -31,8 +32,7 @@ public class JiraTask<ResultType,ResultObjectType> extends AsyncTask<Object, Voi
 
         private JiraTaskType mOperationType;
         private JiraCallback<ResultType,ResultObjectType> mCallback;
-        //TODO what is the purpose of json. rename
-        private String mJson;
+        private String mPostMessage;
         private JiraSearchType mSearchType;
 
         public Builder setOperationType(JiraTaskType operationType) {
@@ -45,9 +45,8 @@ public class JiraTask<ResultType,ResultObjectType> extends AsyncTask<Object, Voi
             return this;
         }
 
-        //TODO what is the purpose of json. rename
-        public Builder setJson(String json) {
-            mJson = json;
+        public Builder setPostMessage(String json) {
+            mPostMessage = json;
             return this;
         }
 
@@ -60,7 +59,7 @@ public class JiraTask<ResultType,ResultObjectType> extends AsyncTask<Object, Voi
             JiraTask<ResultType,ResultObjectType> jiraTask = new JiraTask<>();
             jiraTask.mOperationType = this.mOperationType;
             jiraTask.mCallback = this.mCallback;
-            jiraTask.mJson = this.mJson;
+            jiraTask.mJson = this.mPostMessage;
             jiraTask.mSearchType = this.mSearchType;
             return jiraTask;
         }
@@ -89,8 +88,16 @@ public class JiraTask<ResultType,ResultObjectType> extends AsyncTask<Object, Voi
                 restResponse = new JiraApi().createIssue(mJson);
                 break;
             case SEARCH:
-                String userName = CredentialsManager.getInstance().getUserName();
-                restResponse = new JiraApi().searchData(userName, mSearchType);
+
+                switch (mSearchType) {
+                    case ISSUE:
+                        restResponse = new JiraApi().searchData(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor());
+                        break;
+                    case USER_INFO:
+                        String requestSuffix = JiraApiConst.USER_INFO_PATH +  CredentialsManager.getInstance().getUserName()  + JiraApiConst.EXPAND_GROUPS);
+                        restResponse = new JiraApi().searchData(requestSuffix, new UserInfoProcessor());
+                        break;
+                }
                 break;
         }
         return restResponse;

@@ -77,7 +77,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
                 new JiraTask.Builder<CreateIssueResult,Void>()
                         .setOperationType(JiraTaskType.CREATE_ISSUE)
                         .setCallback(CreateIssueActivity.this)
-                        .setJson(issue.createSimpleIssue(projectKey, issueType, description, summary))
+                        .setPostMessage(issue.createSimpleIssue(projectKey, issueType, description, summary))
                         .create()
                         .execute();
             }
