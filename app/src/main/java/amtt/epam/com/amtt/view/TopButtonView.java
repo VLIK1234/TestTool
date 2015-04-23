@@ -9,8 +9,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -62,6 +68,9 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
     private TextView[] textViewArray;
     public TextView textUserInfo;
     public TextView textBugRep;
+    private int xButton = 0;
+    private int yButton = 0;
+    private RelativeLayout topButtonLayout;
 
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
@@ -74,6 +83,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
         this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
+        topButtonLayout = (RelativeLayout)findViewById(R.id.top_button_layout);
     }
 
     private void initComponent() {
@@ -103,7 +113,7 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
                     Intent intent = new Intent(getContext(), LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().getApplicationContext().startActivity(intent);
-                }else{
+                } else {
                     //logout logic
                 }
             }
@@ -172,16 +182,13 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
         viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 buttonsBar.getViewTreeObserver().removeOnPreDrawListener(this);
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    if (layoutParams.x+mainButton.getWidth()+buttonsBar.getWidth() > metrics.widthPixels) {
-                        layoutParams.x -= (layoutParams.x + mainButton.getWidth()+ buttonsBar.getWidth() - metrics.widthPixels);
-                        windowManager.updateViewLayout(TopButtonView.this, layoutParams);
-                    }
-                } else {
-                    if (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
-                        layoutParams.y -= (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() - metrics.heightPixels + getStatusBarHeight());
-                        windowManager.updateViewLayout(TopButtonView.this, layoutParams);
-                    }
+                if (layoutParams.x + buttonsBar.getWidth() > metrics.widthPixels) {
+                    layoutParams.x -= (layoutParams.x + buttonsBar.getWidth() - metrics.widthPixels);
+                    windowManager.updateViewLayout(TopButtonView.this, layoutParams);
+                }
+                if (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
+                    layoutParams.y -= (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() - metrics.heightPixels + getStatusBarHeight());
+                    windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                 }
                 return true;
             }
@@ -246,20 +253,13 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
 
                     // update the position of the view
                     if (event.getPointerCount() == 1) {
-                        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                            if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
-                                layoutParams.x += deltaX;
-                            }
-                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
-                                layoutParams.y += deltaY;
-                            }
-                        } else {
-                            if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
-                                layoutParams.x += deltaX;
-                            }
-                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
-                                layoutParams.y += deltaY;
-                            }
+                        if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
+                            layoutParams.x += deltaX;
+                            xButton = layoutParams.x;
+                        }
+                        if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
+                            layoutParams.y += deltaY;
+                            yButton = layoutParams.y;
                         }
 
                         widthProportion = (float) layoutParams.x / metrics.widthPixels;
@@ -280,11 +280,32 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
                             Animation reverseRotate = AnimationUtils.loadAnimation(getContext(), R.anim.reverse_rotate);
                             mainButton.startAnimation(reverseRotate);
                             reverseRotate.setFillAfter(true);
-                            Animation translateUp = AnimationUtils.loadAnimation(getContext(), R.anim.translate_up);
+                            final Animation translateUp = AnimationUtils.loadAnimation(getContext(), R.anim.abc_fade_out);
                             translateUp.setAnimationListener(new Animation.AnimationListener() {
                                 @Override
                                 public void onAnimationStart(Animation animation) {
+                                    Animation translateMainButton = new TranslateAnimation(0, xButton - layoutParams.x, 0, yButton - layoutParams.y);
+                                    translateMainButton.setDuration(300);
+                                    translateMainButton.setInterpolator(new DecelerateInterpolator());
+                                    translateMainButton.setAnimationListener(new Animation.AnimationListener() {
+                                        @Override
+                                        public void onAnimationStart(Animation animation) {
 
+                                        }
+
+                                        @Override
+                                        public void onAnimationEnd(Animation animation) {
+                                            layoutParams.x = xButton;
+                                            layoutParams.y = yButton;
+                                            windowManager.updateViewLayout(TopButtonView.this, layoutParams);
+                                        }
+
+                                        @Override
+                                        public void onAnimationRepeat(Animation animation) {
+
+                                        }
+                                    });
+                                    topButtonLayout.startAnimation(translateMainButton);
                                 }
 
                                 @Override
@@ -298,20 +319,11 @@ public class TopButtonView extends FrameLayout implements ShowUserDataCallback {
                                 }
                             });
                             buttonsBar.startAnimation(translateUp);
-                            Animation combination = AnimationUtils.loadAnimation(getContext(), R.anim.combination_reverse);
-                            long durationAnimation = combination.getDuration();
-                            for (int i = 0; i < buttonsArray.length; i++, durationAnimation+=100) {
-                                combination.setDuration(durationAnimation);
-                                buttonsArray[i].startAnimation(combination);
-                            }
-                            Animation alpha = AnimationUtils.loadAnimation(getContext(), R.anim.alpha_back);
-                            durationAnimation = 300;
-                            for (int i = 0; i < textViewArray.length; i++, durationAnimation+=100) {
-                                alpha.setDuration(durationAnimation);
-                                textViewArray[i].startAnimation(alpha);
-                            }
+
                         } else {
                             buttonsBar.setVisibility(VISIBLE);
+                            xButton = layoutParams.x;
+                            yButton = layoutParams.y;
                             Animation rotate = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
                             rotate.setFillAfter(true);
                             mainButton.startAnimation(rotate);
