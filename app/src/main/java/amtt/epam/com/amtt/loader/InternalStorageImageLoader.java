@@ -71,7 +71,7 @@ public class InternalStorageImageLoader implements ImageLoadingCallback {
     @Override
     public void onLoadingFinished(String path, final Bitmap bitmap) {
         ImageView imageview = mLoadedImages.remove(path);
-        if (bitmap != null) {
+        if (bitmap != null && imageview != null) {
             imageview.setImageBitmap(bitmap);
             synchronized (mCache) {
                 mCache.put(path, bitmap);

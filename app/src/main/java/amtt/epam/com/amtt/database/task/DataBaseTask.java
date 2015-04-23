@@ -13,6 +13,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,8 @@ import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
+import amtt.epam.com.amtt.processing.Processor;
+import amtt.epam.com.amtt.util.IOUtils;
 
 /**
  * Created by Artsiom_Kaliaha on 26.03.2015.
@@ -248,21 +251,29 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     }
 
 
-    private String saveScreen() throws Exception {
-        String screenPath;
-        Process fileSavingProcess = Runtime.getRuntime().exec("su");
-        OutputStream fileSavingStream = fileSavingProcess.getOutputStream();
-        fileSavingStream.write((SCREENSHOT_COMMAND + (screenPath = mPath + "/screen" + mStepNumber + ".png")).getBytes("ASCII"));
-        fileSavingStream.flush();
-        fileSavingStream.close();
-        fileSavingProcess.destroy();
+    private String saveScreen() throws IOException {
+        String screenPath = null;
+        Process fileSavingProcess = null;
+        Process changeModeProcess = null;
+        OutputStream fileSavingStream = null;
+        OutputStream changeModeStream = null;
+        try {
+            fileSavingProcess = Runtime.getRuntime().exec("su");
+            fileSavingStream = fileSavingProcess.getOutputStream();
+            fileSavingStream.write((SCREENSHOT_COMMAND + (screenPath = mPath + "/screen" + mStepNumber + ".png")).getBytes("ASCII"));
+            fileSavingStream.flush();
+            fileSavingStream.close();
 
-        Process changeModeProcess = Runtime.getRuntime().exec("su");
-        OutputStream changeModeStream =  changeModeProcess.getOutputStream();
-        changeModeStream.write((CHANGE_PERMISSION_COMMAND + screenPath + "\n").getBytes("ASCII"));
-        changeModeStream.flush();
-        changeModeStream.close();
-        changeModeProcess.destroy();
+            changeModeProcess = Runtime.getRuntime().exec("su");
+            changeModeStream = changeModeProcess.getOutputStream();
+            changeModeStream.write((CHANGE_PERMISSION_COMMAND + screenPath + "\n").getBytes("ASCII"));
+            changeModeStream.flush();
+            changeModeStream.close();
+            changeModeProcess.destroy();
+        } finally {
+            IOUtils.close(fileSavingStream, changeModeStream);
+            destroyProcesses(fileSavingProcess, changeModeProcess);
+        }
         return screenPath;
     }
 
@@ -300,6 +311,15 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         values.put(StepsTable._SCREEN_PATH, screenPath);
         values.put(StepsTable._ASSOCIATED_ACTIVITY, componentName.getClassName());
         mContext.getContentResolver().insert(AmttContentProvider.STEP_CONTENT_URI, values);
+    }
+
+    //help methods
+    private void destroyProcesses(@NonNull Process... processArray) {
+        for (Process process : processArray) {
+            if (process != null) {
+                process.destroy();
+            }
+        }
     }
 
 
@@ -356,4 +376,5 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     private String getUiOptions(ActivityInfo activityInfo) {
         return sUiOptions.get(activityInfo.uiOptions);
     }
+
 }
