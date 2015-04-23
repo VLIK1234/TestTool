@@ -18,14 +18,13 @@ public class BaseActivity extends Activity{
     //TODO SAVE_STEP != TAKESCREENSHOT, call constants carefully
     public final static String ACTION_SAVE_STEP = "amtt.epam.com.amtt.app.TAKESCREENSHOT";
 
-    //TODO who is br?
-    protected BroadcastReceiver br;
+    protected BroadcastReceiver broadcastReceiver;
     private IntentFilter intentFilterBroadcast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        br = new BroadcastReceiver() {
+        broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getAction().equals(ACTION_SAVE_STEP)) {
@@ -43,21 +42,22 @@ public class BaseActivity extends Activity{
     }
 
     private void initBroadcastReceiver() {
-        registerReceiver(br, intentFilterBroadcast);
+        registerReceiver(broadcastReceiver, intentFilterBroadcast);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(br);
+        unregisterReceiver(broadcastReceiver);
     }
 
     public void showProgress(boolean show) {
-        //TODO why do we need to seek twice?
-        if (findViewById(getProgressViewId())!=null) {
-            findViewById(getProgressViewId()).setVisibility(show ? View.VISIBLE : View.GONE);
+        int progressId = getProgressViewId();
+        if (findViewById(progressId)!= null) {
+            findViewById(progressId).setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
+
     protected int getProgressViewId() {
         return R.id.progress;
     }
