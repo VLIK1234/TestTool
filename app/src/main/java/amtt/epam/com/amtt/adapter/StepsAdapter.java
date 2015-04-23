@@ -33,6 +33,8 @@ public class StepsAdapter extends CursorAdapter {
 
     public StepsAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
+        //TODO we really need to recreate ImageLoader every tyme we create adapter?
+        //when we clear cache for unused adapter with loader instance
         mImageLoader = new InternalStorageImageLoader(10, IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT);
     }
 

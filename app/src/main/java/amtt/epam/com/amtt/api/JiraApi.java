@@ -24,9 +24,12 @@ import amtt.epam.com.amtt.api.rest.RestMethod.RestMethodType;
 
 @SuppressWarnings("unchecked")
 public class JiraApi {
+    //TODO need update when class goes to singleton
     final private String mUrl = CredentialsManager.getInstance().getUrl();
 
+    //TODO divide request creation and execution. Pass created request to JiraTask to execute in background
     public RestResponse authorize() {
+        //TODO we have base headers for every call?
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, getCredential());
 
@@ -40,12 +43,14 @@ public class JiraApi {
                     .create()
                     .execute();
         } catch (Exception e) {
+            //TODO what if you get any error? no connection or other?
             restResponse = new RestResponse<>();
             restResponse.setResult(AuthorizationResult.DENIED);
             restResponse.setMessage("Authorization isn't passed: " + e.getMessage());
             return restResponse;
         }
 
+        //TODO what is bad gateway for user? what shall I do?
         //Bad gate way is considered as a httpResponse, not an exception
         if (restResponse.getStatusCode() == JiraApiConst.BAD_GATE_WAY) {
             restResponse.setMessage("Authorization isn't passed: bad gateway");
@@ -56,7 +61,9 @@ public class JiraApi {
         return restResponse;
     }
 
+    //TODO divide request creation and execution. Pass created request to JiraTask to execute in background
     public RestResponse createIssue(final String jsonString) {
+        //TODO we have base headers for every call?
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, getCredential());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
@@ -71,6 +78,7 @@ public class JiraApi {
                     .create()
                     .execute();
         } catch (Exception e) {
+            //TODO what if you get any error? no connection or other?  show reason if possible
             restResponse = new RestResponse<>();
             restResponse.setMessage("Issue isn't created: " + e.getMessage());
             restResponse.setResult(CreateIssueResult.FAILURE);
@@ -81,6 +89,9 @@ public class JiraApi {
         return restResponse;
     }
 
+    //TODO divide request creation and execution. Pass created request to JiraTask to execute in background
+    //TODO we don't need username here. If we get one more type, we need to update this class?
+    //pass url (or suffix) and processor to method will help you
     public RestResponse searchData(final String userName, final JiraSearchType typeData) {
         String url = null;
         RestMethod.Builder builder = new RestMethod.Builder();
@@ -88,6 +99,7 @@ public class JiraApi {
         if (typeData != null) {
             switch (typeData) {
                 case ISSUE: {
+                    //TODO we don't need username here, why shall we pass it to method?
                     builder.setObjectProcessor(new ProjectsFromJsonProcessor());
                     url = mUrl + JiraApiConst.USER_PROJECTS_PATH;
                     break;
@@ -99,6 +111,7 @@ public class JiraApi {
             }
         }
 
+        //TODO we have base headers for every call?
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, getCredential());
 
@@ -113,6 +126,7 @@ public class JiraApi {
 
             restResponse.setResult(UserDataResult.SUCCESS);
         } catch (Exception e) {
+            //TODO what if you get any error? no connection or other?  show reason if possible
             restResponse = new RestResponse();
             restResponse.setMessage(e);
             restResponse.setResult(UserDataResult.FAILURE);
@@ -121,6 +135,8 @@ public class JiraApi {
     }
 
     public String getCredential() {
+        //TODO Base64.encodeToString for every call?
+        //TODO CredentialsManager.getInstance().getPassword() - can we store password?
         return JiraApiConst.BASIC_AUTH + Base64.encodeToString((CredentialsManager.getInstance().getUserName() +
                 Constants.SharedPreferenceKeys.COLON + CredentialsManager.getInstance().getPassword()).getBytes(), Base64.NO_WRAP);
     }

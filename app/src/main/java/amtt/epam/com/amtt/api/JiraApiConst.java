@@ -1,10 +1,12 @@
 package amtt.epam.com.amtt.api;
 
+import java.net.HttpURLConnection;
+
 /**
  * Created by Artsiom_Kaliaha on 15.04.2015.
  */
 public interface JiraApiConst {
-
+    //TODO use static final class for constants
     //Paths
     String BASE_PATH = "/rest/auth/latest/";
     String LOGIN_PATH = BASE_PATH + "session";
@@ -21,6 +23,7 @@ public interface JiraApiConst {
     String APPLICATION_JSON = "application/json";
     String BASIC_AUTH = "Basic ";
 
+    //TODO We have HttpStatus and HttpURLConnection with response codes constants
     //Response codes
     int BAD_GATE_WAY = 502;
 

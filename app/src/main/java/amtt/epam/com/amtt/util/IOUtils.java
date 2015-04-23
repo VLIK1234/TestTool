@@ -1,5 +1,7 @@
 package amtt.epam.com.amtt.util;
 
+import android.support.annotation.NonNull;
+
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.FileReader;
@@ -12,12 +14,14 @@ public class IOUtils {
 
     private static final String CLASS_NAME = IOUtils.class.getSimpleName();
 
-    public static void close(Closeable closeable) {
-        if (closeable != null) {
-            try {
-                closeable.close();
-            } catch (IOException e) {
-                Logger.e(CLASS_NAME, e.getMessage());
+    public static void close(@NonNull Closeable... closeablesArray) {
+        for (Closeable closeable : closeablesArray) {
+            if (closeable != null) {
+                try {
+                    closeable.close();
+                } catch (IOException e) {
+                    Logger.e(CLASS_NAME, e.getMessage());
+                }
             }
         }
     }

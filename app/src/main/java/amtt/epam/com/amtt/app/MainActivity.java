@@ -1,8 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +26,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback {
     private String mCrashFilePath;
     private static final String CRASH_DIALOG_TAG = "crash_dialog_tag";
     private static int sStepNumber;
-    private DataBaseTask mDataBaseClearTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,42 +43,24 @@ public class MainActivity extends BaseActivity implements StepSavingCallback {
 
         Thread.currentThread().setUncaughtExceptionHandler(new AmttExceptionHandler(this));
 
-
-        mDataBaseClearTask = new DataBaseTask.Builder()
+        new DataBaseTask.Builder()
                 .setOperationType(DataBaseOperationType.CLEAR)
                 .setContext(MainActivity.this)
-                .create();
-        mDataBaseClearTask.execute();
+                .setCallback(MainActivity.this)
+                .create()
+                .execute();
 
         Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
         clearDbButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sStepNumber = 0;
-                mDataBaseClearTask.execute();
-            }
-        });
-
-        Button stepButton = (Button) findViewById(R.id.step_button);
-        stepButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sStepNumber++;
                 new DataBaseTask.Builder()
-                        .setOperationType(DataBaseOperationType.SAVE_STEP)
+                        .setOperationType(DataBaseOperationType.CLEAR)
                         .setContext(MainActivity.this)
-                        .setComponentName(MainActivity.this.getComponentName())
-                        .setStepNumber(sStepNumber)
+                        .setCallback(MainActivity.this)
                         .create()
                         .execute();
-            }
-        });
-
-        Button showStepsButton = (Button) findViewById(R.id.show_steps_button);
-        showStepsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, StepsActivity.class));
             }
         });
 
