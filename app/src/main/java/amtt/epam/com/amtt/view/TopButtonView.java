@@ -9,11 +9,20 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -49,11 +58,12 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
     private LinearLayout buttonsBar;
-    private ImageView mainButton;
+    public ImageView mainButton;
     private DisplayMetrics metrics;
     private int currentOrientation;
     private float widthProportion;
     private float heightProportion;
+    private Button[] buttonsArray;
     public Button buttonAuth;
     public Button buttonBugRep;
     public Button buttonUserInfo;
@@ -63,6 +73,12 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
     private int lastX;
     private int lastY;
     public boolean moving;
+    private TextView[] textViewArray;
+    public TextView textUserInfo;
+    public TextView textBugRep;
+    private int xButton = 0;
+    private int yButton = 0;
+    private RelativeLayout topButtonLayout;
 
     //Database fields
     private static int sStepNumber; //responsible for steps ordering in database
@@ -71,7 +87,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
         initComponent();
-
         buttonsBar.setOrientation(LinearLayout.VERTICAL);
 
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -80,6 +95,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
+        topButtonLayout = (RelativeLayout)findViewById(R.id.top_button_layout);
     }
 
     @SuppressWarnings("unchecked")
@@ -88,32 +104,47 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         inflater.inflate(R.layout.top_button_layout, this, true);
         buttonsBar = (LinearLayout) findViewById(R.id.buttons_bar);
         mainButton = (ImageView) findViewById(R.id.plus_button);
-        mainButton.setImageResource(R.drawable.ic_top_button);
         buttonsBar.setVisibility(GONE);
+        TextView textAuth = (TextView) findViewById(R.id.text_auth);
+        textUserInfo = (TextView) findViewById(R.id.text_user_info);
+        TextView textAddStep = (TextView) findViewById(R.id.text_add_step);
+        TextView textShowStep = (TextView) findViewById(R.id.text_show_step);
+        textBugRep = (TextView) findViewById(R.id.text_bug_rep);
+        textViewArray = new TextView[]{textAuth, textUserInfo, textAddStep, textShowStep, textBugRep};
 
         buttonAuth = (Button) findViewById(R.id.button_auth);
-        buttonAuth.setOnClickListener(new OnClickListener() {
+        buttonUserInfo = (Button) findViewById(R.id.button_user_info);
+        Button buttonAddStep = (Button) findViewById(R.id.button_add_step);
+        Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
+        buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
+        buttonsArray = new Button[]{buttonAuth, buttonUserInfo, buttonAddStep, buttonShowStep, buttonBugRep};
+
+        OnClickListener listenerAuth = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!CredentialsManager.getInstance().getAccessState()) {
                     Intent intent = new Intent(getContext(), LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().getApplicationContext().startActivity(intent);
-                }else{
+                } else {
+                    //logout logic
                 }
             }
-        });
-        buttonUserInfo = (Button) findViewById(R.id.button_user_info);
-        buttonUserInfo.setOnClickListener(new OnClickListener() {
+        };
+        buttonAuth.setOnClickListener(listenerAuth);
+        textAuth.setOnClickListener(listenerAuth);
+        OnClickListener listenerUserInfo = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), UserInfoActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intent);
             }
-        });
-        Button buttonAddStep = (Button) findViewById(R.id.button_add_step);
-        buttonAddStep.setOnClickListener(new OnClickListener() {
+        };
+        buttonUserInfo.setOnClickListener(listenerUserInfo);
+        textUserInfo.setOnClickListener(listenerUserInfo);
+
+        OnClickListener listenerAddStep = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 sStepNumber++;
@@ -125,18 +156,22 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                         .create()
                         .execute();
             }
-        });
-        Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
-        buttonShowStep.setOnClickListener(new OnClickListener() {
+        };
+        buttonAddStep.setOnClickListener(listenerAddStep);
+        textAddStep.setOnClickListener(listenerAddStep);
+
+        OnClickListener listnerShowStep = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), StepsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intent);
             }
-        });
-        buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
-        buttonBugRep.setOnClickListener(new OnClickListener() {
+        };
+        buttonShowStep.setOnClickListener(listnerShowStep);
+        textShowStep.setOnClickListener(listnerShowStep);
+
+        OnClickListener listenerBugRep = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 new JiraTask.Builder<UserDataResult,JMetaResponse>()
@@ -146,7 +181,9 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                         .create()
                         .execute();
             }
-        });
+        };
+        buttonBugRep.setOnClickListener(listenerBugRep);
+        textBugRep.setOnClickListener(listenerBugRep);
 
         clearDatabase();
     }
@@ -169,16 +206,13 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 buttonsBar.getViewTreeObserver().removeOnPreDrawListener(this);
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    if (layoutParams.x+mainButton.getWidth()+buttonsBar.getWidth() > metrics.widthPixels) {
-                        layoutParams.x -= (layoutParams.x + mainButton.getWidth()+ buttonsBar.getWidth() - metrics.widthPixels);
-                        windowManager.updateViewLayout(TopButtonView.this, layoutParams);
-                    }
-                } else {
-                    if (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
-                        layoutParams.y -= (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() - metrics.heightPixels + getStatusBarHeight());
-                        windowManager.updateViewLayout(TopButtonView.this, layoutParams);
-                    }
+                if (layoutParams.x + buttonsBar.getWidth() > metrics.widthPixels) {
+                    layoutParams.x -= (layoutParams.x + buttonsBar.getWidth() - metrics.widthPixels);
+                    windowManager.updateViewLayout(TopButtonView.this, layoutParams);
+                }
+                if (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
+                    layoutParams.y -= (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() - metrics.heightPixels + getStatusBarHeight());
+                    windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                 }
                 return true;
             }
@@ -243,20 +277,13 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
 
                     // update the position of the view
                     if (event.getPointerCount() == 1) {
-                        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                            if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
-                                layoutParams.x += deltaX;
-                            }
-                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
-                                layoutParams.y += deltaY;
-                            }
-                        } else {
-                            if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
-                                layoutParams.x += deltaX;
-                            }
-                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
-                                layoutParams.y += deltaY;
-                            }
+                        if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
+                            layoutParams.x += deltaX;
+                            xButton = layoutParams.x;
+                        }
+                        if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
+                            layoutParams.y += deltaY;
+                            yButton = layoutParams.y;
                         }
 
                         widthProportion = (float) layoutParams.x / metrics.widthPixels;
@@ -274,9 +301,71 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
                         if (buttonsBar.getVisibility() == VISIBLE) {
-                            buttonsBar.setVisibility(GONE);
+                            Animation reverseRotate = AnimationUtils.loadAnimation(getContext(), R.anim.reverse_rotate);
+                            mainButton.startAnimation(reverseRotate);
+                            reverseRotate.setFillAfter(true);
+                            final Animation translateUp = AnimationUtils.loadAnimation(getContext(), R.anim.abc_fade_out);
+                            translateUp.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
+                                    Animation translateMainButton = new TranslateAnimation(0, xButton - layoutParams.x, 0, yButton - layoutParams.y);
+                                    translateMainButton.setDuration(300);
+                                    translateMainButton.setInterpolator(new DecelerateInterpolator());
+                                    translateMainButton.setAnimationListener(new Animation.AnimationListener() {
+                                        @Override
+                                        public void onAnimationStart(Animation animation) {
+
+                                        }
+
+                                        @Override
+                                        public void onAnimationEnd(Animation animation) {
+                                            layoutParams.x = xButton;
+                                            layoutParams.y = yButton;
+                                            windowManager.updateViewLayout(TopButtonView.this, layoutParams);
+                                        }
+
+                                        @Override
+                                        public void onAnimationRepeat(Animation animation) {
+
+                                        }
+                                    });
+                                    topButtonLayout.startAnimation(translateMainButton);
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    buttonsBar.setVisibility(GONE);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+
+                                }
+                            });
+                            buttonsBar.startAnimation(translateUp);
+
                         } else {
                             buttonsBar.setVisibility(VISIBLE);
+                            xButton = layoutParams.x;
+                            yButton = layoutParams.y;
+                            Animation rotate = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
+                            rotate.setFillAfter(true);
+                            mainButton.startAnimation(rotate);
+                            Animation translate = AnimationUtils.loadAnimation(getContext(), R.anim.translate);
+                            buttonsBar.startAnimation(translate);
+                            Animation combination = AnimationUtils.loadAnimation(getContext(), R.anim.combination);
+                            long durationAnimation = combination.getDuration();
+                            for (int i = 0; i < buttonsArray.length; i++, durationAnimation+=100) {
+                                combination.setDuration(durationAnimation);
+                                buttonsArray[i].startAnimation(combination);
+                            }
+                            Animation alpha = AnimationUtils.loadAnimation(getContext(), R.anim.alpha);
+                            durationAnimation = 300;
+                            for (int i = 0; i < textViewArray.length; i++, durationAnimation+=100) {
+                                alpha.setDuration(durationAnimation);
+                                textViewArray[i].startAnimation(alpha);
+                            }
+
                             checkFreeSpace();
                         }
                     }
