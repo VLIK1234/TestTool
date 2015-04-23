@@ -24,9 +24,15 @@ import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
+import amtt.epam.com.amtt.app.MainActivity;
+import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
+import amtt.epam.com.amtt.database.task.DataBaseOperationType;
+import amtt.epam.com.amtt.database.task.DataBaseTask;
+import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
+import amtt.epam.com.amtt.database.task.StepSavingCallback;
 import amtt.epam.com.amtt.api.result.UserDataResult;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
@@ -36,7 +42,7 @@ import amtt.epam.com.amtt.util.PreferenceUtils;
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-public class TopButtonView extends FrameLayout implements JiraCallback<UserDataResult, JMetaResponse> {
+public class TopButtonView extends FrameLayout implements JiraCallback<UserDataResult, JMetaResponse>, StepSavingCallback {
 
     private final static String LOG_TAG = "TAG";
 
@@ -57,6 +63,10 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
     private int lastX;
     private int lastY;
     public boolean moving;
+
+    //Database fields
+    private static int sStepNumber; //responsible for steps ordering in database
+    private int mScreenNumber; //responsible for nonrecurring screenshot names
 
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
@@ -106,19 +116,23 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         buttonAddStep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "STEP", Toast.LENGTH_LONG).show();
-//                Intent intentATS = new Intent(BaseActivity.ACTION_SAVE_STEP);
-//                getContext().sendBroadcast(intentATS);
+                sStepNumber++;
+                new DataBaseTask.Builder()
+                        .setOperationType(DataBaseOperationType.SAVE_STEP)
+                        .setContext(getContext())
+                        .setCallback(TopButtonView.this)
+                        .setStepNumber(sStepNumber)
+                        .create()
+                        .execute();
             }
         });
         Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
         buttonShowStep.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "SHOW", Toast.LENGTH_LONG).show();
-//                Intent intent = new Intent(getContext(), StepsActivity.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                getContext().getApplicationContext().startActivity(intent);
+                Intent intent = new Intent(getContext(), StepsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intent);
             }
         });
         buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
@@ -133,6 +147,8 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                         .execute();
             }
         });
+
+        clearDatabase();
     }
 
     private void checkFreeSpace() {
@@ -294,6 +310,33 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
             savePositionAfterTurnScreen();
             buttonsBar.setVisibility(GONE);
         }
+    }
+
+    //Database callbacks
+    @Override
+    public int getScreenNumber() {
+        return mScreenNumber;
+    }
+
+
+    @Override
+    public void onDataBaseActionDone(DataBaseTaskResult result) {
+        int resultMessage = result == DataBaseTaskResult.ERROR ? R.string.data_base_action_error : R.string.data_base_action_done;
+        Toast.makeText(getContext(), resultMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void incrementScreenNumber() {
+        mScreenNumber++;
+    }
+
+    private void clearDatabase() {
+        new DataBaseTask.Builder()
+                .setOperationType(DataBaseOperationType.CLEAR)
+                .setContext(getContext())
+                .setCallback(TopButtonView.this)
+                .create()
+                .execute();
     }
 
 }
