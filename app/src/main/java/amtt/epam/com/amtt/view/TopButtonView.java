@@ -85,7 +85,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
-        topButtonLayout = (RelativeLayout)findViewById(R.id.top_button_layout);
     }
 
     @SuppressWarnings("unchecked")
@@ -108,68 +107,55 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
         buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
         buttonsArray = new Button[]{buttonAuth, buttonUserInfo, buttonAddStep, buttonShowStep, buttonBugRep};
+        topButtonLayout = (RelativeLayout)findViewById(R.id.top_button_layout);
 
-        OnClickListener listenerAuth = new OnClickListener() {
+        LinearLayout layoutAuth = (LinearLayout) findViewById(R.id.layout_auth);
+        LinearLayout layoutUserInfo = (LinearLayout) findViewById(R.id.layout_user_info);
+        LinearLayout layoutAddStep = (LinearLayout) findViewById(R.id.layout_add_step);
+        LinearLayout layoutShowStep = (LinearLayout) findViewById(R.id.layout_show_step);
+        LinearLayout layoutBugRep = (LinearLayout) findViewById(R.id.layout_bug_rep);
+
+        OnClickListener listnerButtons = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!CredentialsManager.getInstance().getAccessState()) {
-                    Intent intent = new Intent(getContext(), LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    getContext().getApplicationContext().startActivity(intent);
-                } else {
-                    //logout logic
+                switch (v.getId()) {
+                    case R.id.layout_auth:
+                        if (!CredentialsManager.getInstance().getAccessState()) {
+                            Intent intent = new Intent(getContext(), LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            getContext().getApplicationContext().startActivity(intent);
+                        } else {
+                            //logout logic
+                        }
+                        break;
+                    case R.id.layout_user_info:
+                        Intent intent = new Intent(getContext(), UserInfoActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getContext().getApplicationContext().startActivity(intent);
+                        break;
+                    case R.id.layout_add_step:
+                        Toast.makeText(getContext(), "STEP", Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.layout_show_step:
+                        Toast.makeText(getContext(), "SHOW", Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.layout_bug_rep:
+                        new JiraTask.Builder<UserDataResult, JMetaResponse>()
+                                .setOperationType(JiraTaskType.SEARCH)
+                                .setSearchType(JiraTask.JiraSearchType.ISSUE)
+                                .setCallback(TopButtonView.this)
+                                .create()
+                                .execute();
+                        break;
+                    default:
                 }
             }
         };
-        buttonAuth.setOnClickListener(listenerAuth);
-        textAuth.setOnClickListener(listenerAuth);
-        OnClickListener listenerUserInfo = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), UserInfoActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().getApplicationContext().startActivity(intent);
-            }
-        };
-        buttonUserInfo.setOnClickListener(listenerUserInfo);
-        textUserInfo.setOnClickListener(listenerUserInfo);
-
-        OnClickListener listenerAddStep = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "STEP", Toast.LENGTH_LONG).show();
-//                Intent intentATS = new Intent(BaseActivity.ACTION_SAVE_STEP);
-//                getContext().sendBroadcast(intentATS);
-            }
-        };
-        buttonAddStep.setOnClickListener(listenerAddStep);
-        textAddStep.setOnClickListener(listenerAddStep);
-
-        OnClickListener listnerShowStep = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "SHOW", Toast.LENGTH_LONG).show();
-//                Intent intent = new Intent(getContext(), StepsActivity.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                getContext().getApplicationContext().startActivity(intent);
-            }
-        };
-        buttonShowStep.setOnClickListener(listnerShowStep);
-        textShowStep.setOnClickListener(listnerShowStep);
-
-        OnClickListener listenerBugRep = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new JiraTask.Builder<UserDataResult,JMetaResponse>()
-                        .setOperationType(JiraTaskType.SEARCH)
-                        .setSearchType(JiraTask.JiraSearchType.ISSUE)
-                        .setCallback(TopButtonView.this)
-                        .create()
-                        .execute();
-            }
-        };
-        buttonBugRep.setOnClickListener(listenerBugRep);
-        textBugRep.setOnClickListener(listenerBugRep);
+        layoutAuth.setOnClickListener(listnerButtons);
+        layoutUserInfo.setOnClickListener(listnerButtons);
+        layoutAddStep.setOnClickListener(listnerButtons);
+        layoutShowStep.setOnClickListener(listnerButtons);
+        layoutBugRep.setOnClickListener(listnerButtons);
     }
 
     private void checkFreeSpace() {
