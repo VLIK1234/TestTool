@@ -35,7 +35,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
 
         private DataBaseOperationType mOperationType;
         private Context mContext;
-        private StepSavingCallback mCallback;
+        private DataBaseCallback mCallback;
         private int mStepNumber;
 
         public Builder() {
@@ -51,7 +51,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             return this;
         }
 
-        public Builder setCallback(@NonNull StepSavingCallback callback) {
+        public Builder setCallback(@NonNull DataBaseCallback callback) {
             mCallback = callback;
             return this;
         }
@@ -158,27 +158,9 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
 
     private DataBaseOperationType mOperationType;
     private Context mContext;
-    private StepSavingCallback mCallback;
+    private DataBaseCallback mCallback;
     private String mPath;
     private int mCurrentSdkVersion;
-
-    public DataBaseTask(DataBaseOperationType operationType, Context context, int stepNumber) {
-        mOperationType = operationType;
-        mContext = context;
-        mCallback = (StepSavingCallback) context;
-        mPath = context.getCacheDir().getPath();
-        mCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
-        mStepNumber = stepNumber;
-    }
-
-    public DataBaseTask(DataBaseOperationType operationType, Context context) {
-        mOperationType = operationType;
-        mContext = context;
-        mCallback = (StepSavingCallback) context;
-    }
-
-    public DataBaseTask() {
-    }
 
     @Override
     protected DataBaseTaskResult doInBackground(Void... params) {
@@ -202,7 +184,6 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         String screenPath;
         try {
             screenPath = saveScreen();
-            mCallback.incrementScreenNumber();
         } catch (Exception e) {
             return DataBaseTaskResult.ERROR;
         }
@@ -247,7 +228,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
                 screenshot.delete();
             }
         }
-        return DataBaseTaskResult.DONE;
+        return DataBaseTaskResult.CLEARED;
     }
 
 
