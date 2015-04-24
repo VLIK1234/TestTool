@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.loader;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 /**
@@ -16,7 +17,7 @@ public class ImageLoadingTask extends AsyncTask<Void, Void, Bitmap> {
     private final int mImageViewWidth;
     private final int mImageViewHeight;
 
-    public ImageLoadingTask(String path, ImageView imageView, int imageViewWidth, int imageViewHeight, ImageLoadingCallback callback) {
+    public ImageLoadingTask(String path, ImageView imageView, int imageViewWidth, int imageViewHeight, @NonNull ImageLoadingCallback callback) {
         mPath = path;
         mImageView = imageView;
         mImageViewWidth = imageViewWidth;
@@ -31,16 +32,12 @@ public class ImageLoadingTask extends AsyncTask<Void, Void, Bitmap> {
         BitmapFactory.decodeFile(mPath, options);
         options.inSampleSize = calculateInSampleSize(options);
         options.inJustDecodeBounds = false;
-
-        final Bitmap bitmap = BitmapFactory.decodeFile(mPath, options);
-        mCallback.onLoadingFinished(mPath, bitmap);
-
-        return bitmap;
+        return BitmapFactory.decodeFile(mPath, options);
     }
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        mImageView.setImageBitmap(bitmap);
+        mCallback.onLoadingFinished(mPath, bitmap);
     }
 
     private int calculateInSampleSize(BitmapFactory.Options options) {

@@ -1,8 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,22 +11,15 @@ import com.crashlytics.android.Crashlytics;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.crash.AmttExceptionHandler;
-import amtt.epam.com.amtt.database.task.DataBaseOperationType;
-import amtt.epam.com.amtt.database.task.DataBaseTask;
-import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
-import amtt.epam.com.amtt.database.task.StepSavingCallback;
 import amtt.epam.com.amtt.fragment.CrashDialogFragment;
 import amtt.epam.com.amtt.util.IOUtils;
 import io.fabric.sdk.android.Fabric;
 
 
-public class MainActivity extends BaseActivity implements StepSavingCallback {
+public class MainActivity extends BaseActivity {
 
-    private int mScreenNumber = 1;
     private String mCrashFilePath;
     private static final String CRASH_DIALOG_TAG = "crash_dialog_tag";
-    private static int sStepNumber;
-    private DataBaseTask mDataBaseClearTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,45 +36,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback {
         });
 
         Thread.currentThread().setUncaughtExceptionHandler(new AmttExceptionHandler(this));
-
-
-        mDataBaseClearTask = new DataBaseTask.Builder()
-                .setOperationType(DataBaseOperationType.CLEAR)
-                .setContext(MainActivity.this)
-                .create();
-        mDataBaseClearTask.execute();
-
-        Button clearDbButton = (Button) findViewById(R.id.clear_db_button);
-        clearDbButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sStepNumber = 0;
-                mDataBaseClearTask.execute();
-            }
-        });
-
-        Button stepButton = (Button) findViewById(R.id.step_button);
-        stepButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sStepNumber++;
-                new DataBaseTask.Builder()
-                        .setOperationType(DataBaseOperationType.SAVE_STEP)
-                        .setContext(MainActivity.this)
-                        .setComponentName(MainActivity.this.getComponentName())
-                        .setStepNumber(sStepNumber)
-                        .create()
-                        .execute();
-            }
-        });
-
-        Button showStepsButton = (Button) findViewById(R.id.show_steps_button);
-        showStepsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, StepsActivity.class));
-            }
-        });
 
         final Button showCrashInfoButton = (Button) findViewById(R.id.show_crash_info);
         showCrashInfoButton.setOnClickListener(new View.OnClickListener() {
@@ -113,23 +64,6 @@ public class MainActivity extends BaseActivity implements StepSavingCallback {
 
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
 
-    }
-
-    @Override
-    public int getScreenNumber() {
-        return mScreenNumber;
-    }
-
-
-    @Override
-    public void onDataBaseActionDone(DataBaseTaskResult result) {
-        int resultMessage = result == DataBaseTaskResult.ERROR ? R.string.data_base_action_error : R.string.data_base_action_done;
-        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void incrementScreenNumber() {
-        mScreenNumber++;
     }
 
 

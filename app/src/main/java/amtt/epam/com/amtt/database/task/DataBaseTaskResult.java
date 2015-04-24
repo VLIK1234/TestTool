@@ -6,6 +6,7 @@ package amtt.epam.com.amtt.database.task;
 public enum DataBaseTaskResult {
 
     DONE,
-    ERROR
+    ERROR,
+    CLEARED
 
 }
