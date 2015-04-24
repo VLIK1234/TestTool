@@ -24,7 +24,6 @@ public class StepsWithMetaTable extends Table {
             ActivityInfoTable._SOFT_INPUT_MODE,
             ActivityInfoTable._TARGET_ACTIVITY_NAME,
             ActivityInfoTable._TASK_AFFINITY,
-            ActivityInfoTable._THEME,
             ActivityInfoTable._UI_OPTIONS,
             ActivityInfoTable._PROCESS_NAME,
             ActivityInfoTable._PACKAGE_NAME

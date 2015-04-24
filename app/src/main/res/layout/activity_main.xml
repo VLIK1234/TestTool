@@ -4,22 +4,12 @@
     android:layout_height="match_parent"
     android:background="@color/material_deep_teal_200">
 
-
-    <Button
-        android:id="@+id/clear_db_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:text="@string/clear_db_button" />
-
     <Button
         android:id="@+id/crash_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/clear_db_button"
         android:text="@string/crash_button" />
 
     <Button

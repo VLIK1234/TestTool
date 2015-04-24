@@ -33,15 +33,14 @@ import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
-import amtt.epam.com.amtt.app.MainActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
+import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
-import amtt.epam.com.amtt.database.task.StepSavingCallback;
 import amtt.epam.com.amtt.api.result.UserDataResult;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
@@ -51,7 +50,7 @@ import amtt.epam.com.amtt.util.PreferenceUtils;
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-public class TopButtonView extends FrameLayout implements JiraCallback<UserDataResult, JMetaResponse>, StepSavingCallback {
+public class TopButtonView extends FrameLayout implements JiraCallback<UserDataResult, JMetaResponse>, DataBaseCallback {
 
     private final static String LOG_TAG = "TAG";
 
@@ -401,23 +400,23 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         }
     }
 
-    //Database callbacks
-    @Override
-    public int getScreenNumber() {
-        return mScreenNumber;
-    }
-
-
     @Override
     public void onDataBaseActionDone(DataBaseTaskResult result) {
-        int resultMessage = result == DataBaseTaskResult.ERROR ? R.string.data_base_action_error : R.string.data_base_action_done;
+        int resultMessage;
+        switch (result) {
+            case DONE:
+                resultMessage = R.string.data_base_action_done;
+                break;
+            case ERROR:
+                resultMessage = R.string.data_base_action_error;
+                break;
+            default:
+                resultMessage = R.string.data_base_cleared;
+                break;
+        }
         Toast.makeText(getContext(), resultMessage, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void incrementScreenNumber() {
-        mScreenNumber++;
-    }
 
     private void clearDatabase() {
         new DataBaseTask.Builder()
