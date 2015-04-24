@@ -48,17 +48,13 @@
     <string name="screenshot_image_description">image view for screenshot</string>
 
     <string name="step_text">Step</string>
-
     <string name="empty_list_view">There is no saved steps =(</string>
-
     <string name="close_button">Close</string>
     <string name="delete_crash_button">Delete and close</string>
     <string name="show_crash_info_text">Show crash info</string>
     <string name="lack_of_crashes_text">There were no crashes recently</string>
-
     <string name="file_deleted">Deletion done</string>
     <string name="file_not_deleted">Deletion hasn\'t been done</string>
-
     <string name="notification_title">AMTT</string>
     <string name="notification_text">Button-assistant is running.</string>
     <string name="display_name">Display Name</string>
@@ -86,6 +82,5 @@
     <string name="affects_versions">Affects Version/s</string>
     <string name="environment">Environment</string>
     <string name="tester">Tester</string>
-
 
 </resources>

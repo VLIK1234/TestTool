@@ -10,5 +10,8 @@
         <item name="android:icon">@color/icons</item>
         <item name="android:divider">@color/divider</item>
     </style>
-
+    <style name="mySpinnerStyle" parent="android:Widget.ListView.DropDown">
+        <item name="android:divider">#00ff00</item>
+        <item name="android:dividerHeight">1dp</item>
+    </style>
 </resources>
