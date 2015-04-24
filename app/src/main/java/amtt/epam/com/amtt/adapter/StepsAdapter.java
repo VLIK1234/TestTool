@@ -33,6 +33,8 @@ public class StepsAdapter extends CursorAdapter {
 
     public StepsAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
+        //TODO we really need to recreate ImageLoader every tyme we create adapter?
+        //when we clear cache for unused adapter with loader instance
         mImageLoader = new InternalStorageImageLoader(10, IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT);
     }
 
@@ -65,7 +67,6 @@ public class StepsAdapter extends CursorAdapter {
                 "Soft input mode: " + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._SOFT_INPUT_MODE)) + "\n" +
                 "Target app name: " + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._TARGET_ACTIVITY_NAME)) + "\n" +
                 "Task affinity: " + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._TASK_AFFINITY)) + "\n" +
-                "Theme: " + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._THEME)) + "\n" +
                 "Ui options: " + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._UI_OPTIONS)) + "\n" +
                 "Process name: " + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._PROCESS_NAME)) + "\n" +
                 "Package name: " + cursor.getString(cursor.getColumnIndex(ActivityInfoTable._PACKAGE_NAME)) + "\n";

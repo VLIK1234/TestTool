@@ -20,7 +20,7 @@ import amtt.epam.com.amtt.database.table.Table;
  */
 public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstants, BaseColumns {
 
-    private static final Integer DATA_BASE_VERSION = 2;
+    private static final Integer DATA_BASE_VERSION = 3;
     private static final String DATA_BASE_NAME = "amtt.db";
     private static final List<Class> sTables;
 

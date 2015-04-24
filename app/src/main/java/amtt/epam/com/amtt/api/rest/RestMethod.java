@@ -118,7 +118,7 @@ public class RestMethod<ResultType, ResultObjectType> {
         return mHttpClient.execute(httpPost);
     }
 
-    public RestResponse<ResultType, ResultObjectType> execute() throws IOException {
+    public RestResponse<ResultType, ResultObjectType> execute() throws Exception {
         HttpResponse httpResponse = null;
 
         switch (mRestMethodType) {
@@ -132,12 +132,7 @@ public class RestMethod<ResultType, ResultObjectType> {
 
         String responseMessage = null;
         if (mResponseProcessor != null) {
-            try {
-                responseMessage = mResponseProcessor.process(httpResponse);
-            } catch (Exception e) {
-                //TODO WTF? see notes to RestResponse
-                responseMessage = "response message is illegible=(";
-            }
+            responseMessage = mResponseProcessor.process(httpResponse);
         }
 
         ResultObjectType resultObject = null;

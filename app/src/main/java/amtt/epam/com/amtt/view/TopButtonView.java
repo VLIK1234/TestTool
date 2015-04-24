@@ -4,16 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -22,11 +28,17 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
+import amtt.epam.com.amtt.api.rest.RestResponse;
+import amtt.epam.com.amtt.api.result.UserDataResult;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
+import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
-import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
+import amtt.epam.com.amtt.database.task.DataBaseCallback;
+import amtt.epam.com.amtt.database.task.DataBaseOperationType;
+import amtt.epam.com.amtt.database.task.DataBaseTask;
+import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
 import amtt.epam.com.amtt.api.result.UserDataResult;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
@@ -36,18 +48,19 @@ import amtt.epam.com.amtt.util.PreferenceUtils;
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-public class TopButtonView extends FrameLayout implements JiraCallback<UserDataResult, JMetaResponse> {
+public class TopButtonView extends FrameLayout implements JiraCallback<UserDataResult, JMetaResponse>, DataBaseCallback {
 
     private final static String LOG_TAG = "TAG";
 
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
     private LinearLayout buttonsBar;
-    private ImageView mainButton;
+    public ImageView mainButton;
     private DisplayMetrics metrics;
     private int currentOrientation;
     private float widthProportion;
     private float heightProportion;
+    private Button[] buttonsArray;
     public Button buttonAuth;
     public Button buttonBugRep;
     public Button buttonUserInfo;
@@ -57,11 +70,20 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
     private int lastX;
     private int lastY;
     public boolean moving;
+    private TextView[] textViewArray;
+    private int xButton = 0;
+    private int yButton = 0;
+    private RelativeLayout topButtonLayout;
+    public LinearLayout layoutUserInfo;
+    public LinearLayout layoutBugRep;
+
+    //Database fields
+    private static int sStepNumber; //responsible for steps ordering in database
+    private int mScreenNumber; //responsible for nonrecurring screenshot names
 
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
         initComponent();
-
         buttonsBar.setOrientation(LinearLayout.VERTICAL);
 
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -77,62 +99,84 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.top_button_layout, this, true);
         buttonsBar = (LinearLayout) findViewById(R.id.buttons_bar);
-        mainButton = (ImageView) findViewById(R.id.plus_button);
-        mainButton.setImageResource(R.drawable.ic_top_button);
+        mainButton = (ImageView) findViewById(R.id.main_button);
         buttonsBar.setVisibility(GONE);
+        TextView textAuth = (TextView) findViewById(R.id.text_auth);
+        TextView textUserInfo = (TextView) findViewById(R.id.text_user_info);
+        TextView textAddStep = (TextView) findViewById(R.id.text_add_step);
+        TextView textShowStep = (TextView) findViewById(R.id.text_show_step);
+        TextView textBugRep = (TextView) findViewById(R.id.text_bug_rep);
+        textViewArray = new TextView[]{textAuth, textUserInfo, textAddStep, textShowStep, textBugRep};
 
         buttonAuth = (Button) findViewById(R.id.button_auth);
-        buttonAuth.setOnClickListener(new OnClickListener() {
+        buttonUserInfo = (Button) findViewById(R.id.button_user_info);
+        Button buttonAddStep = (Button) findViewById(R.id.button_add_step);
+        Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
+        buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
+        buttonsArray = new Button[]{buttonAuth, buttonUserInfo, buttonAddStep, buttonShowStep, buttonBugRep};
+        topButtonLayout = (RelativeLayout) findViewById(R.id.top_button_layout);
+
+        LinearLayout layoutAuth = (LinearLayout) findViewById(R.id.layout_auth);
+        layoutUserInfo = (LinearLayout) findViewById(R.id.layout_user_info);
+        LinearLayout layoutAddStep = (LinearLayout) findViewById(R.id.layout_add_step);
+        LinearLayout layoutShowStep = (LinearLayout) findViewById(R.id.layout_show_step);
+        layoutBugRep = (LinearLayout) findViewById(R.id.layout_bug_rep);
+
+        OnClickListener listenerButtons = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!CredentialsManager.getInstance().getAccessState()) {
-                    Intent intent = new Intent(getContext(), LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    getContext().getApplicationContext().startActivity(intent);
-                }else{
+                switch (v.getId()) {
+                    case R.id.layout_auth:
+                        if (!CredentialsManager.getInstance().getAccessState()) {
+                            Intent intent = new Intent(getContext(), LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            getContext().getApplicationContext().startActivity(intent);
+                        } else {
+                            //logout logic
+                        }
+                        break;
+                    case R.id.layout_user_info:
+                        Intent intent = new Intent(getContext(), UserInfoActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getContext().getApplicationContext().startActivity(intent);
+                        break;
+                    case R.id.layout_add_step:
+                        sStepNumber++;
+                        new DataBaseTask.Builder()
+                                .setOperationType(DataBaseOperationType.SAVE_STEP)
+                                .setContext(getContext())
+                                .setCallback(TopButtonView.this)
+                                .setStepNumber(sStepNumber)
+                                .create()
+                                .execute();
+                        break;
+
+                    case R.id.layout_show_step:
+                         Intent intentStep = new Intent(getContext(), StepsActivity.class);
+                         intentStep.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                         getContext().getApplicationContext().startActivity(intentStep);
+                        break;
+                    case R.id.layout_bug_rep:
+                        new JiraTask.Builder<UserDataResult, JMetaResponse>()
+                                .setOperationType(JiraTaskType.SEARCH)
+                                .setSearchType(JiraTask.JiraSearchType.ISSUE)
+                                .setCallback(TopButtonView.this)
+                                .create()
+                                .execute();
+                        break;
+                    default:
                 }
             }
-        });
-        buttonUserInfo = (Button) findViewById(R.id.button_user_info);
-        buttonUserInfo.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), UserInfoActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().getApplicationContext().startActivity(intent);
-            }
-        });
-        Button buttonAddStep = (Button) findViewById(R.id.button_add_step);
-        buttonAddStep.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "STEP", Toast.LENGTH_LONG).show();
-//                Intent intentATS = new Intent(BaseActivity.ACTION_SAVE_STEP);
-//                getContext().sendBroadcast(intentATS);
-            }
-        });
-        Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
-        buttonShowStep.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "SHOW", Toast.LENGTH_LONG).show();
-//                Intent intent = new Intent(getContext(), StepsActivity.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                getContext().getApplicationContext().startActivity(intent);
-            }
-        });
-        buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
-        buttonBugRep.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new JiraTask.Builder<UserDataResult,JMetaResponse>()
-                        .setOperationType(JiraTaskType.SEARCH)
-                        .setSearchType(JiraTask.JiraSearchType.ISSUE)
-                        .setCallback(TopButtonView.this)
-                        .create()
-                        .execute();
-            }
-        });
+        };
+        layoutAuth.setOnClickListener(listenerButtons);
+        layoutUserInfo.setOnClickListener(listenerButtons);
+        layoutAddStep.setOnClickListener(listenerButtons);
+        layoutShowStep.setOnClickListener(listenerButtons);
+        layoutBugRep.setOnClickListener(listenerButtons);
+        layoutUserInfo.setClickable(false);
+        layoutBugRep.setClickable(false);
+
+        clearDatabase();
     }
 
     private void checkFreeSpace() {
@@ -153,16 +197,13 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 buttonsBar.getViewTreeObserver().removeOnPreDrawListener(this);
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    if (layoutParams.x+mainButton.getWidth()+buttonsBar.getWidth() > metrics.widthPixels) {
-                        layoutParams.x -= (layoutParams.x + mainButton.getWidth()+ buttonsBar.getWidth() - metrics.widthPixels);
-                        windowManager.updateViewLayout(TopButtonView.this, layoutParams);
-                    }
-                } else {
-                    if (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
-                        layoutParams.y -= (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() - metrics.heightPixels + getStatusBarHeight());
-                        windowManager.updateViewLayout(TopButtonView.this, layoutParams);
-                    }
+                if (layoutParams.x + buttonsBar.getWidth() > metrics.widthPixels) {
+                    layoutParams.x -= (layoutParams.x + buttonsBar.getWidth() - metrics.widthPixels);
+                    windowManager.updateViewLayout(TopButtonView.this, layoutParams);
+                }
+                if (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
+                    layoutParams.y -= (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() - metrics.heightPixels + getStatusBarHeight());
+                    windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                 }
                 return true;
             }
@@ -227,20 +268,13 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
 
                     // update the position of the view
                     if (event.getPointerCount() == 1) {
-                        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                            if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
-                                layoutParams.x += deltaX;
-                            }
-                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
-                                layoutParams.y += deltaY;
-                            }
-                        } else {
-                            if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
-                                layoutParams.x += deltaX;
-                            }
-                            if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
-                                layoutParams.y += deltaY;
-                            }
+                        if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
+                            layoutParams.x += deltaX;
+                            xButton = layoutParams.x;
+                        }
+                        if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
+                            layoutParams.y += deltaY;
+                            yButton = layoutParams.y;
                         }
 
                         widthProportion = (float) layoutParams.x / metrics.widthPixels;
@@ -258,9 +292,71 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
                         if (buttonsBar.getVisibility() == VISIBLE) {
-                            buttonsBar.setVisibility(GONE);
+                            Animation reverseRotate = AnimationUtils.loadAnimation(getContext(), R.anim.reverse_rotate);
+                            mainButton.startAnimation(reverseRotate);
+                            reverseRotate.setFillAfter(true);
+                            final Animation translateUp = AnimationUtils.loadAnimation(getContext(), R.anim.abc_fade_out);
+                            translateUp.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
+                                    Animation translateMainButton = new TranslateAnimation(0, xButton - layoutParams.x, 0, yButton - layoutParams.y);
+                                    translateMainButton.setDuration(300);
+                                    translateMainButton.setInterpolator(new DecelerateInterpolator());
+                                    translateMainButton.setAnimationListener(new Animation.AnimationListener() {
+                                        @Override
+                                        public void onAnimationStart(Animation animation) {
+
+                                        }
+
+                                        @Override
+                                        public void onAnimationEnd(Animation animation) {
+                                            layoutParams.x = xButton;
+                                            layoutParams.y = yButton;
+                                            windowManager.updateViewLayout(TopButtonView.this, layoutParams);
+                                        }
+
+                                        @Override
+                                        public void onAnimationRepeat(Animation animation) {
+
+                                        }
+                                    });
+                                    topButtonLayout.startAnimation(translateMainButton);
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    buttonsBar.setVisibility(GONE);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+
+                                }
+                            });
+                            buttonsBar.startAnimation(translateUp);
+
                         } else {
                             buttonsBar.setVisibility(VISIBLE);
+                            xButton = layoutParams.x;
+                            yButton = layoutParams.y;
+                            Animation rotate = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
+                            rotate.setFillAfter(true);
+                            mainButton.startAnimation(rotate);
+                            Animation translate = AnimationUtils.loadAnimation(getContext(), R.anim.translate);
+                            buttonsBar.startAnimation(translate);
+                            Animation combination = AnimationUtils.loadAnimation(getContext(), R.anim.combination);
+                            long durationAnimation = combination.getDuration();
+                            for (int i = 0; i < buttonsArray.length; i++, durationAnimation += 100) {
+                                combination.setDuration(durationAnimation);
+                                buttonsArray[i].startAnimation(combination);
+                            }
+                            Animation alpha = AnimationUtils.loadAnimation(getContext(), R.anim.alpha);
+                            durationAnimation = 300;
+                            for (int i = 0; i < textViewArray.length; i++, durationAnimation += 100) {
+                                alpha.setDuration(durationAnimation);
+                                textViewArray[i].startAnimation(alpha);
+                            }
+
                             checkFreeSpace();
                         }
                     }
@@ -271,7 +367,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
     }
 
     @Override
-    public void onJiraRequestPerformed(RestResponse<UserDataResult,JMetaResponse> restResponse) {
+    public void onJiraRequestPerformed(RestResponse<UserDataResult, JMetaResponse> restResponse) {
         if (restResponse.getResult() == UserDataResult.SUCCESS) {
             JMetaResponse jiraMetaResponse = restResponse.getResultObject();
             ArrayList<String> projectsNames = jiraMetaResponse.getProjectsNames();
@@ -294,6 +390,33 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
             savePositionAfterTurnScreen();
             buttonsBar.setVisibility(GONE);
         }
+    }
+
+    @Override
+    public void onDataBaseActionDone(DataBaseTaskResult result) {
+        int resultMessage;
+        switch (result) {
+            case DONE:
+                resultMessage = R.string.data_base_action_done;
+                break;
+            case ERROR:
+                resultMessage = R.string.data_base_action_error;
+                break;
+            default:
+                resultMessage = R.string.data_base_cleared;
+                break;
+        }
+        Toast.makeText(getContext(), resultMessage, Toast.LENGTH_SHORT).show();
+    }
+
+
+    private void clearDatabase() {
+        new DataBaseTask.Builder()
+                .setOperationType(DataBaseOperationType.CLEAR)
+                .setContext(getContext())
+                .setCallback(TopButtonView.this)
+                .create()
+                .execute();
     }
 
 }

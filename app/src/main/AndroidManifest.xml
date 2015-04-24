@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
 
     <!--
      To retrieve OAuth 2.0 tokens or invalidate tokens to disconnect a user. This disconnect
@@ -44,10 +45,6 @@
 
         <activity
             android:name=".app.SecondActivity"
-            android:label="@string/app_name" />
-
-        <activity
-            android:name=".app.ThirdActivity"
             android:label="@string/app_name" />
 
         <activity

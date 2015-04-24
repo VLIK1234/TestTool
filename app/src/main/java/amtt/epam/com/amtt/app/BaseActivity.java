@@ -17,22 +17,20 @@ public class BaseActivity extends Activity{
 
     //TODO SAVE_STEP != TAKESCREENSHOT, call constants carefully
     public final static String ACTION_SAVE_STEP = "amtt.epam.com.amtt.app.TAKESCREENSHOT";
-
-    protected BroadcastReceiver broadcastReceiver;
-    private IntentFilter intentFilterBroadcast;
+    private IntentFilter intentFilterBroadcast = new IntentFilter(ACTION_SAVE_STEP);
+    protected BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ACTION_SAVE_STEP)) {
+                //Realization save step
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(ACTION_SAVE_STEP)) {
-                    //Realization save step
-                }
-            }
-        };
-        intentFilterBroadcast = new IntentFilter(ACTION_SAVE_STEP);
+
     }
 
     @Override
@@ -52,9 +50,9 @@ public class BaseActivity extends Activity{
     }
 
     public void showProgress(boolean show) {
-        int progressId = getProgressViewId();
-        if (findViewById(progressId)!= null) {
-            findViewById(progressId).setVisibility(show ? View.VISIBLE : View.GONE);
+    View progressBar = findViewById(getProgressViewId());
+        if (progressBar!= null) {
+            findViewById(R.id.progress).setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
 

@@ -76,6 +76,12 @@
     <string name="button_close_service">Close</string>
     <string name="login">Log In</string>
     <string name="logout">Log Out</string>
+    <string name="button_authorization">Authorization</string>
+    <string name="button_user_info">User info</string>
+    <string name="button_add_step">Add step</string>
+    <string name="button_show_step">Show step</string>
+    <string name="button_bug_rep">Create issue</string>
+    <string name="data_base_cleared">Database cleared</string>
     <string name="priority">Priority</string>
     <string name="affects_versions">Affects Version/s</string>
     <string name="environment">Environment</string>

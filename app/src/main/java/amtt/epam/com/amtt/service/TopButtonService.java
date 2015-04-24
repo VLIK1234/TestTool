@@ -100,7 +100,7 @@ public class TopButtonService extends Service{
         layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
         layoutParams.format = PixelFormat.TRANSLUCENT;
-        layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
+        layoutParams.gravity = Gravity.TOP | Gravity.START;
         layoutParams.x = xInitPosition;
         layoutParams.y = yInitPosition;
     }
@@ -126,6 +126,8 @@ public class TopButtonService extends Service{
         view.buttonAuth.setTextColor(getResources().getColor(R.color.red));
         view.buttonBugRep.setEnabled(true);
         view.buttonUserInfo.setEnabled(true);
+        view.layoutUserInfo.setClickable(true);
+        view.layoutBugRep.setClickable(true);
     }
 
     private void showNotification() {
