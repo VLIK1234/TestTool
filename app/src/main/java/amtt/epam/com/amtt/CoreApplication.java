@@ -2,7 +2,7 @@ package amtt.epam.com.amtt;
 
 import android.app.Application;
 
-import amtt.epam.com.amtt.util.Kontext;
+import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.service.TopButtonService;
 /**
  * Created by Ivan_Bakach on 19.03.2015.
@@ -12,7 +12,7 @@ public class CoreApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Kontext.setKontext(getApplicationContext());
+        ContextHolder.setContext(getApplicationContext());
         TopButtonService.start(this);
     }
 }
