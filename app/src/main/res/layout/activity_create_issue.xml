@@ -4,49 +4,163 @@
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context="amtt.epam.com.amtt.app.CreateIssueActivity">
 
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/material_vertical_size_list_item"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:id="@+id/project_key">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/project_name"
+        android:textSize="@dimen/font_english_like_caption"
+        android:layout_marginBottom="@dimen/material_vertical_size_divider" />
     <Spinner
         android:id="@+id/spin_projects_key"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/project_key"
-        android:singleLine="false" />
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_vertical_height_edittext"
+        android:hint="@string/project_key"/>
+</RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_vertical_size_list_item"
+        android:id="@+id/project_issue_name"
+        android:layout_below="@id/project_key">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/issue_name"
+            android:textSize="@dimen/font_english_like_caption" />
     <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_vertical_height_edittext"
         android:id="@+id/spin_issue_name"
         android:hint="@string/issue_name" />
+    </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_vertical_size_list_item"
+        android:id="@+id/summary_layout"
+        android:layout_below="@id/project_issue_name">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/summary"
+            android:textSize="@dimen/font_english_like_caption" />
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/material_vertical_height_edittext"
         android:id="@+id/et_summary"
-        android:hint="@string/summary" />
+        android:hint="@string/summary"
+        android:textSize="@dimen/font_english_like_subhead" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_vertical_size_list_item"
+        android:id="@+id/priority_layout"
+        android:layout_below="@id/summary_layout">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/priority"
+            android:textSize="@dimen/font_english_like_caption" />
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_vertical_height_edittext"
+        android:id="@+id/spin_priority"
+        android:hint="@string/priority"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_vertical_size_list_item"
+        android:id="@+id/versions_layout"
+        android:layout_below="@id/priority_layout">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/affects_versions"
+            android:textSize="@dimen/font_english_like_caption" />
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_vertical_height_edittext"
+        android:id="@+id/spin_versions"
+        android:hint="@string/affects_versions"/>
+    </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_vertical_size_list_item"
+        android:id="@+id/environement_layout"
+        android:layout_below="@id/versions_layout">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/environment"
+            android:textSize="@dimen/font_english_like_caption" />
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/et_description"
-        android:hint="@string/description" />
+        android:layout_height="@dimen/material_vertical_height_edittext"
+        android:id="@+id/et_environment"
+        android:inputType="textMultiLine"
+        android:hint="@string/environment"
+        android:textSize="@dimen/font_english_like_subhead" />
+        </RelativeLayout>
 
-    <Button
-        android:id="@+id/btn_create"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:text="@string/create_issue"
-        android:enabled="false" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_vertical_size_list_item"
+        android:id="@+id/description_layout"
+        android:layout_below="@id/environement_layout">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/description"
+            android:textSize="@dimen/font_english_like_caption" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_vertical_height_edittext"
+        android:inputType="textMultiLine"
+        android:id="@+id/et_description"
+        android:hint="@string/description"
+        android:textSize="@dimen/font_english_like_subhead" />
+</RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_vertical_size_list_item"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:id="@+id/tester_layout"
+        android:layout_below="@id/description_layout">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tester"
+            android:textSize="@dimen/font_english_like_caption" />
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/material_vertical_height_edittext"
+        android:id="@+id/spin_testers"
+        android:hint="@string/tester"/>
+        </RelativeLayout>
 
     <ProgressBar
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="center"
         android:id="@+id/progress"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btn_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="@string/create_issue"
+        android:enabled="false"
+        android:layout_below="@id/tester_layout"/>
 
 </LinearLayout>
