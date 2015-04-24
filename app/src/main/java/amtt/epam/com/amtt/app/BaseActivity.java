@@ -50,8 +50,13 @@ public class BaseActivity extends Activity{
     }
 
     public void showProgress(boolean show) {
-        if (findViewById(R.id.progress)!= null) {
+    View progressBar = findViewById(getProgressViewId());
+        if (progressBar!= null) {
             findViewById(R.id.progress).setVisibility(show ? View.VISIBLE : View.GONE);
         }
+    }
+
+    protected int getProgressViewId() {
+        return R.id.progress;
     }
 }
