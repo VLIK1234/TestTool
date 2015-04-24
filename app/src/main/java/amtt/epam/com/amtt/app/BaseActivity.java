@@ -17,23 +17,20 @@ public class BaseActivity extends Activity{
 
     //TODO SAVE_STEP != TAKESCREENSHOT, call constants carefully
     public final static String ACTION_SAVE_STEP = "amtt.epam.com.amtt.app.TAKESCREENSHOT";
-
-    //TODO who is br?
-    protected BroadcastReceiver br;
-    private IntentFilter intentFilterBroadcast;
+    private IntentFilter intentFilterBroadcast = new IntentFilter(ACTION_SAVE_STEP);
+    protected BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ACTION_SAVE_STEP)) {
+                //Realization save step
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        br = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(ACTION_SAVE_STEP)) {
-                    //Realization save step
-                }
-            }
-        };
-        intentFilterBroadcast = new IntentFilter(ACTION_SAVE_STEP);
+
     }
 
     @Override
@@ -43,21 +40,22 @@ public class BaseActivity extends Activity{
     }
 
     private void initBroadcastReceiver() {
-        registerReceiver(br, intentFilterBroadcast);
+        registerReceiver(broadcastReceiver, intentFilterBroadcast);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(br);
+        unregisterReceiver(broadcastReceiver);
     }
 
     public void showProgress(boolean show) {
-        //TODO why do we need to seek twice?
-        if (findViewById(getProgressViewId())!=null) {
-            findViewById(getProgressViewId()).setVisibility(show ? View.VISIBLE : View.GONE);
+    View progressBar = findViewById(getProgressViewId());
+        if (progressBar!= null) {
+            findViewById(R.id.progress).setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
+
     protected int getProgressViewId() {
         return R.id.progress;
     }

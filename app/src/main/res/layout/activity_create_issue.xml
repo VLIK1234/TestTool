@@ -39,7 +39,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:text="@string/create_issue"/>
+        android:text="@string/create_issue"
+        android:enabled="false" />
 
     <ProgressBar
         android:layout_height="wrap_content"
