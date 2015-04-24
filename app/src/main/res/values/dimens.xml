@@ -38,5 +38,6 @@
     <dimen name="margin_buttons_bar">4dp</dimen>
     <dimen name="margin_first_text_view">8dp</dimen>
     <dimen name="margin_background_circle">5dp</dimen>
-    <dimen name="textview_background_height">24dp</dimen>
+    <dimen name="card_corner_radius">3dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
 </resources>

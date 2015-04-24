@@ -4,18 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -31,12 +28,12 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
+import amtt.epam.com.amtt.api.rest.RestResponse;
+import amtt.epam.com.amtt.api.result.UserDataResult;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
-import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
-import amtt.epam.com.amtt.api.result.UserDataResult;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.CredentialsManager;
@@ -68,11 +65,11 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
     private int lastY;
     public boolean moving;
     private TextView[] textViewArray;
-    public TextView textUserInfo;
-    public TextView textBugRep;
     private int xButton = 0;
     private int yButton = 0;
     private RelativeLayout topButtonLayout;
+    public LinearLayout layoutUserInfo;
+    public LinearLayout layoutBugRep;
 
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
@@ -92,13 +89,13 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.top_button_layout, this, true);
         buttonsBar = (LinearLayout) findViewById(R.id.buttons_bar);
-        mainButton = (ImageView) findViewById(R.id.plus_button);
+        mainButton = (ImageView) findViewById(R.id.main_button);
         buttonsBar.setVisibility(GONE);
         TextView textAuth = (TextView) findViewById(R.id.text_auth);
-        textUserInfo = (TextView) findViewById(R.id.text_user_info);
+        TextView textUserInfo = (TextView) findViewById(R.id.text_user_info);
         TextView textAddStep = (TextView) findViewById(R.id.text_add_step);
         TextView textShowStep = (TextView) findViewById(R.id.text_show_step);
-        textBugRep = (TextView) findViewById(R.id.text_bug_rep);
+        TextView textBugRep = (TextView) findViewById(R.id.text_bug_rep);
         textViewArray = new TextView[]{textAuth, textUserInfo, textAddStep, textShowStep, textBugRep};
 
         buttonAuth = (Button) findViewById(R.id.button_auth);
@@ -107,15 +104,15 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
         buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
         buttonsArray = new Button[]{buttonAuth, buttonUserInfo, buttonAddStep, buttonShowStep, buttonBugRep};
-        topButtonLayout = (RelativeLayout)findViewById(R.id.top_button_layout);
+        topButtonLayout = (RelativeLayout) findViewById(R.id.top_button_layout);
 
         LinearLayout layoutAuth = (LinearLayout) findViewById(R.id.layout_auth);
-        LinearLayout layoutUserInfo = (LinearLayout) findViewById(R.id.layout_user_info);
+        layoutUserInfo = (LinearLayout) findViewById(R.id.layout_user_info);
         LinearLayout layoutAddStep = (LinearLayout) findViewById(R.id.layout_add_step);
         LinearLayout layoutShowStep = (LinearLayout) findViewById(R.id.layout_show_step);
-        LinearLayout layoutBugRep = (LinearLayout) findViewById(R.id.layout_bug_rep);
+        layoutBugRep = (LinearLayout) findViewById(R.id.layout_bug_rep);
 
-        OnClickListener listnerButtons = new OnClickListener() {
+        OnClickListener listenerButtons = new OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
@@ -151,11 +148,13 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                 }
             }
         };
-        layoutAuth.setOnClickListener(listnerButtons);
-        layoutUserInfo.setOnClickListener(listnerButtons);
-        layoutAddStep.setOnClickListener(listnerButtons);
-        layoutShowStep.setOnClickListener(listnerButtons);
-        layoutBugRep.setOnClickListener(listnerButtons);
+        layoutAuth.setOnClickListener(listenerButtons);
+        layoutUserInfo.setOnClickListener(listenerButtons);
+        layoutAddStep.setOnClickListener(listenerButtons);
+        layoutShowStep.setOnClickListener(listenerButtons);
+        layoutBugRep.setOnClickListener(listenerButtons);
+        layoutUserInfo.setClickable(false);
+        layoutBugRep.setClickable(false);
     }
 
     private void checkFreeSpace() {
@@ -325,13 +324,13 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                             buttonsBar.startAnimation(translate);
                             Animation combination = AnimationUtils.loadAnimation(getContext(), R.anim.combination);
                             long durationAnimation = combination.getDuration();
-                            for (int i = 0; i < buttonsArray.length; i++, durationAnimation+=100) {
+                            for (int i = 0; i < buttonsArray.length; i++, durationAnimation += 100) {
                                 combination.setDuration(durationAnimation);
                                 buttonsArray[i].startAnimation(combination);
                             }
                             Animation alpha = AnimationUtils.loadAnimation(getContext(), R.anim.alpha);
                             durationAnimation = 300;
-                            for (int i = 0; i < textViewArray.length; i++, durationAnimation+=100) {
+                            for (int i = 0; i < textViewArray.length; i++, durationAnimation += 100) {
                                 alpha.setDuration(durationAnimation);
                                 textViewArray[i].startAnimation(alpha);
                             }
@@ -346,7 +345,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
     }
 
     @Override
-    public void onJiraRequestPerformed(RestResponse<UserDataResult,JMetaResponse> restResponse) {
+    public void onJiraRequestPerformed(RestResponse<UserDataResult, JMetaResponse> restResponse) {
         if (restResponse.getResult() == UserDataResult.SUCCESS) {
             JMetaResponse jiraMetaResponse = restResponse.getResultObject();
             ArrayList<String> projectsNames = jiraMetaResponse.getProjectsNames();

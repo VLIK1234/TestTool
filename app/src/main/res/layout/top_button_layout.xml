@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/top_button_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/plus_button"
+        android:id="@+id/main_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/background_main_button"/>
@@ -14,7 +15,8 @@
         android:id="@+id/buttons_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:duplicateParentState="false">
 
         <LinearLayout
             android:id="@+id/layout_auth"
@@ -22,8 +24,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginStart="@dimen/margin_buttons_bar"
-            android:layout_marginLeft="@dimen/margin_buttons_bar"
-            android:clickable="false">
+            android:layout_marginLeft="@dimen/margin_buttons_bar">
 
             <Button
                 android:id="@+id/button_auth"
@@ -34,18 +35,24 @@
                 android:text="@string/login"
                 android:textColor="@color/green"
                 android:textSize="@dimen/button_text_size"
-                android:duplicateParentState="true"
+                android:enabled="false"
                 android:clickable="false"/>
 
-            <TextView
-                android:id="@+id/text_auth"
+            <android.support.v7.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_first_text_view"
-                android:background="@drawable/background_text"
-                android:text="@string/button_authorization"
-                android:duplicateParentState="true"
-                android:textColor="@color/black"/>
+                android:layout_gravity="center"
+                card_view:cardUseCompatPadding="true"
+                card_view:cardElevation="@dimen/card_elevation"
+                card_view:cardCornerRadius="@dimen/card_corner_radius">
+
+                <TextView
+                    android:id="@+id/text_auth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_authorization"
+                    android:textColor="@color/black"/>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
 
         <LinearLayout
@@ -55,7 +62,7 @@
             android:orientation="horizontal"
             android:layout_marginStart="@dimen/margin_buttons_bar"
             android:layout_marginLeft="@dimen/margin_buttons_bar"
-            android:clickable="false">
+            android:duplicateParentState="false">
 
             <Button
                 android:id="@+id/button_user_info"
@@ -63,16 +70,25 @@
                 android:layout_height="@dimen/button_small_size"
                 android:layout_margin="@dimen/margin_buttons_bar"
                 android:background="@drawable/background_user_info"
+                android:enabled="false"
                 android:clickable="false"/>
 
-            <TextView
-                android:id="@+id/text_user_info"
+
+            <android.support.v7.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_buttons_bar"
-                android:background="@drawable/background_text"
-                android:text="@string/button_user_info"
-                android:textColor="@color/black"/>
+                android:layout_gravity="center"
+                card_view:cardUseCompatPadding="true"
+                card_view:cardElevation="@dimen/card_elevation"
+                card_view:cardCornerRadius="@dimen/card_corner_radius">
+
+                <TextView
+                    android:id="@+id/text_user_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_user_info"
+                    android:textColor="@color/black"/>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
 
         <LinearLayout
@@ -82,7 +98,7 @@
             android:orientation="horizontal"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="@dimen/margin_buttons_bar"
-            android:clickable="true">
+            android:duplicateParentState="false">
 
             <Button
                 android:id="@+id/button_add_step"
@@ -92,14 +108,21 @@
                 android:background="@drawable/background_add_step"
                 android:clickable="false"/>
 
-            <TextView
-                android:id="@+id/text_add_step"
+            <android.support.v7.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_buttons_bar"
-                android:background="@drawable/background_text"
-                android:text="@string/button_add_step"
-                android:textColor="@color/black" />
+                android:layout_gravity="center"
+                card_view:cardUseCompatPadding="true"
+                card_view:cardElevation="@dimen/card_elevation"
+                card_view:cardCornerRadius="@dimen/card_corner_radius">
+
+                <TextView
+                    android:id="@+id/text_add_step"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_add_step"
+                    android:textColor="@color/black"/>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
 
         <LinearLayout
@@ -109,7 +132,7 @@
             android:orientation="horizontal"
             android:layout_marginStart="@dimen/margin_buttons_bar"
             android:layout_marginLeft="@dimen/margin_buttons_bar"
-            android:clickable="true">
+            android:duplicateParentState="false">
 
             <Button
                 android:id="@+id/button_show_step"
@@ -119,14 +142,21 @@
                 android:background="@drawable/background_show_step"
                 android:clickable="false"/>
 
-            <TextView
-                android:id="@+id/text_show_step"
+            <android.support.v7.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_buttons_bar"
-                android:background="@drawable/background_text"
-                android:text="@string/button_show_step"
-                android:textColor="@color/black" />
+                android:layout_gravity="center"
+                card_view:cardUseCompatPadding="true"
+                card_view:cardElevation="@dimen/card_elevation"
+                card_view:cardCornerRadius="@dimen/card_corner_radius">
+
+                <TextView
+                    android:id="@+id/text_show_step"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_show_step"
+                    android:textColor="@color/black"/>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
 
         <LinearLayout
@@ -136,7 +166,7 @@
             android:orientation="horizontal"
             android:layout_marginStart="@dimen/margin_buttons_bar"
             android:layout_marginLeft="@dimen/margin_buttons_bar"
-            android:clickable="false">
+            android:duplicateParentState="false">
 
             <Button
                 android:id="@+id/button_bug_rep"
@@ -145,16 +175,23 @@
                 android:layout_margin="@dimen/margin_buttons_bar"
                 android:background="@drawable/background_bug_rep"
                 android:enabled="false"
-                android:clickable="false" />
+                android:clickable="false"/>
 
-            <TextView
-                android:id="@+id/text_bug_rep"
+            <android.support.v7.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_buttons_bar"
-                android:background="@drawable/background_text"
-                android:text="@string/button_bug_rep"
-                android:textColor="@color/black" />
+                android:layout_gravity="center"
+                card_view:cardUseCompatPadding="true"
+                card_view:cardElevation="@dimen/card_elevation"
+                card_view:cardCornerRadius="@dimen/card_corner_radius">
+
+                <TextView
+                    android:id="@+id/text_bug_rep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_bug_rep"
+                    android:textColor="@color/black"/>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
     </LinearLayout>
 

@@ -126,8 +126,8 @@ public class TopButtonService extends Service{
         view.buttonAuth.setTextColor(getResources().getColor(R.color.red));
         view.buttonBugRep.setEnabled(true);
         view.buttonUserInfo.setEnabled(true);
-        view.textUserInfo.setEnabled(true);
-        view.textBugRep.setEnabled(true);
+        view.layoutUserInfo.setClickable(true);
+        view.layoutBugRep.setClickable(true);
     }
 
     private void showNotification() {
