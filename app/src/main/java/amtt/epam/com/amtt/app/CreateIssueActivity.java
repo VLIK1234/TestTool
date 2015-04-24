@@ -42,7 +42,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
         etSummary = (EditText) findViewById(R.id.et_summary);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getProjectsNames());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerProjectsKey = (Spinner) findViewById(R.id.spin_projects_key);
+        spinnerProjectsKey = (Spinner) findViewById(R.id.spin_projects_name);
         spinnerProjectsKey.setAdapter(adapter);
         spinnerProjectsKey.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

@@ -35,4 +35,5 @@
     <dimen name="circle_padding">8dp</dimen>
 
     <dimen name="material_vertical_height_edittext">48dp</dimen>
+    <dimen name="material_vertical_margin_spinner">8dp</dimen>
 </resources>

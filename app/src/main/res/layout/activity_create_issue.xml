@@ -1,133 +1,166 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:orientation="vertical"
     tools:context="amtt.epam.com.amtt.app.CreateIssueActivity">
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/material_vertical_size_list_item"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:id="@+id/project_key">
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/project_name"
-        android:textSize="@dimen/font_english_like_caption"
-        android:layout_marginBottom="@dimen/material_vertical_size_divider" />
-    <Spinner
-        android:id="@+id/spin_projects_key"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/material_vertical_height_edittext"
-        android:hint="@string/project_key"/>
-</RelativeLayout>
+        android:layout_height="@dimen/material_vertical_size_list_item"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:id="@+id/project_name">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_project_name"
+            android:text="@string/project_name"
+            android:textSize="@dimen/font_english_like_caption"
+            android:layout_marginBottom="@dimen/material_vertical_size_divider"
+            android:paddingLeft="@dimen/activity_horizontal_margin"/>
+        <Spinner
+            android:id="@+id/spin_projects_name"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/material_vertical_height_edittext"
+            android:hint="@string/project_key"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:paddingLeft="@dimen/material_vertical_margin_spinner"
+            android:paddingTop="16dp"/>
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_vertical_size_list_item"
         android:id="@+id/project_issue_name"
-        android:layout_below="@id/project_key">
+        android:layout_below="@id/project_name"
+        android:paddingTop="@dimen/activity_vertical_margin">
         <TextView
+
+            android:paddingLeft="@dimen/activity_horizontal_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/issue_name"
-            android:textSize="@dimen/font_english_like_caption" />
+            android:textSize="@dimen/font_english_like_caption"
+            android:layout_marginBottom="@dimen/material_vertical_size_divider"/>
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_vertical_height_edittext"
         android:id="@+id/spin_issue_name"
-        android:hint="@string/issue_name" />
+        android:hint="@string/issue_name"
+        android:paddingLeft="@dimen/material_vertical_margin_spinner"
+        android:paddingTop="16dp"/>
     </RelativeLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_vertical_size_list_item"
         android:id="@+id/summary_layout"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_below="@id/project_issue_name">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/summary"
-            android:textSize="@dimen/font_english_like_caption" />
+            android:textSize="@dimen/font_english_like_caption"
+            android:id="@+id/tv_summary"
+            android:paddingLeft="@dimen/activity_horizontal_margin"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_vertical_height_edittext"
         android:id="@+id/et_summary"
         android:hint="@string/summary"
-        android:textSize="@dimen/font_english_like_subhead" />
+        android:textSize="@dimen/font_english_like_subhead"
+        android:paddingLeft="15dp"
+        android:layout_below="@id/tv_summary"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_vertical_size_list_item"
         android:id="@+id/priority_layout"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_below="@id/summary_layout">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/priority"
-            android:textSize="@dimen/font_english_like_caption" />
+            android:textSize="@dimen/font_english_like_caption"
+            android:paddingLeft="@dimen/activity_horizontal_margin"/>
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_vertical_height_edittext"
         android:id="@+id/spin_priority"
-        android:hint="@string/priority"/>
+        android:hint="@string/priority"
+        android:paddingLeft="@dimen/material_vertical_margin_spinner"
+        android:paddingTop="16dp"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_vertical_size_list_item"
         android:id="@+id/versions_layout"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_below="@id/priority_layout">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/affects_versions"
-            android:textSize="@dimen/font_english_like_caption" />
+            android:textSize="@dimen/font_english_like_caption"
+
+            android:paddingLeft="@dimen/activity_horizontal_margin"/>
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_vertical_height_edittext"
         android:id="@+id/spin_versions"
-        android:hint="@string/affects_versions"/>
+        android:hint="@string/affects_versions"
+        android:paddingLeft="@dimen/material_vertical_margin_spinner"
+        android:paddingTop="16dp"/>
     </RelativeLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/material_vertical_size_list_item"
+        android:layout_height="wrap_content"
         android:id="@+id/environement_layout"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_below="@id/versions_layout">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/environment"
-            android:textSize="@dimen/font_english_like_caption" />
+            android:textSize="@dimen/font_english_like_caption"
+            android:id="@+id/tv_environment"
+            android:paddingLeft="@dimen/activity_horizontal_margin"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_vertical_height_edittext"
         android:id="@+id/et_environment"
         android:inputType="textMultiLine"
         android:hint="@string/environment"
-        android:textSize="@dimen/font_english_like_subhead" />
+        android:textSize="@dimen/font_english_like_subhead"
+        android:layout_below="@+id/tv_environment"
+        android:paddingLeft="15dp"/>
         </RelativeLayout>
-
     <RelativeLayout
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/material_vertical_size_list_item"
+        android:layout_height="wrap_content"
         android:id="@+id/description_layout"
         android:layout_below="@id/environement_layout">
         <TextView
+            android:id="@+id/tv_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/description"
-            android:textSize="@dimen/font_english_like_caption" />
+            android:textSize="@dimen/font_english_like_caption"
+            android:layout_marginBottom="@dimen/material_vertical_size_divider"
+            android:paddingLeft="@dimen/activity_horizontal_margin"/>
     <EditText
+        android:paddingLeft="15dp"
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_vertical_height_edittext"
         android:inputType="textMultiLine"
         android:id="@+id/et_description"
         android:hint="@string/description"
-        android:textSize="@dimen/font_english_like_subhead" />
+        android:textSize="@dimen/font_english_like_subhead"
+        android:layout_below="@+id/tv_description"/>
 </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -139,12 +172,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/tester"
-            android:textSize="@dimen/font_english_like_caption" />
+            android:textSize="@dimen/font_english_like_caption"
+            android:paddingLeft="@dimen/activity_horizontal_margin"/>
     <Spinner
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_vertical_height_edittext"
         android:id="@+id/spin_testers"
-        android:hint="@string/tester"/>
+        android:hint="@string/tester"
+        android:paddingLeft="@dimen/material_vertical_margin_spinner"
+        android:paddingTop="16dp"/>
         </RelativeLayout>
 
     <ProgressBar
@@ -163,4 +199,4 @@
         android:enabled="false"
         android:layout_below="@id/tester_layout"/>
 
-</LinearLayout>
+</RelativeLayout>

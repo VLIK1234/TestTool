@@ -36,7 +36,7 @@
     <string name="password">Password</string>
     <string name="project_key">Project key</string>
     <string name="project_key_value">AMTT</string>
-    <string name="issue_name">Issue name</string>
+    <string name="issue_name">Issue Type</string>
     <string name="issue_name_value">Task</string>
     <string name="summary">Summary</string>
     <string name="description">Description</string>
@@ -70,15 +70,14 @@
     <string name="user_info">User info</string>
     <string name="self">Self</string>
     <string name="names_groups">Names groups</string>
-    <string name="title_activity_create_issue2">CreateIssue2Activity</string>
-    <string name="project_name">Project name</string>
+    <string name="project_name">Project</string>
     <string name="credentials">Credentials</string>
     <string name="access">Access</string>
     <string name="button_close_service">Close</string>
-    <string name="login">LogIn</string>
-    <string name="logout">LogOut</string>
+    <string name="login">Log In</string>
+    <string name="logout">Log Out</string>
     <string name="priority">Priority</string>
-    <string name="affects_versions">Affects version/s</string>
+    <string name="affects_versions">Affects Version/s</string>
     <string name="environment">Environment</string>
     <string name="tester">Tester</string>
 
