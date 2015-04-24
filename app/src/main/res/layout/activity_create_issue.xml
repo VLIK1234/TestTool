@@ -1,11 +1,17 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingRight="@dimen/activity_horizontal_margin"
+
     android:orientation="vertical"
     tools:context="amtt.epam.com.amtt.app.CreateIssueActivity">
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="@dimen/activity_horizontal_margin">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_vertical_size_list_item"
@@ -24,10 +30,9 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/material_vertical_height_edittext"
             android:hint="@string/project_key"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:paddingTop="16dp"
             android:paddingLeft="@dimen/material_vertical_margin_spinner"
-            android:paddingTop="16dp"/>
+/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -194,9 +199,10 @@
         android:id="@+id/btn_create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
+        android:layout_alignParentRight="true"
         android:text="@string/create_issue"
         android:enabled="false"
         android:layout_below="@id/tester_layout"/>
-
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>
+</LinearLayout>
