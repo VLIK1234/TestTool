@@ -9,13 +9,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -31,9 +27,9 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
+import amtt.epam.com.amtt.api.result.JiraOpearationResult;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
-import amtt.epam.com.amtt.app.MainActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.api.rest.RestResponse;
@@ -43,7 +39,7 @@ import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
 import amtt.epam.com.amtt.database.task.StepSavingCallback;
 import amtt.epam.com.amtt.api.result.UserDataResult;
-import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.util.UtilConstants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.PreferenceUtils;
@@ -51,7 +47,7 @@ import amtt.epam.com.amtt.util.PreferenceUtils;
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-public class TopButtonView extends FrameLayout implements JiraCallback<UserDataResult, JMetaResponse>, StepSavingCallback {
+public class TopButtonView extends FrameLayout implements JiraCallback<JiraOpearationResult, JMetaResponse>, StepSavingCallback {
 
     private final static String LOG_TAG = "TAG";
 
@@ -376,13 +372,13 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
     }
 
     @Override
-    public void onJiraRequestPerformed(RestResponse<UserDataResult,JMetaResponse> restResponse) {
-        if (restResponse.getResult() == UserDataResult.SUCCESS) {
+    public void onJiraRequestPerformed(RestResponse<JiraOpearationResult,JMetaResponse> restResponse) {
+        if (restResponse.getResult() == JiraOpearationResult.PERFORMED) {
             JMetaResponse jiraMetaResponse = restResponse.getResultObject();
             ArrayList<String> projectsNames = jiraMetaResponse.getProjectsNames();
             ArrayList<String> projectsKeys = jiraMetaResponse.getProjectsKeys();
-            PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
-            PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
+            PreferenceUtils.putSet(UtilConstants.SharedPreference.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
+            PreferenceUtils.putSet(UtilConstants.SharedPreference.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
             Intent intent = new Intent(getContext(), CreateIssueActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             getContext().getApplicationContext().startActivity(intent);

@@ -11,6 +11,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 import amtt.epam.com.amtt.processing.Processor;
@@ -35,8 +36,8 @@ public class RestMethod<ResultType, ResultObjectType> {
         private Map<String, String> mHeaders;
         private String mUrl;
         //TODO Why do we need two processors?
-        private ResponseProcessor mResponseProcessor; //processor for retrieving String messages from Json responses
-        private Processor<ResultObjectType, HttpEntity> mObjectProcessor; //processor for retrieving Objects from Json responses
+        private ResponseProcessor mResponseProcessor; //processor for retrieving STRING MESSAGES
+        private Processor<ResultObjectType, HttpEntity> mObjectProcessor; //processor for retrieving OBJECTS
         private String mJsonString;
 
         public Builder setType(RestMethodType methodType) {
@@ -63,14 +64,12 @@ public class RestMethod<ResultType, ResultObjectType> {
             return this;
         }
 
-        //TODO Why do we need two processors?
         public Builder setObjectProcessor(Processor<ResultObjectType, HttpEntity> processor) {
             mObjectProcessor = processor;
             return this;
         }
 
-        //TODO is it post request body? why is it called so?
-        public Builder setJsonString(String jsonString) {
+        public Builder setPostJson(String jsonString) {
             mJsonString = jsonString;
             return this;
         }
@@ -109,7 +108,16 @@ public class RestMethod<ResultType, ResultObjectType> {
         for (Map.Entry<String, String> keyValuePair : mHeaders.entrySet()) {
             httpGet.setHeader(keyValuePair.getKey(), keyValuePair.getValue());
         }
-        return mHttpClient.execute(httpGet);
+
+        HttpResponse httpResponse;
+        try {
+            httpResponse = mHttpClient.execute(httpGet);
+        } catch (IllegalStateException e) {
+            throw new IllegalStateException("jira domain is wrong");
+        } catch (UnknownHostException e) {
+            throw new UnknownHostException("jira domain is wrong");
+        }
+        return httpResponse;
     }
 
     private HttpResponse post() throws IOException {

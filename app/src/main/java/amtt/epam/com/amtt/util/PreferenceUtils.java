@@ -1,12 +1,9 @@
 package amtt.epam.com.amtt.util;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import java.util.Set;
-
-import amtt.epam.com.amtt.R;
 
 public class PreferenceUtils {
 
@@ -15,12 +12,12 @@ public class PreferenceUtils {
     public PreferenceUtils() {
     }
 
-    public static boolean getBoolean(String key, boolean defaultValue) {
-        return getPref().getBoolean(key, defaultValue);
+    public static boolean getBoolean(String key) {
+        return getPref().getBoolean(key, false);
     }
 
-    public static String getString(String key, String defaultValue) {
-        return getPref().getString(key, defaultValue);
+    public static String getString(String key) {
+        return getPref().getString(key, UtilConstants.SharedPreference.EMPTY_STRING);
     }
 
     public static Set<String> getSet(String key, Set<String> defaultValue) {

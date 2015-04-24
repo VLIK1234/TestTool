@@ -32,7 +32,6 @@ public class AuthResponseProcessor extends ResponseProcessor {
                     .registerTypeAdapter(AuthResponse.class, new AuthResponseDeserializer())
                     .create();
             AuthResponse authResponse = gson.fromJson(inputStreamReader, AuthResponse.class);
-
             return authResponse.getPrettyResponse();
         } finally {
             IOUtils.close(content, inputStreamReader);

@@ -20,7 +20,7 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreateIssue;
 import amtt.epam.com.amtt.api.result.CreateIssueResult;
-import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.util.UtilConstants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 
@@ -77,7 +77,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
                 new JiraTask.Builder<CreateIssueResult,Void>()
                         .setOperationType(JiraTaskType.CREATE_ISSUE)
                         .setCallback(CreateIssueActivity.this)
-                        .setPostMessage(issue.createSimpleIssue(projectKey, issueType, description, summary))
+                        .setPostJson(issue.createSimpleIssue(projectKey, issueType, description, summary))
                         .create()
                         .execute();
             }
@@ -89,12 +89,12 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
     }
 
     public ArrayList<String> getProjectsNames() {
-        projectsNames = Converter.setToArrayList(PreferenceUtils.getSet(Constants.SharedPreferenceKeys.PROJECTS_NAMES, null));
+        projectsNames = Converter.setToArrayList(PreferenceUtils.getSet(UtilConstants.SharedPreference.PROJECTS_NAMES, null));
         return projectsNames;
     }
 
     public ArrayList<String> getProjectsKeys() {
-        projectsKeys = Converter.setToArrayList(PreferenceUtils.getSet(Constants.SharedPreferenceKeys.PROJECTS_KEYS, null));
+        projectsKeys = Converter.setToArrayList(PreferenceUtils.getSet(UtilConstants.SharedPreference.PROJECTS_KEYS, null));
         return projectsKeys;
     }
 

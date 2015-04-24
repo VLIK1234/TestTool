@@ -13,19 +13,19 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
-import amtt.epam.com.amtt.api.result.AuthorizationResult;
 import amtt.epam.com.amtt.api.rest.RestResponse;
+import amtt.epam.com.amtt.api.result.JiraOpearationResult;
 import amtt.epam.com.amtt.service.TopButtonService;
-import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.util.UtilConstants;
 
-public class LoginActivity extends BaseActivity implements JiraCallback<AuthorizationResult,Void> {
+public class LoginActivity extends BaseActivity implements JiraCallback<JiraOpearationResult, Void> {
 
     private EditText userName;
     private EditText password;
     private EditText url;
-    private String toastText = Constants.SharedPreferenceKeys.VOID;
+    private String toastText = UtilConstants.SharedPreference.EMPTY_STRING;
     private Button loginButton;
     private final String TAG = this.getClass().getSimpleName();
 
@@ -47,13 +47,13 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(userName.getText().toString())) {
-                    toastText += (Constants.DialogKeys.INPUT_USERNAME + Constants.DialogKeys.NEW_LINE);
+                    toastText += (UtilConstants.Dialog.INPUT_USERNAME + UtilConstants.Dialog.NEW_LINE);
                 }
                 if (TextUtils.isEmpty(password.getText().toString())) {
-                    toastText += (Constants.DialogKeys.INPUT_PASSWORD + Constants.DialogKeys.NEW_LINE);
+                    toastText += (UtilConstants.Dialog.INPUT_PASSWORD + UtilConstants.Dialog.NEW_LINE);
                 }
                 if (TextUtils.isEmpty(url.getText().toString())) {
-                    toastText += (Constants.DialogKeys.INPUT_URL);
+                    toastText += (UtilConstants.Dialog.INPUT_URL);
                 } else {
                     Logger.d(TAG, String.valueOf(TextUtils.isEmpty(userName.getText().toString())));
                     Logger.d(TAG, String.valueOf(TextUtils.isEmpty(password.getText().toString())));
@@ -63,7 +63,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
                     showProgress(true);
                     CredentialsManager.getInstance().setUrl(url.getText().toString());
                     CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString());
-                    new JiraTask.Builder<AuthorizationResult,Void>()
+                    new JiraTask.Builder<JiraOpearationResult, Void>()
                             .setOperationType(JiraTaskType.AUTH)
                             .setCallback(LoginActivity.this)
                             .create()
@@ -80,13 +80,13 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
     }
 
     @Override
-    public void onJiraRequestPerformed(RestResponse<AuthorizationResult,Void> restResponse) {
+    public void onJiraRequestPerformed(RestResponse<JiraOpearationResult, Void> restResponse) {
         Toast.makeText(this, restResponse.getMessage(), Toast.LENGTH_SHORT).show();
         showProgress(false);
         loginButton.setVisibility(View.VISIBLE);
-        if (restResponse.getResult() == AuthorizationResult.SUCCESS) {
-            CredentialsManager.getInstance().setUserName(userName.getText().toString());
+        if (restResponse.getResult() == JiraOpearationResult.PERFORMED) {
             CredentialsManager.getInstance().setUrl(url.getText().toString());
+            CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString());
             CredentialsManager.getInstance().setAccess(true);
             TopButtonService.authSuccess(this);
             finish();
