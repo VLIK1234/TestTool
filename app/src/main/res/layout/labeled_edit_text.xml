@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:showIn="@layout/activity_login">
+
+    <TextView
+        android:id="@+id/tv_jira_url"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:text="@string/url"
+        android:textSize="@dimen/material_caption_font_size"
+        android:paddingLeft="4dp" />
+
+    <EditText
+        android:id="@+id/jira_url"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:hint="@string/url"
+        android:inputType="textUri"
+        android:paddingTop="@dimen/material_vertical_size_divider"
+        android:paddingBottom="7dp"
+        android:textSize="@dimen/material_subhead_font_size" />
+
+    <TextView
+        android:id="@+id/tv_error_jira_url"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/summary"
+        android:textSize="@dimen/material_caption_font_size"
+        android:visibility="gone" />
+</LinearLayout>

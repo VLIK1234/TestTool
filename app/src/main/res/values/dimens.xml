@@ -19,17 +19,18 @@
     <dimen name="material_icon_button_size">36dp</dimen>
     <dimen name="material_icon_button_place_size">48dp</dimen>
 
-    <dimen name="font_english_like_display_4">112sp</dimen>
-    <dimen name="font_english_like_display_3">56sp</dimen>
-    <dimen name="font_english_like_display_2">45sp</dimen>
-    <dimen name="font_english_like_display_1">34sp</dimen>
-    <dimen name="font_english_like_headline">24sp</dimen>
-    <dimen name="font_english_like_title">20sp</dimen>
-    <dimen name="font_english_like_subhead">16sp</dimen>
-    <dimen name="font_english_like_body_2">14sp</dimen>
-    <dimen name="font_english_like_body_1">14sp</dimen>
-    <dimen name="font_english_like_caption">12sp</dimen>
-    <dimen name="font_english_like_button">14sp</dimen>
+    <dimen name="material_display_4_font_size">112sp</dimen>
+    <dimen name="material_display_3_font_size">56sp</dimen>
+    <dimen name="material_display_2_font_size">45sp</dimen>
+    <dimen name="material_display_1_font_size">34sp</dimen>
+    <dimen name="material_headline_font_size">24sp</dimen>
+    <dimen name="material_title_font_size">20sp</dimen>
+    <dimen name="material_subhead_font_size">16sp</dimen>
+    <dimen name="material_body_2_font_size">14sp</dimen>
+    <dimen name="material_body_1_font_size">14sp</dimen>
+    <dimen name="material_caption_font_size">12sp</dimen>
+    <dimen name="material_button_font_size">14sp</dimen>
+
     <dimen name="button_small_size">35dp</dimen>
     <dimen name="button_text_size">10sp</dimen>
     <dimen name="circle_padding">3dp</dimen>
@@ -41,6 +42,15 @@
     <dimen name="card_corner_radius">3dp</dimen>
     <dimen name="card_elevation">4dp</dimen>
 
+    <dimen name="material_vertical_bottom_padding_menu_item">20dp</dimen>
+    <dimen name="material_vertical_height_menu_item">48dp</dimen>
+    <dimen name="material_vertical_height_padding_menu">8dp</dimen>
+    <dimen name="material_vertical_width_padding_menu">16dp</dimen>
     <dimen name="material_vertical_height_edittext">48dp</dimen>
     <dimen name="material_vertical_margin_spinner">8dp</dimen>
+    <dimen name="zero_size">0dp</dimen>
+
+    <dimen name="material_vertical_button_min_width_size">64dp</dimen>
+    <dimen name="material_vertical_button_padding_top">24dp</dimen>
+    <dimen name="material_vertical_button_height_size">48dp</dimen>
 </resources>

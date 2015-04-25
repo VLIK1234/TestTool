@@ -1,3 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <declare-styleable name="Spinner">
+        <attr name="android:dropDownWidth" />
+        <attr name="android:popupBackground" />
+        <attr name="android:minWidth"/>
+        <attr name="android:minHeight"/>
+        <attr name="spn_labelEnable" format="boolean"/>
+        <attr name="spn_labelPadding" format="reference|dimension"/>
+        <attr name="spn_labelTextSize" format="reference|dimension"/>
+        <attr name="spn_labelTextColor" format="reference|color"/>
+        <attr name="spn_labelTextAppearance" format="reference"/>
+        <attr name="spn_labelEllipsize" format="integer">
+            <enum name="start" value="0x00000001" />
+            <enum name="middle" value="0x00000002" />
+            <enum name="end" value="0x00000003" />
+            <enum name="marquee" value="0x00000004" />
+        </attr>
+        <attr name="spn_label" format="string|reference"/>
+        <attr name="spn_popupItemAnimation" format="reference"/>
+        <attr name="spn_popupItemAnimOffset" format="integer"/>
+        <attr name="spn_arrowColor" format="reference|color"/>
+        <attr name="spn_arrowSize" format="reference|dimension"/>
+        <attr name="spn_arrowPadding" format="reference|dimension"/>
+        <attr name="spn_arrowAnimDuration" format="integer"/>
+        <attr name="spn_arrowInterpolator" format="reference"/>
+        <attr name="spn_arrowAnimClockwise" format="boolean"/>
+        <attr name="spn_arrowSwitchMode" format="boolean"/>
+        <attr name="spn_dividerColor" format="reference|color"/>
+        <attr name="spn_dividerHeight" format="reference|dimension"/>
+        <attr name="spn_dividerPadding" format="reference|dimension"/>
+        <attr name="spn_dividerAnimDuration" format="reference|integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="EditText">
+        <attr name="et_supportPadding" format="reference|dimension"/>
+        <attr name="et_supportTextSize" format="reference|dimension"/>
+
+        <attr name="et_dividerColor" format="reference|color"/>
+        <attr name="et_dividerErrorColor" format="reference|color"/>
+        <attr name="et_dividerHeight" format="reference|dimension"/>
+        <attr name="et_dividerPadding" format="reference|dimension"/>
+        <attr name="et_dividerAnimDuration" format="reference|integer"/>
+        <attr name="et_marginLeft" format="reference|dimension"/>
+        <attr name="et_marginRight" format="reference|dimension"/>
+        <attr name="et_paddingLeft" format="reference|dimension"/>
+        <attr name="et_paddingRight" format="reference|dimension"/>
+        <attr name="et_paddingTop" format="reference|dimension"/>
+        <attr name="et_paddingBottom" format="reference|dimension"/>
+
+    </declare-styleable>
 </resources>

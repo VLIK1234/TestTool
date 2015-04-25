@@ -13,14 +13,14 @@
         android:layout_height="wrap_content"
         android:text="@string/display_name"
         android:id="@+id/tv_display_name"
-        android:textSize="@dimen/font_english_like_headline" />
+        android:textSize="@dimen/material_headline_font_size" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/user_name"
         android:id="@+id/tv_name"
-        android:textSize="@dimen/font_english_like_subhead"
+        android:textSize="@dimen/material_subhead_font_size"
         android:layout_below="@+id/tv_display_name" />
 
     <TextView
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:text="@string/user_email"
         android:id="@+id/tv_email_address"
-        android:textSize="@dimen/font_english_like_subhead"
+        android:textSize="@dimen/material_subhead_font_size"
         android:layout_below="@+id/tv_name" />
 
     <TextView
@@ -37,7 +37,7 @@
         android:text="@string/time_zone"
         android:id="@+id/tv_time_zone"
         android:layout_below="@+id/tv_email_address"
-        android:textSize="@dimen/font_english_like_subhead" />
+        android:textSize="@dimen/material_subhead_font_size" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -45,7 +45,7 @@
         android:text="@string/locale"
         android:id="@+id/tv_locale"
         android:layout_below="@+id/tv_time_zone"
-        android:textSize="@dimen/font_english_like_subhead" />
+        android:textSize="@dimen/material_subhead_font_size" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -53,14 +53,14 @@
         android:text="@string/groups"
         android:id="@+id/tv_groups"
         android:layout_below="@+id/tv_locale"
-        android:textSize="@dimen/font_english_like_subhead" />
+        android:textSize="@dimen/material_subhead_font_size" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/size"
         android:id="@+id/tv_size"
-        android:textSize="@dimen/font_english_like_subhead"
+        android:textSize="@dimen/material_subhead_font_size"
         android:layout_below="@+id/tv_groups"
         android:layout_toRightOf="@+id/tv_groups"
         android:layout_toEndOf="@+id/tv_groups" />
@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:text="@string/names_groups"
         android:id="@+id/tv_names"
-        android:textSize="@dimen/font_english_like_subhead"
+        android:textSize="@dimen/material_subhead_font_size"
         android:layout_below="@+id/tv_size"
         android:layout_toRightOf="@+id/tv_groups"
         android:layout_toEndOf="@+id/tv_groups" />

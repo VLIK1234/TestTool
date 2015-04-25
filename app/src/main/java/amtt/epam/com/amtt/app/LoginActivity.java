@@ -38,7 +38,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
         password = (EditText) findViewById(R.id.password);
         url = (EditText) findViewById(R.id.jira_url);
 
-        url.setText("https://amttpr.atlassian.net");
+        url.setText("https://amtt01.atlassian.net");
         userName.setText("iryna_monchanka");
 
         loginButton = (Button) findViewById(R.id.login_button);

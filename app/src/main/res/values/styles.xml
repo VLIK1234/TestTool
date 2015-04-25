@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Material" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
@@ -10,8 +10,39 @@
         <item name="android:icon">@color/icons</item>
         <item name="android:divider">@color/divider</item>
     </style>
-    <style name="mySpinnerStyle" parent="android:Widget.ListView.DropDown">
-        <item name="android:divider">#00ff00</item>
+
+
+    <style name="Material.Drawable"></style>
+
+    <style name="Material.Widget"></style>
+
+    <style name="Material.Widget.Spinner">
+        <item name="spn_labelEnable">false</item>
+        <item name="spn_labelPadding">0dp</item>
+        <item name="spn_labelTextAppearance">@style/TextAppearance.AppCompat.Caption</item>
+        <item name="spn_labelTextColor">@color/abc_secondary_text_material_dark</item>
+        <item name="spn_labelTextSize">@dimen/material_subhead_font_size</item>
+        <item name="spn_labelEllipsize">end</item>
+        <item name="spn_dividerHeight">2dp</item>
+        <item name="spn_dividerPadding">0dp</item>
+        <item name="spn_dividerAnimDuration">@android:integer/config_longAnimTime</item>
+        <item name="spn_arrowColor">?attr/colorControlNormal</item>
+        <item name="spn_arrowSize">4dp</item>
+        <item name="spn_arrowPadding">8dp</item>
+        <item name="spn_popupItemAnimation">@anim/abc_slide_in_bottom</item>
+        <item name="spn_popupItemAnimOffset">120</item>
+    </style>
+
+    <style name="Material.Widget.EditText">
+        <item name="et_dividerErrorColor">?attr/colorAccent</item>
+        <item name="et_dividerAnimDuration">@android:integer/config_shortAnimTime</item>
         <item name="android:dividerHeight">1dp</item>
+        <item name="et_marginLeft">@dimen/zero_size</item>
+        <item name="et_marginRight">@dimen/zero_size</item>
+        <item name="et_paddingBottom">7dp</item>
+        <item name="android:paddingLeft">@dimen/zero_size</item>
+        <item name="et_paddingRight">@dimen/zero_size</item>
+        <item name="et_paddingTop">@dimen/zero_size</item>
+        <item name="et_supportTextSize">@dimen/material_subhead_font_size</item>
     </style>
 </resources>

@@ -40,8 +40,8 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
         setContentView(R.layout.activity_create_issue);
         etDescription = (EditText) findViewById(R.id.et_description);
         etSummary = (EditText) findViewById(R.id.et_summary);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getProjectsNames());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_layout, getProjectsNames());
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinnerProjectsKey = (Spinner) findViewById(R.id.spin_projects_name);
         spinnerProjectsKey.setAdapter(adapter);
         spinnerProjectsKey.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -122,8 +122,8 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
             JMetaResponse jMetaResponse = ((RestResponse<Void, JMetaResponse>) restResponse).getResultObject();
             int index = jMetaResponse.getProjects().size() - (getSelectedItemPositionProject() + 1);
             ArrayList<String> issueTypesNames = jMetaResponse.getProjects().get(index).getIssueTypesNames();
-            ArrayAdapter<String> issueNames = new ArrayAdapter<>(CreateIssueActivity.this, android.R.layout.simple_spinner_item, issueTypesNames);
-            issueNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter<String> issueNames = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, issueTypesNames);
+            issueNames.setDropDownViewResource(R.layout.spinner_dropdown_item);
             spinnerIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
             spinnerIssueTypes.setAdapter(issueNames);
             buttonCreateIssue.setEnabled(true);
