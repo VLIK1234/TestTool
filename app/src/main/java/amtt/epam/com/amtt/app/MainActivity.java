@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.app;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +47,14 @@ public class MainActivity extends BaseActivity {
                     CrashDialogFragment crashDialogFragment = CrashDialogFragment.newInstance(rawString, mCrashFilePath);
                     crashDialogFragment.show(getFragmentManager(), CRASH_DIALOG_TAG);
                 }
+            }
+        });
+
+        final Button settingsButton = (Button) findViewById(R.id.settings_button);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             }
         });
 

@@ -19,6 +19,13 @@
         android:layout_below="@id/crash_button"
         android:text="@string/show_crash_info_text" />
 
+    <Button
+        android:id="@+id/settings_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/show_crash_info"
+        android:text="@string/settings_activity" />
+
     <ProgressBar
         android:id="@+id/progress"
         android:layout_width="wrap_content"
