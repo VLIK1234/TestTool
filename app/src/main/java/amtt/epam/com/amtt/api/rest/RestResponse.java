@@ -1,55 +1,44 @@
 package amtt.epam.com.amtt.api.rest;
 
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
+
 /**
  * Class providing access to REST method responses
  * Created by Artsiom_Kaliaha on 15.04.2015.
  */
-public class RestResponse<ResultType, ResultObjectType> {
+public class RestResponse<OutputType> {
 
     private String mResponseMessage;
-    private ResultType mResult;
-    private ResultObjectType mObject;
-    private Exception mException;
+    private JiraOperationResult mResult;
+    private OutputType mObject;
 
     public RestResponse() {
-    }
-
-    public void setMessage(String responseMessage) {
-        mResponseMessage = responseMessage;
     }
 
     public void setMessage(Exception e) {
         mResponseMessage = e.getMessage();
     }
 
-    public void setResult(ResultType result) {
-        mResult = result;
+    public void setOperationResult(JiraOperationResult result) {
+        if (mResult == null) {
+            mResult = result;
+        }
     }
 
-    public void setResultObject(ResultObjectType object) {
+    public void setResultObject(OutputType object) {
         mObject = object;
     }
 
-    public void setException(Exception e) {
-        mException = e;
-    }
-
-
-    public String getMessage() {
+    public String getExceptionMessage() {
         return mResponseMessage;
     }
 
-    public ResultType getResult() {
+    public JiraOperationResult getOpeartionResult() {
         return mResult;
     }
 
-    public ResultObjectType getResultObject() {
+    public OutputType getResultObject() {
         return mObject;
-    }
-
-
-    public Exception getException() {
-        return mException;
     }
 
 }

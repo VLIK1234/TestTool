@@ -1,15 +1,12 @@
 package amtt.epam.com.amtt.api;
 
-import org.apache.http.HttpEntity;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestMethod.RestMethodType;
 import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.api.result.CreateIssueResult;
-import amtt.epam.com.amtt.api.result.JiraOpearationResult;
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.processing.AuthResponseProcessor;
 import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.util.CredentialsManager;
@@ -23,7 +20,7 @@ public class JiraApi {
 
     private static class JiraApiSingletonHolder {
 
-        public static final JiraApi INSTANCE = new JiraApi(CredentialsManager.getInstance());
+        public static final JiraApi INSTANCE = new JiraApi();
 
     }
 
@@ -31,65 +28,62 @@ public class JiraApi {
         return JiraApiSingletonHolder.INSTANCE;
     }
 
-    private final String mUrl;
-    private final String mCredentialsString;
+    private final CredentialsManager mCredentialsManager;
     private RestMethod mMethod;
 
-    private JiraApi(CredentialsManager credentialsManager) {
-        mUrl = credentialsManager.getUrl();
-        mCredentialsString = credentialsManager.getCredentials();
+    private JiraApi() {
+        mCredentialsManager = CredentialsManager.getInstance();
     }
 
     public JiraApi authorize() {
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, mCredentialsString);
-        mMethod = new RestMethod.Builder<JiraOpearationResult, Void>()
+        headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials());
+        mMethod = new RestMethod.Builder<String>()
                 .setType(RestMethodType.GET)
-                .setUrl(mUrl + JiraApiConst.LOGIN_PATH)
+                .setUrl(mCredentialsManager.getUrl() + JiraApiConst.LOGIN_PATH)
                 .setHeadersMap(headers)
-                .setResponseProcessor(new AuthResponseProcessor())
+                .setProcessor(new AuthResponseProcessor())
                 .create();
         return this;
     }
 
     public JiraApi createIssue(final String jsonString) {
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, mCredentialsString);
+        headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
-        mMethod = new RestMethod.Builder<CreateIssueResult, Void>()
+        mMethod = new RestMethod.Builder<Void>()
                 .setType(RestMethodType.POST)
-                .setUrl(mUrl + JiraApiConst.ISSUE_PATH)
+                .setUrl(mCredentialsManager.getUrl() + JiraApiConst.ISSUE_PATH)
                 .setHeadersMap(headers)
                 .setPostJson(jsonString)
                 .create();
         return this;
     }
 
-    public <ResultObjectType> JiraApi searchData(final String requestSuffix, final Processor<ResultObjectType, HttpEntity> processor) {
+    public <OutputType, InputType> JiraApi searchData(final String requestSuffix, final Processor<OutputType, InputType> processor) {
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, mCredentialsString);
-        String url = mUrl + requestSuffix;
+        headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials());
 
         mMethod = new RestMethod.Builder()
                 .setType(RestMethodType.GET)
-                .setUrl(url + requestSuffix)
+                .setUrl(mCredentialsManager.getUrl() + requestSuffix)
                 .setHeadersMap(headers)
-                .setObjectProcessor(processor)
+                .setProcessor(processor)
                 .create();
         return this;
     }
 
     public RestResponse execute() {
-        RestResponse<JiraOpearationResult, Void> restResponse;
+        RestResponse<Void> restResponse;
         try {
             restResponse = mMethod.execute();
         } catch (Exception e) {
             restResponse = new RestResponse<>();
-            restResponse.setResult(JiraOpearationResult.UNPERFORMED);
+            restResponse.setOperationResult(JiraOperationResult.UNPERFORMED);
             restResponse.setMessage(e);
             return restResponse;
         }
-        restResponse.setResult(JiraOpearationResult.PERFORMED);
+        restResponse.setOperationResult(JiraOperationResult.PERFORMED);
         return restResponse;
     }
 

@@ -13,8 +13,8 @@ import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 public class UserInfoProcessor implements Processor<JiraUserInfo, HttpEntity> {
 
     @Override
-    public JiraUserInfo process(HttpEntity inputStream) throws Exception {
-        String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
+    public JiraUserInfo process(HttpEntity httpEntity) throws Exception {
+        String _response = EntityUtils.toString(httpEntity, HTTP.UTF_8);
         return Gson.getInstance().fromJson(_response, JiraUserInfo.class);
     }
 }

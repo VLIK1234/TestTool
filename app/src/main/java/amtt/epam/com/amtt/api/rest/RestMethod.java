@@ -14,14 +14,14 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Map;
 
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.processing.Processor;
-import amtt.epam.com.amtt.processing.ResponseProcessor;
 
 /**
  * Class for performing REST methods to Jira api
  * Created by Artsiom_Kaliaha on 15.04.2015.
  */
-public class RestMethod<ResultType, ResultObjectType> {
+public class RestMethod<OutputType> {
 
     public enum RestMethodType {
 
@@ -30,14 +30,12 @@ public class RestMethod<ResultType, ResultObjectType> {
 
     }
 
-    public static class Builder<ResultType, ResultObjectType> {
+    public static class Builder<OutputType> {
 
         private RestMethodType mRestMethodType;
         private Map<String, String> mHeaders;
         private String mUrl;
-        //TODO Why do we need two processors?
-        private ResponseProcessor mResponseProcessor; //processor for retrieving STRING MESSAGES
-        private Processor<ResultObjectType, HttpEntity> mObjectProcessor; //processor for retrieving OBJECTS
+        private Processor<OutputType, HttpEntity> mProcessor; //processor for retrieving OBJECTS
         private String mJsonString;
 
         public Builder setType(RestMethodType methodType) {
@@ -59,13 +57,8 @@ public class RestMethod<ResultType, ResultObjectType> {
             return this;
         }
 
-        public Builder setResponseProcessor(ResponseProcessor processor) {
-            mResponseProcessor = processor;
-            return this;
-        }
-
-        public Builder setObjectProcessor(Processor<ResultObjectType, HttpEntity> processor) {
-            mObjectProcessor = processor;
+        public Builder setProcessor(Processor<OutputType, HttpEntity> processor) {
+            mProcessor = processor;
             return this;
         }
 
@@ -75,12 +68,11 @@ public class RestMethod<ResultType, ResultObjectType> {
         }
 
         public RestMethod create() {
-            RestMethod<ResultType, ResultObjectType> restMethod = new RestMethod<>();
+            RestMethod<OutputType> restMethod = new RestMethod<>();
             restMethod.mRestMethodType = this.mRestMethodType;
             restMethod.mHeaders = this.mHeaders;
             restMethod.mUrl = this.mUrl;
-            restMethod.mResponseProcessor = this.mResponseProcessor;
-            restMethod.mObjectProcessor = this.mObjectProcessor;
+            restMethod.mProcessor = this.mProcessor;
             restMethod.mJsonString = this.mJsonString;
             return restMethod;
         }
@@ -91,8 +83,7 @@ public class RestMethod<ResultType, ResultObjectType> {
     private RestMethodType mRestMethodType;
     private Map<String, String> mHeaders;
     private String mUrl;
-    private ResponseProcessor mResponseProcessor;
-    private Processor<ResultObjectType, HttpEntity> mObjectProcessor;
+    private Processor<OutputType, HttpEntity> mProcessor;
     private String mJsonString;
 
 
@@ -115,7 +106,7 @@ public class RestMethod<ResultType, ResultObjectType> {
         } catch (IllegalStateException e) {
             throw new IllegalStateException("jira domain is wrong");
         } catch (UnknownHostException e) {
-            throw new UnknownHostException("jira domain is wrong");
+            throw new UnknownHostException("Check jira domain or internet connection");
         }
         return httpResponse;
     }
@@ -129,7 +120,7 @@ public class RestMethod<ResultType, ResultObjectType> {
         return mHttpClient.execute(httpPost);
     }
 
-    public RestResponse<ResultType, ResultObjectType> execute() throws Exception {
+    public RestResponse<OutputType> execute() throws Exception {
         HttpResponse httpResponse = null;
 
         switch (mRestMethodType) {
@@ -143,24 +134,26 @@ public class RestMethod<ResultType, ResultObjectType> {
 
         int statusCode = httpResponse.getStatusLine().getStatusCode();
         if (statusCode == HttpStatus.SC_NOT_FOUND || statusCode == HttpStatus.SC_BAD_GATEWAY) {
-            throw new AuthenticationException("wrong path to jira");
+            throw new AuthenticationException("Check jira domain");
         } else if (statusCode == HttpStatus.SC_UNAUTHORIZED) {
-            throw new AuthenticationException("wrong password or user name");
+            throw new AuthenticationException("Check password or user name");
+        } else if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+            throw new Exception("Internal server error occurred");
         }
 
-        String responseMessage = null;
-        if (mResponseProcessor != null) {
-            responseMessage = mResponseProcessor.process(httpResponse);
+        RestResponse<OutputType> restResponse = new RestResponse<>();
+        try {
+            if (mProcessor != null) {
+                OutputType result = mProcessor.process(httpResponse.getEntity());
+                restResponse.setResultObject(result);
+            }
+        } catch (Exception e) {
+            throw new Exception("Received json is illegible");
         }
 
-        ResultObjectType resultObject = null;
-        if (mObjectProcessor != null) {
-            resultObject = mObjectProcessor.process(httpResponse.getEntity());
+        if (mRestMethodType == RestMethodType.POST) {
+            restResponse.setOperationResult(JiraOperationResult.CREATED);
         }
-
-        RestResponse<ResultType, ResultObjectType> restResponse = new RestResponse<>();
-        restResponse.setMessage(responseMessage);
-        restResponse.setResultObject(resultObject);
         return restResponse;
     }
 

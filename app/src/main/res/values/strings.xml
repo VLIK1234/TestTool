@@ -82,6 +82,7 @@
     <string name="button_add_step">Add step</string>
     <string name="button_show_step">Show step</string>
     <string name="button_bug_rep">Create issue</string>
+    <string name="issue_created">Issue created</string>
 
 
 </resources>

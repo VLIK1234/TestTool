@@ -17,15 +17,15 @@ import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.JiraTask.JiraSearchType;
 import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
 import amtt.epam.com.amtt.api.rest.RestResponse;
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreateIssue;
-import amtt.epam.com.amtt.api.result.CreateIssueResult;
-import amtt.epam.com.amtt.util.UtilConstants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.util.UtilConstants;
 
 
-public class CreateIssueActivity extends BaseActivity implements JiraCallback {
+public class CreateIssueActivity extends BaseActivity implements JiraCallback<JMetaResponse> {
 
     private EditText etDescription, etSummary;
     private ArrayList<String> projectsNames = new ArrayList<>();
@@ -74,7 +74,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
                 showProgress(true);
                 buttonCreateIssue.setVisibility(View.GONE);
 
-                new JiraTask.Builder<CreateIssueResult,Void>()
+                new JiraTask.Builder<Void>()
                         .setOperationType(JiraTaskType.CREATE_ISSUE)
                         .setCallback(CreateIssueActivity.this)
                         .setPostJson(issue.createSimpleIssue(projectKey, issueType, description, summary))
@@ -109,19 +109,17 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onJiraRequestPerformed(RestResponse restResponse) {
-        if (restResponse.getResult() instanceof CreateIssueResult) {
-            Toast.makeText(this, restResponse.getMessage(), Toast.LENGTH_SHORT).show();
-            if (restResponse.getResult() == CreateIssueResult.SUCCESS) {
-                finish();
-            }
+    public void onJiraRequestPerformed(RestResponse<JMetaResponse> restResponse) {
+        if (restResponse.getOpeartionResult() == JiraOperationResult.CREATED) {
+            Toast.makeText(this, R.string.issue_created, Toast.LENGTH_SHORT).show();
+            finish();
             buttonCreateIssue.setVisibility(View.VISIBLE);
         } else {
             if (restResponse.getResultObject() == null) {
-                Toast.makeText(this, restResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, restResponse.getExceptionMessage(), Toast.LENGTH_SHORT).show();
                 return;
             }
-            JMetaResponse jMetaResponse = ((RestResponse<Void, JMetaResponse>) restResponse).getResultObject();
+            JMetaResponse jMetaResponse = restResponse.getResultObject();
             int index = jMetaResponse.getProjects().size() - (getSelectedItemPositionProject() + 1);
             ArrayList<String> issueTypesNames = jMetaResponse.getProjects().get(index).getIssueTypesNames();
             ArrayAdapter<String> issueNames = new ArrayAdapter<>(CreateIssueActivity.this, android.R.layout.simple_spinner_item, issueTypesNames);

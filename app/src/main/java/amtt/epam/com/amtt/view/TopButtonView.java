@@ -27,7 +27,7 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
-import amtt.epam.com.amtt.api.result.JiraOpearationResult;
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
@@ -38,7 +38,6 @@ import amtt.epam.com.amtt.database.task.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
 import amtt.epam.com.amtt.database.task.StepSavingCallback;
-import amtt.epam.com.amtt.api.result.UserDataResult;
 import amtt.epam.com.amtt.util.UtilConstants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.CredentialsManager;
@@ -47,7 +46,7 @@ import amtt.epam.com.amtt.util.PreferenceUtils;
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-public class TopButtonView extends FrameLayout implements JiraCallback<JiraOpearationResult, JMetaResponse>, StepSavingCallback {
+public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResponse>, StepSavingCallback {
 
     private final static String LOG_TAG = "TAG";
 
@@ -170,7 +169,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JiraOpear
         OnClickListener listenerBugRep = new OnClickListener() {
             @Override
             public void onClick(View v) {
-                new JiraTask.Builder<UserDataResult,JMetaResponse>()
+                new JiraTask.Builder<JMetaResponse>()
                         .setOperationType(JiraTaskType.SEARCH)
                         .setSearchType(JiraTask.JiraSearchType.ISSUE)
                         .setCallback(TopButtonView.this)
@@ -372,8 +371,8 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JiraOpear
     }
 
     @Override
-    public void onJiraRequestPerformed(RestResponse<JiraOpearationResult,JMetaResponse> restResponse) {
-        if (restResponse.getResult() == JiraOpearationResult.PERFORMED) {
+    public void onJiraRequestPerformed(RestResponse<JMetaResponse> restResponse) {
+        if (restResponse.getOpeartionResult() == JiraOperationResult.PERFORMED) {
             JMetaResponse jiraMetaResponse = restResponse.getResultObject();
             ArrayList<String> projectsNames = jiraMetaResponse.getProjectsNames();
             ArrayList<String> projectsKeys = jiraMetaResponse.getProjectsKeys();
@@ -383,7 +382,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JiraOpear
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             getContext().getApplicationContext().startActivity(intent);
         } else {
-            Toast.makeText(getContext(), restResponse.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), restResponse.getExceptionMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 

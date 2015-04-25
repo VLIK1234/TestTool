@@ -8,11 +8,11 @@ import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.JiraTask.JiraSearchType;
 import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.api.result.UserDataResult;
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.util.UtilConstants;
 
-public class UserInfoActivity extends BaseActivity implements JiraCallback<UserDataResult,JiraUserInfo> {
+public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraUserInfo> {
 
     private TextView name, emailAddress, displayName, timeZone, locale, size, namesGroups;
 
@@ -29,7 +29,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<UserD
         size = (TextView) findViewById(R.id.tv_size);
         namesGroups = (TextView) findViewById(R.id.tv_names);
         showProgress(true);
-        new JiraTask.Builder<UserDataResult,JiraUserInfo>()
+        new JiraTask.Builder<JiraUserInfo>()
                 .setOperationType(JiraTask.JiraTaskType.SEARCH)
                 .setSearchType(JiraSearchType.USER_INFO)
                 .setCallback(UserInfoActivity.this)
@@ -39,20 +39,22 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<UserD
     }
 
     @Override
-    public void onJiraRequestPerformed(RestResponse<UserDataResult, JiraUserInfo> restResponse) {
-        JiraUserInfo user = restResponse.getResultObject();
-        name.setText(getResources().getString(R.string.user_name) + UtilConstants.SharedPreference.COLON + user.getName());
-        emailAddress.setText(getResources().getString(R.string.user_email) + UtilConstants.SharedPreference.COLON + user.getEmailAddress());
-        displayName.setText(user.getDisplayName());
-        timeZone.setText(getResources().getString(R.string.time_zone) + UtilConstants.SharedPreference.COLON + user.getTimeZone());
-        locale.setText(getResources().getString(R.string.locale) + UtilConstants.SharedPreference.COLON + user.getLocale());
-        size.setText(getResources().getString(R.string.size) + UtilConstants.SharedPreference.COLON + String.valueOf(user.getGroups().getSize()));
-        String groups = "";
-        for (int i = 0; i < user.getGroups().getItems().size(); i++) {
-            groups += user.getGroups().getItems().get(i).getName() + UtilConstants.Dialog.NEW_LINE;
+    public void onJiraRequestPerformed(RestResponse< JiraUserInfo> restResponse) {
+        if (restResponse.getOpeartionResult() == JiraOperationResult.PERFORMED) {
+            JiraUserInfo user = restResponse.getResultObject();
+            name.setText(getResources().getString(R.string.user_name) + UtilConstants.SharedPreference.COLON + user.getName());
+            emailAddress.setText(getResources().getString(R.string.user_email) + UtilConstants.SharedPreference.COLON + user.getEmailAddress());
+            displayName.setText(user.getDisplayName());
+            timeZone.setText(getResources().getString(R.string.time_zone) + UtilConstants.SharedPreference.COLON + user.getTimeZone());
+            locale.setText(getResources().getString(R.string.locale) + UtilConstants.SharedPreference.COLON + user.getLocale());
+            size.setText(getResources().getString(R.string.size) + UtilConstants.SharedPreference.COLON + String.valueOf(user.getGroups().getSize()));
+            String groups = "";
+            for (int i = 0; i < user.getGroups().getItems().size(); i++) {
+                groups += user.getGroups().getItems().get(i).getName() + UtilConstants.Dialog.NEW_LINE;
+            }
+            namesGroups.setText(getResources().getString(R.string.names_groups) + UtilConstants.SharedPreference.COLON + groups);
+            showProgress(false);
         }
-        namesGroups.setText(getResources().getString(R.string.names_groups) + UtilConstants.SharedPreference.COLON + groups);
-        showProgress(false);
     }
 
 }

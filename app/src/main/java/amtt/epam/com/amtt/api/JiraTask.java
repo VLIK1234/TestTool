@@ -11,7 +11,7 @@ import amtt.epam.com.amtt.util.CredentialsManager;
  * AsyncTask which is directly used in code to perform async requests to Jira api
  * Created by Artsiom_Kaliaha on 17.04.2015.
  */
-public class JiraTask<ResultType, ResultObjectType> extends AsyncTask<Object, Void, RestResponse<ResultType, ResultObjectType>> {
+public class JiraTask< ResultObjectType> extends AsyncTask<Object, Void, RestResponse<ResultObjectType>> {
 
     public enum JiraSearchType {
 
@@ -28,10 +28,10 @@ public class JiraTask<ResultType, ResultObjectType> extends AsyncTask<Object, Vo
 
     }
 
-    public static class Builder<ResultType, ResultObjectType> {
+    public static class Builder<ResultObjectType> {
 
         private JiraTaskType mOperationType;
-        private JiraCallback<ResultType, ResultObjectType> mCallback;
+        private JiraCallback<ResultObjectType> mCallback;
         private String mPostMessage;
         private JiraSearchType mSearchType;
 
@@ -40,7 +40,7 @@ public class JiraTask<ResultType, ResultObjectType> extends AsyncTask<Object, Vo
             return this;
         }
 
-        public Builder setCallback(JiraCallback<ResultType, ResultObjectType> callback) {
+        public Builder setCallback(JiraCallback<ResultObjectType> callback) {
             mCallback = callback;
             return this;
         }
@@ -56,7 +56,7 @@ public class JiraTask<ResultType, ResultObjectType> extends AsyncTask<Object, Vo
         }
 
         public JiraTask create() {
-            JiraTask<ResultType, ResultObjectType> jiraTask = new JiraTask<>();
+            JiraTask<ResultObjectType> jiraTask = new JiraTask<>();
             jiraTask.mOperationType = this.mOperationType;
             jiraTask.mCallback = this.mCallback;
             jiraTask.mJson = this.mPostMessage;
@@ -67,7 +67,7 @@ public class JiraTask<ResultType, ResultObjectType> extends AsyncTask<Object, Vo
     }
 
     private JiraTaskType mOperationType;
-    private JiraCallback<ResultType, ResultObjectType> mCallback;
+    private JiraCallback<ResultObjectType> mCallback;
     private String mJson;
     private JiraSearchType mSearchType;
 
@@ -76,7 +76,7 @@ public class JiraTask<ResultType, ResultObjectType> extends AsyncTask<Object, Vo
 
     @Override
     @SuppressWarnings("unchecked")
-    protected RestResponse<ResultType, ResultObjectType> doInBackground(Object... params) {
+    protected RestResponse<ResultObjectType> doInBackground(Object... params) {
         JiraApi api = JiraApi.getInstance();
         switch (mOperationType) {
             case AUTH:
@@ -101,7 +101,7 @@ public class JiraTask<ResultType, ResultObjectType> extends AsyncTask<Object, Vo
     }
 
     @Override
-    protected void onPostExecute(RestResponse<ResultType, ResultObjectType> restResponse) {
+    protected void onPostExecute(RestResponse<ResultObjectType> restResponse) {
         mCallback.onJiraRequestPerformed(restResponse);
     }
 
