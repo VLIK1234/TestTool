@@ -12,6 +12,7 @@ public final class JiraApiConst {
     private static String API_PATH = "api";
     private static String SLASH = "/";
     private static String REST_API_PATH = SLASH + REST_PATH + SLASH + API_PATH + SLASH + API_VERSION + SLASH;
+    public static String EPAM_JIRA_SUFFIX = SLASH + "jira";
 
     //Paths
     public static String LOGIN_PATH = SLASH + REST_PATH + SLASH + "auth" + SLASH + API_VERSION_LATEST + SLASH + "session";

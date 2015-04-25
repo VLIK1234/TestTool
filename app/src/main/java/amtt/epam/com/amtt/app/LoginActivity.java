@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
@@ -38,8 +40,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
         password = (EditText) findViewById(R.id.password);
         url = (EditText) findViewById(R.id.jira_url);
 
-        url.setText("https://amtt01.atlassian.net");
-        userName.setText("artsiom_kaliaha");
+        url.setText("https://jira.epam.com");
 
         loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -59,9 +60,11 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
                     Logger.d(TAG, String.valueOf(TextUtils.isEmpty(password.getText().toString())));
                     Logger.d(TAG, String.valueOf(TextUtils.isEmpty(url.getText().toString())));
 
+                    CheckBox epamJira = (CheckBox)findViewById(R.id.epamJiraCheckBox);
+                    String requestUrl = epamJira.isChecked() ? url.getText().toString() + JiraApiConst.EPAM_JIRA_SUFFIX : url.getText().toString();
 
                     showProgress(true);
-                    CredentialsManager.getInstance().setUrl(url.getText().toString());
+                    CredentialsManager.getInstance().setUrl(requestUrl);
                     CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString());
                     new JiraTask.Builder<Void>()
                             .setOperationType(JiraTaskType.AUTH)
@@ -81,16 +84,20 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
 
     @Override
     public void onJiraRequestPerformed(RestResponse<String> restResponse) {
-        Toast.makeText(this, restResponse.getResultObject(), Toast.LENGTH_SHORT).show();
         showProgress(false);
         loginButton.setVisibility(View.VISIBLE);
+        String resultMessage;
         if (restResponse.getOpeartionResult() == JiraOperationResult.PERFORMED) {
+            resultMessage = restResponse.getResultObject();
             CredentialsManager.getInstance().setUrl(url.getText().toString());
             CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString());
             CredentialsManager.getInstance().setAccess(true);
             TopButtonService.authSuccess(this);
             finish();
+        } else {
+            resultMessage = restResponse.getExceptionMessage();
         }
+        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
     }
 
 }

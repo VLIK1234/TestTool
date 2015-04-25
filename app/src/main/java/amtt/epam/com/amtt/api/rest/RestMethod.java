@@ -135,7 +135,7 @@ public class RestMethod<OutputType> {
         int statusCode = httpResponse.getStatusLine().getStatusCode();
         if (statusCode == HttpStatus.SC_NOT_FOUND || statusCode == HttpStatus.SC_BAD_GATEWAY) {
             throw new AuthenticationException("Check jira domain");
-        } else if (statusCode == HttpStatus.SC_UNAUTHORIZED) {
+        } else if (statusCode == HttpStatus.SC_UNAUTHORIZED || statusCode == HttpStatus.SC_FORBIDDEN) {
             throw new AuthenticationException("Check password or user name");
         } else if (statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
             throw new Exception("Internal server error occurred");

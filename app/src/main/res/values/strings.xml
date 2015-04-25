@@ -83,6 +83,7 @@
     <string name="button_show_step">Show step</string>
     <string name="button_bug_rep">Create issue</string>
     <string name="issue_created">Issue created</string>
+    <string name="epam_employee_checkbox">Sign in as a EPAM employee</string>
 
 
 </resources>
