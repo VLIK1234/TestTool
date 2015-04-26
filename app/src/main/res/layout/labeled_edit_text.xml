@@ -3,33 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:showIn="@layout/activity_login">
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tv_jira_url"
+        android:id="@+id/tv_label"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:paddingTop="@dimen/activity_vertical_margin"
-        android:text="@string/label_url"
+        android:text="@string/label_label"
         android:textSize="@dimen/material_caption_font_size"
         android:paddingLeft="4dp" />
 
     <EditText
-        android:id="@+id/jira_url"
+        android:id="@+id/et_edit_text"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:hint="@string/label_url"
+        android:hint="@string/label_hint"
         android:inputType="textUri"
         android:paddingTop="@dimen/material_vertical_size_divider"
         android:paddingBottom="7dp"
         android:textSize="@dimen/material_subhead_font_size" />
 
     <TextView
-        android:id="@+id/tv_error_jira_url"
+        android:id="@+id/tv_error_label"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="@string/label_summary"
+        android:text="@string/label_error_label"
         android:textSize="@dimen/material_caption_font_size"
         android:visibility="gone" />
 </LinearLayout>
