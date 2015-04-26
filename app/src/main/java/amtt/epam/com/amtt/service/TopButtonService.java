@@ -122,7 +122,7 @@ public class TopButtonService extends Service{
     }
 
     private void changeUiAuthSuccess(){
-        view.buttonAuth.setText(R.string.logout);
+        view.buttonAuth.setText(R.string.label_logout);
         view.buttonAuth.setTextColor(getResources().getColor(R.color.red));
         view.buttonBugRep.setEnabled(true);
         view.buttonUserInfo.setEnabled(true);
@@ -144,7 +144,7 @@ public class TopButtonService extends Service{
 
         NotificationCompat.Action closeService = new NotificationCompat.Action(
                 R.drawable.ic_close_service,
-                getString(R.string.button_close_service),
+                getString(R.string.label_close),
                 PendingIntent.getService(this, 0, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE), PendingIntent.FLAG_UPDATE_CURRENT));
 
         builder.addAction(action);

@@ -20,14 +20,14 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:paddingTop="@dimen/activity_vertical_margin"
-        android:text="@string/url"
+        android:text="@string/label_url"
         android:textSize="@dimen/material_caption_font_size"/>
 
     <TextView
         android:id="@+id/tv_error_user_name"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="@string/summary"
+        android:text="@string/label_summary"
         android:textSize="@dimen/material_caption_font_size"
         android:visibility="gone"/>
     <EditText
@@ -35,8 +35,7 @@
         android:inputType="textEmailAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/jira_url"
-        android:hint="@string/user_name" />
+        android:hint="@string/label_user_name" />
 
     <!-- *******USER NAME END***************************************************-->
 
@@ -45,27 +44,23 @@
     <EditText
         android:id="@+id/password"
         android:inputType="textPassword"
-        android:layout_below="@+id/user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/password" />
+        android:hint="@string/label_password" />
 
     <!-- *******PASSWORD END***************************************************-->
 
     <Button
         android:id="@+id/login_button"
-        android:layout_below="@id/password"
-        android:text="@string/login_button"
+        android:text="@string/label_login"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true" />
+        android:layout_height="wrap_content" />
 
     <ProgressBar
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:id="@+id/progress"
         android:visibility="gone"
-        android:layout_centerInParent="true"/>
+        android:layout_gravity="center"/>
 
 </LinearLayout>

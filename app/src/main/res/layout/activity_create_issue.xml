@@ -23,26 +23,26 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:paddingTop="@dimen/activity_vertical_margin"
-                android:text="@string/project_name"
+                android:text="@string/label_project"
                 android:textSize="@dimen/material_caption_font_size" />
             <Spinner
                 android:id="@+id/spin_projects_name"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:hint="@string/project_key"
                 android:paddingTop="@dimen/material_vertical_size_divider"
                 android:paddingBottom="7dp"/>
             <ImageView
                 android:layout_height="1dip"
                 android:layout_width="fill_parent"
                 android:background="@color/accent"
-                android:paddingBottom="@dimen/material_vertical_size_divider"/>
+                android:paddingBottom="@dimen/material_vertical_size_divider"
+                android:contentDescription="@string/label_divider" />
             <TextView
                 android:id="@+id/tv_error_project_name"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:paddingTop="@dimen/material_vertical_size_divider"
-                android:text="@string/project_name"
+                android:text="@string/label_project"
                 android:textSize="@dimen/material_caption_font_size"
                 android:visibility="gone"/>
         </LinearLayout>
@@ -56,13 +56,13 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:paddingTop="@dimen/activity_vertical_margin"
-            android:text="@string/issue_name"
+            android:text="@string/label_issue_type"
             android:textSize="@dimen/material_caption_font_size"/>
         <Spinner
             android:id="@+id/spin_issue_name"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:hint="@string/issue_name"
+            android:hint="@string/label_issue_type"
             android:paddingTop="@dimen/material_vertical_size_divider"
             android:paddingBottom="7dp"/>
         <ImageView
@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:paddingTop="@dimen/material_vertical_size_divider"
-            android:text="@string/issue_name"
+            android:text="@string/label_issue_type"
             android:textSize="@dimen/material_caption_font_size"
             android:visibility="gone"/>
 
@@ -88,13 +88,13 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:paddingTop="@dimen/activity_vertical_margin"
-            android:text="@string/summary"
+            android:text="@string/label_summary"
             android:textSize="@dimen/material_caption_font_size"/>
         <EditText
             android:id="@+id/et_summary"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:hint="@string/summary"
+            android:hint="@string/label_summary"
             android:inputType="text"
             android:paddingTop="@dimen/material_vertical_size_divider"
             android:paddingBottom="7dp"
@@ -104,7 +104,7 @@
             android:id="@+id/tv_error_summary"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="@string/summary"
+            android:text="@string/label_summary"
             android:textSize="@dimen/material_caption_font_size"
             android:visibility="gone"/>
 
@@ -117,13 +117,13 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:paddingTop="@dimen/activity_vertical_margin"
-            android:text="@string/priority"
+            android:text="@string/label_priority"
             android:textSize="@dimen/material_caption_font_size"/>
         <Spinner
             android:id="@+id/spin_priority"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:hint="@string/priority"
+            android:hint="@string/label_priority"
             android:paddingTop="@dimen/material_vertical_size_divider"
             android:paddingBottom="7dp"/>
         <ImageView
@@ -135,7 +135,7 @@
             android:id="@+id/tv_error_priority"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="@string/priority"
+            android:text="@string/label_priority"
             android:textSize="@dimen/material_caption_font_size"
             android:visibility="gone"/>
 
@@ -148,13 +148,13 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:paddingTop="@dimen/activity_vertical_margin"
-            android:text="@string/affects_versions"
+            android:text="@string/label_affects_versions"
             android:textSize="@dimen/material_caption_font_size"/>
         <Spinner
             android:id="@+id/spin_affects_versions"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:hint="@string/affects_versions"
+            android:hint="@string/label_affects_versions"
             android:paddingTop="@dimen/material_vertical_size_divider"
             android:paddingBottom="7dp"/>
         <ImageView
@@ -166,7 +166,7 @@
             android:id="@+id/tv_error_affects_versions"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="@string/affects_versions"
+            android:text="@string/label_affects_versions"
             android:textSize="@dimen/material_caption_font_size"
             android:visibility="gone"/>
 
@@ -179,14 +179,14 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:paddingTop="@dimen/activity_vertical_margin"
-            android:text="@string/environment"
+            android:text="@string/label_environment"
             android:textSize="@dimen/material_caption_font_size"/>
         <EditText
             android:id="@+id/et_environment"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:inputType="textMultiLine"
-            android:hint="@string/environment"
+            android:hint="@string/label_environment"
             android:paddingTop="@dimen/material_vertical_size_divider"
             android:paddingBottom="7dp"
             android:textSize="@dimen/material_subhead_font_size"
@@ -195,7 +195,7 @@
             android:id="@+id/tv_error_environment"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="@string/environment"
+            android:text="@string/label_environment"
             android:textSize="@dimen/material_caption_font_size"
             android:visibility="gone"/>
 
@@ -208,14 +208,14 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:paddingTop="@dimen/activity_vertical_margin"
-            android:text="@string/description"
+            android:text="@string/label_description"
             android:textSize="@dimen/material_caption_font_size"/>
         <EditText
             android:id="@+id/et_description"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:inputType="textMultiLine"
-            android:hint="@string/description"
+            android:hint="@string/label_description"
             android:paddingTop="@dimen/material_vertical_size_divider"
             android:paddingBottom="7dp"
             android:textSize="@dimen/material_subhead_font_size"
@@ -224,7 +224,7 @@
             android:id="@+id/tv_error_description"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="@string/description"
+            android:text="@string/label_description"
             android:textSize="@dimen/material_caption_font_size"
             android:visibility="gone"/>
 
@@ -237,13 +237,13 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:paddingTop="@dimen/activity_vertical_margin"
-            android:text="@string/tester"
+            android:text="@string/label_tester"
             android:textSize="@dimen/material_caption_font_size"/>
         <Spinner
             android:id="@+id/spin_testers"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:hint="@string/tester"
+            android:hint="@string/label_tester"
             android:paddingTop="@dimen/material_vertical_size_divider"
             android:paddingBottom="7dp"/>
         <ImageView
@@ -255,7 +255,7 @@
             android:id="@+id/tv_error_tester"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="@string/tester"
+            android:text="@string/label_tester"
             android:textSize="@dimen/material_caption_font_size"
             android:visibility="gone"/>
 
@@ -275,7 +275,7 @@
             android:enabled="false"
             android:layout_marginTop="@dimen/material_vertical_button_padding_top"
             android:minWidth="@dimen/material_vertical_button_min_width_size"
-            android:text="@string/create_issue"
+            android:text="@string/label_create"
             android:textSize="@dimen/material_button_font_size"/>
      </LinearLayout>
 </ScrollView>

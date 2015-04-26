@@ -41,17 +41,17 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<UserD
     @Override
     public void onJiraRequestPerformed(RestResponse<UserDataResult, JiraUserInfo> restResponse) {
         JiraUserInfo user = restResponse.getResultObject();
-        name.setText(getResources().getString(R.string.user_name) + Constants.SharedPreferenceKeys.COLON + user.getName());
-        emailAddress.setText(getResources().getString(R.string.user_email) + Constants.SharedPreferenceKeys.COLON + user.getEmailAddress());
+        name.setText(getResources().getString(R.string.label_user_name) + Constants.SharedPreferenceKeys.COLON + user.getName());
+        emailAddress.setText(getResources().getString(R.string.label_email) + Constants.SharedPreferenceKeys.COLON + user.getEmailAddress());
         displayName.setText(user.getDisplayName());
-        timeZone.setText(getResources().getString(R.string.time_zone) + Constants.SharedPreferenceKeys.COLON + user.getTimeZone());
-        locale.setText(getResources().getString(R.string.locale) + Constants.SharedPreferenceKeys.COLON + user.getLocale());
-        size.setText(getResources().getString(R.string.size) + Constants.SharedPreferenceKeys.COLON + String.valueOf(user.getGroups().getSize()));
+        timeZone.setText(getResources().getString(R.string.label_time_zone) + Constants.SharedPreferenceKeys.COLON + user.getTimeZone());
+        locale.setText(getResources().getString(R.string.label_locale) + Constants.SharedPreferenceKeys.COLON + user.getLocale());
+        size.setText(getResources().getString(R.string.label_size) + Constants.SharedPreferenceKeys.COLON + String.valueOf(user.getGroups().getSize()));
         String groups = "";
         for (int i = 0; i < user.getGroups().getItems().size(); i++) {
             groups += user.getGroups().getItems().get(i).getName() + Constants.DialogKeys.NEW_LINE;
         }
-        namesGroups.setText(getResources().getString(R.string.names_groups) + Constants.SharedPreferenceKeys.COLON + groups);
+        namesGroups.setText(getResources().getString(R.string.label_names_groups) + Constants.SharedPreferenceKeys.COLON + groups);
         showProgress(false);
     }
 

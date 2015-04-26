@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:paddingTop="@dimen/activity_vertical_margin"
-        android:text="@string/url"
+        android:text="@string/label_url"
         android:textSize="@dimen/material_caption_font_size"
         android:paddingLeft="4dp" />
 
@@ -19,7 +19,7 @@
         android:id="@+id/jira_url"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:hint="@string/url"
+        android:hint="@string/label_url"
         android:inputType="textUri"
         android:paddingTop="@dimen/material_vertical_size_divider"
         android:paddingBottom="7dp"
@@ -29,7 +29,7 @@
         android:id="@+id/tv_error_jira_url"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="@string/summary"
+        android:text="@string/label_summary"
         android:textSize="@dimen/material_caption_font_size"
         android:visibility="gone" />
 </LinearLayout>

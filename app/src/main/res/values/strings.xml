@@ -1,86 +1,59 @@
 <resources>
     <string name="app_name">amtt</string>
-
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
     <string name="button_hide">Hide</string>
     <string name="button_show">Show</string>
 
-    <string name="title_activity_login">Login to Jira</string>
-    <string name="login_button">Log in</string>
-    <string name="show_steps_button">Show steps</string>
-
-    <string name="authorization_success">Authorization is passed</string>
-    <string name="authorization_denied">Authorization is not passed</string>
     <string name="title_activity_create_issue">Creating issue</string>
-    <string name="issue_creating_success">Issue is created</string>
-    <string name="issue_creating_unsuccess">Issue is not created</string>
-    <string name="save_activity_info">Save activity info</string>
-    <string name="save_image">Save image</string>
-    <string name="step_button">Save step</string>
-    <string name="clear_db_button">Clear db</string>
+    <string name="title_activity_login">Login to Jira</string>
+    <string name="title_activity_steps">StepsActivity</string>
+    <string name="title_activity_user_info">UserInfoActivity</string>
 
-    <string name="image_saving_error">Error while saving screenshot</string>
-    <string name="image_saving_success">Screenshot saved</string>
-
-    <string name="db_saving_error">Error while saving activity info</string>
-    <string name="db_saving_success">Activity info saved</string>
-
-    <string name="crash_button">Make crash</string>
+    <string name="label_add_step">Add step</string>
+    <string name="label_affects_versions">Affects Version/s</string>
+    <string name="label_authorization">Authorization</string>
+    <string name="label_close">Close</string>
+    <string name="label_create">Create</string>
+    <string name="label_create_issue">Create issue</string>
+    <string name="label_delete_and_close">Delete and close</string>
+    <string name="label_description">Description</string>
+    <string name="label_display_name">Display Name</string>
+    <string name="label_divider">Divider</string>
+    <string name="label_email">Email</string>
+    <string name="label_environment">Environment</string>
+    <string name="label_groups">Groups</string>
+    <string name="label_issue">Issue</string>
+    <string name="label_issue_type">Issue Type</string>
+    <string name="label_locale">Locale</string>
+    <string name="label_login">Log In</string>
+    <string name="label_logout">Log Out</string>
+    <string name="label_make_crash">Make crash</string>
+    <string name="label_names_groups">Names groups</string>
+    <string name="label_password">Password</string>
+    <string name="label_priority">Priority</string>
+    <string name="label_project">Project</string>
+    <string name="label_show_crash_info">Show crash info</string>
+    <string name="label_show_step">Show step</string>
+    <string name="label_size">Size</string>
+    <string name="label_step">Step</string>
+    <string name="label_summary">Summary</string>
+    <string name="label_tester">Tester</string>
+    <string name="label_time_zone">Time zone</string>
+    <string name="label_url">URL</string>
+    <string name="label_user_info">User info</string>
+    <string name="label_user_name">Username</string>
 
     <string name="data_base_action_error">Error has occurred</string>
     <string name="data_base_action_done">Done</string>
-    <string name="button_issue">Issue</string>
-    <string name="user_name">Username</string>
-    <string name="password">Password</string>
-    <string name="project_key">Project key</string>
-    <string name="project_key_value">AMTT</string>
-    <string name="issue_name">Issue Type</string>
-    <string name="issue_name_value">Task</string>
-    <string name="summary">Summary</string>
-    <string name="description">Description</string>
-    <string name="create_issue">Create</string>
-    <string name="title_activity_user_info">UserInfoActivity</string>
-    <string name="url">URL</string>
-    <string name="title_activity_steps">StepsActivity</string>
+    <string name="data_base_cleared">Database cleared</string>
 
     <string name="screenshot_image_description">image view for screenshot</string>
 
-    <string name="step_text">Step</string>
     <string name="empty_list_view">There is no saved steps =(</string>
-    <string name="close_button">Close</string>
-    <string name="delete_crash_button">Delete and close</string>
-    <string name="show_crash_info_text">Show crash info</string>
     <string name="lack_of_crashes_text">There were no crashes recently</string>
     <string name="file_deleted">Deletion done</string>
     <string name="file_not_deleted">Deletion hasn\'t been done</string>
     <string name="notification_title">AMTT</string>
     <string name="notification_text">Button-assistant is running.</string>
-    <string name="display_name">Display Name</string>
-    <string name="user_email">Email</string>
-    <string name="time_zone">Time zone</string>
-    <string name="locale">Locale</string>
-    <string name="groups">Groups</string>
-    <string name="size">Size</string>
-    <string name="user_info">User info</string>
-    <string name="self">Self</string>
-    <string name="names_groups">Names groups</string>
-    <string name="project_name">Project</string>
-    <string name="credentials">Credentials</string>
-    <string name="access">Access</string>
-    <string name="button_close_service">Close</string>
-    <string name="login">Log In</string>
-    <string name="logout">Log Out</string>
-    <string name="button_authorization">Authorization</string>
-    <string name="button_user_info">User info</string>
-    <string name="button_add_step">Add step</string>
-    <string name="button_show_step">Show step</string>
-    <string name="button_bug_rep">Create issue</string>
-    <string name="data_base_cleared">Database cleared</string>
-    <string name="priority">Priority</string>
-    <string name="affects_versions">Affects Version/s</string>
-    <string name="environment">Environment</string>
-    <string name="tester">Tester</string>
-
 </resources>
