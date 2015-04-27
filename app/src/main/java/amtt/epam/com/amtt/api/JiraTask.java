@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.api;
 
 import android.os.AsyncTask;
 
+import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
@@ -11,98 +12,56 @@ import amtt.epam.com.amtt.util.CredentialsManager;
  * AsyncTask which is directly used in code to perform async requests to Jira api
  * Created by Artsiom_Kaliaha on 17.04.2015.
  */
-public class JiraTask< ResultObjectType> extends AsyncTask<Object, Void, RestResponse<ResultObjectType>> {
+public class JiraTask<ResultType> extends AsyncTask<Object, Void, RestResponse<ResultType>> {
 
-    public enum JiraSearchType {
+    public static class Builder<ResultType> {
 
-        ISSUE,
-        USER_INFO
+        private RestMethod<ResultType> mRestMethod;
+        private JiraCallback<ResultType> mCallback;
 
-    }
-
-    public enum JiraTaskType {
-
-        AUTH,
-        CREATE_ISSUE,
-        SEARCH
-
-    }
-
-    public static class Builder<ResultObjectType> {
-
-        private JiraTaskType mOperationType;
-        private JiraCallback<ResultObjectType> mCallback;
-        private String mPostMessage;
-        private JiraSearchType mSearchType;
-
-        public Builder setOperationType(JiraTaskType operationType) {
-            mOperationType = operationType;
+        public Builder setRestMethod(RestMethod<ResultType> restMethod) {
+            mRestMethod = restMethod;
             return this;
         }
 
-        public Builder setCallback(JiraCallback<ResultObjectType> callback) {
+        public Builder setCallback(JiraCallback<ResultType> callback) {
             mCallback = callback;
             return this;
         }
 
-        public Builder setPostJson(String json) {
-            mPostMessage = json;
-            return this;
-        }
 
-        public Builder setSearchType(JiraSearchType jiraSearchType) {
-            mSearchType = jiraSearchType;
-            return this;
-        }
-
-        public JiraTask create() {
-            JiraTask<ResultObjectType> jiraTask = new JiraTask<>();
-            jiraTask.mOperationType = this.mOperationType;
+        public void createAndExecute() {
+            JiraTask<ResultType> jiraTask = new JiraTask<>();
+            jiraTask.mRestMethod = this.mRestMethod;
             jiraTask.mCallback = this.mCallback;
-            jiraTask.mJson = this.mPostMessage;
-            jiraTask.mSearchType = this.mSearchType;
-            return jiraTask;
+            jiraTask.execute();
         }
 
     }
 
-    private JiraTaskType mOperationType;
-    private JiraCallback<ResultObjectType> mCallback;
-    private String mJson;
-    private JiraSearchType mSearchType;
+    private RestMethod mRestMethod;
+    private JiraCallback<ResultType> mCallback;
 
     private JiraTask() {
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected RestResponse<ResultObjectType> doInBackground(Object... params) {
-        JiraApi api = JiraApi.getInstance();
-        switch (mOperationType) {
-            case AUTH:
-                api = api.authorize();
-                break;
-            case CREATE_ISSUE:
-                api = api.createIssue(mJson);
-                break;
-            case SEARCH:
-                switch (mSearchType) {
-                    case ISSUE:
-                        api = api.searchData(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor());
-                        break;
-                    case USER_INFO:
-                        String requestSuffix = JiraApiConst.USER_INFO_PATH + CredentialsManager.getInstance().getUserName() + JiraApiConst.EXPAND_GROUPS;
-                        api = api.searchData(requestSuffix, new UserInfoProcessor());
-                        break;
-                }
-                break;
+    protected RestResponse<ResultType> doInBackground(Object... params) {
+        RestResponse<ResultType> restResponse = null;
+        try {
+            restResponse = mRestMethod.execute();
+        } catch (Exception e) {
+            mCallback.onRequestError(e);
         }
-        return api.execute();
+        return restResponse;
     }
 
     @Override
-    protected void onPostExecute(RestResponse<ResultObjectType> restResponse) {
-        mCallback.onJiraRequestPerformed(restResponse);
+    protected void onPostExecute(RestResponse<ResultType> restResponse) {
+        if (restResponse != null) {
+            mCallback.onRequestPerformed(restResponse);
+        }
     }
 
 }

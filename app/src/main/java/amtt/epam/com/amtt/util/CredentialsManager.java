@@ -24,6 +24,10 @@ public class CredentialsManager {
                 UtilConstants.SharedPreference.COLON + CredentialsManager.getInstance().getPassword()).getBytes(), Base64.NO_WRAP);
     }
 
+    public String getCredentials(final String userName, final String password) {
+        return JiraApiConst.BASIC_AUTH + Base64.encodeToString((userName + UtilConstants.SharedPreference.COLON + password).getBytes(), Base64.NO_WRAP);
+    }
+
     public String getUserName() {
         return PreferenceUtils.getString(UtilConstants.SharedPreference.USER_NAME);
     }

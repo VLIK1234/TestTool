@@ -4,12 +4,16 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.api.JiraApi;
+import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.JiraTask.JiraSearchType;
+import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
+import amtt.epam.com.amtt.processing.UserInfoProcessor;
+import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.UtilConstants;
 
 public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraUserInfo> {
@@ -17,7 +21,6 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     private TextView name, emailAddress, displayName, timeZone, locale, size, namesGroups;
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
@@ -28,18 +31,27 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
         locale = (TextView) findViewById(R.id.tv_locale);
         size = (TextView) findViewById(R.id.tv_size);
         namesGroups = (TextView) findViewById(R.id.tv_names);
-        showProgress(true);
-        new JiraTask.Builder<JiraUserInfo>()
-                .setOperationType(JiraTask.JiraTaskType.SEARCH)
-                .setSearchType(JiraSearchType.USER_INFO)
-                .setCallback(UserInfoActivity.this)
-                .create()
-                .execute();
 
+        executeAsynchronously();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void executeAsynchronously() {
+        String requestSuffix = JiraApiConst.USER_INFO_PATH + CredentialsManager.getInstance().getUserName() + JiraApiConst.EXPAND_GROUPS;
+        RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix, new UserInfoProcessor());
+        new JiraTask.Builder<JiraUserInfo>()
+                .setRestMethod(userInfoMethod)
+                .setCallback(UserInfoActivity.this)
+                .createAndExecute();
     }
 
     @Override
-    public void onJiraRequestPerformed(RestResponse< JiraUserInfo> restResponse) {
+    public void onRequestStarted() {
+        showProgress(true);
+    }
+
+    @Override
+    public void onRequestPerformed(RestResponse<JiraUserInfo> restResponse) {
         if (restResponse.getOpeartionResult() == JiraOperationResult.PERFORMED) {
             JiraUserInfo user = restResponse.getResultObject();
             name.setText(getResources().getString(R.string.user_name) + UtilConstants.SharedPreference.COLON + user.getName());
@@ -57,4 +69,8 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
         }
     }
 
+    @Override
+    public void onRequestError(Exception e) {
+
+    }
 }

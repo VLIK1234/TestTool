@@ -11,10 +11,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
+import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.service.TopButtonService;
@@ -24,11 +25,13 @@ import amtt.epam.com.amtt.util.UtilConstants;
 
 public class LoginActivity extends BaseActivity implements JiraCallback<String> {
 
-    private EditText userName;
-    private EditText password;
-    private EditText url;
+    private EditText mUserName;
+    private EditText mPassword;
+    private EditText mUrl;
     private String toastText = UtilConstants.SharedPreference.EMPTY_STRING;
-    private Button loginButton;
+    private Button mLoginButton;
+    private CheckBox mEpamJira;
+
     private final String TAG = this.getClass().getSimpleName();
 
     @Override
@@ -36,43 +39,37 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        userName = (EditText) findViewById(R.id.user_name);
-        password = (EditText) findViewById(R.id.password);
-        url = (EditText) findViewById(R.id.jira_url);
+        mUserName = (EditText) findViewById(R.id.user_name);
+        mPassword = (EditText) findViewById(R.id.password);
+        mUrl = (EditText) findViewById(R.id.jira_url);
+        mEpamJira = (CheckBox)findViewById(R.id.epamJiraCheckBox);
 
-        url.setText("https://jira.epam.com");
+        mUrl.setText("https://jira.epam.com");
 
-        loginButton = (Button) findViewById(R.id.login_button);
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        mLoginButton = (Button) findViewById(R.id.login_button);
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(userName.getText().toString())) {
+                if (TextUtils.isEmpty(mUserName.getText().toString())) {
                     toastText += (UtilConstants.Dialog.INPUT_USERNAME + UtilConstants.Dialog.NEW_LINE);
                 }
-                if (TextUtils.isEmpty(password.getText().toString())) {
+                if (TextUtils.isEmpty(mPassword.getText().toString())) {
                     toastText += (UtilConstants.Dialog.INPUT_PASSWORD + UtilConstants.Dialog.NEW_LINE);
                 }
-                if (TextUtils.isEmpty(url.getText().toString())) {
+                if (TextUtils.isEmpty(mUrl.getText().toString())) {
                     toastText += (UtilConstants.Dialog.INPUT_URL);
                 } else {
-                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(userName.getText().toString())));
-                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(password.getText().toString())));
-                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(url.getText().toString())));
+                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(mUserName.getText().toString())));
+                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(mPassword.getText().toString())));
+                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(mUrl.getText().toString())));
 
-                    CheckBox epamJira = (CheckBox)findViewById(R.id.epamJiraCheckBox);
-                    String requestUrl = epamJira.isChecked() ? url.getText().toString() + JiraApiConst.EPAM_JIRA_SUFFIX : url.getText().toString();
-
-                    showProgress(true);
-                    CredentialsManager.getInstance().setUrl(requestUrl);
-                    CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString());
-                    new JiraTask.Builder<Void>()
-                            .setOperationType(JiraTaskType.AUTH)
+                    String requestUrl = mEpamJira.isChecked() ? mUrl.getText().toString() + JiraApiConst.EPAM_JIRA_SUFFIX : mUrl.getText().toString();
+                    RestMethod<String> authMethod = JiraApi.getInstance().buildAuth(mUserName.getText().toString(), mPassword.getText().toString(), requestUrl);
+                    new JiraTask.Builder<String>()
+                            .setRestMethod(authMethod)
                             .setCallback(LoginActivity.this)
-                            .create()
-                            .execute();
-
-                    loginButton.setVisibility(View.GONE);
+                            .createAndExecute();
                 }
                 if (!TextUtils.isEmpty(toastText)) {
                     Toast.makeText(LoginActivity.this, toastText, Toast.LENGTH_LONG).show();
@@ -83,14 +80,21 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
     }
 
     @Override
-    public void onJiraRequestPerformed(RestResponse<String> restResponse) {
+    public void onRequestStarted() {
+        showProgress(true);
+        mLoginButton.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public void onRequestPerformed(RestResponse<String> restResponse) {
         showProgress(false);
-        loginButton.setVisibility(View.VISIBLE);
+        mLoginButton.setVisibility(View.VISIBLE);
         String resultMessage;
         if (restResponse.getOpeartionResult() == JiraOperationResult.PERFORMED) {
             resultMessage = restResponse.getResultObject();
-            CredentialsManager.getInstance().setUrl(url.getText().toString());
-            CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString());
+            CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
+            CredentialsManager.getInstance().setCredentials(mUserName.getText().toString(), mPassword.getText().toString());
             CredentialsManager.getInstance().setAccess(true);
             TopButtonService.authSuccess(this);
             finish();
@@ -98,6 +102,11 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
             resultMessage = restResponse.getExceptionMessage();
         }
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRequestError(Exception e) {
+
     }
 
 }

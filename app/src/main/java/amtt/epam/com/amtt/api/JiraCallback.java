@@ -5,8 +5,12 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 /**
  * Created by Artsiom_Kaliaha on 17.04.2015.
  */
-public interface JiraCallback<OutputType> {
+public interface JiraCallback<ResultType> {
+
+    void onRequestStarted();
     
-    void onJiraRequestPerformed(RestResponse<OutputType> restResponse);
+    void onRequestPerformed(RestResponse<ResultType> restResponse);
+
+    void onRequestError(Exception e);
 
 }

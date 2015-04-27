@@ -35,19 +35,19 @@ public class JiraApi {
         mCredentialsManager = CredentialsManager.getInstance();
     }
 
-    public JiraApi authorize() {
+    public RestMethod buildAuth(final String userName, final String password, final String url) {
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials());
+        headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials(userName, password));
         mMethod = new RestMethod.Builder<String>()
                 .setType(RestMethodType.GET)
-                .setUrl(mCredentialsManager.getUrl() + JiraApiConst.LOGIN_PATH)
+                .setUrl(url + JiraApiConst.LOGIN_PATH)
                 .setHeadersMap(headers)
                 .setProcessor(new AuthResponseProcessor())
                 .create();
-        return this;
+        return mMethod;
     }
 
-    public JiraApi createIssue(final String jsonString) {
+    public RestMethod buildIssueCeating(final String postEntity) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
@@ -55,12 +55,12 @@ public class JiraApi {
                 .setType(RestMethodType.POST)
                 .setUrl(mCredentialsManager.getUrl() + JiraApiConst.ISSUE_PATH)
                 .setHeadersMap(headers)
-                .setPostJson(jsonString)
+                .setPostEntity(postEntity)
                 .create();
-        return this;
+        return mMethod;
     }
 
-    public <OutputType, InputType> JiraApi searchData(final String requestSuffix, final Processor<OutputType, InputType> processor) {
+    public <ResultType, InputType> RestMethod buildDataSearch(final String requestSuffix, final Processor<ResultType, InputType> processor) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials());
 
@@ -70,7 +70,7 @@ public class JiraApi {
                 .setHeadersMap(headers)
                 .setProcessor(processor)
                 .create();
-        return this;
+        return mMethod;
     }
 
     public RestResponse execute() {

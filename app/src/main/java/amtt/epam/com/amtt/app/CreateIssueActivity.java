@@ -12,19 +12,22 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.api.JiraApi;
+import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.JiraTask.JiraSearchType;
-import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
+import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreateIssue;
+import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 import amtt.epam.com.amtt.util.UtilConstants;
 
 
+@SuppressWarnings("unchecked")
 public class CreateIssueActivity extends BaseActivity implements JiraCallback<JMetaResponse> {
 
     private EditText etDescription, etSummary;
@@ -34,7 +37,6 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
     private Button buttonCreateIssue;
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
@@ -47,13 +49,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
         spinnerProjectsKey.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                showProgress(true);
-                new JiraTask.Builder<>()
-                        .setOperationType(JiraTaskType.SEARCH)
-                        .setSearchType(JiraSearchType.ISSUE)
-                        .setCallback(CreateIssueActivity.this)
-                        .create()
-                        .execute();
+                getMetaAsynchronously();
             }
 
             @Override
@@ -64,22 +60,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
         buttonCreateIssue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CreateIssue issue = new CreateIssue();
-                String projectKey, issueType, description, summary;
-                description = etDescription.getText().toString();
-                summary = etSummary.getText().toString();
-                //TODO is it possible to click create issue before spinnerIssueTypes are inited?
-                issueType = spinnerIssueTypes.getSelectedItem().toString();
-                projectKey = getProjectKey();
-                showProgress(true);
-                buttonCreateIssue.setVisibility(View.GONE);
-
-                new JiraTask.Builder<Void>()
-                        .setOperationType(JiraTaskType.CREATE_ISSUE)
-                        .setCallback(CreateIssueActivity.this)
-                        .setPostJson(issue.createSimpleIssue(projectKey, issueType, description, summary))
-                        .create()
-                        .execute();
+                createIssueAsynchronously();
             }
         });
     }
@@ -107,9 +88,40 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
     }
 
 
+    private void createIssueAsynchronously() {
+        CreateIssue issue = new CreateIssue();
+        String projectKey, issueType, description, summary;
+        description = etDescription.getText().toString();
+        summary = etSummary.getText().toString();
+        //TODO is it possible to click create issue before spinnerIssueTypes are inited?
+        issueType = spinnerIssueTypes.getSelectedItem().toString();
+        projectKey = getProjectKey();
+
+        RestMethod<JMetaResponse> createIssue = JiraApi.getInstance().buildIssueCeating(issue.createSimpleIssue(projectKey, issueType, description, summary));
+        new JiraTask.Builder<JMetaResponse>()
+                .setRestMethod(createIssue)
+                .setCallback(CreateIssueActivity.this)
+                .createAndExecute();
+    }
+
+    private void getMetaAsynchronously() {
+        RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor());
+        new JiraTask.Builder<JMetaResponse>()
+                .setRestMethod(searchMethod)
+                .setCallback(CreateIssueActivity.this)
+                .createAndExecute();
+    }
+
+
+    @Override
+    public void onRequestStarted() {
+        showProgress(false);
+        buttonCreateIssue.setVisibility(View.GONE);
+    }
+
     @Override
     @SuppressWarnings("unchecked")
-    public void onJiraRequestPerformed(RestResponse<JMetaResponse> restResponse) {
+    public void onRequestPerformed(RestResponse<JMetaResponse> restResponse) {
         if (restResponse.getOpeartionResult() == JiraOperationResult.CREATED) {
             Toast.makeText(this, R.string.issue_created, Toast.LENGTH_SHORT).show();
             finish();
@@ -127,8 +139,10 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
             spinnerIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
             spinnerIssueTypes.setAdapter(issueNames);
         }
-        showProgress(false);
-
     }
 
+    @Override
+    public void onRequestError(Exception e) {
+
+    }
 }

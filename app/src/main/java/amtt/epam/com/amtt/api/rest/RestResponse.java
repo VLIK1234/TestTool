@@ -6,17 +6,12 @@ import amtt.epam.com.amtt.api.result.JiraOperationResult;
  * Class providing access to REST method responses
  * Created by Artsiom_Kaliaha on 15.04.2015.
  */
-public class RestResponse<OutputType> {
+public class RestResponse<ResultType> {
 
-    private String mResponseMessage;
     private JiraOperationResult mResult;
-    private OutputType mObject;
+    private ResultType mObject;
 
     public RestResponse() {
-    }
-
-    public void setMessage(Exception e) {
-        mResponseMessage = e.getMessage();
     }
 
     public void setOperationResult(JiraOperationResult result) {
@@ -25,19 +20,15 @@ public class RestResponse<OutputType> {
         }
     }
 
-    public void setResultObject(OutputType object) {
+    public void setResultObject(ResultType object) {
         mObject = object;
-    }
-
-    public String getExceptionMessage() {
-        return mResponseMessage;
     }
 
     public JiraOperationResult getOpeartionResult() {
         return mResult;
     }
 
-    public OutputType getResultObject() {
+    public ResultType getResultObject() {
         return mObject;
     }
 
