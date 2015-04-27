@@ -1,7 +1,6 @@
 package amtt.epam.com.amtt.app;
 
 import android.os.Bundle;
-import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraCallback;
@@ -11,6 +10,7 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.UserDataResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.view.TextView;
 
 public class UserInfoActivity extends BaseActivity implements JiraCallback<UserDataResult,JiraUserInfo> {
 

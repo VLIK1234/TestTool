@@ -14,10 +14,6 @@
         android:paddingTop="@dimen/activity_vertical_margin">
 
         <!-- *******PROJECTS BEGIN***************************************************-->
-        <LinearLayout
-            android:layout_height="72dp"
-            android:layout_width="match_parent"
-            android:orientation="vertical">
             <TextView
                 android:id="@+id/tv_project_name"
                 android:layout_height="wrap_content"
@@ -34,7 +30,7 @@
             <ImageView
                 android:layout_height="1dip"
                 android:layout_width="fill_parent"
-                android:background="@color/accent"
+                android:background="@color/divider"
                 android:paddingBottom="@dimen/material_vertical_size_divider"
                 android:contentDescription="@string/label_divider" />
             <TextView
@@ -45,7 +41,6 @@
                 android:text="@string/label_project"
                 android:textSize="@dimen/material_caption_font_size"
                 android:visibility="gone"/>
-        </LinearLayout>
         <!-- *******PROJECTS END***************************************************-->
 
         <!-- *******ISSUE TYPES BEGIN**********************************************-->
@@ -57,6 +52,7 @@
             android:text="@string/label_issue_type"
             android:textSize="@dimen/material_caption_font_size"/>
         <Spinner
+            style="@style/Material.Widget.Spinner"
             android:id="@+id/spin_issue_name"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
@@ -66,7 +62,7 @@
         <ImageView
             android:layout_height="1dip"
             android:layout_width="fill_parent"
-            android:background="@color/accent"
+            android:background="@color/divider"
             android:paddingBottom="@dimen/material_vertical_size_divider"/>
         <TextView
             android:id="@+id/tv_error_issue_name"
@@ -106,6 +102,7 @@
             android:text="@string/label_priority"
             android:textSize="@dimen/material_caption_font_size"/>
         <Spinner
+            style="@style/Material.Widget.Spinner"
             android:id="@+id/spin_priority"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
@@ -115,7 +112,7 @@
         <ImageView
             android:layout_width="fill_parent"
             android:layout_height="1dip"
-            android:background="@color/accent"
+            android:background="@color/divider"
             android:paddingTop="@dimen/material_vertical_size_divider"/>
         <TextView
             android:id="@+id/tv_error_priority"
@@ -135,6 +132,7 @@
             android:text="@string/label_affects_versions"
             android:textSize="@dimen/material_caption_font_size"/>
         <Spinner
+            style="@style/Material.Widget.Spinner"
             android:id="@+id/spin_affects_versions"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
@@ -144,7 +142,7 @@
         <ImageView
             android:layout_width="fill_parent"
             android:layout_height="1dip"
-            android:background="@color/accent"
+            android:background="@color/divider"
             android:paddingTop="@dimen/material_vertical_size_divider"/>
         <TextView
             android:id="@+id/tv_error_affects_versions"
@@ -202,6 +200,7 @@
             android:text="@string/label_tester"
             android:textSize="@dimen/material_caption_font_size"/>
         <Spinner
+            style="@style/Material.Widget.Spinner"
             android:id="@+id/spin_testers"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
@@ -211,7 +210,7 @@
         <ImageView
             android:layout_width="fill_parent"
             android:layout_height="1dip"
-            android:background="@color/accent"
+            android:background="@color/divider"
             android:paddingTop="@dimen/material_vertical_size_divider"/>
         <TextView
             android:id="@+id/tv_error_tester"
