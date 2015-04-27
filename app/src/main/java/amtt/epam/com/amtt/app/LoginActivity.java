@@ -4,9 +4,9 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
@@ -19,13 +19,13 @@ import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.view.EditText;
 
 public class LoginActivity extends BaseActivity implements JiraCallback<AuthorizationResult,Void> {
 
     private EditText userName;
     private EditText password;
     private EditText url;
-    private String toastText = Constants.SharedPreferenceKeys.VOID;
     private Button loginButton;
     private final String TAG = this.getClass().getSimpleName();
 
@@ -46,24 +46,34 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
             @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(userName.getText().toString())) {
-                    toastText += (Constants.DialogKeys.INPUT_USERNAME + Constants.DialogKeys.NEW_LINE);
-                }
-                if (TextUtils.isEmpty(password.getText().toString())) {
-                    toastText += (Constants.DialogKeys.INPUT_PASSWORD + Constants.DialogKeys.NEW_LINE);
-                }
-                if (TextUtils.isEmpty(url.getText().toString())) {
-                    toastText += (Constants.DialogKeys.INPUT_URL);
-                } else {
-                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(userName.getText().toString())));
-                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(password.getText().toString())));
-                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(url.getText().toString())));
+                Boolean isValid = false;
 
+                if (TextUtils.isEmpty(userName.getText().toString())) {
+                    userName.setError(Constants.DialogKeys.INPUT_USERNAME);
+                    userName.getOverlay();
+                    isValid = false;
+                }
+                else {isValid = true;}
+
+
+                if (TextUtils.isEmpty(password.getText().toString())) {
+                    password.setError(Constants.DialogKeys.INPUT_PASSWORD);
+                    password.getOverlay();
+                    isValid = false;
+                }
+
+                if (TextUtils.isEmpty(url.getText().toString())) {
+                    url.setError(Constants.DialogKeys.INPUT_URL);
+                    url.getOverlay();
+                    isValid = false;
+                }
+
+                if( isValid == true){
 
                     showProgress(true);
                     CredentialsManager.getInstance().setUrl(url.getText().toString());
                     CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString());
-                    new JiraTask.Builder<AuthorizationResult,Void>()
+                    new JiraTask.Builder<AuthorizationResult, Void>()
                             .setOperationType(JiraTaskType.AUTH)
                             .setCallback(LoginActivity.this)
                             .create()
@@ -71,12 +81,34 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
 
                     loginButton.setVisibility(View.GONE);
                 }
-                if (!TextUtils.isEmpty(toastText)) {
-                    Toast.makeText(LoginActivity.this, toastText, Toast.LENGTH_LONG).show();
-                }
-                toastText = "";
+
             }
         });
+
+        userName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus)
+                    userName.setError(null);
+            }
+        });
+
+        password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus)
+                    password.setError(null);
+            }
+        });
+
+        url.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus)
+                    url.setError(null);
+            }
+        });
+
     }
 
     @Override

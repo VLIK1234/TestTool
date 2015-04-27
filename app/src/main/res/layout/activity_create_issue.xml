@@ -98,8 +98,7 @@
             android:inputType="text"
             android:paddingTop="@dimen/material_vertical_size_divider"
             android:paddingBottom="7dp"
-            android:textSize="@dimen/material_subhead_font_size"
-            style="@style/Material.Widget.EditText"/>
+            android:textSize="@dimen/material_subhead_font_size"/>
         <TextView
             android:id="@+id/tv_error_summary"
             android:layout_height="wrap_content"
@@ -189,8 +188,7 @@
             android:hint="@string/label_environment"
             android:paddingTop="@dimen/material_vertical_size_divider"
             android:paddingBottom="7dp"
-            android:textSize="@dimen/material_subhead_font_size"
-            style="@style/Material.Widget.EditText"/>
+            android:textSize="@dimen/material_subhead_font_size"/>
         <TextView
             android:id="@+id/tv_error_environment"
             android:layout_height="wrap_content"
@@ -218,8 +216,7 @@
             android:hint="@string/label_description"
             android:paddingTop="@dimen/material_vertical_size_divider"
             android:paddingBottom="7dp"
-            android:textSize="@dimen/material_subhead_font_size"
-            style="@style/Material.Widget.EditText"/>
+            android:textSize="@dimen/material_subhead_font_size"/>
         <TextView
             android:id="@+id/tv_error_description"
             android:layout_height="wrap_content"

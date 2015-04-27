@@ -22,9 +22,12 @@
     <string name="label_divider">Divider</string>
     <string name="label_email">Email</string>
     <string name="label_environment">Environment</string>
+    <string name="label_error_label">Error label</string>
     <string name="label_groups">Groups</string>
+    <string name="label_hint">Hint</string>
     <string name="label_issue">Issue</string>
     <string name="label_issue_type">Issue Type</string>
+    <string name="label_label">Label</string>
     <string name="label_locale">Locale</string>
     <string name="label_login">Log In</string>
     <string name="label_logout">Log Out</string>
@@ -56,7 +59,4 @@
     <string name="file_not_deleted">Deletion hasn\'t been done</string>
     <string name="notification_title">AMTT</string>
     <string name="notification_text">Button-assistant is running.</string>
-    <string name="label_label">Label</string>
-    <string name="label_hint">Hint</string>
-    <string name="label_error_label">Error label</string>
 </resources>

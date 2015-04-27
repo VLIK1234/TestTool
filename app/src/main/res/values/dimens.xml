@@ -42,7 +42,7 @@
     <dimen name="card_corner_radius">3dp</dimen>
     <dimen name="card_elevation">4dp</dimen>
 
-    <dimen name="material_vertical_bottom_padding_menu_item">20dp</dimen>
+    <dimen name="material_vertical_bottom_padding_menu_item">16dp</dimen>
     <dimen name="material_vertical_height_menu_item">48dp</dimen>
     <dimen name="material_vertical_height_padding_menu">8dp</dimen>
     <dimen name="material_vertical_width_padding_menu">16dp</dimen>
