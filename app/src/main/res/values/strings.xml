@@ -59,4 +59,5 @@
     <string name="file_not_deleted">Deletion hasn\'t been done</string>
     <string name="notification_title">AMTT</string>
     <string name="notification_text">Button-assistant is running.</string>
+    <string name="label_attachment">Attachment</string>
 </resources>
