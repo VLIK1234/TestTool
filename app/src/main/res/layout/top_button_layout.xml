@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/main_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:background="@drawable/background_main_button"/>
 
     <LinearLayout
@@ -30,7 +30,6 @@
                 android:id="@+id/button_auth"
                 android:layout_width="@dimen/button_small_size"
                 android:layout_height="@dimen/button_small_size"
-                android:layout_margin="@dimen/margin_buttons_bar"
                 android:background="@drawable/background_circle"
                 android:text="@string/login"
                 android:textColor="@color/green"
@@ -68,7 +67,6 @@
                 android:id="@+id/button_user_info"
                 android:layout_width="@dimen/button_small_size"
                 android:layout_height="@dimen/button_small_size"
-                android:layout_margin="@dimen/margin_buttons_bar"
                 android:background="@drawable/background_user_info"
                 android:enabled="false"
                 android:clickable="false"/>
@@ -104,7 +102,6 @@
                 android:id="@+id/button_add_step"
                 android:layout_width="@dimen/button_small_size"
                 android:layout_height="@dimen/button_small_size"
-                android:layout_margin="@dimen/margin_buttons_bar"
                 android:background="@drawable/background_add_step"
                 android:clickable="false"/>
 
@@ -138,7 +135,6 @@
                 android:id="@+id/button_show_step"
                 android:layout_width="@dimen/button_small_size"
                 android:layout_height="@dimen/button_small_size"
-                android:layout_margin="@dimen/margin_buttons_bar"
                 android:background="@drawable/background_show_step"
                 android:clickable="false"/>
 
@@ -172,7 +168,6 @@
                 android:id="@+id/button_bug_rep"
                 android:layout_width="@dimen/button_small_size"
                 android:layout_height="@dimen/button_small_size"
-                android:layout_margin="@dimen/margin_buttons_bar"
                 android:background="@drawable/background_bug_rep"
                 android:enabled="false"
                 android:clickable="false"/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/background_circle"/>
-    <item android:drawable="@drawable/state_bug_rep"/>
+    <item android:drawable="@drawable/state_bug_rep" android:top="6dp" android:bottom="12dp" android:left="9dp" android:right="9dp"/>
 </layer-list>
