@@ -22,6 +22,7 @@ public interface Constants {
         String INPUT_PASSWORD = "Input password";
         String INPUT_URL = "Input URL";
         String NEW_LINE = "\n";
+        String INPUT_SUMMARY = "Input summary";
     }
 
 

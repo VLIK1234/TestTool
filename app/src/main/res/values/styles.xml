@@ -16,11 +16,8 @@
     <style name="Material.Widget"></style>
 
     <style name="Material.Widget.Spinner">
-        <item name="spn_labelEnable">false</item>
-        <item name="spn_labelPadding">0dp</item>
-        <item name="spn_labelTextAppearance">@style/TextAppearance.AppCompat.Caption</item>
-        <item name="spn_labelTextColor">@color/abc_secondary_text_material_dark</item>
-        <item name="spn_labelTextSize">@dimen/material_subhead_font_size</item>
+        <item name="android:textSize">@dimen/material_subhead_font_size</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
         <item name="spn_labelEllipsize">end</item>
         <item name="spn_dividerHeight">2dp</item>
         <item name="spn_dividerPadding">0dp</item>

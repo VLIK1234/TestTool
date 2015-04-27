@@ -1,11 +1,11 @@
 package amtt.epam.com.amtt.app;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -23,6 +23,7 @@ import amtt.epam.com.amtt.api.result.CreateIssueResult;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.view.EditText;
 
 
 public class CreateIssueActivity extends BaseActivity implements JiraCallback {
@@ -64,21 +65,35 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
         buttonCreateIssue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buttonCreateIssue.setEnabled(false);
-                String projectKey, issueType, description, summary;
-                description = etDescription.getText().toString();
-                summary = etSummary.getText().toString();
-                issueType = spinnerIssueTypes.getSelectedItem().toString();
-                projectKey = getProjectKey();
-                showProgress(true);
-                CreateIssue issue = new CreateIssue();
-                new JiraTask.Builder<CreateIssueResult,Void>()
-                        .setOperationType(JiraTaskType.CREATE_ISSUE)
-                        .setCallback(CreateIssueActivity.this)
-                        .setJson(issue.createSimpleIssue(projectKey, issueType, description, summary))
-                        .create()
-                        .execute();
+
+                Boolean isValid = false;
+
+                if (TextUtils.isEmpty(etSummary.getText().toString())) {
+                    etSummary.setError(Constants.DialogKeys.INPUT_SUMMARY);
+                    etSummary.getOverlay();
+                    isValid = false;
+                }
+                else {isValid = true;}
+
+                if( isValid == true) {
+
+                    buttonCreateIssue.setEnabled(false);
+                    String projectKey, issueType, description, summary;
+                    description = etDescription.getText().toString();
+                    summary = etSummary.getText().toString();
+                    issueType = spinnerIssueTypes.getSelectedItem().toString();
+                    projectKey = getProjectKey();
+                    showProgress(true);
+                    CreateIssue issue = new CreateIssue();
+                    new JiraTask.Builder<CreateIssueResult, Void>()
+                            .setOperationType(JiraTaskType.CREATE_ISSUE)
+                            .setCallback(CreateIssueActivity.this)
+                            .setJson(issue.createSimpleIssue(projectKey, issueType, description, summary))
+                            .create()
+                            .execute();
+                }
             }
+
         });
     }
 
