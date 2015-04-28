@@ -69,7 +69,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
 
                 if (TextUtils.isEmpty(etSummary.getText().toString())) {
                     etSummary.setError(Constants.DialogKeys.INPUT_SUMMARY);
-                    etSummary.getOverlay();
+                    etSummary.invalidate();
                     isValid = false;
                 }
 

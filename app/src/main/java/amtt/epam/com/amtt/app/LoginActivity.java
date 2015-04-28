@@ -54,7 +54,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
 
                 if (TextUtils.isEmpty(password.getText().toString())) {
                     password.setError(Constants.DialogKeys.INPUT_PASSWORD);
-                    //password.getOverlay();
                     password.invalidate();
                     isValid = false;
                 }
