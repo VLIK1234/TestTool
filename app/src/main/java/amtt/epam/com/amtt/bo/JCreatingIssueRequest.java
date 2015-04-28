@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.bo.issue.willrefactored;
+package amtt.epam.com.amtt.bo;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -7,14 +7,14 @@ import amtt.epam.com.amtt.bo.issue.JiraIssueFields;
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
  */
-public class JiraBase {
+public class JCreatingIssueRequest {
     @SerializedName("fields")
     private JiraIssueFields mFields;
 
-    public JiraBase() {
+    public JCreatingIssueRequest() {
     }
 
-    public JiraBase(JiraIssueFields fields) {
+    public JCreatingIssueRequest(JiraIssueFields fields) {
         this.mFields = fields;
     }
 

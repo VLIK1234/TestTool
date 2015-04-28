@@ -1,11 +1,14 @@
-package amtt.epam.com.amtt.bo.issue.user;
+package amtt.epam.com.amtt.bo.user;
 
 import com.google.gson.annotations.SerializedName;
+
+import amtt.epam.com.amtt.bo.user.JiraAvatarUrls;
+import amtt.epam.com.amtt.bo.user.JiraUserGroup;
 
 /**
  * Created by Iryna_Monchanka on 3/31/2015.
  */
-public class JiraUserInfo {
+public class JiraUser {
 
     @SerializedName("key")
     private String mKey;
@@ -30,10 +33,10 @@ public class JiraUserInfo {
     @SerializedName("expand")
     private String mExpand;
 
-    public JiraUserInfo() {
+    public JiraUser() {
     }
 
-    public JiraUserInfo(String key, String self, String name, JiraAvatarUrls avatarUrls, String emailAddress, String displayName, Boolean active, String timeZone, String locale, JiraUserGroup groups, String expand) {
+    public JiraUser(String key, String self, String name, JiraAvatarUrls avatarUrls, String emailAddress, String displayName, Boolean active, String timeZone, String locale, JiraUserGroup groups, String expand) {
         this.mKey = key;
         this.mSelf = self;
         this.mName = name;

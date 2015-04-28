@@ -1,8 +1,10 @@
-package amtt.epam.com.amtt.bo.issue.createmeta;
+package amtt.epam.com.amtt.bo;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+
+import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 
 /**
  * Created by Iryna_Monchanka on 3/31/2015.

@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.bo.issue.user;
+package amtt.epam.com.amtt.bo.user;
 
 import com.google.gson.annotations.SerializedName;
 

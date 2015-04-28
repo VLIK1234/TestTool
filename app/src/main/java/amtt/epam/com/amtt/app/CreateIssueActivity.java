@@ -17,7 +17,7 @@ import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.JiraTask.JiraSearchType;
 import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
 import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
+import amtt.epam.com.amtt.bo.JMetaResponse;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreateIssue;
 import amtt.epam.com.amtt.api.result.CreateIssueResult;
 import amtt.epam.com.amtt.util.Constants;

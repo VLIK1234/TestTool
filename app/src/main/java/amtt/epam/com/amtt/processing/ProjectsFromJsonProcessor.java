@@ -7,7 +7,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
+import amtt.epam.com.amtt.bo.JMetaResponse;
 
 
 /**

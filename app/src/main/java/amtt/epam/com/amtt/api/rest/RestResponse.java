@@ -2,8 +2,6 @@ package amtt.epam.com.amtt.api.rest;
 
 import org.apache.http.HttpEntity;
 
-import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
-
 /**
  * Class providing access to REST method responses
  * Created by Artsiom_Kaliaha on 15.04.2015.

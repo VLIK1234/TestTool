@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.bo.issue.willrefactored;
 
 import android.util.Log;
 
+import amtt.epam.com.amtt.bo.JCreatingIssueRequest;
 import amtt.epam.com.amtt.bo.issue.JiraIssueFields;
 import amtt.epam.com.amtt.bo.issue.JiraIssueProject;
 import amtt.epam.com.amtt.bo.issue.JiraIssueTypesIssueType;
@@ -17,8 +18,8 @@ public class CreateIssue {
     private JiraIssueProject mProject = new JiraIssueProject();
     private JiraIssueTypesIssueType mIssueType = new JiraIssueTypesIssueType();
     private JiraIssueFields mFields = new JiraIssueFields();
-    private JiraBase mBData = new JiraBase();
-    private IssueGsonProcessor<JiraBase> mIssueGsonProcessor = new IssueGsonProcessor<>();
+    private JCreatingIssueRequest mBData = new JCreatingIssueRequest();
+    private IssueGsonProcessor<JCreatingIssueRequest> mIssueGsonProcessor = new IssueGsonProcessor<>();
     private String jsonString = null;
 
     public CreateIssue() {
