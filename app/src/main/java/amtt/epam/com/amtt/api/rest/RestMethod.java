@@ -1,5 +1,8 @@
 package amtt.epam.com.amtt.api.rest;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -12,9 +15,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Map;
-import java.util.Objects;
 
-import amtt.epam.com.amtt.api.JiraException;
+import amtt.epam.com.amtt.api.exception.JiraException;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.processing.Processor;
 
@@ -80,13 +82,14 @@ public class RestMethod<ResultType> {
 
     }
 
+    public static final int EMPTY_STATUS_CODE = -1;
+
     private static HttpClient mHttpClient;
     private RestMethodType mRestMethodType;
     private Map<String, String> mHeaders;
     private String mUrl;
     private Processor<ResultType, HttpEntity> mProcessor;
     private String mPostEntity;
-
 
     static {
         mHttpClient = new DefaultHttpClient();
@@ -95,7 +98,7 @@ public class RestMethod<ResultType> {
     public RestMethod() {
     }
 
-    private HttpResponse get() throws IOException {
+    private HttpResponse get() throws Exception {
         HttpGet httpGet = new HttpGet(mUrl);
         for (Map.Entry<String, String> keyValuePair : mHeaders.entrySet()) {
             httpGet.setHeader(keyValuePair.getKey(), keyValuePair.getValue());
@@ -105,9 +108,9 @@ public class RestMethod<ResultType> {
         try {
             httpResponse = mHttpClient.execute(httpGet);
         } catch (IllegalStateException e) {
-            throw new IllegalStateException();
+            throw new JiraException(e, EMPTY_STATUS_CODE, this);
         } catch (UnknownHostException e) {
-            throw new UnknownHostException();
+            throw new JiraException(e, EMPTY_STATUS_CODE, this);
         }
         return httpResponse;
     }
@@ -136,35 +139,24 @@ public class RestMethod<ResultType> {
         RestResponse<ResultType> restResponse = new RestResponse<>();
 
         int statusCode = httpResponse.getStatusLine().getStatusCode();
-        ResultType result = null;
+        if (statusCode == HttpStatus.SC_NOT_FOUND || statusCode == HttpStatus.SC_BAD_GATEWAY ||
+                statusCode == HttpStatus.SC_UNAUTHORIZED || statusCode == HttpStatus.SC_FORBIDDEN ||
+                statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+            throw new JiraException(null, statusCode, this);
+        }
+
+        ResultType result;
         try {
             if (mProcessor != null) {
                 result = mProcessor.process(httpResponse.getEntity());
                 restResponse.setResultObject(result);
             }
         } catch (Exception e) {
-            throw new JiraException(e, httpResponse.getStatusLine().getStatusCode(), null);
-        }
-
-        if (statusCode == HttpStatus.SC_NOT_FOUND || statusCode == HttpStatus.SC_BAD_GATEWAY ||
-                statusCode == HttpStatus.SC_UNAUTHORIZED || statusCode == HttpStatus.SC_FORBIDDEN ||
-                statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-            //why the "result" is cast to String and set as result
-            //Two cases can take place:
-            //1. RestMethod must return String response -> request performed and error response is received
-            // -> processor parses the response and give String back
-            // -> we check status code and throw an exception
-            // -> throw new JiraException(null, statusCode, (String)result); <-
-            //2. RestMethod must return Entity -> request performed
-            // -> processor parses the response and throws an exception as current response can't be processed in a proper way
-            // -> exception is thrown, we catch it and throw JiraException with null "result"
-            // -> throw new JiraException(e, httpResponse.getStatusLine().getStatusCode(), null); <-
-            //Conclusion: the result passed to JiraException constructor can be only of String type=)
-            throw new JiraException(null, statusCode, (String)result);
+            throw new JiraException(e, httpResponse.getStatusLine().getStatusCode(), this);
         }
 
         if (mRestMethodType == RestMethodType.POST) {
-            restResponse.setOperationResult(JiraOperationResult.CREATED);
+            restResponse.setOperationResult(JiraOperationResult.ISSUE_CREATED);
         }
         return restResponse;
     }

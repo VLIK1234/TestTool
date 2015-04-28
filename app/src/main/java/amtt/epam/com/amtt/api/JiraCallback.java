@@ -8,7 +8,7 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 public interface JiraCallback<ResultType> {
 
     void onRequestStarted();
-    
+
     void onRequestPerformed(RestResponse<ResultType> restResponse);
 
     void onRequestError(Exception e);

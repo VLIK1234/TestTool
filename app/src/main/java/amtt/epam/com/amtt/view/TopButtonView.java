@@ -29,22 +29,21 @@ import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.rest.RestMethod;
-import amtt.epam.com.amtt.api.result.JiraOperationResult;
+import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
-import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.database.task.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
 import amtt.epam.com.amtt.database.task.StepSavingCallback;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
-import amtt.epam.com.amtt.util.UtilConstants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.util.UtilConstants;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
@@ -93,7 +92,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
-        topButtonLayout = (RelativeLayout)findViewById(R.id.top_button_layout);
+        topButtonLayout = (RelativeLayout) findViewById(R.id.top_button_layout);
     }
 
     @SuppressWarnings("unchecked")
@@ -353,13 +352,13 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
                             buttonsBar.startAnimation(translate);
                             Animation combination = AnimationUtils.loadAnimation(getContext(), R.anim.combination);
                             long durationAnimation = combination.getDuration();
-                            for (int i = 0; i < buttonsArray.length; i++, durationAnimation+=100) {
+                            for (int i = 0; i < buttonsArray.length; i++, durationAnimation += 100) {
                                 combination.setDuration(durationAnimation);
                                 buttonsArray[i].startAnimation(combination);
                             }
                             Animation alpha = AnimationUtils.loadAnimation(getContext(), R.anim.alpha);
                             durationAnimation = 300;
-                            for (int i = 0; i < textViewArray.length; i++, durationAnimation+=100) {
+                            for (int i = 0; i < textViewArray.length; i++, durationAnimation += 100) {
                                 alpha.setDuration(durationAnimation);
                                 textViewArray[i].startAnimation(alpha);
                             }
@@ -411,7 +410,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     }
 
 
-
     @Override
     public void onRequestStarted() {
 
@@ -419,18 +417,14 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
 
     @Override
     public void onRequestPerformed(RestResponse<JMetaResponse> restResponse) {
-        if (restResponse.getOpeartionResult() == JiraOperationResult.PERFORMED) {
-            JMetaResponse jiraMetaResponse = restResponse.getResultObject();
-            ArrayList<String> projectsNames = jiraMetaResponse.getProjectsNames();
-            ArrayList<String> projectsKeys = jiraMetaResponse.getProjectsKeys();
-            PreferenceUtils.putSet(UtilConstants.SharedPreference.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
-            PreferenceUtils.putSet(UtilConstants.SharedPreference.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
-            Intent intent = new Intent(getContext(), CreateIssueActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            getContext().getApplicationContext().startActivity(intent);
-        } else {
-            Toast.makeText(getContext(), restResponse.getExceptionMessage(), Toast.LENGTH_SHORT).show();
-        }
+        JMetaResponse jiraMetaResponse = restResponse.getResultObject();
+        ArrayList<String> projectsNames = jiraMetaResponse.getProjectsNames();
+        ArrayList<String> projectsKeys = jiraMetaResponse.getProjectsKeys();
+        PreferenceUtils.putSet(UtilConstants.SharedPreference.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
+        PreferenceUtils.putSet(UtilConstants.SharedPreference.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
+        Intent intent = new Intent(getContext(), CreateIssueActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getContext().getApplicationContext().startActivity(intent);
     }
 
     @Override

@@ -73,17 +73,9 @@ public class JiraApi {
         return mMethod;
     }
 
-    public RestResponse execute() {
-        RestResponse<Void> restResponse;
-        try {
-            restResponse = mMethod.execute();
-        } catch (Exception e) {
-            restResponse = new RestResponse<>();
-            restResponse.setOperationResult(JiraOperationResult.UNPERFORMED);
-            restResponse.setMessage(e);
-            return restResponse;
-        }
-        restResponse.setOperationResult(JiraOperationResult.PERFORMED);
+    public RestResponse execute() throws Exception {
+        RestResponse<Void> restResponse = mMethod.execute();
+        restResponse.setOperationResult(JiraOperationResult.REQUEST_PERFORMED);
         return restResponse;
     }
 

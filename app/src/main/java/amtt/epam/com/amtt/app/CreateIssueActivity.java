@@ -16,6 +16,8 @@ import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
+import amtt.epam.com.amtt.api.exception.ExceptionHandler;
+import amtt.epam.com.amtt.api.exception.JiraException;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
@@ -122,15 +124,11 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
     @Override
     @SuppressWarnings("unchecked")
     public void onRequestPerformed(RestResponse<JMetaResponse> restResponse) {
-        if (restResponse.getOpeartionResult() == JiraOperationResult.CREATED) {
+        if (restResponse.getOpeartionResult() == JiraOperationResult.ISSUE_CREATED) {
             Toast.makeText(this, R.string.issue_created, Toast.LENGTH_SHORT).show();
             finish();
             buttonCreateIssue.setVisibility(View.VISIBLE);
         } else {
-            if (restResponse.getResultObject() == null) {
-                Toast.makeText(this, restResponse.getExceptionMessage(), Toast.LENGTH_SHORT).show();
-                return;
-            }
             JMetaResponse jMetaResponse = restResponse.getResultObject();
             int index = jMetaResponse.getProjects().size() - (getSelectedItemPositionProject() + 1);
             ArrayList<String> issueTypesNames = jMetaResponse.getProjects().get(index).getIssueTypesNames();
@@ -143,6 +141,6 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
 
     @Override
     public void onRequestError(Exception e) {
-
+        ExceptionHandler.getInstance().showDialog((JiraException)e, CreateIssueActivity.this);
     }
 }

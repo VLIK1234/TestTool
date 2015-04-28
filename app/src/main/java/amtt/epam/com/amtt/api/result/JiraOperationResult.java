@@ -5,8 +5,7 @@ package amtt.epam.com.amtt.api.result;
  */
 public enum JiraOperationResult {
 
-    PERFORMED,
-    UNPERFORMED,
-    CREATED
+    REQUEST_PERFORMED,
+    ISSUE_CREATED
 
 }

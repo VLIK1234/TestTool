@@ -8,6 +8,8 @@ import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
+import amtt.epam.com.amtt.api.exception.ExceptionHandler;
+import amtt.epam.com.amtt.api.exception.JiraException;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
@@ -52,7 +54,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
 
     @Override
     public void onRequestPerformed(RestResponse<JiraUserInfo> restResponse) {
-        if (restResponse.getOpeartionResult() == JiraOperationResult.PERFORMED) {
+        if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
             JiraUserInfo user = restResponse.getResultObject();
             name.setText(getResources().getString(R.string.user_name) + UtilConstants.SharedPreference.COLON + user.getName());
             emailAddress.setText(getResources().getString(R.string.user_email) + UtilConstants.SharedPreference.COLON + user.getEmailAddress());
@@ -71,6 +73,6 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
 
     @Override
     public void onRequestError(Exception e) {
-
+        ExceptionHandler.getInstance().showDialog((JiraException)e, UserInfoActivity.this);
     }
 }

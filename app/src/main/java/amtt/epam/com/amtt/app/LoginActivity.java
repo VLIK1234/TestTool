@@ -15,9 +15,10 @@ import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
+import amtt.epam.com.amtt.api.exception.ExceptionHandler;
+import amtt.epam.com.amtt.api.exception.JiraException;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.Logger;
@@ -42,7 +43,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
         mUserName = (EditText) findViewById(R.id.user_name);
         mPassword = (EditText) findViewById(R.id.password);
         mUrl = (EditText) findViewById(R.id.jira_url);
-        mEpamJira = (CheckBox)findViewById(R.id.epamJiraCheckBox);
+        mEpamJira = (CheckBox) findViewById(R.id.epamJiraCheckBox);
 
         mUrl.setText("https://jira.epam.com");
 
@@ -90,23 +91,18 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
     public void onRequestPerformed(RestResponse<String> restResponse) {
         showProgress(false);
         mLoginButton.setVisibility(View.VISIBLE);
-        String resultMessage;
-        if (restResponse.getOpeartionResult() == JiraOperationResult.PERFORMED) {
-            resultMessage = restResponse.getResultObject();
-            CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
-            CredentialsManager.getInstance().setCredentials(mUserName.getText().toString(), mPassword.getText().toString());
-            CredentialsManager.getInstance().setAccess(true);
-            TopButtonService.authSuccess(this);
-            finish();
-        } else {
-            resultMessage = restResponse.getExceptionMessage();
-        }
+        String resultMessage = restResponse.getResultObject();
+        CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
+        CredentialsManager.getInstance().setCredentials(mUserName.getText().toString(), mPassword.getText().toString());
+        CredentialsManager.getInstance().setAccess(true);
+        TopButtonService.authSuccess(this);
         Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override
     public void onRequestError(Exception e) {
-
+        ExceptionHandler.getInstance().showDialog((JiraException)e, LoginActivity.this);
     }
 
 }

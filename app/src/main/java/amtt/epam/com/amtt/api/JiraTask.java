@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.api;
 
 import android.os.AsyncTask;
 
+import amtt.epam.com.amtt.api.exception.JiraException;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
@@ -41,6 +42,7 @@ public class JiraTask<ResultType> extends AsyncTask<Object, Void, RestResponse<R
 
     private RestMethod mRestMethod;
     private JiraCallback<ResultType> mCallback;
+    private JiraException mException;
 
     private JiraTask() {
     }
@@ -52,7 +54,7 @@ public class JiraTask<ResultType> extends AsyncTask<Object, Void, RestResponse<R
         try {
             restResponse = mRestMethod.execute();
         } catch (Exception e) {
-            mCallback.onRequestError(e);
+            mException = (JiraException)e;
         }
         return restResponse;
     }
@@ -61,6 +63,8 @@ public class JiraTask<ResultType> extends AsyncTask<Object, Void, RestResponse<R
     protected void onPostExecute(RestResponse<ResultType> restResponse) {
         if (restResponse != null) {
             mCallback.onRequestPerformed(restResponse);
+        } else {
+            mCallback.onRequestError(mException);
         }
     }
 

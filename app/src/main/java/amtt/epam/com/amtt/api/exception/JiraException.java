@@ -1,4 +1,6 @@
-package amtt.epam.com.amtt.api;
+package amtt.epam.com.amtt.api.exception;
+
+import amtt.epam.com.amtt.api.rest.RestMethod;
 
 /**
  * Created by Artsiom_Kaliaha on 27.04.2015.
@@ -7,24 +9,27 @@ public class JiraException extends Exception {
 
     private final Exception mSuppressedException;
     private final int mStatusCode;
-    private final String mResponseErrorMessage;
+    private final RestMethod mRestMethod;
 
-    public  JiraException(Exception suppressedException, int resultCode, String responseErrorMessage) {
+    public JiraException(Exception suppressedException, int resultCode, RestMethod restMethod) {
         mSuppressedException = suppressedException;
         mStatusCode = resultCode;
-        mResponseErrorMessage = responseErrorMessage;
+        mRestMethod = restMethod;
     }
 
-    public Exception getSuppressedException() {
+
+    public Exception getSuppressedOne() {
         return mSuppressedException;
     }
+
+
 
     public int getStatusCode() {
         return mStatusCode;
     }
 
-    public String getResponseErrorMessage() {
-        return mResponseErrorMessage;
+    public RestMethod getRestMethod() {
+        return mRestMethod;
     }
 
 }
