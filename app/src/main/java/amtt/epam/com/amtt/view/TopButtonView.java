@@ -1,8 +1,12 @@
 package amtt.epam.com.amtt.view;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Canvas;
+import android.graphics.drawable.LayerDrawable;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,6 +19,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -54,7 +59,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
     private LinearLayout buttonsBar;
-    public ImageView mainButton;
+    public ImageButton mainButton;
     private DisplayMetrics metrics;
     private int currentOrientation;
     private float widthProportion;
@@ -98,7 +103,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.top_button_layout, this, true);
         buttonsBar = (LinearLayout) findViewById(R.id.buttons_bar);
-        mainButton = (ImageView) findViewById(R.id.main_button);
+        mainButton = (ImageButton) findViewById(R.id.main_button);
         buttonsBar.setVisibility(GONE);
         TextView textAuth = (TextView) findViewById(R.id.text_auth);
         TextView textUserInfo = (TextView) findViewById(R.id.text_user_info);
@@ -338,10 +343,17 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                             buttonsBar.setVisibility(VISIBLE);
                             xButton = layoutParams.x;
                             yButton = layoutParams.y;
-//
-                            Animation rotate = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
-                            rotate.setFillAfter(true);
-                            mainButton.startAnimation(rotate);
+
+//                            Animation rotate = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
+//                            rotate.setFillAfter(true);
+//                            mainButton.startAnimation(rotate);
+                            LayerDrawable ld = (LayerDrawable) getResources().getDrawable(R.drawable.background_main_button);
+
+                            AnimatorSet animatorSet = new AnimatorSet().setDuration(300);
+                            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(ld.findDrawableByLayerId(R.id.main_button_background), "rotation", 180, 0);
+                            objectAnimator.setInterpolator(new DecelerateInterpolator());
+                            animatorSet.play(objectAnimator);
+                            animatorSet.start();
                             Animation translate = AnimationUtils.loadAnimation(getContext(), R.anim.translate);
                             buttonsBar.startAnimation(translate);
                             Animation combination = AnimationUtils.loadAnimation(getContext(), R.anim.combination);
@@ -364,6 +376,14 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        canvas.save();
+//        canvas.rotate(0, mainButton.getWidth()/2, mainButton.getHeight()/2);
+        super.draw(canvas);
+        canvas.restore();
     }
 
     @Override

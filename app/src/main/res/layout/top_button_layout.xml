@@ -5,10 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <ImageButton
         android:id="@+id/main_button"
         android:layout_width="@dimen/main_button_size"
         android:layout_height="@dimen/main_button_size"
+        android:clickable="false"
         android:background="@drawable/background_main_button"/>
 
     <LinearLayout

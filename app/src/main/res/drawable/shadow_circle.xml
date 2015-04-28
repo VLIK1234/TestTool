@@ -5,25 +5,25 @@
             android:dither="true">
             <gradient android:startColor="@color/dim_foreground_disabled_material_light"
                 android:endColor="@android:color/transparent"
-                android:gradientRadius="50"
+                android:gradientRadius="45"
                 android:type="radial"/>
         </shape>
     </item>
-    <item android:top="3dp" android:bottom="2dp" android:right="3dp">
+    <item android:top="3dp" android:bottom="2dp">
         <shape android:shape="oval"
             android:dither="true">
             <gradient android:startColor="@color/dim_foreground_disabled_material_light"
                 android:endColor="@android:color/transparent"
-                android:gradientRadius="40"
+                android:gradientRadius="35"
                 android:type="radial"/>
         </shape>
     </item>
-    <item android:top="3dp" android:bottom="4dp" android:right="3dp">
+    <item android:top="3dp" android:bottom="4dp">
         <shape android:shape="oval"
             android:dither="true">
             <gradient android:startColor="@color/dim_foreground_disabled_material_light"
                 android:endColor="@android:color/transparent"
-                android:gradientRadius="30"
+                android:gradientRadius="25"
                 android:type="radial"/>
         </shape>
     </item>
