@@ -5,9 +5,11 @@ import android.annotation.SuppressLint;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Created by Iryna_Monchanka on 4/27/2015.
+ * Created on 4/27/2015.
+ *
+ * based on https://github.com/rey5137/material/blob/master/lib/src/main/java/com/rey/material/util/ViewUtil.java
  */
-public class ViewsUtil {
+public class ViewUtil {
 
     public static final long FRAME_DURATION = 1000 / 60;
 

@@ -31,8 +31,13 @@ import android.widget.MultiAutoCompleteTextView;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.util.ColorsUtil;
-import amtt.epam.com.amtt.util.ViewsUtil;
+import amtt.epam.com.amtt.util.ThemeUtil;
+import amtt.epam.com.amtt.util.ViewUtil;
+
+/**
+ * Created on 4/27/2015.
+ * based on https://github.com/rey5137/material/blob/master/lib/src/main/java/com/rey/material/widget/EditText.java
+ */
 
 public class EditText extends FrameLayout {
 
@@ -123,7 +128,7 @@ public class EditText extends FrameLayout {
         }
 
         int inputId = a.getResourceId(R.styleable.EditText_et_inputId, 0);
-        mInputView.setId(inputId != 0 ? inputId : ViewsUtil.generateViewId());
+        mInputView.setId(inputId != 0 ? inputId : ViewUtil.generateViewId());
         mInputView.setVisibility(View.VISIBLE);
         mInputView.setFocusableInTouchMode(true);
         mDividerColors = a.getColorStateList(R.styleable.EditText_et_dividerColor);
@@ -134,15 +139,15 @@ public class EditText extends FrameLayout {
                     new int[]{android.R.attr.state_focused, android.R.attr.state_enabled},
             };
             int[] colors = new int[]{
-                    ColorsUtil.colorControlNormal(context, 0xFF000000),
-                    ColorsUtil.colorControlActivated(context, 0xFF000000),
+                    ThemeUtil.colorControlNormal(context, 0xFF000000),
+                    ThemeUtil.colorControlActivated(context, 0xFF000000),
             };
 
             mDividerColors = new ColorStateList(states, colors);
         }
 
         if(mDividerErrorColors == null)
-            mDividerErrorColors = ColorStateList.valueOf(ColorsUtil.colorAccent(context, 0xFFFF0000));
+            mDividerErrorColors = ColorStateList.valueOf(ThemeUtil.colorAccent(context, 0xFFFF0000));
 
         int dividerHeight = a.getDimensionPixelOffset(R.styleable.EditText_et_dividerHeight, 0);
         int dividerPadding = a.getDimensionPixelOffset(R.styleable.EditText_et_dividerPadding, 0);
@@ -252,8 +257,8 @@ public class EditText extends FrameLayout {
                 case SUPPORT_MODE_HELPER:
                 case SUPPORT_MODE_HELPER_WITH_ERROR:
                     mSupportView.setGravity(GravityCompat.START);
-                    mSupportHelper = ColorsUtil.getString(a, R.styleable.EditText_et_helper, supportHelper);
-                    setError(ColorsUtil.getString(a, R.styleable.EditText_et_error, supportError));
+                    mSupportHelper = ThemeUtil.getCharSequence(a, R.styleable.EditText_et_helper, supportHelper);
+                    setError(ThemeUtil.getCharSequence(a, R.styleable.EditText_et_error, supportError));
                     break;
             }
             addView(mSupportView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));

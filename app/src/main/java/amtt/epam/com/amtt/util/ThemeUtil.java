@@ -10,9 +10,10 @@ import android.util.TypedValue;
 import amtt.epam.com.amtt.R;
 
 /**
- * Created by Iryna_Monchanka on 4/27/2015.
+ * Created on 4/27/2015.
+ * based on https://github.com/rey5137/material/blob/master/lib/src/main/java/com/rey/material/util/ThemeUtil.java
  */
-public class ColorsUtil {
+public class ThemeUtil {
 
     private static TypedValue value;
 
@@ -79,7 +80,7 @@ public class ColorsUtil {
         }
     }
 
-    public static CharSequence getString(TypedArray array, int index, CharSequence defaultValue){
+    public static CharSequence getCharSequence(TypedArray array, int index, CharSequence defaultValue){
         String result = array.getString(index);
         return result == null ? defaultValue : result;
     }

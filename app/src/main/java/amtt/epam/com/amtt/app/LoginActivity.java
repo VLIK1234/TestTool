@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -18,7 +17,6 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
-import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.view.EditText;
 
 public class LoginActivity extends BaseActivity implements JiraCallback<AuthorizationResult,Void> {
@@ -46,30 +44,28 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
             @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
-                Boolean isValid = false;
+                Boolean isValid = true;
 
                 if (TextUtils.isEmpty(userName.getText().toString())) {
                     userName.setError(Constants.DialogKeys.INPUT_USERNAME);
-                    userName.getOverlay();
+                    userName.invalidate();
                     isValid = false;
                 }
-                else {isValid = true;}
-
 
                 if (TextUtils.isEmpty(password.getText().toString())) {
                     password.setError(Constants.DialogKeys.INPUT_PASSWORD);
-                    password.getOverlay();
+                    //password.getOverlay();
+                    password.invalidate();
                     isValid = false;
                 }
 
                 if (TextUtils.isEmpty(url.getText().toString())) {
                     url.setError(Constants.DialogKeys.INPUT_URL);
-                    url.getOverlay();
+                    url.invalidate();
                     isValid = false;
                 }
 
-                if( isValid == true){
-
+                if(isValid){
                     showProgress(true);
                     CredentialsManager.getInstance().setUrl(url.getText().toString());
                     CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString());
@@ -78,8 +74,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
                             .setCallback(LoginActivity.this)
                             .create()
                             .execute();
-
-                    loginButton.setVisibility(View.GONE);
+                    loginButton.setEnabled(false);
                 }
 
             }
@@ -115,7 +110,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
     public void onJiraRequestPerformed(RestResponse<AuthorizationResult,Void> restResponse) {
         Toast.makeText(this, restResponse.getMessage(), Toast.LENGTH_SHORT).show();
         showProgress(false);
-        loginButton.setVisibility(View.VISIBLE);
+        loginButton.setEnabled(true);
         if (restResponse.getResult() == AuthorizationResult.SUCCESS) {
             CredentialsManager.getInstance().setUserName(userName.getText().toString());
             CredentialsManager.getInstance().setUrl(url.getText().toString());

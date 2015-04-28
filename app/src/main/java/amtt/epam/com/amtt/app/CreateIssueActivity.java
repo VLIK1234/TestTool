@@ -65,17 +65,15 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
         buttonCreateIssue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Boolean isValid = false;
+                Boolean isValid = true;
 
                 if (TextUtils.isEmpty(etSummary.getText().toString())) {
                     etSummary.setError(Constants.DialogKeys.INPUT_SUMMARY);
                     etSummary.getOverlay();
                     isValid = false;
                 }
-                else {isValid = true;}
 
-                if( isValid == true) {
+                if(isValid) {
 
                     buttonCreateIssue.setEnabled(false);
                     String projectKey, issueType, description, summary;
@@ -115,6 +113,11 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
         projectsKeys = getProjectsKeys();
         //TODO unreadable string
         //too many fields in line. Why do you get position from end of the list
+        /**
+        *
+        * will fixed when will create extend JIRA ticket
+        *
+        */
         return projectsKeys.get(projectsNames.size() - ((projectsNames.indexOf(spinnerProjectsKey.getSelectedItem().toString())) + 1));
 
     }
