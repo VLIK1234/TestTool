@@ -4,7 +4,8 @@
         <!--<bitmap android:src="@drawable/button_shadow"-->
             <!--android:antialias="true"/>-->
     <!--</item>-->
-    <item android:id="@+id/shape" android:top="6dp" android:bottom="12dp" android:left="9dp" android:right="9dp">
+    <item android:drawable="@drawable/shadow_circle" android:top="3dp" android:bottom="7dp" android:left="6dp" android:right="4dp"/>
+    <item android:id="@+id/shape" android:top="3dp" android:bottom="9dp" android:left="6dp" android:right="6dp">
         <shape
             android:shape="oval">
             <padding

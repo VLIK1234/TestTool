@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/main_button"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="@dimen/main_button_size"
+        android:layout_height="@dimen/main_button_size"
         android:background="@drawable/background_main_button"/>
 
     <LinearLayout

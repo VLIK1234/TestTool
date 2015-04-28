@@ -3,12 +3,7 @@ package amtt.epam.com.amtt.view;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
-import android.support.v7.widget.*;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -85,52 +80,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
     private static int sStepNumber; //responsible for steps ordering in database
     private int mScreenNumber; //responsible for nonrecurring screenshot names
 
-    final RectF sCornerRect = new RectF();
-
-    public void initStatic() {
-        // Draws a round rect using 7 draw operations. This is faster than using
-        // canvas.drawRoundRect before JBMR1 because API 11-16 used alpha mask textures to draw
-        // shapes.
-        RoundRectDrawableWithShadowOwn.sRoundRectHelper
-                = new RoundRectDrawableWithShadowOwn.RoundRectHelper() {
-            @Override
-            public void drawRoundRect(Canvas canvas, RectF bounds, float cornerRadius,
-                                      Paint paint) {
-                final float twoRadius = cornerRadius * 2;
-                final float innerWidth = bounds.width() - twoRadius - 1;
-                final float innerHeight = bounds.height() - twoRadius - 1;
-                // increment it to account for half pixels.
-                if (cornerRadius >= 1f) {
-                    cornerRadius += .5f;
-                    sCornerRect.set(-cornerRadius, -cornerRadius, cornerRadius, cornerRadius);
-                    int saved = canvas.save();
-                    canvas.translate(bounds.left + cornerRadius, bounds.top + cornerRadius);
-                    canvas.drawArc(sCornerRect, 180, 90, true, paint);
-                    canvas.translate(innerWidth, 0);
-                    canvas.rotate(90);
-                    canvas.drawArc(sCornerRect, 180, 90, true, paint);
-                    canvas.translate(innerHeight, 0);
-                    canvas.rotate(90);
-                    canvas.drawArc(sCornerRect, 180, 90, true, paint);
-                    canvas.translate(innerWidth, 0);
-                    canvas.rotate(90);
-                    canvas.drawArc(sCornerRect, 180, 90, true, paint);
-                    canvas.restoreToCount(saved);
-                    //draw top and bottom pieces
-                    canvas.drawRect(bounds.left + cornerRadius - 1f, bounds.top,
-                            bounds.right - cornerRadius + 1f, bounds.top + cornerRadius,
-                            paint);
-                    canvas.drawRect(bounds.left + cornerRadius - 1f,
-                            bounds.bottom - cornerRadius + 1f, bounds.right - cornerRadius + 1f,
-                            bounds.bottom, paint);
-                }
-////                center
-                canvas.drawRect(bounds.left, bounds.top + Math.max(0, cornerRadius - 1f),
-                        bounds.right, bounds.bottom - cornerRadius + 1f, paint);
-            }
-        };
-    }
-
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
         initComponent();
@@ -142,15 +91,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
-        RoundRectDrawableWithShadowOwn background = createBackground(context, 2423464, 50,
-                50, 50);
-        mainButton.setBackgroundDrawable(background);
-    }
-
-    RoundRectDrawableWithShadowOwn createBackground(Context context, int backgroundColor,
-                                                 float radius, float elevation, float maxElevation) {
-        return new RoundRectDrawableWithShadowOwn(context.getResources(), backgroundColor, radius,
-                elevation, maxElevation);
     }
 
     @SuppressWarnings("unchecked")
@@ -398,6 +338,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                             buttonsBar.setVisibility(VISIBLE);
                             xButton = layoutParams.x;
                             yButton = layoutParams.y;
+//
                             Animation rotate = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
                             rotate.setFillAfter(true);
                             mainButton.startAnimation(rotate);
