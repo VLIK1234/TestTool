@@ -9,5 +9,4 @@
     android:paddingRight="@dimen/material_vertical_width_padding_menu"
     android:paddingBottom="@dimen/material_vertical_bottom_padding_menu_item"
     android:textSize="@dimen/material_subhead_font_size"
-    android:textAlignment="gravity"
     android:gravity="bottom"/>

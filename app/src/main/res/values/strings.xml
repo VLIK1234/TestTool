@@ -12,6 +12,7 @@
 
     <string name="label_add_step">Add step</string>
     <string name="label_affects_versions">Affects Version/s</string>
+    <string name="label_attachment">Attachment</string>
     <string name="label_authorization">Authorization</string>
     <string name="label_close">Close</string>
     <string name="label_create">Create</string>
@@ -59,5 +60,4 @@
     <string name="file_not_deleted">Deletion hasn\'t been done</string>
     <string name="notification_title">AMTT</string>
     <string name="notification_text">Button-assistant is running.</string>
-    <string name="label_attachment">Attachment</string>
 </resources>

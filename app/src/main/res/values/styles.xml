@@ -19,7 +19,7 @@
         <item name="android:textSize">@dimen/material_subhead_font_size</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
         <item name="spn_labelEllipsize">end</item>
-        <item name="spn_dividerHeight">2dp</item>
+        <item name="spn_dividerHeight">1dp</item>
         <item name="spn_dividerPadding">0dp</item>
         <item name="spn_dividerAnimDuration">@android:integer/config_longAnimTime</item>
         <item name="spn_arrowColor">?attr/colorControlNormal</item>

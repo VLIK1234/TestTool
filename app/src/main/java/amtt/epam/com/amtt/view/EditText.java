@@ -102,7 +102,9 @@ public class EditText extends FrameLayout {
 	private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes){
 		applyStyle(context, attrs, defStyleAttr, defStyleRes);
 	}
-
+    public void applyStyle(int resId){
+        applyStyle(getContext(), null, 0, resId);
+    }
     private void applyStyle(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes){
         CharSequence text = mInputView == null ? null : mInputView.getText();
         CharSequence supportHelper = getHelper();
@@ -158,8 +160,11 @@ public class EditText extends FrameLayout {
         mDivider = new Divider(dividerHeight, mDividerCompoundPadding ? mInputView.getTotalPaddingLeft() : 0, mDividerCompoundPadding ? mInputView.getTotalPaddingRight() : 0, mDividerColors, dividerAnimDuration);
         mDivider.setInEditMode(isInEditMode());
         mDivider.setAnimEnable(false);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-            mInputView.setBackground(mDivider);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+            mInputView.setBackground(mDivider);}
+        else {
+            mInputView.setBackgroundDrawable(mDivider);
+        }
         mDivider.setAnimEnable(true);
 
         if(text != null)
