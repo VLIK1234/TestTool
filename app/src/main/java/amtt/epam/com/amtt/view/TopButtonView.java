@@ -28,6 +28,8 @@ import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
+import amtt.epam.com.amtt.api.exception.AmttException;
+import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
@@ -428,8 +430,8 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     }
 
     @Override
-    public void onRequestError(Exception e) {
-
+    public void onRequestError(AmttException e) {
+        ExceptionHandler.getInstance().processError(e).showDialog(getContext(), TopButtonView.this);
     }
 
 }

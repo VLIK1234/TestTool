@@ -1,11 +1,9 @@
 package amtt.epam.com.amtt.api.rest;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -13,10 +11,11 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
 import java.util.Map;
 
-import amtt.epam.com.amtt.api.exception.JiraException;
+import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.processing.Processor;
 
@@ -98,7 +97,7 @@ public class RestMethod<ResultType> {
     public RestMethod() {
     }
 
-    private HttpResponse get() throws Exception {
+    private HttpResponse get() throws AmttException {
         HttpGet httpGet = new HttpGet(mUrl);
         for (Map.Entry<String, String> keyValuePair : mHeaders.entrySet()) {
             httpGet.setHeader(keyValuePair.getKey(), keyValuePair.getValue());
@@ -108,23 +107,42 @@ public class RestMethod<ResultType> {
         try {
             httpResponse = mHttpClient.execute(httpGet);
         } catch (IllegalStateException e) {
-            throw new JiraException(e, EMPTY_STATUS_CODE, this);
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        } catch (IllegalArgumentException e) {
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (UnknownHostException e) {
-            throw new JiraException(e, EMPTY_STATUS_CODE, this);
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        } catch (ClientProtocolException e) {
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        } catch (IOException e) {
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }
         return httpResponse;
     }
 
-    private HttpResponse post() throws IOException {
+    private HttpResponse post() throws AmttException {
         HttpPost httpPost = new HttpPost(mUrl);
-        httpPost.setEntity(new StringEntity(mPostEntity));
+        try {
+            httpPost.setEntity(new StringEntity(mPostEntity));
+        } catch (UnsupportedEncodingException e) {
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        }
         for (Map.Entry<String, String> keyValuePair : mHeaders.entrySet()) {
             httpPost.setHeader(keyValuePair.getKey(), keyValuePair.getValue());
         }
-        return mHttpClient.execute(httpPost);
+
+        HttpResponse httpResponse;
+        try {
+            httpResponse = mHttpClient.execute(httpPost);
+        } catch (ClientProtocolException e) {
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        } catch (IOException e) {
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        }
+        return httpResponse;
     }
 
-    public RestResponse<ResultType> execute() throws Exception {
+    public RestResponse<ResultType> execute() throws AmttException {
         HttpResponse httpResponse = null;
 
         switch (mRestMethodType) {
@@ -137,28 +155,30 @@ public class RestMethod<ResultType> {
         }
 
         RestResponse<ResultType> restResponse = new RestResponse<>();
+        ResultType result;
+        HttpEntity entity = null;
+        try {
+            if (mProcessor != null) {
+                entity = httpResponse.getEntity();
+                result = mProcessor.process(entity);
+                restResponse.setResultObject(result);
+            }
+        } catch (Exception e) {
+            throw new AmttException(e, httpResponse.getStatusLine().getStatusCode(), this, entity);
+        }
 
         int statusCode = httpResponse.getStatusLine().getStatusCode();
         if (statusCode == HttpStatus.SC_NOT_FOUND || statusCode == HttpStatus.SC_BAD_GATEWAY ||
                 statusCode == HttpStatus.SC_UNAUTHORIZED || statusCode == HttpStatus.SC_FORBIDDEN ||
                 statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-            throw new JiraException(null, statusCode, this);
+            throw new AmttException(null, statusCode, this, null);
         }
 
-        ResultType result;
-        try {
-            if (mProcessor != null) {
-                result = mProcessor.process(httpResponse.getEntity());
-                restResponse.setResultObject(result);
-            }
-        } catch (Exception e) {
-            throw new JiraException(e, httpResponse.getStatusLine().getStatusCode(), this);
-        }
-
-        if (mRestMethodType == RestMethodType.POST) {
-            restResponse.setOperationResult(JiraOperationResult.ISSUE_CREATED);
-        }
         return restResponse;
+    }
+
+    public RestMethodType getRequestType() {
+        return mRestMethodType;
     }
 
 }

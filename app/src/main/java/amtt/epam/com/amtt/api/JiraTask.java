@@ -2,12 +2,10 @@ package amtt.epam.com.amtt.api;
 
 import android.os.AsyncTask;
 
-import amtt.epam.com.amtt.api.exception.JiraException;
+import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.processing.ProjectsProcessor;
-import amtt.epam.com.amtt.processing.UserInfoProcessor;
-import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
 
 /**
  * AsyncTask which is directly used in code to perform async requests to Jira api
@@ -42,9 +40,14 @@ public class JiraTask<ResultType> extends AsyncTask<Object, Void, RestResponse<R
 
     private RestMethod mRestMethod;
     private JiraCallback<ResultType> mCallback;
-    private JiraException mException;
+    private AmttException mException;
 
     private JiraTask() {
+    }
+
+    @Override
+    protected void onPreExecute() {
+        mCallback.onRequestStarted();
     }
 
     @Override
@@ -53,8 +56,9 @@ public class JiraTask<ResultType> extends AsyncTask<Object, Void, RestResponse<R
         RestResponse<ResultType> restResponse = null;
         try {
             restResponse = mRestMethod.execute();
-        } catch (Exception e) {
-            mException = (JiraException)e;
+            setOperationResult(restResponse);
+        } catch (AmttException e) {
+            mException = e;
         }
         return restResponse;
     }
@@ -66,6 +70,16 @@ public class JiraTask<ResultType> extends AsyncTask<Object, Void, RestResponse<R
         } else {
             mCallback.onRequestError(mException);
         }
+    }
+
+    private void setOperationResult(RestResponse<ResultType> restResponse) {
+        JiraOperationResult operationResult;
+        if (mRestMethod.getRequestType() == RestMethod.RestMethodType.GET) {
+            operationResult = JiraOperationResult.REQUEST_PERFORMED;
+        } else {
+            operationResult = JiraOperationResult.ISSUE_CREATED;
+        }
+        restResponse.setOperationResult(operationResult);
     }
 
 }

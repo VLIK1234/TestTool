@@ -9,7 +9,7 @@ import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.exception.ExceptionHandler;
-import amtt.epam.com.amtt.api.exception.JiraException;
+import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
@@ -72,7 +72,8 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     }
 
     @Override
-    public void onRequestError(Exception e) {
-        ExceptionHandler.getInstance().showDialog((JiraException)e, UserInfoActivity.this);
+    public void onRequestError(AmttException e) {
+        ExceptionHandler.getInstance().processError(e).showDialog(this, UserInfoActivity.this);
+        showProgress(false);
     }
 }

@@ -21,6 +21,8 @@ public final class UtilConstants {
 
     public final class Dialog {
 
+        public static final int EMPTY_FIELD = 0;
+
         public static final String INPUT_USERNAME = "Input username";
         public static final String INPUT_PASSWORD = "Input password";
         public static final String INPUT_URL = "Input URL";

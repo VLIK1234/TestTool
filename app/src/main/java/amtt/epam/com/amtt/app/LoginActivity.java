@@ -16,7 +16,7 @@ import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.exception.ExceptionHandler;
-import amtt.epam.com.amtt.api.exception.JiraException;
+import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.service.TopButtonService;
@@ -32,8 +32,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
     private String toastText = UtilConstants.SharedPreference.EMPTY_STRING;
     private Button mLoginButton;
     private CheckBox mEpamJira;
-
-    private final String TAG = this.getClass().getSimpleName();
 
     @Override
     @SuppressWarnings("unchecked")
@@ -60,11 +58,11 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
                 }
                 if (TextUtils.isEmpty(mUrl.getText().toString())) {
                     toastText += (UtilConstants.Dialog.INPUT_URL);
-                } else {
-                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(mUserName.getText().toString())));
-                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(mPassword.getText().toString())));
-                    Logger.d(TAG, String.valueOf(TextUtils.isEmpty(mUrl.getText().toString())));
-
+                }
+                if (!TextUtils.isEmpty(toastText)) {
+                    Toast.makeText(LoginActivity.this, toastText, Toast.LENGTH_LONG).show();
+                }
+                if (toastText.length() == 0) {
                     String requestUrl = mEpamJira.isChecked() ? mUrl.getText().toString() + JiraApiConst.EPAM_JIRA_SUFFIX : mUrl.getText().toString();
                     RestMethod<String> authMethod = JiraApi.getInstance().buildAuth(mUserName.getText().toString(), mPassword.getText().toString(), requestUrl);
                     new JiraTask.Builder<String>()
@@ -72,10 +70,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
                             .setCallback(LoginActivity.this)
                             .createAndExecute();
                 }
-                if (!TextUtils.isEmpty(toastText)) {
-                    Toast.makeText(LoginActivity.this, toastText, Toast.LENGTH_LONG).show();
-                }
-                toastText = "";
+                toastText = UtilConstants.SharedPreference.EMPTY_STRING;
             }
         });
     }
@@ -83,14 +78,14 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
     @Override
     public void onRequestStarted() {
         showProgress(true);
-        mLoginButton.setVisibility(View.GONE);
+        mLoginButton.setEnabled(false);
     }
 
 
     @Override
     public void onRequestPerformed(RestResponse<String> restResponse) {
         showProgress(false);
-        mLoginButton.setVisibility(View.VISIBLE);
+        mLoginButton.setEnabled(true);
         String resultMessage = restResponse.getResultObject();
         CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
         CredentialsManager.getInstance().setCredentials(mUserName.getText().toString(), mPassword.getText().toString());
@@ -101,8 +96,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
     }
 
     @Override
-    public void onRequestError(Exception e) {
-        ExceptionHandler.getInstance().showDialog((JiraException)e, LoginActivity.this);
+    public void onRequestError(AmttException e) {
+        ExceptionHandler.getInstance().processError(e).showDialog(this, LoginActivity.this);
+        showProgress(false);
+        mLoginButton.setEnabled(true);
     }
 
 }
