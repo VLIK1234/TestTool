@@ -6,8 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -23,13 +22,12 @@ import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
-import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.util.IOUtils;
 
 /**
  * Created by Artsiom_Kaliaha on 26.03.2015.
  */
-public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> implements ActivityInfoConstants {
+public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResponse<ResultType>> implements ActivityInfoConstants {
 
     public static class Builder {
 
@@ -158,36 +156,38 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
 
     private DataBaseOperationType mOperationType;
     private Context mContext;
-    private DataBaseCallback mCallback;
+    private DataBaseCallback<ResultType> mCallback;
     private String mPath;
     private int mCurrentSdkVersion;
 
     @Override
-    protected DataBaseTaskResult doInBackground(Void... params) {
-        switch (mOperationType) {
-            case SAVE_STEP:
-                return performStepSaving();
-            case CLEAR:
-                return performCleaning();
-            default:
-                return null;
+    protected DataBaseResponse<ResultType> doInBackground(Void... params) {
+        DataBaseResponse<ResultType> dataBaseResponse = new DataBaseResponse<>();
+        try {
+            switch (mOperationType) {
+                case SAVE_STEP:
+                    performStepSaving();
+                case CLEAR:
+                    performCleaning();
+                default:
+                    dataBaseResponse.setValueResult((ResultType) performAvailabilityCheck());
+            }
+        } catch (Exception e) {
+            dataBaseResponse = new DataBaseResponse<>();
+            dataBaseResponse.setTaskResult(DataBaseTaskResult.ERROR);
         }
+        dataBaseResponse.setTaskResult(DataBaseTaskResult.DONE);
+        return dataBaseResponse;
     }
 
     @Override
-    protected void onPostExecute(DataBaseTaskResult result) {
+    protected void onPostExecute(DataBaseResponse<ResultType> result) {
         mCallback.onDataBaseActionDone(result);
     }
 
 
-    private DataBaseTaskResult performStepSaving() {
-        String screenPath;
-        try {
-            screenPath = saveScreen();
-        } catch (Exception e) {
-            return DataBaseTaskResult.ERROR;
-        }
-
+    private void performStepSaving() throws Exception {
+        String screenPath = saveScreen();
         ComponentName topActivity = getTopActivity();
 
         int existingActivityInfo = mContext.getContentResolver().query(
@@ -199,21 +199,12 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
 
         //if there is no records about current app in db
         if (existingActivityInfo == 0) {
-            ActivityInfo activityInfo;
-            try {
-                activityInfo = mContext
-                        .getPackageManager()
-                        .getActivityInfo(topActivity, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
-            } catch (PackageManager.NameNotFoundException e) {
-                return DataBaseTaskResult.ERROR;
-            }
-
+            ActivityInfo activityInfo = mContext
+                    .getPackageManager()
+                    .getActivityInfo(topActivity, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
             saveActivityInfo(activityInfo);
         }
-
         saveStep(screenPath, topActivity);
-
-        return DataBaseTaskResult.DONE;
     }
 
     private DataBaseTaskResult performCleaning() {
@@ -229,6 +220,13 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             }
         }
         return DataBaseTaskResult.CLEARED;
+    }
+
+    private Boolean performAvailabilityCheck() {
+        Cursor cursor = mContext.getContentResolver().query(AmttContentProvider.ACTIVITY_META_CONTENT_URI, null, null, null, null);
+        boolean isAnyUserInDB = cursor.getColumnCount() != 0;
+        cursor.close();
+        return isAnyUserInDB;
     }
 
 
@@ -259,7 +257,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     }
 
     private ComponentName getTopActivity() {
-        ActivityManager activityManager = (ActivityManager)mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
         ActivityManager.RunningTaskInfo lastActivity = tasks.get(0);
         return lastActivity.topActivity;
