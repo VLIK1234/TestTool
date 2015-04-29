@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -48,19 +49,16 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
 
                 if (TextUtils.isEmpty(userName.getText().toString())) {
                     userName.setError(Constants.DialogKeys.INPUT_USERNAME);
-                    userName.invalidate();
                     isValid = false;
                 }
 
                 if (TextUtils.isEmpty(password.getText().toString())) {
                     password.setError(Constants.DialogKeys.INPUT_PASSWORD);
-                    password.invalidate();
                     isValid = false;
                 }
 
                 if (TextUtils.isEmpty(url.getText().toString())) {
                     url.setError(Constants.DialogKeys.INPUT_URL);
-                    url.invalidate();
                     isValid = false;
                 }
 
@@ -103,6 +101,32 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
             }
         });
 
+        userName.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                    userName.setError(null);
+                return false;
+            }
+        });
+
+        password.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction() == KeyEvent.ACTION_DOWN)
+                    password.setError(null);
+                return false;
+            }
+        });
+
+        url.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(event.getAction() == KeyEvent.ACTION_DOWN)
+                    url.setError(null);
+                return false;
+            }
+        });
     }
 
     @Override

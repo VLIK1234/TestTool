@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.app;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -69,7 +70,6 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
 
                 if (TextUtils.isEmpty(etSummary.getText().toString())) {
                     etSummary.setError(Constants.DialogKeys.INPUT_SUMMARY);
-                    etSummary.invalidate();
                     isValid = false;
                 }
 
@@ -92,6 +92,15 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
                 }
             }
 
+        });
+
+        etSummary.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                    etSummary.setError(null);
+                return false;
+            }
         });
     }
 
