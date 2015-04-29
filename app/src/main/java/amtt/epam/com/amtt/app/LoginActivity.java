@@ -6,25 +6,22 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
-import java.security.Key;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
-import amtt.epam.com.amtt.api.result.AuthorizationResult;
 import amtt.epam.com.amtt.api.rest.RestResponse;
+import amtt.epam.com.amtt.api.result.AuthorizationResult;
 import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.view.EditText;
 
-public class LoginActivity extends BaseActivity implements JiraCallback<AuthorizationResult,Void> {
+public class LoginActivity extends BaseActivity implements JiraCallback<AuthorizationResult, Void> {
 
     private EditText userName;
     private EditText password;
@@ -38,71 +35,19 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         userName = (EditText) findViewById(R.id.user_name);
+        userName.onTextChangedListener();
+        userName.onFocusChangeListener();
+
         password = (EditText) findViewById(R.id.password);
+        password.onTextChangedListener();
+        password.onFocusChangeListener();
+
         url = (EditText) findViewById(R.id.jira_url);
+        url.onTextChangedListener();
+        url.onFocusChangeListener();
 
         url.setText("https://amtt01.atlassian.net");
         userName.setText("iryna_monchanka");
-
-
-        userName.addTextChangedListener(new TextWatcher(){
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                userName.setError(null);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-
-        password.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                password.setError(null);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-
-        url.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                url.setError(null);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-
-
-
-
-
-
-
-
-
-
-
 
         loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -140,34 +85,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
 
             }
         });
-
-        userName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus)
-                    userName.setError(null);
-            }
-        });
-
-        password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus)
-                    password.setError(null);
-            }
-        });
-
-        url.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus)
-                    url.setError(null);
-            }
-        });
     }
 
     @Override
-    public void onJiraRequestPerformed(RestResponse<AuthorizationResult,Void> restResponse) {
+    public void onJiraRequestPerformed(RestResponse<AuthorizationResult, Void> restResponse) {
         Toast.makeText(this, restResponse.getMessage(), Toast.LENGTH_SHORT).show();
         showProgress(false);
         loginButton.setEnabled(true);
