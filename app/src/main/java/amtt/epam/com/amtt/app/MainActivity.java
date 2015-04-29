@@ -13,7 +13,6 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.crash.AmttExceptionHandler;
 import amtt.epam.com.amtt.fragment.CrashDialogFragment;
 import amtt.epam.com.amtt.service.TopButtonService;
-import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.util.IOUtils;
 import io.fabric.sdk.android.Fabric;
 
@@ -55,14 +54,14 @@ public class MainActivity extends BaseActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TopButtonService.start(ContextHolder.getContext());
+                TopButtonService.start(MainActivity.this);
             }
         });
         Button close = (Button) findViewById(R.id.close);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TopButtonService.close(ContextHolder.getContext());
+                TopButtonService.close(MainActivity.this);
             }
         });
 
