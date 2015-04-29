@@ -44,6 +44,9 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
         setContentView(R.layout.activity_create_issue);
         etDescription = (EditText) findViewById(R.id.et_description);
         etSummary = (EditText) findViewById(R.id.et_summary);
+        etSummary.onTextChangedListener();
+        etSummary.onFocusChangeListener();
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_layout, getProjectsNames());
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinnerProjectsKey = (Spinner) findViewById(R.id.spin_projects_name);
@@ -75,7 +78,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
                     isValid = false;
                 }
 
-                if(isValid) {
+                if (isValid) {
 
                     buttonCreateIssue.setEnabled(false);
                     String projectKey, issueType, description, summary;
@@ -94,22 +97,6 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
                 }
             }
 
-        });
-
-        etSummary.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                etSummary.setError(null);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
         });
     }
 
