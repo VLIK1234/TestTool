@@ -5,8 +5,8 @@
             android:dither="true">
             <gradient android:startColor="@color/dim_foreground_disabled_material_light"
                 android:endColor="@android:color/transparent"
-                android:gradientRadius="45"
-                android:type="radial"/>
+                android:gradientRadius="65"
+                android:type="linear"/>
         </shape>
     </item>
     <item android:top="3dp" android:bottom="2dp">
@@ -14,8 +14,8 @@
             android:dither="true">
             <gradient android:startColor="@color/dim_foreground_disabled_material_light"
                 android:endColor="@android:color/transparent"
-                android:gradientRadius="35"
-                android:type="radial"/>
+                android:gradientRadius="55"
+                android:type="linear"/>
         </shape>
     </item>
     <item android:top="3dp" android:bottom="4dp">
@@ -23,8 +23,8 @@
             android:dither="true">
             <gradient android:startColor="@color/dim_foreground_disabled_material_light"
                 android:endColor="@android:color/transparent"
-                android:gradientRadius="25"
-                android:type="radial"/>
+                android:gradientRadius="45"
+                android:type="linear"/>
         </shape>
     </item>
 </layer-list>
