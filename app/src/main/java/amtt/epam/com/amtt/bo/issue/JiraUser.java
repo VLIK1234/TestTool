@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Irina Monchenko on 30.03.2015.
  */
-public class JiraIssueReporter {
+public class JiraUser {
 
     @SerializedName("key")
     private String mKey;
@@ -24,9 +24,9 @@ public class JiraIssueReporter {
     @SerializedName("timeZone")
     private String mTimeZone;
 
-    public JiraIssueReporter(){}
+    public JiraUser(){}
 
-    public JiraIssueReporter(String key, String self, String name, JiraAvatarUrls avatarUrls, String emailAddress, String displayName, Boolean active, String timeZone) {
+    public JiraUser(String key, String self, String name, JiraAvatarUrls avatarUrls, String emailAddress, String displayName, Boolean active, String timeZone) {
         this.mKey = key;
         this.mSelf = self;
         this.mName = name;

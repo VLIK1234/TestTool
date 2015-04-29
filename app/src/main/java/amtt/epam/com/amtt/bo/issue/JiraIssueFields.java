@@ -16,9 +16,9 @@ public class JiraIssueFields {
     @SerializedName("issuetype")
     private JiraIssueTypesIssueType mIssueType;
     @SerializedName("assignee")
-    private JiraIssueAssignee mAssignee;
+    private JiraUser mAssignee;
     @SerializedName("reporter")
-    private JiraIssueReporter mReporter;
+    private JiraUser mReporter;
     @SerializedName("priority")
     private JiraIssuePriority mPriority;
     @SerializedName("labels")
@@ -100,8 +100,8 @@ public class JiraIssueFields {
         this.mIssueType = issueType;
     }
 
-    public JiraIssueFields(JiraIssueProject mProject, String mSummary, JiraIssueTypesIssueType mIssueType, JiraIssueAssignee mAssignee,
-                           JiraIssueReporter mReporter, JiraIssuePriority mPriority, ArrayList<String> labels, JiraIssueTimeTracking jiraIssueTimeTracking,
+    public JiraIssueFields(JiraIssueProject mProject, String mSummary, JiraIssueTypesIssueType mIssueType, JiraUser mAssignee,
+                           JiraUser mReporter, JiraIssuePriority mPriority, ArrayList<String> labels, JiraIssueTimeTracking jiraIssueTimeTracking,
                            JiraIssueSecurity jiraIssueSecurity, ArrayList<JiraIssueVersion> jiraIssueVersions, String mEnvironment, String mDescription,
                            String mDueDate, ArrayList<JiraIssueVersion> jiraIssueFixVersions, ArrayList<JiraIssueComponent> jiraIssueComponents) {
         this.mProject = mProject;
@@ -145,19 +145,19 @@ public class JiraIssueFields {
         this.mIssueType = issueType;
     }
 
-    public JiraIssueAssignee getAssignee() {
+    public JiraUser getAssignee() {
         return mAssignee;
     }
 
-    public void setAssignee(JiraIssueAssignee assignee) {
+    public void setAssignee(JiraUser assignee) {
         this.mAssignee = assignee;
     }
 
-    public JiraIssueReporter getReporter() {
+    public JiraUser getReporter() {
         return mReporter;
     }
 
-    public void setReporter(JiraIssueReporter reporter) {
+    public void setReporter(JiraUser reporter) {
         this.mReporter = reporter;
     }
 

@@ -8,11 +8,11 @@ import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.JiraTask.JiraSearchType;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.UserDataResult;
-import amtt.epam.com.amtt.bo.user.JiraUser;
+import amtt.epam.com.amtt.bo.user.JiraUserInfo;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.view.TextView;
 
-public class UserInfoActivity extends BaseActivity implements JiraCallback<UserDataResult,JiraUser> {
+public class UserInfoActivity extends BaseActivity implements JiraCallback<UserDataResult,JiraUserInfo> {
 
     private TextView name, emailAddress, displayName, timeZone, locale, size, namesGroups;
 
@@ -29,7 +29,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<UserD
         size = (TextView) findViewById(R.id.tv_size);
         namesGroups = (TextView) findViewById(R.id.tv_names);
         showProgress(true);
-        new JiraTask.Builder<UserDataResult,JiraUser>()
+        new JiraTask.Builder<UserDataResult,JiraUserInfo>()
                 .setOperationType(JiraTask.JiraTaskType.SEARCH)
                 .setSearchType(JiraSearchType.USER_INFO)
                 .setCallback(UserInfoActivity.this)
@@ -39,8 +39,8 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<UserD
     }
 
     @Override
-    public void onJiraRequestPerformed(RestResponse<UserDataResult, JiraUser> restResponse) {
-        JiraUser user = restResponse.getResultObject();
+    public void onJiraRequestPerformed(RestResponse<UserDataResult, JiraUserInfo> restResponse) {
+        JiraUserInfo user = restResponse.getResultObject();
         name.setText(getResources().getString(R.string.label_user_name) + Constants.SharedPreferenceKeys.COLON + user.getName());
         emailAddress.setText(getResources().getString(R.string.label_email) + Constants.SharedPreferenceKeys.COLON + user.getEmailAddress());
         displayName.setText(user.getDisplayName());
