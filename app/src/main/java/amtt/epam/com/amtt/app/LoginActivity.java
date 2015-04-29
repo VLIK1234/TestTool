@@ -3,11 +3,15 @@ package amtt.epam.com.amtt.app;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.security.Key;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraCallback;
@@ -40,6 +44,66 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
         url.setText("https://amtt01.atlassian.net");
         userName.setText("iryna_monchanka");
 
+
+        userName.addTextChangedListener(new TextWatcher(){
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                userName.setError(null);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+        password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                password.setError(null);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+        url.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                url.setError(null);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
         loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -62,7 +126,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
                     isValid = false;
                 }
 
-                if(isValid){
+                if (isValid) {
                     showProgress(true);
                     CredentialsManager.getInstance().setUrl(url.getText().toString());
                     CredentialsManager.getInstance().setCredentials(userName.getText().toString(), password.getText().toString());
@@ -88,7 +152,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
         password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus)
+                if (hasFocus)
                     password.setError(null);
             }
         });
@@ -96,35 +160,8 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
         url.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus)
+                if (hasFocus)
                     url.setError(null);
-            }
-        });
-
-        userName.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN)
-                    userName.setError(null);
-                return false;
-            }
-        });
-
-        password.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(event.getAction() == KeyEvent.ACTION_DOWN)
-                    password.setError(null);
-                return false;
-            }
-        });
-
-        url.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(event.getAction() == KeyEvent.ACTION_DOWN)
-                    url.setError(null);
-                return false;
             }
         });
     }

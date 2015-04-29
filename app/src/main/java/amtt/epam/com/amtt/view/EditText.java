@@ -70,6 +70,7 @@ public class EditText extends FrameLayout {
     protected android.widget.EditText mInputView;
     protected LabelView mSupportView;
 	private Divider mDivider;
+    private ArrayList<TextWatcher> mListeners;
 
     private TextView.OnSelectionChangedListener mOnSelectionChangedListener;
 
@@ -729,6 +730,10 @@ public class EditText extends FrameLayout {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {}
+    }
+
+    public void addTextChangedListener(TextWatcher watcher) {
+        mInputView.addTextChangedListener(watcher);
     }
 
 	private class LabelView extends TextView{

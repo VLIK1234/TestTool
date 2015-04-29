@@ -1,7 +1,9 @@
 package amtt.epam.com.amtt.app;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -94,12 +96,19 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
 
         });
 
-        etSummary.setOnKeyListener(new View.OnKeyListener() {
+        etSummary.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN)
-                    etSummary.setError(null);
-                return false;
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                etSummary.setError(null);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
     }
