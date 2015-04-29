@@ -1,10 +1,7 @@
 package amtt.epam.com.amtt.app;
 
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -44,8 +41,8 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
         setContentView(R.layout.activity_create_issue);
         etDescription = (EditText) findViewById(R.id.et_description);
         etSummary = (EditText) findViewById(R.id.et_summary);
-        etSummary.onTextChangedListener();
-        etSummary.onFocusChangeListener();
+        etSummary.clearErrorOnTextChanged(true);
+        etSummary.clearErrorOnFocus(true);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_layout, getProjectsNames());
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);

@@ -3,9 +3,7 @@ package amtt.epam.com.amtt.app;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -35,16 +33,16 @@ public class LoginActivity extends BaseActivity implements JiraCallback<Authoriz
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         userName = (EditText) findViewById(R.id.user_name);
-        userName.onTextChangedListener();
-        userName.onFocusChangeListener();
+        userName.clearErrorOnTextChanged(true);
+        userName.clearErrorOnFocus(true);
 
         password = (EditText) findViewById(R.id.password);
-        password.onTextChangedListener();
-        password.onFocusChangeListener();
+        password.clearErrorOnTextChanged(true);
+        password.clearErrorOnFocus(true);
 
         url = (EditText) findViewById(R.id.jira_url);
-        url.onTextChangedListener();
-        url.onFocusChangeListener();
+        url.clearErrorOnTextChanged(true);
+        url.clearErrorOnFocus(true);
 
         url.setText("https://amtt01.atlassian.net");
         userName.setText("iryna_monchanka");

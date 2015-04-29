@@ -1203,32 +1203,36 @@ public class EditText extends FrameLayout {
         }
     }
 
-    public void onTextChangedListener() {
-        EditText.this.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
+    public void clearErrorOnTextChanged(Boolean clearErrorEnable) {
+        if (clearErrorEnable) {
+            EditText.this.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                EditText.this.setError(null);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-        });
-    }
-
-    public void onFocusChangeListener() {
-        EditText.this.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus)
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                     EditText.this.setError(null);
-            }
-        });
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+            });
+        }
     }
 
+    public void clearErrorOnFocus(Boolean clearErrorEnable) {
+        if (clearErrorEnable) {
+            EditText.this.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus)
+                        EditText.this.setError(null);
+                }
+            });
+        }
+
+    }
 
 }
