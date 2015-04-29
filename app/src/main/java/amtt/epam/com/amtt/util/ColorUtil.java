@@ -9,7 +9,7 @@ import android.graphics.Color;
  */
 public class ColorUtil {
 
-	public static int getColorWithAlphaPercent(int baseColor, float alphaPercent){
+	public static int getColorWithAlpha(int baseColor, float alphaPercent){
 		int alpha = Math.round(Color.alpha(baseColor) * alphaPercent);
 		
 		return (baseColor & 0x00FFFFFF) | (alpha << 24);

@@ -124,7 +124,7 @@ public class RippleDrawable extends Drawable implements Animatable,	OnTouchListe
 		
 		mInShader = new RadialGradient(0, 0, GRADIENT_RADIUS, new int[]{mRippleColor, mRippleColor, 0}, GRADIENT_STOPS, Shader.TileMode.CLAMP);		
 		if(mRippleType == TYPE_WAVE)
-			mOutShader = new RadialGradient(0, 0, GRADIENT_RADIUS, new int[]{0, ColorUtil.getColorWithAlphaPercent(mRippleColor, 0f), mRippleColor}, GRADIENT_STOPS, Shader.TileMode.CLAMP);
+			mOutShader = new RadialGradient(0, 0, GRADIENT_RADIUS, new int[]{0, ColorUtil.getColorWithAlpha(mRippleColor, 0f), mRippleColor}, GRADIENT_STOPS, Shader.TileMode.CLAMP);
 	}
 
     public void setBackgroundDrawable(Drawable backgroundDrawable){
