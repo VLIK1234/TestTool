@@ -31,12 +31,13 @@ import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.UserDataResult;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
-import amtt.epam.com.amtt.app.LoginActivity;
+import amtt.epam.com.amtt.app.SettingsActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseOperationType;
+import amtt.epam.com.amtt.database.task.DataBaseResponse;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
 import amtt.epam.com.amtt.api.result.UserDataResult;
@@ -48,7 +49,7 @@ import amtt.epam.com.amtt.util.PreferenceUtils;
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-public class TopButtonView extends FrameLayout implements JiraCallback<UserDataResult, JMetaResponse>, DataBaseCallback {
+public class TopButtonView extends FrameLayout implements JiraCallback<UserDataResult, JMetaResponse>, DataBaseCallback<Void> {
 
     private final static String LOG_TAG = "TAG";
 
@@ -79,7 +80,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
 
     //Database fields
     private static int sStepNumber; //responsible for steps ordering in database
-    private int mScreenNumber; //responsible for nonrecurring screenshot names
 
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
@@ -128,7 +128,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                 switch (v.getId()) {
                     case R.id.layout_auth:
                         if (!CredentialsManager.getInstance().getAccessState()) {
-                            Intent intent = new Intent(getContext(), LoginActivity.class);
+                            Intent intent = new Intent(getContext(), SettingsActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             getContext().getApplicationContext().startActivity(intent);
                         } else {
@@ -147,8 +147,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                                 .setContext(getContext())
                                 .setCallback(TopButtonView.this)
                                 .setStepNumber(sStepNumber)
-                                .create()
-                                .execute();
+                                .createAndExecute();
                         break;
 
                     case R.id.layout_show_step:
@@ -393,9 +392,9 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
     }
 
     @Override
-    public void onDataBaseActionDone(DataBaseTaskResult result) {
-        int resultMessage;
-        switch (result) {
+    public void onDataBaseActionDone(DataBaseResponse<Void> result) {
+        int resultMessage ;
+        switch (result.getTaskResult()) {
             case DONE:
                 resultMessage = R.string.data_base_action_done;
                 break;
@@ -415,8 +414,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                 .setOperationType(DataBaseOperationType.CLEAR)
                 .setContext(getContext())
                 .setCallback(TopButtonView.this)
-                .create()
-                .execute();
+                .createAndExecute();
     }
 
 }

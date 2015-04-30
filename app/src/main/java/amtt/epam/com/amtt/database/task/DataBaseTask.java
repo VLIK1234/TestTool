@@ -29,11 +29,11 @@ import amtt.epam.com.amtt.util.IOUtils;
  */
 public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResponse<ResultType>> implements ActivityInfoConstants {
 
-    public static class Builder {
+    public static class Builder<ResultType> {
 
         private DataBaseOperationType mOperationType;
         private Context mContext;
-        private DataBaseCallback mCallback;
+        private DataBaseCallback<ResultType> mCallback;
         private int mStepNumber;
 
         public Builder() {
@@ -59,15 +59,15 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
             return this;
         }
 
-        public DataBaseTask create() {
-            DataBaseTask dataBaseTask = new DataBaseTask();
+        public void createAndExecute() {
+            DataBaseTask<ResultType> dataBaseTask = new DataBaseTask<>();
             dataBaseTask.mOperationType = this.mOperationType;
             dataBaseTask.mContext = this.mContext;
             dataBaseTask.mCallback = this.mCallback;
             dataBaseTask.mStepNumber = this.mStepNumber;
             dataBaseTask.mPath = mContext.getFilesDir().getPath() + SCREENSHOT_FOLDER;
             dataBaseTask.mCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
-            return dataBaseTask;
+            dataBaseTask.execute();
         }
 
     }
@@ -186,6 +186,7 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
     }
 
 
+    //primary method types
     private void performStepSaving() throws Exception {
         String screenPath = saveScreen();
         ComponentName topActivity = getTopActivity();

@@ -36,9 +36,7 @@ public class LoginFragment extends Fragment implements JiraCallback<Authorizatio
     private Button mLoginButton;
     private ProgressBar mProgress;
 
-    public LoginFragment() {
-        // Required empty public constructor
-    }
+    public LoginFragment() { }
 
 
     @Override
