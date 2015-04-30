@@ -637,11 +637,6 @@ public class EditText extends FrameLayout {
     }
 
     @Override
-    public void setOnFocusChangeListener(OnFocusChangeListener l) {
-        mInputView.setOnFocusChangeListener(l);
-    }
-
-    @Override
     public void setSelected(boolean selected) {
         mInputView.setSelected(selected);
     }
@@ -1224,15 +1219,95 @@ public class EditText extends FrameLayout {
 
     public void clearErrorOnFocus(Boolean clearErrorEnable) {
         if (clearErrorEnable) {
-            EditText.this.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            OnFocusChangeListener onFocusChangeListener = new OnFocusChangeListener();
+            InnerOnFocusChangeListener innerOnFocusChangeListener = new InnerOnFocusChangeListener();
+            View.OnFocusChangeListener vievOnFocusChangeListener = new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus)
                         EditText.this.setError(null);
                 }
-            });
+            };
+            innerOnFocusChangeListener.setOnFocusChangeListener(vievOnFocusChangeListener);
+            onFocusChangeListener.setOnFocusChangeListener(vievOnFocusChangeListener);
+            onFocusChangeListener.addListener(innerOnFocusChangeListener);
+            onFocusChangeListener.doListing();
+        }
+    }
+
+    public interface AListener {
+        void OnFocusChange(View.OnFocusChangeListener onFocusChangeListener);
+    }
+
+
+    public class OnFocusChangeListener {
+
+        public ArrayList<AListener> mListeners = new ArrayList<>();
+        private View.OnFocusChangeListener mOnFocusChangeListener;
+
+        public OnFocusChangeListener() {
         }
 
+        public OnFocusChangeListener(ArrayList<AListener> listeners, View.OnFocusChangeListener onFocusChangeListener) {
+            this.mListeners = listeners;
+            this.mOnFocusChangeListener = onFocusChangeListener;
+        }
+
+        public void addListener(AListener listener) {
+            mListeners.add(listener);
+            this.setListeners(mListeners);
+        }
+
+        public void doListing() {
+            for (int i = 0; i < mListeners.size(); i++) {
+                mListeners.get(i).OnFocusChange(mOnFocusChangeListener);
+            }
+        }
+
+        public ArrayList<AListener> getListeners() {
+            return mListeners;
+        }
+
+        public void setListeners(ArrayList<AListener> listeners) {
+            this.mListeners = listeners;
+        }
+
+        public View.OnFocusChangeListener getOnFocusChangeListener() {
+            return mOnFocusChangeListener;
+        }
+
+        public void setOnFocusChangeListener(View.OnFocusChangeListener onFocusChangeListener) {
+            this.mOnFocusChangeListener = onFocusChangeListener;
+        }
+    }
+
+
+    public class InnerOnFocusChangeListener implements AListener {
+
+        private View.OnFocusChangeListener mViewOnFocusChangeListener;
+
+        public InnerOnFocusChangeListener() {
+        }
+
+        public InnerOnFocusChangeListener(View.OnFocusChangeListener viewOnFocusChangeListener) {
+            this.mViewOnFocusChangeListener = viewOnFocusChangeListener;
+        }
+
+        public void OnFocusChange(View.OnFocusChangeListener viewOnFocusChangeListener) {
+            setOnFocusChangeListener(viewOnFocusChangeListener);
+        }
+
+        public void setOnFocusChangeListener(View.OnFocusChangeListener viewOnFocusChangeListener) {
+            mInputView.setOnFocusChangeListener(viewOnFocusChangeListener);
+        }
+
+        public View.OnFocusChangeListener getViewOnFocusChangeListener() {
+            return mViewOnFocusChangeListener;
+        }
+
+        public void setViewOnFocusChangeListener(View.OnFocusChangeListener viewOnFocusChangeListener) {
+            this.mViewOnFocusChangeListener = viewOnFocusChangeListener;
+        }
     }
 
 }
