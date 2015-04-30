@@ -1281,7 +1281,6 @@ public class EditText extends FrameLayout {
         }
 
         public void removeListener(TextChangeListener listener) {
-            mListeners.add(listener);
             if (mListeners != null) {
                 int i = mListeners.indexOf(listener);
                 if (i >= 0) {
