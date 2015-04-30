@@ -15,8 +15,7 @@ import amtt.epam.com.amtt.R;
  */
 public class BaseActivity extends Activity{
 
-    //TODO SAVE_STEP != TAKESCREENSHOT, call constants carefully
-    public final static String ACTION_SAVE_STEP = "amtt.epam.com.amtt.app.TAKESCREENSHOT";
+    public final static String ACTION_SAVE_STEP = "amtt.epam.com.amtt.app.SAVESTEP";
     private IntentFilter intentFilterBroadcast = new IntentFilter(ACTION_SAVE_STEP);
     protected BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
