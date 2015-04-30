@@ -82,6 +82,20 @@
     <string name="button_add_step">Add step</string>
     <string name="button_show_step">Show step</string>
     <string name="button_bug_rep">Create issue</string>
+    <string name="issue_created">Issue created</string>
+    <string name="epam_employee_checkbox">Sign in as a EPAM employee</string>
+
+    <string name="error_title_auth">Authorization error</string>
+    <string name="error_message_auth">Check your credentials</string>
+    <string name="error_message_auth_forbidden">You are not allowed to login now</string>
+    <string name="error_title_request">Request error</string>
+    <string name="error_message_no_internet">You are offline</string>
+    <string name="error_button_try">Try again</string>
+    <string name="error_button_settings">Open settings</string>
+    <string name="error_message_unknown">Unknown error</string>
+    <string name="error_message_gateway">Gateway error</string>
+    <string name="error_message_web_address">Wrong web-address</string>
+    <string name="error_button_close">Close</string>
     <string name="data_base_cleared">Database cleared</string>
     <string name="label_activity">"Activity: "</string>
     <string name="label_configuration_changes">"Configuration changes: "</string>
@@ -99,6 +113,5 @@
     <string name="label_process_name">"Process name: "</string>
     <string name="label_package_name">"Package name: "</string>
     <string name="label_step">"Step "</string>
-
 
 </resources>
