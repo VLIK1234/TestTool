@@ -66,6 +66,7 @@ public class EditText extends FrameLayout {
 
     private int mLabelInAnimId;
     private int mLabelOutAnimId;
+    protected  TextWatcher mTextWatcher;
 
     protected LabelView mLabelView;
     protected android.widget.EditText mInputView;
@@ -74,6 +75,10 @@ public class EditText extends FrameLayout {
     private ArrayList<TextWatcher> mListeners;
 
     private TextView.OnSelectionChangedListener mOnSelectionChangedListener;
+    private OnFocusChangeListener onFocusChangeListener;
+    private ArrayList<TextChangeListener> mTextChangeListeners;
+    private View.OnFocusChangeListener vievOnFocusChangeListener;
+    private InnerOnFocusChangeListener innerOnFocusChangeListener;
 
     public EditText(Context context) {
         super(context);
@@ -735,6 +740,10 @@ public class EditText extends FrameLayout {
         mInputView.addTextChangedListener(watcher);
     }
 
+    public void removeTextChangedListener(TextWatcher watcher) {
+        mInputView.removeTextChangedListener(watcher);
+    }
+
     private class LabelView extends TextView {
 
         public LabelView(Context context) {
@@ -1199,9 +1208,8 @@ public class EditText extends FrameLayout {
     }
 
     public void clearErrorOnTextChanged(Boolean clearErrorEnable) {
-        TextWatcher textWatcher;
         if (clearErrorEnable) {
-            textWatcher = new TextWatcher() {
+            mTextWatcher = new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
                 }
@@ -1215,29 +1223,15 @@ public class EditText extends FrameLayout {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                 }
             };
+            EditText.this.addTextChangedListener(mTextWatcher);
         } else {
-            textWatcher = new TextWatcher() {
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-            };
+            EditText.this.removeTextChangedListener(mTextWatcher);
         }
-        EditText.this.addTextChangedListener(textWatcher);
     }
 
     public void clearErrorOnFocus(Boolean clearErrorEnable) {
-        OnFocusChangeListener onFocusChangeListener = new OnFocusChangeListener();
-        InnerOnFocusChangeListener innerOnFocusChangeListener = new InnerOnFocusChangeListener();
-        View.OnFocusChangeListener vievOnFocusChangeListener;
         if (clearErrorEnable) {
+            innerOnFocusChangeListener = new InnerOnFocusChangeListener();
             vievOnFocusChangeListener = new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
@@ -1245,41 +1239,55 @@ public class EditText extends FrameLayout {
                         EditText.this.setError(null);
                 }
             };
+            innerOnFocusChangeListener.setOnFocusChangeListener(vievOnFocusChangeListener);
+            if (mTextChangeListeners != null) {
+                mTextChangeListeners = onFocusChangeListener.getListeners();
+            } else {
+                mTextChangeListeners = new ArrayList<>();
+            }
+            onFocusChangeListener = new OnFocusChangeListener();
+            onFocusChangeListener.setListeners(mTextChangeListeners);
+            onFocusChangeListener.setOnFocusChangeListener(vievOnFocusChangeListener);
+            onFocusChangeListener.addListener(innerOnFocusChangeListener);
 
         } else {
-            vievOnFocusChangeListener = new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-
-                }
-            };
+            onFocusChangeListener.removeListener(innerOnFocusChangeListener);
         }
-        innerOnFocusChangeListener.setOnFocusChangeListener(vievOnFocusChangeListener);
-        onFocusChangeListener.setOnFocusChangeListener(vievOnFocusChangeListener);
-        onFocusChangeListener.addListener(innerOnFocusChangeListener);
+
         onFocusChangeListener.doListing();
     }
 
-    public interface AListener {
+    public interface TextChangeListener {
         void OnFocusChange(View.OnFocusChangeListener onFocusChangeListener);
     }
 
 
     public class OnFocusChangeListener {
 
-        public ArrayList<AListener> mListeners = new ArrayList<>();
+        public ArrayList<TextChangeListener> mListeners = new ArrayList<>();
         private View.OnFocusChangeListener mOnFocusChangeListener;
 
         public OnFocusChangeListener() {
         }
 
-        public OnFocusChangeListener(ArrayList<AListener> listeners, View.OnFocusChangeListener onFocusChangeListener) {
+        public OnFocusChangeListener(ArrayList<TextChangeListener> listeners, View.OnFocusChangeListener onFocusChangeListener) {
             this.mListeners = listeners;
             this.mOnFocusChangeListener = onFocusChangeListener;
         }
 
-        public void addListener(AListener listener) {
+        public void addListener(TextChangeListener listener) {
             mListeners.add(listener);
+            this.setListeners(mListeners);
+        }
+
+        public void removeListener(TextChangeListener listener) {
+            mListeners.add(listener);
+            if (mListeners != null) {
+                int i = mListeners.indexOf(listener);
+                if (i >= 0) {
+                    mListeners.remove(i);
+                }
+            }
             this.setListeners(mListeners);
         }
 
@@ -1289,11 +1297,11 @@ public class EditText extends FrameLayout {
             }
         }
 
-        public ArrayList<AListener> getListeners() {
+        public ArrayList<TextChangeListener> getListeners() {
             return mListeners;
         }
 
-        public void setListeners(ArrayList<AListener> listeners) {
+        public void setListeners(ArrayList<TextChangeListener> listeners) {
             this.mListeners = listeners;
         }
 
@@ -1307,7 +1315,7 @@ public class EditText extends FrameLayout {
     }
 
 
-    public class InnerOnFocusChangeListener implements AListener {
+    public class InnerOnFocusChangeListener implements TextChangeListener {
 
         private View.OnFocusChangeListener mViewOnFocusChangeListener;
 
