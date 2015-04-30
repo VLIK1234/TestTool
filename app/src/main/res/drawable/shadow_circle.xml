@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval"
+            android:dither="true">
+            <gradient android:startColor="@color/dim_foreground_disabled_material_light"
+                android:endColor="@android:color/transparent"
+                android:gradientRadius="65"
+                android:type="linear"/>
+        </shape>
+    </item>
+    <item android:top="3dp" android:bottom="2dp">
+        <shape android:shape="oval"
+            android:dither="true">
+            <gradient android:startColor="@color/dim_foreground_disabled_material_light"
+                android:endColor="@android:color/transparent"
+                android:gradientRadius="55"
+                android:type="linear"/>
+        </shape>
+    </item>
+    <item android:top="3dp" android:bottom="4dp">
+        <shape android:shape="oval"
+            android:dither="true">
+            <gradient android:startColor="@color/dim_foreground_disabled_material_light"
+                android:endColor="@android:color/transparent"
+                android:gradientRadius="45"
+                android:type="linear"/>
+        </shape>
+    </item>
+</layer-list>

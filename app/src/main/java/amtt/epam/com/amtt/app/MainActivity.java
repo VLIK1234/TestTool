@@ -12,6 +12,7 @@ import com.crashlytics.android.Crashlytics;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.crash.AmttExceptionHandler;
 import amtt.epam.com.amtt.fragment.CrashDialogFragment;
+import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.IOUtils;
 import io.fabric.sdk.android.Fabric;
 
@@ -46,6 +47,21 @@ public class MainActivity extends BaseActivity {
                     CrashDialogFragment crashDialogFragment = CrashDialogFragment.newInstance(rawString, mCrashFilePath);
                     crashDialogFragment.show(getFragmentManager(), CRASH_DIALOG_TAG);
                 }
+            }
+        });
+
+        Button start = (Button) findViewById(R.id.start);
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TopButtonService.start(MainActivity.this);
+            }
+        });
+        Button close = (Button) findViewById(R.id.close);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TopButtonService.close(MainActivity.this);
             }
         });
 

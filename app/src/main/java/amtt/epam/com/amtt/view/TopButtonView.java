@@ -1,10 +1,15 @@
 package amtt.epam.com.amtt.view;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.os.Build;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,7 +21,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -39,7 +44,6 @@ import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
-import amtt.epam.com.amtt.api.result.UserDataResult;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.CredentialsManager;
@@ -55,7 +59,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
     private LinearLayout buttonsBar;
-    public ImageView mainButton;
+    public ImageButton mainButton;
     private DisplayMetrics metrics;
     private int currentOrientation;
     private float widthProportion;
@@ -99,7 +103,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.top_button_layout, this, true);
         buttonsBar = (LinearLayout) findViewById(R.id.buttons_bar);
-        mainButton = (ImageView) findViewById(R.id.main_button);
+        mainButton = (ImageButton) findViewById(R.id.main_button);
         buttonsBar.setVisibility(GONE);
         TextView textAuth = (TextView) findViewById(R.id.text_auth);
         TextView textUserInfo = (TextView) findViewById(R.id.text_user_info);
@@ -292,9 +296,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
                         if (buttonsBar.getVisibility() == VISIBLE) {
-                            Animation reverseRotate = AnimationUtils.loadAnimation(getContext(), R.anim.reverse_rotate);
-                            mainButton.startAnimation(reverseRotate);
-                            reverseRotate.setFillAfter(true);
+                            playRotateAnimationMainButton(300,180,0);
                             final Animation translateUp = AnimationUtils.loadAnimation(getContext(), R.anim.abc_fade_out);
                             translateUp.setAnimationListener(new Animation.AnimationListener() {
                                 @Override
@@ -339,9 +341,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                             buttonsBar.setVisibility(VISIBLE);
                             xButton = layoutParams.x;
                             yButton = layoutParams.y;
-                            Animation rotate = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
-                            rotate.setFillAfter(true);
-                            mainButton.startAnimation(rotate);
+                            playRotateAnimationMainButton(300,0,180);
                             Animation translate = AnimationUtils.loadAnimation(getContext(), R.anim.translate);
                             buttonsBar.startAnimation(translate);
                             Animation combination = AnimationUtils.loadAnimation(getContext(), R.anim.combination);
@@ -364,6 +364,25 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                 break;
         }
         return true;
+    }
+
+    private void setBackgroundCompat(View view, Drawable drawable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            view.setBackground(drawable);
+        } else {
+            view.setBackgroundDrawable(drawable);
+        }
+    }
+
+    private void playRotateAnimationMainButton(int duration, int fromAngle, int toAngle){
+        AnimatorSet expand = new AnimatorSet().setDuration(duration);
+        LayerDrawable layerDrawable = (LayerDrawable) getResources().getDrawable(R.drawable.background_main_button);
+        RotatingDrawable drawable = new RotatingDrawable(layerDrawable.findDrawableByLayerId(R.id.main_button_background));
+        ObjectAnimator animator = ObjectAnimator.ofFloat(drawable, "rotation", fromAngle, toAngle);
+        animator.start();
+        expand.play(animator);
+        layerDrawable.setDrawableByLayerId(R.id.main_button_background, drawable);
+        setBackgroundCompat(mainButton, layerDrawable);
     }
 
     @Override
@@ -389,6 +408,33 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         if (newConfig.orientation != currentOrientation) {
             savePositionAfterTurnScreen();
             buttonsBar.setVisibility(GONE);
+        }
+    }
+
+    private static class RotatingDrawable extends LayerDrawable {
+        public RotatingDrawable(Drawable drawable) {
+            super(new Drawable[] { drawable });
+        }
+
+        private float mRotation;
+
+        @SuppressWarnings("UnusedDeclaration")
+        public float getRotation() {
+            return mRotation;
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public void setRotation(float rotation) {
+            mRotation = rotation;
+            invalidateSelf();
+        }
+
+        @Override
+        public void draw(Canvas canvas) {
+            canvas.save();
+            canvas.rotate(mRotation, getBounds().centerX(), getBounds().centerY());
+            super.draw(canvas);
+            canvas.restore();
         }
     }
 
