@@ -3,56 +3,84 @@ package amtt.epam.com.amtt.app;
 import android.os.Bundle;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.api.JiraApi;
+import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.JiraTask.JiraSearchType;
+import amtt.epam.com.amtt.api.exception.ExceptionHandler;
+import amtt.epam.com.amtt.api.exception.AmttException;
+import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.api.result.UserDataResult;
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
-import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.view.TextView;
+import amtt.epam.com.amtt.processing.UserInfoProcessor;
+import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.util.UtilConstants;
 
-public class UserInfoActivity extends BaseActivity implements JiraCallback<UserDataResult,JiraUserInfo> {
+public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraUserInfo> {
 
-    private TextView name, emailAddress, displayName, timeZone, locale, size, namesGroups;
+    private TextView mName;
+    private TextView mEmailAddress;
+    private TextView mDisplayName;
+    private TextView timeZone;
+    private TextView locale;
+    private TextView size;
+    private TextView namesGroups;
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
-        name = (TextView) findViewById(R.id.tv_name);
-        emailAddress = (TextView) findViewById(R.id.tv_email_address);
-        displayName = (TextView) findViewById(R.id.tv_display_name);
+        mName = (TextView) findViewById(R.id.tv_name);
+        mEmailAddress = (TextView) findViewById(R.id.tv_email_address);
+        mDisplayName = (TextView) findViewById(R.id.tv_display_name);
         timeZone = (TextView) findViewById(R.id.tv_time_zone);
         locale = (TextView) findViewById(R.id.tv_locale);
         size = (TextView) findViewById(R.id.tv_size);
         namesGroups = (TextView) findViewById(R.id.tv_names);
-        showProgress(true);
-        new JiraTask.Builder<UserDataResult,JiraUserInfo>()
-                .setOperationType(JiraTask.JiraTaskType.SEARCH)
-                .setSearchType(JiraSearchType.USER_INFO)
-                .setCallback(UserInfoActivity.this)
-                .create()
-                .execute();
+        executeAsynchronously();
+    }
 
+    @SuppressWarnings("unchecked")
+    private void executeAsynchronously() {
+        String requestSuffix = JiraApiConst.USER_INFO_PATH + CredentialsManager.getInstance().getUserName() + JiraApiConst.EXPAND_GROUPS;
+        RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix, new UserInfoProcessor());
+        new JiraTask.Builder<JiraUserInfo>()
+                .setRestMethod(userInfoMethod)
+                .setCallback(UserInfoActivity.this)
+                .createAndExecute();
     }
 
     @Override
-    public void onJiraRequestPerformed(RestResponse<UserDataResult, JiraUserInfo> restResponse) {
-        JiraUserInfo user = restResponse.getResultObject();
-        name.setText(getResources().getString(R.string.label_user_name) + Constants.SharedPreferenceKeys.COLON + user.getName());
-        emailAddress.setText(getResources().getString(R.string.label_email) + Constants.SharedPreferenceKeys.COLON + user.getEmailAddress());
-        displayName.setText(user.getDisplayName());
-        timeZone.setText(getResources().getString(R.string.label_time_zone) + Constants.SharedPreferenceKeys.COLON + user.getTimeZone());
-        locale.setText(getResources().getString(R.string.label_locale) + Constants.SharedPreferenceKeys.COLON + user.getLocale());
-        size.setText(getResources().getString(R.string.label_size) + Constants.SharedPreferenceKeys.COLON + String.valueOf(user.getGroups().getSize()));
-        String groups = "";
-        for (int i = 0; i < user.getGroups().getItems().size(); i++) {
-            groups += user.getGroups().getItems().get(i).getName() + Constants.DialogKeys.NEW_LINE;
-        }
-        namesGroups.setText(getResources().getString(R.string.label_names_groups) + Constants.SharedPreferenceKeys.COLON + groups);
-        showProgress(false);
+    public void onRequestStarted() {
+        showProgress(true);
     }
 
+    @Override
+    public void onRequestPerformed(RestResponse<JiraUserInfo> restResponse) {
+
+        if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
+            JiraUserInfo user = restResponse.getResultObject();
+            mName.setText(getResources().getString(R.string.label_user_name) + UtilConstants.SharedPreference.COLON + user.getName());
+            mEmailAddress.setText(getResources().getString(R.string.label_email) + UtilConstants.SharedPreference.COLON + user.getEmailAddress());
+            mDisplayName.setText(user.getDisplayName());
+            timeZone.setText(getResources().getString(R.string.label_time_zone) + UtilConstants.SharedPreference.COLON + user.getTimeZone());
+            locale.setText(getResources().getString(R.string.label_locale) + UtilConstants.SharedPreference.COLON + user.getLocale());
+            size.setText(getResources().getString(R.string.label_size) + UtilConstants.SharedPreference.COLON + String.valueOf(user.getGroups().getSize()));
+            String groups = "";
+            for (int i = 0; i < user.getGroups().getItems().size(); i++) {
+                groups += user.getGroups().getItems().get(i).getName() + UtilConstants.Dialog.NEW_LINE;
+            }
+            namesGroups.setText(getResources().getString(R.string.label_names_groups) + UtilConstants.SharedPreference.COLON + groups);
+            showProgress(false);
+
+        }
+    }
+
+    @Override
+    public void onRequestError(AmttException e) {
+        ExceptionHandler.getInstance().processError(e).showDialog(this, UserInfoActivity.this);
+        showProgress(false);
+    }
 }

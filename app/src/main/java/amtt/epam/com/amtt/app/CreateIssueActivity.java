@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.util.Constants;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,21 +13,26 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.api.JiraApi;
+import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.JiraTask.JiraSearchType;
-import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
+import amtt.epam.com.amtt.api.exception.ExceptionHandler;
+import amtt.epam.com.amtt.api.exception.AmttException;
+import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.bo.issue.willrefactored.CreateIssue;
-import amtt.epam.com.amtt.api.result.CreateIssueResult;
-import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 import amtt.epam.com.amtt.view.EditText;
+import amtt.epam.com.amtt.util.UtilConstants;
 
 
-public class CreateIssueActivity extends BaseActivity implements JiraCallback {
+@SuppressWarnings("unchecked")
+public class CreateIssueActivity extends BaseActivity implements JiraCallback<JMetaResponse> {
 
     private EditText etDescription, etSummary;
     private ArrayList<String> projectsNames = new ArrayList<>();
@@ -35,7 +41,6 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
     private Button buttonCreateIssue;
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
@@ -51,13 +56,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
         spinnerProjectsKey.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                showProgress(true);
-                new JiraTask.Builder<>()
-                        .setOperationType(JiraTaskType.SEARCH)
-                        .setSearchType(JiraSearchType.ISSUE)
-                        .setCallback(CreateIssueActivity.this)
-                        .create()
-                        .execute();
+                getMetaAsynchronously();
             }
 
             @Override
@@ -68,6 +67,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
         buttonCreateIssue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Boolean isValid = true;
 
                 if (TextUtils.isEmpty(etSummary.getText().toString())) {
@@ -77,23 +77,9 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
 
                 if (isValid) {
 
-                    buttonCreateIssue.setEnabled(false);
-                    String projectKey, issueType, description, summary;
-                    description = etDescription.getText().toString();
-                    summary = etSummary.getText().toString();
-                    issueType = spinnerIssueTypes.getSelectedItem().toString();
-                    projectKey = getProjectKey();
-                    showProgress(true);
-                    CreateIssue issue = new CreateIssue();
-                    new JiraTask.Builder<CreateIssueResult, Void>()
-                            .setOperationType(JiraTaskType.CREATE_ISSUE)
-                            .setCallback(CreateIssueActivity.this)
-                            .setJson(issue.createSimpleIssue(projectKey, issueType, description, summary))
-                            .create()
-                            .execute();
+                    createIssueAsynchronously();
                 }
             }
-
         });
     }
 
@@ -102,12 +88,12 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
     }
 
     public ArrayList<String> getProjectsNames() {
-        projectsNames = Converter.setToArrayList(PreferenceUtils.getSet(Constants.SharedPreferenceKeys.PROJECTS_NAMES, null));
+        projectsNames = Converter.setToArrayList(PreferenceUtils.getSet(UtilConstants.SharedPreference.PROJECTS_NAMES, null));
         return projectsNames;
     }
 
     public ArrayList<String> getProjectsKeys() {
-        projectsKeys = Converter.setToArrayList(PreferenceUtils.getSet(Constants.SharedPreferenceKeys.PROJECTS_KEYS, null));
+        projectsKeys = Converter.setToArrayList(PreferenceUtils.getSet(UtilConstants.SharedPreference.PROJECTS_KEYS, null));
         return projectsKeys;
     }
 
@@ -125,31 +111,59 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
     }
 
 
+    private void createIssueAsynchronously() {
+        buttonCreateIssue.setEnabled(false);
+        showProgress(true);
+        CreateIssue issue = new CreateIssue();
+        String projectKey, issueType, description, summary;
+        description = etDescription.getText().toString();
+        summary = etSummary.getText().toString();
+        issueType = spinnerIssueTypes.getSelectedItem().toString();
+        projectKey = getProjectKey();
+
+        RestMethod<JMetaResponse> createIssue = JiraApi.getInstance().buildIssueCeating(issue.createSimpleIssue(projectKey, issueType, description, summary));
+        new JiraTask.Builder<JMetaResponse>()
+                .setRestMethod(createIssue)
+                .setCallback(CreateIssueActivity.this)
+                .createAndExecute();
+    }
+
+    private void getMetaAsynchronously() {
+        RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor());
+        new JiraTask.Builder<JMetaResponse>()
+                .setRestMethod(searchMethod)
+                .setCallback(CreateIssueActivity.this)
+                .createAndExecute();
+    }
+
+
+    @Override
+    public void onRequestStarted() {
+        showProgress(false);
+        buttonCreateIssue.setEnabled(false);
+    }
+
     @Override
     @SuppressWarnings("unchecked")
-    public void onJiraRequestPerformed(RestResponse restResponse) {
-        if (restResponse.getResult() instanceof CreateIssueResult) {
-            Toast.makeText(this, restResponse.getMessage(), Toast.LENGTH_SHORT).show();
-            if (restResponse.getResult() == CreateIssueResult.SUCCESS) {
-                finish();
-            }
-            buttonCreateIssue.setEnabled(true);
+    public void onRequestPerformed(RestResponse<JMetaResponse> restResponse) {
+        if (restResponse.getOpeartionResult() == JiraOperationResult.ISSUE_CREATED) {
+            Toast.makeText(this, R.string.issue_created, Toast.LENGTH_SHORT).show();
+            finish();
         } else {
-            if (restResponse.getResultObject() == null) {
-                Toast.makeText(this, restResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                return;
-            }
-            JMetaResponse jMetaResponse = ((RestResponse<Void, JMetaResponse>) restResponse).getResultObject();
+            JMetaResponse jMetaResponse = restResponse.getResultObject();
             int index = jMetaResponse.getProjects().size() - (getSelectedItemPositionProject() + 1);
             ArrayList<String> issueTypesNames = jMetaResponse.getProjects().get(index).getIssueTypesNames();
             ArrayAdapter<String> issueNames = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, issueTypesNames);
             issueNames.setDropDownViewResource(R.layout.spinner_dropdown_item);
             spinnerIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
             spinnerIssueTypes.setAdapter(issueNames);
-            buttonCreateIssue.setEnabled(true);
-        }
-        showProgress(false);
 
+        }
+        buttonCreateIssue.setEnabled(true);
     }
 
+    @Override
+    public void onRequestError(AmttException e) {
+        ExceptionHandler.getInstance().processError(e).showDialog(this, CreateIssueActivity.this);
+    }
 }

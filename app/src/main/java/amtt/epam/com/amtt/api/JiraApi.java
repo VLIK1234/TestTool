@@ -1,22 +1,15 @@
 package amtt.epam.com.amtt.api;
 
-import android.util.Base64;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import amtt.epam.com.amtt.api.rest.RestMethod;
-import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.api.result.AuthorizationResult;
-import amtt.epam.com.amtt.api.JiraTask.JiraSearchType;
-import amtt.epam.com.amtt.api.result.UserDataResult;
-import amtt.epam.com.amtt.api.result.CreateIssueResult;
-import amtt.epam.com.amtt.processing.AuthResponseProcessor;
-import amtt.epam.com.amtt.processing.ProjectsFromJsonProcessor;
-import amtt.epam.com.amtt.processing.UserInfoFromJsonProcessor;
-import amtt.epam.com.amtt.util.Constants;
-import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.api.rest.RestMethod.RestMethodType;
+import amtt.epam.com.amtt.api.rest.RestResponse;
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
+import amtt.epam.com.amtt.processing.AuthResponseProcessor;
+import amtt.epam.com.amtt.processing.Processor;
+import amtt.epam.com.amtt.util.CredentialsManager;
 
 /**
  * Created by Artsiom_Kaliaha on 24.03.2015.
@@ -24,121 +17,66 @@ import amtt.epam.com.amtt.api.rest.RestMethod.RestMethodType;
 
 @SuppressWarnings("unchecked")
 public class JiraApi {
-    //TODO need update when class goes to singleton
-    final private String mUrl = CredentialsManager.getInstance().getUrl();
 
-    //TODO divide request creation and execution. Pass created request to JiraTask to execute in background
-    public RestResponse authorize() {
-        //TODO we have base headers for every call?
-        Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, getCredential());
+    private static class JiraApiSingletonHolder {
 
-        RestResponse<AuthorizationResult, Void> restResponse;
-        try {
-            restResponse = new RestMethod.Builder<AuthorizationResult, Void>()
-                    .setType(RestMethodType.GET)
-                    .setUrl(mUrl + JiraApiConst.LOGIN_PATH)
-                    .setHeadersMap(headers)
-                    .setResponseProcessor(new AuthResponseProcessor())
-                    .create()
-                    .execute();
-        } catch (Exception e) {
-            //TODO what if you get any error? no connection or other?
-            restResponse = new RestResponse<>();
-            restResponse.setResult(AuthorizationResult.DENIED);
-            restResponse.setMessage("Authorization isn't passed: " + e.getMessage());
-            return restResponse;
-        }
+        public static final JiraApi INSTANCE = new JiraApi();
 
-        //TODO what is bad gateway for user? what shall I do?
-        //Bad gate way is considered as a httpResponse, not an exception
-        if (restResponse.getStatusCode() == JiraApiConst.BAD_GATE_WAY) {
-            restResponse.setMessage("Authorization isn't passed: bad gateway");
-            return restResponse;
-        }
-
-        restResponse.setResult(AuthorizationResult.SUCCESS);
-        return restResponse;
     }
 
-    //TODO divide request creation and execution. Pass created request to JiraTask to execute in background
-    public RestResponse createIssue(final String jsonString) {
-        //TODO we have base headers for every call?
+    public static JiraApi getInstance() {
+        return JiraApiSingletonHolder.INSTANCE;
+    }
+
+    private final CredentialsManager mCredentialsManager;
+    private RestMethod mMethod;
+
+    private JiraApi() {
+        mCredentialsManager = CredentialsManager.getInstance();
+    }
+
+    public RestMethod buildAuth(final String userName, final String password, final String url) {
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, getCredential());
+        headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials(userName, password));
+        mMethod = new RestMethod.Builder<String>()
+                .setType(RestMethodType.GET)
+                .setUrl(url + JiraApiConst.LOGIN_PATH)
+                .setHeadersMap(headers)
+                .setProcessor(new AuthResponseProcessor())
+                .create();
+        return mMethod;
+    }
+
+    public RestMethod buildIssueCeating(final String postEntity) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
-
-        RestResponse<CreateIssueResult,Void> restResponse;
-        try {
-            restResponse = new RestMethod.Builder<CreateIssueResult,Void>()
-                    .setType(RestMethodType.POST)
-                    .setUrl(mUrl + JiraApiConst.ISSUE_PATH)
-                    .setHeadersMap(headers)
-                    .setJsonString(jsonString)
-                    .create()
-                    .execute();
-        } catch (Exception e) {
-            //TODO what if you get any error? no connection or other?  show reason if possible
-            restResponse = new RestResponse<>();
-            restResponse.setMessage("Issue isn't created: " + e.getMessage());
-            restResponse.setResult(CreateIssueResult.FAILURE);
-            return restResponse;
-        }
-        restResponse.setMessage("Issue is created");
-        restResponse.setResult(CreateIssueResult.SUCCESS);
-        return restResponse;
+        mMethod = new RestMethod.Builder<Void>()
+                .setType(RestMethodType.POST)
+                .setUrl(mCredentialsManager.getUrl() + JiraApiConst.ISSUE_PATH)
+                .setHeadersMap(headers)
+                .setPostEntity(postEntity)
+                .create();
+        return mMethod;
     }
 
-    //TODO divide request creation and execution. Pass created request to JiraTask to execute in background
-    //TODO we don't need username here. If we get one more type, we need to update this class?
-    //pass url (or suffix) and processor to method will help you
-    public RestResponse searchData(final String userName, final JiraSearchType typeData) {
-        String url = null;
-        RestMethod.Builder builder = new RestMethod.Builder();
-
-        if (typeData != null) {
-            switch (typeData) {
-                case ISSUE: {
-                    //TODO we don't need username here, why shall we pass it to method?
-                    builder.setObjectProcessor(new ProjectsFromJsonProcessor());
-                    url = mUrl + JiraApiConst.USER_PROJECTS_PATH;
-                    break;
-                }
-                case USER_INFO:
-                    builder.setObjectProcessor(new UserInfoFromJsonProcessor());
-                    url = mUrl + JiraApiConst.USER_INFO_PATH + userName + JiraApiConst.EXPAND_GROUPS;
-                    break;
-            }
-        }
-
-        //TODO we have base headers for every call?
+    public <ResultType, InputType> RestMethod buildDataSearch(final String requestSuffix, final Processor<ResultType, InputType> processor) {
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, getCredential());
+        headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials());
 
-        RestResponse restResponse;
-        try {
-            restResponse = builder
-                    .setType(RestMethodType.GET)
-                    .setUrl(url)
-                    .setHeadersMap(headers)
-                    .create()
-                    .execute();
-
-            restResponse.setResult(UserDataResult.SUCCESS);
-        } catch (Exception e) {
-            //TODO what if you get any error? no connection or other?  show reason if possible
-            restResponse = new RestResponse();
-            restResponse.setMessage(e);
-            restResponse.setResult(UserDataResult.FAILURE);
-        }
-        return restResponse;
+        mMethod = new RestMethod.Builder()
+                .setType(RestMethodType.GET)
+                .setUrl(mCredentialsManager.getUrl() + requestSuffix)
+                .setHeadersMap(headers)
+                .setProcessor(processor)
+                .create();
+        return mMethod;
     }
 
-    public String getCredential() {
-        //TODO Base64.encodeToString for every call?
-        //TODO CredentialsManager.getInstance().getPassword() - can we store password?
-        return JiraApiConst.BASIC_AUTH + Base64.encodeToString((CredentialsManager.getInstance().getUserName() +
-                Constants.SharedPreferenceKeys.COLON + CredentialsManager.getInstance().getPassword()).getBytes(), Base64.NO_WRAP);
+    public RestResponse execute() throws Exception {
+        RestResponse<Void> restResponse = mMethod.execute();
+        restResponse.setOperationResult(JiraOperationResult.REQUEST_PERFORMED);
+        return restResponse;
     }
 
 }

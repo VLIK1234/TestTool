@@ -30,11 +30,15 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.api.JiraApi;
+import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.JiraTask.JiraTaskType;
+
+import amtt.epam.com.amtt.api.exception.AmttException;
+import amtt.epam.com.amtt.api.exception.ExceptionHandler;
+import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.api.result.UserDataResult;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
@@ -44,15 +48,16 @@ import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
-import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.util.UtilConstants;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-public class TopButtonView extends FrameLayout implements JiraCallback<UserDataResult, JMetaResponse>, DataBaseCallback {
+public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResponse>, DataBaseCallback {
 
     private final static String LOG_TAG = "TAG";
 
@@ -96,6 +101,8 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
         this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
+        topButtonLayout = (RelativeLayout) findViewById(R.id.top_button_layout);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -161,12 +168,11 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                          getContext().getApplicationContext().startActivity(intentStep);
                         break;
                     case R.id.layout_bug_rep:
-                        new JiraTask.Builder<UserDataResult, JMetaResponse>()
-                                .setOperationType(JiraTaskType.SEARCH)
-                                .setSearchType(JiraTask.JiraSearchType.ISSUE)
+                        RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor());
+                        new JiraTask.Builder<JMetaResponse>()
+                                .setRestMethod(searchMethod)
                                 .setCallback(TopButtonView.this)
-                                .create()
-                                .execute();
+                                .createAndExecute();
                         break;
                     default:
                 }
@@ -386,22 +392,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
     }
 
     @Override
-    public void onJiraRequestPerformed(RestResponse<UserDataResult, JMetaResponse> restResponse) {
-        if (restResponse.getResult() == UserDataResult.SUCCESS) {
-            JMetaResponse jiraMetaResponse = restResponse.getResultObject();
-            ArrayList<String> projectsNames = jiraMetaResponse.getProjectsNames();
-            ArrayList<String> projectsKeys = jiraMetaResponse.getProjectsKeys();
-            PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
-            PreferenceUtils.putSet(Constants.SharedPreferenceKeys.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
-            Intent intent = new Intent(getContext(), CreateIssueActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            getContext().getApplicationContext().startActivity(intent);
-        } else {
-            Toast.makeText(getContext(), restResponse.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
@@ -463,6 +453,29 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                 .setCallback(TopButtonView.this)
                 .create()
                 .execute();
+    }
+
+
+    @Override
+    public void onRequestStarted() {
+
+    }
+
+    @Override
+    public void onRequestPerformed(RestResponse<JMetaResponse> restResponse) {
+        JMetaResponse jiraMetaResponse = restResponse.getResultObject();
+        ArrayList<String> projectsNames = jiraMetaResponse.getProjectsNames();
+        ArrayList<String> projectsKeys = jiraMetaResponse.getProjectsKeys();
+        PreferenceUtils.putSet(UtilConstants.SharedPreference.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
+        PreferenceUtils.putSet(UtilConstants.SharedPreference.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
+        Intent intent = new Intent(getContext(), CreateIssueActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getContext().getApplicationContext().startActivity(intent);
+    }
+
+    @Override
+    public void onRequestError(AmttException e) {
+        ExceptionHandler.getInstance().processError(e).showDialog(getContext(), TopButtonView.this);
     }
 
 }
