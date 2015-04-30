@@ -12,6 +12,7 @@ import amtt.epam.com.amtt.loader.BlockingStack;
 import amtt.epam.com.amtt.util.DialogUtils;
 
 /**
+ * Common class for handling request exceptions
  * Created by Artsiom_Kaliaha on 28.04.2015.
  */
 public class ExceptionHandler {
@@ -39,6 +40,9 @@ public class ExceptionHandler {
         return ExceptionHandlerSingletonHolder.INSTANCE;
     }
 
+    /**
+     * Identifies exception type, adds to the failed requests stack, set the last processed exception and it's type
+     */
     public ExceptionHandler processError(final AmttException amttException) {
         mLastProcessedException = amttException;
         mLastType = ExceptionType.valueOf(amttException);
@@ -59,6 +63,9 @@ public class ExceptionHandler {
         return this;
     }
 
+    /**
+     * Constructs dialogs
+     */
     public void showDialog(final Context context, JiraCallback jiraCallback) {
         if (!isDialogShown) {
             new DialogUtils.Builder(context)

@@ -5,6 +5,7 @@ import org.apache.http.HttpEntity;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 
 /**
+ * Class encapsulate thrown exceptions and bad results code if such ones have been received, rest method for repeated request
  * Created by Artsiom_Kaliaha on 27.04.2015.
  */
 public class AmttException extends Exception {

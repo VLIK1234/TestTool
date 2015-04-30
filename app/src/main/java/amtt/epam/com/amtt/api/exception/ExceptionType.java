@@ -14,6 +14,7 @@ import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.util.UtilConstants;
 
 /**
+ * Constants containing information for error dialog
  * Created by Artsiom_Kaliaha on 28.04.2015.
  */
 public enum ExceptionType {
@@ -74,6 +75,9 @@ public enum ExceptionType {
         return mNeutralText;
     }
 
+    /**
+     * Returns constant by exception
+     */
     public static ExceptionType valueOf(AmttException e) {
         if (e.getSuppressedOne() != null) {
             Class exceptionClass = e.getSuppressedOne().getClass();
