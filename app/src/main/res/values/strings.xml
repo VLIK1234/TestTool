@@ -96,6 +96,22 @@
     <string name="error_message_gateway">Gateway error</string>
     <string name="error_message_web_address">Wrong web-address</string>
     <string name="error_button_close">Close</string>
-
+    <string name="data_base_cleared">Database cleared</string>
+    <string name="label_activity">"Activity: "</string>
+    <string name="label_configuration_changes">"Configuration changes: "</string>
+    <string name="label_flags">"Flags: "</string>
+    <string name="label_launch_mode">"Launch mode: "</string>
+    <string name="label_max_recents">"Max recents: "</string>
+    <string name="label_parent_app">"Parent app: "</string>
+    <string name="label_permission">"Permission: "</string>
+    <string name="label_persistable_mode">"Persistable mode: "</string>
+    <string name="label_screen_orientation">"Screen orientation: "</string>
+    <string name="label_soft_input_mode">"Soft input mode: "</string>
+    <string name="label_target_app_name">"Target app name: "</string>
+    <string name="label_task_affinity">"Task affinity: "</string>
+    <string name="label_ui_options">"Ui options: "</string>
+    <string name="label_process_name">"Process name: "</string>
+    <string name="label_package_name">"Package name: "</string>
+    <string name="label_step">"Step "</string>
 
 </resources>

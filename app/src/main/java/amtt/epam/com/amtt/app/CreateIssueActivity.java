@@ -136,6 +136,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
             issueNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
             spinnerIssueTypes.setAdapter(issueNames);
+            buttonCreateIssue.setEnabled(true);
         }
     }
 

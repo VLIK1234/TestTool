@@ -38,7 +38,7 @@ public class PreferenceUtils {
 
     public static SharedPreferences getPref() {
         if (mSharedPreferences == null) {
-            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(Kontext.getKontext());
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(ContextHolder.getContext());
         }
         return mSharedPreferences;
     }

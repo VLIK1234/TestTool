@@ -23,7 +23,6 @@ public final class ActivityInfoTable extends Table {
     public static final String _SOFT_INPUT_MODE = "_soft_input_mode";
     public static final String _TARGET_ACTIVITY_NAME = "_target_activity_name";
     public static final String _TASK_AFFINITY = "_task_affinity";
-    public static final String _THEME = "_theme";
     public static final String _UI_OPTIONS = "_ui_options";
     public static final String _PROCESS_NAME = "_process_name";
     public static final String _PACKAGE_NAME = "_package_name";
@@ -43,7 +42,6 @@ public final class ActivityInfoTable extends Table {
             _SOFT_INPUT_MODE,
             _TARGET_ACTIVITY_NAME,
             _TASK_AFFINITY,
-            _THEME,
             _UI_OPTIONS,
             _PROCESS_NAME,
             _PACKAGE_NAME
@@ -63,7 +61,6 @@ public final class ActivityInfoTable extends Table {
             add(_SOFT_INPUT_MODE);
             add(_TARGET_ACTIVITY_NAME);
             add(_TASK_AFFINITY);
-            add(_THEME);
             add(_UI_OPTIONS);
             add(_PROCESS_NAME);
             add(_PACKAGE_NAME);
