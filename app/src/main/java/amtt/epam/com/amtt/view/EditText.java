@@ -1199,8 +1199,9 @@ public class EditText extends FrameLayout {
     }
 
     public void clearErrorOnTextChanged(Boolean clearErrorEnable) {
+        TextWatcher textWatcher;
         if (clearErrorEnable) {
-            EditText.this.addTextChangedListener(new TextWatcher() {
+            textWatcher = new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
                 }
@@ -1213,26 +1214,50 @@ public class EditText extends FrameLayout {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                 }
-            });
+            };
+        } else {
+            textWatcher = new TextWatcher() {
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+            };
         }
+        EditText.this.addTextChangedListener(textWatcher);
     }
 
     public void clearErrorOnFocus(Boolean clearErrorEnable) {
+        OnFocusChangeListener onFocusChangeListener = new OnFocusChangeListener();
+        InnerOnFocusChangeListener innerOnFocusChangeListener = new InnerOnFocusChangeListener();
+        View.OnFocusChangeListener vievOnFocusChangeListener;
         if (clearErrorEnable) {
-            OnFocusChangeListener onFocusChangeListener = new OnFocusChangeListener();
-            InnerOnFocusChangeListener innerOnFocusChangeListener = new InnerOnFocusChangeListener();
-            View.OnFocusChangeListener vievOnFocusChangeListener = new View.OnFocusChangeListener() {
+            vievOnFocusChangeListener = new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus)
                         EditText.this.setError(null);
                 }
             };
-            innerOnFocusChangeListener.setOnFocusChangeListener(vievOnFocusChangeListener);
-            onFocusChangeListener.setOnFocusChangeListener(vievOnFocusChangeListener);
-            onFocusChangeListener.addListener(innerOnFocusChangeListener);
-            onFocusChangeListener.doListing();
+
+        } else {
+            vievOnFocusChangeListener = new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+
+                }
+            };
         }
+        innerOnFocusChangeListener.setOnFocusChangeListener(vievOnFocusChangeListener);
+        onFocusChangeListener.setOnFocusChangeListener(vievOnFocusChangeListener);
+        onFocusChangeListener.addListener(innerOnFocusChangeListener);
+        onFocusChangeListener.doListing();
     }
 
     public interface AListener {
