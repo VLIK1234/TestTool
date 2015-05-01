@@ -23,10 +23,10 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     private TextView mName;
     private TextView mEmailAddress;
     private TextView mDisplayName;
-    private TextView timeZone;
-    private TextView locale;
-    private TextView size;
-    private TextView namesGroups;
+    private TextView mTimeZone;
+    private TextView mLocale;
+    private TextView mSize;
+    private TextView mNamesGroups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +35,10 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
         mName = (TextView) findViewById(R.id.tv_name);
         mEmailAddress = (TextView) findViewById(R.id.tv_email_address);
         mDisplayName = (TextView) findViewById(R.id.tv_display_name);
-        timeZone = (TextView) findViewById(R.id.tv_time_zone);
-        locale = (TextView) findViewById(R.id.tv_locale);
-        size = (TextView) findViewById(R.id.tv_size);
-        namesGroups = (TextView) findViewById(R.id.tv_names);
+        mTimeZone = (TextView) findViewById(R.id.tv_time_zone);
+        mLocale = (TextView) findViewById(R.id.tv_locale);
+        mSize = (TextView) findViewById(R.id.tv_size);
+        mNamesGroups = (TextView) findViewById(R.id.tv_names);
         executeAsynchronously();
     }
 
@@ -65,14 +65,14 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
             mName.setText(getResources().getString(R.string.label_user_name) + UtilConstants.SharedPreference.COLON + user.getName());
             mEmailAddress.setText(getResources().getString(R.string.label_email) + UtilConstants.SharedPreference.COLON + user.getEmailAddress());
             mDisplayName.setText(user.getDisplayName());
-            timeZone.setText(getResources().getString(R.string.label_time_zone) + UtilConstants.SharedPreference.COLON + user.getTimeZone());
-            locale.setText(getResources().getString(R.string.label_locale) + UtilConstants.SharedPreference.COLON + user.getLocale());
-            size.setText(getResources().getString(R.string.label_size) + UtilConstants.SharedPreference.COLON + String.valueOf(user.getGroups().getSize()));
+            mTimeZone.setText(getResources().getString(R.string.label_time_zone) + UtilConstants.SharedPreference.COLON + user.getTimeZone());
+            mLocale.setText(getResources().getString(R.string.label_locale) + UtilConstants.SharedPreference.COLON + user.getLocale());
+            mSize.setText(getResources().getString(R.string.label_size) + UtilConstants.SharedPreference.COLON + String.valueOf(user.getGroups().getSize()));
             String groups = "";
             for (int i = 0; i < user.getGroups().getItems().size(); i++) {
                 groups += user.getGroups().getItems().get(i).getName() + UtilConstants.Dialog.NEW_LINE;
             }
-            namesGroups.setText(getResources().getString(R.string.label_names_groups) + UtilConstants.SharedPreference.COLON + groups);
+            mNamesGroups.setText(getResources().getString(R.string.label_names_groups) + UtilConstants.SharedPreference.COLON + groups);
             showProgress(false);
 
         }
