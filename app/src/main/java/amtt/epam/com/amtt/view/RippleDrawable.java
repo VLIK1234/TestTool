@@ -30,8 +30,14 @@ import android.view.animation.Interpolator;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.util.ColorUtil;
-import amtt.epam.com.amtt.util.ColorsUtil;
-import amtt.epam.com.amtt.util.ViewsUtil;
+import amtt.epam.com.amtt.util.ThemeUtil;
+import amtt.epam.com.amtt.util.ViewUtil;
+
+
+/**
+ * Created on 4/27/2015.
+ * based on https://github.com/rey5137/material/blob/master/lib/src/main/java/com/rey/material/drawable/RippleDrawable.java
+ */
 
 public class RippleDrawable extends Drawable implements Animatable,	OnTouchListener {
 	
@@ -81,7 +87,10 @@ public class RippleDrawable extends Drawable implements Animatable,	OnTouchListe
 	private static final float[] GRADIENT_STOPS = new float[]{0f, 0.99f, 1f};
 	private static final float GRADIENT_RADIUS = 16;
 		
-	private RippleDrawable(Drawable backgroundDrawable, int backgroundAnimDuration, int backgroundColor, int rippleType, boolean delayClick,  int maxRippleRadius, int rippleAnimDuration, int rippleColor, Interpolator inInterpolator, Interpolator outInterpolator, int type, int topLeftCornerRadius, int topRightCornerRadius, int bottomRightCornerRadius, int bottomLeftCornerRadius, int left, int top, int right, int bottom){
+	private RippleDrawable(Drawable backgroundDrawable, int backgroundAnimDuration, int backgroundColor, int rippleType,
+						   boolean delayClick,  int maxRippleRadius, int rippleAnimDuration, int rippleColor,
+						   Interpolator inInterpolator, Interpolator outInterpolator, int type, int topLeftCornerRadius,
+						   int topRightCornerRadius, int bottomRightCornerRadius, int bottomLeftCornerRadius, int left, int top, int right, int bottom){
 		setBackgroundDrawable(backgroundDrawable);
 		mBackgroundAnimDuration = backgroundAnimDuration;
 		mBackgroundColor = backgroundColor;
@@ -115,7 +124,7 @@ public class RippleDrawable extends Drawable implements Animatable,	OnTouchListe
 		
 		mInShader = new RadialGradient(0, 0, GRADIENT_RADIUS, new int[]{mRippleColor, mRippleColor, 0}, GRADIENT_STOPS, Shader.TileMode.CLAMP);		
 		if(mRippleType == TYPE_WAVE)
-			mOutShader = new RadialGradient(0, 0, GRADIENT_RADIUS, new int[]{0, ColorUtil.getColor(mRippleColor, 0f), mRippleColor}, GRADIENT_STOPS, Shader.TileMode.CLAMP);
+			mOutShader = new RadialGradient(0, 0, GRADIENT_RADIUS, new int[]{0, ColorUtil.getColorWithAlpha(mRippleColor, 0f), mRippleColor}, GRADIENT_STOPS, Shader.TileMode.CLAMP);
 	}
 
     public void setBackgroundDrawable(Drawable backgroundDrawable){
@@ -325,7 +334,7 @@ public class RippleDrawable extends Drawable implements Animatable,	OnTouchListe
 		
 		resetAnimation();
 		
-		scheduleSelf(mUpdater, SystemClock.uptimeMillis() + ViewsUtil.FRAME_DURATION);
+		scheduleSelf(mUpdater, SystemClock.uptimeMillis() + ViewUtil.FRAME_DURATION);
 	    invalidateSelf();  
 	}
 
@@ -397,7 +406,7 @@ public class RippleDrawable extends Drawable implements Animatable,	OnTouchListe
 		}
 		
 		if(isRunning())
-			scheduleSelf(mUpdater, SystemClock.uptimeMillis() + ViewsUtil.FRAME_DURATION);
+			scheduleSelf(mUpdater, SystemClock.uptimeMillis() + ViewUtil.FRAME_DURATION);
 		
 		invalidateSelf();		
 	}
@@ -426,7 +435,7 @@ public class RippleDrawable extends Drawable implements Animatable,	OnTouchListe
 		}
 		
 		if(isRunning())
-			scheduleSelf(mUpdater, SystemClock.uptimeMillis() + ViewsUtil.FRAME_DURATION);
+			scheduleSelf(mUpdater, SystemClock.uptimeMillis() + ViewUtil.FRAME_DURATION);
 		
 		invalidateSelf();		
 	}
@@ -506,12 +515,12 @@ public class RippleDrawable extends Drawable implements Animatable,	OnTouchListe
 			backgroundAnimDuration(a.getInteger(R.styleable.RippleDrawable_rd_backgroundAnimDuration, context.getResources().getInteger(android.R.integer.config_mediumAnimTime)));
 			rippleType(a.getInteger(R.styleable.RippleDrawable_rd_rippleType, RippleDrawable.TYPE_TOUCH));
             delayClick(a.getBoolean(R.styleable.RippleDrawable_rd_delayClick, false));
-            type = ColorsUtil.getType(a, R.styleable.RippleDrawable_rd_maxRippleRadius);
+            type = ThemeUtil.getType(a, R.styleable.RippleDrawable_rd_maxRippleRadius);
             if(type >= TypedValue.TYPE_FIRST_INT && type <= TypedValue.TYPE_LAST_INT)
                 maxRippleRadius(a.getInteger(R.styleable.RippleDrawable_rd_maxRippleRadius, -1));
             else
-			    maxRippleRadius(a.getDimensionPixelSize(R.styleable.RippleDrawable_rd_maxRippleRadius, ColorsUtil.dpToPx(context, 48)));
-			rippleColor(a.getColor(R.styleable.RippleDrawable_rd_rippleColor, ColorsUtil.colorControlHighlight(context, 0)));
+			    maxRippleRadius(a.getDimensionPixelSize(R.styleable.RippleDrawable_rd_maxRippleRadius, ThemeUtil.dpToPx(context, 48)));
+			rippleColor(a.getColor(R.styleable.RippleDrawable_rd_rippleColor, ThemeUtil.colorControlHighlight(context, 0)));
 			rippleAnimDuration(a.getInteger(R.styleable.RippleDrawable_rd_rippleAnimDuration, context.getResources().getInteger(android.R.integer.config_mediumAnimTime)));
 			if((resId = a.getResourceId(R.styleable.RippleDrawable_rd_inInterpolator, 0)) != 0)
 				inInterpolator(AnimationUtils.loadInterpolator(context, resId));

@@ -2,6 +2,8 @@ package amtt.epam.com.amtt.api.rest;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -9,16 +11,19 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.UnknownHostException;
 import java.util.Map;
 
+import amtt.epam.com.amtt.api.exception.AmttException;
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.processing.Processor;
-import amtt.epam.com.amtt.processing.ResponseProcessor;
 
 /**
  * Class for performing REST methods to Jira api
  * Created by Artsiom_Kaliaha on 15.04.2015.
  */
-public class RestMethod<ResultType, ResultObjectType> {
+public class RestMethod<ResultType> {
 
     public enum RestMethodType {
 
@@ -27,15 +32,13 @@ public class RestMethod<ResultType, ResultObjectType> {
 
     }
 
-    public static class Builder<ResultType, ResultObjectType> {
+    public static class Builder<ResultType> {
 
         private RestMethodType mRestMethodType;
         private Map<String, String> mHeaders;
         private String mUrl;
-        //TODO Why do we need two processors?
-        private ResponseProcessor mResponseProcessor; //processor for retrieving String messages from Json responses
-        private Processor<ResultObjectType, HttpEntity> mObjectProcessor; //processor for retrieving Objects from Json responses
-        private String mJsonString;
+        private Processor<ResultType, HttpEntity> mProcessor; //processor for retrieving OBJECTS
+        private String mPostEntity;
 
         public Builder setType(RestMethodType methodType) {
             mRestMethodType = methodType;
@@ -56,43 +59,36 @@ public class RestMethod<ResultType, ResultObjectType> {
             return this;
         }
 
-        public Builder setResponseProcessor(ResponseProcessor processor) {
-            mResponseProcessor = processor;
-            return this;
-        }
-        //TODO Why do we need two processors?
-        public Builder setObjectProcessor(Processor<ResultObjectType, HttpEntity> processor) {
-            mObjectProcessor = processor;
+        public Builder setProcessor(Processor<ResultType, HttpEntity> processor) {
+            mProcessor = processor;
             return this;
         }
 
-        //TODO is it post request body? why is it called so?
-        public Builder setJsonString(String jsonString) {
-            mJsonString = jsonString;
+        public Builder setPostEntity(String postEntity) {
+            mPostEntity = postEntity;
             return this;
         }
 
         public RestMethod create() {
-            RestMethod<ResultType, ResultObjectType> restMethod = new RestMethod<>();
+            RestMethod<ResultType> restMethod = new RestMethod<>();
             restMethod.mRestMethodType = this.mRestMethodType;
             restMethod.mHeaders = this.mHeaders;
             restMethod.mUrl = this.mUrl;
-            restMethod.mResponseProcessor = this.mResponseProcessor;
-            restMethod.mObjectProcessor = this.mObjectProcessor;
-            restMethod.mJsonString = this.mJsonString;
+            restMethod.mProcessor = this.mProcessor;
+            restMethod.mPostEntity = this.mPostEntity;
             return restMethod;
         }
 
     }
 
+    public static final int EMPTY_STATUS_CODE = -1;
+
     private static HttpClient mHttpClient;
     private RestMethodType mRestMethodType;
     private Map<String, String> mHeaders;
     private String mUrl;
-    private ResponseProcessor mResponseProcessor;
-    private Processor<ResultObjectType, HttpEntity> mObjectProcessor;
-    private String mJsonString;
-
+    private Processor<ResultType, HttpEntity> mProcessor;
+    private String mPostEntity;
 
     static {
         mHttpClient = new DefaultHttpClient();
@@ -101,24 +97,52 @@ public class RestMethod<ResultType, ResultObjectType> {
     public RestMethod() {
     }
 
-    private HttpResponse get() throws IOException {
+    private HttpResponse get() throws AmttException {
         HttpGet httpGet = new HttpGet(mUrl);
         for (Map.Entry<String, String> keyValuePair : mHeaders.entrySet()) {
             httpGet.setHeader(keyValuePair.getKey(), keyValuePair.getValue());
         }
-        return mHttpClient.execute(httpGet);
+
+        HttpResponse httpResponse;
+        try {
+            httpResponse = mHttpClient.execute(httpGet);
+        } catch (IllegalStateException e) {
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        } catch (IllegalArgumentException e) {
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        } catch (UnknownHostException e) {
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        } catch (ClientProtocolException e) {
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        } catch (IOException e) {
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        }
+        return httpResponse;
     }
 
-    private HttpResponse post() throws IOException {
+    private HttpResponse post() throws AmttException {
         HttpPost httpPost = new HttpPost(mUrl);
-        httpPost.setEntity(new StringEntity(mJsonString));
+        try {
+            httpPost.setEntity(new StringEntity(mPostEntity));
+        } catch (UnsupportedEncodingException e) {
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        }
         for (Map.Entry<String, String> keyValuePair : mHeaders.entrySet()) {
             httpPost.setHeader(keyValuePair.getKey(), keyValuePair.getValue());
         }
-        return mHttpClient.execute(httpPost);
+
+        HttpResponse httpResponse;
+        try {
+            httpResponse = mHttpClient.execute(httpPost);
+        } catch (ClientProtocolException e) {
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        } catch (IOException e) {
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        }
+        return httpResponse;
     }
 
-    public RestResponse<ResultType, ResultObjectType> execute() throws Exception {
+    public RestResponse<ResultType> execute() throws AmttException {
         HttpResponse httpResponse = null;
 
         switch (mRestMethodType) {
@@ -130,28 +154,34 @@ public class RestMethod<ResultType, ResultObjectType> {
                 break;
         }
 
-        String responseMessage = null;
-        if (mResponseProcessor != null) {
-            responseMessage = mResponseProcessor.process(httpResponse);
-        }
-
-        ResultObjectType resultObject = null;
-        if (mObjectProcessor != null) {
-            try {
-                resultObject = mObjectProcessor.process(httpResponse.getEntity());
-            } catch (Exception e) {
-                responseMessage = "response object is illegible=(";
+        RestResponse<ResultType> restResponse = new RestResponse<>();
+        ResultType result;
+        HttpEntity entity = null;
+        //TODO we have processor only for successful request. You can get parse error before wrong status code.  Check codes before.
+        try {
+            if (mProcessor != null) {
+                entity = httpResponse.getEntity();
+                result = mProcessor.process(entity);
+                restResponse.setResultObject(result);
             }
+        } catch (Exception e) {
+            throw new AmttException(e, httpResponse.getStatusLine().getStatusCode(), this, entity);
         }
 
-        //TODO I think it would be a good idea to have status code, headers, error and result.
-        //TODO don't set entity. process it and close as soon it is not used later
-        RestResponse<ResultType, ResultObjectType> restResponse = new RestResponse<>();
-        restResponse.setStatusCode(httpResponse.getStatusLine().getStatusCode());
-        restResponse.setMessage(responseMessage);
-        restResponse.setEntity(httpResponse.getEntity());
-        restResponse.setResultObject(resultObject);
+        int statusCode = httpResponse.getStatusLine().getStatusCode();
+        //TODO what if return result only on good codes, such as 200?
+        if (statusCode == HttpStatus.SC_NOT_FOUND || statusCode == HttpStatus.SC_BAD_GATEWAY ||
+                statusCode == HttpStatus.SC_UNAUTHORIZED || statusCode == HttpStatus.SC_FORBIDDEN ||
+                statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+            //TODO put error
+            throw new AmttException(null, statusCode, this, null);
+        }
+
         return restResponse;
+    }
+
+    public RestMethodType getRequestType() {
+        return mRestMethodType;
     }
 
 }

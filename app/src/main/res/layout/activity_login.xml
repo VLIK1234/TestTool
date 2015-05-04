@@ -48,6 +48,12 @@
         app:et_supportTextErrorColor="#FFFF0000"/>
     <!-- *******USER NAME END***************************************************-->
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_epam_employee_sign"
+        android:id="@+id/epamJiraCheckBox"/>
+
     <!-- *******PASSWORD BEGIN***************************************************-->
     <amtt.epam.com.amtt.view.EditText
         style="@style/Material.Widget.EditText"
@@ -75,7 +81,7 @@
         android:layout_marginTop="@dimen/material_vertical_button_padding_top"
         android:minWidth="@dimen/material_vertical_button_min_width_size"
         android:text="@string/label_login"
-        android:textSize="@dimen/material_button_font_size"/>
+        android:textSize="@dimen/material_font_size_button"/>
 
     <ProgressBar
         android:layout_height="wrap_content"

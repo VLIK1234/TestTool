@@ -2,18 +2,34 @@
     <string name="app_name">amtt</string>
     <string name="action_settings">Settings</string>
 
-    <string name="button_hide">Hide</string>
-    <string name="button_show">Show</string>
 
     <string name="title_activity_create_issue">Creating issue</string>
     <string name="title_activity_login">Login to Jira</string>
     <string name="title_activity_steps">StepsActivity</string>
     <string name="title_activity_user_info">UserInfoActivity</string>
 
+    <string name="empty_list_view">There is no saved steps =(</string>
+    <string name="issue_created">Issue created</string>
+
+    <string name="error_title_auth">Authorization error</string>
+    <string name="error_message_auth">Check your credentials</string>
+    <string name="error_message_auth_forbidden">You are not allowed to login now</string>
+    <string name="error_title_request">Request error</string>
+    <string name="error_message_no_internet">You are offline</string>
+    <string name="error_button_try">Try again</string>
+    <string name="error_button_settings">Open settings</string>
+    <string name="error_message_unknown">Unknown error</string>
+    <string name="error_message_gateway">Gateway error</string>
+    <string name="error_message_web_address">Wrong web-address</string>
+    <string name="error_button_close">Close</string>
+
+    <string name="label_activity">"Activity: "</string>
     <string name="label_add_step">Add step</string>
     <string name="label_affects_versions">Affects Version/s</string>
+    <string name="label_attachment">Attachment</string>
     <string name="label_authorization">Authorization</string>
     <string name="label_close">Close</string>
+    <string name="label_configuration_changes">"Configuration changes: "</string>
     <string name="label_create">Create</string>
     <string name="label_create_issue">Create issue</string>
     <string name="label_delete_and_close">Delete and close</string>
@@ -22,27 +38,43 @@
     <string name="label_divider">Divider</string>
     <string name="label_email">Email</string>
     <string name="label_environment">Environment</string>
+    <string name="label_epam_employee_sign">Sign in as a EPAM employee</string>
     <string name="label_error_label">Error label</string>
+    <string name="label_flags">"Flags: "</string>
     <string name="label_groups">Groups</string>
+    <string name="label_hide">Hide</string>
     <string name="label_hint">Hint</string>
     <string name="label_issue">Issue</string>
     <string name="label_issue_type">Issue Type</string>
     <string name="label_label">Label</string>
+    <string name="label_launch_mode">"Launch mode: "</string>
     <string name="label_locale">Locale</string>
     <string name="label_login">Log In</string>
     <string name="label_logout">Log Out</string>
     <string name="label_make_crash">Make crash</string>
+    <string name="label_max_recents">"Max recents: "</string>
     <string name="label_names_groups">Names groups</string>
+    <string name="label_package_name">"Package name: "</string>
+    <string name="label_parent_app">"Parent app: "</string>
     <string name="label_password">Password</string>
+    <string name="label_permission">"Permission: "</string>
+    <string name="label_persistable_mode">"Persistable mode: "</string>
     <string name="label_priority">Priority</string>
+    <string name="label_process_name">"Process name: "</string>
     <string name="label_project">Project</string>
+    <string name="label_screen_orientation">"Screen orientation: "</string>
+    <string name="label_show">Show</string>
     <string name="label_show_crash_info">Show crash info</string>
     <string name="label_show_step">Show step</string>
     <string name="label_size">Size</string>
-    <string name="label_step">Step</string>
+    <string name="label_soft_input_mode">"Soft input mode: "</string>
+    <string name="label_step">"Step "</string>
     <string name="label_summary">Summary</string>
+    <string name="label_target_app_name">"Target app name: "</string>
+    <string name="label_task_affinity">"Task affinity: "</string>
     <string name="label_tester">Tester</string>
     <string name="label_time_zone">Time zone</string>
+    <string name="label_ui_options">"Ui options: "</string>
     <string name="label_url">URL</string>
     <string name="label_user_info">User info</string>
     <string name="label_user_name">Username</string>
@@ -53,11 +85,11 @@
 
     <string name="screenshot_image_description">image view for screenshot</string>
 
-    <string name="empty_list_view">There is no saved steps =(</string>
     <string name="lack_of_crashes_text">There were no crashes recently</string>
     <string name="file_deleted">Deletion done</string>
     <string name="file_not_deleted">Deletion hasn\'t been done</string>
     <string name="notification_title">AMTT</string>
     <string name="notification_text">Button-assistant is running.</string>
-    <string name="label_attachment">Attachment</string>
+    <string name="label_start">Start</string>
+
 </resources>

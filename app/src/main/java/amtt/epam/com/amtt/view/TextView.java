@@ -7,7 +7,8 @@ import android.view.MotionEvent;
 import android.view.View;
 
 /**
- * Created by Iryna_Monchanka on 4/27/2015.
+ * Created on 4/27/2015.
+ * based on https://github.com/rey5137/material/blob/master/lib/src/main/java/com/rey/material/widget/TextView.java
  */
 public class TextView extends android.widget.TextView {
 

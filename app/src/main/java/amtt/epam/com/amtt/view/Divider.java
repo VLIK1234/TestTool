@@ -13,11 +13,13 @@ import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 
-import amtt.epam.com.amtt.util.ViewsUtil;
+import amtt.epam.com.amtt.util.ViewUtil;
 
 /**
- * Created by Iryna_Monchanka on 4/27/2015.
+ * Created on 4/27/2015.
+ * based on  https://github.com/rey5137/material/blob/master/lib/src/main/java/com/rey/material/drawable/DividerDrawable.java
  */
+
 public class Divider extends Drawable implements Animatable {
 
     private boolean mRunning = false;
@@ -152,7 +154,7 @@ public class Divider extends Drawable implements Animatable {
 
     @Override
     protected boolean onStateChange(int[] state) {
-        mEnable = ViewsUtil.hasState(state, android.R.attr.state_enabled);
+        mEnable = ViewUtil.hasState(state, android.R.attr.state_enabled);
         int color = mColorStateList.getColorForState(state, mCurColor);
 
         if(mCurColor != color){
@@ -181,7 +183,7 @@ public class Divider extends Drawable implements Animatable {
     @Override
     public void start() {
         resetAnimation();
-        scheduleSelf(mUpdater, SystemClock.uptimeMillis() + ViewsUtil.FRAME_DURATION);
+        scheduleSelf(mUpdater, SystemClock.uptimeMillis() + ViewUtil.FRAME_DURATION);
         invalidateSelf();
     }
 
@@ -220,7 +222,7 @@ public class Divider extends Drawable implements Animatable {
             mRunning = false;
 
         if(isRunning())
-            scheduleSelf(mUpdater, SystemClock.uptimeMillis() + ViewsUtil.FRAME_DURATION);
+            scheduleSelf(mUpdater, SystemClock.uptimeMillis() + ViewUtil.FRAME_DURATION);
 
         invalidateSelf();
     }

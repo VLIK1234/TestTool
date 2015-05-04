@@ -8,9 +8,13 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
 import amtt.epam.com.amtt.R;
+
+/**
+ * Created on 4/27/2015.
+ * based on https://github.com/rey5137/material/blob/master/lib/src/main/java/com/rey/material/widget/RippleManager.java
+ */
 
 public final class RippleManager implements View.OnClickListener, Runnable{
 

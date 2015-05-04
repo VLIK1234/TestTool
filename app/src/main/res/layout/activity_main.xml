@@ -26,5 +26,19 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
+    <Button
+        android:id="@+id/start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/label_start"/>
+    <Button
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toRightOf="@id/start"
+        android:layout_toEndOf="@id/start"
+        android:text="@string/label_close"/>
 
 </RelativeLayout>

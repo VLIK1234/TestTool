@@ -16,10 +16,10 @@
     <style name="Material.Widget"></style>
 
     <style name="Material.Widget.Spinner">
-        <item name="android:textSize">@dimen/material_subhead_font_size</item>
+        <item name="android:textSize">@dimen/material_font_size_subhead</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
         <item name="spn_labelEllipsize">end</item>
-        <item name="spn_dividerHeight">2dp</item>
+        <item name="spn_dividerHeight">1dp</item>
         <item name="spn_dividerPadding">0dp</item>
         <item name="spn_dividerAnimDuration">@android:integer/config_longAnimTime</item>
         <item name="spn_arrowColor">?attr/colorControlNormal</item>
@@ -34,7 +34,7 @@
         <item name="et_labelPadding">0dp</item>
         <item name="et_labelTextAppearance">@style/TextAppearance.AppCompat.Caption</item>
         <item name="et_labelTextColor">@color/abc_secondary_text_material_dark</item>
-        <item name="et_labelTextSize">@dimen/material_caption_font_size</item>
+        <item name="et_labelTextSize">@dimen/material_font_size_caption</item>
         <item name="et_labelEllipsize">end</item>
         <item name="et_labelInAnim">@anim/abc_fade_in</item>
         <item name="et_labelOutAnim">@anim/abc_fade_out</item>
