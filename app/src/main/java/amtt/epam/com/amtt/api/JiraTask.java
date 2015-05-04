@@ -33,6 +33,7 @@ public class JiraTask<ResultType> extends AsyncTask<Object, Void, RestResponse<R
             JiraTask<ResultType> jiraTask = new JiraTask<>();
             jiraTask.mRestMethod = this.mRestMethod;
             jiraTask.mCallback = this.mCallback;
+            //TODO executors?
             jiraTask.execute();
         }
 

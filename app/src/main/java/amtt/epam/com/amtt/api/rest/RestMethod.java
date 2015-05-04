@@ -157,6 +157,7 @@ public class RestMethod<ResultType> {
         RestResponse<ResultType> restResponse = new RestResponse<>();
         ResultType result;
         HttpEntity entity = null;
+        //TODO we have processor only for successful request. You can get parse error before wrong status code.  Check codes before.
         try {
             if (mProcessor != null) {
                 entity = httpResponse.getEntity();
@@ -168,9 +169,11 @@ public class RestMethod<ResultType> {
         }
 
         int statusCode = httpResponse.getStatusLine().getStatusCode();
+        //TODO what if return result only on good codes, such as 200?
         if (statusCode == HttpStatus.SC_NOT_FOUND || statusCode == HttpStatus.SC_BAD_GATEWAY ||
                 statusCode == HttpStatus.SC_UNAUTHORIZED || statusCode == HttpStatus.SC_FORBIDDEN ||
                 statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+            //TODO put error
             throw new AmttException(null, statusCode, this, null);
         }
 

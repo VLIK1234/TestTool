@@ -13,6 +13,7 @@ public class AmttException extends Exception {
     private final Exception mSuppressedException;
     private final int mStatusCode;
     private final RestMethod mRestMethod;
+    //TODO It's not a good idea to put Entity or response here. Let it be just a converted String
     private final HttpEntity mEntity; //field isn't used at the time, but resides here for future exception handling logic complication
 
     public AmttException(Exception suppressedException, int resultCode, RestMethod restMethod, HttpEntity httpEntity) {

@@ -20,6 +20,7 @@ public class CredentialsManager {
     }
 
     public String getCredentials() {
+        //TODO still we save password and encode it every time we need auth string.
         return JiraApiConst.BASIC_AUTH + Base64.encodeToString((CredentialsManager.getInstance().getUserName() +
                 UtilConstants.SharedPreference.COLON + CredentialsManager.getInstance().getPassword()).getBytes(), Base64.NO_WRAP);
     }
