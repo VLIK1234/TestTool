@@ -68,6 +68,7 @@
     <string name="label_show_step">Show step</string>
     <string name="label_size">Size</string>
     <string name="label_soft_input_mode">"Soft input mode: "</string>
+    <string name="label_start">Start</string>
     <string name="label_step">"Step "</string>
     <string name="label_summary">Summary</string>
     <string name="label_target_app_name">"Target app name: "</string>
@@ -90,6 +91,5 @@
     <string name="file_not_deleted">Deletion hasn\'t been done</string>
     <string name="notification_title">AMTT</string>
     <string name="notification_text">Button-assistant is running.</string>
-    <string name="label_start">Start</string>
 
 </resources>

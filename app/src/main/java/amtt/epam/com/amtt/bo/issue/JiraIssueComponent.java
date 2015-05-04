@@ -9,11 +9,27 @@ public class JiraIssueComponent {
 
     @SerializedName("id")
     private String mId;
+    @SerializedName("self")
+    private String mSelf;
+    @SerializedName("name")
+    private String mName;
+    @SerializedName("description")
+    private String mDescription;
+    @SerializedName("isAssigneeTypeValid")
+    private Boolean mIsAssigneeTypeValid;
 
     public JiraIssueComponent(){}
 
     public JiraIssueComponent(String id) {
         this.mId = id;
+    }
+
+    public JiraIssueComponent(String id, String self, String name, String description, Boolean isAssigneeTypeValid) {
+        this.mId = id;
+        this.mSelf = self;
+        this.mName = name;
+        this.mDescription = description;
+        this.mIsAssigneeTypeValid = isAssigneeTypeValid;
     }
 
     public String getId() {
@@ -22,5 +38,37 @@ public class JiraIssueComponent {
 
     public void setId(String id) {
         this.mId = id;
+    }
+
+    public String getSelf() {
+        return mSelf;
+    }
+
+    public void setSelf(String self) {
+        this.mSelf = self;
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String name) {
+        this.mName = name;
+    }
+
+    public String getDescription() {
+        return mDescription;
+    }
+
+    public void setDescription(String description) {
+        this.mDescription = description;
+    }
+
+    public Boolean isAssigneeTypeValid() {
+        return mIsAssigneeTypeValid;
+    }
+
+    public void setIsAssigneeTypeValid(Boolean isAssigneeTypeValid) {
+        this.mIsAssigneeTypeValid = isAssigneeTypeValid;
     }
 }

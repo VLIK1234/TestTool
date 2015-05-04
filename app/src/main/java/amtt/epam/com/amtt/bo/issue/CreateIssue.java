@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.bo.issue.willrefactored;
+package amtt.epam.com.amtt.bo.issue;
 
 import android.util.Log;
 

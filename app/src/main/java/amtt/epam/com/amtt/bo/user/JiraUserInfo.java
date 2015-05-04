@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.bo.user;
 import com.google.gson.annotations.SerializedName;
 
 import amtt.epam.com.amtt.bo.issue.JiraAvatarUrls;
-import amtt.epam.com.amtt.bo.issue.JiraUser;
 
 /**
  * Created by Iryna_Monchanka on 3/31/2015.

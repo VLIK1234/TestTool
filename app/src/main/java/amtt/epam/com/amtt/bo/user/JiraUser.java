@@ -1,5 +1,6 @@
-package amtt.epam.com.amtt.bo.issue;
+package amtt.epam.com.amtt.bo.user;
 
+import amtt.epam.com.amtt.bo.issue.JiraAvatarUrls;
 import com.google.gson.annotations.SerializedName;
 
 /**

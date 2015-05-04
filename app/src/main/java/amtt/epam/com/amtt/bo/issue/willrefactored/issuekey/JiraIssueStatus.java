@@ -10,6 +10,7 @@ public class JiraIssueStatus {
     private String iconUrl;
     private String name;
     private int id;
+    private JiraIssueStatusCategory statusCategory;
 
 
 }

@@ -1,5 +1,7 @@
 package amtt.epam.com.amtt.bo.issue;
 
+import amtt.epam.com.amtt.bo.project.JiraIssueVersion;
+import amtt.epam.com.amtt.bo.user.JiraUser;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
