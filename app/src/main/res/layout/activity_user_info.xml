@@ -1,85 +1,84 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="amtt.epam.com.amtt.app.UserInfoActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/display_name"
+    <amtt.epam.com.amtt.view.TextView
         android:id="@+id/tv_display_name"
-        android:textSize="@dimen/font_english_like_headline" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/user_name"
+        android:textSize="@dimen/material_font_size_headline"
+        android:textColor="@color/abc_primary_text_material_light"
+        android:text="@string/label_display_name"/>
+
+    <amtt.epam.com.amtt.view.TextView
         android:id="@+id/tv_name"
-        android:textSize="@dimen/font_english_like_subhead"
-        android:layout_below="@+id/tv_display_name" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/user_email"
+        android:textSize="@dimen/material_font_size_subhead"
+        android:textColor="@color/abc_primary_text_material_light"
+        android:text="@string/label_user_name" />
+
+    <amtt.epam.com.amtt.view.TextView
         android:id="@+id/tv_email_address"
-        android:textSize="@dimen/font_english_like_subhead"
-        android:layout_below="@+id/tv_name" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/time_zone"
+        android:textSize="@dimen/material_font_size_subhead"
+        android:textColor="@color/abc_primary_text_material_light"
+        android:text="@string/label_email" />
+
+    <amtt.epam.com.amtt.view.TextView
         android:id="@+id/tv_time_zone"
-        android:layout_below="@+id/tv_email_address"
-        android:textSize="@dimen/font_english_like_subhead" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/locale"
+        android:textSize="@dimen/material_font_size_subhead"
+        android:textColor="@color/abc_primary_text_material_light"
+        android:text="@string/label_time_zone"/>
+
+    <amtt.epam.com.amtt.view.TextView
         android:id="@+id/tv_locale"
-        android:layout_below="@+id/tv_time_zone"
-        android:textSize="@dimen/font_english_like_subhead" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/groups"
+        android:textSize="@dimen/material_font_size_subhead"
+        android:textColor="@color/abc_primary_text_material_light"
+        android:text="@string/label_locale"/>
+
+    <amtt.epam.com.amtt.view.TextView
         android:id="@+id/tv_groups"
-        android:layout_below="@+id/tv_locale"
-        android:textSize="@dimen/font_english_like_subhead" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/size"
+        android:textSize="@dimen/material_font_size_subhead"
+        android:textColor="@color/abc_primary_text_material_light"
+        android:text="@string/label_groups"/>
+
+    <amtt.epam.com.amtt.view.TextView
         android:id="@+id/tv_size"
-        android:textSize="@dimen/font_english_like_subhead"
-        android:layout_below="@+id/tv_groups"
-        android:layout_toRightOf="@+id/tv_groups"
-        android:layout_toEndOf="@+id/tv_groups" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/names_groups"
+        android:textSize="@dimen/material_font_size_subhead"
+        android:textColor="@color/abc_primary_text_material_light"
+        android:text="@string/label_size"/>
+
+    <amtt.epam.com.amtt.view.TextView
         android:id="@+id/tv_names"
-        android:textSize="@dimen/font_english_like_subhead"
-        android:layout_below="@+id/tv_size"
-        android:layout_toRightOf="@+id/tv_groups"
-        android:layout_toEndOf="@+id/tv_groups" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/material_font_size_subhead"
+        android:textColor="@color/abc_primary_text_material_light"
+        android:text="@string/label_names_groups"/>
+
 
     <ProgressBar
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:id="@+id/progress"
         android:visibility="gone"
-        android:layout_centerInParent="true" />
+        android:layout_gravity="center"/>
 
-</RelativeLayout>
+</LinearLayout>

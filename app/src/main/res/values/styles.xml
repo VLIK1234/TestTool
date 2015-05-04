@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Material" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
@@ -10,5 +10,46 @@
         <item name="android:icon">@color/icons</item>
         <item name="android:divider">@color/divider</item>
     </style>
+
+    <style name="Material.Drawable"></style>
+
+    <style name="Material.Widget"></style>
+
+    <style name="Material.Widget.Spinner">
+        <item name="android:textSize">@dimen/material_font_size_subhead</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
+        <item name="spn_labelEllipsize">end</item>
+        <item name="spn_dividerHeight">1dp</item>
+        <item name="spn_dividerPadding">0dp</item>
+        <item name="spn_dividerAnimDuration">@android:integer/config_longAnimTime</item>
+        <item name="spn_arrowColor">?attr/colorControlNormal</item>
+        <item name="spn_arrowSize">4dp</item>
+        <item name="spn_arrowPadding">8dp</item>
+        <item name="spn_popupItemAnimation">@anim/abc_slide_in_bottom</item>
+        <item name="spn_popupItemAnimOffset">120</item>
+    </style>
+
+    <style name="Material.Widget.EditText">
+        <item name="et_labelEnable">true</item>
+        <item name="et_labelPadding">0dp</item>
+        <item name="et_labelTextAppearance">@style/TextAppearance.AppCompat.Caption</item>
+        <item name="et_labelTextColor">@color/abc_secondary_text_material_dark</item>
+        <item name="et_labelTextSize">@dimen/material_font_size_caption</item>
+        <item name="et_labelEllipsize">end</item>
+        <item name="et_labelInAnim">@anim/abc_fade_in</item>
+        <item name="et_labelOutAnim">@anim/abc_fade_out</item>
+        <item name="et_dividerErrorColor">?attr/colorAccent</item>
+        <item name="et_dividerAnimDuration">@android:integer/config_shortAnimTime</item>
+        <item name="et_dividerHeight">1dp</item>
+        <item name="et_dividerPadding">0dp</item>
+        <item name="et_dividerCompoundPadding">true</item>
+        <item name="et_supportTextAppearance">@style/TextAppearance.AppCompat.Caption</item>
+        <item name="et_supportTextColor">@color/secondary_text</item>
+        <item name="et_supportTextErrorColor">?attr/colorAccent</item>
+        <item name="et_supportTextSize">8dp</item>
+        <item name="et_supportEllipsize">end</item>
+        <item name="et_autoCompleteMode">none</item>
+    </style>
+
 
 </resources>

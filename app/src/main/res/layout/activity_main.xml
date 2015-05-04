@@ -10,14 +10,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:text="@string/crash_button" />
+        android:text="@string/label_make_crash" />
 
     <Button
         android:id="@+id/show_crash_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/crash_button"
-        android:text="@string/show_crash_info_text" />
+        android:text="@string/label_show_crash_info" />
 
     <ProgressBar
         android:id="@+id/progress"
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Start"/>
+        android:text="@string/label_start"/>
     <Button
         android:id="@+id/close"
         android:layout_width="wrap_content"
@@ -39,6 +39,6 @@
         android:layout_centerInParent="true"
         android:layout_toRightOf="@id/start"
         android:layout_toEndOf="@id/start"
-        android:text="Close"/>
+        android:text="@string/label_close"/>
 
 </RelativeLayout>

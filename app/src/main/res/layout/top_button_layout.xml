@@ -32,7 +32,7 @@
                 android:layout_width="@dimen/button_small_size"
                 android:layout_height="@dimen/button_small_size"
                 android:background="@drawable/background_circle"
-                android:text="@string/login"
+                android:text="@string/label_login"
                 android:textColor="@color/green"
                 android:textSize="@dimen/button_text_size"
                 android:enabled="false"
@@ -50,7 +50,7 @@
                     android:id="@+id/text_auth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/button_authorization"
+                    android:text="@string/label_authorization"
                     android:textColor="@color/black"/>
             </android.support.v7.widget.CardView>
         </LinearLayout>
@@ -85,7 +85,7 @@
                     android:id="@+id/text_user_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/button_user_info"
+                    android:text="@string/label_user_info"
                     android:textColor="@color/black"/>
             </android.support.v7.widget.CardView>
         </LinearLayout>
@@ -118,7 +118,7 @@
                     android:id="@+id/text_add_step"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/button_add_step"
+                    android:text="@string/label_add_step"
                     android:textColor="@color/black"/>
             </android.support.v7.widget.CardView>
         </LinearLayout>
@@ -151,7 +151,7 @@
                     android:id="@+id/text_show_step"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/button_show_step"
+                    android:text="@string/label_show_step"
                     android:textColor="@color/black"/>
             </android.support.v7.widget.CardView>
         </LinearLayout>
@@ -185,7 +185,7 @@
                     android:id="@+id/text_bug_rep"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/button_bug_rep"
+                    android:text="@string/label_create_issue"
                     android:textColor="@color/black"/>
             </android.support.v7.widget.CardView>
         </LinearLayout>
