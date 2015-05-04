@@ -22,6 +22,7 @@ import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
+import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.util.IOUtils;
 
 /**
@@ -224,7 +225,7 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
     }
 
     private Boolean performAvailabilityCheck() {
-        Cursor cursor = mContext.getContentResolver().query(AmttContentProvider.ACTIVITY_META_CONTENT_URI, null, null, null, null);
+        Cursor cursor = mContext.getContentResolver().query(AmttContentProvider.USER_CONTENT_URI, UsersTable.PROJECTION, null, null, null);
         boolean isAnyUserInDB = cursor.getColumnCount() != 0;
         cursor.close();
         return isAnyUserInDB;

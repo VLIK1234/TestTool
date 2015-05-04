@@ -61,6 +61,7 @@ public class SettingsActivity extends ActionBarActivity implements DataBaseCallb
         int id = item.getItemId();
 
         if (id == R.id.action_new_qa) {
+            mFragmentManager.beginTransaction().replace(R.id.container, new LoginFragment()).commit();
             return true;
         }
 

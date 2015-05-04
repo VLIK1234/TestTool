@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
@@ -19,7 +18,7 @@ import amtt.epam.com.amtt.loader.InternalStorageImageLoader;
 /**
  * Created by Artsiom_Kaliaha on 31.03.2015.
  */
-public class StepsAdapter extends CursorAdapter {
+public class StepAdapter extends CursorAdapter {
 
     private static class ViewHolder {
         ImageView mImageView;
@@ -31,7 +30,7 @@ public class StepsAdapter extends CursorAdapter {
     public static final int IMAGE_VIEW_WIDTH = 360;
     public static final int IMAGE_VIEW_HEIGHT = 640;
 
-    public StepsAdapter(Context context, Cursor c, int flags) {
+    public StepAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
         //TODO we really need to recreate ImageLoader every tyme we create adapter?
         //when we clear cache for unused adapter with loader instance
@@ -40,7 +39,7 @@ public class StepsAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = LayoutInflater.from(context).inflate(R.layout.adapter_steps, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.adapter_step, parent, false);
 
         ViewHolder vh = new ViewHolder();
         vh.mImageView = (ImageView) view.findViewById(R.id.screenshot_image);

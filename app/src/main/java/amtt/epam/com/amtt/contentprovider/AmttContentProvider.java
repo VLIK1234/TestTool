@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.task.DataBaseManager;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
@@ -31,6 +32,7 @@ public class AmttContentProvider extends ContentProvider {
     public static final Uri ACTIVITY_META_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + ActivityInfoTable.TABLE_NAME);
     public static final Uri STEP_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + StepsTable.TABLE_NAME);
     public static final Uri STEP_WITH_META_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + StepsWithMetaTable.TABLE_NAME);
+    public static final Uri USER_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + UsersTable.TABLE_NAME);
 
     public static final String ACTIVITY_META_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + ActivityInfoTable.TABLE_NAME;
     public static final String ACTIVITY_META_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + ActivityInfoTable.TABLE_NAME;
@@ -38,6 +40,8 @@ public class AmttContentProvider extends ContentProvider {
     public static final String STEP_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsTable.TABLE_NAME;
     public static final String STEP_WITH_META_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsWithMetaTable.TABLE_NAME;
     public static final String STEP_WITH_META_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsWithMetaTable.TABLE_NAME;
+    public static final String USER_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + UsersTable.TABLE_NAME;
+    public static final String USER_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + UsersTable.TABLE_NAME;
 
     private static final UriMatcher sUriMatcher;
     private static Map<Integer, String> sContentType;
@@ -52,6 +56,8 @@ public class AmttContentProvider extends ContentProvider {
         sUriMatcher.addURI(AUTHORITY, StepsTable.TABLE_NAME + "/#", AmttUri.STEP_ID.ordinal());
         sUriMatcher.addURI(AUTHORITY, StepsWithMetaTable.TABLE_NAME, AmttUri.STEP_WITH_META.ordinal());
         sUriMatcher.addURI(AUTHORITY, StepsWithMetaTable.TABLE_NAME + "/#", AmttUri.STEP_WITH_META_ID.ordinal());
+        sUriMatcher.addURI(AUTHORITY, UsersTable.TABLE_NAME, AmttUri.USER.ordinal());
+        sUriMatcher.addURI(AUTHORITY, UsersTable.TABLE_NAME + "/#", AmttUri.USER_ID.ordinal());
 
         sContentType = new HashMap<>();
         sContentType.put(AmttUri.ACTIVITY_META.ordinal(), ACTIVITY_META_CONTENT_TYPE);
@@ -60,6 +66,8 @@ public class AmttContentProvider extends ContentProvider {
         sContentType.put(AmttUri.STEP_ID.ordinal(), STEP_CONTENT_ITEM_TYPE);
         sContentType.put(AmttUri.STEP_WITH_META.ordinal(), STEP_WITH_META_CONTENT_TYPE);
         sContentType.put(AmttUri.STEP_WITH_META_ID.ordinal(), STEP_WITH_META_CONTENT_ITEM_TYPE);
+        sContentType.put(AmttUri.USER.ordinal(), USER_CONTENT_TYPE);
+        sContentType.put(AmttUri.USER_ID.ordinal(), USER_CONTENT_ITEM_TYPE);
 
         sProjections = new HashMap<>();
         sProjections.put(AmttUri.ACTIVITY_META.ordinal(), ActivityInfoTable.PROJECTION);
@@ -68,6 +76,8 @@ public class AmttContentProvider extends ContentProvider {
         sProjections.put(AmttUri.STEP_ID.ordinal(), StepsTable.PROJECTION);
         sProjections.put(AmttUri.STEP_WITH_META.ordinal(), StepsWithMetaTable.PROJECTION);
         sProjections.put(AmttUri.STEP_WITH_META_ID.ordinal(), StepsWithMetaTable.PROJECTION);
+        sProjections.put(AmttUri.USER.ordinal(), UsersTable.PROJECTION);
+        sProjections.put(AmttUri.USER_ID.ordinal(), UsersTable.PROJECTION);
     }
 
     @Override

@@ -14,6 +14,7 @@ import amtt.epam.com.amtt.database.constant.SqlQueryConstants;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.Table;
+import amtt.epam.com.amtt.database.table.UsersTable;
 
 /**
  * Created by Artsiom_Kaliaha on 18.03.2015.
@@ -28,6 +29,7 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
         sTables = new ArrayList<>();
         sTables.add(ActivityInfoTable.class);
         sTables.add(StepsTable.class);
+        sTables.add(UsersTable.class);
     }
 
     public DataBaseManager(Context context) {

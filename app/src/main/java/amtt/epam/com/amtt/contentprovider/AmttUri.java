@@ -10,6 +10,8 @@ public enum AmttUri {
     STEP,
     STEP_ID,
     STEP_WITH_META,
-    STEP_WITH_META_ID
+    STEP_WITH_META_ID,
+    USER,
+    USER_ID
 
 }
