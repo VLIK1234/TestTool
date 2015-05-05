@@ -1,6 +1,4 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
@@ -20,19 +18,21 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:textSize="@dimen/material_font_size_caption"
-            android:textColor="@color/abc_primary_text_material_light"
-            android:text="@string/label_project"/>
-            <Spinner
-                style="@style/Material.Widget.Spinner"
-                android:id="@+id/spin_projects_name"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"/>
-            <ImageView
-                android:layout_height="1dip"
-                android:layout_width="fill_parent"
-                android:background="#FF8D8D8D"
-                android:paddingBottom="@dimen/material_vertical_size_divider"
-                android:contentDescription="@string/label_divider" />
+            android:textColor="@color/primary_text"
+            android:text="@string/label_project" />
+
+        <Spinner
+            style="@style/Material.Widget.Spinner"
+            android:id="@+id/spin_projects_name"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent" />
+
+        <ImageView
+            android:layout_height="@dimen/material_colored_divider_size"
+            android:layout_width="fill_parent"
+            android:background="@color/iv_divider_color"
+            android:paddingBottom="@dimen/material_vertical_size_divider"
+            android:contentDescription="@string/label_divider" />
         <!-- *******PROJECTS END***************************************************-->
 
         <!-- *******ISSUE TYPES BEGIN**********************************************-->
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/material_vertical_size_divider"
             android:textSize="@dimen/material_font_size_caption"
-            android:textColor="@color/abc_primary_text_material_light"
+            android:textColor="@color/primary_text"
             android:text="@string/label_issue_type"/>
         <Spinner
             style="@style/Material.Widget.Spinner"
@@ -50,11 +50,11 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:hint="@string/label_issue_type"
-            android:paddingBottom="7dp"/>
+            android:paddingBottom="@dimen/spinner_padding_bottom"/>
         <ImageView
-            android:layout_height="1dip"
+            android:layout_height="@dimen/material_colored_divider_size"
             android:layout_width="fill_parent"
-            android:background="#FF8D8D8D"
+            android:background="@color/iv_divider_color"
             android:paddingBottom="@dimen/material_vertical_size_divider"/>
         <!-- *******ISSUE TYPES END**********************************************-->
 
@@ -71,11 +71,11 @@
             android:inputType="text"
             android:hint="@string/label_summary"
             app:et_inputId="@+id/summary_error"
-            app:et_dividerErrorColor="#FFFF0000"
+            app:et_dividerErrorColor="@color/et_divider_error"
             app:et_helper="Enter summary"
             app:et_labelTextColor="@drawable/color_label"
             app:et_supportMode="helperWithError"
-            app:et_supportTextErrorColor="#FFFF0000" />
+            app:et_supportTextErrorColor="@color/et_divider_error" />
         <!-- *******SUMMARY END*************************************************-->
 
         <!-- *******PRIORITY BEGIN*************************************************-->
@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/material_vertical_size_divider"
             android:textSize="@dimen/material_font_size_caption"
-            android:textColor="@color/abc_primary_text_material_light"
+            android:textColor="@color/primary_text"
             android:text="@string/label_priority"/>
         <Spinner
             style="@style/Material.Widget.Spinner"
@@ -93,12 +93,12 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:hint="@string/label_priority"
-            android:paddingBottom="7dp"/>
+            android:paddingBottom="@dimen/spinner_padding_bottom"/>
 
         <ImageView
             android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            android:background="#FF8D8D8D"
+            android:layout_height="@dimen/material_colored_divider_size"
+            android:background="@color/iv_divider_color"
             android:paddingTop="@dimen/material_vertical_size_divider"/>
         <!-- *******PRIORITY END*************************************************-->
 
@@ -109,7 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/material_vertical_size_divider"
             android:textSize="@dimen/material_font_size_caption"
-            android:textColor="@color/abc_primary_text_material_light"
+            android:textColor="@color/primary_text"
             android:text="@string/label_attachment"/>
         <FrameLayout
             android:id="@+id/container_with_dotted_border"
@@ -135,7 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/material_vertical_size_divider"
             android:textSize="@dimen/material_font_size_caption"
-            android:textColor="@color/abc_primary_text_material_light"
+            android:textColor="@color/primary_text"
             android:text="@string/label_affects_versions"/>
         <Spinner
             style="@style/Material.Widget.Spinner"
@@ -143,11 +143,11 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:hint="@string/label_affects_versions"
-            android:paddingBottom="7dp"/>
+            android:paddingBottom="@dimen/spinner_padding_bottom"/>
         <ImageView
             android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            android:background="#FF8D8D8D"
+            android:layout_height="@dimen/material_colored_divider_size"
+            android:background="@color/iv_divider_color"
             android:paddingTop="@dimen/material_vertical_size_divider"/>
         <!-- *******AFFECTS VERSIONS END****************************************-->
 
@@ -163,11 +163,11 @@
             android:inputType="textMultiLine"
             android:hint="@string/label_environment"
             app:et_inputId="@+id/summary_error"
-            app:et_dividerErrorColor="#FFFF0000"
+            app:et_dividerErrorColor="@color/et_divider_error"
             app:et_helper="Enter environment"
             app:et_labelTextColor="@drawable/color_label"
             app:et_supportMode="helperWithError"
-            app:et_supportTextErrorColor="#FFFF0000"/>
+            app:et_supportTextErrorColor="@color/et_divider_error"/>
         <!-- *******ENVIRONMENT END****************************************-->
 
         <!-- *******DESCRIPTION BEGIN****************************************-->
@@ -182,11 +182,11 @@
             android:inputType="textMultiLine"
             android:hint="@string/label_description"
             app:et_inputId="@+id/description_error"
-            app:et_dividerErrorColor="#FFFF0000"
+            app:et_dividerErrorColor="@color/et_divider_error"
             app:et_helper="Enter description"
             app:et_labelTextColor="@drawable/color_label"
             app:et_supportMode="helperWithError"
-            app:et_supportTextErrorColor="#FFFF0000"/>
+            app:et_supportTextErrorColor="@color/et_divider_error"/>
         <!-- *******DESCRIPTION END****************************************-->
 
         <!-- *******TESTER BEGIN****************************************-->
@@ -196,19 +196,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/material_vertical_size_divider"
             android:textSize="@dimen/material_font_size_caption"
-            android:textColor="@color/abc_primary_text_material_light"
+            android:textColor="@color/primary_text"
             android:text="@string/label_tester"/>
         <Spinner
             style="@style/Material.Widget.Spinner"
-            android:id="@+id/spin_testers"
+            android:id="@+id/spin_assignable_users"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:hint="@string/label_tester"
-            android:paddingBottom="7dp"/>
+            android:paddingBottom="@dimen/spinner_padding_bottom"/>
         <ImageView
             android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            android:background="#FF8D8D8D"
+            android:layout_height="@dimen/material_colored_divider_size"
+            android:background="@color/iv_divider_color"
             android:paddingTop="@dimen/material_vertical_size_divider"/>
         <!-- *******TESTER END****************************************-->
 

@@ -58,10 +58,10 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     }
 
     @Override
-    public void onRequestPerformed(RestResponse<JiraUserInfo> restResponse) {
+    public void onRequestPerformed(RestResponse<?> restResponse) {
 
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
-            JiraUserInfo user = restResponse.getResultObject();
+            JiraUserInfo user = (JiraUserInfo) restResponse.getResultObject();
             mName.setText(getResources().getString(R.string.label_user_name) + UtilConstants.SharedPreference.COLON + user.getName());
             mEmailAddress.setText(getResources().getString(R.string.label_email) + UtilConstants.SharedPreference.COLON + user.getEmailAddress());
             mDisplayName.setText(user.getDisplayName());

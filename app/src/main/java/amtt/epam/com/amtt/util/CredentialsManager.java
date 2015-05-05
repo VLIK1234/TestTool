@@ -11,6 +11,8 @@ import amtt.epam.com.amtt.api.JiraApiConst;
 public class CredentialsManager {
 
     private static final CredentialsManager INSTANCE = new CredentialsManager();
+    private String password;
+
 
     private CredentialsManager() {
     }
@@ -34,7 +36,7 @@ public class CredentialsManager {
     }
 
     private String getPassword() {
-        return PreferenceUtils.getString(UtilConstants.SharedPreference.PASSWORD);
+            return password;
     }
 
     public String getUrl() {
@@ -55,17 +57,12 @@ public class CredentialsManager {
     }
 
     public void setCredentials(String userName, String password) {
-        setPassword(password);
+        this.password = password;
         setUserName(userName);
     }
 
     private void setUserName(String userName) {
         PreferenceUtils.putString(UtilConstants.SharedPreference.USER_NAME, userName);
     }
-
-    private void setPassword(String password) {
-        PreferenceUtils.putString(UtilConstants.SharedPreference.PASSWORD, password);
-    }
-
 }
 

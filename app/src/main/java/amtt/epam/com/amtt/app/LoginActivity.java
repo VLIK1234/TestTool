@@ -43,15 +43,17 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
         mUserName = (EditText) findViewById(R.id.user_name);
         mUserName.clearErrorOnTextChanged(true);
         mUserName.clearErrorOnFocus(true);
+        mUserName.setText("admin");
 
         mPassword = (EditText) findViewById(R.id.password);
         mPassword.clearErrorOnTextChanged(true);
         mPassword.clearErrorOnFocus(true);
+        mPassword.setText("bujhm515");
         
         mUrl = (EditText) findViewById(R.id.jira_url);
         mUrl.clearErrorOnTextChanged(true);
         mUrl.clearErrorOnFocus(true);
-        mUrl.setText("https://jira.epam.com");
+        mUrl.setText("https://amtt02.atlassian.net");
 
         mEpamJira = (CheckBox) findViewById(R.id.epamJiraCheckBox);
  
@@ -108,10 +110,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
 
 
             @Override
-            public void onRequestPerformed(RestResponse<String> restResponse) {
+            public void onRequestPerformed(RestResponse<?> restResponse) {
                 showProgress(false);
                 mLoginButton.setEnabled(true);
-                String resultMessage = restResponse.getResultObject();
+                String resultMessage = (String) restResponse.getResultObject();
                 CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
                 CredentialsManager.getInstance().setCredentials(mUserName.getText().toString(), mPassword.getText().toString());
                 CredentialsManager.getInstance().setAccess(true);

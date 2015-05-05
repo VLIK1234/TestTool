@@ -462,8 +462,8 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     }
 
     @Override
-    public void onRequestPerformed(RestResponse<JMetaResponse> restResponse) {
-        JMetaResponse jiraMetaResponse = restResponse.getResultObject();
+    public void onRequestPerformed(RestResponse<?> restResponse) {
+        JMetaResponse jiraMetaResponse = (JMetaResponse) restResponse.getResultObject();
         ArrayList<String> projectsNames = jiraMetaResponse.getProjectsNames();
         ArrayList<String> projectsKeys = jiraMetaResponse.getProjectsKeys();
         PreferenceUtils.putSet(UtilConstants.SharedPreference.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
