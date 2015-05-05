@@ -2,12 +2,13 @@ package amtt.epam.com.amtt.database.table;
 
 import java.util.ArrayList;
 
+import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.util.MultiValueMap;
 
 /**
  * Created by Artsiom_Kaliaha on 29.04.2015.
  */
-public class UsersTable extends Table {
+public class UsersTable extends Table implements BaseColumns {
 
     public static final String TABLE_NAME = "users_table";
 
@@ -17,6 +18,7 @@ public class UsersTable extends Table {
     private static MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
+            _ID,
             _USER_NAME,
             _PASSWORD
     };
@@ -26,6 +28,9 @@ public class UsersTable extends Table {
         sColumnsMap.put(TYPE_TEXT, new ArrayList<String>() {{
             add(_USER_NAME);
             add(_PASSWORD);
+        }});
+        sColumnsMap.put(TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
+            add(_ID);
         }});
     }
 

@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class JiraUserGroup {
 
-    @SerializedName("size")
+    @SerializedName("user_group_size")
     private int mSize;
     @SerializedName("items")
     private ArrayList<JiraUserGroupItem> mItems;

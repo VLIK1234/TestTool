@@ -20,14 +20,14 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<UserD
     @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_info);
-        name = (TextView) findViewById(R.id.tv_name);
-        emailAddress = (TextView) findViewById(R.id.tv_email_address);
-        displayName = (TextView) findViewById(R.id.tv_display_name);
-        timeZone = (TextView) findViewById(R.id.tv_time_zone);
-        locale = (TextView) findViewById(R.id.tv_locale);
-        size = (TextView) findViewById(R.id.tv_size);
-        namesGroups = (TextView) findViewById(R.id.tv_names);
+        setContentView(R.layout.fragment_user_info);
+        name = (TextView) findViewById(R.id.user_name);
+        emailAddress = (TextView) findViewById(R.id.user_email);
+        displayName = (TextView) findViewById(R.id.user_display_name);
+        timeZone = (TextView) findViewById(R.id.user_time_zone);
+        locale = (TextView) findViewById(R.id.user_locale);
+        size = (TextView) findViewById(R.id.user_group_size);
+        namesGroups = (TextView) findViewById(R.id.user_groups_names);
         showProgress(true);
         new JiraTask.Builder<UserDataResult,JiraUserInfo>()
                 .setOperationType(JiraTask.JiraTaskType.SEARCH)

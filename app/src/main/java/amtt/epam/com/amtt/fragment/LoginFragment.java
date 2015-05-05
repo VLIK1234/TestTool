@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.fragment;
 
 
 import android.annotation.TargetApi;
+import android.content.ContentValues;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -19,15 +20,22 @@ import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.AuthorizationResult;
+import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
-import amtt.epam.com.amtt.util.Logger;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class LoginFragment extends Fragment implements JiraCallback<AuthorizationResult,Void> {
+
+    public static interface FragmentLoginCallback {
+
+        void onUserLoggedIn();
+
+    }
 
     private EditText mUserName;
     private EditText mPassword;
@@ -49,8 +57,8 @@ public class LoginFragment extends Fragment implements JiraCallback<Authorizatio
         mPassword = (EditText) layout.findViewById(R.id.password);
         mUrl = (EditText) layout.findViewById(R.id.jira_url);
 
-        mUrl.setText("https://amttpr.atlassian.net");
-        mUserName.setText("iryna_monchanka");
+        mUrl.setText("https://amtt02.atlassian.net");
+        mUserName.setText("artsiom_kaliaha");
 
         mLoginButton = (Button) layout.findViewById(R.id.login_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +105,7 @@ public class LoginFragment extends Fragment implements JiraCallback<Authorizatio
             CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
             CredentialsManager.getInstance().setAccess(true);
             TopButtonService.authSuccess(getActivity());
+            insertUserToDatabase();
         }
     }
 
@@ -104,6 +113,14 @@ public class LoginFragment extends Fragment implements JiraCallback<Authorizatio
         if (mProgress != null) {
             mProgress.setVisibility(show ? View.VISIBLE : View.GONE);
         }
+    }
+
+    private void insertUserToDatabase() {
+        ContentValues userValues = new ContentValues();
+        userValues.put(UsersTable._USER_NAME, mUserName.getText().toString());
+        userValues.put(UsersTable._PASSWORD, mPassword.getText().toString());
+        getActivity().getContentResolver().insert(AmttContentProvider.USER_CONTENT_URI,userValues);
+        ((FragmentLoginCallback)getActivity()).onUserLoggedIn();
     }
 
 }
