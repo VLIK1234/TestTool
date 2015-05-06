@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.api.rest;
 
+import amtt.epam.com.amtt.util.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -90,6 +91,8 @@ public class RestMethod<ResultType> {
     private Processor<ResultType, HttpEntity> mProcessor;
     private String mPostEntity;
 
+    private static final String TAG = RestMethod.class.getSimpleName();
+
     static {
         mHttpClient = new DefaultHttpClient();
     }
@@ -107,14 +110,19 @@ public class RestMethod<ResultType> {
         try {
             httpResponse = mHttpClient.execute(httpGet);
         } catch (IllegalStateException e) {
+            Logger.d(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IllegalArgumentException e) {
+            Logger.d(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (UnknownHostException e) {
+            Logger.d(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (ClientProtocolException e) {
+            Logger.d(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IOException e) {
+            Logger.d(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }
         return httpResponse;
@@ -135,8 +143,10 @@ public class RestMethod<ResultType> {
         try {
             httpResponse = mHttpClient.execute(httpPost);
         } catch (ClientProtocolException e) {
+            Logger.d(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IOException e) {
+            Logger.d(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }
         return httpResponse;
@@ -165,6 +175,7 @@ public class RestMethod<ResultType> {
                 restResponse.setResultObject(result);
             }
         } catch (Exception e) {
+            Logger.d(TAG, e.getMessage());
             throw new AmttException(e, httpResponse.getStatusLine().getStatusCode(), this, entity);
         }
 
@@ -174,6 +185,7 @@ public class RestMethod<ResultType> {
                 statusCode == HttpStatus.SC_UNAUTHORIZED || statusCode == HttpStatus.SC_FORBIDDEN ||
                 statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
             //TODO put error
+            Logger.d(TAG, String.valueOf(statusCode));
             throw new AmttException(null, statusCode, this, null);
         }
 

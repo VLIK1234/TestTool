@@ -6,11 +6,11 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 /**
  * Created by Artsiom_Kaliaha on 17.04.2015.
  */
-public interface JiraCallback<T> {
+public interface JiraCallback<ResultType> {
 
     void onRequestStarted();
 
-    void onRequestPerformed(RestResponse<?> restResponse);
+    void onRequestPerformed(RestResponse<ResultType> restResponse);
 
     void onRequestError(AmttException e);
 

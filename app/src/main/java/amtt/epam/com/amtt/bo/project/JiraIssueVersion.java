@@ -25,8 +25,8 @@ public class JiraIssueVersion {
     private Boolean mOverdue;
     @SerializedName("userReleaseDate")
     private String mUserReleaseDate;
-    @SerializedName("projectId")
-    private int mProjectId;
+    //@SerializedName("projectId")
+   // private int mProjectId;
 
     public JiraIssueVersion(){}
 
@@ -44,7 +44,7 @@ public class JiraIssueVersion {
         this.mReleaseDate = releaseDate;
         this.mOverdue = overdue;
         this.mUserReleaseDate = userReleaseDate;
-        this.mProjectId = projectId;
+        //this.mProjectId = projectId;
     }
 
     public String getId() {
@@ -118,12 +118,12 @@ public class JiraIssueVersion {
     public void setUserReleaseDate(String userReleaseDate) {
         this.mUserReleaseDate = userReleaseDate;
     }
-
+/*
     public int getProjectId() {
         return mProjectId;
     }
 
     public void setProjectId(int projectId) {
         this.mProjectId = projectId;
-    }
+    }*/
 }

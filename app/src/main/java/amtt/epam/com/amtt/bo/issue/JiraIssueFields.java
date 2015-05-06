@@ -30,7 +30,7 @@ public class JiraIssueFields {
     @SerializedName("security")
     private JiraIssueSecurity mJiraIssueSecurity;
     @SerializedName("versions")
-    private ArrayList<JiraIssueVersion> mJiraIssueVersions;
+    private ArrayList<JiraIssueVersion> mJiraIssueVersions = new ArrayList<>();
     @SerializedName("environment")
     private String mEnvironment;
     @SerializedName("description")
@@ -38,7 +38,7 @@ public class JiraIssueFields {
     @SerializedName("duedate")
     private String mDueDate;
     @SerializedName("fixVersions")
-    private ArrayList<JiraIssueVersion> mJiraIssueFixVersions;
+    private ArrayList<JiraIssueVersion> mJiraIssueFixVersions = new ArrayList<>();
     @SerializedName("components")
     private ArrayList<JiraIssueComponent> mJiraIssueComponents;
 
@@ -199,8 +199,10 @@ public class JiraIssueFields {
         return mJiraIssueVersions;
     }
 
-    public void setJiraIssueVersions(ArrayList<JiraIssueVersion> jiraIssueVersions) {
-        this.mJiraIssueVersions = jiraIssueVersions;
+    public void setJiraIssueVersions(JiraIssueVersion jiraIssueVersions) {
+        if (jiraIssueVersions != null) {
+            mJiraIssueVersions.add(jiraIssueVersions);
+        }
     }
 
     public String getEnvironment() {

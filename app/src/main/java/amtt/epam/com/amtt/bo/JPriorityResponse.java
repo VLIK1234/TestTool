@@ -10,6 +10,7 @@ import java.util.ArrayList;
 public class JPriorityResponse {
 
     private ArrayList<JPriority> mPriorities;
+    private ArrayList<String> mPriorityNames;
 
     public JPriorityResponse(){}
 
@@ -23,5 +24,17 @@ public class JPriorityResponse {
 
     public void setPriorities(ArrayList<JPriority> priorities) {
         this.mPriorities = priorities;
+    }
+
+    public ArrayList<String> getPriorityNames() {
+        if (mPriorities != null) {
+            mPriorityNames = new ArrayList<>();
+            for (int i = 0; i < mPriorities.size(); i++) {
+                mPriorityNames.add(mPriorities.get(i).getName());
+            }
+            return  mPriorityNames;
+        } else {
+            return null;
+        }
     }
 }

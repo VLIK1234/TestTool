@@ -10,6 +10,9 @@ import java.util.ArrayList;
 public class JUserAssignableResponse {
 
     private ArrayList<JiraUser> mAssignableUsers;
+    private ArrayList<String> mAssignableUsersNames;
+
+    public JUserAssignableResponse(){}
 
     public JUserAssignableResponse(ArrayList<JiraUser> assignableUsers) {
         this.mAssignableUsers = assignableUsers;
@@ -21,5 +24,17 @@ public class JUserAssignableResponse {
 
     public void setAssignableUsers(ArrayList<JiraUser> assignableUsers) {
         this.mAssignableUsers = assignableUsers;
+    }
+
+    public ArrayList<String> getAssignableUsersNames() {
+        if (mAssignableUsers != null) {
+            mAssignableUsersNames = new ArrayList<>();
+            for (int i = 0; i < mAssignableUsers.size(); i++) {
+                mAssignableUsersNames.add(mAssignableUsers.get(i).getName());
+            }
+            return  mAssignableUsersNames;
+        } else {
+            return null;
+        }
     }
 }

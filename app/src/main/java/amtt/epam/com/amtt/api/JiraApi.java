@@ -10,6 +10,7 @@ import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.processing.AuthResponseProcessor;
 import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.util.Logger;
 
 /**
  * Created by Artsiom_Kaliaha on 24.03.2015.
@@ -17,6 +18,8 @@ import amtt.epam.com.amtt.util.CredentialsManager;
 
 @SuppressWarnings("unchecked")
 public class JiraApi {
+
+    private static final String TAG = JiraApi.class.getSimpleName();
 
     private static class JiraApiSingletonHolder {
 
@@ -63,7 +66,8 @@ public class JiraApi {
     public <ResultType, InputType> RestMethod buildDataSearch(final String requestSuffix, final Processor<ResultType, InputType> processor) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials());
-
+        Logger.d(TAG, requestSuffix);
+        Logger.d(TAG, mCredentialsManager.getCredentials());
         mMethod = new RestMethod.Builder()
                 .setType(RestMethodType.GET)
                 .setUrl(mCredentialsManager.getUrl() + requestSuffix)

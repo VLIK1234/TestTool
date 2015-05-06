@@ -11,9 +11,13 @@ import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.JMetaResponse;
+import amtt.epam.com.amtt.bo.JPriorityResponse;
 import amtt.epam.com.amtt.bo.JProjectExtVersionsResponse;
+import amtt.epam.com.amtt.bo.JUserAssignableResponse;
 import amtt.epam.com.amtt.bo.issue.CreateIssue;
+import amtt.epam.com.amtt.processing.PriorityProcessor;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
+import amtt.epam.com.amtt.processing.UsersAssignableProcessor;
 import amtt.epam.com.amtt.processing.VersionsProcessor;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
@@ -28,7 +32,7 @@ import android.widget.*;
 import java.util.ArrayList;
 
 @SuppressWarnings("unchecked")
-public class CreateIssueActivity extends BaseActivity implements JiraCallback<Object> {
+public class CreateIssueActivity extends BaseActivity implements JiraCallback {
 
     private EditText mDescription;
     private EditText mSummary;
@@ -50,7 +54,11 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<Ob
         mSummary = (EditText) findViewById(R.id.et_summary);
         mSummary.clearErrorOnTextChanged(true);
         mSummary.clearErrorOnFocus(true);
-
+        mIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
+        mVersions = (Spinner) findViewById(R.id.spin_affects_versions);
+        mAssignableUsers = (Spinner) findViewById(R.id.spin_assignable_users);
+        mPriority = (Spinner) findViewById(R.id.spin_priority);
+        mEnvironment = (EditText) findViewById(R.id.et_environment);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_layout, getProjectsNames());
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         mProjectName = (Spinner) findViewById(R.id.spin_projects_name);
@@ -60,6 +68,8 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<Ob
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 getMetaAsynchronously();
                 getVersionsAsynchronously();
+                getPriorityAsynchronously();
+              //  getUsersAssignableAsynchronously();
             }
 
             @Override
@@ -112,18 +122,27 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<Ob
 
     }
 
-
     private void createIssueAsynchronously() {
         mCreateIssue.setEnabled(false);
         showProgress(true);
         CreateIssue issue = new CreateIssue();
-        String projectKey, issueType, description, summary;
+        String projectKey, issueType, description, summary, priority, versions, environment, assignableUserName;
         description = mDescription.getText().toString();
         summary = mSummary.getText().toString();
-        issueType = mIssueTypes.getSelectedItem().toString();
-        projectKey = getProjectKey();
+        issueType ="Epic";//= mIssueTypes.getSelectedItem().toString();
+        priority = mPriority.getSelectedItem().toString();
+        try {
+            versions = mVersions.getSelectedItem().toString();
+        }
+        catch(Exception e){
+            versions = null;
+        }
+        environment = mEnvironment.getText().toString();
+        //assignableUserName = mAssignableUsers.getSelectedItem().toString();
 
-        RestMethod<JMetaResponse> createIssue = JiraApi.getInstance().buildIssueCeating(issue.createSimpleIssue(projectKey, issueType, description, summary));
+        projectKey = "FOUR";//= getProjectKey();
+
+        RestMethod<JMetaResponse> createIssue = JiraApi.getInstance().buildIssueCeating(issue.createSimpleIssue(projectKey, issueType, description, summary, priority, versions, environment));
         new JiraTask.Builder<JMetaResponse>()
             .setRestMethod(createIssue)
             .setCallback(CreateIssueActivity.this)
@@ -147,7 +166,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<Ob
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onRequestPerformed(RestResponse<?> restResponse) {
+    public void onRequestPerformed(RestResponse restResponse) {
         if (restResponse.getOpeartionResult() == JiraOperationResult.ISSUE_CREATED) {
             Toast.makeText(this, R.string.issue_created, Toast.LENGTH_SHORT).show();
             finish();
@@ -158,17 +177,23 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<Ob
                 ArrayList<String> issueTypesNames = jMetaResponse.getProjects().get(index).getIssueTypesNames();
                 ArrayAdapter<String> issueNames = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, issueTypesNames);
                 issueNames.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                mIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
                 mIssueTypes.setAdapter(issueNames);
-               // getVersionsAsynchronously();
+                // getVersionsAsynchronously();
             } else if (restResponse.getResultObject().getClass() == JProjectExtVersionsResponse.class) {
                 JProjectExtVersionsResponse jProjectExtVersionsResponse = (JProjectExtVersionsResponse) restResponse.getResultObject();
                 ArrayAdapter<String> jVersions = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, jProjectExtVersionsResponse.getVersionsNames());
-                mVersions = (Spinner) findViewById(R.id.spin_affects_versions);
                 mVersions.setAdapter(jVersions);
+            } else if (restResponse.getResultObject().getClass() == JUserAssignableResponse.class) {
+                JUserAssignableResponse jUserAssignableResponse = (JUserAssignableResponse) restResponse.getResultObject();
+                ArrayAdapter<String> jUsersAssignable = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, jUserAssignableResponse.getAssignableUsersNames());
+                mAssignableUsers.setAdapter(jUsersAssignable);
+            } else if (restResponse.getResultObject().getClass() == JPriorityResponse.class) {
+                JPriorityResponse jPriorityResponse = (JPriorityResponse) restResponse.getResultObject();
+                ArrayAdapter<String> jPriority = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, jPriorityResponse.getPriorityNames());
+                mPriority.setAdapter(jPriority);
             }
+            mCreateIssue.setEnabled(true);
         }
-        mCreateIssue.setEnabled(true);
     }
 
     @Override
@@ -178,10 +203,27 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<Ob
 
     private void getVersionsAsynchronously() {
         String path = JiraApiConst.PROJECT_VERSIONS_PATH + getProjectKey() + JiraApiConst.PROJECT_VERSIONS_PATH_V;
-        RestMethod<JProjectExtVersionsResponse> versions;
-        versions = JiraApi.getInstance().buildDataSearch(path, new VersionsProcessor());
+        RestMethod<JProjectExtVersionsResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new VersionsProcessor());
         new JiraTask.Builder<JProjectExtVersionsResponse>()
-            .setRestMethod(versions)
+            .setRestMethod(searchMethod)
+            .setCallback(CreateIssueActivity.this)
+            .createAndExecute();
+    }
+
+    private void getUsersAssignableAsynchronously() {
+        String path = JiraApiConst.USERS_ASSIGNABLE_PATH + getProjectKey();
+        RestMethod<JUserAssignableResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new UsersAssignableProcessor());
+        new JiraTask.Builder<JUserAssignableResponse>()
+            .setRestMethod(searchMethod)
+            .setCallback(CreateIssueActivity.this)
+            .createAndExecute();
+    }
+
+    private void getPriorityAsynchronously() {
+        String path = JiraApiConst.PROJECT_PRIORITY_PATH;
+        RestMethod<JPriorityResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new PriorityProcessor());
+        new JiraTask.Builder<JPriorityResponse>()
+            .setRestMethod(searchMethod)
             .setCallback(CreateIssueActivity.this)
             .createAndExecute();
     }

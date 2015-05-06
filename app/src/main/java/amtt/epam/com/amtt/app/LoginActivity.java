@@ -48,7 +48,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
         mPassword = (EditText) findViewById(R.id.password);
         mPassword.clearErrorOnTextChanged(true);
         mPassword.clearErrorOnFocus(true);
-        mPassword.setText("bujhm515");
         
         mUrl = (EditText) findViewById(R.id.jira_url);
         mUrl.clearErrorOnTextChanged(true);
@@ -110,7 +109,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
 
 
             @Override
-            public void onRequestPerformed(RestResponse<?> restResponse) {
+            public void onRequestPerformed(RestResponse<String> restResponse) {
                 showProgress(false);
                 mLoginButton.setEnabled(true);
                 String resultMessage = (String) restResponse.getResultObject();
