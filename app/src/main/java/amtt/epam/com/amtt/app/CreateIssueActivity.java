@@ -70,7 +70,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
                 Boolean isValid = true;
 
                 if (TextUtils.isEmpty(etSummary.getText().toString())) {
-                    etSummary.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
+                    etSummary.setError("");
                     isValid = false;
                 }
 

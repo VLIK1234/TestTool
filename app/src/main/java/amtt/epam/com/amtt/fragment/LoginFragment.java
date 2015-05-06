@@ -163,6 +163,7 @@ public class LoginFragment extends BaseFragment implements JiraCallback<String>,
         TopButtonService.authSuccess(getActivity());
         Toast.makeText(getActivity(), resultMessage, Toast.LENGTH_SHORT).show();
         insertUserToDatabase();
+        TopButtonService.authSuccess(getActivity());
     }
 
     @Override

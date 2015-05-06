@@ -17,6 +17,7 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.UserAdapter;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.service.TopButtonService;
 
 /**
  * Created by Artsiom_Kaliaha on 30.04.2015.
@@ -49,6 +50,7 @@ public class UserListFragment extends BaseFragment implements LoaderManager.Load
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ((ListFragmentUserCallback) getActivity()).onListItemClick(id);
+                TopButtonService.authSuccess(getActivity());
             }
         });
         mProgressBar = (ProgressBar) layout.findViewById(android.R.id.progress);
