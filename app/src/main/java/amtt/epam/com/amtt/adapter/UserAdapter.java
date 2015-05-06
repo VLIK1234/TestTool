@@ -37,6 +37,8 @@ public class UserAdapter extends CursorAdapter {
         return layout;
     }
 
+
+
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder vh = (ViewHolder)view.getTag();

@@ -75,10 +75,6 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
         Cursor cursor;
         SQLiteDatabase database = getReadableDatabase();
 
-        if (selection != null) {
-            selection += "=?";
-        }
-
         try {
             database.beginTransaction();
             cursor = getReadableDatabase().query(tableName, projection, selection, selectionArgs, null, null, sortOrder);

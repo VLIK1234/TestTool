@@ -13,6 +13,7 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.rest.RestResponse;
+import amtt.epam.com.amtt.api.result.AuthorizationResult;
 import amtt.epam.com.amtt.api.result.UserDataResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.util.Constants;
@@ -20,6 +21,7 @@ import amtt.epam.com.amtt.util.Constants;
 /**
  * Created by Artsiom_Kaliaha on 05.05.2015.
  */
+@SuppressWarnings("unchecked")
 public class UserFragment extends BaseFragment implements JiraCallback<UserDataResult,JiraUserInfo> {
 
     private static final String KEY_USER = "key_user";
@@ -50,7 +52,6 @@ public class UserFragment extends BaseFragment implements JiraCallback<UserDataR
         return layout;
     }
 
-    @SuppressWarnings("unchecked")
     private void requestUserInfo() {
         new JiraTask.Builder<UserDataResult,JiraUserInfo>()
                 .setOperationType(JiraTask.JiraTaskType.SEARCH)
@@ -73,22 +74,29 @@ public class UserFragment extends BaseFragment implements JiraCallback<UserDataR
     }
 
 
-
     @Override
     public void onJiraRequestPerformed(RestResponse<UserDataResult, JiraUserInfo> restResponse) {
         JiraUserInfo user = restResponse.getResultObject();
-        mUserName.setText(getResources().getString(R.string.user_name) + Constants.SharedPreferenceKeys.COLON + user.getName());
-        mEmail.setText(getResources().getString(R.string.user_email) + Constants.SharedPreferenceKeys.COLON + user.getEmailAddress());
-        mDisplayName.setText(user.getDisplayName());
-        mTimeZone.setText(getResources().getString(R.string.time_zone) + Constants.SharedPreferenceKeys.COLON + user.getTimeZone());
-        mLocale.setText(getResources().getString(R.string.locale) + Constants.SharedPreferenceKeys.COLON + user.getLocale());
-        mGroupSize.setText(getResources().getString(R.string.size) + Constants.SharedPreferenceKeys.COLON + String.valueOf(user.getGroups().getSize()));
-        String groups = "";
-        for (int i = 0; i < user.getGroups().getItems().size(); i++) {
-            groups += user.getGroups().getItems().get(i).getName() + Constants.DialogKeys.NEW_LINE;
+        if (user != null) {
+            mUserName.setText(getResources().getString(R.string.user_name) + Constants.SharedPreferenceKeys.COLON + user.getName());
+            mEmail.setText(getResources().getString(R.string.user_email) + Constants.SharedPreferenceKeys.COLON + user.getEmailAddress());
+            mDisplayName.setText(user.getDisplayName());
+            mTimeZone.setText(getResources().getString(R.string.time_zone) + Constants.SharedPreferenceKeys.COLON + user.getTimeZone());
+            mLocale.setText(getResources().getString(R.string.locale) + Constants.SharedPreferenceKeys.COLON + user.getLocale());
+            mGroupSize.setText(getResources().getString(R.string.size) + Constants.SharedPreferenceKeys.COLON + String.valueOf(user.getGroups().getSize()));
+            String groups = "";
+            for (int i = 0; i < user.getGroups().getItems().size(); i++) {
+                groups += user.getGroups().getItems().get(i).getName() + Constants.DialogKeys.NEW_LINE;
+            }
+            mGroupsNames.setText(getResources().getString(R.string.names_groups) + Constants.SharedPreferenceKeys.COLON + groups);
+            setProgressVisibility(View.GONE);
+        } else {
+            new JiraTask.Builder<AuthorizationResult, Void>()
+                    .setOperationType(JiraTask.JiraTaskType.AUTH)
+                    .setCallback(UserFragment.this)
+                    .create()
+                    .execute();
         }
-        mGroupsNames.setText(getResources().getString(R.string.names_groups) + Constants.SharedPreferenceKeys.COLON + groups);
-        setProgressVisibility(View.GONE);
     }
 
 }

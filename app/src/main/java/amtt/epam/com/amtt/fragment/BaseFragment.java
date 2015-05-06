@@ -8,6 +8,9 @@ import android.widget.ProgressBar;
  */
 public class BaseFragment extends Fragment {
 
+    static final int CURSOR_LOADER_ID = 0;
+    static final int NO_FLAGS = 0;
+
     ProgressBar mProgressBar;
 
     void setProgressVisibility(int visibilityState) {

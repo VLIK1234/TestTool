@@ -75,5 +75,6 @@
     <string name="action_new_qa">Add new QA</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settings_activity">Settings</string>
+    <string name="user_already_exists">User with this name already exists</string>
 
 </resources>

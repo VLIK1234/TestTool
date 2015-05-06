@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,11 +38,8 @@ import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseResponse;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
-import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
-import amtt.epam.com.amtt.api.result.UserDataResult;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
-import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 
 /**
@@ -127,18 +123,14 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.layout_auth:
-                        if (!CredentialsManager.getInstance().getAccessState()) {
-                            Intent intent = new Intent(getContext(), SettingsActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            getContext().getApplicationContext().startActivity(intent);
-                        } else {
-                            //logout logic
-                        }
-                        break;
-                    case R.id.layout_user_info:
-                        Intent intent = new Intent(getContext(), UserInfoActivity.class);
+                        Intent intent = new Intent(getContext(), SettingsActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         getContext().getApplicationContext().startActivity(intent);
+                        break;
+                    case R.id.layout_user_info:
+                        Intent userInfointent = new Intent(getContext(), UserInfoActivity.class);
+                        userInfointent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getContext().getApplicationContext().startActivity(userInfointent);
                         break;
                     case R.id.layout_add_step:
                         sStepNumber++;
@@ -151,9 +143,9 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
                         break;
 
                     case R.id.layout_show_step:
-                         Intent intentStep = new Intent(getContext(), StepsActivity.class);
-                         intentStep.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                         getContext().getApplicationContext().startActivity(intentStep);
+                        Intent intentStep = new Intent(getContext(), StepsActivity.class);
+                        intentStep.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getContext().getApplicationContext().startActivity(intentStep);
                         break;
                     case R.id.layout_bug_rep:
                         new JiraTask.Builder<UserDataResult, JMetaResponse>()
@@ -393,7 +385,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<UserDataR
 
     @Override
     public void onDataBaseActionDone(DataBaseResponse<Void> result) {
-        int resultMessage ;
+        int resultMessage;
         switch (result.getTaskResult()) {
             case DONE:
                 resultMessage = R.string.data_base_action_done;

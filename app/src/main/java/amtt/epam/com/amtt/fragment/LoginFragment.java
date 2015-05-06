@@ -2,14 +2,21 @@ package amtt.epam.com.amtt.fragment;
 
 
 import android.annotation.TargetApi;
+import android.app.Fragment;
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputBinding;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -29,7 +36,7 @@ import amtt.epam.com.amtt.util.CredentialsManager;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LoginFragment extends Fragment implements JiraCallback<AuthorizationResult,Void> {
+public class LoginFragment extends BaseFragment implements JiraCallback<AuthorizationResult, Void>, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static interface FragmentLoginCallback {
 
@@ -42,17 +49,29 @@ public class LoginFragment extends Fragment implements JiraCallback<Authorizatio
     private EditText mUrl;
     private String mToastText = Constants.SharedPreferenceKeys.VOID;
     private Button mLoginButton;
-    private ProgressBar mProgress;
 
-    public LoginFragment() { }
+    private InputMethodManager mInputManager;
+
+    public LoginFragment() {
+    }
 
 
     @Override
-    @SuppressWarnings("unchecked")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_login, container, false);
+        initViews(layout);
+        mInputManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        return layout;
+    }
 
-        mProgress = (ProgressBar)layout.findViewById(android.R.id.progress);
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mInputManager.hideSoftInputFromWindow(mUserName.getWindowToken(), NO_FLAGS);
+    }
+
+    private void initViews(View layout) {
+        mProgressBar = (ProgressBar) layout.findViewById(android.R.id.progress);
         mUserName = (EditText) layout.findViewById(R.id.user_name);
         mPassword = (EditText) layout.findViewById(R.id.password);
         mUrl = (EditText) layout.findViewById(R.id.jira_url);
@@ -74,15 +93,11 @@ public class LoginFragment extends Fragment implements JiraCallback<Authorizatio
                 if (TextUtils.isEmpty(mUrl.getText().toString())) {
                     mToastText += (Constants.DialogKeys.INPUT_URL);
                 } else {
-                    showProgress(true);
+                    setProgressVisibility(View.VISIBLE);
                     CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
                     CredentialsManager.getInstance().setCredentials(mUserName.getText().toString(), mPassword.getText().toString());
-                    new JiraTask.Builder<AuthorizationResult, Void>()
-                            .setOperationType(JiraTask.JiraTaskType.AUTH)
-                            .setCallback(LoginFragment.this)
-                            .create()
-                            .execute();
 
+                    getLoaderManager().initLoader(CURSOR_LOADER_ID, null, LoginFragment.this);
                     mLoginButton.setVisibility(View.GONE);
                 }
                 if (!TextUtils.isEmpty(mToastText)) {
@@ -91,14 +106,30 @@ public class LoginFragment extends Fragment implements JiraCallback<Authorizatio
                 mToastText = "";
             }
         });
-
-        return layout;
     }
 
+    @SuppressWarnings("unchecked")
+    private void sendAuthRequest() {
+        new JiraTask.Builder<AuthorizationResult, Void>()
+                .setOperationType(JiraTask.JiraTaskType.AUTH)
+                .setCallback(LoginFragment.this)
+                .create()
+                .execute();
+    }
+
+    private void insertUserToDatabase() {
+        ContentValues userValues = new ContentValues();
+        userValues.put(UsersTable._USER_NAME, mUserName.getText().toString());
+        userValues.put(UsersTable._PASSWORD, mPassword.getText().toString());
+        getActivity().getContentResolver().insert(AmttContentProvider.USER_CONTENT_URI, userValues);
+        ((FragmentLoginCallback) getActivity()).onUserLoggedIn();
+    }
+
+    //Callbacks
     @Override
-    public void onJiraRequestPerformed(RestResponse<AuthorizationResult,Void> restResponse) {
+    public void onJiraRequestPerformed(RestResponse<AuthorizationResult, Void> restResponse) {
         Toast.makeText(getActivity(), restResponse.getMessage(), Toast.LENGTH_SHORT).show();
-        showProgress(false);
+        setProgressVisibility(View.GONE);
         mLoginButton.setVisibility(View.VISIBLE);
         if (restResponse.getResult() == AuthorizationResult.SUCCESS) {
             CredentialsManager.getInstance().setUserName(mUserName.getText().toString());
@@ -109,18 +140,29 @@ public class LoginFragment extends Fragment implements JiraCallback<Authorizatio
         }
     }
 
-    private void showProgress(boolean show) {
-        if (mProgress != null) {
-            mProgress.setVisibility(show ? View.VISIBLE : View.GONE);
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(),
+                AmttContentProvider.USER_CONTENT_URI,
+                UsersTable.PROJECTION,
+                UsersTable._USER_NAME + "=?",
+                new String[] {mUserName.getText().toString()},
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data.getCount() == 0) {
+            sendAuthRequest();
+        } else {
+            Toast.makeText(getActivity(), getActivity().getString(R.string.user_already_exists), Toast.LENGTH_SHORT).show();
+            setProgressVisibility(View.GONE);
         }
     }
 
-    private void insertUserToDatabase() {
-        ContentValues userValues = new ContentValues();
-        userValues.put(UsersTable._USER_NAME, mUserName.getText().toString());
-        userValues.put(UsersTable._PASSWORD, mPassword.getText().toString());
-        getActivity().getContentResolver().insert(AmttContentProvider.USER_CONTENT_URI,userValues);
-        ((FragmentLoginCallback)getActivity()).onUserLoggedIn();
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 
 }

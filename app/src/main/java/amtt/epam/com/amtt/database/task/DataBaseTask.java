@@ -171,7 +171,7 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
                 case CLEAR:
                     performCleaning();
                 default:
-                    dataBaseResponse.setValueResult((ResultType) performAvailabilityCheck());
+                    dataBaseResponse.setValueResult((ResultType) isAnyUserInDatabase());
             }
         } catch (Exception e) {
             dataBaseResponse = new DataBaseResponse<>();
@@ -224,9 +224,9 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
         return DataBaseTaskResult.CLEARED;
     }
 
-    private Boolean performAvailabilityCheck() {
+    private Boolean isAnyUserInDatabase() {
         Cursor cursor = mContext.getContentResolver().query(AmttContentProvider.USER_CONTENT_URI, UsersTable.PROJECTION, null, null, null);
-        boolean isAnyUserInDB = cursor.getColumnCount() != 0;
+        boolean isAnyUserInDB = cursor.getCount() != 0;
         cursor.close();
         return isAnyUserInDB;
     }

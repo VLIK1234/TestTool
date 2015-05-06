@@ -21,6 +21,10 @@ import amtt.epam.com.amtt.fragment.UserListFragment;
 
 public class SettingsActivity extends ActionBarActivity implements DataBaseCallback<Boolean>, FragmentLoginCallback, ListFragmentUserCallback {
 
+    private static final String TAG_LOGIN_FRAGMENT = "tag_login_fragment";
+    private static final String TAG_USER_LIST_FRAGMENT = "tag_user_list_fragment";
+    private static final String TAG_USER_FRAGMENT = "tag_user_fragment";
+
     private FragmentManager mFragmentManager;
 
     @Override
@@ -50,11 +54,20 @@ public class SettingsActivity extends ActionBarActivity implements DataBaseCallb
         int id = item.getItemId();
 
         if (id == R.id.action_new_qa) {
-            mFragmentManager.beginTransaction().replace(R.id.container, new LoginFragment()).commit();
+            mFragmentManager.beginTransaction().replace(R.id.container, new LoginFragment(), TAG_LOGIN_FRAGMENT).addToBackStack(null).commit();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mFragmentManager.getBackStackEntryCount() > 0) {
+            mFragmentManager.popBackStack();
+        } else {
+            finish();
+        }
     }
 
     //Callbacks
@@ -63,9 +76,9 @@ public class SettingsActivity extends ActionBarActivity implements DataBaseCallb
         if (dataBaseResponse.getTaskResult() == DataBaseTaskResult.DONE) {
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
             if (dataBaseResponse.getValueResult()) {
-                transaction.add(R.id.container, new LoginFragment());
+                transaction.replace(R.id.container, new UserListFragment(), TAG_USER_LIST_FRAGMENT);
             } else {
-                transaction.add(R.id.container, new UserListFragment());
+                transaction.replace(R.id.container, new LoginFragment(), TAG_LOGIN_FRAGMENT);
             }
             transaction.commit();
         }
@@ -73,11 +86,11 @@ public class SettingsActivity extends ActionBarActivity implements DataBaseCallb
 
     @Override
     public void onUserLoggedIn() {
-        mFragmentManager.beginTransaction().replace(R.id.container, new UserListFragment()).commit();
+        mFragmentManager.beginTransaction().replace(R.id.container, new UserListFragment(), TAG_USER_LIST_FRAGMENT).commit();
     }
 
     @Override
     public void onListItemClick(long id) {
-        mFragmentManager.beginTransaction().replace(R.id.container, UserFragment.getInstance(id)).commit();
+        mFragmentManager.beginTransaction().replace(R.id.container, UserFragment.getInstance(id), TAG_USER_FRAGMENT).addToBackStack(null).commit();
     }
 }
