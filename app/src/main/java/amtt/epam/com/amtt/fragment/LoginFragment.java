@@ -15,28 +15,33 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputBinding;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.CheckBox;
+
+import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.view.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.api.JiraApi;
+import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
+import amtt.epam.com.amtt.api.exception.AmttException;
+import amtt.epam.com.amtt.api.exception.ExceptionHandler;
+import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.api.result.AuthorizationResult;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.service.TopButtonService;
-import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LoginFragment extends BaseFragment implements JiraCallback<AuthorizationResult, Void>, LoaderManager.LoaderCallbacks<Cursor> {
+public class LoginFragment extends BaseFragment implements JiraCallback<String>, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static interface FragmentLoginCallback {
 
@@ -47,8 +52,9 @@ public class LoginFragment extends BaseFragment implements JiraCallback<Authoriz
     private EditText mUserName;
     private EditText mPassword;
     private EditText mUrl;
-    private String mToastText = Constants.SharedPreferenceKeys.VOID;
+    private String mToastText = Constants.Str.EMPTY;
     private Button mLoginButton;
+    private CheckBox mEpamJira;
 
     private InputMethodManager mInputManager;
 
@@ -72,9 +78,10 @@ public class LoginFragment extends BaseFragment implements JiraCallback<Authoriz
 
     private void initViews(View layout) {
         mProgressBar = (ProgressBar) layout.findViewById(android.R.id.progress);
-        mUserName = (EditText) layout.findViewById(R.id.user_name);
+        mUserName = (amtt.epam.com.amtt.view.EditText) layout.findViewById(R.id.user_name);
         mPassword = (EditText) layout.findViewById(R.id.password);
         mUrl = (EditText) layout.findViewById(R.id.jira_url);
+        mEpamJira = (CheckBox) layout.findViewById(R.id.epam_jira_checkbox);
 
         mUrl.setText("https://amtt02.atlassian.net");
         mUserName.setText("artsiom_kaliaha");
@@ -84,37 +91,23 @@ public class LoginFragment extends BaseFragment implements JiraCallback<Authoriz
             @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(mUserName.getText().toString())) {
-                    mToastText += (Constants.DialogKeys.INPUT_USERNAME + Constants.DialogKeys.NEW_LINE);
-                }
-                if (TextUtils.isEmpty(mPassword.getText().toString())) {
-                    mToastText += (Constants.DialogKeys.INPUT_PASSWORD + Constants.DialogKeys.NEW_LINE);
-                }
-                if (TextUtils.isEmpty(mUrl.getText().toString())) {
-                    mToastText += (Constants.DialogKeys.INPUT_URL);
-                } else {
-                    setProgressVisibility(View.VISIBLE);
-                    CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
-                    CredentialsManager.getInstance().setCredentials(mUserName.getText().toString(), mPassword.getText().toString());
-
-                    getLoaderManager().initLoader(CURSOR_LOADER_ID, null, LoginFragment.this);
-                    mLoginButton.setVisibility(View.GONE);
-                }
-                if (!TextUtils.isEmpty(mToastText)) {
-                    Toast.makeText(getActivity(), mToastText, Toast.LENGTH_LONG).show();
-                }
-                mToastText = "";
+                checkFields();
             }
         });
     }
 
     @SuppressWarnings("unchecked")
     private void sendAuthRequest() {
-        new JiraTask.Builder<AuthorizationResult, Void>()
-                .setOperationType(JiraTask.JiraTaskType.AUTH)
+        String requestUrl = mEpamJira.isChecked() ? mUrl.getText().toString() + JiraApiConst.EPAM_JIRA_SUFFIX : mUrl.getText().toString();
+        RestMethod<String> authMethod = JiraApi.getInstance().buildAuth(mUserName.getText().toString(), mPassword.getText().toString(), requestUrl);
+        new JiraTask.Builder<String>()
+                .setRestMethod(authMethod)
                 .setCallback(LoginFragment.this)
-                .create()
-                .execute();
+                .createAndExecute();
+    }
+
+    private void isUserAlreadyInDatabase() {
+        getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, LoginFragment.this);
     }
 
     private void insertUserToDatabase() {
@@ -125,21 +118,61 @@ public class LoginFragment extends BaseFragment implements JiraCallback<Authoriz
         ((FragmentLoginCallback) getActivity()).onUserLoggedIn();
     }
 
-    //Callbacks
-    @Override
-    public void onJiraRequestPerformed(RestResponse<AuthorizationResult, Void> restResponse) {
-        Toast.makeText(getActivity(), restResponse.getMessage(), Toast.LENGTH_SHORT).show();
-        setProgressVisibility(View.GONE);
-        mLoginButton.setVisibility(View.VISIBLE);
-        if (restResponse.getResult() == AuthorizationResult.SUCCESS) {
-            CredentialsManager.getInstance().setUserName(mUserName.getText().toString());
-            CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
-            CredentialsManager.getInstance().setAccess(true);
-            TopButtonService.authSuccess(getActivity());
-            insertUserToDatabase();
+    private void checkFields() {
+        if (TextUtils.isEmpty(mUserName.getText().toString())) {
+            mToastText = getActivity().getString(R.string.enter_prefix) + getActivity().getString(R.string.enter_username);
         }
+        if (TextUtils.isEmpty(mPassword.getText().toString())) {
+            if (TextUtils.isEmpty(mToastText)) {
+                mToastText = getActivity().getString(R.string.enter_prefix) + getActivity().getString(R.string.enter_password);
+            } else {
+                mToastText += Constants.Str.COMMA + getActivity().getString(R.string.enter_password);
+            }
+        }
+        if (TextUtils.isEmpty(mUrl.getText().toString())) {
+            if (TextUtils.isEmpty(mToastText)) {
+                mToastText = getActivity().getString(R.string.enter_prefix) + getActivity().getString(R.string.enter_url);
+            } else {
+                mToastText += Constants.Str.COMMA + getActivity().getString(R.string.enter_url);
+            }
+        }
+        if (!TextUtils.isEmpty(mToastText)) {
+            Toast.makeText(getActivity(), mToastText, Toast.LENGTH_LONG).show();
+        } else {
+            isUserAlreadyInDatabase();
+        }
+        mToastText = Constants.Str.EMPTY;
     }
 
+    //Callbacks
+    //Jira
+    @Override
+    public void onRequestStarted() {
+        setProgressVisibility(View.VISIBLE);
+        mLoginButton.setEnabled(false);
+    }
+
+    @Override
+    public void onRequestPerformed(RestResponse<String> restResponse) {
+        setProgressVisibility(View.GONE);
+        mLoginButton.setEnabled(true);
+        String resultMessage = restResponse.getResultObject();
+        CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
+        CredentialsManager.getInstance().setCredentials(mUserName.getText().toString(), mPassword.getText().toString());
+        CredentialsManager.getInstance().setAccess(true);
+        TopButtonService.authSuccess(getActivity());
+        Toast.makeText(getActivity(), resultMessage, Toast.LENGTH_SHORT).show();
+        insertUserToDatabase();
+    }
+
+    @Override
+    public void onRequestError(AmttException e) {
+        ExceptionHandler.getInstance().processError(e).showDialog(getActivity(), LoginFragment.this);
+        setProgressVisibility(View.GONE);
+        mLoginButton.setEnabled(true);
+    }
+
+    //Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getActivity(),

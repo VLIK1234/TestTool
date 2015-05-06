@@ -24,7 +24,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/Material">
         <activity
             android:name=".app.MainActivity"
             android:label="@string/app_name" >
@@ -43,9 +43,6 @@
             android:name=".service.TopButtonService"
             android:exported="false" />
 
-        <activity
-            android:name=".app.SecondActivity"
-            android:label="@string/app_name" />
         <activity
             android:name=".app.CreateIssueActivity"
             android:label="@string/title_activity_create_issue" />

@@ -1,28 +1,39 @@
 package amtt.epam.com.amtt.fragment;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.api.JiraApi;
+import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
+import amtt.epam.com.amtt.api.exception.AmttException;
+import amtt.epam.com.amtt.api.exception.ExceptionHandler;
+import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.api.result.AuthorizationResult;
-import amtt.epam.com.amtt.api.result.UserDataResult;
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
+import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.view.TextView;
 
 /**
  * Created by Artsiom_Kaliaha on 05.05.2015.
  */
 @SuppressWarnings("unchecked")
-public class UserFragment extends BaseFragment implements JiraCallback<UserDataResult,JiraUserInfo> {
+public class UserFragment extends BaseFragment implements JiraCallback<JiraUserInfo>, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String KEY_USER = "key_user";
 
@@ -41,6 +52,7 @@ public class UserFragment extends BaseFragment implements JiraCallback<UserDataR
         UserFragment fragment = new UserFragment();
         Bundle args = new Bundle();
         args.putLong(KEY_USER, userId);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -48,55 +60,95 @@ public class UserFragment extends BaseFragment implements JiraCallback<UserDataR
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_user_info, container, false);
         initViews(layout);
-        requestUserInfo();
+
+        Bundle args = getArguments();
+        requestUserCredentialsFromDatabase(args);
         return layout;
     }
 
-    private void requestUserInfo() {
-        new JiraTask.Builder<UserDataResult,JiraUserInfo>()
-                .setOperationType(JiraTask.JiraTaskType.SEARCH)
-                .setSearchType(JiraTask.JiraSearchType.USER_INFO)
-                .setCallback(UserFragment.this)
-                .create()
-                .execute();
-    }
-
     private void initViews(View layout) {
-        mUserName = (TextView)layout.findViewById(R.id.user_name);
-        mEmail = (TextView)layout.findViewById(R.id.user_email);
-        mDisplayName = (TextView)layout.findViewById(R.id.user_display_name);
-        mTimeZone = (TextView)layout.findViewById(R.id.user_time_zone);
-        mLocale = (TextView)layout.findViewById(R.id.user_locale);
-        mGroupSize = (TextView)layout.findViewById(R.id.user_group_size);
-        mGroupsNames = (TextView)layout.findViewById(R.id.user_groups_names);
+        mUserName = (TextView) layout.findViewById(R.id.user_name);
+        mEmail = (TextView) layout.findViewById(R.id.user_email);
+        mDisplayName = (TextView) layout.findViewById(R.id.user_display_name);
+        mTimeZone = (TextView) layout.findViewById(R.id.user_time_zone);
+        mLocale = (TextView) layout.findViewById(R.id.user_locale);
+        mGroupSize = (TextView) layout.findViewById(R.id.user_group_size);
+        mGroupsNames = (TextView) layout.findViewById(R.id.user_groups_names);
 
-        mProgressBar = (ProgressBar)layout.findViewById(android.R.id.progress);
+        mProgressBar = (ProgressBar) layout.findViewById(android.R.id.progress);
     }
 
+    private void requestUserInfo() {
+        String requestSuffix = JiraApiConst.USER_INFO_PATH + CredentialsManager.getInstance().getUserName() + JiraApiConst.EXPAND_GROUPS;
+        RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix, new UserInfoProcessor());
+        new JiraTask.Builder<JiraUserInfo>()
+                .setRestMethod(userInfoMethod)
+                .setCallback(UserFragment.this)
+                .createAndExecute();
+    }
+
+    private void requestUserCredentialsFromDatabase(Bundle argsWithUserId) {
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, argsWithUserId, UserFragment.this);
+    }
+
+    //Callbacks
+    //Jira
+    @Override
+    public void onRequestStarted() {
+        setProgressVisibility(View.VISIBLE);
+    }
 
     @Override
-    public void onJiraRequestPerformed(RestResponse<UserDataResult, JiraUserInfo> restResponse) {
-        JiraUserInfo user = restResponse.getResultObject();
-        if (user != null) {
-            mUserName.setText(getResources().getString(R.string.user_name) + Constants.SharedPreferenceKeys.COLON + user.getName());
-            mEmail.setText(getResources().getString(R.string.user_email) + Constants.SharedPreferenceKeys.COLON + user.getEmailAddress());
+    public void onRequestPerformed(RestResponse<JiraUserInfo> restResponse) {
+
+        if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
+            JiraUserInfo user = restResponse.getResultObject();
+            mUserName.setText(getResources().getString(R.string.label_user_name) + Constants.Str.COLON + user.getName());
+            mEmail.setText(getResources().getString(R.string.label_email) + Constants.Str.COLON + user.getEmailAddress());
             mDisplayName.setText(user.getDisplayName());
-            mTimeZone.setText(getResources().getString(R.string.time_zone) + Constants.SharedPreferenceKeys.COLON + user.getTimeZone());
-            mLocale.setText(getResources().getString(R.string.locale) + Constants.SharedPreferenceKeys.COLON + user.getLocale());
-            mGroupSize.setText(getResources().getString(R.string.size) + Constants.SharedPreferenceKeys.COLON + String.valueOf(user.getGroups().getSize()));
+            mTimeZone.setText(getResources().getString(R.string.label_time_zone) + Constants.Str.COLON + user.getTimeZone());
+            mLocale.setText(getResources().getString(R.string.label_locale) + Constants.Str.COLON + user.getLocale());
+            mGroupSize.setText(getResources().getString(R.string.label_size) + Constants.Str.COLON + String.valueOf(user.getGroups().getSize()));
             String groups = "";
             for (int i = 0; i < user.getGroups().getItems().size(); i++) {
-                groups += user.getGroups().getItems().get(i).getName() + Constants.DialogKeys.NEW_LINE;
+                groups += user.getGroups().getItems().get(i).getName() + Constants.Str.NEW_LINE;
             }
-            mGroupsNames.setText(getResources().getString(R.string.names_groups) + Constants.SharedPreferenceKeys.COLON + groups);
+            mGroupsNames.setText(getResources().getString(R.string.label_names_groups) + Constants.Str.COLON + groups);
             setProgressVisibility(View.GONE);
-        } else {
-            new JiraTask.Builder<AuthorizationResult, Void>()
-                    .setOperationType(JiraTask.JiraTaskType.AUTH)
-                    .setCallback(UserFragment.this)
-                    .create()
-                    .execute();
         }
     }
 
+    @Override
+    public void onRequestError(AmttException e) {
+        ExceptionHandler.getInstance().processError(e).showDialog(getActivity(), UserFragment.this);
+        setProgressVisibility(View.GONE);
+    }
+
+    //Loader
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        long userId = args.getLong(KEY_USER);
+        return new CursorLoader(getActivity(),
+                AmttContentProvider.USER_CONTENT_URI,
+                UsersTable.PROJECTION,
+                UsersTable._ID + "=?",
+                new String[]{String.valueOf(userId)},
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        data.moveToFirst();
+        String userName = data.getString(data.getColumnIndex(UsersTable._USER_NAME));
+        String password = data.getString(data.getColumnIndex(UsersTable._PASSWORD));
+        CredentialsManager.getInstance().setCredentials(userName, password);
+        requestUserInfo();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
 }

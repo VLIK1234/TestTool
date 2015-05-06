@@ -3,25 +3,33 @@ package amtt.epam.com.amtt.util;
 /**
  * Created by Irina Monchenko on 07.04.2015.
  */
-public interface Constants {
+public final class Constants {
 
-    public interface SharedPreferenceKeys {
-        String USER_NAME = "username";
-        String URL = "url";
-        String VOID = "";
-        String PROJECTS_NAMES = "projectsNames";
-        String PROJECTS_KEYS = "projectsKeys";
-        String ACCESS = "access";
-        String COLON = ":";
-        String CREDENTIALS = "credentials";
+    public final class SharedPreference {
+
+        public static final String USER_NAME = "username";
+        public static final String PASSWORD = "password";
+        public static final String URL = "url";
+        public static final String PROJECTS_NAMES = "projectsNames";
+        public static final String PROJECTS_KEYS = "projectsKeys";
+        public static final String ACCESS = "access";
+        public static final String CREDENTIALS = "credentials";
 
     }
 
-    public interface DialogKeys {
-        String INPUT_USERNAME = "Input username";
-        String INPUT_PASSWORD = "Input password";
-        String INPUT_URL = "Input URL";
-        String NEW_LINE = "\n";
+    public final class Dialog {
+
+        public static final int EMPTY_FIELD = 0;
+
+    }
+
+    public final class Str {
+
+        public static final String NEW_LINE = "\n";
+        public static final String COLON = ":";
+        public static final String EMPTY = "";
+        public static final String COMMA = ",";
+
     }
 
 

@@ -2,103 +2,85 @@ package amtt.epam.com.amtt.api;
 
 import android.os.AsyncTask;
 
+import amtt.epam.com.amtt.api.exception.AmttException;
+import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
 
 /**
  * AsyncTask which is directly used in code to perform async requests to Jira api
  * Created by Artsiom_Kaliaha on 17.04.2015.
  */
-public class JiraTask<ResultType,ResultObjectType> extends AsyncTask<Object, Void, RestResponse<ResultType,ResultObjectType>> {
+public class JiraTask<ResultType> extends AsyncTask<Object, Void, RestResponse<ResultType>> {
 
-    //TODO we use this class only outside
-    public enum JiraSearchType {
+    public static class Builder<ResultType> {
 
-        ISSUE,
-        USER_INFO
+        private RestMethod<ResultType> mRestMethod;
+        private JiraCallback<ResultType> mCallback;
 
-    }
-
-    public enum JiraTaskType {
-
-        AUTH,
-        CREATE_ISSUE,
-        SEARCH
-
-    }
-
-    public static class Builder<ResultType,ResultObjectType> {
-
-        private JiraTaskType mOperationType;
-        private JiraCallback<ResultType,ResultObjectType> mCallback;
-        //TODO what is the purpose of json. rename
-        private String mJson;
-        private JiraSearchType mSearchType;
-
-        public Builder setOperationType(JiraTaskType operationType) {
-            mOperationType = operationType;
+        public Builder setRestMethod(RestMethod<ResultType> restMethod) {
+            mRestMethod = restMethod;
             return this;
         }
 
-        public Builder setCallback(JiraCallback<ResultType,ResultObjectType> callback) {
+        public Builder setCallback(JiraCallback<ResultType> callback) {
             mCallback = callback;
             return this;
         }
 
-        //TODO what is the purpose of json. rename
-        public Builder setJson(String json) {
-            mJson = json;
-            return this;
-        }
 
-        public Builder setSearchType(JiraSearchType jiraSearchType) {
-            mSearchType = jiraSearchType;
-            return this;
-        }
-
-        public JiraTask create() {
-            JiraTask<ResultType,ResultObjectType> jiraTask = new JiraTask<>();
-            jiraTask.mOperationType = this.mOperationType;
+        public void createAndExecute() {
+            JiraTask<ResultType> jiraTask = new JiraTask<>();
+            jiraTask.mRestMethod = this.mRestMethod;
             jiraTask.mCallback = this.mCallback;
-            jiraTask.mJson = this.mJson;
-            jiraTask.mSearchType = this.mSearchType;
-            return jiraTask;
+            //TODO executors?
+            jiraTask.execute();
         }
 
     }
 
-    private JiraTaskType mOperationType;
-    private JiraCallback<ResultType,ResultObjectType> mCallback;
-    private String mJson;
-    private JiraSearchType mSearchType;
+    private RestMethod mRestMethod;
+    private JiraCallback<ResultType> mCallback;
+    private AmttException mException;
 
     private JiraTask() {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    protected RestResponse<ResultType,ResultObjectType> doInBackground(Object... params) {
-        RestResponse<ResultType,ResultObjectType> restResponse = null;
+    protected void onPreExecute() {
+        mCallback.onRequestStarted();
+    }
 
-        switch (mOperationType) {
-            case AUTH:
-                //TODO we create class everyTime we perform call? Why do you are afraid of singltones?
-                restResponse = new JiraApi().authorize();
-                break;
-            case CREATE_ISSUE:
-                restResponse = new JiraApi().createIssue(mJson);
-                break;
-            case SEARCH:
-                String userName = CredentialsManager.getInstance().getUserName();
-                restResponse = new JiraApi().searchData(userName, mSearchType);
-                break;
+    @Override
+    @SuppressWarnings("unchecked")
+    protected RestResponse<ResultType> doInBackground(Object... params) {
+        RestResponse<ResultType> restResponse = null;
+        try {
+            restResponse = mRestMethod.execute();
+            setOperationResult(restResponse);
+        } catch (AmttException e) {
+            mException = e;
         }
         return restResponse;
     }
 
     @Override
-    protected void onPostExecute(RestResponse<ResultType,ResultObjectType> restResponse) {
-        mCallback.onJiraRequestPerformed(restResponse);
+    protected void onPostExecute(RestResponse<ResultType> restResponse) {
+        if (restResponse != null) {
+            mCallback.onRequestPerformed(restResponse);
+        } else {
+            mCallback.onRequestError(mException);
+        }
+    }
+
+    private void setOperationResult(RestResponse<ResultType> restResponse) {
+        JiraOperationResult operationResult;
+        if (mRestMethod.getRequestType() == RestMethod.RestMethodType.GET) {
+            operationResult = JiraOperationResult.REQUEST_PERFORMED;
+        } else {
+            operationResult = JiraOperationResult.ISSUE_CREATED;
+        }
+        restResponse.setOperationResult(operationResult);
     }
 
 }

@@ -122,7 +122,7 @@ public class TopButtonService extends Service{
     }
 
     private void changeUiAuthSuccess(){
-        view.buttonAuth.setText(R.string.logout);
+        view.buttonAuth.setText(R.string.label_logout);
         view.buttonAuth.setTextColor(getResources().getColor(R.color.red));
         view.buttonBugRep.setEnabled(true);
         view.buttonUserInfo.setEnabled(true);
@@ -139,12 +139,12 @@ public class TopButtonService extends Service{
 
         action = new NotificationCompat.Action(
                 R.drawable.ic_stat_action_visibility_off,
-                getString(R.string.button_hide),
+                getString(R.string.label_hide),
                 PendingIntent.getService(this, 0, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_HIDE_VIEW), PendingIntent.FLAG_UPDATE_CURRENT));
 
         NotificationCompat.Action closeService = new NotificationCompat.Action(
                 R.drawable.ic_close_service,
-                getString(R.string.button_close_service),
+                getString(R.string.label_close),
                 PendingIntent.getService(this, 0, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE), PendingIntent.FLAG_UPDATE_CURRENT));
 
         builder.addAction(action);
@@ -157,12 +157,12 @@ public class TopButtonService extends Service{
         if (view.getVisibility() == View.VISIBLE) {
             view.setVisibility(View.GONE);
             action.icon = R.drawable.ic_stat_action_visibility;
-            action.title = getString(R.string.button_show);
+            action.title = getString(R.string.label_show);
             notificationManager.notify(ID, builder.build());
         } else {
             view.setVisibility(View.VISIBLE);
             action.icon = R.drawable.ic_stat_action_visibility_off;
-            action.title = getString(R.string.button_hide);
+            action.title = getString(R.string.label_hide);
             notificationManager.notify(ID, builder.build());
         }
     }

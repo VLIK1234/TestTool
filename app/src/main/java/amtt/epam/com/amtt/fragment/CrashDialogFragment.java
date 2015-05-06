@@ -64,13 +64,13 @@ public class CrashDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setTitle(title)
                 .setMessage(message)
-                .setNegativeButton(R.string.close_button, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.label_close, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dismiss();
                     }
                 })
-                .setNeutralButton(R.string.delete_crash_button, new DialogInterface.OnClickListener() {
+                .setNeutralButton(R.string.label_delete_and_close, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         new DeleteFileTask(path).execute();

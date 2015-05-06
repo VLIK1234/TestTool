@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/shape">
+    <!--<item android:id="@+id/shadow">-->
+        <!--<bitmap android:src="@drawable/button_shadow"-->
+            <!--android:antialias="true"/>-->
+    <!--</item>-->
+    <item android:drawable="@drawable/shadow_circle" android:top="3dp" android:bottom="7dp" android:left="6dp" android:right="4dp"/>
+    <item android:id="@+id/shape" android:top="3dp" android:bottom="9dp" android:left="6dp" android:right="6dp">
         <shape
-            android:dither="true"
-            android:shape="oval">
-            <padding android:bottom="1dp"/>
-            <gradient
-                android:angle="315.0"
-                android:startColor="@color/light_grey"
-                android:endColor="@color/grey"
-                android:gradientRadius="100"
-                android:type="linear" />
-        </shape>
-    </item>
-    <item android:id="@+id/shape">
-        <shape
-            android:dither="true"
             android:shape="oval">
             <padding
                 android:bottom="@dimen/margin_background_circle"
@@ -23,6 +14,7 @@
                 android:right="@dimen/margin_background_circle"
                 android:top="@dimen/margin_background_circle" />
             <solid android:color="@color/blue_grey" />
+
         </shape>
     </item>
 </layer-list>

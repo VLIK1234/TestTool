@@ -2,7 +2,6 @@ package amtt.epam.com.amtt.app;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,13 +12,13 @@ import amtt.epam.com.amtt.database.task.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseResponse;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
+import amtt.epam.com.amtt.fragment.LoginFragment;
 import amtt.epam.com.amtt.fragment.LoginFragment.FragmentLoginCallback;
 import amtt.epam.com.amtt.fragment.UserFragment;
-import amtt.epam.com.amtt.fragment.UserListFragment.ListFragmentUserCallback;
-import amtt.epam.com.amtt.fragment.LoginFragment;
 import amtt.epam.com.amtt.fragment.UserListFragment;
+import amtt.epam.com.amtt.fragment.UserListFragment.ListFragmentUserCallback;
 
-public class SettingsActivity extends ActionBarActivity implements DataBaseCallback<Boolean>, FragmentLoginCallback, ListFragmentUserCallback {
+public class SettingsActivity extends BaseActivity implements DataBaseCallback<Boolean>, FragmentLoginCallback, ListFragmentUserCallback {
 
     private static final String TAG_LOGIN_FRAGMENT = "tag_login_fragment";
     private static final String TAG_USER_LIST_FRAGMENT = "tag_user_list_fragment";
@@ -53,7 +52,7 @@ public class SettingsActivity extends ActionBarActivity implements DataBaseCallb
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_new_qa) {
+        if (id == R.id.action_new_user) {
             mFragmentManager.beginTransaction().replace(R.id.container, new LoginFragment(), TAG_LOGIN_FRAGMENT).addToBackStack(null).commit();
             return true;
         }

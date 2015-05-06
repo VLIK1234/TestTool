@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 
 import amtt.epam.com.amtt.R;
@@ -13,10 +14,9 @@ import amtt.epam.com.amtt.R;
 /**
  * Created by Ivan_Bakach on 26.03.2015.
  */
-public class BaseActivity extends Activity{
+public class BaseActivity extends ActionBarActivity {
 
-    //TODO SAVE_STEP != TAKESCREENSHOT, call constants carefully
-    public final static String ACTION_SAVE_STEP = "amtt.epam.com.amtt.app.TAKESCREENSHOT";
+    public final static String ACTION_SAVE_STEP = "amtt.epam.com.amtt.app.SAVESTEP";
     private IntentFilter intentFilterBroadcast = new IntentFilter(ACTION_SAVE_STEP);
     protected BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override

@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.bo.issue.willrefactored;
+package amtt.epam.com.amtt.bo.issue;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -27,6 +27,15 @@ public class JiraIssueTypesIssueType {
     public JiraIssueTypesIssueType(String id, String name) {
         this.mId = id;
         this.mName = name;
+    }
+
+    public JiraIssueTypesIssueType(String id, String name, String self, String description, String iconUrl, Boolean subtask) {
+        this.mId = id;
+        this.mName = name;
+        this.mSelf = self;
+        this.mDescription = description;
+        this.mIconUrl = iconUrl;
+        this.mSubtask = subtask;
     }
 
     public String getName() {

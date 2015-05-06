@@ -2,42 +2,43 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="material_vertical_margin_layout_vertical">16dp</dimen>
-    <dimen name="material_vertical_margin_horizontal_bottom">48dp</dimen>
-    <dimen name="material_vertical_margin_horizontal_top">48dp</dimen>
-    <dimen name="material_vertical_align_context_horizontal_top">72dp</dimen>
-    <dimen name="material_vertical_size_actionbar">56dp</dimen>
-    <dimen name="material_vertical_size_headline">72dp</dimen>
-    <dimen name="material_vertical_size_list_item">72dp</dimen>
-    <dimen name="material_vertical_size_divider">8dp</dimen>
-    <dimen name="material_vertical_size_title">48dp</dimen>
-    <dimen name="material_vertical_size_navigationdrawer_margin">240dp</dimen>
 
-    <dimen name="material_icon_place_size">48dp</dimen>
-    <dimen name="material_icon_size">40dp</dimen>
-    <dimen name="material_icon_min_size">24dp</dimen>
-    <dimen name="material_icon_button_size">36dp</dimen>
-    <dimen name="material_icon_button_place_size">48dp</dimen>
-
-    <dimen name="font_english_like_display_4">112sp</dimen>
-    <dimen name="font_english_like_display_3">56sp</dimen>
-    <dimen name="font_english_like_display_2">45sp</dimen>
-    <dimen name="font_english_like_display_1">34sp</dimen>
-    <dimen name="font_english_like_headline">24sp</dimen>
-    <dimen name="font_english_like_title">20sp</dimen>
-    <dimen name="font_english_like_subhead">16sp</dimen>
-    <dimen name="font_english_like_body_2">14sp</dimen>
-    <dimen name="font_english_like_body_1">14sp</dimen>
-    <dimen name="font_english_like_caption">12sp</dimen>
-    <dimen name="font_english_like_button">14sp</dimen>
-    <dimen name="button_small_size">35dp</dimen>
+    <dimen name="button_small_size">46dp</dimen>
     <dimen name="button_text_size">10sp</dimen>
-    <dimen name="circle_padding">3dp</dimen>
-    <dimen name="rectangle_text_padding">3dp</dimen>
-    <dimen name="rectangle_text_radius">4dp</dimen>
-    <dimen name="margin_buttons_bar">4dp</dimen>
-    <dimen name="margin_first_text_view">8dp</dimen>
-    <dimen name="margin_background_circle">5dp</dimen>
+
     <dimen name="card_corner_radius">3dp</dimen>
     <dimen name="card_elevation">4dp</dimen>
+
+    <dimen name="list_bottom_padding_drawable">9dp</dimen>
+    <dimen name="list_left_padding_drawable">6dp</dimen>
+    <dimen name="list_right_padding_drawable">6dp</dimen>
+    <dimen name="list_top_padding_drawable">3dp</dimen>
+
+    <dimen name="main_button_size">56dp</dimen>
+
+    <dimen name="margin_buttons_bar">4dp</dimen>
+    <dimen name="margin_background_circle">5dp</dimen>
+
+    <dimen name="material_font_size_display_4">112sp</dimen>
+    <dimen name="material_font_size_display_3">56sp</dimen>
+    <dimen name="material_font_size_display_2">45sp</dimen>
+    <dimen name="material_font_size_display_1">34sp</dimen>
+    <dimen name="material_font_size_headline">24sp</dimen>
+    <dimen name="material_font_size_title">20sp</dimen>
+    <dimen name="material_font_size_subhead">16sp</dimen>
+    <dimen name="material_font_size_body_2">14sp</dimen>
+    <dimen name="material_font_size_body_1">14sp</dimen>
+    <dimen name="material_font_size_caption">12sp</dimen>
+    <dimen name="material_font_size_button">14sp</dimen>
+
+
+    <dimen name="material_menu_item_vertical_bottom_padding">16dp</dimen>
+    <dimen name="material_menu_item_vertical_height">48dp</dimen>
+    <dimen name="material_menu_item_vertical_width">16dp</dimen>
+
+    <dimen name="material_vertical_button_min_width_size">64dp</dimen>
+    <dimen name="material_vertical_button_padding_top">24dp</dimen>
+    <dimen name="material_vertical_button_height_size">48dp</dimen>
+
+    <dimen name="material_vertical_size_divider">8dp</dimen>
 </resources>
