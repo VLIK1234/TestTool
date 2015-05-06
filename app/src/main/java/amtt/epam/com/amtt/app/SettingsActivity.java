@@ -53,7 +53,10 @@ public class SettingsActivity extends BaseActivity implements DataBaseCallback<B
         int id = item.getItemId();
 
         if (id == R.id.action_new_user) {
-            mFragmentManager.beginTransaction().replace(R.id.container, new LoginFragment(), TAG_LOGIN_FRAGMENT).addToBackStack(null).commit();
+            LoginFragment loginFragment = (LoginFragment)mFragmentManager.findFragmentByTag(TAG_LOGIN_FRAGMENT);
+            if (loginFragment == null) {
+                mFragmentManager.beginTransaction().replace(R.id.container, new LoginFragment(), TAG_LOGIN_FRAGMENT).addToBackStack(null).commit();
+            }
             return true;
         }
 
