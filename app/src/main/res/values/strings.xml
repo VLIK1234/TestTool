@@ -24,6 +24,7 @@
     <string name="error_button_close">Close</string>
 
     <string name="label_activity">"Activity: "</string>
+    <string name="label_add">Add</string>
     <string name="label_add_step">Add step</string>
     <string name="label_affects_versions">Affects Version/s</string>
     <string name="label_attachment">Attachment</string>
@@ -46,6 +47,8 @@
     <string name="label_hint">Hint</string>
     <string name="label_issue">Issue</string>
     <string name="label_issue_type">Issue Type</string>
+    <string name="label_jira_id">Jira ID</string>
+    <string name="label_key">Key</string>
     <string name="label_label">Label</string>
     <string name="label_launch_mode">"Launch mode: "</string>
     <string name="label_locale">Locale</string>
@@ -53,6 +56,7 @@
     <string name="label_logout">Log Out</string>
     <string name="label_make_crash">Make crash</string>
     <string name="label_max_recents">"Max recents: "</string>
+    <string name="label_name">Name</string>
     <string name="label_names_groups">Names groups</string>
     <string name="label_package_name">"Package name: "</string>
     <string name="label_parent_app">"Parent app: "</string>

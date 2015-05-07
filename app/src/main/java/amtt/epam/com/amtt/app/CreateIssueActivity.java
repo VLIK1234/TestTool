@@ -182,14 +182,17 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback {
             } else if (restResponse.getResultObject().getClass() == JProjectExtVersionsResponse.class) {
                 JProjectExtVersionsResponse jProjectExtVersionsResponse = (JProjectExtVersionsResponse) restResponse.getResultObject();
                 ArrayAdapter<String> jVersions = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, jProjectExtVersionsResponse.getVersionsNames());
+                jVersions.setDropDownViewResource(R.layout.spinner_dropdown_item);
                 mVersions.setAdapter(jVersions);
             } else if (restResponse.getResultObject().getClass() == JUserAssignableResponse.class) {
                 JUserAssignableResponse jUserAssignableResponse = (JUserAssignableResponse) restResponse.getResultObject();
                 ArrayAdapter<String> jUsersAssignable = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, jUserAssignableResponse.getAssignableUsersNames());
+                jUsersAssignable.setDropDownViewResource(R.layout.spinner_dropdown_item);
                 mAssignableUsers.setAdapter(jUsersAssignable);
             } else if (restResponse.getResultObject().getClass() == JPriorityResponse.class) {
                 JPriorityResponse jPriorityResponse = (JPriorityResponse) restResponse.getResultObject();
                 ArrayAdapter<String> jPriority = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, jPriorityResponse.getPriorityNames());
+                jPriority.setDropDownViewResource(R.layout.spinner_dropdown_item);
                 mPriority.setAdapter(jPriority);
             }
             mCreateIssue.setEnabled(true);
