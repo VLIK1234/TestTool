@@ -6,8 +6,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.Environment;
-import android.os.FileObserver;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
@@ -15,7 +15,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
+
+import java.io.File;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
@@ -28,10 +29,11 @@ public class TopButtonService extends Service {
 
     public static final String ACTION_START = "SHOW";
     public static final String ACTION_CLOSE = "CLOSE";
-    private static final String LOG_TAG = "Log";
+    private static final String TAG = "Log";
     public static final int ID = 7;
     public static final String ACTION_HIDE_VIEW = "HIDE_VIEW";
     public static final String ACTION_AUTH_SUCCESS = "AUTHORIZATION_SUCCESS";
+    public static final String ACTION_SHOW_SCREEN = "SHOW_SCREEN";
     private int xInitPosition;
     private int yInitPosition;
     private TopButtonView view;
@@ -41,6 +43,23 @@ public class TopButtonService extends Service {
     private NotificationCompat.Action action;
     private NotificationCompat.Builder builder;
     private AmttFileObserver fileObserver;
+    //bellow field for cap code and will be delete after do work realization
+    private static Context context;
+    private static String pathToScreenshot;
+
+    public void showScreen(){
+        Intent intent = new Intent();
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+        File file = new File(pathToScreenshot);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setDataAndType(Uri.fromFile(file), "image/*");
+        startActivity(intent);
+    }
+
+    public static void sendActionScreenshot(String pathToScreenshot){
+        TopButtonService.pathToScreenshot = pathToScreenshot;
+        context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_SHOW_SCREEN));
+    }
 
     public static void start(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_START));
@@ -62,13 +81,14 @@ public class TopButtonService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        context = getBaseContext();
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
         xInitPosition = displayMetrics.widthPixels / 2;
         yInitPosition = displayMetrics.heightPixels / 2;
         initLayoutParams();
         view = new TopButtonView(getBaseContext(), layoutParams);
-        final String pathScreenshot = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath();
+        final String pathScreenshot = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath()+"/Screenshot";
         fileObserver = new AmttFileObserver(pathScreenshot);
         fileObserver.startWatching();
     }
@@ -94,6 +114,9 @@ public class TopButtonService extends Service {
                     break;
                 case ACTION_AUTH_SUCCESS:
                     changeUiAuthSuccess();
+                    break;
+                case ACTION_SHOW_SCREEN:
+                    showScreen();
                     break;
             }
         } else {
