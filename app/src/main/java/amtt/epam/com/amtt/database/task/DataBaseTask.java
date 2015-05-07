@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
@@ -36,6 +37,7 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
         private Context mContext;
         private DataBaseCallback<ResultType> mCallback;
         private int mStepNumber;
+        private String mUserName;
 
         public Builder() {
         }
@@ -60,6 +62,11 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
             return this;
         }
 
+        public Builder setUserName(String userName) {
+            mUserName = userName;
+            return this;
+        }
+
         public void createAndExecute() {
             DataBaseTask<ResultType> dataBaseTask = new DataBaseTask<>();
             dataBaseTask.mOperationType = this.mOperationType;
@@ -68,6 +75,7 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
             dataBaseTask.mStepNumber = this.mStepNumber;
             dataBaseTask.mPath = mContext.getFilesDir().getPath() + SCREENSHOT_FOLDER;
             dataBaseTask.mCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
+            dataBaseTask.mUserName = this.mUserName;
             dataBaseTask.execute();
         }
 
@@ -84,6 +92,7 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
     private static Map<Integer, String> sSoftInputMode;
     private static Map<Integer, String> sUiOptions;
     private int mStepNumber;
+    private String mUserName;
 
     static {
         sConfigChanges = new HashMap<>();
@@ -171,7 +180,7 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
                 case CLEAR:
                     performCleaning();
                 default:
-                    dataBaseResponse.setValueResult((ResultType) isAnyUserInDatabase());
+                    dataBaseResponse.setValueResult((ResultType) checkUser());
             }
         } catch (Exception e) {
             dataBaseResponse = new DataBaseResponse<>();
@@ -224,8 +233,12 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
         return DataBaseTaskResult.CLEARED;
     }
 
-    private Boolean isAnyUserInDatabase() {
-        Cursor cursor = mContext.getContentResolver().query(AmttContentProvider.USER_CONTENT_URI, UsersTable.PROJECTION, null, null, null);
+    private Boolean checkUser() {
+        Cursor cursor = mContext.getContentResolver().query(AmttContentProvider.USER_CONTENT_URI,
+                UsersTable.PROJECTION,
+                UsersTable._USER_NAME + "=?",
+                new String[] { mUserName },
+                null);
         boolean isAnyUserInDB = cursor.getCount() != 0;
         cursor.close();
         return isAnyUserInDB;

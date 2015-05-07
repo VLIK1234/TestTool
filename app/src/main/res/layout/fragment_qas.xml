@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="amtt.epam.com.amtt.app.SettingsActivity">
+    tools:context="amtt.epam.com.amtt.app.UsersActivity">
 
     <ListView
         android:id="@android:id/list"

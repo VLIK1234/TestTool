@@ -1,27 +1,15 @@
-package amtt.epam.com.amtt.fragment;
-
+package amtt.epam.com.amtt.app;
 
 import android.annotation.TargetApi;
-import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-
-import amtt.epam.com.amtt.database.task.DataBaseCallback;
-import amtt.epam.com.amtt.database.task.DataBaseResponse;
-import amtt.epam.com.amtt.database.task.DataBaseTask;
-import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
-import amtt.epam.com.amtt.util.Constants;
-import amtt.epam.com.amtt.view.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
@@ -35,19 +23,20 @@ import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.database.task.DataBaseCallback;
+import amtt.epam.com.amtt.database.task.DataBaseOperationType;
+import amtt.epam.com.amtt.database.task.DataBaseResponse;
+import amtt.epam.com.amtt.database.task.DataBaseTask;
+import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
 import amtt.epam.com.amtt.service.TopButtonService;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.view.EditText;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Artsiom_Kaliaha on 07.05.2015.
  */
-public class LoginFragment extends BaseFragment implements JiraCallback<String>, DataBaseCallback<Boolean> {
-
-    public static interface FragmentLoginCallback {
-
-        void onUserLoggedIn();
-
-    }
+public class LoginActivity extends BaseActivity implements JiraCallback<String>, DataBaseCallback<Boolean> {
 
     private EditText mUserName;
     private EditText mPassword;
@@ -58,35 +47,30 @@ public class LoginFragment extends BaseFragment implements JiraCallback<String>,
 
     private InputMethodManager mInputManager;
 
-    public LoginFragment() {
-    }
-
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.activity_login, container, false);
-        initViews(layout);
-        mInputManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        return layout;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+        initViews();
+        mInputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
         mInputManager.hideSoftInputFromWindow(mUserName.getWindowToken(), NO_FLAGS);
     }
 
-    private void initViews(View layout) {
-        mProgressBar = (ProgressBar) layout.findViewById(android.R.id.progress);
-        mUserName = (amtt.epam.com.amtt.view.EditText) layout.findViewById(R.id.user_name);
-        mPassword = (EditText) layout.findViewById(R.id.password);
-        mUrl = (EditText) layout.findViewById(R.id.jira_url);
-        mEpamJira = (CheckBox) layout.findViewById(R.id.epam_jira_checkbox);
+    private void initViews() {
+        mUserName = (EditText) findViewById(R.id.user_name);
+        mPassword = (EditText) findViewById(R.id.password);
+        mUrl = (EditText) findViewById(R.id.jira_url);
+        mEpamJira = (CheckBox) findViewById(R.id.epam_jira_checkbox);
 
         mUrl.setText("https://amtt02.atlassian.net");
         mUserName.setText("artsiom_kaliaha");
 
-        mLoginButton = (Button) layout.findViewById(R.id.login_button);
+        mLoginButton = (Button) findViewById(R.id.login_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
@@ -102,14 +86,15 @@ public class LoginFragment extends BaseFragment implements JiraCallback<String>,
         RestMethod<String> authMethod = JiraApi.getInstance().buildAuth(mUserName.getText().toString(), mPassword.getText().toString(), requestUrl);
         new JiraTask.Builder<String>()
                 .setRestMethod(authMethod)
-                .setCallback(LoginFragment.this)
+                .setCallback(LoginActivity.this)
                 .createAndExecute();
     }
 
     private void isUserAlreadyInDatabase() {
         new DataBaseTask.Builder<Boolean>()
-                .setContext(getActivity())
+                .setContext(this)
                 .setCallback(this)
+                .setOperationType(DataBaseOperationType.CHECK_USERS_AVAILABILITY)
                 .setUserName(mUserName.getText().toString())
                 .createAndExecute();
     }
@@ -118,30 +103,30 @@ public class LoginFragment extends BaseFragment implements JiraCallback<String>,
         ContentValues userValues = new ContentValues();
         userValues.put(UsersTable._USER_NAME, mUserName.getText().toString());
         userValues.put(UsersTable._PASSWORD, mPassword.getText().toString());
-        getActivity().getContentResolver().insert(AmttContentProvider.USER_CONTENT_URI, userValues);
-        ((FragmentLoginCallback) getActivity()).onUserLoggedIn();
+        getContentResolver().insert(AmttContentProvider.USER_CONTENT_URI, userValues);
+        finish();
     }
 
     private void checkFields() {
         if (TextUtils.isEmpty(mUserName.getText().toString())) {
-            mToastText = getActivity().getString(R.string.enter_prefix) + getActivity().getString(R.string.enter_username);
+            mToastText = getString(R.string.enter_prefix) + getString(R.string.enter_username);
         }
         if (TextUtils.isEmpty(mPassword.getText().toString())) {
             if (TextUtils.isEmpty(mToastText)) {
-                mToastText = getActivity().getString(R.string.enter_prefix) + getActivity().getString(R.string.enter_password);
+                mToastText = getString(R.string.enter_prefix) + getString(R.string.enter_password);
             } else {
-                mToastText += Constants.Str.COMMA + getActivity().getString(R.string.enter_password);
+                mToastText += Constants.Str.COMMA + getString(R.string.enter_password);
             }
         }
         if (TextUtils.isEmpty(mUrl.getText().toString())) {
             if (TextUtils.isEmpty(mToastText)) {
-                mToastText = getActivity().getString(R.string.enter_prefix) + getActivity().getString(R.string.enter_url);
+                mToastText = getString(R.string.enter_prefix) + getString(R.string.enter_url);
             } else {
-                mToastText += Constants.Str.COMMA + getActivity().getString(R.string.enter_url);
+                mToastText += Constants.Str.COMMA + getString(R.string.enter_url);
             }
         }
         if (!TextUtils.isEmpty(mToastText)) {
-            Toast.makeText(getActivity(), mToastText, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, mToastText, Toast.LENGTH_LONG).show();
         } else {
             isUserAlreadyInDatabase();
         }
@@ -152,39 +137,39 @@ public class LoginFragment extends BaseFragment implements JiraCallback<String>,
     //Jira
     @Override
     public void onRequestStarted() {
-        setProgressVisibility(View.VISIBLE);
+        showProgress(true);
         mLoginButton.setEnabled(false);
     }
 
     @Override
     public void onRequestPerformed(RestResponse<String> restResponse) {
-        setProgressVisibility(View.GONE);
+        showProgress(false);
         mLoginButton.setEnabled(true);
         String resultMessage = restResponse.getResultObject();
         CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
         CredentialsManager.getInstance().setCredentials(mUserName.getText().toString(), mPassword.getText().toString());
         CredentialsManager.getInstance().setAccess(true);
-        TopButtonService.authSuccess(getActivity());
-        Toast.makeText(getActivity(), resultMessage, Toast.LENGTH_SHORT).show();
+        TopButtonService.authSuccess(this);
+        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
         insertUserToDatabase();
-        TopButtonService.authSuccess(getActivity());
+        TopButtonService.authSuccess(this);
     }
 
     @Override
     public void onRequestError(AmttException e) {
-        ExceptionHandler.getInstance().processError(e).showDialog(getActivity(), LoginFragment.this);
-        setProgressVisibility(View.GONE);
+        ExceptionHandler.getInstance().processError(e).showDialog(this, this);
+        showProgress(false);
         mLoginButton.setEnabled(true);
     }
 
     //Database task
     @Override
     public void onDataBaseActionDone(DataBaseResponse<Boolean> dataBaseResponse) {
-        if (dataBaseResponse.getTaskResult() == DataBaseTaskResult.DONE && dataBaseResponse.getValueResult()) {
+        if (dataBaseResponse.getTaskResult() == DataBaseTaskResult.DONE && !dataBaseResponse.getValueResult()) {
             sendAuthRequest();
         } else {
-            Toast.makeText(getActivity(), getActivity().getString(R.string.user_already_exists), Toast.LENGTH_SHORT).show();
-            setProgressVisibility(View.GONE);
+            Toast.makeText(this, getString(R.string.user_already_exists), Toast.LENGTH_SHORT).show();
+            showProgress(false);
         }
     }
 

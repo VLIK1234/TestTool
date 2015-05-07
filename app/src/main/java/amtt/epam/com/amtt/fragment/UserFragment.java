@@ -58,7 +58,7 @@ public class UserFragment extends BaseFragment implements JiraCallback<JiraUserI
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_user_info, container, false);
+        View layout = inflater.inflate(R.layout.activity_user_info, container, false);
         initViews(layout);
 
         Bundle args = getArguments();
@@ -72,8 +72,6 @@ public class UserFragment extends BaseFragment implements JiraCallback<JiraUserI
         mDisplayName = (TextView) layout.findViewById(R.id.user_display_name);
         mTimeZone = (TextView) layout.findViewById(R.id.user_time_zone);
         mLocale = (TextView) layout.findViewById(R.id.user_locale);
-        mGroupSize = (TextView) layout.findViewById(R.id.user_group_size);
-        mGroupsNames = (TextView) layout.findViewById(R.id.user_groups_names);
 
         mProgressBar = (ProgressBar) layout.findViewById(android.R.id.progress);
     }
@@ -151,4 +149,5 @@ public class UserFragment extends BaseFragment implements JiraCallback<JiraUserI
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
+
 }

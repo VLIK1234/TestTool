@@ -16,6 +16,8 @@ import amtt.epam.com.amtt.R;
  */
 public class BaseActivity extends ActionBarActivity {
 
+    static final int CURSOR_LOADER_ID = 0;
+    static final int NO_FLAGS = 0;
     public final static String ACTION_SAVE_STEP = "amtt.epam.com.amtt.app.SAVESTEP";
     private IntentFilter intentFilterBroadcast = new IntentFilter(ACTION_SAVE_STEP);
     protected BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {

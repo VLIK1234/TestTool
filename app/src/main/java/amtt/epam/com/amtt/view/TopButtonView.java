@@ -40,7 +40,7 @@ import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
-import amtt.epam.com.amtt.app.SettingsActivity;
+import amtt.epam.com.amtt.app.UsersActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
@@ -136,7 +136,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.layout_auth:
-                        Intent intent = new Intent(getContext(), SettingsActivity.class);
+                        Intent intent = new Intent(getContext(), UsersActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         getContext().getApplicationContext().startActivity(intent);
                         break;
