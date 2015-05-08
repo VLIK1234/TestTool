@@ -14,8 +14,8 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
+import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants;
-import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.view.TextView;
 
 /**
@@ -43,12 +43,12 @@ public class UserInfoActivity extends  BaseActivity implements JiraCallback<Jira
 
     @SuppressWarnings("unchecked")
     private void executeAsynchronously() {
-        String requestSuffix = JiraApiConst.USER_INFO_PATH + CredentialsManager.getInstance().getUserName() + JiraApiConst.EXPAND_GROUPS;
-        RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix, new UserInfoProcessor());
-        new JiraTask.Builder<JiraUserInfo>()
-                .setRestMethod(userInfoMethod)
-                .setCallback(UserInfoActivity.this)
-                .createAndExecute();
+//        String requestSuffix = JiraApiConst.USER_INFO_PATH + ActiveUser.getInstance().getUserName() + JiraApiConst.EXPAND_GROUPS;
+//        RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix, new UserInfoProcessor());
+//        new JiraTask.Builder<JiraUserInfo>()
+//                .setRestMethod(userInfoMethod)
+//                .setCallback(UserInfoActivity.this)
+//                .createAndExecute();
     }
 
     @Override
@@ -58,7 +58,6 @@ public class UserInfoActivity extends  BaseActivity implements JiraCallback<Jira
 
     @Override
     public void onRequestPerformed(RestResponse<JiraUserInfo> restResponse) {
-
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
             JiraUserInfo user = restResponse.getResultObject();
             mName.setText(getResources().getString(R.string.label_user_name) + Constants.Str.COLON + user.getName());

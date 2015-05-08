@@ -120,7 +120,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
         issueType = spinnerIssueTypes.getSelectedItem().toString();
         projectKey = getProjectKey();
 
-        RestMethod<JMetaResponse> createIssue = JiraApi.getInstance().buildIssueCeating(issue.createSimpleIssue(projectKey, issueType, description, summary));
+        RestMethod<JMetaResponse> createIssue = JiraApi.getInstance().buildIssueCreating(issue.createSimpleIssue(projectKey, issueType, description, summary));
         new JiraTask.Builder<JMetaResponse>()
                 .setRestMethod(createIssue)
                 .setCallback(CreateIssueActivity.this)
@@ -128,7 +128,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
     }
 
     private void getMetaAsynchronously() {
-        RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor());
+        RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor(), null, null,null);
         new JiraTask.Builder<JMetaResponse>()
                 .setRestMethod(searchMethod)
                 .setCallback(CreateIssueActivity.this)

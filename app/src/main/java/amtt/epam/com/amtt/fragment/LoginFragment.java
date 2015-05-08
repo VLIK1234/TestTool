@@ -19,6 +19,7 @@ import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseResponse;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
+import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.view.EditText;
 import android.widget.ProgressBar;
@@ -36,7 +37,6 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.service.TopButtonService;
-import amtt.epam.com.amtt.util.CredentialsManager;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -117,7 +117,7 @@ public class LoginFragment extends BaseFragment implements JiraCallback<String>,
     private void insertUserToDatabase() {
         ContentValues userValues = new ContentValues();
         userValues.put(UsersTable._USER_NAME, mUserName.getText().toString());
-        userValues.put(UsersTable._PASSWORD, mPassword.getText().toString());
+        //userValues.put(UsersTable._PASSWORD, mPassword.getText().toString());
         getActivity().getContentResolver().insert(AmttContentProvider.USER_CONTENT_URI, userValues);
         ((FragmentLoginCallback) getActivity()).onUserLoggedIn();
     }
@@ -161,9 +161,9 @@ public class LoginFragment extends BaseFragment implements JiraCallback<String>,
         setProgressVisibility(View.GONE);
         mLoginButton.setEnabled(true);
         String resultMessage = restResponse.getResultObject();
-        CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
-        CredentialsManager.getInstance().setCredentials(mUserName.getText().toString(), mPassword.getText().toString());
-        CredentialsManager.getInstance().setAccess(true);
+        ActiveUser.getInstance().setUrl(mUrl.getText().toString());
+        //ActiveUser.getInstance().setCredentials(mUserName.getText().toString(), mPassword.getText().toString());
+        ActiveUser.getInstance().setAccess(true);
         TopButtonService.authSuccess(getActivity());
         Toast.makeText(getActivity(), resultMessage, Toast.LENGTH_SHORT).show();
         insertUserToDatabase();

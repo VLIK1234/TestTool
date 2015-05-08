@@ -26,7 +26,7 @@ import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.util.Constants;
-import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.view.TextView;
 
 /**
@@ -77,12 +77,12 @@ public class UserFragment extends BaseFragment implements JiraCallback<JiraUserI
     }
 
     private void requestUserInfo() {
-        String requestSuffix = JiraApiConst.USER_INFO_PATH + CredentialsManager.getInstance().getUserName() + JiraApiConst.EXPAND_GROUPS;
-        RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix, new UserInfoProcessor());
-        new JiraTask.Builder<JiraUserInfo>()
-                .setRestMethod(userInfoMethod)
-                .setCallback(UserFragment.this)
-                .createAndExecute();
+//        String requestSuffix = JiraApiConst.USER_INFO_PATH + ActiveUser.getInstance().getUserName() + JiraApiConst.EXPAND_GROUPS;
+//        RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix, new UserInfoProcessor());
+//        new JiraTask.Builder<JiraUserInfo>()
+//                .setRestMethod(userInfoMethod)
+//                .setCallback(UserFragment.this)
+//                .createAndExecute();
     }
 
     private void requestUserCredentialsFromDatabase(Bundle argsWithUserId) {
@@ -140,8 +140,8 @@ public class UserFragment extends BaseFragment implements JiraCallback<JiraUserI
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         data.moveToFirst();
         String userName = data.getString(data.getColumnIndex(UsersTable._USER_NAME));
-        String password = data.getString(data.getColumnIndex(UsersTable._PASSWORD));
-        CredentialsManager.getInstance().setCredentials(userName, password);
+        //String password = data.getString(data.getColumnIndex(UsersTable._PASSWORD));
+        //ActiveUser.getInstance().setCredentials(userName, password);
         requestUserInfo();
     }
 

@@ -158,11 +158,11 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
                         getContext().getApplicationContext().startActivity(intentStep);
                         break;
                     case R.id.layout_bug_rep:
-                        RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor());
-                        new JiraTask.Builder<JMetaResponse>()
-                                .setRestMethod(searchMethod)
-                                .setCallback(TopButtonView.this)
-                                .createAndExecute();
+//                        RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor());
+//                        new JiraTask.Builder<JMetaResponse>()
+//                                .setRestMethod(searchMethod)
+//                                .setCallback(TopButtonView.this)
+//                                .createAndExecute();
                         break;
                     default:
                 }
