@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.contentprovider;
 
+import amtt.epam.com.amtt.database.table.*;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -16,9 +17,6 @@ import java.util.Map;
 import java.util.Set;
 
 import amtt.epam.com.amtt.database.task.DataBaseManager;
-import amtt.epam.com.amtt.database.table.ActivityInfoTable;
-import amtt.epam.com.amtt.database.table.StepsTable;
-import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
 
 
 /**
@@ -31,6 +29,10 @@ public class AmttContentProvider extends ContentProvider {
     public static final Uri ACTIVITY_META_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + ActivityInfoTable.TABLE_NAME);
     public static final Uri STEP_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + StepsTable.TABLE_NAME);
     public static final Uri STEP_WITH_META_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + StepsWithMetaTable.TABLE_NAME);
+    public static final Uri USER_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + UsersTable.TABLE_NAME);
+    public static final Uri PRIORITY_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + PriorityTable.TABLE_NAME);
+    public static final Uri PROJECT_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + ProjectTable.TABLE_NAME);
+    public static final Uri ISSUETYPE_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + IssuetypeTable.TABLE_NAME);
 
     public static final String ACTIVITY_META_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + ActivityInfoTable.TABLE_NAME;
     public static final String ACTIVITY_META_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + ActivityInfoTable.TABLE_NAME;
