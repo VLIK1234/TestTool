@@ -21,7 +21,7 @@ public class PriorityTable extends Table implements BaseColumns {
         _ID,
         _JIRA_ID,
         _NAME,
-        UsersTable._USER_NAME
+        UsersTable._URL
     };
 
     static {
@@ -29,7 +29,7 @@ public class PriorityTable extends Table implements BaseColumns {
         sColumnsMap.put(TYPE_TEXT, new ArrayList<String>() {{
             add(_JIRA_ID);
             add(_NAME);
-            add(UsersTable._USER_NAME);
+            add(UsersTable._URL);
         }});
         sColumnsMap.put(TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);

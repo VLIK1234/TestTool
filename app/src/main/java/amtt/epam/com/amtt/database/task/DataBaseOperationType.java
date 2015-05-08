@@ -6,6 +6,10 @@ package amtt.epam.com.amtt.database.task;
 public enum DataBaseOperationType {
 
     CLEAR,
-    SAVE_STEP
+    SAVE_STEP,
+    SAVE_USER,
+    SAVE_PRIORITY,
+    SAVE_PROJECT,
+    SAVE_ISSUETYPE
 
 }

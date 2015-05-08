@@ -36,10 +36,24 @@ public class AmttContentProvider extends ContentProvider {
 
     public static final String ACTIVITY_META_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + ActivityInfoTable.TABLE_NAME;
     public static final String ACTIVITY_META_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + ActivityInfoTable.TABLE_NAME;
+
     public static final String STEP_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsTable.TABLE_NAME;
     public static final String STEP_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsTable.TABLE_NAME;
+
     public static final String STEP_WITH_META_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsWithMetaTable.TABLE_NAME;
     public static final String STEP_WITH_META_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsWithMetaTable.TABLE_NAME;
+
+    public static final String USER_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + UsersTable.TABLE_NAME;
+    public static final String USER_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + UsersTable.TABLE_NAME;
+
+    public static final String PRIORITY_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + PriorityTable.TABLE_NAME;
+    public static final String PRIORITY_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + PriorityTable.TABLE_NAME;
+
+    public static final String PROJECT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + ProjectTable.TABLE_NAME;
+    public static final String PROJECT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + ProjectTable.TABLE_NAME;
+
+    public static final String ISSUETYPE_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + IssuetypeTable.TABLE_NAME;
+    public static final String ISSUETYPE_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + IssuetypeTable.TABLE_NAME;
 
     private static final UriMatcher sUriMatcher;
     private static Map<Integer, String> sContentType;
@@ -50,26 +64,72 @@ public class AmttContentProvider extends ContentProvider {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(AUTHORITY, ActivityInfoTable.TABLE_NAME, AmttUri.ACTIVITY_META.ordinal());
         sUriMatcher.addURI(AUTHORITY, ActivityInfoTable.TABLE_NAME + "/#", AmttUri.ACTIVITY_META_BY_NAME.ordinal());
+
         sUriMatcher.addURI(AUTHORITY, StepsTable.TABLE_NAME, AmttUri.STEP.ordinal());
         sUriMatcher.addURI(AUTHORITY, StepsTable.TABLE_NAME + "/#", AmttUri.STEP_ID.ordinal());
+
         sUriMatcher.addURI(AUTHORITY, StepsWithMetaTable.TABLE_NAME, AmttUri.STEP_WITH_META.ordinal());
         sUriMatcher.addURI(AUTHORITY, StepsWithMetaTable.TABLE_NAME + "/#", AmttUri.STEP_WITH_META_ID.ordinal());
+
+        sUriMatcher.addURI(AUTHORITY, UsersTable.TABLE_NAME, AmttUri.USER.ordinal());
+        sUriMatcher.addURI(AUTHORITY, UsersTable.TABLE_NAME + "/#", AmttUri.USER_BY_KEY.ordinal());
+        sUriMatcher.addURI(AUTHORITY, UsersTable.TABLE_NAME + "/#", AmttUri.USER_BY_URL.ordinal());
+
+        sUriMatcher.addURI(AUTHORITY, PriorityTable.TABLE_NAME, AmttUri.PRIORITY.ordinal());
+        sUriMatcher.addURI(AUTHORITY, PriorityTable.TABLE_NAME + "/#", AmttUri.PRIORITY_BY_USER_URL.ordinal());
+
+        sUriMatcher.addURI(AUTHORITY, ProjectTable.TABLE_NAME, AmttUri.PROJECT.ordinal());
+        sUriMatcher.addURI(AUTHORITY, ProjectTable.TABLE_NAME + "/#", AmttUri.PROJECT_BY_USER_EMAIL.ordinal());
+
+        sUriMatcher.addURI(AUTHORITY, IssuetypeTable.TABLE_NAME, AmttUri.ISSUETYPE.ordinal());
+        sUriMatcher.addURI(AUTHORITY, IssuetypeTable.TABLE_NAME + "/#", AmttUri.ISSUETYPE_BY_PROJECT_KEY.ordinal());
 
         sContentType = new HashMap<>();
         sContentType.put(AmttUri.ACTIVITY_META.ordinal(), ACTIVITY_META_CONTENT_TYPE);
         sContentType.put(AmttUri.ACTIVITY_META_BY_NAME.ordinal(), ACTIVITY_META_CONTENT_ITEM_TYPE);
+
         sContentType.put(AmttUri.STEP.ordinal(), STEP_CONTENT_TYPE);
         sContentType.put(AmttUri.STEP_ID.ordinal(), STEP_CONTENT_ITEM_TYPE);
+
         sContentType.put(AmttUri.STEP_WITH_META.ordinal(), STEP_WITH_META_CONTENT_TYPE);
         sContentType.put(AmttUri.STEP_WITH_META_ID.ordinal(), STEP_WITH_META_CONTENT_ITEM_TYPE);
+
+        sContentType.put(AmttUri.USER.ordinal(), USER_CONTENT_TYPE);
+        sContentType.put(AmttUri.USER_BY_KEY.ordinal(), USER_CONTENT_ITEM_TYPE);
+        sContentType.put(AmttUri.USER_BY_KEY.ordinal(), USER_CONTENT_ITEM_TYPE);
+
+        sContentType.put(AmttUri.PRIORITY.ordinal(), PRIORITY_CONTENT_TYPE);
+        sContentType.put(AmttUri.PRIORITY_BY_USER_URL.ordinal(), PRIORITY_CONTENT_ITEM_TYPE);
+
+        sContentType.put(AmttUri.PROJECT.ordinal(), PROJECT_CONTENT_TYPE);
+        sContentType.put(AmttUri.PROJECT.ordinal(), PROJECT_CONTENT_ITEM_TYPE);
+
+        sContentType.put(AmttUri.ISSUETYPE.ordinal(), ISSUETYPE_CONTENT_TYPE);
+        sContentType.put(AmttUri.ISSUETYPE_BY_PROJECT_KEY.ordinal(), ISSUETYPE_CONTENT_ITEM_TYPE);
 
         sProjections = new HashMap<>();
         sProjections.put(AmttUri.ACTIVITY_META.ordinal(), ActivityInfoTable.PROJECTION);
         sProjections.put(AmttUri.ACTIVITY_META_BY_NAME.ordinal(), ActivityInfoTable.PROJECTION);
+
         sProjections.put(AmttUri.STEP.ordinal(), StepsTable.PROJECTION);
         sProjections.put(AmttUri.STEP_ID.ordinal(), StepsTable.PROJECTION);
+
         sProjections.put(AmttUri.STEP_WITH_META.ordinal(), StepsWithMetaTable.PROJECTION);
         sProjections.put(AmttUri.STEP_WITH_META_ID.ordinal(), StepsWithMetaTable.PROJECTION);
+
+        sProjections.put(AmttUri.USER.ordinal(), UsersTable.PROJECTION);
+        sProjections.put(AmttUri.USER_BY_KEY.ordinal(), UsersTable.PROJECTION);
+        sProjections.put(AmttUri.USER_BY_URL.ordinal(), UsersTable.PROJECTION);
+
+        sProjections.put(AmttUri.PRIORITY.ordinal(), PriorityTable.PROJECTION);
+        sProjections.put(AmttUri.PRIORITY_BY_USER_URL.ordinal(), PriorityTable.PROJECTION);
+
+        sProjections.put(AmttUri.PROJECT.ordinal(), ProjectTable.PROJECTION);
+        sProjections.put(AmttUri.PROJECT_BY_USER_EMAIL.ordinal(), ProjectTable.PROJECTION);
+
+        sProjections.put(AmttUri.ISSUETYPE.ordinal(), IssuetypeTable.PROJECTION);
+        sProjections.put(AmttUri.ISSUETYPE_BY_PROJECT_KEY.ordinal(), IssuetypeTable.PROJECTION);
+
     }
 
     @Override
@@ -109,6 +169,12 @@ public class AmttContentProvider extends ContentProvider {
         String tableName = uri.getLastPathSegment();
         long id = getDataBaseManager().insert(tableName, values);
         return ContentUris.withAppendedId(uri, id);
+    }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+
+        return super.bulkInsert(uri, values);
     }
 
     @Override

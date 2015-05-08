@@ -1,9 +1,9 @@
 package amtt.epam.com.amtt.database.table;
 
+import java.util.ArrayList;
+
 import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.util.MultiValueMap;
-
-import java.util.ArrayList;
 
 /**
  * Created by Iryna_Monchanka on 07.05.2015.
@@ -23,15 +23,15 @@ public class ProjectTable extends Table implements BaseColumns {
     private static MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
-        _ID,
-        _AVATAR_MEDIUM_URL,
-        _AVATAR_SMALL_URL,
-        _AVATAR_URL,
-        _AVATAR_X_SMALL_URL,
-        _JIRA_ID,
-        _KEY,
-        _NAME,
-        UsersTable._USER_NAME
+            _ID,
+            _AVATAR_MEDIUM_URL,
+            _AVATAR_SMALL_URL,
+            _AVATAR_URL,
+            _AVATAR_X_SMALL_URL,
+            UsersTable._EMAIL,
+            _JIRA_ID,
+            _KEY,
+            _NAME
     };
 
     static {
@@ -41,10 +41,10 @@ public class ProjectTable extends Table implements BaseColumns {
             add(_AVATAR_SMALL_URL);
             add(_AVATAR_URL);
             add(_AVATAR_X_SMALL_URL);
+            add(UsersTable._EMAIL);
             add(_JIRA_ID);
             add(_KEY);
             add(_NAME);
-            add(UsersTable._USER_NAME);
         }});
         sColumnsMap.put(TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);

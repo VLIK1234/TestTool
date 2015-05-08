@@ -1,5 +1,13 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.bo.JPriorityResponse;
+import amtt.epam.com.amtt.bo.user.JiraUserInfo;
+import amtt.epam.com.amtt.database.task.DataBaseCallback;
+import amtt.epam.com.amtt.database.task.DataBaseOperationType;
+import amtt.epam.com.amtt.database.task.DataBaseTask;
+import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
+import amtt.epam.com.amtt.processing.PriorityProcessor;
+import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.util.Constants;
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -24,7 +32,7 @@ import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.view.EditText;
 import amtt.epam.com.amtt.util.UtilConstants;
 
-public class LoginActivity extends BaseActivity implements JiraCallback<String> {
+public class LoginActivity extends BaseActivity implements JiraCallback, DataBaseCallback {
     
     private final String TAG = this.getClass().getSimpleName();
     private EditText mUserName;
@@ -33,6 +41,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
     private String toastText = UtilConstants.SharedPreference.EMPTY_STRING;
     private Button mLoginButton;
     private CheckBox mEpamJira;
+    private String mRequestUrl;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -88,13 +97,8 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
                 if (isValid) {
                     showProgress(true);
                     mLoginButton.setEnabled(false);
-                    String requestUrl = mEpamJira.isChecked() ? mUrl.getText().toString() + JiraApiConst.EPAM_JIRA_SUFFIX : mUrl.getText().toString();
-                    RestMethod<String> authMethod = JiraApi.getInstance().buildAuth(mUserName.getText().toString(), mPassword.getText().toString(), requestUrl);
-                    new JiraTask.Builder<String>()
-                        .setRestMethod(authMethod)
-                        .setCallback(LoginActivity.this)
-                        .createAndExecute();
-
+                    mRequestUrl = mEpamJira.isChecked() ? mUrl.getText().toString() + JiraApiConst.EPAM_JIRA_SUFFIX : mUrl.getText().toString();
+                    getAuthorizationAsynchronously();
                 }
                 toastText = UtilConstants.SharedPreference.EMPTY_STRING;
             }
@@ -107,18 +111,61 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
                 mLoginButton.setEnabled(false);
             }
 
+    @SuppressWarnings("unchecked")
+    private void getAuthorizationAsynchronously() {
+        RestMethod<String> authMethod = JiraApi.getInstance().buildAuth(mUserName.getText().toString(), mPassword.getText().toString(), mRequestUrl);
+        new JiraTask.Builder<String>()
+                .setRestMethod(authMethod)
+                .setCallback(LoginActivity.this)
+                .createAndExecute();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void getUserInfoAsynchronously() {
+        String requestSuffix = JiraApiConst.USER_INFO_PATH + CredentialsManager.getInstance().getUserName() + JiraApiConst.EXPAND_GROUPS;
+        RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix, new UserInfoProcessor());
+        new JiraTask.Builder<JiraUserInfo>()
+                .setRestMethod(userInfoMethod)
+                .setCallback(LoginActivity.this)
+                .createAndExecute();
+    }
+    @SuppressWarnings("unchecked")
+    private void getPriorityAsynchronously() {
+        String path = JiraApiConst.PROJECT_PRIORITY_PATH;
+        RestMethod<JPriorityResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new PriorityProcessor());
+        new JiraTask.Builder<JPriorityResponse>()
+                .setRestMethod(searchMethod)
+                .setCallback(LoginActivity.this)
+                .createAndExecute();
+    }
 
             @Override
-            public void onRequestPerformed(RestResponse<String> restResponse) {
-                showProgress(false);
-                mLoginButton.setEnabled(true);
-                String resultMessage = (String) restResponse.getResultObject();
-                CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
-                CredentialsManager.getInstance().setCredentials(mUserName.getText().toString(), mPassword.getText().toString());
-                CredentialsManager.getInstance().setAccess(true);
-                TopButtonService.authSuccess(this);
-                Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-                finish();
+            public void onRequestPerformed(RestResponse restResponse) {
+                if (restResponse.getResultObject().getClass() == String.class) {
+                    showProgress(false);
+                    mLoginButton.setEnabled(true);
+                    String resultMessage = (String) restResponse.getResultObject();
+                    CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
+                    CredentialsManager.getInstance().setCredentials(mUserName.getText().toString(), mPassword.getText().toString());
+                    CredentialsManager.getInstance().setAccess(true);
+                    TopButtonService.authSuccess(this);
+                    Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+                    getUserInfoAsynchronously();
+                } else if(restResponse.getResultObject().getClass() == JiraUserInfo.class) {
+                    JiraUserInfo jiraUserInfo = (JiraUserInfo) restResponse.getResultObject();
+                    new DataBaseTask.Builder()
+                            .setContext(this)
+                            .setCallback(LoginActivity.this)
+                            .setOperationType(DataBaseOperationType.SAVE_USER)
+                            .setJiraUserInfo(jiraUserInfo)
+                            .setUserKey(jiraUserInfo.getKey())
+                            .setUrl(mUrl.getText().toString())
+                            .create()
+                            .execute();
+                    showProgress(false);
+                    mLoginButton.setEnabled(true);
+                }
+                //finish();
             }
 
             @Override
@@ -128,4 +175,22 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
                 mLoginButton.setEnabled(true);
             }
 
+    @Override
+    public void onDataBaseActionDone(DataBaseTaskResult result) {
+        int resultMessage;
+        switch (result) {
+            case DONE:
+                resultMessage = R.string.data_base_action_done;
+                break;
+            case ERROR:
+                resultMessage = R.string.data_base_action_error;
+                break;
+            default:
+                resultMessage = R.string.data_base_cleared;
+                break;
         }
+        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+    }
+
+
+}

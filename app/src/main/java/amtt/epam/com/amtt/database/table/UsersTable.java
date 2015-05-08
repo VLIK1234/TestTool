@@ -18,7 +18,6 @@ public class UsersTable extends Table implements BaseColumns {
     public static final String _AVATAR_X_SMALL_URL = "_avatar_x_small_url";
     public static final String _EMAIL = "_email";
     public static final String _KEY = "_key";
-    public static final String _PASSWORD = "_password";
     public static final String _URL = "_url";
     public static final String _USER_NAME = "_user_name";
 
@@ -33,7 +32,6 @@ public class UsersTable extends Table implements BaseColumns {
             _AVATAR_X_SMALL_URL,
             _EMAIL,
             _KEY,
-            _PASSWORD,
             _URL,
             _USER_NAME
     };
@@ -47,7 +45,6 @@ public class UsersTable extends Table implements BaseColumns {
             add(_AVATAR_X_SMALL_URL);
             add(_EMAIL);
             add(_KEY);
-            add(_PASSWORD);
             add(_URL);
             add(_USER_NAME);
         }});

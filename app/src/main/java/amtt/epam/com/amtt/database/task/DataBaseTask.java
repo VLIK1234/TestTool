@@ -6,8 +6,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -19,12 +17,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import amtt.epam.com.amtt.bo.issue.createmeta.JIssueTypes;
+import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
+import amtt.epam.com.amtt.bo.project.JPriority;
+import amtt.epam.com.amtt.bo.user.JiraUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
+import amtt.epam.com.amtt.database.table.IssuetypeTable;
+import amtt.epam.com.amtt.database.table.PriorityTable;
+import amtt.epam.com.amtt.database.table.ProjectTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
-import amtt.epam.com.amtt.processing.Processor;
+import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.util.Logger;
 
 /**
  * Created by Artsiom_Kaliaha on 26.03.2015.
@@ -37,6 +43,14 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         private Context mContext;
         private DataBaseCallback mCallback;
         private int mStepNumber;
+        private String mUrl;
+        private JiraUserInfo mJiraUserInfo;
+        private JPriority mPriority;
+        private JProjects mProjects;
+        private String mEmail;
+        private JIssueTypes mIssueTypes;
+        private String mUserKey;
+        private String mProjectKey;
 
         public Builder() {
         }
@@ -47,17 +61,62 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         }
 
         public Builder setContext(@NonNull Context context) {
+            Logger.d(DataBaseTask.class.getSimpleName(), "setContext()");
             mContext = context;
+
             return this;
         }
 
         public Builder setCallback(@NonNull DataBaseCallback callback) {
+            Logger.d(DataBaseTask.class.getSimpleName(), "setCallback()");
             mCallback = callback;
             return this;
         }
 
         public Builder setStepNumber(int stepNumber) {
             mStepNumber = stepNumber;
+            return this;
+        }
+
+        public Builder setUrl(String url) {
+            Logger.d(DataBaseTask.class.getSimpleName(), "setUrl()");
+            mUrl = url;
+            return this;
+        }
+
+        public Builder setJiraUserInfo(JiraUserInfo jiraUserInfo){
+            Logger.d(DataBaseTask.class.getSimpleName(), "setJiraUserInfo()");
+            mJiraUserInfo = jiraUserInfo;
+            return this;
+        }
+        public Builder setPriority(JPriority priority){
+            mPriority = priority;
+            return this;
+        }
+
+        public Builder setProjects(JProjects projects){
+            mProjects = projects;
+            return this;
+        }
+
+        public Builder setEmail(String email) {
+            mEmail = email;
+            return this;
+        }
+
+        public Builder setIssueTypes(JIssueTypes issueTypes){
+            mIssueTypes = issueTypes;
+            return this;
+        }
+
+        public Builder setUserKey(String userKey) {
+            Logger.d(DataBaseTask.class.getSimpleName(), "setUserKey()");
+            mUserKey = userKey;
+            return this;
+        }
+
+        public Builder setProjectKey(String projectKey) {
+            mProjectKey = projectKey;
             return this;
         }
 
@@ -69,6 +128,14 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             dataBaseTask.mStepNumber = this.mStepNumber;
             dataBaseTask.mPath = mContext.getFilesDir().getPath() + SCREENSHOT_FOLDER;
             dataBaseTask.mCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
+            dataBaseTask.mUrl = this.mUrl;
+            dataBaseTask.mJiraUserInfo = this.mJiraUserInfo;
+            dataBaseTask.mPriority = this.mPriority;
+            dataBaseTask.mProjects = this.mProjects;
+            dataBaseTask.mEmail = this.mEmail;
+            dataBaseTask.mIssueTypes = this.mIssueTypes;
+            dataBaseTask.mUserKey = this.mUserKey;
+            dataBaseTask.mProjectKey = this.mProjectKey;
             return dataBaseTask;
         }
 
@@ -161,6 +228,14 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     private DataBaseCallback mCallback;
     private String mPath;
     private int mCurrentSdkVersion;
+    private String mUrl;
+    private JiraUserInfo mJiraUserInfo;
+    private JPriority mPriority;
+    private JProjects mProjects;
+    private String mEmail;
+    private JIssueTypes mIssueTypes;
+    private String mUserKey;
+    private String mProjectKey;
 
     @Override
     protected DataBaseTaskResult doInBackground(Void... params) {
@@ -169,6 +244,14 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
                 return performStepSaving();
             case CLEAR:
                 return performCleaning();
+            case SAVE_USER:
+                return performUserSaving();
+            case SAVE_PRIORITY:
+                return performPrioritySaving();
+            case SAVE_PROJECT:
+                return performProjectSaving();
+            case SAVE_ISSUETYPE:
+                return performIssuetypeSaving();
             default:
                 return null;
         }
@@ -176,7 +259,9 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
 
     @Override
     protected void onPostExecute(DataBaseTaskResult result) {
-        mCallback.onDataBaseActionDone(result);
+        if (mCallback != null) {
+            mCallback.onDataBaseActionDone(result);
+        }
     }
 
 
@@ -231,6 +316,90 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         return DataBaseTaskResult.CLEARED;
     }
 
+    private DataBaseTaskResult performUserSaving() {
+        Logger.d(DataBaseTask.class.getSimpleName(), "performUserSaving()");
+        if (mUserKey != null) {
+            Logger.d(DataBaseTask.class.getSimpleName(), "getCount()");
+            int existingUserKey = mContext.getContentResolver().query(
+                    AmttContentProvider.USER_CONTENT_URI,
+                    new String[]{UsersTable._KEY},
+                    UsersTable._KEY,
+                    new String[]{mUserKey},
+                    null).getCount();
+            Logger.d(DataBaseTask.class.getSimpleName(), String.valueOf(existingUserKey));
+            if ((existingUserKey == 0) && (mJiraUserInfo != null) && (mUrl != null)) {
+
+                Logger.d(DataBaseTask.class.getSimpleName(), "saveUser()");
+                saveUser(mJiraUserInfo, mUrl);
+            } else {
+                Logger.d(DataBaseTask.class.getSimpleName(), "saveUser(not)");
+                return DataBaseTaskResult.ERROR;
+            }
+            return DataBaseTaskResult.DONE;
+        } else {
+            Logger.d(DataBaseTask.class.getSimpleName(), "performUserSaving(not)");
+            return DataBaseTaskResult.ERROR;
+        }
+    }
+//TODO test existing priorities in PriorityTable
+    private DataBaseTaskResult performPrioritySaving() {
+        if (mUserKey != null) {
+            int existingUserUrl = mContext.getContentResolver().query(
+                    AmttContentProvider.USER_CONTENT_URI,
+                    new String[]{UsersTable._URL},
+                    UsersTable._URL,
+                    new String[]{mUrl},
+                    null).getCount();
+
+            if ((existingUserUrl != 0) && (mPriority != null) && (mUrl != null)) {
+                savePriority(mPriority, mUrl);
+            } else {
+                return DataBaseTaskResult.ERROR;
+            }
+            return DataBaseTaskResult.DONE;
+        } else {
+            return DataBaseTaskResult.ERROR;
+        }
+    }
+    //TODO test existing projects in ProjectTable
+    private DataBaseTaskResult performProjectSaving() {
+        if (mEmail != null) {
+            int existingUserEmail = mContext.getContentResolver().query(
+                    AmttContentProvider.USER_CONTENT_URI,
+                    new String[]{UsersTable._EMAIL},
+                    UsersTable._EMAIL,
+                    new String[]{mEmail},
+                    null).getCount();
+            if ((existingUserEmail == 1) && (mProjects != null)) {
+                saveProject(mProjects, mEmail);
+            } else {
+                return DataBaseTaskResult.ERROR;
+            }
+            return DataBaseTaskResult.DONE;
+        } else {
+            return DataBaseTaskResult.ERROR;
+        }
+    }
+
+    private DataBaseTaskResult performIssuetypeSaving() {
+        if (mProjectKey != null) {
+            int existingProjectKey = mContext.getContentResolver().query(
+                    AmttContentProvider.PROJECT_CONTENT_URI,
+                    new String[]{ProjectTable._KEY},
+                    ProjectTable._KEY,
+                    new String[]{mProjectKey},
+                    null).getCount();
+
+            if ((existingProjectKey == 1) && (mIssueTypes != null)) {
+                saveIssuetype(mIssueTypes, mProjectKey);
+            } else {
+                return DataBaseTaskResult.ERROR;
+            }
+            return DataBaseTaskResult.DONE;
+        } else {
+            return DataBaseTaskResult.ERROR;
+        }
+    }
 
     private String saveScreen() throws IOException {
         String screenPath = null;
@@ -292,6 +461,47 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         values.put(StepsTable._SCREEN_PATH, screenPath);
         values.put(StepsTable._ASSOCIATED_ACTIVITY, componentName.getClassName());
         mContext.getContentResolver().insert(AmttContentProvider.STEP_CONTENT_URI, values);
+    }
+
+    public void saveUser(JiraUserInfo jiraUserInfo, String url) {
+        ContentValues values = new ContentValues();
+        values.put(UsersTable._AVATAR_MEDIUM_URL, jiraUserInfo.getAvatarUrls().getAvatarMediumUrl());
+        values.put(UsersTable._AVATAR_SMALL_URL, jiraUserInfo.getAvatarUrls().getAvatarSmallUrl());
+        values.put(UsersTable._AVATAR_URL, jiraUserInfo.getAvatarUrls().getAvatarUrl());
+        values.put(UsersTable._AVATAR_X_SMALL_URL, jiraUserInfo.getAvatarUrls().getAvatarXSmallUrl());
+        values.put(UsersTable._EMAIL, jiraUserInfo.getEmailAddress());
+        values.put(UsersTable._KEY, jiraUserInfo.getKey());
+        values.put(UsersTable._URL, url);
+        values.put(UsersTable._USER_NAME, jiraUserInfo.getName());
+        mContext.getContentResolver().insert(AmttContentProvider.USER_CONTENT_URI, values);
+    }
+
+    private void savePriority(JPriority jPriority, String url) {
+        ContentValues values = new ContentValues();
+        values.put(PriorityTable._JIRA_ID, jPriority.getId());
+        values.put(PriorityTable._NAME, jPriority.getId());
+        values.put(UsersTable._URL, url);
+        mContext.getContentResolver().insert(AmttContentProvider.PRIORITY_CONTENT_URI, values);
+    }
+
+    private void saveProject(JProjects jProjects, String email) {
+        ContentValues values = new ContentValues();
+        values.put(ProjectTable._AVATAR_MEDIUM_URL, jProjects.getAvatarUrls().getAvatarMediumUrl());
+        values.put(ProjectTable._AVATAR_SMALL_URL, jProjects.getAvatarUrls().getAvatarSmallUrl());
+        values.put(ProjectTable._AVATAR_URL, jProjects.getAvatarUrls().getAvatarUrl());
+        values.put(ProjectTable._AVATAR_X_SMALL_URL, jProjects.getAvatarUrls().getAvatarXSmallUrl());
+        values.put(UsersTable._EMAIL, email);
+        values.put(ProjectTable._JIRA_ID, jProjects.getId());
+        values.put(ProjectTable._KEY, jProjects.getKey());
+        values.put(ProjectTable._NAME, jProjects.getName());
+        mContext.getContentResolver().insert(AmttContentProvider.PROJECT_CONTENT_URI, values);
+    }
+
+    private void saveIssuetype(JIssueTypes issueTypes, String key) {
+        ContentValues values = new ContentValues();
+        values.put(ProjectTable._KEY, key);
+        values.put(IssuetypeTable._NAME, issueTypes.getName());
+        mContext.getContentResolver().insert(AmttContentProvider.ISSUETYPE_CONTENT_URI, values);
     }
 
     //help methods
