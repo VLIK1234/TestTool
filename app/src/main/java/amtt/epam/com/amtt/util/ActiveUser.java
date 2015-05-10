@@ -60,8 +60,10 @@ public class ActiveUser {
         PreferenceUtils.putBoolean(Constants.SharedPreference.ACCESS, url);
     }
 
-    public void setCredentials(String userName, String password) {
-        String credentialsString = JiraApiConst.BASIC_AUTH + Base64.encodeToString((mUserName + Constants.Str.COLON + mPassword).getBytes(), Base64.NO_WRAP);
+    public void setCredentials(String userName, String password, String url) {
+        mUserName = userName;
+        mUrl = url;
+        String credentialsString = JiraApiConst.BASIC_AUTH + Base64.encodeToString((mUserName + Constants.Str.COLON + password).getBytes(), Base64.NO_WRAP);
         PreferenceUtils.putString(Constants.SharedPreference.CREDENTIALS, credentialsString);
     }
 

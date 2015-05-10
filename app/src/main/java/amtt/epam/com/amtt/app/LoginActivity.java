@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.adapter.LoginItemAdapter;
+import amtt.epam.com.amtt.adapter.LoginItemAdapter.ViewHolder;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
@@ -43,9 +45,11 @@ import amtt.epam.com.amtt.database.task.DataBaseResponse;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
+import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants.Str;
 import amtt.epam.com.amtt.view.EditText;
+import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
  * Created by Artsiom_Kaliaha on 07.05.2015.
@@ -65,15 +69,16 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        TopButtonService.close(this);
         initViews();
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
     }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
+        TopButtonService.start(this);
     }
-
 
     private void initViews() {
         mUserName = (AutoCompleteTextView) findViewById(R.id.user_name);
@@ -102,6 +107,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
                     .setCallback(LoginActivity.this)
                     .createAndExecute();
         } else {
+            //get user info and perform auth in one request
             String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserName.getText().toString() + JiraApiConst.EXPAND_GROUPS;
             RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
                     new UserInfoProcessor(),
@@ -127,6 +133,9 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     private void insertUserToDatabase(JiraUserInfo user) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(UsersTable._USER_NAME, user.getName());
+        contentValues.put(UsersTable._DISPLAY_NAME, user.getDisplayName());
+        contentValues.put(UsersTable._TIME_ZONE, user.getTimeZone());
+        contentValues.put(UsersTable._LOCALE, user.getLocale());
         contentValues.put(UsersTable._URL, mRequestUrl);
         contentValues.put(UsersTable._KEY, user.getKey());
         contentValues.put(UsersTable._EMAIL, user.getEmailAddress());
@@ -135,12 +144,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         contentValues.put(UsersTable._AVATAR_32, user.getAvatarUrls().getAvatarMediumUrl());
         contentValues.put(UsersTable._AVATAR_48, user.getAvatarUrls().getAvatarUrl());
         getContentResolver().insert(AmttContentProvider.USER_CONTENT_URI, contentValues);
-
-        ActiveUser activeUser = ActiveUser.getInstance();
-        String userName = mUserName.getText().toString();
-        String password = mPassword.getText().toString();
-        activeUser.setCredentials(userName, password);
-        activeUser.setUrl(mRequestUrl);
     }
 
     private void checkFields() {
@@ -169,6 +172,13 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         mToastText = Str.EMPTY;
     }
 
+    private void populateActiveUserInfo() {
+        ActiveUser activeUser = ActiveUser.getInstance();
+        String userName = mUserName.getText().toString();
+        String password = mPassword.getText().toString();
+        activeUser.setCredentials(userName, password, mRequestUrl);
+    }
+
     //Callbacks
     //Jira
     @Override
@@ -186,6 +196,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
                 JiraUserInfo user = restResponse.getResultObject();
                 insertUserToDatabase(user);
             }
+            populateActiveUserInfo();
         }
         finish();
     }
@@ -202,6 +213,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     public void onDataBaseActionDone(DataBaseResponse<Boolean> dataBaseResponse) {
         if (dataBaseResponse.getTaskResult() == DataBaseTaskResult.DONE) {
             sendAuthRequest(dataBaseResponse.getValueResult());
+            TopButtonService.authSuccess(this);
         }
     }
 
@@ -224,16 +236,21 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
                 mUserUrlMap.put(userName, url);
             }
 
-            ArrayAdapter<String> usersAdapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_dropdown_item_1line,
-                    mUserUrlMap.keySet().toArray(new String[mUserUrlMap.keySet().size()]));
-            mUserName.setAdapter(usersAdapter);
+            LoginItemAdapter adapter = new LoginItemAdapter(this, data, NO_FLAGS);
+            mUserName.setAdapter(adapter);
             mUserName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String userName = ((TextView)view).getText().toString();
+                    ViewHolder vh = (ViewHolder)view.getTag();
+                    String userName = vh.getTextView().getText().toString();
                     mUserName.setText(userName);
                     mUrl.setText(mUserUrlMap.get(userName));
+                }
+            });
+            mUserName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
                 }
             });
         }

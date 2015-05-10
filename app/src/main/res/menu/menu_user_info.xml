@@ -3,8 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="amtt.epam.com.amtt.app.UsersActivity">
 
-    <item android:id="@+id/action_new_user"
+    <item android:id="@+id/action_refresh_user_info"
+        android:title="@string/action_refresh_user_info"
+        android:icon="@drawable/ic_action_refresh"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/action_change_user"
         android:title="@string/action_new_user"
         android:icon="@drawable/ic_action_add_qa"
         app:showAsAction="always"/>
+
 </menu>

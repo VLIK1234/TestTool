@@ -40,7 +40,8 @@ import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
-import amtt.epam.com.amtt.app.UsersActivity;
+import amtt.epam.com.amtt.app.LoginActivity;
+import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
@@ -136,11 +137,14 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.layout_auth:
-                        Intent intent = new Intent(getContext(), UsersActivity.class);
+                        Intent intent = new Intent(getContext(), LoginActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         getContext().getApplicationContext().startActivity(intent);
                         break;
                     case R.id.layout_user_info:
+                        Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
+                        userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getContext().getApplicationContext().startActivity(userInfoIntent);
                         break;
                     case R.id.layout_add_step:
                         sStepNumber++;
@@ -158,11 +162,15 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
                         getContext().getApplicationContext().startActivity(intentStep);
                         break;
                     case R.id.layout_bug_rep:
-//                        RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor());
-//                        new JiraTask.Builder<JMetaResponse>()
-//                                .setRestMethod(searchMethod)
-//                                .setCallback(TopButtonView.this)
-//                                .createAndExecute();
+                        RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH,
+                                new ProjectsProcessor(),
+                                null,
+                                null,
+                                null);
+                        new JiraTask.Builder<JMetaResponse>()
+                                .setRestMethod(searchMethod)
+                                .setCallback(TopButtonView.this)
+                                .createAndExecute();
                         break;
                     default:
                 }
