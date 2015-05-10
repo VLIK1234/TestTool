@@ -1,12 +1,14 @@
 package amtt.epam.com.amtt.contentprovider;
 
 import amtt.epam.com.amtt.database.table.*;
+import amtt.epam.com.amtt.util.Logger;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.net.Uri;
 
 import java.util.Arrays;
@@ -17,12 +19,15 @@ import java.util.Map;
 import java.util.Set;
 
 import amtt.epam.com.amtt.database.task.DataBaseManager;
+import android.os.Looper;
 
 
 /**
  * Created by Artsiom_Kaliaha on 23.03.2015.
  */
 public class AmttContentProvider extends ContentProvider {
+
+    private final String TAG = this.getClass().getSimpleName();
 
     private static final String AUTHORITY = "amtt.epam.com.amtt.contentprovider";
 
@@ -173,8 +178,20 @@ public class AmttContentProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
+        String tableName = uri.getLastPathSegment();
+        int numValues = values.length;
+        try {
+            for (int i = 0; i < numValues; i++) {
+            long id = getDataBaseManager().insert(tableName, values[i]);
+                if (id <= 0) {
+                    Logger.e(TAG, "Failed to insert row into " + uri);
+                }
+            }
 
-        return super.bulkInsert(uri, values);
+    }catch (Exception e){
+            Logger.e(TAG, "bulkInsert() " + uri);
+        }
+        return numValues;
     }
 
     @Override

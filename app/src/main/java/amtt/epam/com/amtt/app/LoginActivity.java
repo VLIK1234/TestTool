@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.bo.JMetaResponse;
 import amtt.epam.com.amtt.bo.JPriorityResponse;
 import amtt.epam.com.amtt.bo.user.JiraUserInfo;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
@@ -42,6 +43,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback, DataBas
     private Button mLoginButton;
     private CheckBox mEpamJira;
     private String mRequestUrl;
+    private JiraUserInfo jiraUserInfo;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -129,6 +131,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback, DataBas
                 .setCallback(LoginActivity.this)
                 .createAndExecute();
     }
+
     @SuppressWarnings("unchecked")
     private void getPriorityAsynchronously() {
         String path = JiraApiConst.PROJECT_PRIORITY_PATH;
@@ -137,6 +140,16 @@ public class LoginActivity extends BaseActivity implements JiraCallback, DataBas
                 .setRestMethod(searchMethod)
                 .setCallback(LoginActivity.this)
                 .createAndExecute();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void getProjectsAsynchronously() {
+        String path = JiraApiConst.PROJECT_PRIORITY_PATH;
+        RestMethod<JPriorityResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new PriorityProcessor());
+        new JiraTask.Builder<JPriorityResponse>()
+            .setRestMethod(searchMethod)
+            .setCallback(LoginActivity.this)
+            .createAndExecute();
     }
 
             @Override
@@ -152,7 +165,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback, DataBas
                     Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
                     getUserInfoAsynchronously();
                 } else if(restResponse.getResultObject().getClass() == JiraUserInfo.class) {
-                    JiraUserInfo jiraUserInfo = (JiraUserInfo) restResponse.getResultObject();
+                    jiraUserInfo = (JiraUserInfo) restResponse.getResultObject();
                     new DataBaseTask.Builder()
                             .setContext(this)
                             .setCallback(LoginActivity.this)
@@ -162,6 +175,26 @@ public class LoginActivity extends BaseActivity implements JiraCallback, DataBas
                             .setUrl(mUrl.getText().toString())
                             .create()
                             .execute();
+                    getProjectsAsynchronously();
+                } else if(restResponse.getResultObject().getClass() == JMetaResponse.class) {
+                    JMetaResponse metaResponse = (JMetaResponse) restResponse.getResultObject();
+                    new DataBaseTask.Builder()
+                        .setContext(this)
+                        .setCallback(LoginActivity.this)
+                        .setOperationType(DataBaseOperationType.SAVE_LIST_PROJECT)
+                        .setMetaResponse(metaResponse)
+                        .setEmail(jiraUserInfo.getEmailAddress())
+                        .create()
+                        .execute();
+                    for (int i = 0; i < metaResponse.getProjects().size(); i++) {
+                        new DataBaseTask.Builder()
+                            .setContext(this)
+                            .setCallback(LoginActivity.this)
+                            .setOperationType(DataBaseOperationType.SAVE_LIST_ISSUETYPE)
+                            .setProjects(metaResponse.getProjects().get(i))
+                            .create()
+                            .execute();
+                    }
                     showProgress(false);
                     mLoginButton.setEnabled(true);
                 }
