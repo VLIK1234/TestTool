@@ -26,15 +26,16 @@ public class StepAdapter extends CursorAdapter {
         TextView mStep;
     }
 
-    private final InternalStorageImageLoader mImageLoader;
+    private static final InternalStorageImageLoader sImageLoader;
     public static final int IMAGE_VIEW_WIDTH = 360;
     public static final int IMAGE_VIEW_HEIGHT = 640;
 
+    static {
+        sImageLoader = new InternalStorageImageLoader(10, IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT);
+    }
+
     public StepAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
-        //TODO we really need to recreate ImageLoader every tyme we create adapter?
-        //when we clear cache for unused adapter with loader instance
-        mImageLoader = new InternalStorageImageLoader(10, IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT);
     }
 
     @Override
@@ -76,7 +77,7 @@ public class StepAdapter extends CursorAdapter {
     }
 
     private void setBitmap(ImageView imageView, String path) {
-        mImageLoader.load(imageView, path);
+        sImageLoader.load(imageView, path);
     }
 
 }

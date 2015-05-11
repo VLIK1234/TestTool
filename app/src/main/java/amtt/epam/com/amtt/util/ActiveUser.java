@@ -14,8 +14,8 @@ public class ActiveUser {
     private static final ActiveUser INSTANCE = new ActiveUser();
 
     private String mUserName;
-    private String mPassword;
     private String mUrl;
+    private int mId;
 
     private ActiveUser() {
     }
@@ -39,25 +39,12 @@ public class ActiveUser {
         return mUserName;
     }
 
-    private String getPassword() {
-        return mPassword;
-    }
-
     public String getUrl() {
         return mUrl;
     }
 
-    public boolean getAccessState() {
-        return !TextUtils.isEmpty(getUserName()) && !TextUtils.isEmpty(getPassword());
-    }
-
-
     public void setUrl(String url) {
         mUrl = url;
-    }
-
-    public void setAccess(Boolean url) {
-        PreferenceUtils.putBoolean(Constants.SharedPreference.ACCESS, url);
     }
 
     public void setCredentials(String userName, String password, String url) {
@@ -67,13 +54,12 @@ public class ActiveUser {
         PreferenceUtils.putString(Constants.SharedPreference.CREDENTIALS, credentialsString);
     }
 
-    public void setUserName(String userName) {
-        PreferenceUtils.putString(Constants.SharedPreference.USER_NAME, userName);
-        mUserName = userName;
+    public int getId() {
+        return mId;
     }
 
-    public void setPassword(String password) {
-        mPassword = password;
+    public void setId(int id) {
+        mId = id;
     }
 
 }

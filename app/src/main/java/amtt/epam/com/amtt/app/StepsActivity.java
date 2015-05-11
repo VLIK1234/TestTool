@@ -16,7 +16,7 @@ import amtt.epam.com.amtt.adapter.StepAdapter;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
 
-public class StepsActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class StepsActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int CURSOR_LOADER = 0;
 
@@ -47,21 +47,19 @@ public class StepsActivity extends ActionBarActivity implements LoaderManager.Lo
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.getCount() != 0) {
             if (mAdapter == null) {
-                //TODO why do you init adapter with null and then call swapCursor?
-                mAdapter = new StepAdapter(StepsActivity.this, null, 0);
+                mAdapter = new StepAdapter(StepsActivity.this, data, 0);
                 mListView.setAdapter(mAdapter);
+            } else {
+                mAdapter.swapCursor(data);
             }
-            mAdapter.swapCursor(data);
-            //TODO progress is hidden in both cases
-            mProgressBar.setVisibility(View.GONE);
         } else {
-            mProgressBar.setVisibility(View.GONE);
             mEmptyText.setVisibility(View.VISIBLE);
         }
+        showProgress(false);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        //TODO do we need additional logic
+        mAdapter.changeCursor(null);
     }
 }

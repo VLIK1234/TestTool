@@ -30,6 +30,9 @@ public class JiraUserInfo {
     @SerializedName("expand")
     private String mExpand;
 
+    private String mUrl;
+    private int mId;
+
     public JiraUserInfo() {
     }
 
@@ -134,4 +137,21 @@ public class JiraUserInfo {
     public void setExpand(String expand) {
         this.mExpand = expand;
     }
+
+    public String getUrl() {
+        return mUrl;
+    }
+
+    public void setUrl(String url) {
+        mUrl = url;
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        mId = id;
+    }
+
 }

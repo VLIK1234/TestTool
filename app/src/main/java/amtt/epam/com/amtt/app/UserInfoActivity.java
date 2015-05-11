@@ -164,11 +164,11 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     public void onRequestPerformed(RestResponse<JiraUserInfo> restResponse) {
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
             JiraUserInfo user = restResponse.getResultObject();
-            mName.setText(getResources().getString(R.string.label_user_name) + Str.COLON + user.getName());
-            mEmailAddress.setText(getResources().getString(R.string.label_email) + Str.COLON + user.getEmailAddress());
+            mName.setText(user.getName());
+            mEmailAddress.setText(user.getEmailAddress());
             mDisplayName.setText(user.getDisplayName());
-            mTimeZone.setText(getResources().getString(R.string.label_time_zone) + Str.COLON + user.getTimeZone());
-            mLocale.setText(getResources().getString(R.string.label_locale) + Str.COLON + user.getLocale());
+            mTimeZone.setText(user.getTimeZone());
+            mLocale.setText(user.getLocale());
             updateUserInfo(user);
             showProgress(false);
         }

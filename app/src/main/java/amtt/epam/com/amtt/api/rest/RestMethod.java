@@ -9,6 +9,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -16,7 +18,6 @@ import java.net.UnknownHostException;
 import java.util.Map;
 
 import amtt.epam.com.amtt.api.exception.AmttException;
-import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.processing.Processor;
 
 /**
@@ -154,10 +155,16 @@ public class RestMethod<ResultType> {
                 break;
         }
 
+        int statusCode = httpResponse.getStatusLine().getStatusCode();
+        if (mRestMethodType == RestMethodType.GET && statusCode != HttpStatus.SC_OK ||
+                mRestMethodType == RestMethodType.POST && statusCode != HttpStatus.SC_CREATED) {
+            //TODO put error
+            throw new AmttException(null, statusCode, this, null);
+        }
+
         RestResponse<ResultType> restResponse = new RestResponse<>();
         ResultType result;
         HttpEntity entity = null;
-        //TODO we have processor only for successful request. You can get parse error before wrong status code.  Check codes before.
         try {
             if (mProcessor != null) {
                 entity = httpResponse.getEntity();
@@ -165,16 +172,7 @@ public class RestMethod<ResultType> {
                 restResponse.setResultObject(result);
             }
         } catch (Exception e) {
-            throw new AmttException(e, httpResponse.getStatusLine().getStatusCode(), this, entity);
-        }
-
-        int statusCode = httpResponse.getStatusLine().getStatusCode();
-        //TODO what if return result only on good codes, such as 200?
-        if (statusCode == HttpStatus.SC_NOT_FOUND || statusCode == HttpStatus.SC_BAD_GATEWAY ||
-                statusCode == HttpStatus.SC_UNAUTHORIZED || statusCode == HttpStatus.SC_FORBIDDEN ||
-                statusCode == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
-            //TODO put error
-            throw new AmttException(null, statusCode, this, null);
+            throw prepareException(e, statusCode, entity);
         }
 
         return restResponse;
@@ -182,6 +180,21 @@ public class RestMethod<ResultType> {
 
     public RestMethodType getRequestType() {
         return mRestMethodType;
+    }
+
+
+    private AmttException prepareException(Exception e, int statusCode, HttpEntity entity) {
+        AmttException amttException = new AmttException(e, statusCode, this);
+        String entityString = null;
+        try {
+            entityString = EntityUtils.toString(entity, HTTP.UTF_8);
+        } catch (IOException entityParseException) {
+            //TODO for reviewer: addSuppressed requires API19, project API is 14th
+            //amttException.getSuppressedOne().addSuppressed(entityParseException);
+            amttException.replaceSuppressedOne(entityParseException);
+        }
+        amttException.setEntity(entityString);
+        return amttException;
     }
 
 }

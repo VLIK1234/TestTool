@@ -27,7 +27,7 @@ import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 import amtt.epam.com.amtt.view.EditText;
-import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.util.Constants.SharedPreference;
 
 
 @SuppressWarnings("unchecked")
@@ -87,12 +87,12 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
     }
 
     public ArrayList<String> getProjectsNames() {
-        projectsNames = Converter.setToArrayList(PreferenceUtils.getSet(Constants.SharedPreference.PROJECTS_NAMES, null));
+        projectsNames = Converter.setToArrayList(PreferenceUtils.getSet(SharedPreference.PROJECTS_NAMES, null));
         return projectsNames;
     }
 
     public ArrayList<String> getProjectsKeys() {
-        projectsKeys = Converter.setToArrayList(PreferenceUtils.getSet(Constants.SharedPreference.PROJECTS_KEYS, null));
+        projectsKeys = Converter.setToArrayList(PreferenceUtils.getSet(SharedPreference.PROJECTS_KEYS, null));
         return projectsKeys;
     }
 

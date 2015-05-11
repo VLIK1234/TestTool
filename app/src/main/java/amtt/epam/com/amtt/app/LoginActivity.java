@@ -38,6 +38,7 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.database.dao.UserDao;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseOperationType;
@@ -82,8 +83,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
 
     private void initViews() {
         mUserName = (AutoCompleteTextView) findViewById(R.id.user_name);
+        mUserName.setText("artsiom_kaliaha");
         mPassword = (EditText) findViewById(R.id.password);
         mUrl = (EditText) findViewById(R.id.jira_url);
+        mUrl.setText("https://amtt02.atlassian.net");
         mEpamJira = (CheckBox) findViewById(R.id.epam_jira_checkbox);
         mLoginButton = (Button) findViewById(R.id.login_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
@@ -241,7 +244,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
             mUserName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    ViewHolder vh = (ViewHolder)view.getTag();
+                    ViewHolder vh = (ViewHolder) view.getTag();
                     String userName = vh.getTextView().getText().toString();
                     mUserName.setText(userName);
                     mUrl.setText(mUserUrlMap.get(userName));
