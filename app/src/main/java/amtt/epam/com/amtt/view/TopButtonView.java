@@ -85,6 +85,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     private RelativeLayout topButtonLayout;
     public LinearLayout layoutUserInfo;
     public LinearLayout layoutBugRep;
+    private static boolean isStartRecord = false;
 
     //Database fields
     private static int sStepNumber; //responsible for steps ordering in database
@@ -102,7 +103,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
         topButtonLayout = (RelativeLayout) findViewById(R.id.top_button_layout);
-
+        buttonsBar.addView(new RecordButton(context));
     }
 
     @SuppressWarnings("unchecked")
@@ -478,4 +479,10 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         ExceptionHandler.getInstance().processError(e).showDialog(getContext(), TopButtonView.this);
     }
 
+    public static void setStartRecord(boolean isStartRecord){
+        TopButtonView.isStartRecord = isStartRecord;
+    }
+    public static boolean getStartRecord(){
+        return isStartRecord;
+    }
 }
