@@ -1,25 +1,13 @@
 package amtt.epam.com.amtt.contentprovider;
 
 import amtt.epam.com.amtt.database.table.*;
+import amtt.epam.com.amtt.database.task.DataBaseManager;
 import amtt.epam.com.amtt.util.Logger;
-import android.content.ContentProvider;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.UriMatcher;
+import android.content.*;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.net.Uri;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import amtt.epam.com.amtt.database.task.DataBaseManager;
-import android.os.Looper;
+import java.util.*;
 
 
 /**
@@ -182,13 +170,13 @@ public class AmttContentProvider extends ContentProvider {
         int numValues = values.length;
         try {
             for (int i = 0; i < numValues; i++) {
-            long id = getDataBaseManager().insert(tableName, values[i]);
+                long id = getDataBaseManager().insert(tableName, values[i]);
                 if (id <= 0) {
                     Logger.e(TAG, "Failed to insert row into " + uri);
                 }
             }
 
-    }catch (Exception e){
+        } catch (Exception e) {
             Logger.e(TAG, "bulkInsert() " + uri);
         }
         return numValues;

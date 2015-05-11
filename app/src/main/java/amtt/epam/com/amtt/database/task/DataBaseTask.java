@@ -2,6 +2,15 @@ package amtt.epam.com.amtt.database.task;
 
 import amtt.epam.com.amtt.bo.JMetaResponse;
 import amtt.epam.com.amtt.bo.JPriorityResponse;
+import amtt.epam.com.amtt.bo.issue.createmeta.JIssueTypes;
+import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
+import amtt.epam.com.amtt.bo.project.JPriority;
+import amtt.epam.com.amtt.bo.user.JiraUserInfo;
+import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
+import amtt.epam.com.amtt.database.table.*;
+import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.util.Logger;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -15,28 +24,18 @@ import android.support.annotation.NonNull;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.*;
-
-import amtt.epam.com.amtt.bo.issue.createmeta.JIssueTypes;
-import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
-import amtt.epam.com.amtt.bo.project.JPriority;
-import amtt.epam.com.amtt.bo.user.JiraUserInfo;
-import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
-import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
-import amtt.epam.com.amtt.database.table.ActivityInfoTable;
-import amtt.epam.com.amtt.database.table.IssuetypeTable;
-import amtt.epam.com.amtt.database.table.PriorityTable;
-import amtt.epam.com.amtt.database.table.ProjectTable;
-import amtt.epam.com.amtt.database.table.StepsTable;
-import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.util.IOUtils;
-import amtt.epam.com.amtt.util.Logger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Artsiom_Kaliaha on 26.03.2015.
  */
 public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> implements ActivityInfoConstants {
 
+
+    String TAG = DataBaseTask.class.getSimpleName();
     public static class Builder {
 
         private DataBaseOperationType mOperationType;
@@ -87,17 +86,18 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             return this;
         }
 
-        public Builder setJiraUserInfo(JiraUserInfo jiraUserInfo){
+        public Builder setJiraUserInfo(JiraUserInfo jiraUserInfo) {
             Logger.d(DataBaseTask.class.getSimpleName(), "setJiraUserInfo()");
             mJiraUserInfo = jiraUserInfo;
             return this;
         }
-        public Builder setPriority(JPriority priority){
+
+        public Builder setPriority(JPriority priority) {
             mPriority = priority;
             return this;
         }
 
-        public Builder setProjects(JProjects projects){
+        public Builder setProjects(JProjects projects) {
             mProjects = projects;
             return this;
         }
@@ -107,7 +107,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             return this;
         }
 
-        public Builder setIssueTypes(JIssueTypes issueTypes){
+        public Builder setIssueTypes(JIssueTypes issueTypes) {
             mIssueTypes = issueTypes;
             return this;
         }
@@ -123,12 +123,12 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             return this;
         }
 
-        public Builder setMetaResponse(JMetaResponse metaResponse){
+        public Builder setMetaResponse(JMetaResponse metaResponse) {
             mMetaResponse = metaResponse;
             return this;
         }
 
-        public Builder setPriorityResponse(JPriorityResponse priorityResponse){
+        public Builder setPriorityResponse(JPriorityResponse priorityResponse) {
             mPriorityResponse = priorityResponse;
             return this;
         }
@@ -340,40 +340,39 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     }
 
     private DataBaseTaskResult performUserSaving() {
-        Logger.d(DataBaseTask.class.getSimpleName(), "performUserSaving()");
+        Logger.d(TAG, "performUserSaving()");
         if (mUserKey != null) {
-            Logger.d(DataBaseTask.class.getSimpleName(), "getCount()");
-            int existingUserKey = mContext.getContentResolver().query(
-                    AmttContentProvider.USER_CONTENT_URI,
-                    new String[]{UsersTable._KEY},
-                    UsersTable._KEY,
-                    new String[]{mUserKey},
-                    null).getCount();
-            Logger.d(DataBaseTask.class.getSimpleName(), String.valueOf(existingUserKey));
-            if ((existingUserKey == 0) && (mJiraUserInfo != null) && (mUrl != null)) {
-
-                Logger.d(DataBaseTask.class.getSimpleName(), "saveUser()");
+            Logger.d(TAG, "getCount()");
+            /*int existingUserKey = mContext.getContentResolver().query(
+                AmttContentProvider.USER_CONTENT_URI,
+                new String[]{UsersTable._KEY},
+                UsersTable._KEY,
+                new String[]{mUserKey},
+                null).getCount();
+            Logger.d(TAG, String.valueOf(existingUserKey));*/
+            if ((mJiraUserInfo != null) && (mUrl != null)) {
+                Logger.d(TAG, "saveUser()");
                 saveUser(mJiraUserInfo, mUrl);
             } else {
-                Logger.d(DataBaseTask.class.getSimpleName(), "saveUser(not)");
+                Logger.d(TAG, "saveUser(not)");
                 return DataBaseTaskResult.ERROR;
             }
             return DataBaseTaskResult.DONE;
         } else {
-            Logger.d(DataBaseTask.class.getSimpleName(), "performUserSaving(not)");
+            Logger.d(TAG, "performUserSaving(not)");
             return DataBaseTaskResult.ERROR;
         }
     }
-//TODO test existing priorities in PriorityTable
-    private DataBaseTaskResult performPrioritySaving() {
-        if  (mUrl != null) {
-            int existingUserUrl = mContext.getContentResolver().query(
-                    AmttContentProvider.USER_CONTENT_URI,
-                    new String[]{UsersTable._URL},
-                    UsersTable._URL,
-                    new String[]{mUrl},
-                    null).getCount();
 
+    //TODO test existing priorities in PriorityTable
+    private DataBaseTaskResult performPrioritySaving() {
+        if (mUrl != null) {
+            int existingUserUrl = mContext.getContentResolver().query(
+                AmttContentProvider.USER_CONTENT_URI,
+                new String[]{UsersTable._URL},
+                UsersTable._URL,
+                new String[]{mUrl},
+                null).getCount();
             if ((existingUserUrl != 0) && (mPriority != null)) {
                 savePriority(mPriority, mUrl);
             } else {
@@ -386,16 +385,15 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     }
 
     private DataBaseTaskResult performListPrioritySaving() {
-        if (mUrl != null){
+        if (mUrl != null) {
             int existingUserUrl = mContext.getContentResolver().query(
                 AmttContentProvider.USER_CONTENT_URI,
                 new String[]{UsersTable._URL},
                 UsersTable._URL,
                 new String[]{mUrl},
                 null).getCount();
-
             if ((existingUserUrl != 0) && (mPriority != null)) {
-                savePriority(mPriority, mUrl);
+                saveListPriority(mPriorityResponse, mUrl);
             } else {
                 return DataBaseTaskResult.ERROR;
             }
@@ -409,11 +407,11 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     private DataBaseTaskResult performProjectSaving() {
         if (mEmail != null) {
             int existingUserEmail = mContext.getContentResolver().query(
-                    AmttContentProvider.USER_CONTENT_URI,
-                    new String[]{UsersTable._EMAIL},
-                    UsersTable._EMAIL,
-                    new String[]{mEmail},
-                    null).getCount();
+                AmttContentProvider.USER_CONTENT_URI,
+                new String[]{UsersTable._EMAIL},
+                UsersTable._EMAIL,
+                new String[]{mEmail},
+                null).getCount();
             if ((existingUserEmail == 1) && (mProjects != null)) {
                 saveProject(mProjects, mEmail);
             } else {
@@ -447,11 +445,11 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     private DataBaseTaskResult performIssuetypeSaving() {
         if (mProjectKey != null) {
             int existingProjectKey = mContext.getContentResolver().query(
-                    AmttContentProvider.PROJECT_CONTENT_URI,
-                    new String[]{ProjectTable._KEY},
-                    ProjectTable._KEY,
-                    new String[]{mProjectKey},
-                    null).getCount();
+                AmttContentProvider.PROJECT_CONTENT_URI,
+                new String[]{ProjectTable._KEY},
+                ProjectTable._KEY,
+                new String[]{mProjectKey},
+                null).getCount();
 
             if ((existingProjectKey == 1) && (mIssueTypes != null)) {
                 saveIssuetype(mIssueTypes, mProjectKey);
@@ -465,16 +463,15 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     }
 
     private DataBaseTaskResult performListIssuetypesSaving() {
-        if (mProjectKey != null) {
+        if (mProjects.getKey() != null) {
             int existingProjectKey = mContext.getContentResolver().query(
                 AmttContentProvider.PROJECT_CONTENT_URI,
                 new String[]{ProjectTable._KEY},
                 ProjectTable._KEY,
-                new String[]{mProjectKey},
+                new String[]{mProjects.getKey()},
                 null).getCount();
-
             if (existingProjectKey == 1) {
-               saveListIssuetype(mProjects);
+                saveListIssuetype(mProjects);
             } else {
                 return DataBaseTaskResult.ERROR;
             }
@@ -567,16 +564,13 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         mContext.getContentResolver().insert(AmttContentProvider.PRIORITY_CONTENT_URI, values);
     }
 
-    private void saveListPriority(JPriorityResponse jPriorityResponce, String url) {
-
+    private void saveListPriority(JPriorityResponse priorityResponce, String url) {
         ContentValues[] bulkToInsert;
-        List<ContentValues>mValueList = new ArrayList<ContentValues>();
-
-        for (int i = 0; i < jPriorityResponce.getPriorities().size(); i++) {
-
+        List<ContentValues> mValueList = new ArrayList<ContentValues>();
+        for (int i = 0; i < priorityResponce.getPriorities().size(); i++) {
             ContentValues mNewValues = new ContentValues();
-            mNewValues.put(PriorityTable._JIRA_ID, jPriorityResponce.getPriorities().get(i).getId());
-            mNewValues.put(PriorityTable._NAME, jPriorityResponce.getPriorities().get(i).getId());
+            mNewValues.put(PriorityTable._JIRA_ID, priorityResponce.getPriorities().get(i).getId());
+            mNewValues.put(PriorityTable._NAME, priorityResponce.getPriorities().get(i).getId());
             mNewValues.put(UsersTable._URL, url);
             mValueList.add(mNewValues);
         }
@@ -585,22 +579,22 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         mContext.getContentResolver().bulkInsert(AmttContentProvider.PRIORITY_CONTENT_URI, bulkToInsert);
     }
 
-    private void saveProject(JProjects jProjects, String email) {
+    private void saveProject(JProjects projects, String email) {
         ContentValues values = new ContentValues();
-        values.put(ProjectTable._AVATAR_MEDIUM_URL, jProjects.getAvatarUrls().getAvatarMediumUrl());
-        values.put(ProjectTable._AVATAR_SMALL_URL, jProjects.getAvatarUrls().getAvatarSmallUrl());
-        values.put(ProjectTable._AVATAR_URL, jProjects.getAvatarUrls().getAvatarUrl());
-        values.put(ProjectTable._AVATAR_X_SMALL_URL, jProjects.getAvatarUrls().getAvatarXSmallUrl());
+        values.put(ProjectTable._AVATAR_MEDIUM_URL, projects.getAvatarUrls().getAvatarMediumUrl());
+        values.put(ProjectTable._AVATAR_SMALL_URL, projects.getAvatarUrls().getAvatarSmallUrl());
+        values.put(ProjectTable._AVATAR_URL, projects.getAvatarUrls().getAvatarUrl());
+        values.put(ProjectTable._AVATAR_X_SMALL_URL, projects.getAvatarUrls().getAvatarXSmallUrl());
         values.put(UsersTable._EMAIL, email);
-        values.put(ProjectTable._JIRA_ID, jProjects.getId());
-        values.put(ProjectTable._KEY, jProjects.getKey());
-        values.put(ProjectTable._NAME, jProjects.getName());
+        values.put(ProjectTable._JIRA_ID, projects.getId());
+        values.put(ProjectTable._KEY, projects.getKey());
+        values.put(ProjectTable._NAME, projects.getName());
         mContext.getContentResolver().insert(AmttContentProvider.PROJECT_CONTENT_URI, values);
     }
 
     private void saveListProject(JMetaResponse metaResponse, String email) {
         ContentValues[] bulkToInsert;
-        List<ContentValues>mValueList = new ArrayList<ContentValues>();
+        List<ContentValues> mValueList = new ArrayList<ContentValues>();
         for (int i = 0; i < metaResponse.getProjects().size(); i++) {
             ContentValues mNewValues = new ContentValues();
             mNewValues.put(ProjectTable._AVATAR_MEDIUM_URL, metaResponse.getProjects().get(i).getAvatarUrls().getAvatarMediumUrl());
@@ -625,13 +619,13 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         mContext.getContentResolver().insert(AmttContentProvider.ISSUETYPE_CONTENT_URI, values);
     }
 
-    private void saveListIssuetype(JProjects jProjects) {
+    private void saveListIssuetype(JProjects projects) {
         ContentValues[] bulkToInsert;
-        List<ContentValues>mValueList = new ArrayList<ContentValues>();
-        for (int i = 0; i < jProjects.getIssueTypes().size(); i++) {
+        List<ContentValues> mValueList = new ArrayList<ContentValues>();
+        for (int i = 0; i < projects.getIssueTypes().size(); i++) {
             ContentValues mNewValues = new ContentValues();
-            mNewValues.put(ProjectTable._KEY, jProjects.getKey());
-            mNewValues.put(IssuetypeTable._NAME, jProjects.getIssueTypes().get(i).getName());
+            mNewValues.put(ProjectTable._KEY, projects.getKey());
+            mNewValues.put(IssuetypeTable._NAME, projects.getIssueTypes().get(i).getName());
             mValueList.add(mNewValues);
         }
         bulkToInsert = new ContentValues[mValueList.size()];
