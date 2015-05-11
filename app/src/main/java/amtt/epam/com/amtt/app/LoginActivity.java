@@ -1,5 +1,15 @@
 package amtt.epam.com.amtt.app;
 
+import android.annotation.TargetApi;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.Toast;
+
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
@@ -25,17 +35,6 @@ import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.util.UtilConstants;
 import amtt.epam.com.amtt.view.EditText;
-import android.annotation.TargetApi;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.Toast;
-
-import java.util.concurrent.Executor;
 
 public class LoginActivity extends BaseActivity implements JiraCallback, DataBaseCallback {
     
@@ -150,14 +149,11 @@ public class LoginActivity extends BaseActivity implements JiraCallback, DataBas
     @SuppressWarnings("unchecked")
     private void getProjectsAsynchronously() {
         String path = JiraApiConst.USER_PROJECTS_PATH;
-        Logger.d(TAG, path);
         RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new ProjectsProcessor());
-        Logger.d(TAG, " RestMethod<JMetaResponse> ");
         new JiraTask.Builder<JMetaResponse>()
             .setRestMethod(searchMethod)
             .setCallback(LoginActivity.this)
             .createAndExecute();
-        Logger.d(TAG, " JiraTask.Builder<JMetaResponse> ");
     }
 
     @Override
@@ -177,51 +173,54 @@ public class LoginActivity extends BaseActivity implements JiraCallback, DataBas
             jiraUserInfo = (JiraUserInfo) restResponse.getResultObject();
             Logger.d(TAG, "DataBaseOperationType.SAVE_USER");
             new DataBaseTask.Builder()
+                    .setOperationType(DataBaseOperationType.SAVE_USER)
                     .setContext(this)
-                .setCallback(LoginActivity.this)
-                .setOperationType(DataBaseOperationType.SAVE_USER)
-                .setJiraUserInfo(jiraUserInfo)
-                .setUserKey(jiraUserInfo.getKey())
-                .setUrl(mUrl.getText().toString())
-                .create()
-                .executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+
+
+                    .setJiraUserInfo(jiraUserInfo)
+                    .setUserKey(jiraUserInfo.getKey())
+                    .setUrl(mUrl.getText().toString())
+                    .setCallback(LoginActivity.this)
+                    .create()
+                    .executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
             Logger.d(TAG, "getProjectsAsynchronously()");
             getProjectsAsynchronously();
         } else if (restResponse.getResultObject().getClass() == JMetaResponse.class) {
             JMetaResponse metaResponse = (JMetaResponse) restResponse.getResultObject();
             Logger.d(TAG, "DataBaseOperationType.SAVE_LIST_PROJECT");
             new DataBaseTask.Builder()
-                .setContext(this)
-                .setCallback(LoginActivity.this)
                     .setOperationType(DataBaseOperationType.SAVE_LIST_PROJECT)
-                .setMetaResponse(metaResponse)
-                .setEmail(jiraUserInfo.getEmailAddress())
-                .create()
+                    .setContext(this)
+                    .setMetaResponse(metaResponse)
+                    .setEmail(jiraUserInfo.getEmailAddress())
+                    .setCallback(LoginActivity.this)
+                    .create()
                     .executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
-            Logger.d(TAG, "DataBaseOperationType.SAVE_LIST_ISSUETYPE");
+          /*  Logger.d(TAG, "DataBaseOperationType.SAVE_LIST_ISSUETYPE");
             for (int i = 0; i < metaResponse.getProjects().size(); i++) {
                 new DataBaseTask.Builder()
-                    .setContext(this)
-                    .setCallback(LoginActivity.this)
                         .setOperationType(DataBaseOperationType.SAVE_LIST_ISSUETYPE)
-                    .setProjects(metaResponse.getProjects().get(i))
-                    .create()
+                        .setContext(this)
+                        .setCallback(LoginActivity.this)
+                        .setProjects(metaResponse.getProjects().get(i))
+                        .create()
                         .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }
+            }*/
             showProgress(false);
             mLoginButton.setEnabled(true);
             Logger.d(TAG, "getPriorityAsynchronously()");
             getPriorityAsynchronously();
-        }else if (restResponse.getResultObject().getClass() == JPriorityResponse.class) {
+        } else if (restResponse.getResultObject().getClass() == JPriorityResponse.class) {
             JPriorityResponse metaResponse = (JPriorityResponse) restResponse.getResultObject();
             Logger.d(TAG, "DataBaseOperationType.SAVE_LIST_PRIORITY");
             new DataBaseTask.Builder()
-                .setContext(this)
-                .setCallback(LoginActivity.this)
+
                     .setOperationType(DataBaseOperationType.SAVE_LIST_PRIORITY)
-                .setPriorityResponse(metaResponse)
-                .setEmail(jiraUserInfo.getEmailAddress())
-                .create()
+                    .setContext(this)
+                    .setCallback(LoginActivity.this)
+                    .setPriorityResponse(metaResponse)
+                    .setEmail(jiraUserInfo.getEmailAddress())
+                    .create()
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
         showProgress(false);

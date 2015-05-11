@@ -18,6 +18,7 @@ import amtt.epam.com.amtt.database.table.ProjectTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.Table;
 import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.util.Logger;
 
 /**
  * Created by Artsiom_Kaliaha on 18.03.2015.
@@ -27,6 +28,7 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
     private static final Integer DATA_BASE_VERSION = 3;
     private static final String DATA_BASE_NAME = "amtt.db";
     private static final List<Class> sTables;
+    private final String TAG = this.getClass().getSimpleName();
 
     static {
         sTables = new ArrayList<>();
@@ -140,6 +142,25 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
         }
 
         return id;
+    }
+
+    public int bulkInsert(String tableName, ContentValues[] values){
+        SQLiteDatabase database = getWritableDatabase();
+        int numValues = values.length;
+        try {
+            database.beginTransaction();
+            for (int i = 0; i < numValues; i++) {
+                long newID = database.insert(tableName, null, values[i]);
+                database.setTransactionSuccessful();
+                if (newID <= 0) {
+                    Logger.e(TAG, "Failed to insert row into " + tableName);
+                }
+            }}finally {
+                database.endTransaction();
+                database.close();
+            }
+
+            return numValues;
     }
 
     public int delete(String tableName, String selection, String[] selectionArgs) {
