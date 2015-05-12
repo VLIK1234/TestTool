@@ -144,25 +144,6 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
         return id;
     }
 
-    public int bulkInsert(String tableName, ContentValues[] values){
-        SQLiteDatabase database = getWritableDatabase();
-        int numValues = values.length;
-        try {
-            database.beginTransaction();
-            for (int i = 0; i < numValues; i++) {
-                long newID = database.insert(tableName, null, values[i]);
-                database.setTransactionSuccessful();
-                if (newID <= 0) {
-                    Logger.e(TAG, "Failed to insert row into " + tableName);
-                }
-            }}finally {
-                database.endTransaction();
-                database.close();
-            }
-
-            return numValues;
-    }
-
     public int delete(String tableName, String selection, String[] selectionArgs) {
         int deletedRows;
         SQLiteDatabase database = getWritableDatabase();

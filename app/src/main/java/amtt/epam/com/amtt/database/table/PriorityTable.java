@@ -14,6 +14,7 @@ public class PriorityTable extends Table implements BaseColumns {
 
     public static final String _JIRA_ID = "_jira_id";
     public static final String _NAME = "_name";
+    public static final String _URL = "_url";
 
     private static MultiValueMap<String, String> sColumnsMap;
 
@@ -21,7 +22,7 @@ public class PriorityTable extends Table implements BaseColumns {
         _ID,
         _JIRA_ID,
         _NAME,
-        UsersTable._URL
+        _URL
     };
 
     static {
@@ -29,7 +30,7 @@ public class PriorityTable extends Table implements BaseColumns {
         sColumnsMap.put(TYPE_TEXT, new ArrayList<String>() {{
             add(_JIRA_ID);
             add(_NAME);
-            add(UsersTable._URL);
+            add(_URL);
         }});
         sColumnsMap.put(TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);

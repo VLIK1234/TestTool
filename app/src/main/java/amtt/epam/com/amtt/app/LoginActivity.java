@@ -175,16 +175,12 @@ public class LoginActivity extends BaseActivity implements JiraCallback, DataBas
             new DataBaseTask.Builder()
                     .setOperationType(DataBaseOperationType.SAVE_USER)
                     .setContext(this)
-
-
                     .setJiraUserInfo(jiraUserInfo)
                     .setUserKey(jiraUserInfo.getKey())
                     .setUrl(mUrl.getText().toString())
                     .setCallback(LoginActivity.this)
                     .create()
                     .executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
-            Logger.d(TAG, "getProjectsAsynchronously()");
-            getProjectsAsynchronously();
         } else if (restResponse.getResultObject().getClass() == JMetaResponse.class) {
             JMetaResponse metaResponse = (JMetaResponse) restResponse.getResultObject();
             Logger.d(TAG, "DataBaseOperationType.SAVE_LIST_PROJECT");
@@ -196,32 +192,17 @@ public class LoginActivity extends BaseActivity implements JiraCallback, DataBas
                     .setCallback(LoginActivity.this)
                     .create()
                     .executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
-          /*  Logger.d(TAG, "DataBaseOperationType.SAVE_LIST_ISSUETYPE");
-            for (int i = 0; i < metaResponse.getProjects().size(); i++) {
-                new DataBaseTask.Builder()
-                        .setOperationType(DataBaseOperationType.SAVE_LIST_ISSUETYPE)
-                        .setContext(this)
-                        .setCallback(LoginActivity.this)
-                        .setProjects(metaResponse.getProjects().get(i))
-                        .create()
-                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }*/
-            showProgress(false);
-            mLoginButton.setEnabled(true);
-            Logger.d(TAG, "getPriorityAsynchronously()");
-            getPriorityAsynchronously();
         } else if (restResponse.getResultObject().getClass() == JPriorityResponse.class) {
             JPriorityResponse metaResponse = (JPriorityResponse) restResponse.getResultObject();
             Logger.d(TAG, "DataBaseOperationType.SAVE_LIST_PRIORITY");
             new DataBaseTask.Builder()
-
                     .setOperationType(DataBaseOperationType.SAVE_LIST_PRIORITY)
                     .setContext(this)
-                    .setCallback(LoginActivity.this)
                     .setPriorityResponse(metaResponse)
-                    .setEmail(jiraUserInfo.getEmailAddress())
+                    .setUrl(mUrl.getText().toString())
+                    .setCallback(LoginActivity.this)
                     .create()
-                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    .executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
         }
         showProgress(false);
         mLoginButton.setEnabled(true);
@@ -236,14 +217,27 @@ public class LoginActivity extends BaseActivity implements JiraCallback, DataBas
             }
 
     @Override
-    public void onDataBaseActionDone(DataBaseTaskResult result) {
+    public void onDataBaseActionDone(String result) {
         int resultMessage;
         switch (result) {
-            case DONE:
+            case "DONE":
                 resultMessage = R.string.data_base_action_done;
                 break;
-            case ERROR:
+            case "ERROR":
                 resultMessage = R.string.data_base_action_error;
+                break;
+            case "SAVE_USER":
+                resultMessage = R.string.data_base_action_done;
+                Logger.d(TAG, "getProjectsAsynchronously()");
+                getProjectsAsynchronously();
+                break;
+            case "SAVE_LIST_PROJECT":
+                resultMessage = R.string.data_base_action_done;
+                Logger.d(TAG, "getPriorityAsynchronously()");
+                getPriorityAsynchronously();
+                break;
+            case "SAVE_LIST_PRIORITY":
+                resultMessage = R.string.data_base_action_done;
                 break;
             default:
                 resultMessage = R.string.data_base_cleared;

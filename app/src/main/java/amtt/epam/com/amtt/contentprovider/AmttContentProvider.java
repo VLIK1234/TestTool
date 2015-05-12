@@ -6,6 +6,7 @@ import amtt.epam.com.amtt.util.Logger;
 import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import java.util.*;
 
@@ -143,7 +144,7 @@ public class AmttContentProvider extends ContentProvider {
             cursor = getDataBaseManager().joinQuery(tablesName,
                     StepsWithMetaTable.PROJECTION,
                     new String[]{StepsTable._ASSOCIATED_ACTIVITY, ActivityInfoTable._ACTIVITY_NAME});
-        } else {
+        } else{
             String tableName = uri.getLastPathSegment();
             cursor = getDataBaseManager().query(tableName, projection, selection, selectionArgs, sortOrder);
         }
@@ -165,20 +166,18 @@ public class AmttContentProvider extends ContentProvider {
     }
 
     @Override
-    public int bulkInsert(Uri uri, ContentValues[] values) {
+    public int bulkInsert(Uri uri, @NonNull ContentValues[] values) {
         String tableName = uri.getLastPathSegment();
         int numValues = values.length;
-        try {
-            for (int i = 0; i < numValues; i++) {
-                long id = getDataBaseManager().insert(tableName, values[i]);
-                if (id <= 0) {
-                    Logger.e(TAG, "Failed to insert row into " + uri);
-                }
+        for (int i = 0; i < numValues; i++) {
+            long newID = getDataBaseManager().insert(tableName, values[i]);
+            if (newID <= 0) {
+                Logger.e(TAG, "Failed to insert row into " + tableName);
+                return 0;
             }
 
-        } catch (Exception e) {
-            Logger.e(TAG, "bulkInsert() " + uri);
         }
+        Logger.e(TAG, numValues + " insert " + tableName);
         return numValues;
     }
 

@@ -5,6 +5,6 @@ package amtt.epam.com.amtt.database.task;
  */
 public interface DataBaseCallback {
 
-    void onDataBaseActionDone(DataBaseTaskResult result);
+    void onDataBaseActionDone(String result);
 
 }

@@ -429,17 +429,17 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     }
 
     @Override
-    public void onDataBaseActionDone(DataBaseTaskResult result) {
+    public void onDataBaseActionDone(String result) {
         int resultMessage;
         switch (result) {
-            case DONE:
-                resultMessage = R.string.data_base_action_done;
+            case "CLEAR":
+                resultMessage = R.string.data_base_cleared;
                 break;
-            case ERROR:
+            case "ERROR":
                 resultMessage = R.string.data_base_action_error;
                 break;
             default:
-                resultMessage = R.string.data_base_cleared;
+                resultMessage = R.string.data_base_action_done;
                 break;
         }
         Toast.makeText(getContext(), resultMessage, Toast.LENGTH_SHORT).show();

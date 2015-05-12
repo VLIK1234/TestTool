@@ -297,7 +297,15 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     @Override
     protected void onPostExecute(DataBaseTaskResult result) {
         if (mCallback != null) {
-            mCallback.onDataBaseActionDone(result);
+            if (result == DataBaseTaskResult.ERROR) {
+                mCallback.onDataBaseActionDone(String.valueOf(result));
+            } else if (result == DataBaseTaskResult.CLEARED){
+                mCallback.onDataBaseActionDone(String.valueOf(result));
+            }
+            else {
+
+                mCallback.onDataBaseActionDone(String.valueOf(mOperationType));
+            }
         }
     }
 
@@ -605,7 +613,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         ContentValues values = new ContentValues();
         values.put(PriorityTable._JIRA_ID, jPriority.getId());
         values.put(PriorityTable._NAME, jPriority.getId());
-        values.put(UsersTable._URL, url);
+        values.put(PriorityTable._URL, url);
         mContext.getContentResolver().insert(AmttContentProvider.PRIORITY_CONTENT_URI, values);
         Logger.d(TAG, "savePriority(ok)");
     }
@@ -618,7 +626,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             ContentValues mNewValues = new ContentValues();
             mNewValues.put(PriorityTable._JIRA_ID, priorityResponce.getPriorities().get(i).getId());
             mNewValues.put(PriorityTable._NAME, priorityResponce.getPriorities().get(i).getId());
-            mNewValues.put(UsersTable._URL, url);
+            mNewValues.put(PriorityTable._URL, url);
             mValueList.add(mNewValues);
         }
         bulkToInsert = new ContentValues[mValueList.size()];
