@@ -87,6 +87,15 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     public LinearLayout layoutBugRep;
     private static boolean isStartRecord = false;
 
+    private StartRecordView startRecordView;
+    private CreateTicketView createTicketView;
+    private OpenAmttView openAmttView;
+    private ExpectedResultView expectedResultView;
+    private ScreenshotView screenshotView;
+    private ActivityInfoView activityInfoView;
+    private StepView stepView;
+    private CancelRecordView cancelRecordView;
+
     //Database fields
     private static int sStepNumber; //responsible for steps ordering in database
     private int mScreenNumber; //responsible for nonrecurring screenshot names
@@ -103,6 +112,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
         topButtonLayout = (RelativeLayout) findViewById(R.id.top_button_layout);
+        initButtonsBarUnit();
     }
 
     @Override
@@ -350,20 +360,9 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
 
                         } else {
                             if (!isStartRecord) {
-                                buttonsBar.removeAllViews();
-                                buttonsBar.addView(new StartRecordView(getContext()));
-                                buttonsBar.addView(new CreateTicketView(getContext()));
-                                buttonsBar.addView(new OpenAmttView(getContext()));
-                                buttonsBar.addView(new ExpectedResultView(getContext()));
+                                startRecordState();
                             }else{
-                                buttonsBar.removeAllViews();
-                                buttonsBar.addView(new ScreenshotView(getContext()));
-                                buttonsBar.addView(new ActivityInfoView(getContext()));
-                                buttonsBar.addView(new StepView(getContext()));
-                                buttonsBar.addView(new ExpectedResultView(getContext()));
-                                buttonsBar.addView(new CreateTicketView(getContext()));
-                                buttonsBar.addView(new CancelRecordView(getContext()));
-                                buttonsBar.addView(new OpenAmttView(getContext()));
+                                cancelRecordState();
                             }
                             buttonsBar.setVisibility(VISIBLE);
                             xButton = layoutParams.x;
@@ -504,5 +503,34 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     }
     public static boolean getStartRecord(){
         return isStartRecord;
+    }
+
+    public void initButtonsBarUnit(){
+        startRecordView = new StartRecordView(getContext());
+        createTicketView = new CreateTicketView(getContext());
+        openAmttView = new OpenAmttView(getContext());
+        expectedResultView = new ExpectedResultView(getContext());
+        screenshotView = new ScreenshotView(getContext());
+        activityInfoView = new ActivityInfoView(getContext());
+        stepView = new StepView(getContext());
+        cancelRecordView = new CancelRecordView(getContext());
+    }
+
+    public void startRecordState(){
+        buttonsBar.removeAllViews();
+        buttonsBar.addView(startRecordView);
+        buttonsBar.addView(createTicketView);
+        buttonsBar.addView(openAmttView);
+        buttonsBar.addView(expectedResultView);
+    }
+    public void cancelRecordState(){
+        buttonsBar.removeAllViews();
+        buttonsBar.addView(screenshotView);
+        buttonsBar.addView(activityInfoView);
+        buttonsBar.addView(stepView);
+        buttonsBar.addView(expectedResultView);
+        buttonsBar.addView(createTicketView);
+        buttonsBar.addView(cancelRecordView);
+        buttonsBar.addView(openAmttView);
     }
 }
