@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.view;
+package amtt.epam.com.amtt.topbutton.view;
 
 import android.content.Context;
 import android.widget.Toast;

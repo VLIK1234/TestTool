@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.view;
+package amtt.epam.com.amtt.topbutton.view;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -111,7 +111,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
-        topButtonLayout = (RelativeLayout) findViewById(R.id.top_button_layout);
         initButtonsBarUnit();
     }
 
@@ -124,6 +123,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     private void initComponent() {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.top_button_layout, this, true);
+        topButtonLayout = (RelativeLayout) findViewById(R.id.top_button_layout);
         buttonsBar = (LinearLayout) findViewById(R.id.buttons_bar);
         mainButton = (ImageButton) findViewById(R.id.main_button);
         buttonsBar.setVisibility(GONE);
