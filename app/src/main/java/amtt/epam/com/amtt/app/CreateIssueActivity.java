@@ -86,7 +86,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback, L
         mAssignableUsers = (Spinner) findViewById(R.id.spin_assignable_users);
         mPriority = (Spinner) findViewById(R.id.spin_priority);
 
-        SimpleCursorAdapter spinAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, null,
+        spinAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_item, null,
                 new String[]{PriorityTable._NAME}, new int[]{android.R.id.text1}, 0);
         spinAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         mPriority.setAdapter(spinAdapter);
@@ -270,9 +270,9 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback, L
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Logger.d(TAG, "onCreateLoader");
-        Logger.d(TAG, args.getString(EXTRA_URI));
+//        Logger.d(TAG, args.getString(EXTRA_URI));
         Logger.d(TAG, String.valueOf(args.getStringArray(EXTRA_PROJECTION).length));
-        return new CursorLoader(this, Uri.parse(args.getString(EXTRA_URI)),
+        return new CursorLoader(this, (Uri) args.getParcelable(EXTRA_URI),
                 args.getStringArray(EXTRA_PROJECTION), args.getString(EXTRA_SELECTION),
                 args.getStringArray(EXTRA_SELECTION_ARGS), args.getString(EXTRA_SORT_ORDER));
     }
@@ -312,7 +312,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback, L
         }
         Logger.d(TAG, "performInLoader(String typeDBRequest)" + typeDBRequest);
         Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_URI, String.valueOf(mCursorLoaderUri));
+        bundle.putParcelable(EXTRA_URI, mCursorLoaderUri);
         bundle.putStringArray(EXTRA_PROJECTION, mCursorLoaderProjection);
         bundle.putString(EXTRA_SELECTION, mCursorLoaderSelection);
         bundle.putStringArray(EXTRA_SELECTION_ARGS, mCursorLoaderSelectionArgs);

@@ -369,7 +369,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             Cursor cursor = mContext.getContentResolver().query(
                     AmttContentProvider.USER_CONTENT_URI,
                     new String[]{UsersTable._KEY},
-                    UsersTable._KEY,
+                    UsersTable._KEY + " = ?",
                     new String[]{mUserKey},
                     null);
             int existingUserKey = cursor.getCount();
@@ -395,7 +395,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             Cursor cursor = mContext.getContentResolver().query(
                     AmttContentProvider.USER_CONTENT_URI,
                     new String[]{UsersTable._URL},
-                    UsersTable._URL,
+                    UsersTable._URL+" = ?",
                     new String[]{mUrl},
                     null);
             int existingUserUrl = cursor.getCount();
@@ -418,7 +418,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             Cursor cursor = mContext.getContentResolver().query(
                     AmttContentProvider.USER_CONTENT_URI,
                     new String[]{UsersTable._URL},
-                    UsersTable._URL,
+                    UsersTable._URL+" = ?",
                     new String[]{mUrl},
                     null);
             int existingUserUrl = cursor.getCount();
@@ -443,7 +443,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             Cursor cursor = mContext.getContentResolver().query(
                     AmttContentProvider.USER_CONTENT_URI,
                     new String[]{UsersTable._EMAIL},
-                    UsersTable._EMAIL,
+                    UsersTable._EMAIL+" = ?",
                     new String[]{mEmail},
                     null);
             int existingUserEmail = cursor.getCount();
@@ -466,7 +466,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             Cursor cursor = mContext.getContentResolver().query(
                     AmttContentProvider.USER_CONTENT_URI,
                     new String[]{UsersTable._EMAIL},
-                    UsersTable._EMAIL,
+                    UsersTable._EMAIL+" = ?",
                     new String[]{mEmail},
                     null);
             int existingUserEmail = cursor.getCount();
@@ -489,7 +489,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             Cursor cursor = mContext.getContentResolver().query(
                     AmttContentProvider.PROJECT_CONTENT_URI,
                     new String[]{ProjectTable._KEY},
-                    ProjectTable._KEY,
+                    ProjectTable._KEY+" = ?",
                     new String[]{mProjectKey},
                     null);
             int existingProjectKey = cursor.getCount();
@@ -512,7 +512,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             Cursor cursor = mContext.getContentResolver().query(
                     AmttContentProvider.PROJECT_CONTENT_URI,
                     new String[]{ProjectTable._KEY},
-                    ProjectTable._KEY,
+                    ProjectTable._KEY+" = ?",
                     new String[]{mProjects.getKey()},
                     null);
             int existingProjectKey = cursor.getCount();

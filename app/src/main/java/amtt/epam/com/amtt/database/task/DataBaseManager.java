@@ -18,7 +18,6 @@ import amtt.epam.com.amtt.database.table.ProjectTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.Table;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.util.Logger;
 
 /**
  * Created by Artsiom_Kaliaha on 18.03.2015.
@@ -85,7 +84,7 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
 
         try {
             database.beginTransaction();
-            cursor = getReadableDatabase().query(tableName, projection, selection + "=?", selectionArgs, null, null, sortOrder);
+            cursor = getReadableDatabase().query(tableName, projection, selection, selectionArgs, null, null, sortOrder);
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();

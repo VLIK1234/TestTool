@@ -1,14 +1,30 @@
 package amtt.epam.com.amtt.contentprovider;
 
-import amtt.epam.com.amtt.database.table.*;
-import amtt.epam.com.amtt.database.task.DataBaseManager;
-import amtt.epam.com.amtt.util.Logger;
-import android.content.*;
+import android.content.ContentProvider;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import amtt.epam.com.amtt.database.table.ActivityInfoTable;
+import amtt.epam.com.amtt.database.table.IssuetypeTable;
+import amtt.epam.com.amtt.database.table.PriorityTable;
+import amtt.epam.com.amtt.database.table.ProjectTable;
+import amtt.epam.com.amtt.database.table.StepsTable;
+import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
+import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.database.task.DataBaseManager;
+import amtt.epam.com.amtt.util.Logger;
 
 
 /**
@@ -198,6 +214,9 @@ public class AmttContentProvider extends ContentProvider {
     }
 
     private static boolean isProjectionCorrect(int uriType, String[] projection) {
+        if(projection == null) {
+            return true;
+        }
         String[] existingColumns = sProjections.get(uriType);
         Set<String> availableProjection;
         Set<String> receivedProjection = new HashSet<>(Arrays.asList(projection));
