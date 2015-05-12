@@ -12,14 +12,19 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.database.task.DataBaseCallback;
+import amtt.epam.com.amtt.database.task.DataBaseOperationType;
+import amtt.epam.com.amtt.database.task.DataBaseResponse;
+import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
  * Created by Ivan_Bakach on 20.03.2015.
  */
-public class TopButtonService extends Service{
+public class TopButtonService extends Service implements DataBaseCallback {
 
     public static final String ACTION_START = "SHOW";
     public static final String ACTION_CLOSE = "CLOSE";
@@ -62,6 +67,7 @@ public class TopButtonService extends Service{
         yInitPosition = displayMetrics.heightPixels / 2;
         initLayoutParams();
         view = new TopButtonView(getBaseContext(), layoutParams);
+        clearDatabase();
     }
 
     @Override
@@ -166,4 +172,29 @@ public class TopButtonService extends Service{
             notificationManager.notify(ID, builder.build());
         }
     }
+
+    private void clearDatabase() {
+        new DataBaseTask.Builder()
+                .setOperationType(DataBaseOperationType.CLEAR)
+                .setContext(this)
+                .setCallback(TopButtonService.this)
+                .createAndExecute();
+    }
+
+    @Override
+    public void onDataBaseActionDone(DataBaseResponse dataBaseResponse) {
+        int resultMessage;
+        switch (dataBaseResponse.getTaskResult()) {
+            case DONE:
+                resultMessage = R.string.data_base_action_done;
+                break;
+            case ERROR:
+                resultMessage = R.string.data_base_action_error;
+                break;
+            default:
+                return;
+        }
+        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+    }
+
 }

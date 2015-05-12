@@ -29,8 +29,8 @@ public class UserDao implements DaoInterface<JiraUserInfo> {
         contentValues.put(UsersTable._AVATAR_24, user.getAvatarUrls().getAvatarSmallUrl());
         contentValues.put(UsersTable._AVATAR_32, user.getAvatarUrls().getAvatarMediumUrl());
         contentValues.put(UsersTable._AVATAR_48, user.getAvatarUrls().getAvatarUrl());
-        Uri insertedItemUri = ContextHolder.getContext().getContentResolver().insert(AmttContentProvider.USER_CONTENT_URI, contentValues);
-        return Integer.valueOf(insertedItemUri.getLastPathSegment());
+        Uri insertedUserUri = ContextHolder.getContext().getContentResolver().insert(AmttContentProvider.USER_CONTENT_URI, contentValues);
+        return Integer.valueOf(insertedUserUri.getLastPathSegment());
     }
 
     @Override
@@ -38,6 +38,18 @@ public class UserDao implements DaoInterface<JiraUserInfo> {
         /*
         * will be added as necessary
         * */
+    }
+
+    @Override
+    public void removeByKey(int key) {
+        /*
+        * will be added as necessary
+        * */
+    }
+
+    @Override
+    public void removeAll() throws Exception {
+        ContextHolder.getContext().getContentResolver().delete(AmttContentProvider.USER_CONTENT_URI, null, null);
     }
 
     @Override
@@ -57,21 +69,22 @@ public class UserDao implements DaoInterface<JiraUserInfo> {
                 contentValues,
                 UsersTable._ID + "=?",
                 new String[]{ String.valueOf(object.getId()) });
-        //TODO use approach with Id
     }
 
     @Override
     public List<JiraUserInfo> getAll() {
+        /*
+        * will be added as necessary
+        * */
         return null;
     }
 
     @Override
     public JiraUserInfo getByKey(int key) {
+        /*
+        * will be added as necessary
+        * */
         return null;
     }
 
-    @Override
-    public void removeByKey(int key) {
-
-    }
 }

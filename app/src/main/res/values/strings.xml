@@ -127,7 +127,7 @@
     <string name="enter_password">" password"</string>
     <string name="enter_url">" url"</string>
     <string name="enter_summary"> summary</string>
-    <string name="auth_passed">Authorization is passed</string>
+    <string name="auth_passed">Authorization passed</string>
     <string name="action_refresh_user_info">Refresh info</string>
 
 

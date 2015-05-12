@@ -2,8 +2,6 @@ package amtt.epam.com.amtt.app;
 
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -11,14 +9,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -50,7 +44,6 @@ import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants.Str;
 import amtt.epam.com.amtt.view.EditText;
-import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
  * Created by Artsiom_Kaliaha on 07.05.2015.
@@ -65,6 +58,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     private CheckBox mEpamJira;
     private String mRequestUrl;
     private Map<String,String> mUserUrlMap;
+    private Map<String,Integer> mUserIdMap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -133,20 +127,9 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
                 .createAndExecute();
     }
 
-    private void insertUserToDatabase(JiraUserInfo user) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(UsersTable._USER_NAME, user.getName());
-        contentValues.put(UsersTable._DISPLAY_NAME, user.getDisplayName());
-        contentValues.put(UsersTable._TIME_ZONE, user.getTimeZone());
-        contentValues.put(UsersTable._LOCALE, user.getLocale());
-        contentValues.put(UsersTable._URL, mRequestUrl);
-        contentValues.put(UsersTable._KEY, user.getKey());
-        contentValues.put(UsersTable._EMAIL, user.getEmailAddress());
-        contentValues.put(UsersTable._AVATAR_16, user.getAvatarUrls().getAvatarXSmallUrl());
-        contentValues.put(UsersTable._AVATAR_24, user.getAvatarUrls().getAvatarSmallUrl());
-        contentValues.put(UsersTable._AVATAR_32, user.getAvatarUrls().getAvatarMediumUrl());
-        contentValues.put(UsersTable._AVATAR_48, user.getAvatarUrls().getAvatarUrl());
-        getContentResolver().insert(AmttContentProvider.USER_CONTENT_URI, contentValues);
+    private int insertUserToDatabase(JiraUserInfo user) {
+        user.setUrl(mRequestUrl);
+        return new UserDao().add(user);
     }
 
     private void checkFields() {
@@ -179,7 +162,9 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         ActiveUser activeUser = ActiveUser.getInstance();
         String userName = mUserName.getText().toString();
         String password = mPassword.getText().toString();
+        int userId = mUserIdMap.get(userName);
         activeUser.setCredentials(userName, password, mRequestUrl);
+        activeUser.setId(userId);
     }
 
     //Callbacks
@@ -199,8 +184,8 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
                 JiraUserInfo user = restResponse.getResultObject();
                 insertUserToDatabase(user);
             }
-            populateActiveUserInfo();
         }
+        populateActiveUserInfo();
         finish();
     }
 
@@ -231,12 +216,16 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         showProgress(false);
         if (data != null && data.getCount() > 0) {
             mUserUrlMap = new HashMap<>();
+            mUserIdMap = new HashMap<>();
             String userName;
             String url;
+            int userId;
             while(data.moveToNext()) {
                 url = data.getString(data.getColumnIndex(UsersTable._URL));
                 userName = data.getString(data.getColumnIndex(UsersTable._USER_NAME));
+                userId = data.getInt(data.getColumnIndex(UsersTable._ID));
                 mUserUrlMap.put(userName, url);
+                mUserIdMap.put(userName, userId);
             }
 
             LoginItemAdapter adapter = new LoginItemAdapter(this, data, NO_FLAGS);
@@ -248,12 +237,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
                     String userName = vh.getTextView().getText().toString();
                     mUserName.setText(userName);
                     mUrl.setText(mUserUrlMap.get(userName));
-                }
-            });
-            mUserName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
                 }
             });
         }

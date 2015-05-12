@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import amtt.epam.com.amtt.R;
@@ -14,7 +15,7 @@ import amtt.epam.com.amtt.R;
 /**
  * Created by Ivan_Bakach on 26.03.2015.
  */
-public class BaseActivity extends ActionBarActivity {
+public class BaseActivity extends AppCompatActivity {
 
     static final int CURSOR_LOADER_ID = 0;
     static final int NO_FLAGS = 0;

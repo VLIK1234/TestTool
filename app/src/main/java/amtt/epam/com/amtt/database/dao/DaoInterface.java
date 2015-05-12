@@ -7,16 +7,18 @@ import java.util.List;
  */
 public interface DaoInterface<ObjectType> {
 
-    int add(ObjectType object);
+    int add(ObjectType object) throws Exception;
 
-    void remove(ObjectType object);
+    void remove(ObjectType object) throws Exception;
 
-    void update(ObjectType object);
+    void removeByKey(int key) throws Exception;
 
-    List<ObjectType> getAll();
+    void removeAll() throws Exception;
 
-    ObjectType getByKey(int key);
+    void update(ObjectType object) throws Exception;
 
-    void removeByKey(int key);
+    List<ObjectType> getAll() throws Exception;
+
+    ObjectType getByKey(int key) throws Exception;
 
 }

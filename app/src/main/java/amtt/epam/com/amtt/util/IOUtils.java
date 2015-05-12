@@ -27,6 +27,14 @@ public class IOUtils {
         }
     }
 
+    public static void destroyProcesses(@NonNull Process... processArray) {
+        for (Process process : processArray) {
+            if (process != null) {
+                process.destroy();
+            }
+        }
+    }
+
     /**
      * Method for retrieving string data from internal storage
      */

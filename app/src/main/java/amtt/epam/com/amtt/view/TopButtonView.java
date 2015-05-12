@@ -43,6 +43,7 @@ import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
+import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseOperationType;
@@ -152,7 +153,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
                                 .setOperationType(DataBaseOperationType.SAVE_STEP)
                                 .setContext(getContext())
                                 .setCallback(TopButtonView.this)
-                                .setStepNumber(sStepNumber)
+                                .setStep(new Step(sStepNumber))
                                 .createAndExecute();
                         break;
 
@@ -183,8 +184,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         layoutBugRep.setOnClickListener(listenerButtons);
         layoutUserInfo.setClickable(false);
         layoutBugRep.setClickable(false);
-
-        clearDatabase();
     }
 
     private void checkFreeSpace() {
@@ -437,20 +436,13 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
                 resultMessage = R.string.data_base_action_error;
                 break;
             default:
-                resultMessage = R.string.data_base_cleared;
-                break;
+                return;
         }
         Toast.makeText(getContext(), resultMessage, Toast.LENGTH_SHORT).show();
     }
 
 
-    private void clearDatabase() {
-        new DataBaseTask.Builder()
-                .setOperationType(DataBaseOperationType.CLEAR)
-                .setContext(getContext())
-                .setCallback(TopButtonView.this)
-                .createAndExecute();
-    }
+
 
 
     @Override

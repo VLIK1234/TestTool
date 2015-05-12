@@ -24,6 +24,7 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.database.dao.UserDao;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.service.TopButtonService;
@@ -103,21 +104,8 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     }
 
     private void updateUserInfo(JiraUserInfo user) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(UsersTable._DISPLAY_NAME, user.getDisplayName());
-        contentValues.put(UsersTable._TIME_ZONE, user.getTimeZone());
-        contentValues.put(UsersTable._LOCALE, user.getLocale());
-        contentValues.put(UsersTable._KEY, user.getKey());
-        contentValues.put(UsersTable._EMAIL, user.getEmailAddress());
-        contentValues.put(UsersTable._AVATAR_16, user.getAvatarUrls().getAvatarXSmallUrl());
-        contentValues.put(UsersTable._AVATAR_24, user.getAvatarUrls().getAvatarSmallUrl());
-        contentValues.put(UsersTable._AVATAR_32, user.getAvatarUrls().getAvatarMediumUrl());
-        contentValues.put(UsersTable._AVATAR_48, user.getAvatarUrls().getAvatarUrl());
-
-        getContentResolver().update(AmttContentProvider.USER_CONTENT_URI,
-                contentValues,
-                UsersTable._USER_NAME + "=?",
-                new String[] { mUser.getUserName()});
+        user.setId(mUser.getId());
+        new UserDao().update(user);
     }
 
     //Callback
@@ -127,8 +115,8 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
         return new CursorLoader(this,
                 AmttContentProvider.USER_CONTENT_URI,
                 UsersTable.PROJECTION,
-                UsersTable._USER_NAME + "=?",
-                new String[]{ActiveUser.getInstance().getUserName()},
+                UsersTable._ID + "=?",
+                new String[]{ String.valueOf(ActiveUser.getInstance().getId()) },
                 null);
     }
 

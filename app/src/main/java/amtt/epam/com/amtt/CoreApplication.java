@@ -25,7 +25,6 @@ public class CoreApplication extends Application {
     public void onCreate() {
         super.onCreate();
         ContextHolder.setContext(getApplicationContext());
-        TopButtonService.start(this);
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
                 .build();
         sImageLoader = ImageLoader.getInstance();
