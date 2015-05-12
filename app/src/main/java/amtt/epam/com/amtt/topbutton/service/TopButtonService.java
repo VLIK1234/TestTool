@@ -83,7 +83,7 @@ public class TopButtonService extends Service{
                     changeStateNotificationAction();
                     break;
                 case ACTION_AUTH_SUCCESS:
-                    changeUiAuthSuccess();
+//                    changeUiAuthSuccess();
                     break;
             }
         } else {
