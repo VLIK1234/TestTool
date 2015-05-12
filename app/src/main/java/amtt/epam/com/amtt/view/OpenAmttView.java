@@ -15,6 +15,6 @@ public class OpenAmttView extends TopUnitView{
 
     @Override
     protected void onTouchAction() {
-        Toast.makeText(getContext(), getContext().getString(R.string.label_open_amtt), Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), getContext().getString(R.string.label_open_amtt) + " don't have logic yet.", Toast.LENGTH_LONG).show();
     }
 }

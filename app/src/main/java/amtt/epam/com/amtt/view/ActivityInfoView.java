@@ -15,6 +15,6 @@ public class ActivityInfoView extends TopUnitView {
 
     @Override
     protected void onTouchAction() {
-        Toast.makeText(getContext(), getContext().getString(R.string.label_activity_info), Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), getContext().getString(R.string.label_activity_info) + " don't have logic yet.", Toast.LENGTH_LONG).show();
     }
 }

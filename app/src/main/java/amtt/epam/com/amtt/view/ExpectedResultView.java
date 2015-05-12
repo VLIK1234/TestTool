@@ -16,6 +16,6 @@ public class ExpectedResultView extends TopUnitView{
 
     @Override
     protected void onTouchAction() {
-        Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result), Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result)+" Вова, что здесь должно быть?", Toast.LENGTH_LONG).show();
     }
 }
