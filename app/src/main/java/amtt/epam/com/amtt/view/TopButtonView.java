@@ -103,7 +103,11 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
         topButtonLayout = (RelativeLayout) findViewById(R.id.top_button_layout);
-        buttonsBar.addView(new RecordButton(context));
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
     }
 
     @SuppressWarnings("unchecked")
@@ -345,6 +349,22 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
                             buttonsBar.startAnimation(translateUp);
 
                         } else {
+                            if (!isStartRecord) {
+                                buttonsBar.removeAllViews();
+                                buttonsBar.addView(new StartRecordView(getContext()));
+                                buttonsBar.addView(new CreateTicketView(getContext()));
+                                buttonsBar.addView(new OpenAmttView(getContext()));
+                                buttonsBar.addView(new ExpectedResultView(getContext()));
+                            }else{
+                                buttonsBar.removeAllViews();
+                                buttonsBar.addView(new ScreenshotView(getContext()));
+                                buttonsBar.addView(new ActivityInfoView(getContext()));
+                                buttonsBar.addView(new StepView(getContext()));
+                                buttonsBar.addView(new ExpectedResultView(getContext()));
+                                buttonsBar.addView(new CreateTicketView(getContext()));
+                                buttonsBar.addView(new CancelRecordView(getContext()));
+                                buttonsBar.addView(new OpenAmttView(getContext()));
+                            }
                             buttonsBar.setVisibility(VISIBLE);
                             xButton = layoutParams.x;
                             yButton = layoutParams.y;
