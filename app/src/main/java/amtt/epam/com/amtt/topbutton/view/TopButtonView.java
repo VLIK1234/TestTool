@@ -129,13 +129,19 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         createTicketView = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket) +" Ira doing this task", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket), Toast.LENGTH_LONG).show();
+                Intent intentTicket = new Intent(getContext(), CreateIssueActivity.class);
+                intentTicket.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intentTicket);
             }
         });
         openAmttView = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), new ITouchAction() {
             @Override
             public void TouchAction() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_open_amtt) + " don't have logic yet.", Toast.LENGTH_LONG).show();
+                Intent intentLogin = new Intent(getContext(), LoginActivity.class);
+                intentLogin.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intentLogin);
             }
         });
         expectedResultView = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), new ITouchAction() {
