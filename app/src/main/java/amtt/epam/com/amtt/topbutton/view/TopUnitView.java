@@ -19,13 +19,14 @@ import amtt.epam.com.amtt.R;
 /**
  * Created by Ivan_Bakach on 11.05.2015.
  */
-public abstract class TopUnitView extends LinearLayout{
+public class TopUnitView extends LinearLayout{
 
     private String title;
-
-    public TopUnitView(Context context, String title) {
+    private ITouchAction touchAction;
+    public TopUnitView(Context context, String title , ITouchAction touchAction) {
         super(context);
         this.title = title;
+        this.touchAction = touchAction;
         //Change when will be support landscape orientation
 //        if (orientation==VERTICAL||orientation==HORIZONTAL) {
 //            setOrientation(orientation);
@@ -85,7 +86,7 @@ public abstract class TopUnitView extends LinearLayout{
     public boolean onTouchEvent(MotionEvent event){
     switch (event.getAction()){
         case MotionEvent.ACTION_DOWN:
-            onTouchAction();
+            touchAction.TouchAction();
             break;
     }
         return super.onTouchEvent(event);
@@ -97,6 +98,4 @@ public abstract class TopUnitView extends LinearLayout{
     public String getTitle(){
         return this.title;
     }
-
-    protected abstract void onTouchAction();
 }

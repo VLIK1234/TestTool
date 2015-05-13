@@ -87,14 +87,14 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     public LinearLayout layoutBugRep;
     private static boolean isStartRecord = false;
 
-    private StartRecordView startRecordView;
-    private CreateTicketView createTicketView;
-    private OpenAmttView openAmttView;
-    private ExpectedResultView expectedResultView;
-    private ScreenshotView screenshotView;
-    private ActivityInfoView activityInfoView;
-    private StepView stepView;
-    private CancelRecordView cancelRecordView;
+    private TopUnitView startRecordView;
+    private TopUnitView createTicketView;
+    private TopUnitView openAmttView;
+    private TopUnitView expectedResultView;
+    private TopUnitView screenshotView;
+    private TopUnitView activityInfoView;
+    private TopUnitView stepView;
+    private TopUnitView cancelRecordView;
 
     //Database fields
     private static int sStepNumber; //responsible for steps ordering in database
@@ -506,14 +506,67 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     }
 
     public void initButtonsBarUnit(){
-        startRecordView = new StartRecordView(getContext());
-        createTicketView = new CreateTicketView(getContext());
-        openAmttView = new OpenAmttView(getContext());
-        expectedResultView = new ExpectedResultView(getContext());
-        screenshotView = new ScreenshotView(getContext());
-        activityInfoView = new ActivityInfoView(getContext());
-        stepView = new StepView(getContext());
-        cancelRecordView = new CancelRecordView(getContext());
+        startRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                TopButtonView.setStartRecord(true);
+                Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
+            }
+        });
+        createTicketView = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket) + " ира делает этот таск", Toast.LENGTH_LONG).show();
+            }
+        });
+        openAmttView = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                Toast.makeText(getContext(), getContext().getString(R.string.label_open_amtt) + " don't have logic yet.", Toast.LENGTH_LONG).show();
+            }
+        });
+        expectedResultView = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result)+" Вова, что здесь должно быть?", Toast.LENGTH_LONG).show();
+            }
+        });
+        screenshotView = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot)+" Вова, что здесь должно быть?", Toast.LENGTH_LONG).show();
+                sStepNumber++;
+                new DataBaseTask.Builder()
+                        .setOperationType(DataBaseOperationType.SAVE_STEP)
+                        .setContext(getContext())
+                        .setCallback(TopButtonView.this)
+                        .setStepNumber(sStepNumber)
+                        .create()
+                        .execute();
+            }
+        });
+        activityInfoView = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                Toast.makeText(getContext(), getContext().getString(R.string.label_activity_info) + " don't have logic yet.", Toast.LENGTH_LONG).show();
+            }
+        });
+        stepView = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                Toast.makeText(getContext(), getContext().getString(R.string.label_step_view), Toast.LENGTH_LONG).show();
+                Intent intentStep = new Intent(getContext(), StepsActivity.class);
+                intentStep.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intentStep);
+            }
+        });
+        cancelRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                TopButtonView.setStartRecord(false);
+                Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public void startRecordState(){
