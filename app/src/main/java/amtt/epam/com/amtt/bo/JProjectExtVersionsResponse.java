@@ -1,8 +1,8 @@
 package amtt.epam.com.amtt.bo;
 
-import amtt.epam.com.amtt.bo.project.JiraIssueVersion;
-
 import java.util.ArrayList;
+
+import amtt.epam.com.amtt.bo.project.JiraIssueVersion;
 
 /**
  * Created by Iryna_Monchanka on 04.05.2015.
@@ -11,7 +11,6 @@ public class JProjectExtVersionsResponse {
 
     private ArrayList<JiraIssueVersion> mVersions;
     private ArrayList<String> mVersionsNames;
-
 
     public JProjectExtVersionsResponse(){}
 
@@ -37,5 +36,15 @@ public class JProjectExtVersionsResponse {
 
     public void setVersions(ArrayList<JiraIssueVersion> versions) {
         this.mVersions = versions;
+    }
+
+    public JiraIssueVersion getIssueVersionByName(String versionName) {
+        JiraIssueVersion issueVersion = null;
+        for (JiraIssueVersion version : mVersions) {
+            if (version.getName().equals(versionName)) {
+                issueVersion = version;
+            }
+        }
+        return issueVersion;
     }
 }

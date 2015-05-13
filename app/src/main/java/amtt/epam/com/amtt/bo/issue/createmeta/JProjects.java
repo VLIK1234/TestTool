@@ -111,4 +111,14 @@ public class JProjects {
     public void setIssueTypes(ArrayList<JIssueTypes> issueTypes) {
         this.mIssueTypes = issueTypes;
     }
+
+    public JIssueTypes getIssueTypeByName(String issueName) {
+        JIssueTypes issueType = null;
+        for (JIssueTypes type : mIssueTypes) {
+            if (type.getName().equals(issueName)) {
+                issueType = type;
+            }
+        }
+        return issueType;
+    }
 }

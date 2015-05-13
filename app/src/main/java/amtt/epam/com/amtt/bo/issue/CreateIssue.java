@@ -30,12 +30,12 @@ public class CreateIssue {
     public CreateIssue() {
     }
 
-    public String createSimpleIssue(String keyProject, String issueTypeName, String summary, String description,
-                                    String priority, String versions, String environment) {
+    public String createSimpleIssue(String keyProject, String issueTypeId, String summary, String description,
+                                    String priorityId, String versionsId, String environment) {
         mProject.setKey(keyProject);
-        mIssueType.setName(issueTypeName);
-        mPriority.setName(priority);
-        mVersion.setName(versions);
+        mIssueType.setId(issueTypeId);
+        mPriority.setId(priorityId);
+        mVersion.setId(versionsId);
 
         mFields.setProject(mProject);
         mFields.setSummary(summary);
