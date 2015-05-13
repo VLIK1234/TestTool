@@ -32,6 +32,8 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.dao.DaoFactory;
 import amtt.epam.com.amtt.database.dao.UserDao;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
@@ -43,11 +45,13 @@ import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants.Str;
+import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.view.EditText;
 
 /**
  * Created by Artsiom_Kaliaha on 07.05.2015.
  */
+@SuppressWarnings("unchecked")
 public class LoginActivity extends BaseActivity implements JiraCallback<JiraUserInfo>, DataBaseCallback<Boolean>, LoaderCallbacks<Cursor> {
 
     private AutoCompleteTextView mUserName;
@@ -92,7 +96,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         });
     }
 
-    @SuppressWarnings("unchecked")
     private void sendAuthRequest(boolean isUserInDatabase) {
         mRequestUrl = mEpamJira.isChecked() ? mUrl.getText().toString() + JiraApiConst.EPAM_JIRA_SUFFIX : mUrl.getText().toString();
         String userName = mUserName.getText().toString();
@@ -127,9 +130,14 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
                 .createAndExecute();
     }
 
-    private int insertUserToDatabase(JiraUserInfo user) {
+    private void insertUserToDatabase(JiraUserInfo user) {
         user.setUrl(mRequestUrl);
-        return new UserDao().add(user);
+        try {
+            int userId = DaoFactory.getDao(UserDao.class).add(user);
+            ActiveUser.getInstance().setId(userId);
+        } catch (Exception e) {
+
+        }
     }
 
     private void checkFields() {
@@ -162,9 +170,11 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         ActiveUser activeUser = ActiveUser.getInstance();
         String userName = mUserName.getText().toString();
         String password = mPassword.getText().toString();
-        int userId = mUserIdMap.get(userName);
         activeUser.setCredentials(userName, password, mRequestUrl);
-        activeUser.setId(userId);
+        if (activeUser.getId() == ActiveUser.DEFAULT_ID) {
+            int userId = mUserIdMap.get(userName);
+            activeUser.setId(userId);
+        }
     }
 
     //Callbacks
@@ -208,7 +218,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     //Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, AmttContentProvider.USER_CONTENT_URI, UsersTable.PROJECTION, null, null, null);
+        return new CursorLoader(this, AmttUri.USER.get(), UsersTable.PROJECTION, null, null, null);
     }
 
     @Override

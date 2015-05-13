@@ -6,6 +6,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.StepAdapter;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
 
 public class StepsActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -22,25 +24,33 @@ public class StepsActivity extends BaseActivity implements LoaderManager.LoaderC
 
     private ListView mListView;
     private StepAdapter mAdapter;
-    private ProgressBar mProgressBar;
     private TextView mEmptyText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps);
-
         mListView = (ListView) findViewById(android.R.id.list);
-        mProgressBar = (ProgressBar) findViewById(android.R.id.progress);
         mEmptyText = (TextView) findViewById(android.R.id.empty);
         getLoaderManager().initLoader(CURSOR_LOADER, null, this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        mProgressBar.setVisibility(View.VISIBLE);
-        return new CursorLoader(this, AmttContentProvider.STEP_WITH_META_CONTENT_URI, StepsWithMetaTable.PROJECTION, null, null, null);
+        showProgress(true);
+        return new CursorLoader(this, AmttUri.STEP_WITH_META.get(), StepsWithMetaTable.PROJECTION, null, null, null);
     }
 
     @Override
@@ -60,6 +70,5 @@ public class StepsActivity extends BaseActivity implements LoaderManager.LoaderC
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.changeCursor(null);
     }
 }

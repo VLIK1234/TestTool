@@ -8,17 +8,18 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import amtt.epam.com.amtt.database.dao.Identifiable;
 import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.util.IOUtils;
 
 /**
  * Created by Artsiom_Kaliaha on 12.05.2015.
  */
-public class Step {
+public class Step implements Identifiable {
 
     private static final String SCREENSHOT_COMMAND = "/system/bin/screencap -p ";
     private static final String CHANGE_PERMISSION_COMMAND = "chmod 777 ";
-    public static final String SCREENSHOT_FOLDER = "/screenshot";
+    public static final String SCREENSHOT_FOLDER = "/screenshot/";
 
     private static final String sScreenBasePath;
     private final int mStepNumber;
@@ -31,6 +32,11 @@ public class Step {
     public Step(int stepNumber) {
         mStepNumber = stepNumber;
         mActivityComponent = getTopActivity();
+    }
+
+    @Override
+    public int getId() {
+        return 0;
     }
 
     public ComponentName getActivityComponent() {

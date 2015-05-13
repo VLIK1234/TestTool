@@ -8,10 +8,12 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.util.ContentValuesUtil;
 import amtt.epam.com.amtt.util.ContextHolder;
@@ -19,21 +21,22 @@ import amtt.epam.com.amtt.util.ContextHolder;
 /**
  * Created by Artsiom_Kaliaha on 12.05.2015.
  */
-public class StepDao implements DaoInterface<Step> {
+public class StepDao extends AbstractDao<Step> {
 
-    private static final Context sContext;
-
-    static {
-        sContext = ContextHolder.getContext();
+    public StepDao() {
+        mUris = new Uri[] { AmttUri.STEP.get(), AmttUri.ACTIVITY_META.get() };
     }
 
     @Override
-    public int add(Step object) throws Exception {
-        String screenPath = object.saveScreen();
+    List<ContentValues> getAddValues(Step object) throws Exception {
+        List<ContentValues> valuesList = new ArrayList<>();
 
         ComponentName activityComponent = object.getActivityComponent();
+        ContentValues stepContentValues = ContentValuesUtil.getValuesForStep(object.getId(), activityComponent);
+        valuesList.add(stepContentValues);
+
         int existingActivityInfo = sContext.getContentResolver().query(
-                AmttContentProvider.ACTIVITY_META_CONTENT_URI,
+                mUris[1],
                 new String[]{ActivityInfoTable._ACTIVITY_NAME},
                 ActivityInfoTable._ACTIVITY_NAME,
                 new String[]{activityComponent.getClassName()},
@@ -45,29 +48,23 @@ public class StepDao implements DaoInterface<Step> {
                     .getPackageManager()
                     .getActivityInfo(activityComponent, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
             ContentValues activityContentValues = ContentValuesUtil.getValuesForActivityInfo(activityInfo);
-            sContext.getContentResolver().insert(AmttContentProvider.ACTIVITY_META_CONTENT_URI, activityContentValues);
+            valuesList.add(activityContentValues);
         }
-
-        ContentValues stepContentValues = ContentValuesUtil.getValuesForStep(object.getStepNumber(), screenPath, activityComponent);
-        Uri insertedStepUri = sContext.getContentResolver().insert(AmttContentProvider.STEP_CONTENT_URI, stepContentValues);
-        return Integer.valueOf(insertedStepUri.getLastPathSegment());
+        return valuesList;
     }
 
     @Override
-    public void remove(Step object) throws Exception {
-
+    ContentValues getUpdateValues(Step object) throws Exception {
+        return null;
     }
 
     @Override
-    public void removeByKey(int key) throws Exception {
-
+    void addExtra(Step object) throws Exception {
+        object.saveScreen();
     }
 
     @Override
-    public void removeAll() throws Exception {
-        sContext.getContentResolver().delete(AmttContentProvider.ACTIVITY_META_CONTENT_URI, null, null);
-        sContext.getContentResolver().delete(AmttContentProvider.STEP_CONTENT_URI, null, null);
-
+    void removeAllExtra() throws Exception {
         File screenshotDirectory = new File(Step.SCREENSHOT_FOLDER);
         if (!screenshotDirectory.exists()) {
             screenshotDirectory.mkdir();
@@ -76,21 +73,6 @@ public class StepDao implements DaoInterface<Step> {
                 screenshot.delete();
             }
         }
-    }
-
-    @Override
-    public void update(Step object) throws Exception {
-
-    }
-
-    @Override
-    public List<Step> getAll() throws Exception {
-        return null;
-    }
-
-    @Override
-    public Step getByKey(int key) throws Exception {
-        return null;
     }
 
 }

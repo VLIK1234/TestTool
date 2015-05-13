@@ -8,6 +8,7 @@ import android.os.Build;
 import java.util.HashMap;
 import java.util.Map;
 
+import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
@@ -118,11 +119,11 @@ public class ContentValuesUtil {
         return contentValues;
     }
 
-    public static ContentValues getValuesForStep(int stepNumber, String screenPath, ComponentName componentName) {
+    public static ContentValues getValuesForStep(int stepNumber, ComponentName componentName) {
         ContentValues contentValues = new ContentValues();
         ContentValues values = new ContentValues();
         values.put(StepsTable._ID, stepNumber);
-        values.put(StepsTable._SCREEN_PATH, screenPath);
+        values.put(StepsTable._SCREEN_PATH, Step.SCREENSHOT_FOLDER + stepNumber);
         values.put(StepsTable._ASSOCIATED_ACTIVITY, componentName.getClassName());
         return contentValues;
     }

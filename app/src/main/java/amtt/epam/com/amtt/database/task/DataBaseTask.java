@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.dao.DaoFactory;
 import amtt.epam.com.amtt.database.dao.StepDao;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.util.ContextHolder;
@@ -14,6 +16,7 @@ import amtt.epam.com.amtt.util.ContextHolder;
 /**
  * Created by Artsiom_Kaliaha on 26.03.2015.
  */
+@SuppressWarnings("unchecked")
 public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResponse<ResultType>> {
 
     public static class Builder<ResultType> {
@@ -71,7 +74,6 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
     private DataBaseCallback<ResultType> mCallback;
 
     @Override
-    @SuppressWarnings("unchecked")
     protected DataBaseResponse<ResultType> doInBackground(Void... params) {
         DataBaseResponse<ResultType> dataBaseResponse = new DataBaseResponse<>();
         try {
@@ -102,7 +104,7 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
 
 
     private void performStepSaving() throws Exception {
-        new StepDao().add(mStep);
+        DaoFactory.getDao(StepDao.class).add(mStep);
     }
 
     private DataBaseTaskResult performCleaning() throws Exception{
@@ -111,7 +113,7 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
     }
 
     private Boolean checkUser() {
-        Cursor cursor = mContext.getContentResolver().query(AmttContentProvider.USER_CONTENT_URI,
+        Cursor cursor = mContext.getContentResolver().query(AmttUri.USER.get(),
                 UsersTable.PROJECTION,
                 UsersTable._USER_NAME + "=?",
                 new String[]{ mUserName },

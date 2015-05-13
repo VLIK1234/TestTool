@@ -1,12 +1,10 @@
 package amtt.epam.com.amtt.app;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -33,7 +31,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -53,8 +51,8 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showProgress(boolean show) {
-    View progressBar = findViewById(getProgressViewId());
-        if (progressBar!= null) {
+        View progressBar = findViewById(getProgressViewId());
+        if (progressBar != null) {
             findViewById(R.id.progress).setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }

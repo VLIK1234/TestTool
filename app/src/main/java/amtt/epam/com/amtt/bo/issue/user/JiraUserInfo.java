@@ -2,10 +2,12 @@ package amtt.epam.com.amtt.bo.issue.user;
 
 import com.google.gson.annotations.SerializedName;
 
+import amtt.epam.com.amtt.database.dao.Identifiable;
+
 /**
  * Created by Iryna_Monchanka on 3/31/2015.
  */
-public class JiraUserInfo {
+public class JiraUserInfo implements Identifiable {
 
     @SerializedName("key")
     private String mKey;
@@ -146,6 +148,7 @@ public class JiraUserInfo {
         mUrl = url;
     }
 
+    @Override
     public int getId() {
         return mId;
     }

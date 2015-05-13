@@ -165,4 +165,5 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
     public void onRequestError(AmttException e) {
         ExceptionHandler.getInstance().processError(e).showDialog(this, CreateIssueActivity.this);
     }
+
 }

@@ -10,6 +10,6 @@
         android:layout_height="match_parent" />
 
     <include
-        android:id="@+id/progress_layout"/>
+        layout="@layout/progress_layout"/>
 
 </RelativeLayout>

@@ -62,7 +62,7 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
     private void dropTables(SQLiteDatabase db) {
         try {
             for (Class table : sTables) {
-                db.execSQL(DROP + ((Table)table.newInstance()).getTableName());
+                db.execSQL(DROP + ((Table) table.newInstance()).getTableName());
             }
         } catch (IllegalAccessException e) {
             //ignored
@@ -82,7 +82,6 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
         } finally {
             database.endTransaction();
         }
-
         return cursor;
     }
 
@@ -115,7 +114,6 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
         } finally {
             database.endTransaction();
         }
-
         return cursor;
     }
 
@@ -130,9 +128,7 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();
-            database.close();
         }
-
         return id;
     }
 
@@ -146,9 +142,7 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();
-            database.close();
         }
-
         return deletedRows;
     }
 
@@ -162,7 +156,6 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();
-            database.close();
         }
         return updatedRows;
     }

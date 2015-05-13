@@ -1,10 +1,9 @@
 package amtt.epam.com.amtt.util;
 
-import android.text.TextUtils;
 import android.util.Base64;
-import amtt.epam.com.amtt.util.Constants.SharedPreference;
 
 import amtt.epam.com.amtt.api.JiraApiConst;
+import amtt.epam.com.amtt.util.Constants.SharedPreference;
 
 /**
  * Created by Iryna_Monchanka on 4/8/2015.
@@ -12,6 +11,7 @@ import amtt.epam.com.amtt.api.JiraApiConst;
 public class ActiveUser {
 
     private static final ActiveUser INSTANCE = new ActiveUser();
+    public static final int DEFAULT_ID = 0 ;
 
     private String mUserName;
     private String mUrl;

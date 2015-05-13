@@ -24,6 +24,8 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
+import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.dao.DaoFactory;
 import amtt.epam.com.amtt.database.dao.UserDao;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
@@ -35,6 +37,7 @@ import amtt.epam.com.amtt.view.TextView;
 /**
  * Created by Artsiom_Kaliaha on 07.05.2015.
  */
+@SuppressWarnings("unchecked")
 public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraUserInfo>, LoaderCallbacks<Cursor> {
 
     private TextView mName;
@@ -67,11 +70,8 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch (id) {
+        switch (item.getItemId()) {
             case R.id.action_change_user:
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
@@ -90,8 +90,12 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
                         .setCallback(UserInfoActivity.this)
                         .createAndExecute();
                 return true;
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     public void initViews() {
@@ -105,7 +109,11 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
 
     private void updateUserInfo(JiraUserInfo user) {
         user.setId(mUser.getId());
-        new UserDao().update(user);
+        try {
+            DaoFactory.getDao(UserDao.class).update(user);
+        } catch (Exception e) {
+
+        }
     }
 
     //Callback
@@ -113,7 +121,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this,
-                AmttContentProvider.USER_CONTENT_URI,
+                AmttUri.USER.get(),
                 UsersTable.PROJECTION,
                 UsersTable._ID + "=?",
                 new String[]{ String.valueOf(ActiveUser.getInstance().getId()) },
