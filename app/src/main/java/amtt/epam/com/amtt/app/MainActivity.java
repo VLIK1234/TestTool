@@ -12,7 +12,7 @@ import com.crashlytics.android.Crashlytics;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.crash.AmttExceptionHandler;
 import amtt.epam.com.amtt.fragment.CrashDialogFragment;
-import amtt.epam.com.amtt.service.TopButtonService;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.IOUtils;
 import io.fabric.sdk.android.Fabric;
 

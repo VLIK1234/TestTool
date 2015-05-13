@@ -19,7 +19,7 @@ import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.service.TopButtonService;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.view.EditText;
 import amtt.epam.com.amtt.util.UtilConstants;

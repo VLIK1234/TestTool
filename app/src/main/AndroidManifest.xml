@@ -40,7 +40,7 @@
             android:name="io.fabric.ApiKey"
             android:value="ca8d47b0e2c3c9351a1eec35690b1719ab1aa869" />
         <service
-            android:name=".service.TopButtonService"
+            android:name=".topbutton.service.TopButtonService"
             android:exported="false" />
 
         <activity
