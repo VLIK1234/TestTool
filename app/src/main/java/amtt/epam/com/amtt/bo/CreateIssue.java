@@ -1,5 +1,6 @@
-package amtt.epam.com.amtt.bo.issue;
+package amtt.epam.com.amtt.bo;
 
+import amtt.epam.com.amtt.bo.issue.JiraIssuePriority;
 import amtt.epam.com.amtt.bo.project.JPriority;
 import amtt.epam.com.amtt.bo.project.JiraIssueVersion;
 import android.util.Log;
@@ -13,7 +14,7 @@ import amtt.epam.com.amtt.processing.IssueGsonProcessor;
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
  */
-//todo Irina refactor after discuss with Alex D
+
 public class CreateIssue {
 
     private final String TAG = this.getClass().getSimpleName();
@@ -27,10 +28,7 @@ public class CreateIssue {
     private IssueGsonProcessor<JCreatingIssueRequest> mIssueGsonProcessor = new IssueGsonProcessor<>();
     private String jsonString = null;
 
-    public CreateIssue() {
-    }
-
-    public String createSimpleIssue(String keyProject, String issueTypeId, String summary, String description,
+    public CreateIssue(String keyProject, String issueTypeId, String summary, String description,
                                     String priorityId, String versionsId, String environment) {
         mProject.setKey(keyProject);
         mIssueType.setId(issueTypeId);
@@ -44,8 +42,11 @@ public class CreateIssue {
         mFields.setPriority(mPriority);
         mFields.setJiraIssueVersions(mVersion);
         mFields.setEnvironment(environment);
+        this.mBData.setFields(mFields);
+        getResultJson();
+    }
 
-        mBData.setFields(mFields);
+    public String getResultJson() {
         try {
             jsonString = mIssueGsonProcessor.process(mBData);
             Log.d(TAG, jsonString);
@@ -55,4 +56,5 @@ public class CreateIssue {
 
         return jsonString;
     }
+
 }

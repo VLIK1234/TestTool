@@ -13,7 +13,7 @@ public class JiraIssueFields {
 
     @SerializedName("project")
     private JiraIssueProject mProject;
-    @SerializedName("summary")
+    @SerializedName("description")
     private String mSummary;
     @SerializedName("issuetype")
     private JiraIssueTypesIssueType mIssueType;
@@ -33,7 +33,7 @@ public class JiraIssueFields {
     private ArrayList<JiraIssueVersion> mJiraIssueVersions = new ArrayList<>();
     @SerializedName("environment")
     private String mEnvironment;
-    @SerializedName("description")
+    @SerializedName("summary")
     private String mDescription;
     @SerializedName("duedate")
     private String mDueDate;

@@ -110,19 +110,19 @@ public class RestMethod<ResultType> {
         try {
             httpResponse = mHttpClient.execute(httpGet);
         } catch (IllegalStateException e) {
-            Logger.d(TAG, e.getMessage());
+            Logger.e(TAG, e.getMessage(), e.getCause());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IllegalArgumentException e) {
-            Logger.d(TAG, e.getMessage());
+            Logger.e(TAG, e.getMessage(), e.getCause());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (UnknownHostException e) {
-            Logger.d(TAG, e.getMessage());
+            Logger.e(TAG, e.getMessage(), e.getCause());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (ClientProtocolException e) {
-            Logger.d(TAG, e.getMessage());
+            Logger.e(TAG, e.getMessage(), e.getCause());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IOException e) {
-            Logger.d(TAG, e.getMessage());
+            Logger.e(TAG, e.getMessage(), e.getCause());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }
         return httpResponse;
@@ -133,6 +133,7 @@ public class RestMethod<ResultType> {
         try {
             httpPost.setEntity(new StringEntity(mPostEntity));
         } catch (UnsupportedEncodingException e) {
+            Logger.e(TAG, e.getMessage(), e.getCause());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }
         for (Map.Entry<String, String> keyValuePair : mHeaders.entrySet()) {
@@ -143,10 +144,10 @@ public class RestMethod<ResultType> {
         try {
             httpResponse = mHttpClient.execute(httpPost);
         } catch (ClientProtocolException e) {
-            Logger.d(TAG, e.getMessage());
+            Logger.e(TAG, e.getMessage(), e.getCause());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IOException e) {
-            Logger.d(TAG, e.getMessage());
+            Logger.e(TAG, e.getMessage(), e.getCause());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }
         return httpResponse;
@@ -175,7 +176,7 @@ public class RestMethod<ResultType> {
                 restResponse.setResultObject(result);
             }
         } catch (Exception e) {
-            Logger.d(TAG, e.getMessage());
+            Logger.e(TAG, e.getMessage(), e.getCause());
             throw new AmttException(e, httpResponse.getStatusLine().getStatusCode(), this, entity);
         }
 
