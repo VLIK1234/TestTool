@@ -129,7 +129,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         createTicketView = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket) + " ира делает этот таск", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket) +" Ira doing this task", Toast.LENGTH_LONG).show();
             }
         });
         openAmttView = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), new ITouchAction() {
@@ -141,13 +141,13 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         expectedResultView = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result)+" Вова, что здесь должно быть?", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result)+" Vova what will be here?", Toast.LENGTH_LONG).show();
             }
         });
         screenshotView = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot)+" Вова, что здесь должно быть?", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot)+" Vova what will be here?", Toast.LENGTH_LONG).show();
                 sStepNumber++;
                 new DataBaseTask.Builder()
                         .setOperationType(DataBaseOperationType.SAVE_STEP)
