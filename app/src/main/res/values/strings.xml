@@ -99,5 +99,6 @@
     <string name="label_activity_info">Activity info</string>
     <string name="label_step_view">Step</string>
     <string name="label_cancel_record">Cancel record</string>
+    <string name="label_button_main">Main button</string>
 
 </resources>
