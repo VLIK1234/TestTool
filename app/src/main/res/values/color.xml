@@ -16,6 +16,8 @@
     <color name="black">#000000</color>
     <color name="grey">#727272</color>
     <color name="light_grey">#dbdbdb</color>
+    <color name="cardview_background">#11ffffff</color>
+
 
     <color name="et_divider_focused">@color/accent</color>
     <color name="et_divider_not_focused">#FF6D6D6D</color>
