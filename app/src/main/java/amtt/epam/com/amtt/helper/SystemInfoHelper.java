@@ -1,11 +1,29 @@
 package amtt.epam.com.amtt.helper;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
+
+import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
  * Created by Ivan_Bakach on 14.05.2015.
  */
 public class SystemInfoHelper {
+
+    public static String getAppInfo(){
+        String appInfo = "";
+
+        try {
+            final PackageInfo packageInfo =  ContextHolder.getContext().getPackageManager().getPackageInfo(ContextHolder.getContext().getPackageName(), 0);
+            appInfo += StringFormatHelper.format("Version", packageInfo.versionName);
+            appInfo += StringFormatHelper.format("Name", ContextHolder.getContext().getResources().getString(packageInfo.applicationInfo.labelRes));
+        } catch (final PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return appInfo;
+    }
+
     public static String getDeviceOsInfo(){
         String deviceInfo = "\n\n---Device info---"
                 + StringFormatHelper.format("Version", Build.VERSION.SDK_INT)
@@ -22,6 +40,7 @@ public class SystemInfoHelper {
         String systemProperties = "\n\n---System properties---"
                 + StringFormatHelper.format("Bootloader", Build.BOOTLOADER)
                 + StringFormatHelper.format("Hardware", Build.HARDWARE)
+                + StringFormatHelper.format("Radio firmware", Build.getRadioVersion())
                 + StringFormatHelper.format("Serial number", Build.SERIAL)
                 + StringFormatHelper.format("Build type", Build.TYPE);
 

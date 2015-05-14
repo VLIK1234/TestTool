@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.app;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
@@ -20,7 +21,8 @@ public class InfoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info);
         TextView infoTextView = (TextView) findViewById(R.id.info);
-        infoTextView.setText(getReceivedInfoAboutActivity());
+        infoTextView.setText("---Activity info---");
+        infoTextView.append(getReceivedInfoAboutActivity());
         infoTextView.append(SystemInfoHelper.getDeviceOsInfo());
     }
 
@@ -29,13 +31,6 @@ public class InfoActivity extends BaseActivity {
         String out = "";
         if (extras != null) {
             out += (StringFormatHelper.format(ACTIVITY_NAME, extras.getString(ACTIVITY_NAME)));
-        }
-        try {
-            final PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            out += StringFormatHelper.format("Version", packageInfo.versionName);
-            out += StringFormatHelper.format("Name", getResources().getString(packageInfo.applicationInfo.labelRes));
-        } catch (final PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
         }
         return out;
     }
