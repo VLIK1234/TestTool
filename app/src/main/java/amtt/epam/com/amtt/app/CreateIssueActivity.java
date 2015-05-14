@@ -154,9 +154,11 @@ public class CreateIssueActivity extends BaseActivity implements JiraGetContentC
     @Override
     public void loadData(Object result, JiraContentConst tagResult) {
         if (tagResult == JiraContentConst.PROJECTS_NAMES) {
-            mProjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_layout, (ArrayList<String>) result);
-            mProjectsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-            mSpinnerProjectNames.setAdapter(mProjectsAdapter);
+            if (result != null) {
+                mProjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_layout, (ArrayList<String>) result);
+                mProjectsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                mSpinnerProjectNames.setAdapter(mProjectsAdapter);
+            }
             mSpinnerProjectNames.setEnabled(true);
         } else if (tagResult == JiraContentConst.PROJECT_KEY_BY_NAME) {
             mSpinnerVersions.setEnabled(false);
@@ -165,9 +167,11 @@ public class CreateIssueActivity extends BaseActivity implements JiraGetContentC
             mQueueRequests.add(JiraContentConst.USERS_ASSIGNABLE_NAMES);
             JiraContent.getInstance().getUsersAssignableAsynchronously((String) result, CreateIssueActivity.this);
         } else if (tagResult == JiraContentConst.ISSUE_TYPES_NAMES) {
-            mIssueTypesAdapter = new ArrayAdapter<String>(CreateIssueActivity.this, R.layout.spinner_layout, (ArrayList<String>) result);
-            mIssueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-            mSpinnerIssueTypes.setAdapter(mIssueTypesAdapter);
+            if (result != null) {
+                mIssueTypesAdapter = new ArrayAdapter<String>(CreateIssueActivity.this, R.layout.spinner_layout, (ArrayList<String>) result);
+                mIssueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                mSpinnerIssueTypes.setAdapter(mIssueTypesAdapter);
+            }
             mSpinnerIssueTypes.setEnabled(true);
         } else if (tagResult == JiraContentConst.VERSIONS_NAMES) {
             if (result != null) {

@@ -146,6 +146,8 @@ public class JiraContent {
 
                     @Override
                     public void onRequestError(AmttException e) {
+                        JiraContentConst.error = e;
+                        interfaceSuccess.loadData(null, JiraContentConst.VERSIONS_NAMES);
                     }
 
                 })
@@ -171,6 +173,7 @@ public class JiraContent {
                     }
                     @Override
                     public void onRequestError(AmttException e) {
+                        JiraContentConst.error = e;
                         interfaceSuccess.loadData(null, JiraContentConst.USERS_ASSIGNABLE_NAMES);
                     }
                 })
@@ -198,6 +201,8 @@ public class JiraContent {
 
                     @Override
                     public void onRequestError(AmttException e) {
+                        JiraContentConst.error = e;
+                        interfaceSuccess.loadData(null, JiraContentConst.PRIORITIES_NAMES);
                     }
 
                 })
@@ -230,6 +235,7 @@ public class JiraContent {
                     }
                     @Override
                     public void onRequestError(AmttException e) {
+                        JiraContentConst.error = e;
                         interfaceSuccess.loadData(false, JiraContentConst.CREATE_ISSUE);
                     }
 
