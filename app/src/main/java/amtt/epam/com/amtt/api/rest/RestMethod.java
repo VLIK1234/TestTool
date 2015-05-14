@@ -110,16 +110,7 @@ public class RestMethod<ResultType> {
         HttpResponse httpResponse;
         try {
             httpResponse = mHttpClient.execute(httpGet);
-        } catch (IllegalStateException e) {
-            Logger.e(TAG, e.getMessage(), e.getCause());
-            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
-        } catch (IllegalArgumentException e) {
-            Logger.e(TAG, e.getMessage(), e.getCause());
-            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
-        } catch (UnknownHostException e) {
-            Logger.e(TAG, e.getMessage(), e.getCause());
-            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
-        } catch (ClientProtocolException e) {
+        } catch (IllegalStateException | IllegalArgumentException | UnknownHostException | ClientProtocolException e) {
             Logger.e(TAG, e.getMessage(), e.getCause());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IOException e) {

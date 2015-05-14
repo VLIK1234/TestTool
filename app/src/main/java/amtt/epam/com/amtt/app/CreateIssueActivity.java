@@ -154,7 +154,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraGetContentC
     }
 
     @Override
-    public void loadData(Object result, JiraContentConst tagResult) {
+    public void resultOfDataLoading(Object result, JiraContentConst tagResult) {
         if (tagResult == JiraContentConst.PROJECTS_NAMES) {
             if (result != null) {
                 mProjectsAdapter = new ArrayAdapter<String>(this, R.layout.spinner_layout, (ArrayList<String>) result);

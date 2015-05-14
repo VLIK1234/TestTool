@@ -44,7 +44,7 @@ public class JiraContent {
 
     public void getPrioritiesNames(JiraGetContentCallback<ArrayList<String>> interfaceSuccess) {
         if (mProjectPrioritiesNames != null) {
-            interfaceSuccess.loadData(mProjectPrioritiesNames, JiraContentConst.PRIORITIES_NAMES);
+            interfaceSuccess.resultOfDataLoading(mProjectPrioritiesNames, JiraContentConst.PRIORITIES_NAMES);
         } else {
             getPriorityAsynchronously(interfaceSuccess);
         }
@@ -56,7 +56,7 @@ public class JiraContent {
 
     public void getProjectsNames(JiraGetContentCallback<ArrayList<String>> interfaceSuccess) {
         if (mProjectsNames != null) {
-            interfaceSuccess.loadData(mProjectsNames, JiraContentConst.PROJECTS_NAMES);
+            interfaceSuccess.resultOfDataLoading(mProjectsNames, JiraContentConst.PROJECTS_NAMES);
         } else {
             getMetaAsynchronously(interfaceSuccess);
         }
@@ -68,15 +68,15 @@ public class JiraContent {
         mIssueTypesNames = null;
         mProjectVersions = null;
         mProjectVersionsNames = null;
-        interfaceSuccess.loadData(mProjectKey, JiraContentConst.PROJECT_KEY_BY_NAME);
+        interfaceSuccess.resultOfDataLoading(mProjectKey, JiraContentConst.PROJECT_KEY_BY_NAME);
     }
 
     public void getIssueTypesNames(JiraGetContentCallback<ArrayList<String>> interfaceSuccess) {
         if (mIssueTypesNames != null) {
-            interfaceSuccess.loadData(mIssueTypesNames, JiraContentConst.ISSUE_TYPES_NAMES);
+            interfaceSuccess.resultOfDataLoading(mIssueTypesNames, JiraContentConst.ISSUE_TYPES_NAMES);
         } else {
             mIssueTypesNames = mExtendProject.getIssueTypesNames();
-            interfaceSuccess.loadData(mIssueTypesNames, JiraContentConst.ISSUE_TYPES_NAMES);
+            interfaceSuccess.resultOfDataLoading(mIssueTypesNames, JiraContentConst.ISSUE_TYPES_NAMES);
         }
     }
 
@@ -86,7 +86,7 @@ public class JiraContent {
 
     public void getVersionsNames(String projectKey, JiraGetContentCallback<ArrayList<String>> interfaceSuccess) {
         if (mIssueTypesNames != null) {
-            interfaceSuccess.loadData(mIssueTypesNames, JiraContentConst.VERSIONS_NAMES);
+            interfaceSuccess.resultOfDataLoading(mIssueTypesNames, JiraContentConst.VERSIONS_NAMES);
         } else {
             getVersionsAsynchronously(projectKey, interfaceSuccess);
         }
@@ -114,12 +114,12 @@ public class JiraContent {
                         mMetaResponse = (JMetaResponse) restResponse.getResultObject();
                         mProjectsNames = new ArrayList();
                         mProjectsNames = mMetaResponse.getProjectsNames();
-                        interfaceSuccess.loadData(mProjectsNames, JiraContentConst.PROJECTS_NAMES);
+                        interfaceSuccess.resultOfDataLoading(mProjectsNames, JiraContentConst.PROJECTS_NAMES);
                     }
                     @Override
                     public void onRequestError(AmttException e) {
                         JiraContentConst.error = e;
-                        interfaceSuccess.loadData(null, JiraContentConst.PROJECTS_NAMES);
+                        interfaceSuccess.resultOfDataLoading(null, JiraContentConst.PROJECTS_NAMES);
                     }
                 })
                 .createAndExecute();
@@ -141,13 +141,13 @@ public class JiraContent {
                         mProjectVersions = (JProjectExtVersionsResponse) restResponse.getResultObject();
                         mProjectVersionsNames = new ArrayList();
                         mProjectVersionsNames = mProjectVersions.getVersionsNames();
-                        interfaceSuccess.loadData(mProjectVersionsNames, JiraContentConst.VERSIONS_NAMES);
+                        interfaceSuccess.resultOfDataLoading(mProjectVersionsNames, JiraContentConst.VERSIONS_NAMES);
                     }
 
                     @Override
                     public void onRequestError(AmttException e) {
                         JiraContentConst.error = e;
-                        interfaceSuccess.loadData(null, JiraContentConst.VERSIONS_NAMES);
+                        interfaceSuccess.resultOfDataLoading(null, JiraContentConst.VERSIONS_NAMES);
                     }
 
                 })
@@ -169,12 +169,12 @@ public class JiraContent {
                         mUsersAssignable = (JUserAssignableResponse) restResponse.getResultObject();
                         mUsersAssignableNames = new ArrayList();
                         mUsersAssignableNames = mUsersAssignable.getAssignableUsersNames();
-                        interfaceSuccess.loadData(mUsersAssignableNames, JiraContentConst.USERS_ASSIGNABLE_NAMES);
+                        interfaceSuccess.resultOfDataLoading(mUsersAssignableNames, JiraContentConst.USERS_ASSIGNABLE_NAMES);
                     }
                     @Override
                     public void onRequestError(AmttException e) {
                         JiraContentConst.error = e;
-                        interfaceSuccess.loadData(null, JiraContentConst.USERS_ASSIGNABLE_NAMES);
+                        interfaceSuccess.resultOfDataLoading(null, JiraContentConst.USERS_ASSIGNABLE_NAMES);
                     }
                 })
                 .createAndExecute();
@@ -196,13 +196,13 @@ public class JiraContent {
                         mProjectPriorities = (JPriorityResponse) restResponse.getResultObject();
                         mProjectPrioritiesNames = new ArrayList();
                         mProjectPrioritiesNames = mProjectPriorities.getPriorityNames();
-                        interfaceSuccess.loadData(mProjectPrioritiesNames, JiraContentConst.PRIORITIES_NAMES);
+                        interfaceSuccess.resultOfDataLoading(mProjectPrioritiesNames, JiraContentConst.PRIORITIES_NAMES);
                     }
 
                     @Override
                     public void onRequestError(AmttException e) {
                         JiraContentConst.error = e;
-                        interfaceSuccess.loadData(null, JiraContentConst.PRIORITIES_NAMES);
+                        interfaceSuccess.resultOfDataLoading(null, JiraContentConst.PRIORITIES_NAMES);
                     }
 
                 })
@@ -230,13 +230,13 @@ public class JiraContent {
                             mProjectVersionsNames = new ArrayList();
                             mProjectVersionsNames = mProjectVersions.getVersionsNames();
                         }
-                        interfaceSuccess.loadData(true, JiraContentConst.CREATE_ISSUE);
+                        interfaceSuccess.resultOfDataLoading(true, JiraContentConst.CREATE_ISSUE);
 
                     }
                     @Override
                     public void onRequestError(AmttException e) {
                         JiraContentConst.error = e;
-                        interfaceSuccess.loadData(false, JiraContentConst.CREATE_ISSUE);
+                        interfaceSuccess.resultOfDataLoading(false, JiraContentConst.CREATE_ISSUE);
                     }
 
                 })

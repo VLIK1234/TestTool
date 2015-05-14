@@ -117,7 +117,7 @@ public class TopButtonService extends Service{
         }
         stopSelf();
     }
-//Delete after create logic with choose user activity and start service after authorization loadData
+//Delete after create logic with choose user activity and start service after authorization resultOfDataLoading
 //    private void changeUiAuthSuccess(){
 //        view.buttonAuth.setText(R.string.label_logout);
 //        view.buttonAuth.setTextColor(getResources().getColor(R.color.red));
