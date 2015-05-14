@@ -6,7 +6,6 @@ import android.net.Uri;
 
 import java.util.List;
 
-import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.util.ContextHolder;
@@ -17,7 +16,6 @@ import amtt.epam.com.amtt.util.ContextHolder;
 public abstract class AbstractDao<ObjectType extends Identifiable> implements DaoInterface<ObjectType> {
 
     static final Context sContext;
-    Uri[] mUris;
 
     static {
         sContext = ContextHolder.getContext();
@@ -25,70 +23,56 @@ public abstract class AbstractDao<ObjectType extends Identifiable> implements Da
 
     @Override
     public int add(ObjectType object) throws Exception {
-        addExtra(object);
-        List<ContentValues> valuesArray = getAddValues(object);
-        Uri insertedItemUri;
-        for(int i = 0; i < mUris.length; i++) {
-            insertedItemUri = sContext.getContentResolver().insert(mUris[i], valuesArray.get(i));
-            if (i == mUris.length - 1) {
-                //return the last inserted item's Uri
-                return Integer.valueOf(insertedItemUri.getLastPathSegment());
-            }
-        }
-        return 0;
+        ContentValues values = getAddContentValues(object);
+        Uri insertedItemUri = sContext.getContentResolver().insert(getUri(), values);
+        return Integer.valueOf(insertedItemUri.getLastPathSegment());
     }
 
     @Override
-    public void remove(ObjectType object) throws Exception {
+    public void remove(ObjectType object) {
 
     }
 
     @Override
-    public void removeByKey(int key) throws Exception {
+    public void removeByKey(int key) {
 
     }
 
     @Override
-    public void removeAll() throws Exception {
-        for (Uri uri : mUris) {
-            sContext.getContentResolver().delete(uri, null, null);
-        }
-        removeAllExtra();
+    public void removeAll() {
+        sContext.getContentResolver().delete(getUri(), null, null);
     }
 
     @Override
-    public void update(ObjectType object) throws Exception {
-        ContentValues values = getUpdateValues(object);
+    public void update(ObjectType object) {
+        ContentValues values = getUpdateContentValues(object);
         sContext.getContentResolver().update(AmttUri.USER.get(),
                 values,
                 BaseColumns._ID + "=?",
-                new String[]{ String.valueOf(object.getId()) });
+                new String[]{String.valueOf(object.getId())});
     }
 
     @Override
-    public List<ObjectType> getAll() throws Exception {
+    public List<ObjectType> getAll() {
         return null;
     }
 
     @Override
-    public ObjectType getByKey(int key) throws Exception {
+    public ObjectType getByKey(int key) {
         return null;
     }
 
 
-    abstract List<ContentValues> getAddValues(ObjectType object) throws Exception;
+    ContentValues getAddContentValues(ObjectType object) {
+        return null;
+    }
 
-    abstract ContentValues getUpdateValues(ObjectType object) throws Exception;
+    ContentValues getUpdateContentValues(ObjectType object) {
+        return null;
+    }
 
-    /*
-    * method should be implemented in case additional actions during data saving takes place
-    * e.g. saving activity info to data base and screen to storage
-    * */
-    abstract void addExtra(ObjectType object) throws Exception;
-
-    /*
-    * the same approach but for removing all the entries
-    * */
-    abstract void removeAllExtra() throws Exception;
+    Uri getUri() {
+        return null;
+    }
 
 }

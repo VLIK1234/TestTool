@@ -3,10 +3,12 @@ package amtt.epam.com.amtt.app;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,21 +33,19 @@ import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
-import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.dao.DaoFactory;
 import amtt.epam.com.amtt.database.dao.UserDao;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
-import amtt.epam.com.amtt.database.task.DataBaseOperationType;
-import amtt.epam.com.amtt.database.task.DataBaseResponse;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
-import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
+import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseOperationType;
+import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseTaskResult;
+import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants.Str;
-import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.view.EditText;
 
 /**
@@ -61,8 +61,8 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     private Button mLoginButton;
     private CheckBox mEpamJira;
     private String mRequestUrl;
-    private Map<String,String> mUserUrlMap;
-    private Map<String,Integer> mUserIdMap;
+    private Map<String, String> mUserUrlMap;
+    private Map<String, Integer> mUserIdMap;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -133,10 +133,20 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     private void insertUserToDatabase(JiraUserInfo user) {
         user.setUrl(mRequestUrl);
         try {
-            int userId = DaoFactory.getDao(UserDao.class).add(user);
+            int userId = DaoFactory.getDao(UserDao.TAG).add(user);
             ActiveUser.getInstance().setId(userId);
         } catch (Exception e) {
-
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.error_title_database)
+                    .setMessage(R.string.error_message_database)
+                    .setPositiveButton(R.string.error_button_close, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
         }
     }
 
@@ -230,7 +240,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
             String userName;
             String url;
             int userId;
-            while(data.moveToNext()) {
+            while (data.moveToNext()) {
                 url = data.getString(data.getColumnIndex(UsersTable._URL));
                 userName = data.getString(data.getColumnIndex(UsersTable._USER_NAME));
                 userId = data.getInt(data.getColumnIndex(UsersTable._ID));

@@ -51,6 +51,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_user_info);
         TopButtonService.close(this);
         initViews();
@@ -110,7 +111,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     private void updateUserInfo(JiraUserInfo user) {
         user.setId(mUser.getId());
         try {
-            DaoFactory.getDao(UserDao.class).update(user);
+            DaoFactory.getDao(UserDao.TAG).update(user);
         } catch (Exception e) {
 
         }

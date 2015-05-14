@@ -30,6 +30,7 @@ public class StepsActivity extends BaseActivity implements LoaderManager.LoaderC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mListView = (ListView) findViewById(android.R.id.list);
         mEmptyText = (TextView) findViewById(android.R.id.empty);
         getLoaderManager().initLoader(CURSOR_LOADER, null, this);

@@ -119,13 +119,12 @@ public class ContentValuesUtil {
         return contentValues;
     }
 
-    public static ContentValues getValuesForStep(int stepNumber, ComponentName componentName) {
-        ContentValues contentValues = new ContentValues();
+    public static ContentValues getValuesForStep(int stepNumber, ComponentName componentName, String screenPath) {
         ContentValues values = new ContentValues();
         values.put(StepsTable._ID, stepNumber);
-        values.put(StepsTable._SCREEN_PATH, Step.SCREENSHOT_FOLDER + stepNumber);
+        values.put(StepsTable._SCREEN_PATH, screenPath);
         values.put(StepsTable._ASSOCIATED_ACTIVITY, componentName.getClassName());
-        return contentValues;
+        return values;
     }
 
 

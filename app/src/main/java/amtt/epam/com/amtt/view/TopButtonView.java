@@ -46,8 +46,8 @@ import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
-import amtt.epam.com.amtt.database.task.DataBaseOperationType;
-import amtt.epam.com.amtt.database.task.DataBaseResponse;
+import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseOperationType;
+import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
@@ -182,8 +182,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         layoutAddStep.setOnClickListener(listenerButtons);
         layoutShowStep.setOnClickListener(listenerButtons);
         layoutBugRep.setOnClickListener(listenerButtons);
-        layoutUserInfo.setClickable(false);
-        layoutBugRep.setClickable(false);
     }
 
     private void checkFreeSpace() {

@@ -16,9 +16,7 @@ import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
-import amtt.epam.com.amtt.database.task.DataBaseOperationType;
-import amtt.epam.com.amtt.database.task.DataBaseResponse;
-import amtt.epam.com.amtt.database.task.DataBaseTask;
+import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.view.TopButtonView;
 
 /**
@@ -67,7 +65,6 @@ public class TopButtonService extends Service implements DataBaseCallback {
         yInitPosition = displayMetrics.heightPixels / 2;
         initLayoutParams();
         view = new TopButtonView(getBaseContext(), layoutParams);
-        clearDatabase();
     }
 
     @Override
@@ -127,7 +124,7 @@ public class TopButtonService extends Service implements DataBaseCallback {
         stopSelf();
     }
 
-    private void changeUiAuthSuccess(){
+    private void changeUiAuthSuccess() {
         view.buttonAuth.setText(R.string.label_logout);
         view.buttonAuth.setTextColor(getResources().getColor(R.color.red));
         view.buttonBugRep.setEnabled(true);
@@ -171,14 +168,6 @@ public class TopButtonService extends Service implements DataBaseCallback {
             action.title = getString(R.string.label_hide);
             notificationManager.notify(ID, builder.build());
         }
-    }
-
-    private void clearDatabase() {
-        new DataBaseTask.Builder()
-                .setOperationType(DataBaseOperationType.CLEAR)
-                .setContext(this)
-                .setCallback(TopButtonService.this)
-                .createAndExecute();
     }
 
     @Override

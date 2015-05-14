@@ -5,40 +5,33 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 
 import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.util.ContentValuesUtil;
-import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
  * Created by Artsiom_Kaliaha on 12.05.2015.
  */
 public class StepDao extends AbstractDao<Step> {
 
-    public StepDao() {
-        mUris = new Uri[] { AmttUri.STEP.get(), AmttUri.ACTIVITY_META.get() };
-    }
+    public static final String TAG = StepDao.class.getSimpleName();
 
     @Override
-    List<ContentValues> getAddValues(Step object) throws Exception {
-        List<ContentValues> valuesList = new ArrayList<>();
+    public int add(Step object) throws IOException, NameNotFoundException {
+        String screenPath = object.saveScreen();
 
         ComponentName activityComponent = object.getActivityComponent();
-        ContentValues stepContentValues = ContentValuesUtil.getValuesForStep(object.getId(), activityComponent);
-        valuesList.add(stepContentValues);
-
         int existingActivityInfo = sContext.getContentResolver().query(
-                mUris[1],
+                AmttUri.ACTIVITY_META.get(),
                 new String[]{ActivityInfoTable._ACTIVITY_NAME},
-                ActivityInfoTable._ACTIVITY_NAME,
+                ActivityInfoTable._ACTIVITY_NAME + "=?",
                 new String[]{activityComponent.getClassName()},
                 null).getCount();
 
@@ -48,24 +41,19 @@ public class StepDao extends AbstractDao<Step> {
                     .getPackageManager()
                     .getActivityInfo(activityComponent, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
             ContentValues activityContentValues = ContentValuesUtil.getValuesForActivityInfo(activityInfo);
-            valuesList.add(activityContentValues);
+            sContext.getContentResolver().insert(AmttUri.ACTIVITY_META.get(), activityContentValues);
         }
-        return valuesList;
+
+        ContentValues stepContentValues = ContentValuesUtil.getValuesForStep(object.getStepNumber(), activityComponent, screenPath);
+        Uri insertedStepUri = sContext.getContentResolver().insert(AmttUri.STEP.get(), stepContentValues);
+        return Integer.valueOf(insertedStepUri.getLastPathSegment());
     }
 
-    @Override
-    ContentValues getUpdateValues(Step object) throws Exception {
-        return null;
-    }
+    public void removeAll() {
+        sContext.getContentResolver().delete(AmttUri.ACTIVITY_META.get(), null, null);
+        sContext.getContentResolver().delete(AmttUri.STEP.get(), null, null);
 
-    @Override
-    void addExtra(Step object) throws Exception {
-        object.saveScreen();
-    }
-
-    @Override
-    void removeAllExtra() throws Exception {
-        File screenshotDirectory = new File(Step.SCREENSHOT_FOLDER);
+        File screenshotDirectory = new File(Step.getScreenBasePath());
         if (!screenshotDirectory.exists()) {
             screenshotDirectory.mkdir();
         } else {

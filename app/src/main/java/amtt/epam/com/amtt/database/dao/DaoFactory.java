@@ -8,16 +8,16 @@ import java.util.Map;
  */
 public class DaoFactory {
 
-    private static final Map<Class, DaoInterface> sDaoObjects;
+    private static final Map<String, DaoInterface> sDaoObjects;
 
     static {
-        sDaoObjects = new HashMap<Class, DaoInterface>() {{
-            put(StepDao.class, new StepDao());
-            put(UserDao.class, new UserDao());
+        sDaoObjects = new HashMap<String, DaoInterface>() {{
+            put(StepDao.TAG, new StepDao());
+            put(UserDao.TAG, new UserDao());
         }};
     }
 
-    public static DaoInterface getDao(Class className) {
+    public static DaoInterface getDao(String className) {
         return sDaoObjects.get(className);
     }
 

@@ -36,7 +36,7 @@ public class Step implements Identifiable {
 
     @Override
     public int getId() {
-        return 0;
+        return mStepNumber;
     }
 
     public ComponentName getActivityComponent() {
@@ -64,7 +64,7 @@ public class Step implements Identifiable {
         try {
             fileSavingProcess = Runtime.getRuntime().exec("su");
             fileSavingStream = fileSavingProcess.getOutputStream();
-            fileSavingStream.write((SCREENSHOT_COMMAND + (screenPath = sScreenBasePath + "/screen" + mStepNumber + ".png")).getBytes("ASCII"));
+            fileSavingStream.write((SCREENSHOT_COMMAND + (screenPath = sScreenBasePath + "screen" + mStepNumber + ".png")).getBytes("ASCII"));
             fileSavingStream.flush();
             fileSavingStream.close();
 
@@ -79,6 +79,10 @@ public class Step implements Identifiable {
             IOUtils.destroyProcesses(fileSavingProcess, changeModeProcess);
         }
         return screenPath;
+    }
+
+    public static String getScreenBasePath() {
+        return sScreenBasePath;
     }
 
 }

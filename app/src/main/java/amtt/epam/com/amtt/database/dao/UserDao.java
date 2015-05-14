@@ -18,13 +18,11 @@ import amtt.epam.com.amtt.util.ContextHolder;
  */
 public class UserDao extends AbstractDao<JiraUserInfo> {
 
-    public UserDao() {
-        mUris = new Uri[] { AmttUri.USER.get() };
-    }
+    public static  final String TAG = UserDao.class.getSimpleName();
 
     @Override
-    List<ContentValues> getAddValues(JiraUserInfo object) throws Exception {
-        final ContentValues contentValues = new ContentValues();
+    ContentValues getAddContentValues(JiraUserInfo object) {
+        ContentValues contentValues = new ContentValues();
         contentValues.put(UsersTable._USER_NAME, object.getName());
         contentValues.put(UsersTable._DISPLAY_NAME, object.getDisplayName());
         contentValues.put(UsersTable._TIME_ZONE, object.getTimeZone());
@@ -36,11 +34,11 @@ public class UserDao extends AbstractDao<JiraUserInfo> {
         contentValues.put(UsersTable._AVATAR_24, object.getAvatarUrls().getAvatarSmallUrl());
         contentValues.put(UsersTable._AVATAR_32, object.getAvatarUrls().getAvatarMediumUrl());
         contentValues.put(UsersTable._AVATAR_48, object.getAvatarUrls().getAvatarUrl());
-        return new ArrayList<ContentValues>() {{ add(contentValues); }};
+        return contentValues;
     }
 
     @Override
-    ContentValues getUpdateValues(JiraUserInfo object) throws Exception {
+    ContentValues getUpdateContentValues(JiraUserInfo object) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(UsersTable._DISPLAY_NAME, object.getDisplayName());
         contentValues.put(UsersTable._TIME_ZONE, object.getTimeZone());
@@ -55,13 +53,8 @@ public class UserDao extends AbstractDao<JiraUserInfo> {
     }
 
     @Override
-    void removeAllExtra() throws Exception {
-
-    }
-
-    @Override
-    void addExtra(JiraUserInfo object) throws Exception {
-
+    Uri getUri() {
+        return AmttUri.USER.get();
     }
 
 }

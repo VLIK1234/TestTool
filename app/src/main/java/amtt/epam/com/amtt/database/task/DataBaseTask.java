@@ -6,18 +6,58 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.dao.DaoFactory;
 import amtt.epam.com.amtt.database.dao.StepDao;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
  * Created by Artsiom_Kaliaha on 26.03.2015.
  */
 @SuppressWarnings("unchecked")
-public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResponse<ResultType>> {
+public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseTask.DataBaseResponse<ResultType>> {
+
+    public static class DataBaseResponse<ResultType> {
+
+        public DataBaseTaskResult mTaskResult;
+        public Exception mException;
+        public ResultType mResult;
+
+        public DataBaseResponse(ResultType result, Exception e, DataBaseTaskResult taskResult) {
+            mResult = result;
+            mException = e;
+            mTaskResult = taskResult;
+        }
+
+        public DataBaseTaskResult getTaskResult() {
+            return mTaskResult;
+        }
+
+        public ResultType getValueResult() {
+            return mResult;
+        }
+
+        public Exception getException() {
+            return mException;
+        }
+
+    }
+
+    public enum DataBaseOperationType {
+
+        CLEAR,
+        SAVE_STEP,
+        CHECK_USERS_AVAILABILITY
+
+    }
+
+    public enum DataBaseTaskResult {
+
+        DONE,
+        ERROR,
+        CLEARED
+
+    }
 
     public static class Builder<ResultType> {
 
@@ -72,43 +112,51 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
     private DataBaseOperationType mOperationType;
     private Context mContext;
     private DataBaseCallback<ResultType> mCallback;
+    private Exception mException;
 
     @Override
     protected DataBaseResponse<ResultType> doInBackground(Void... params) {
-        DataBaseResponse<ResultType> dataBaseResponse = new DataBaseResponse<>();
+        ResultType operationResult = null;
         try {
             switch (mOperationType) {
                 case SAVE_STEP:
                     performStepSaving();
+                    break;
                 case CLEAR:
                     performCleaning();
+                    break;
                 default:
-                    dataBaseResponse.setValueResult((ResultType) checkUser());
+                    operationResult = (ResultType)checkUser();
+                    break;
             }
         } catch (Exception e) {
-            dataBaseResponse = new DataBaseResponse<>();
-            dataBaseResponse.setTaskResult(DataBaseTaskResult.ERROR);
+            mException = e;
         }
+
+        DataBaseTaskResult taskResult;
         if (mOperationType == DataBaseOperationType.CLEAR) {
-            dataBaseResponse.setTaskResult(DataBaseTaskResult.CLEARED);
+            taskResult = DataBaseTaskResult.CLEARED;
         } else {
-            dataBaseResponse.setTaskResult(DataBaseTaskResult.DONE);
+            taskResult = DataBaseTaskResult.DONE;
         }
-        return dataBaseResponse;
+//        return dataBaseResponse;
+        return new DataBaseResponse<>(operationResult, mException, taskResult);
     }
 
     @Override
     protected void onPostExecute(DataBaseResponse<ResultType> result) {
-        mCallback.onDataBaseActionDone(result);
+        if (mCallback != null) {
+            mCallback.onDataBaseActionDone(result);
+        }
     }
 
 
     private void performStepSaving() throws Exception {
-        DaoFactory.getDao(StepDao.class).add(mStep);
+        DaoFactory.getDao(StepDao.TAG).add(mStep);
     }
 
-    private DataBaseTaskResult performCleaning() throws Exception{
-        new StepDao().removeAll();
+    private DataBaseTaskResult performCleaning() throws Exception {
+        DaoFactory.getDao(StepDao.TAG).removeAll();
         return DataBaseTaskResult.CLEARED;
     }
 
@@ -116,7 +164,7 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseResp
         Cursor cursor = mContext.getContentResolver().query(AmttUri.USER.get(),
                 UsersTable.PROJECTION,
                 UsersTable._USER_NAME + "=?",
-                new String[]{ mUserName },
+                new String[]{mUserName},
                 null);
         boolean isAnyUserInDB = cursor.getCount() != 0;
         cursor.close();
