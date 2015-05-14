@@ -204,10 +204,8 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     }
 
     private ComponentName getTopActivity() {
-        ActivityManager activityManager = (ActivityManager)getContext().getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
-        ActivityManager.RunningTaskInfo lastActivity = tasks.get(0);
-        return lastActivity.topActivity;
+        ActivityManager activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        return activityManager.getRunningTasks(Integer.MAX_VALUE).get(0).topActivity;
     }
 
     private void checkFreeSpace() {
