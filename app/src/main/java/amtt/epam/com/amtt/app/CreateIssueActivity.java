@@ -133,10 +133,12 @@ public class CreateIssueActivity extends BaseActivity implements JiraGetContentC
                 mSpinnerIssueTypes.setEnabled(false);
                 JiraContent.getInstance().getIssueTypesNames(CreateIssueActivity.this);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
             }
         });
+
     }
 
     public String getIssueTypeName() {
@@ -181,11 +183,13 @@ public class CreateIssueActivity extends BaseActivity implements JiraGetContentC
             }
             mSpinnerVersions.setEnabled(true);
         } else if (tagResult == JiraContentConst.PRIORITIES_NAMES) {
-            mPrioritiesAdapter = new ArrayAdapter<String>(CreateIssueActivity.this, R.layout.spinner_layout, (ArrayList<String>) result);
-            mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-            mSpinnerPriorities.setAdapter(mPrioritiesAdapter);
+            if (result != null) {
+                mPrioritiesAdapter = new ArrayAdapter<String>(CreateIssueActivity.this, R.layout.spinner_layout, (ArrayList<String>) result);
+                mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                mSpinnerPriorities.setAdapter(mPrioritiesAdapter);
+                mSpinnerPriorities.setSelection(2);
+            }
             mSpinnerPriorities.setEnabled(true);
-            mSpinnerPriorities.setSelection(2);
         } else if (tagResult == JiraContentConst.USERS_ASSIGNABLE_NAMES) {
             if (result != null) {
                 mAssignableUsersAdapter = new ArrayAdapter<String>(CreateIssueActivity.this, R.layout.spinner_layout, (ArrayList<String>) result);

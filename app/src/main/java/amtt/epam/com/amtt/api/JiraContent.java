@@ -119,7 +119,7 @@ public class JiraContent {
                     @Override
                     public void onRequestError(AmttException e) {
                         JiraContentConst.error = e;
-                        interfaceSuccess.loadData(mProjectsNames, JiraContentConst.PROJECTS_NAMES);
+                        interfaceSuccess.loadData(null, JiraContentConst.PROJECTS_NAMES);
                     }
                 })
                 .createAndExecute();
