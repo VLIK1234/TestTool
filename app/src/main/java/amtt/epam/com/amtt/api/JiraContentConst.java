@@ -10,10 +10,9 @@ public enum JiraContentConst {
     PROJECT_KEY_BY_NAME,
     ISSUE_TYPES_NAMES,
     VERSIONS_NAMES,
-    CREATE_ISSUE;
+    CREATE_ISSUE,
+    USERS_ASSIGNABLE_NAMES;
 
-    private Throwable e(Throwable e){
-        return e;
-    }
+    public static Throwable error;
 
 }

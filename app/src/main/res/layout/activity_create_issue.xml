@@ -68,7 +68,7 @@
             android:paddingBottom="@dimen/material_vertical_size_divider"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
             android:textColor="@color/primary_text"
-            android:inputType="text"
+            android:inputType="textMultiLine"
             android:hint="@string/label_summary"
             app:et_inputId="@+id/summary_error"
             app:et_dividerErrorColor="@color/et_divider_error"

@@ -1,6 +1,8 @@
 package amtt.epam.com.amtt.processing;
 
+import amtt.epam.com.amtt.bo.JPriorityResponse;
 import amtt.epam.com.amtt.bo.JUserAssignableResponse;
+import amtt.epam.com.amtt.bo.project.JPriority;
 import amtt.epam.com.amtt.bo.user.JiraUser;
 import amtt.epam.com.amtt.bo.user.JiraUserInfo;
 import com.google.gson.JsonArray;
@@ -21,16 +23,15 @@ public class UsersAssignableProcessor implements Processor<JUserAssignableRespon
     public JUserAssignableResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
         JsonParser parser = new JsonParser();
-        JsonArray jArray = parser.parse(_response).getAsJsonArray();
-        JUserAssignableResponse jUserAssignableResponse = new JUserAssignableResponse();
-        ArrayList<JiraUser> lcs = new ArrayList<JiraUser>();
-
-        for(JsonElement obj : jArray )
+        JsonArray jsonArray = parser.parse(_response).getAsJsonArray();
+        JUserAssignableResponse userAssignableResponse = new JUserAssignableResponse();
+        ArrayList<JiraUser> jiraUsers = new ArrayList<JiraUser>();
+        for(JsonElement obj : jsonArray )
         {
-            JiraUser cse = Gson.getInstance().fromJson(obj, JiraUser.class);
-            lcs.add(cse);
+            JiraUser jiraUser = Gson.getInstance().fromJson(obj, JiraUser.class);
+            jiraUsers.add(jiraUser);
         }
-        jUserAssignableResponse.setAssignableUsers(lcs);
-        return Gson.getInstance().fromJson(_response, JUserAssignableResponse.class);
+        userAssignableResponse.setAssignableUsers(jiraUsers);
+        return userAssignableResponse;
     }
 }

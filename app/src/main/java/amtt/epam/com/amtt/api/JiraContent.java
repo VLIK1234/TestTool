@@ -13,6 +13,7 @@ import amtt.epam.com.amtt.bo.CreateIssue;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.processing.PriorityProcessor;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
+import amtt.epam.com.amtt.processing.UsersAssignableProcessor;
 import amtt.epam.com.amtt.processing.VersionsProcessor;
 
 /**
@@ -27,8 +28,8 @@ public class JiraContent {
     private ArrayList<String> mIssueTypesNames;
     private JProjectExtVersionsResponse mProjectVersions;
     private ArrayList<String> mProjectVersionsNames;
-    private JUserAssignableResponse mUserAssignable;
-    private ArrayList<String> mUserAssignableNames;
+    private JUserAssignableResponse mUsersAssignable;
+    private ArrayList<String> mUsersAssignableNames;
     private JPriorityResponse mProjectPriorities;
     private ArrayList<String> mProjectPrioritiesNames;
     private JProjects mExtendProject;
@@ -41,9 +42,9 @@ public class JiraContent {
         return JiraContentHolder.INSTANCE;
     }
 
-    public void getPrioritiesNames(JiraContentCallback<ArrayList<String>> interfaceSuccess) {
+    public void getPrioritiesNames(JiraGetContentCallback<ArrayList<String>> interfaceSuccess) {
         if (mProjectPrioritiesNames != null) {
-            interfaceSuccess.success(mProjectPrioritiesNames, JiraContentConst.PRIORITIES_NAMES);
+            interfaceSuccess.loadData(mProjectPrioritiesNames, JiraContentConst.PRIORITIES_NAMES);
         } else {
             getPriorityAsynchronously(interfaceSuccess);
         }
@@ -53,29 +54,29 @@ public class JiraContent {
         return mProjectPriorities.getPriorityByName(priorityName).getId();
     }
 
-    public void getProjectsNames(JiraContentCallback<ArrayList<String>> interfaceSuccess) {
+    public void getProjectsNames(JiraGetContentCallback<ArrayList<String>> interfaceSuccess) {
         if (mProjectsNames != null) {
-            interfaceSuccess.success(mProjectsNames, JiraContentConst.PROJECTS_NAMES);
+            interfaceSuccess.loadData(mProjectsNames, JiraContentConst.PROJECTS_NAMES);
         } else {
             getMetaAsynchronously(interfaceSuccess);
         }
     }
 
-    public void getProjectKeyByName(String projectName, JiraContentCallback<String> interfaceSuccess) {
+    public void getProjectKeyByName(String projectName, JiraGetContentCallback<String> interfaceSuccess) {
         mExtendProject = mMetaResponse.getProjectByName(projectName);
         mProjectKey = mExtendProject.getKey();
         mIssueTypesNames = null;
         mProjectVersions = null;
         mProjectVersionsNames = null;
-        interfaceSuccess.success(mProjectKey, JiraContentConst.PROJECT_KEY_BY_NAME);
+        interfaceSuccess.loadData(mProjectKey, JiraContentConst.PROJECT_KEY_BY_NAME);
     }
 
-    public void getIssueTypesNames(JiraContentCallback<ArrayList<String>> interfaceSuccess) {
+    public void getIssueTypesNames(JiraGetContentCallback<ArrayList<String>> interfaceSuccess) {
         if (mIssueTypesNames != null) {
-            interfaceSuccess.success(mIssueTypesNames, JiraContentConst.ISSUE_TYPES_NAMES);
+            interfaceSuccess.loadData(mIssueTypesNames, JiraContentConst.ISSUE_TYPES_NAMES);
         } else {
             mIssueTypesNames = mExtendProject.getIssueTypesNames();
-            interfaceSuccess.success(mIssueTypesNames, JiraContentConst.ISSUE_TYPES_NAMES);
+            interfaceSuccess.loadData(mIssueTypesNames, JiraContentConst.ISSUE_TYPES_NAMES);
         }
     }
 
@@ -83,9 +84,9 @@ public class JiraContent {
         return mExtendProject.getIssueTypeByName(issueName).getId();
     }
 
-    public void getVersionsNames(String projectKey, JiraContentCallback<ArrayList<String>> interfaceSuccess) {
+    public void getVersionsNames(String projectKey, JiraGetContentCallback<ArrayList<String>> interfaceSuccess) {
         if (mIssueTypesNames != null) {
-            interfaceSuccess.success(mIssueTypesNames, JiraContentConst.VERSIONS_NAMES);
+            interfaceSuccess.loadData(mIssueTypesNames, JiraContentConst.VERSIONS_NAMES);
         } else {
             getVersionsAsynchronously(projectKey, interfaceSuccess);
         }
@@ -100,7 +101,7 @@ public class JiraContent {
     }
 
     @SuppressWarnings("unchecked")
-    private void getMetaAsynchronously(final JiraContentCallback<ArrayList<String>> interfaceSuccess) {
+    private void getMetaAsynchronously(final JiraGetContentCallback<ArrayList<String>> interfaceSuccess) {
         RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor());
         new JiraTask.Builder<JMetaResponse>()
                 .setRestMethod(searchMethod)
@@ -108,17 +109,17 @@ public class JiraContent {
                     @Override
                     public void onRequestStarted() {
                     }
-
                     @Override
                     public void onRequestPerformed(RestResponse restResponse) {
                         mMetaResponse = (JMetaResponse) restResponse.getResultObject();
                         mProjectsNames = new ArrayList();
                         mProjectsNames = mMetaResponse.getProjectsNames();
-                        interfaceSuccess.success(mProjectsNames, JiraContentConst.PROJECTS_NAMES);
+                        interfaceSuccess.loadData(mProjectsNames, JiraContentConst.PROJECTS_NAMES);
                     }
-
                     @Override
                     public void onRequestError(AmttException e) {
+                        JiraContentConst.error = e;
+                        interfaceSuccess.loadData(mProjectsNames, JiraContentConst.PROJECTS_NAMES);
                     }
                 })
                 .createAndExecute();
@@ -126,23 +127,21 @@ public class JiraContent {
 
 
     @SuppressWarnings("unchecked")
-    private void getVersionsAsynchronously(String projectsKey, final JiraContentCallback<ArrayList<String>> interfaceSuccess) {
+    private void getVersionsAsynchronously(String projectsKey, final JiraGetContentCallback<ArrayList<String>> interfaceSuccess) {
         String path = JiraApiConst.PROJECT_VERSIONS_PATH + projectsKey + JiraApiConst.PROJECT_VERSIONS_PATH_V;
         RestMethod<JProjectExtVersionsResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new VersionsProcessor());
         new JiraTask.Builder<JProjectExtVersionsResponse>()
                 .setRestMethod(searchMethod)
                 .setCallback(new JiraCallback() {
-
                     @Override
                     public void onRequestStarted() {
                     }
-
                     @Override
                     public void onRequestPerformed(RestResponse restResponse) {
                         mProjectVersions = (JProjectExtVersionsResponse) restResponse.getResultObject();
                         mProjectVersionsNames = new ArrayList();
                         mProjectVersionsNames = mProjectVersions.getVersionsNames();
-                        interfaceSuccess.success(mProjectVersionsNames, JiraContentConst.VERSIONS_NAMES);
+                        interfaceSuccess.loadData(mProjectVersionsNames, JiraContentConst.VERSIONS_NAMES);
                     }
 
                     @Override
@@ -153,37 +152,38 @@ public class JiraContent {
                 .createAndExecute();
     }
 
-    /**
-     * @SuppressWarnings("unchecked") private void getUsersAssignableAsynchronously() {
-     * String path = JiraApiConst.USERS_ASSIGNABLE_PATH + getProjectKey();
-     * RestMethod<JUserAssignableResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new UsersAssignableProcessor());
-     * new JiraTask.Builder<JUserAssignableResponse>()
-     * .setRestMethod(searchMethod)
-     * .setCallback(new JiraCallback() {
-     * @Override public void onRequestStarted() {
-     * }
-     * @Override public void onRequestPerformed(RestResponse restResponse) {
-     * mProjectVersions = (JProjectExtVersionsResponse) restResponse.getResultObject();
-     * mProjectVersionsNames = new ArrayList();
-     * mProjectVersionsNames = mProjectVersions.getVersionsNames();
-     * interfaceSuccess.success(mProjectVersionsNames);
-     * }
-     * @Override public void onRequestError(AmttException e) {
-     * }
-     * <p/>
-     * })
-     * .createAndExecute();
-     * }
-     */
+    @SuppressWarnings("unchecked")
+    public void getUsersAssignableAsynchronously(String projectKey, final JiraGetContentCallback<ArrayList<String>> interfaceSuccess) {
+        String path = JiraApiConst.USERS_ASSIGNABLE_PATH + projectKey;
+        RestMethod<JUserAssignableResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new UsersAssignableProcessor());
+        new JiraTask.Builder<JUserAssignableResponse>()
+                .setRestMethod(searchMethod)
+                .setCallback(new JiraCallback() {
+                    @Override
+                    public void onRequestStarted() {
+                    }
+                    @Override
+                    public void onRequestPerformed(RestResponse restResponse) {
+                        mUsersAssignable = (JUserAssignableResponse) restResponse.getResultObject();
+                        mUsersAssignableNames = new ArrayList();
+                        mUsersAssignableNames = mUsersAssignable.getAssignableUsersNames();
+                        interfaceSuccess.loadData(mUsersAssignableNames, JiraContentConst.USERS_ASSIGNABLE_NAMES);
+                    }
+                    @Override
+                    public void onRequestError(AmttException e) {
+                        interfaceSuccess.loadData(null, JiraContentConst.USERS_ASSIGNABLE_NAMES);
+                    }
+                })
+                .createAndExecute();
+    }
 
     @SuppressWarnings("unchecked")
-    private void getPriorityAsynchronously(final JiraContentCallback<ArrayList<String>> interfaceSuccess) {
+    private void getPriorityAsynchronously(final JiraGetContentCallback<ArrayList<String>> interfaceSuccess) {
         String path = JiraApiConst.PROJECT_PRIORITY_PATH;
         RestMethod<JPriorityResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new PriorityProcessor());
         new JiraTask.Builder<JPriorityResponse>()
                 .setRestMethod(searchMethod)
                 .setCallback(new JiraCallback() {
-
                     @Override
                     public void onRequestStarted() {
                     }
@@ -193,7 +193,7 @@ public class JiraContent {
                         mProjectPriorities = (JPriorityResponse) restResponse.getResultObject();
                         mProjectPrioritiesNames = new ArrayList();
                         mProjectPrioritiesNames = mProjectPriorities.getPriorityNames();
-                        interfaceSuccess.success(mProjectPrioritiesNames, JiraContentConst.PRIORITIES_NAMES);
+                        interfaceSuccess.loadData(mProjectPrioritiesNames, JiraContentConst.PRIORITIES_NAMES);
                     }
 
                     @Override
@@ -205,7 +205,7 @@ public class JiraContent {
     }
 
     @SuppressWarnings("unchecked")
-    public void createIssueAsynchronously(String issueTypeName, String priorityName, String versionName, String summary, String description, String environment, final JiraContentCallback<Boolean> interfaceSuccess) {
+    public void createIssueAsynchronously(String issueTypeName, String priorityName, String versionName, String summary, String description, String environment, final JiraGetContentCallback<Boolean> interfaceSuccess) {
         String mProjectKey, issueTypeId, priorityId, versionId;
         mProjectKey = mExtendProject.getKey();
         priorityId = getPriorityIdByName(priorityName);
@@ -215,11 +215,9 @@ public class JiraContent {
         new JiraTask.Builder<JMetaResponse>()
                 .setRestMethod(createIssue)
                 .setCallback(new JiraCallback() {
-
                     @Override
                     public void onRequestStarted() {
                     }
-
                     @Override
                     public void onRequestPerformed(RestResponse restResponse) {
                         mProjectVersions = (JProjectExtVersionsResponse) restResponse.getResultObject();
@@ -227,13 +225,12 @@ public class JiraContent {
                             mProjectVersionsNames = new ArrayList();
                             mProjectVersionsNames = mProjectVersions.getVersionsNames();
                         }
-                        interfaceSuccess.success(true, JiraContentConst.CREATE_ISSUE);
+                        interfaceSuccess.loadData(true, JiraContentConst.CREATE_ISSUE);
 
                     }
-
                     @Override
                     public void onRequestError(AmttException e) {
-                        interfaceSuccess.success(false, JiraContentConst.CREATE_ISSUE);
+                        interfaceSuccess.loadData(false, JiraContentConst.CREATE_ISSUE);
                     }
 
                 })

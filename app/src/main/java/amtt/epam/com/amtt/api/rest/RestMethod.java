@@ -102,6 +102,7 @@ public class RestMethod<ResultType> {
 
     private HttpResponse get() throws AmttException {
         HttpGet httpGet = new HttpGet(mUrl);
+        Logger.i(TAG, mUrl);
         for (Map.Entry<String, String> keyValuePair : mHeaders.entrySet()) {
             httpGet.setHeader(keyValuePair.getKey(), keyValuePair.getValue());
         }
@@ -131,6 +132,7 @@ public class RestMethod<ResultType> {
     private HttpResponse post() throws AmttException {
         HttpPost httpPost = new HttpPost(mUrl);
         try {
+            Logger.i(TAG, mUrl);
             httpPost.setEntity(new StringEntity(mPostEntity));
         } catch (UnsupportedEncodingException e) {
             Logger.e(TAG, e.getMessage(), e.getCause());
@@ -171,6 +173,7 @@ public class RestMethod<ResultType> {
         //TODO we have processor only for successful request. You can get parse error before wrong status code.  Check codes before.
         try {
             if (mProcessor != null) {
+                Logger.i(TAG, String.valueOf(httpResponse.getStatusLine()));
                 entity = httpResponse.getEntity();
                 result = mProcessor.process(entity);
                 restResponse.setResultObject(result);
