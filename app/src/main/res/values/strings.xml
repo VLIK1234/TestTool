@@ -7,6 +7,7 @@
     <string name="title_activity_login">Login to Jira</string>
     <string name="title_activity_steps">StepsActivity</string>
     <string name="title_activity_user_info">UserInfoActivity</string>
+    <string name="title_activity_info">InfoActivity</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
     <string name="issue_created">Issue created</string>

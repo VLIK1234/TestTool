@@ -2,8 +2,13 @@ package amtt.epam.com.amtt.topbutton.view;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -28,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
@@ -40,6 +46,7 @@ import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
+import amtt.epam.com.amtt.app.InfoActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
@@ -161,7 +168,19 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         activityInfoView = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_activity_info) + " don't have logic yet.", Toast.LENGTH_LONG).show();
+                ComponentName topActivity = getTopActivity();
+                ActivityInfo activityInfo;
+                try {
+                    activityInfo = getContext()
+                            .getPackageManager()
+                            .getActivityInfo(topActivity, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
+                    Intent intentStep = new Intent(getContext(), InfoActivity.class);
+                    intentStep.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intentStep.putExtra(InfoActivity.ACTIVITY_NAME, activityInfo.name);
+                    getContext().getApplicationContext().startActivity(intentStep);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         });
         stepView = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), new ITouchAction() {
@@ -182,6 +201,13 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         });
 
         clearDatabase();
+    }
+
+    private ComponentName getTopActivity() {
+        ActivityManager activityManager = (ActivityManager)getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
+        ActivityManager.RunningTaskInfo lastActivity = tasks.get(0);
+        return lastActivity.topActivity;
     }
 
     private void checkFreeSpace() {
