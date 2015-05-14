@@ -23,7 +23,7 @@ public class InfoActivity extends BaseActivity {
         TextView infoTextView = (TextView) findViewById(R.id.info);
         infoTextView.setText("---Activity info---");
         infoTextView.append(getReceivedInfoAboutActivity());
-        infoTextView.append(SystemInfoHelper.getDeviceOsInfo());
+        infoTextView.append(StringFormatHelper.format("Internet status", SystemInfoHelper.getIntenetStatus()));
     }
 
     public String getReceivedInfoAboutActivity() {

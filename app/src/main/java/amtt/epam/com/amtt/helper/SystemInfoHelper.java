@@ -1,7 +1,10 @@
 package amtt.epam.com.amtt.helper;
 
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 
 import amtt.epam.com.amtt.util.ContextHolder;
@@ -16,7 +19,7 @@ public class SystemInfoHelper {
 
         try {
             final PackageInfo packageInfo =  ContextHolder.getContext().getPackageManager().getPackageInfo(ContextHolder.getContext().getPackageName(), 0);
-            appInfo += StringFormatHelper.format("Version", packageInfo.versionName);
+            appInfo += StringFormatHelper.format("Version app", packageInfo.versionName);
             appInfo += StringFormatHelper.format("Name", ContextHolder.getContext().getResources().getString(packageInfo.applicationInfo.labelRes));
         } catch (final PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -56,5 +59,16 @@ public class SystemInfoHelper {
                     +StringFormatHelper.format("Supported 32 bit abis", Build.SUPPORTED_32_BIT_ABIS)
                     +StringFormatHelper.format("Supported 64 bit abis", Build.SUPPORTED_64_BIT_ABIS);
         }
+    }
+
+    public static String getIntenetStatus(){
+        return isOnline()? "Connection active": "Connection non active";
+    }
+
+    public static boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) ContextHolder.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
