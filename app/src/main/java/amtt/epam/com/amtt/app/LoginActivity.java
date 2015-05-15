@@ -81,10 +81,9 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
 
     private void initViews() {
         mUserName = (AutoCompleteTextView) findViewById(R.id.user_name);
-        mUserName.setText("artsiom_kaliaha");
         mPassword = (EditText) findViewById(R.id.password);
         mUrl = (EditText) findViewById(R.id.jira_url);
-        mUrl.setText("https://amtt02.atlassian.net");
+        mUrl.setText("https://");
         mEpamJira = (CheckBox) findViewById(R.id.epam_jira_checkbox);
         mLoginButton = (Button) findViewById(R.id.login_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
