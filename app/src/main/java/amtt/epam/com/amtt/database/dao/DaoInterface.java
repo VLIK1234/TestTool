@@ -1,7 +1,5 @@
 package amtt.epam.com.amtt.database.dao;
 
-import android.content.Context;
-
 import java.util.List;
 
 /**
@@ -9,18 +7,14 @@ import java.util.List;
  */
 public interface DaoInterface<ObjectType> {
 
-    int add(ObjectType object) throws Exception;
+    int addOrUpdate(ObjectType object) throws Exception;
 
     void remove(ObjectType object);
 
-    void removeByKey(int key);
-
-    void removeAll();
-
-    void update(ObjectType object);
+    void removeAll(ObjectType object);
 
     List<ObjectType> getAll();
 
-    ObjectType getByKey(int key);
+    ObjectType getByKey(ObjectType object);
 
 }

@@ -5,10 +5,10 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import amtt.epam.com.amtt.bo.database.ActivityMeta;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.dao.DaoFactory;
-import amtt.epam.com.amtt.database.dao.StepDao;
+import amtt.epam.com.amtt.database.dao.Dao;
 import amtt.epam.com.amtt.database.table.UsersTable;
 
 /**
@@ -42,14 +42,6 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseTask
         CLEAR,
         SAVE_STEP,
         CHECK_USERS_AVAILABILITY
-
-    }
-
-    public enum DataBaseTaskResult {
-
-        DONE,
-        ERROR,
-        CLEARED
 
     }
 
@@ -138,11 +130,12 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseTask
 
 
     private void performStepSaving() throws Exception {
-        DaoFactory.getDao(StepDao.TAG).add(mStep);
+        new Dao().addOrUpdate(mStep);
     }
 
     private void performCleaning() throws Exception {
-        DaoFactory.getDao(StepDao.TAG).removeAll();
+        new Dao().removeAll(new Step());
+        new Dao().removeAll(new ActivityMeta());
     }
 
     private Boolean checkUser() {

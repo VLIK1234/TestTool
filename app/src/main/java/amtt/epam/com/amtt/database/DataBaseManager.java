@@ -118,13 +118,12 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
     }
 
     public long insert(String tableName, ContentValues values) {
+        //TODO use instead of update method
         long id;
-
         SQLiteDatabase database = getWritableDatabase();
-
         try {
             database.beginTransaction();
-            id = database.insert(tableName, null, values);
+            id = database.insertWithOnConflict(tableName, null, values, SQLiteDatabase.CONFLICT_REPLACE);
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();

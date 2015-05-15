@@ -38,15 +38,14 @@ public enum AmttUri {
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        //TODO change to ACTIVITY_META.getTableName()
         sUriMatcher.addURI(AmttContentProvider.AUTHORITY, ACTIVITY_META.getTableName(), AmttUri.ACTIVITY_META.getOrdinal());
         sUriMatcher.addURI(AmttContentProvider.AUTHORITY, ACTIVITY_META.getTableName() + "/#", AmttUri.ACTIVITY_META.getItemOrdinal());
-        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, StepsTable.TABLE_NAME, AmttUri.STEP.getOrdinal());
-        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, StepsTable.TABLE_NAME + "/#", AmttUri.STEP.getItemOrdinal());
-        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, StepsWithMetaTable.TABLE_NAME, AmttUri.STEP_WITH_META.getOrdinal());
-        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, StepsWithMetaTable.TABLE_NAME + "/#", AmttUri.STEP_WITH_META.getItemOrdinal());
-        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, UsersTable.TABLE_NAME, AmttUri.USER.getOrdinal());
-        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, UsersTable.TABLE_NAME + "/#", AmttUri.USER.getItemOrdinal());
+        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, STEP.getTableName(), AmttUri.STEP.getOrdinal());
+        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, STEP.getTableName() + "/#", AmttUri.STEP.getItemOrdinal());
+        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, STEP_WITH_META.getTableName(), AmttUri.STEP_WITH_META.getOrdinal());
+        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, STEP_WITH_META.getTableName() + "/#", AmttUri.STEP_WITH_META.getItemOrdinal());
+        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, USER.getTableName(), AmttUri.USER.getOrdinal());
+        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, USER.getTableName() + "/#", AmttUri.USER.getItemOrdinal());
 
         sContentType = new HashMap<>();
         sContentType.put(AmttUri.ACTIVITY_META.getOrdinal(), AmttUri.ACTIVITY_META.getType());

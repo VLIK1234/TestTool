@@ -1,13 +1,19 @@
 package amtt.epam.com.amtt.bo.issue.user;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+
 import com.google.gson.annotations.SerializedName;
 
-import amtt.epam.com.amtt.database.dao.Identifiable;
+import amtt.epam.com.amtt.bo.database.DatabaseEntity;
+import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.table.UsersTable;
 
 /**
  * Created by Iryna_Monchanka on 3/31/2015.
  */
-public class JiraUserInfo implements Identifiable {
+public class JiraUserInfo extends DatabaseEntity {
 
     @SerializedName("key")
     private String mKey;
@@ -21,35 +27,41 @@ public class JiraUserInfo implements Identifiable {
     private String mEmailAddress;
     @SerializedName("displayName")
     private String mDisplayName;
-    @SerializedName("active")
-    private Boolean mActive;
     @SerializedName("timeZone")
     private String mTimeZone;
     @SerializedName("locale")
     private String mLocale;
-    @SerializedName("groups")
-    private JiraUserGroup mGroups;
-    @SerializedName("expand")
-    private String mExpand;
 
     private String mUrl;
     private int mId;
 
-    public JiraUserInfo() {
+    {
+        mId = mName.hashCode();
     }
 
-    public JiraUserInfo(String key, String self, String name, JiraAvatarUrls avatarUrls, String emailAddress, String displayName, Boolean active, String timeZone, String locale, JiraUserGroup groups, String expand) {
+    public JiraUserInfo(Cursor cursor) {
+        cursor.moveToFirst();
+        mEmailAddress = cursor.getString(cursor.getColumnIndex(UsersTable._EMAIL));
+        mDisplayName= cursor.getString(cursor.getColumnIndex(UsersTable._DISPLAY_NAME));
+        mTimeZone= cursor.getString(cursor.getColumnIndex(UsersTable._TIME_ZONE));
+        mLocale= cursor.getString(cursor.getColumnIndex(UsersTable._LOCALE));
+        String avatar16 = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_16));
+        String avatar24 = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_24));
+        String avatar32 = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_32));
+        String avatar48 = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_48));
+        mAvatarUrls = new JiraAvatarUrls(avatar48, avatar24, avatar16, avatar32);
+
+    }
+
+    public JiraUserInfo(String key, String self, String name, JiraAvatarUrls avatarUrls, String emailAddress, String displayName, String timeZone, String locale) {
         this.mKey = key;
         this.mSelf = self;
         this.mName = name;
         this.mAvatarUrls = avatarUrls;
         this.mEmailAddress = emailAddress;
         this.mDisplayName = displayName;
-        this.mActive = active;
         this.mTimeZone = timeZone;
         this.mLocale = locale;
-        this.mGroups = groups;
-        this.mExpand = expand;
     }
 
     public String getKey() {
@@ -80,64 +92,20 @@ public class JiraUserInfo implements Identifiable {
         return mAvatarUrls;
     }
 
-    public void setAvatarUrls(JiraAvatarUrls avatarUrls) {
-        this.mAvatarUrls = avatarUrls;
-    }
-
     public String getEmailAddress() {
         return mEmailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.mEmailAddress = emailAddress;
     }
 
     public String getDisplayName() {
         return mDisplayName;
     }
 
-    public void setDisplayName(String displayName) {
-        this.mDisplayName = displayName;
-    }
-
-    public Boolean getActive() {
-        return mActive;
-    }
-
-    public void setActive(Boolean active) {
-        this.mActive = active;
-    }
-
     public String getTimeZone() {
         return mTimeZone;
     }
 
-    public void setTimeZone(String timeZone) {
-        this.mTimeZone = timeZone;
-    }
-
     public String getLocale() {
         return mLocale;
-    }
-
-    public void setLocale(String locale) {
-        this.mLocale = locale;
-    }
-
-    public JiraUserGroup getGroups() {
-        return mGroups;
-    }
-
-    public void setGroups(JiraUserGroup groups) {
-        this.mGroups = groups;
-    }
-
-    public String getExpand() {
-        return mExpand;
-    }
-
-    public void setExpand(String expand) {
-        this.mExpand = expand;
     }
 
     public String getUrl() {
@@ -153,8 +121,26 @@ public class JiraUserInfo implements Identifiable {
         return mId;
     }
 
-    public void setId(int id) {
-        mId = id;
+    @Override
+    public Uri getUri() {
+        return AmttUri.USER.get();
+    }
+
+    @Override
+    public ContentValues getContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(UsersTable._USER_NAME, mName);
+        values.put(UsersTable._DISPLAY_NAME, mDisplayName);
+        values.put(UsersTable._TIME_ZONE, mTimeZone);
+        values.put(UsersTable._LOCALE, mLocale);
+        values.put(UsersTable._URL, mUrl);
+        values.put(UsersTable._KEY, mKey);
+        values.put(UsersTable._EMAIL, mEmailAddress);
+        values.put(UsersTable._AVATAR_16, getAvatarUrls().getAvatarXSmallUrl());
+        values.put(UsersTable._AVATAR_24, getAvatarUrls().getAvatarSmallUrl());
+        values.put(UsersTable._AVATAR_32, getAvatarUrls().getAvatarMediumUrl());
+        values.put(UsersTable._AVATAR_48, getAvatarUrls().getAvatarUrl());
+        return values;
     }
 
 }

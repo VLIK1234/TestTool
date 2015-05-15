@@ -22,12 +22,6 @@ import amtt.epam.com.amtt.loader.InternalStorageImageLoader;
  */
 public class LoginItemAdapter extends CursorAdapter {
 
-    private static final ImageLoader sImageLoder;
-
-    static {
-        sImageLoder = CoreApplication.getImageLoader();
-    }
-
     public static class ViewHolder {
 
         ImageView mUserImage;
@@ -64,7 +58,7 @@ public class LoginItemAdapter extends CursorAdapter {
         String userName = cursor.getString(cursor.getColumnIndex(UsersTable._USER_NAME));
         String avatar = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_48));
         vh.mUserName.setText(userName);
-        sImageLoder.displayImage(avatar,vh.mUserImage);
+        CoreApplication.getImageLoader().displayImage(avatar,vh.mUserImage);
     }
 
 }

@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,17 +34,16 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.dao.DaoFactory;
-import amtt.epam.com.amtt.database.dao.UserDao;
+import amtt.epam.com.amtt.database.dao.Dao;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants.Str;
-import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.view.EditText;
 
 /**
@@ -70,11 +68,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         setContentView(R.layout.activity_login);
         TopButtonService.close(this);
         initViews();
-        if (savedInstanceState == null) {
-            getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
-        } else {
-            getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
-        }
+        getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
     }
 
     @Override
@@ -136,7 +130,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     private void insertUserToDatabase(JiraUserInfo user) {
         user.setUrl(mRequestUrl);
         try {
-            int userId = DaoFactory.getDao(UserDao.TAG).add(user);
+            int userId = new Dao().addOrUpdate(user);
             ActiveUser.getInstance().setId(userId);
         } catch (Exception e) {
             new AlertDialog.Builder(this)

@@ -1,7 +1,6 @@
 package amtt.epam.com.amtt.app;
 
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -24,8 +23,7 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.dao.DaoFactory;
-import amtt.epam.com.amtt.database.dao.UserDao;
+import amtt.epam.com.amtt.database.dao.Dao;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -106,10 +104,17 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
         mUserImage = (ImageView) findViewById(R.id.user_image);
     }
 
+    public void populateUserInfo(JiraUserInfo user) {
+        mName.setText(user.getName());
+        mEmailAddress.setText(user.getEmailAddress());
+        mDisplayName.setText(user.getDisplayName());
+        mTimeZone.setText(user.getTimeZone());
+        mLocale.setText(user.getLocale());
+    }
+
     private void updateUserInfo(JiraUserInfo user) {
-        user.setId(mUser.getId());
         try {
-            DaoFactory.getDao(UserDao.TAG).update(user);
+            new Dao().addOrUpdate(user);
         } catch (Exception e) {
 
         }
@@ -130,18 +135,9 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mUser = ActiveUser.getInstance();
-        data.moveToFirst();
-        String email = data.getString(data.getColumnIndex(UsersTable._EMAIL));
-        String displayName = data.getString(data.getColumnIndex(UsersTable._DISPLAY_NAME));
-        String timeZone = data.getString(data.getColumnIndex(UsersTable._TIME_ZONE));
-        String locale = data.getString(data.getColumnIndex(UsersTable._LOCALE));
-        String imageUrl = data.getString(data.getColumnIndex(UsersTable._AVATAR_48));
-        mName.setText(mUser.getUserName());
-        mDisplayName.setText(displayName);
-        mEmailAddress.setText(email);
-        mTimeZone.setText(timeZone);
-        mLocale.setText(locale);
-        CoreApplication.getImageLoader().displayImage(imageUrl, mUserImage);
+        JiraUserInfo userInfo = new JiraUserInfo(data);
+        populateUserInfo(userInfo);
+        CoreApplication.getImageLoader().displayImage(userInfo.getAvatarUrls().getAvatarUrl(), mUserImage);
     }
 
     @Override
@@ -159,11 +155,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     public void onRequestPerformed(RestResponse<JiraUserInfo> restResponse) {
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
             JiraUserInfo user = restResponse.getResultObject();
-            mName.setText(user.getName());
-            mEmailAddress.setText(user.getEmailAddress());
-            mDisplayName.setText(user.getDisplayName());
-            mTimeZone.setText(user.getTimeZone());
-            mLocale.setText(user.getLocale());
+            populateUserInfo(user);
             updateUserInfo(user);
             showProgress(false);
         }
