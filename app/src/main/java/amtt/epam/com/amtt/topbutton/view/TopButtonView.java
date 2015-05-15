@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.view;
+package amtt.epam.com.amtt.topbutton.view;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -19,12 +19,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -34,23 +32,21 @@ import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
-
 import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
-import amtt.epam.com.amtt.app.LoginActivity;
-import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
+import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
+import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
-import amtt.epam.com.amtt.database.task.DataBaseTask;
-import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 
@@ -70,22 +66,26 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     private int currentOrientation;
     private float widthProportion;
     private float heightProportion;
-    private Button[] buttonsArray;
-    public Button buttonAuth;
-    public Button buttonBugRep;
-    public Button buttonUserInfo;
 
     private int firstX;
     private int firstY;
     private int lastX;
     private int lastY;
     public boolean moving;
-    private TextView[] textViewArray;
     private int xButton = 0;
     private int yButton = 0;
+
     private RelativeLayout topButtonLayout;
-    public LinearLayout layoutUserInfo;
-    public LinearLayout layoutBugRep;
+    private static boolean isStartRecord = false;
+
+    private TopUnitView startRecordView;
+    private TopUnitView createTicketView;
+    private TopUnitView openAmttView;
+    private TopUnitView expectedResultView;
+    private TopUnitView screenshotView;
+    private TopUnitView activityInfoView;
+    private TopUnitView stepView;
+    private TopUnitView cancelRecordView;
 
     //Database fields
     private static int sStepNumber; //responsible for steps ordering in database
@@ -93,95 +93,101 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
         initComponent();
-        buttonsBar.setOrientation(LinearLayout.VERTICAL);
-
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         metrics = getContext().getResources().getDisplayMetrics();
         currentOrientation = getResources().getConfiguration().orientation;
         this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
-        topButtonLayout = (RelativeLayout) findViewById(R.id.top_button_layout);
+    }
 
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
     }
 
     @SuppressWarnings("unchecked")
     private void initComponent() {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.top_button_layout, this, true);
+        topButtonLayout = (RelativeLayout) findViewById(R.id.top_button_layout);
         buttonsBar = (LinearLayout) findViewById(R.id.buttons_bar);
         mainButton = (ImageButton) findViewById(R.id.main_button);
+        buttonsBar.setOrientation(LinearLayout.VERTICAL);
         buttonsBar.setVisibility(GONE);
-        TextView textAuth = (TextView) findViewById(R.id.text_auth);
-        TextView textUserInfo = (TextView) findViewById(R.id.text_user_info);
-        TextView textAddStep = (TextView) findViewById(R.id.text_add_step);
-        TextView textShowStep = (TextView) findViewById(R.id.text_show_step);
-        TextView textBugRep = (TextView) findViewById(R.id.text_bug_rep);
-        textViewArray = new TextView[]{textAuth, textUserInfo, textAddStep, textShowStep, textBugRep};
-
-        buttonAuth = (Button) findViewById(R.id.button_auth);
-        buttonUserInfo = (Button) findViewById(R.id.button_user_info);
-        Button buttonAddStep = (Button) findViewById(R.id.button_add_step);
-        Button buttonShowStep = (Button) findViewById(R.id.button_show_step);
-        buttonBugRep = (Button) findViewById(R.id.button_bug_rep);
-        buttonsArray = new Button[]{buttonAuth, buttonUserInfo, buttonAddStep, buttonShowStep, buttonBugRep};
-        topButtonLayout = (RelativeLayout) findViewById(R.id.top_button_layout);
-
-        LinearLayout layoutAuth = (LinearLayout) findViewById(R.id.layout_auth);
-        layoutUserInfo = (LinearLayout) findViewById(R.id.layout_user_info);
-        LinearLayout layoutAddStep = (LinearLayout) findViewById(R.id.layout_add_step);
-        LinearLayout layoutShowStep = (LinearLayout) findViewById(R.id.layout_show_step);
-        layoutBugRep = (LinearLayout) findViewById(R.id.layout_bug_rep);
-
-        OnClickListener listenerButtons = new OnClickListener() {
+        startRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), new ITouchAction() {
             @Override
-            public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.layout_auth:
-                        Intent intent = new Intent(getContext(), LoginActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        getContext().getApplicationContext().startActivity(intent);
-                        break;
-                    case R.id.layout_user_info:
-                        Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
-                        userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        getContext().getApplicationContext().startActivity(userInfoIntent);
-                        break;
-                    case R.id.layout_add_step:
-                        sStepNumber++;
-                        new DataBaseTask.Builder()
-                                .setOperationType(DataBaseOperationType.SAVE_STEP)
-                                .setContext(getContext())
-                                .setCallback(TopButtonView.this)
-                                .setStep(new Step(sStepNumber))
-                                .createAndExecute();
-                        break;
-
-                    case R.id.layout_show_step:
-                        Intent intentStep = new Intent(getContext(), StepsActivity.class);
-                        intentStep.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        getContext().getApplicationContext().startActivity(intentStep);
-                        break;
-                    case R.id.layout_bug_rep:
-                        RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH,
-                                new ProjectsProcessor(),
-                                null,
-                                null,
-                                null);
-                        new JiraTask.Builder<JMetaResponse>()
-                                .setRestMethod(searchMethod)
-                                .setCallback(TopButtonView.this)
-                                .createAndExecute();
-                        break;
-                    default:
-                }
+            public void TouchAction() {
+                TopButtonView.setStartRecord(true);
+                Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
             }
-        };
-        layoutAuth.setOnClickListener(listenerButtons);
-        layoutUserInfo.setOnClickListener(listenerButtons);
-        layoutAddStep.setOnClickListener(listenerButtons);
-        layoutShowStep.setOnClickListener(listenerButtons);
-        layoutBugRep.setOnClickListener(listenerButtons);
+        });
+        createTicketView = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket) + " Ira doing this task", Toast.LENGTH_LONG).show();
+            }
+        });
+        openAmttView = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                Toast.makeText(getContext(), getContext().getString(R.string.label_open_amtt) + " don't have logic yet.", Toast.LENGTH_LONG).show();
+                Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
+                userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(userInfoIntent);
+
+            }
+        });
+        expectedResultView = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result) + " Vova what will be here?", Toast.LENGTH_LONG).show();
+            }
+        });
+        screenshotView = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot) + " Vova what will be here?", Toast.LENGTH_LONG).show();
+                sStepNumber++;
+                new DataBaseTask.Builder()
+                        .setOperationType(DataBaseOperationType.SAVE_STEP)
+                        .setContext(getContext())
+                        .setCallback(TopButtonView.this)
+                        .setStep(new Step(sStepNumber))
+                        .createAndExecute();
+            }
+        });
+        activityInfoView = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                Toast.makeText(getContext(), getContext().getString(R.string.label_activity_info) + " don't have logic yet.", Toast.LENGTH_LONG).show();
+            }
+        });
+        stepView = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                Toast.makeText(getContext(), getContext().getString(R.string.label_step_view), Toast.LENGTH_LONG).show();
+                Intent intentStep = new Intent(getContext(), StepsActivity.class);
+                intentStep.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intentStep);
+            }
+        });
+        cancelRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                TopButtonView.setStartRecord(false);
+                Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
+                RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH,
+                        new ProjectsProcessor(),
+                        null,
+                        null,
+                        null);
+                new JiraTask.Builder<JMetaResponse>()
+                        .setRestMethod(searchMethod)
+                        .setCallback(TopButtonView.this)
+                        .createAndExecute();
+            }
+        });
     }
 
     private void checkFreeSpace() {
@@ -297,7 +303,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
                         if (buttonsBar.getVisibility() == VISIBLE) {
-                            playRotateAnimationMainButton(300,180,0);
+                            playRotateAnimationMainButton(300, 180, 0);
                             final Animation translateUp = AnimationUtils.loadAnimation(getContext(), R.anim.abc_fade_out);
                             translateUp.setAnimationListener(new Animation.AnimationListener() {
                                 @Override
@@ -339,25 +345,17 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
                             buttonsBar.startAnimation(translateUp);
 
                         } else {
+                            if (!getStartRecord()) {
+                                startRecordState();
+                            } else {
+                                cancelRecordState();
+                            }
                             buttonsBar.setVisibility(VISIBLE);
                             xButton = layoutParams.x;
                             yButton = layoutParams.y;
-                            playRotateAnimationMainButton(300,0,180);
+                            playRotateAnimationMainButton(300, 0, 180);
                             Animation translate = AnimationUtils.loadAnimation(getContext(), R.anim.translate);
                             buttonsBar.startAnimation(translate);
-                            Animation combination = AnimationUtils.loadAnimation(getContext(), R.anim.combination);
-                            long durationAnimation = combination.getDuration();
-                            for (int i = 0; i < buttonsArray.length; i++, durationAnimation += 100) {
-                                combination.setDuration(durationAnimation);
-                                buttonsArray[i].startAnimation(combination);
-                            }
-                            Animation alpha = AnimationUtils.loadAnimation(getContext(), R.anim.alpha);
-                            durationAnimation = 300;
-                            for (int i = 0; i < textViewArray.length; i++, durationAnimation += 100) {
-                                alpha.setDuration(durationAnimation);
-                                textViewArray[i].startAnimation(alpha);
-                            }
-
                             checkFreeSpace();
                         }
                     }
@@ -375,7 +373,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         }
     }
 
-    private void playRotateAnimationMainButton(int duration, int fromAngle, int toAngle){
+    private void playRotateAnimationMainButton(int duration, int fromAngle, int toAngle) {
         AnimatorSet expand = new AnimatorSet().setDuration(duration);
         LayerDrawable layerDrawable = (LayerDrawable) getResources().getDrawable(R.drawable.background_main_button);
         RotatingDrawable drawable = new RotatingDrawable(layerDrawable.findDrawableByLayerId(R.id.main_button_background));
@@ -398,7 +396,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
 
     private static class RotatingDrawable extends LayerDrawable {
         public RotatingDrawable(Drawable drawable) {
-            super(new Drawable[] { drawable });
+            super(new Drawable[]{drawable});
         }
 
         private float mRotation;
@@ -435,9 +433,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     }
 
 
-
-
-
     @Override
     public void onRequestStarted() {
 
@@ -460,4 +455,30 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         ExceptionHandler.getInstance().processError(e).showDialog(getContext(), TopButtonView.this);
     }
 
+    public static void setStartRecord(boolean isStartRecord) {
+        TopButtonView.isStartRecord = isStartRecord;
+    }
+
+    public static boolean getStartRecord() {
+        return isStartRecord;
+    }
+
+    public void startRecordState() {
+        buttonsBar.removeAllViews();
+        buttonsBar.addView(startRecordView);
+        buttonsBar.addView(createTicketView);
+        buttonsBar.addView(expectedResultView);
+        buttonsBar.addView(openAmttView);
+    }
+
+    public void cancelRecordState() {
+        buttonsBar.removeAllViews();
+        buttonsBar.addView(screenshotView);
+        buttonsBar.addView(activityInfoView);
+        buttonsBar.addView(stepView);
+        buttonsBar.addView(expectedResultView);
+        buttonsBar.addView(createTicketView);
+        buttonsBar.addView(cancelRecordView);
+        buttonsBar.addView(openAmttView);
+    }
 }

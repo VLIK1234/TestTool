@@ -132,5 +132,14 @@
     <string name="error_title_database">Data base error</string>
     <string name="error_message_database">Exception while executing insert/update operation</string>
 
+    <string name="label_start_record">Start record</string>
+    <string name="label_create_ticket">Create Ticket</string>
+    <string name="label_open_amtt">Open Amtt</string>
+    <string name="label_expected_result">Expected result</string>
+    <string name="label_screenshot">Screenshot</string>
+    <string name="label_activity_info">Activity info</string>
+    <string name="label_step_view">Step</string>
+    <string name="label_cancel_record">Cancel record</string>
+    <string name="label_button_main">Main button</string>
 
 </resources>

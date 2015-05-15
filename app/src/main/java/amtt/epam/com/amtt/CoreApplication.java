@@ -6,7 +6,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import amtt.epam.com.amtt.util.ContextHolder;
-
 /**
  * Created by Ivan_Bakach on 19.03.2015.
  */

@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,12 +41,11 @@ import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseOperationType;
-import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseTaskResult;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
-import amtt.epam.com.amtt.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants.Str;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.view.EditText;
 
 /**
@@ -70,7 +70,11 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         setContentView(R.layout.activity_login);
         TopButtonService.close(this);
         initViews();
-        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
+        if (savedInstanceState == null) {
+            getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
+        } else {
+            getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
+        }
     }
 
     @Override
