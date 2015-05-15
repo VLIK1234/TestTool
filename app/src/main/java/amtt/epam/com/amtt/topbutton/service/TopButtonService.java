@@ -1,8 +1,10 @@
 package amtt.epam.com.amtt.topbutton.service;
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -16,6 +18,7 @@ import android.view.WindowManager;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.MainActivity;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
+import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
  * Created by Ivan_Bakach on 20.03.2015.
@@ -49,6 +52,11 @@ public class TopButtonService extends Service{
 
     public static void authSuccess(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_AUTH_SUCCESS));
+    }
+
+    public static ComponentName getTopActivity() {
+        ActivityManager activityManager = (ActivityManager) ContextHolder.getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        return activityManager.getRunningTasks(Integer.MAX_VALUE).get(0).topActivity;
     }
 
     @Override
@@ -136,7 +144,7 @@ public class TopButtonService extends Service{
                 .setContentTitle(getString(R.string.notification_title))
                 .setOngoing(true)
                 .setContentText(getString(R.string.notification_text))
-                .setContentIntent(PendingIntent.getActivity(getBaseContext(),ID, new Intent(getBaseContext(), MainActivity.class),PendingIntent.FLAG_UPDATE_CURRENT));
+                .setContentIntent(PendingIntent.getActivity(getBaseContext(), ID, new Intent(getBaseContext(), MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
 
 
         action = new NotificationCompat.Action(

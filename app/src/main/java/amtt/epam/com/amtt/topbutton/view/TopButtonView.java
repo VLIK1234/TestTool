@@ -56,6 +56,8 @@ import amtt.epam.com.amtt.database.task.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.PreferenceUtils;
@@ -168,19 +170,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         activityInfoView = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), new ITouchAction() {
             @Override
             public void TouchAction() {
-                ComponentName topActivity = getTopActivity();
-                ActivityInfo activityInfo;
-                try {
-                    activityInfo = getContext()
-                            .getPackageManager()
-                            .getActivityInfo(topActivity, PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
-                    Intent intentStep = new Intent(getContext(), InfoActivity.class);
-                    intentStep.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intentStep.putExtra(InfoActivity.ACTIVITY_NAME, activityInfo.name);
-                    getContext().getApplicationContext().startActivity(intentStep);
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
+                InfoActivity.callInfoActivity(TopButtonService.getTopActivity());
             }
         });
         stepView = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), new ITouchAction() {
@@ -201,11 +191,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         });
 
         clearDatabase();
-    }
-
-    private ComponentName getTopActivity() {
-        ActivityManager activityManager = (ActivityManager) getContext().getSystemService(Context.ACTIVITY_SERVICE);
-        return activityManager.getRunningTasks(Integer.MAX_VALUE).get(0).topActivity;
     }
 
     private void checkFreeSpace() {
