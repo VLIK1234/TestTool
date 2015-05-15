@@ -19,18 +19,12 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseTask
 
     public static class DataBaseResponse<ResultType> {
 
-        public DataBaseTaskResult mTaskResult;
         public Exception mException;
         public ResultType mResult;
 
-        public DataBaseResponse(ResultType result, Exception e, DataBaseTaskResult taskResult) {
+        public DataBaseResponse(ResultType result, Exception e) {
             mResult = result;
             mException = e;
-            mTaskResult = taskResult;
-        }
-
-        public DataBaseTaskResult getTaskResult() {
-            return mTaskResult;
         }
 
         public ResultType getValueResult() {
@@ -112,11 +106,11 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseTask
     private DataBaseOperationType mOperationType;
     private Context mContext;
     private DataBaseCallback<ResultType> mCallback;
-    private Exception mException;
 
     @Override
     protected DataBaseResponse<ResultType> doInBackground(Void... params) {
         ResultType operationResult = null;
+        Exception exception = null;
         try {
             switch (mOperationType) {
                 case SAVE_STEP:
@@ -130,17 +124,9 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseTask
                     break;
             }
         } catch (Exception e) {
-            mException = e;
+            exception = e;
         }
-
-        DataBaseTaskResult taskResult;
-        if (mOperationType == DataBaseOperationType.CLEAR) {
-            taskResult = DataBaseTaskResult.CLEARED;
-        } else {
-            taskResult = DataBaseTaskResult.DONE;
-        }
-//        return dataBaseResponse;
-        return new DataBaseResponse<>(operationResult, mException, taskResult);
+        return new DataBaseResponse<>(operationResult, exception);
     }
 
     @Override
@@ -155,9 +141,8 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseTask
         DaoFactory.getDao(StepDao.TAG).add(mStep);
     }
 
-    private DataBaseTaskResult performCleaning() throws Exception {
+    private void performCleaning() throws Exception {
         DaoFactory.getDao(StepDao.TAG).removeAll();
-        return DataBaseTaskResult.CLEARED;
     }
 
     private Boolean checkUser() {

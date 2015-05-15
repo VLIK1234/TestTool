@@ -172,18 +172,6 @@ public class TopButtonService extends Service implements DataBaseCallback {
 
     @Override
     public void onDataBaseActionDone(DataBaseResponse dataBaseResponse) {
-        int resultMessage;
-        switch (dataBaseResponse.getTaskResult()) {
-            case DONE:
-                resultMessage = R.string.data_base_action_done;
-                break;
-            case ERROR:
-                resultMessage = R.string.data_base_action_error;
-                break;
-            default:
-                return;
-        }
-        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
     }
 
 }

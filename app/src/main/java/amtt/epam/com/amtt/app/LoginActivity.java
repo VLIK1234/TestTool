@@ -219,7 +219,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     //Database task
     @Override
     public void onDataBaseActionDone(DataBaseResponse<Boolean> dataBaseResponse) {
-        if (dataBaseResponse.getTaskResult() == DataBaseTaskResult.DONE) {
+        if (dataBaseResponse.getException() == null) {
             sendAuthRequest(dataBaseResponse.getValueResult());
             TopButtonService.authSuccess(this);
         }
