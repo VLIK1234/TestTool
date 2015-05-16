@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.service;
+package amtt.epam.com.amtt.topbutton.service;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -19,8 +19,12 @@ import android.view.WindowManager;
 import java.io.File;
 
 import amtt.epam.com.amtt.R;
+<<<<<<< HEAD:app/src/main/java/amtt/epam/com/amtt/service/TopButtonService.java
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.view.TopButtonView;
+=======
+import amtt.epam.com.amtt.topbutton.view.TopButtonView;
+>>>>>>> dev:app/src/main/java/amtt/epam/com/amtt/topbutton/service/TopButtonService.java
 
 /**
  * Created by Ivan_Bakach on 20.03.2015.
@@ -113,7 +117,7 @@ public class TopButtonService extends Service {
                     changeStateNotificationAction();
                     break;
                 case ACTION_AUTH_SUCCESS:
-                    changeUiAuthSuccess();
+//                    changeUiAuthSuccess();
                     break;
                 case ACTION_SHOW_SCREEN:
                     showScreen();
@@ -126,16 +130,13 @@ public class TopButtonService extends Service {
     }
 
     private void initLayoutParams() {
-        layoutParams = new WindowManager.LayoutParams();
-        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        layoutParams.type = WindowManager.LayoutParams.TYPE_PHONE;
-        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+        int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
-        layoutParams.format = PixelFormat.TRANSLUCENT;
+
+        layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT, xInitPosition, yInitPosition, WindowManager.LayoutParams.TYPE_PHONE,
+                flags, PixelFormat.TRANSLUCENT);
         layoutParams.gravity = Gravity.TOP | Gravity.START;
-        layoutParams.x = xInitPosition;
-        layoutParams.y = yInitPosition;
     }
 
     private void addView() {
@@ -153,15 +154,15 @@ public class TopButtonService extends Service {
         }
         stopSelf();
     }
-
-    private void changeUiAuthSuccess(){
-        view.buttonAuth.setText(R.string.label_logout);
-        view.buttonAuth.setTextColor(getResources().getColor(R.color.red));
-        view.buttonBugRep.setEnabled(true);
-        view.buttonUserInfo.setEnabled(true);
-        view.layoutUserInfo.setClickable(true);
-        view.layoutBugRep.setClickable(true);
-    }
+//Delete after create logic with choose user activity and start service after authorization success
+//    private void changeUiAuthSuccess(){
+//        view.buttonAuth.setText(R.string.label_logout);
+//        view.buttonAuth.setTextColor(getResources().getColor(R.color.red));
+//        view.buttonBugRep.setEnabled(true);
+//        view.buttonUserInfo.setEnabled(true);
+//        view.layoutUserInfo.setClickable(true);
+//        view.layoutBugRep.setClickable(true);
+//    }
 
     private void showNotification() {
         builder = new NotificationCompat.Builder(this)

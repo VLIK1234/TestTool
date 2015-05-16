@@ -3,7 +3,7 @@ package amtt.epam.com.amtt;
 import android.app.Application;
 
 import amtt.epam.com.amtt.util.ContextHolder;
-import amtt.epam.com.amtt.service.TopButtonService;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 /**
  * Created by Ivan_Bakach on 19.03.2015.
  */
