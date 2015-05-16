@@ -11,7 +11,6 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,12 +18,8 @@ import android.view.WindowManager;
 import java.io.File;
 
 import amtt.epam.com.amtt.R;
-<<<<<<< HEAD:app/src/main/java/amtt/epam/com/amtt/service/TopButtonService.java
 import amtt.epam.com.amtt.observer.AmttFileObserver;
-import amtt.epam.com.amtt.view.TopButtonView;
-=======
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
->>>>>>> dev:app/src/main/java/amtt/epam/com/amtt/topbutton/service/TopButtonService.java
 
 /**
  * Created by Ivan_Bakach on 20.03.2015.

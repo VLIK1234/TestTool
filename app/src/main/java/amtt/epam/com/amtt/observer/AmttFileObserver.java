@@ -6,7 +6,7 @@ import android.util.Log;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import amtt.epam.com.amtt.service.TopButtonService;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
  * Created by Ivan_Bakach on 06.05.2015.
