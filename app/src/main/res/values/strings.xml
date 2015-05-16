@@ -141,5 +141,8 @@
     <string name="label_step_view">Step</string>
     <string name="label_cancel_record">Cancel record</string>
     <string name="label_button_main">Main button</string>
+    <string name="activity_info_unavailable">Activity information isn\'t available</string>
+    <string name="screenshot_saving_error">Error while saving screenshot</string>
+    <string name="database_operation_error">Error while executing database operation</string>
 
 </resources>

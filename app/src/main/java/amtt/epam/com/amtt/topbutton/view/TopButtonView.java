@@ -4,6 +4,8 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -25,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
@@ -41,9 +44,10 @@ import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
+import amtt.epam.com.amtt.database.task.DataBaseCRUD;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
+import amtt.epam.com.amtt.database.task.DataBaseMethod;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
-import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.util.Constants;
@@ -147,14 +151,22 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         screenshotView = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot) + " Vova what will be here?", Toast.LENGTH_LONG).show();
-                sStepNumber++;
-                new DataBaseTask.Builder()
-                        .setOperationType(DataBaseOperationType.SAVE_STEP)
-                        .setContext(getContext())
-                        .setCallback(TopButtonView.this)
-                        .setStep(new Step(sStepNumber))
-                        .createAndExecute();
+                try {
+                    DataBaseMethod<Void> activityMetaSaving = DataBaseCRUD.getInstance().buildActivityMetaSaving();
+                    new DataBaseTask.Builder()
+                            .setCallback(TopButtonView.this)
+                            .setMethod(activityMetaSaving)
+                            .createAndExecute();
+                    DataBaseMethod<Void> stepSaving = DataBaseCRUD.getInstance().buildStepSaving(++sStepNumber);
+                    new DataBaseTask.Builder()
+                            .setCallback(TopButtonView.this)
+                            .setMethod(stepSaving)
+                            .createAndExecute();
+                } catch (NameNotFoundException e) {
+                    Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    Toast.makeText(getContext(), R.string.screenshot_saving_error, Toast.LENGTH_SHORT).show();
+                }
             }
         });
         activityInfoView = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), new ITouchAction() {
@@ -422,16 +434,14 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     }
 
     @Override
-    public void onDataBaseActionDone(DataBaseResponse dataBaseResponse) {
-        int resultMessage;
-        if (dataBaseResponse.getException() == null) {
-            resultMessage = R.string.data_base_action_done;
-        } else {
-            resultMessage = R.string.data_base_action_error;
-        }
-        Toast.makeText(getContext(), resultMessage, Toast.LENGTH_SHORT).show();
+    public void onDataBaseRequestPerformed(DataBaseResponse dataBaseResponse) {
+        Toast.makeText(getContext(), R.string.data_base_action_done, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onDataBaseRequestError(Exception e) {
+        Toast.makeText(getContext(), R.string.database_operation_error, Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     public void onRequestStarted() {

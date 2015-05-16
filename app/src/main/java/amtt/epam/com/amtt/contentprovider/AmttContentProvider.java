@@ -34,10 +34,6 @@ public class AmttContentProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         AmttUri matchedUri = AmttUri.match(uri);
-        if (!isProjectionCorrect(matchedUri, projection)) {
-            throw new IllegalArgumentException("Incorrect projection column(s)");
-        }
-
         Cursor cursor;
         //if step should be retrieved, join query is executed
         if (matchedUri == AmttUri.STEP_WITH_META) {
@@ -82,18 +78,6 @@ public class AmttContentProvider extends ContentProvider {
         int updatedRows = getDataBaseManager().update(tableName, values, selection, selectionArgs);
         getContext().getContentResolver().notifyChange(uri, null);
         return updatedRows;
-    }
-
-    private static boolean isProjectionCorrect(AmttUri uriType, String[] projection) {
-        String[] existingColumns = AmttUri.matchProjection(uriType);
-        Set<String> availableProjection;
-        Set<String> receivedProjection = new HashSet<>(Arrays.asList(projection));
-        if (existingColumns != null) {
-            availableProjection = new HashSet<>(Arrays.asList(existingColumns));
-        } else {
-            availableProjection = Collections.EMPTY_SET;
-        }
-        return availableProjection.containsAll(receivedProjection);
     }
 
     private DataBaseManager getDataBaseManager() {

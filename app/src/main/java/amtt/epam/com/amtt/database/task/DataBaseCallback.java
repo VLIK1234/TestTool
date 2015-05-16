@@ -7,6 +7,8 @@ import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
  */
 public interface DataBaseCallback<ResultType> {
 
-    void onDataBaseActionDone(DataBaseResponse<ResultType> dataBaseResponse);
+    void onDataBaseRequestPerformed(DataBaseResponse<ResultType> dataBaseResponse);
+
+    void onDataBaseRequestError(Exception e);
 
 }

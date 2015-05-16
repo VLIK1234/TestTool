@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -12,6 +13,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.dao.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.util.IOUtils;
@@ -27,7 +29,7 @@ public class Step extends DatabaseEntity {
 
     private static final String sScreenBasePath;
     private int mStepNumber;
-    private ComponentName mActivityComponent;
+    private ComponentName mActivity;
     private String mScreenPath;
 
     static {
@@ -36,8 +38,9 @@ public class Step extends DatabaseEntity {
 
     public Step() { }
 
-    public Step(int stepNumber) {
+    public Step(int stepNumber, ComponentName componentName) {
         mStepNumber = stepNumber;
+        mActivity = componentName;
     }
 
     public Step(Cursor cursor) {
@@ -60,32 +63,17 @@ public class Step extends DatabaseEntity {
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         values.put(StepsTable._ID, mStepNumber);
-        values.put(StepsTable._SCREEN_PATH, sScreenBasePath);
-        values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivityComponent.getClassName());
+        values.put(StepsTable._SCREEN_PATH, mScreenPath);
+        values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity.getClassName());
         return values;
     }
 
-
-    public ComponentName getActivityComponent() {
-        if (mActivityComponent == null) {
-            mActivityComponent = getTopActivity();
-            return mActivityComponent;
-        }
-        return mActivityComponent;
-    }
 
     public String getScreenPath() {
         return mScreenPath;
     }
 
     //help methods
-    private ComponentName getTopActivity() {
-        ActivityManager activityManager = (ActivityManager) ContextHolder.getContext().getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
-        ActivityManager.RunningTaskInfo topTaskInfo = tasks.get(0);
-        return topTaskInfo.topActivity;
-    }
-
     public String saveScreen() throws IOException {
         String screenPath = null;
         Process fileSavingProcess = null;
@@ -95,13 +83,13 @@ public class Step extends DatabaseEntity {
         try {
             fileSavingProcess = Runtime.getRuntime().exec("su");
             fileSavingStream = fileSavingProcess.getOutputStream();
-            fileSavingStream.write((SCREENSHOT_COMMAND + (screenPath = sScreenBasePath + "screen" + mStepNumber + ".png")).getBytes("ASCII"));
+            fileSavingStream.write((SCREENSHOT_COMMAND + (mScreenPath = sScreenBasePath + "screen" + mStepNumber + ".png")).getBytes("ASCII"));
             fileSavingStream.flush();
             fileSavingStream.close();
 
             changeModeProcess = Runtime.getRuntime().exec("su");
             changeModeStream = changeModeProcess.getOutputStream();
-            changeModeStream.write((CHANGE_PERMISSION_COMMAND + screenPath + "\n").getBytes("ASCII"));
+            changeModeStream.write((CHANGE_PERMISSION_COMMAND + mScreenPath + "\n").getBytes("ASCII"));
             changeModeStream.flush();
             changeModeStream.close();
             changeModeProcess.destroy();
@@ -110,10 +98,6 @@ public class Step extends DatabaseEntity {
             IOUtils.destroyProcesses(fileSavingProcess, changeModeProcess);
         }
         return screenPath;
-    }
-
-    public static String getScreenBasePath() {
-        return sScreenBasePath;
     }
 
 }

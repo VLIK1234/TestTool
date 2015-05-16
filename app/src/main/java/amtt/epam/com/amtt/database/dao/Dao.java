@@ -5,7 +5,6 @@ import android.net.Uri;
 
 import java.util.List;
 
-import amtt.epam.com.amtt.bo.database.DatabaseEntity;
 import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.util.ContextHolder;
 
@@ -24,9 +23,9 @@ public class Dao implements DaoInterface<DatabaseEntity> {
     * Use this method for updates. Exception won't be thrown, all the conflicts will be replaced.
     * */
     @Override
-    public int addOrUpdate(DatabaseEntity object) throws Exception {
-        Uri insertedStepUri = sContext.getContentResolver().insert(object.getUri(), object.getContentValues());
-        return Integer.valueOf(insertedStepUri.getLastPathSegment());
+    public Integer addOrUpdate(DatabaseEntity object) {
+        Uri insertedItemUri = sContext.getContentResolver().insert(object.getUri(), object.getContentValues());
+        return Integer.valueOf(insertedItemUri.getLastPathSegment());
     }
 
     @Override
@@ -35,8 +34,8 @@ public class Dao implements DaoInterface<DatabaseEntity> {
     }
 
     @Override
-    public void removeAll(DatabaseEntity prototypeObject) {
-        sContext.getContentResolver().delete(prototypeObject.getUri(), null, null);
+    public void removeAll(DatabaseEntity objectPrototype) {
+        sContext.getContentResolver().delete(objectPrototype.getUri(), null, null);
     }
 
     @Override
@@ -44,12 +43,8 @@ public class Dao implements DaoInterface<DatabaseEntity> {
         return null;
     }
 
-    /*
-    * Create new object in order to obtain Id and Uri
-    * */
     @Override
-    public DatabaseEntity getByKey(DatabaseEntity prototypeObject) {
-        sContext.getContentResolver().delete(prototypeObject.getUri(), BaseColumns._ID + "?", new String[]{String.valueOf(prototypeObject.getId())});
+    public DatabaseEntity getByKey(DatabaseEntity objectPrototype) {
         return null;
     }
 

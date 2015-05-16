@@ -7,14 +7,14 @@ import java.util.List;
  */
 public interface DaoInterface<ObjectType> {
 
-    int addOrUpdate(ObjectType object) throws Exception;
+    Integer addOrUpdate(ObjectType object);
 
     void remove(ObjectType object);
 
-    void removeAll(ObjectType object);
+    void removeAll(ObjectType objectPrototype);
 
     List<ObjectType> getAll();
 
-    ObjectType getByKey(ObjectType object);
+    ObjectType getByKey(ObjectType objectPrototype);
 
 }

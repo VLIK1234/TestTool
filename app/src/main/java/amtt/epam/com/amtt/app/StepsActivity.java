@@ -51,7 +51,7 @@ public class StepsActivity extends BaseActivity implements LoaderManager.LoaderC
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         showProgress(true);
-        return new CursorLoader(this, AmttUri.STEP_WITH_META.get(), StepsWithMetaTable.PROJECTION, null, null, null);
+        return new CursorLoader(this, AmttUri.STEP_WITH_META.get(), null, null, null, null);
     }
 
     @Override

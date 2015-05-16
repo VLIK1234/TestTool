@@ -126,7 +126,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(this,
                 AmttUri.USER.get(),
-                UsersTable.PROJECTION,
+                null,
                 UsersTable._ID + "=?",
                 new String[]{ String.valueOf(ActiveUser.getInstance().getId()) },
                 null);

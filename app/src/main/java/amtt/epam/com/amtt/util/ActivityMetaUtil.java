@@ -1,22 +1,24 @@
 package amtt.epam.com.amtt.util;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
-import android.content.ContentValues;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import amtt.epam.com.amtt.bo.database.Step;
+import amtt.epam.com.amtt.bo.database.ActivityMeta;
 import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
-import amtt.epam.com.amtt.database.table.ActivityInfoTable;
-import amtt.epam.com.amtt.database.table.StepsTable;
 
 /**
  * Created by Artsiom_Kaliaha on 12.05.2015.
  */
-public class ContentValuesUtil {
+public class ActivityMetaUtil {
 
     private static Map<Integer, String> sConfigChanges;
     private static Map<Integer, String> sFlags;
@@ -26,6 +28,8 @@ public class ContentValuesUtil {
     private static Map<Integer, String> sSoftInputMode;
     private static Map<Integer, String> sUiOptions;
     private static int sCurrentSdkVersion;
+
+    private static ActivityInfo sActivityInfo;
 
     static {
         sConfigChanges = new HashMap<>();
@@ -99,86 +103,92 @@ public class ContentValuesUtil {
         sCurrentSdkVersion = android.os.Build.VERSION.SDK_INT;
     }
 
-    public static ContentValues getValuesForActivityInfo(ActivityInfo activityInfo) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(ActivityInfoTable._ACTIVITY_NAME, activityInfo.name);
-        contentValues.put(ActivityInfoTable._CONFIG_CHANGES, getConfigChange(activityInfo));
-        contentValues.put(ActivityInfoTable._FLAGS, getFlags(activityInfo));
-        contentValues.put(ActivityInfoTable._LAUNCH_MODE, getLaunchMode(activityInfo));
-        contentValues.put(ActivityInfoTable._MAX_RECENTS, getMaxRecents(activityInfo));
-        contentValues.put(ActivityInfoTable._PARENT_ACTIVITY_NAME, getParentActivityName(activityInfo));
-        contentValues.put(ActivityInfoTable._PERMISSION, getPermission(activityInfo));
-        contentValues.put(ActivityInfoTable._PERSISTABLE_MODE, getPersistableMode(activityInfo));
-        contentValues.put(ActivityInfoTable._SCREEN_ORIENTATION, getScreenOrientation(activityInfo));
-        contentValues.put(ActivityInfoTable._SOFT_INPUT_MODE, getSoftInputMode(activityInfo));
-        contentValues.put(ActivityInfoTable._TARGET_ACTIVITY_NAME, getTargetActivity(activityInfo));
-        contentValues.put(ActivityInfoTable._TASK_AFFINITY, activityInfo.taskAffinity);
-        contentValues.put(ActivityInfoTable._UI_OPTIONS, getUiOptions(activityInfo));
-        contentValues.put(ActivityInfoTable._PROCESS_NAME, activityInfo.processName);
-        contentValues.put(ActivityInfoTable._PACKAGE_NAME, activityInfo.packageName);
-        return contentValues;
+    public static ActivityMeta createMeta() throws NameNotFoundException {
+        sActivityInfo = getTopActivityInfo();
+        String activityName = sActivityInfo.name;
+        String taskAffinity = sActivityInfo.taskAffinity;
+        String processName = sActivityInfo.processName;
+        String packageName = sActivityInfo.packageName;
+        String configChanges = getConfigChange();
+        String flags = getFlags();
+        String launchMode = getLaunchMode();
+        String maxRecents = getMaxRecents();
+        String parentActivityName = getParentActivityName();
+        String permission = getPermission();
+        String persistableMode = getPersistableMode();
+        String screenOrientation = getScreenOrientation();
+        String softInputMode = getSoftInputMode();
+        String targetActivity = getTargetActivity();
+        String uiOptions = getUiOptions();
+        sActivityInfo = null;
+        return new ActivityMeta(activityName, taskAffinity, processName, packageName, configChanges, flags, launchMode, maxRecents,
+                parentActivityName, permission, persistableMode, screenOrientation, softInputMode, targetActivity, uiOptions);
     }
 
-    public static ContentValues getValuesForStep(int stepNumber, ComponentName componentName, String screenPath) {
-        ContentValues values = new ContentValues();
-        values.put(StepsTable._ID, stepNumber);
-        values.put(StepsTable._SCREEN_PATH, screenPath);
-        values.put(StepsTable._ASSOCIATED_ACTIVITY, componentName.getClassName());
-        return values;
+    public static ComponentName getTopActivityComponent() {
+        ActivityManager activityManager = (ActivityManager) ContextHolder.getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
+        ActivityManager.RunningTaskInfo topTaskInfo = tasks.get(0);
+        return topTaskInfo.topActivity;
     }
 
-
-    private static String getConfigChange(ActivityInfo activityInfo) {
-        return sConfigChanges.get(activityInfo.configChanges) == null ? ActivityInfoConstants.NOT_AVAILABLE : sConfigChanges.get(activityInfo.configChanges);
+    private static ActivityInfo getTopActivityInfo() throws NameNotFoundException {
+        return ContextHolder.getContext()
+                    .getPackageManager()
+                    .getActivityInfo(getTopActivityComponent(), PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
     }
 
-    private static String getFlags(ActivityInfo activityInfo) {
-        return sFlags.get(activityInfo.flags) == null ? ActivityInfoConstants.NOT_AVAILABLE : sFlags.get(activityInfo.flags);
+    private static String getConfigChange() {
+        return sConfigChanges.get(sActivityInfo.configChanges) == null ? ActivityInfoConstants.NOT_AVAILABLE : sConfigChanges.get(sActivityInfo.configChanges);
     }
 
-    private static String getLaunchMode(ActivityInfo activityInfo) {
-        return sLaunchMode.get(activityInfo.launchMode) == null ? ActivityInfoConstants.NOT_AVAILABLE : sLaunchMode.get(activityInfo.launchMode);
+    private static String getFlags() {
+        return sFlags.get(sActivityInfo.flags) == null ? ActivityInfoConstants.NOT_AVAILABLE : sFlags.get(sActivityInfo.flags);
     }
 
-    private static String getMaxRecents(ActivityInfo activityInfo) {
+    private static String getLaunchMode() {
+        return sLaunchMode.get(sActivityInfo.launchMode) == null ? ActivityInfoConstants.NOT_AVAILABLE : sLaunchMode.get(sActivityInfo.launchMode);
+    }
+
+    private static String getMaxRecents() {
         if (sCurrentSdkVersion < Build.VERSION_CODES.LOLLIPOP) {
             return ActivityInfoConstants.NOT_SUPPORTED;
         }
-        return Integer.toString(activityInfo.maxRecents);
+        return Integer.toString(sActivityInfo.maxRecents);
     }
 
-    private static String getParentActivityName(ActivityInfo activityInfo) {
+    private static String getParentActivityName() {
         if (sCurrentSdkVersion < Build.VERSION_CODES.JELLY_BEAN) {
             return ActivityInfoConstants.NOT_SUPPORTED;
         }
-        return activityInfo.parentActivityName == null ? ActivityInfoConstants.NOT_AVAILABLE : activityInfo.parentActivityName;
+        return sActivityInfo.parentActivityName == null ? ActivityInfoConstants.NOT_AVAILABLE : sActivityInfo.parentActivityName;
     }
 
-    private static String getPermission(ActivityInfo activityInfo) {
-        return activityInfo.permission == null ? ActivityInfoConstants.NOT_AVAILABLE : activityInfo.permission;
+    private static String getPermission() {
+        return sActivityInfo.permission == null ? ActivityInfoConstants.NOT_AVAILABLE : sActivityInfo.permission;
     }
 
-    private static String getPersistableMode(ActivityInfo activityInfo) {
+    private static String getPersistableMode() {
         if (sCurrentSdkVersion < Build.VERSION_CODES.LOLLIPOP) {
             return ActivityInfoConstants.NOT_SUPPORTED;
         }
-        return sPersistableMode.get(activityInfo.persistableMode) == null ? ActivityInfoConstants.NOT_AVAILABLE : sPersistableMode.get(activityInfo.persistableMode);
+        return sPersistableMode.get(sActivityInfo.persistableMode) == null ? ActivityInfoConstants.NOT_AVAILABLE : sPersistableMode.get(sActivityInfo.persistableMode);
     }
 
-    private static String getScreenOrientation(ActivityInfo activityInfo) {
-        return sScreenOrientation.get(activityInfo.screenOrientation) == null ? ActivityInfoConstants.NOT_AVAILABLE : sScreenOrientation.get(activityInfo.screenOrientation);
+    private static String getScreenOrientation() {
+        return sScreenOrientation.get(sActivityInfo.screenOrientation) == null ? ActivityInfoConstants.NOT_AVAILABLE : sScreenOrientation.get(sActivityInfo.screenOrientation);
     }
 
-    private static String getSoftInputMode(ActivityInfo activityInfo) {
-        return sSoftInputMode.get(activityInfo.softInputMode) == null ? ActivityInfoConstants.NOT_AVAILABLE : sSoftInputMode.get(activityInfo.softInputMode);
+    private static String getSoftInputMode() {
+        return sSoftInputMode.get(sActivityInfo.softInputMode) == null ? ActivityInfoConstants.NOT_AVAILABLE : sSoftInputMode.get(sActivityInfo.softInputMode);
     }
 
-    private static String getTargetActivity(ActivityInfo activityInfo) {
-        return activityInfo.targetActivity == null ? ActivityInfoConstants.NOT_AVAILABLE : activityInfo.targetActivity;
+    private static String getTargetActivity() {
+        return sActivityInfo.targetActivity == null ? ActivityInfoConstants.NOT_AVAILABLE : sActivityInfo.targetActivity;
     }
 
-    private static String getUiOptions(ActivityInfo activityInfo) {
-        return sUiOptions.get(activityInfo.uiOptions);
+    private static String getUiOptions() {
+        return sUiOptions.get(sActivityInfo.uiOptions);
     }
 
 }

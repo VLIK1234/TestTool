@@ -3,15 +3,15 @@ package amtt.epam.com.amtt.database.constant;
 /**
  * Created by Artsiom_Kaliaha on 31.03.2015.
  */
-public interface SqlQueryConstants {
+public final class SqlQueryConstants {
 
-    String SELECT = "SELECT ";
-    String FROM = " FROM ";
-    String JOIN = " JOIN ";
-    String ON = " ON ";
+    public static final String SELECT = "SELECT ";
+    public static final String FROM = " FROM ";
+    public static final String JOIN = " JOIN ";
+    public static final String ON = " ON ";
 
-    String EQUALS = " = ";
-    String COMMA = ", ";
-    String DOT = ".";
+    public static final String EQUALS = " = ";
+    public static final String COMMA = ", ";
+    public static final String DOT = ".";
 
 }

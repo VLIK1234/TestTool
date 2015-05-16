@@ -19,7 +19,7 @@ import amtt.epam.com.amtt.database.table.UsersTable;
 /**
  * Created by Artsiom_Kaliaha on 18.03.2015.
  */
-public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstants, BaseColumns {
+public class DataBaseManager extends SQLiteOpenHelper {
 
     private static final Integer DATA_BASE_VERSION = 3;
     private static final String DATA_BASE_NAME = "amtt.db";
@@ -62,7 +62,7 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
     private void dropTables(SQLiteDatabase db) {
         try {
             for (Class table : sTables) {
-                db.execSQL(DROP + ((Table) table.newInstance()).getTableName());
+                db.execSQL(BaseColumns.DROP + ((Table) table.newInstance()).getTableName());
             }
         } catch (IllegalAccessException e) {
             //ignored
@@ -87,22 +87,22 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
 
     public Cursor joinQuery(String[] tablesName, String[] projection, String[] connectionColumns) {
         StringBuilder rawQueryBuilder = new StringBuilder();
-        rawQueryBuilder.append(SELECT);
+        rawQueryBuilder.append(SqlQueryConstants.SELECT);
 
         for (int i = 0; i < projection.length; i++) {
             rawQueryBuilder.append(projection[i]);
             if (i != projection.length - 1) {
-                rawQueryBuilder.append(COMMA);
+                rawQueryBuilder.append(SqlQueryConstants.COMMA);
             }
         }
 
         final String firstTable = tablesName[0];
         final String secondTable = tablesName[1];
-        rawQueryBuilder.append(FROM).append(firstTable)
-                .append(JOIN).append(secondTable)
-                .append(ON).append(firstTable).append(DOT).append(connectionColumns[0])
-                .append(EQUALS)
-                .append(secondTable).append(DOT).append(connectionColumns[1]);
+        rawQueryBuilder.append(SqlQueryConstants.FROM).append(firstTable)
+                .append(SqlQueryConstants.JOIN).append(secondTable)
+                .append(SqlQueryConstants.ON).append(firstTable).append(SqlQueryConstants.DOT).append(connectionColumns[0])
+                .append(SqlQueryConstants.EQUALS)
+                .append(secondTable).append(SqlQueryConstants.DOT).append(connectionColumns[1]);
 
         Cursor cursor;
         SQLiteDatabase database = getReadableDatabase();

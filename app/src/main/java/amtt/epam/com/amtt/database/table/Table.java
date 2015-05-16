@@ -10,7 +10,7 @@ import amtt.epam.com.amtt.util.MultiValueMap;
 /**
  * Created by Artsiom_Kaliaha on 20.03.2015.
  */
-public abstract class Table implements BaseColumns {
+public abstract class Table implements android.provider.BaseColumns {
 
     public abstract MultiValueMap<String, String> getColumnsMap();
 
@@ -25,7 +25,7 @@ public abstract class Table implements BaseColumns {
         for (Map.Entry<String, List<String>> pair : keyValuePairs) {
             List<String> columns = pair.getValue();
             for (String column : columns) {
-                createQuery.append(column).append(" ").append(pair.getKey()).append(DIVIDER);
+                createQuery.append(column).append(" ").append(pair.getKey()).append(BaseColumns.DIVIDER);
             }
         }
         createQuery.deleteCharAt(createQuery.length() - 2).append(" )");

@@ -6,7 +6,7 @@ import android.net.Uri;
 
 import com.google.gson.annotations.SerializedName;
 
-import amtt.epam.com.amtt.bo.database.DatabaseEntity;
+import amtt.epam.com.amtt.database.dao.DatabaseEntity;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
 
@@ -35,9 +35,7 @@ public class JiraUserInfo extends DatabaseEntity {
     private String mUrl;
     private int mId;
 
-    {
-        mId = mName.hashCode();
-    }
+    public JiraUserInfo() { }
 
     public JiraUserInfo(Cursor cursor) {
         cursor.moveToFirst();
@@ -50,7 +48,6 @@ public class JiraUserInfo extends DatabaseEntity {
         String avatar32 = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_32));
         String avatar48 = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_48));
         mAvatarUrls = new JiraAvatarUrls(avatar48, avatar24, avatar16, avatar32);
-
     }
 
     public JiraUserInfo(String key, String self, String name, JiraAvatarUrls avatarUrls, String emailAddress, String displayName, String timeZone, String locale) {

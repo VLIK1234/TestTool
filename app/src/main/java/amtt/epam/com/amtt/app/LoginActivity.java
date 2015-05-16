@@ -3,12 +3,10 @@ package amtt.epam.com.amtt.app;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -36,9 +34,10 @@ import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.dao.Dao;
 import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.database.task.DataBaseCRUD;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
+import amtt.epam.com.amtt.database.task.DataBaseMethod;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
-import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -79,9 +78,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
 
     private void initViews() {
         mUserName = (AutoCompleteTextView) findViewById(R.id.user_name);
+        mUserName.setText("artsiom_kaliaha");
         mPassword = (EditText) findViewById(R.id.password);
         mUrl = (EditText) findViewById(R.id.jira_url);
-        mUrl.setText("https://");
+        mUrl.setText("https://amtt03.atlassian.net");
         mEpamJira = (CheckBox) findViewById(R.id.epam_jira_checkbox);
         mLoginButton = (Button) findViewById(R.id.login_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
@@ -119,32 +119,17 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     }
 
     private void isUserAlreadyInDatabase() {
+        DataBaseMethod<Boolean> dataBaseMethod = DataBaseCRUD.getInstance().buildCheckUser(mUserName.getText().toString());
         new DataBaseTask.Builder<Boolean>()
-                .setContext(this)
                 .setCallback(this)
-                .setOperationType(DataBaseOperationType.CHECK_USERS_AVAILABILITY)
-                .setUserName(mUserName.getText().toString())
+                .setMethod(dataBaseMethod)
                 .createAndExecute();
     }
 
     private void insertUserToDatabase(JiraUserInfo user) {
         user.setUrl(mRequestUrl);
-        try {
-            int userId = new Dao().addOrUpdate(user);
-            ActiveUser.getInstance().setId(userId);
-        } catch (Exception e) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.error_title_database)
-                    .setMessage(R.string.error_message_database)
-                    .setPositiveButton(R.string.error_button_close, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .create()
-                    .show();
-        }
+        int userId = new Dao().addOrUpdate(user);
+        ActiveUser.getInstance().setId(userId);
     }
 
     private void checkFields() {
@@ -215,17 +200,20 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
 
     //Database task
     @Override
-    public void onDataBaseActionDone(DataBaseResponse<Boolean> dataBaseResponse) {
-        if (dataBaseResponse.getException() == null) {
-            sendAuthRequest(dataBaseResponse.getValueResult());
-            TopButtonService.authSuccess(this);
-        }
+    public void onDataBaseRequestPerformed(DataBaseResponse<Boolean> dataBaseResponse) {
+        sendAuthRequest(dataBaseResponse.getResult());
+        TopButtonService.authSuccess(this);
+    }
+
+    @Override
+    public void onDataBaseRequestError(Exception e) {
+        Toast.makeText(this, R.string.database_operation_error, Toast.LENGTH_SHORT).show();
     }
 
     //Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, AmttUri.USER.get(), UsersTable.PROJECTION, null, null, null);
+        return new CursorLoader(this, AmttUri.USER.get(), null, null, null, null);
     }
 
     @Override

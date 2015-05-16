@@ -1,15 +1,7 @@
 package amtt.epam.com.amtt.database.task;
 
-import android.content.Context;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-
-import amtt.epam.com.amtt.bo.database.ActivityMeta;
-import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.dao.Dao;
-import amtt.epam.com.amtt.database.table.UsersTable;
 
 /**
  * Created by Artsiom_Kaliaha on 26.03.2015.
@@ -19,134 +11,66 @@ public class DataBaseTask<ResultType> extends AsyncTask<Void, Void, DataBaseTask
 
     public static class DataBaseResponse<ResultType> {
 
-        public Exception mException;
         public ResultType mResult;
 
-        public DataBaseResponse(ResultType result, Exception e) {
+        public DataBaseResponse(ResultType result) {
             mResult = result;
-            mException = e;
         }
 
-        public ResultType getValueResult() {
+        public ResultType getResult() {
             return mResult;
         }
-
-        public Exception getException() {
-            return mException;
-        }
-
-    }
-
-    public enum DataBaseOperationType {
-
-        CLEAR,
-        SAVE_STEP,
-        CHECK_USERS_AVAILABILITY
 
     }
 
     public static class Builder<ResultType> {
 
-        private DataBaseOperationType mOperationType;
-        private Context mContext;
         private DataBaseCallback<ResultType> mCallback;
-        private Step mStep;
-        private String mUserName;
-
-        public Builder() {
-        }
-
-        public Builder setOperationType(DataBaseOperationType operationType) {
-            mOperationType = operationType;
-            return this;
-        }
-
-        public Builder setContext(@NonNull Context context) {
-            mContext = context;
-            return this;
-        }
+        private DataBaseMethod<ResultType> mDataBaseMethod;
 
         public Builder setCallback(@NonNull DataBaseCallback callback) {
             mCallback = callback;
             return this;
         }
 
-        public Builder setStep(Step step) {
-            mStep = step;
-            return this;
-        }
-
-        public Builder setUserName(String userName) {
-            mUserName = userName;
+        public Builder setMethod(DataBaseMethod dataBaseMethod) {
+            mDataBaseMethod = dataBaseMethod;
             return this;
         }
 
         public void createAndExecute() {
             DataBaseTask<ResultType> dataBaseTask = new DataBaseTask<>();
-            dataBaseTask.mOperationType = this.mOperationType;
-            dataBaseTask.mContext = this.mContext;
+            dataBaseTask.mDataBaseMethod = this.mDataBaseMethod;
             dataBaseTask.mCallback = this.mCallback;
-            dataBaseTask.mStep = this.mStep;
-            dataBaseTask.mUserName = this.mUserName;
             dataBaseTask.execute();
         }
 
     }
 
-    private Step mStep;
-    private String mUserName;
-    private DataBaseOperationType mOperationType;
-    private Context mContext;
+    private DataBaseMethod<ResultType> mDataBaseMethod;
     private DataBaseCallback<ResultType> mCallback;
+    private Exception mException;
 
     @Override
     protected DataBaseResponse<ResultType> doInBackground(Void... params) {
-        ResultType operationResult = null;
-        Exception exception = null;
+        DataBaseResponse<ResultType> dataBaseResponse = null;
         try {
-            switch (mOperationType) {
-                case SAVE_STEP:
-                    performStepSaving();
-                    break;
-                case CLEAR:
-                    performCleaning();
-                    break;
-                default:
-                    operationResult = (ResultType)checkUser();
-                    break;
-            }
+            dataBaseResponse = mDataBaseMethod.execute();
         } catch (Exception e) {
-            exception = e;
+            mException = e;
         }
-        return new DataBaseResponse<>(operationResult, exception);
+        return dataBaseResponse;
     }
 
     @Override
     protected void onPostExecute(DataBaseResponse<ResultType> result) {
         if (mCallback != null) {
-            mCallback.onDataBaseActionDone(result);
+            if (mException == null) {
+                mCallback.onDataBaseRequestPerformed(result);
+            } else {
+                mCallback.onDataBaseRequestError(mException);
+            }
         }
-    }
-
-
-    private void performStepSaving() throws Exception {
-        new Dao().addOrUpdate(mStep);
-    }
-
-    private void performCleaning() throws Exception {
-        new Dao().removeAll(new Step());
-        new Dao().removeAll(new ActivityMeta());
-    }
-
-    private Boolean checkUser() {
-        Cursor cursor = mContext.getContentResolver().query(AmttUri.USER.get(),
-                UsersTable.PROJECTION,
-                UsersTable._USER_NAME + "=?",
-                new String[]{mUserName},
-                null);
-        boolean isAnyUserInDB = cursor.getCount() != 0;
-        cursor.close();
-        return isAnyUserInDB;
     }
 
 }

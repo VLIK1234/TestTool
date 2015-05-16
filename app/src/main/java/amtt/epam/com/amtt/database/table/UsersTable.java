@@ -8,7 +8,7 @@ import amtt.epam.com.amtt.util.MultiValueMap;
 /**
  * Created by Artsiom_Kaliaha on 29.04.2015.
  */
-public class UsersTable extends Table implements BaseColumns {
+public class UsersTable extends Table {
 
     public static final String TABLE_NAME = "users";
 
@@ -43,7 +43,7 @@ public class UsersTable extends Table implements BaseColumns {
 
     static {
         sColumnsMap = new MultiValueMap<>();
-        sColumnsMap.put(TYPE_TEXT, new ArrayList<String>() {{
+        sColumnsMap.put(BaseColumns.TYPE_TEXT, new ArrayList<String>() {{
             add(_USER_NAME);
             add(_DISPLAY_NAME);
             add(_TIME_ZONE);
@@ -56,7 +56,7 @@ public class UsersTable extends Table implements BaseColumns {
             add(_AVATAR_32);
             add(_AVATAR_48);
         }});
-        sColumnsMap.put(TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
+        sColumnsMap.put(BaseColumns.TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);
         }});
     }

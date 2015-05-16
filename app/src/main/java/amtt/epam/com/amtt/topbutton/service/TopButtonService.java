@@ -168,7 +168,11 @@ public class TopButtonService extends Service implements DataBaseCallback {
     }
 
     @Override
-    public void onDataBaseActionDone(DataBaseResponse dataBaseResponse) {
+    public void onDataBaseRequestPerformed(DataBaseResponse dataBaseResponse) {
     }
 
+    @Override
+    public void onDataBaseRequestError(Exception e) {
+
+    }
 }

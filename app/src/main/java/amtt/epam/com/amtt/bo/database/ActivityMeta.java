@@ -1,12 +1,15 @@
 package amtt.epam.com.amtt.bo.database;
 
 import android.content.ContentValues;
+import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.net.Uri;
 
 import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.dao.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
+import amtt.epam.com.amtt.util.ActivityMetaUtil;
 
 /**
  * Created by Artsiom_Kaliaha on 15.05.2015.
@@ -14,7 +17,7 @@ import amtt.epam.com.amtt.database.table.StepsTable;
 public class ActivityMeta extends DatabaseEntity {
 
     private int mId;
-    private String mAssociatedActivity;
+    private String mActivityName;
     private String mConfigChanges;
     private String mFlags;
     private String mLaunchMode;
@@ -32,10 +35,30 @@ public class ActivityMeta extends DatabaseEntity {
 
     public ActivityMeta() { }
 
+    public ActivityMeta(String activityName, String taskAffinity, String processName, String packageName, String configChanges,
+                        String flags, String launchMode, String maxRecents, String parentActivityName, String permission,
+                        String persistableMode, String screenOrientation, String softInputMode, String targetActivity, String uiOptions) {
+        mActivityName = activityName;
+        mTaskAffinity = taskAffinity;
+        mProcessName = processName;
+        mPackageName = packageName;
+        mConfigChanges = configChanges;
+        mFlags = flags;
+        mLaunchMode = launchMode;
+        mMaxRecents = maxRecents;
+        mParentActivityName = parentActivityName;
+        mPermission = permission;
+        mPersistableMode = persistableMode;
+        mScreenOrientation = screenOrientation;
+        mSoftInputMode = softInputMode;
+        mTargetActivityName = targetActivity;
+        mUiOptions = uiOptions;
+    }
+
     public ActivityMeta(Cursor cursor) {
         super(cursor);
         mId = cursor.getInt(cursor.getColumnIndex(StepsTable._ID));
-        mAssociatedActivity = cursor.getString(cursor.getColumnIndex(StepsTable._ASSOCIATED_ACTIVITY));
+        mActivityName = cursor.getString(cursor.getColumnIndex(StepsTable._ASSOCIATED_ACTIVITY));
         mConfigChanges = cursor.getString(cursor.getColumnIndex(ActivityInfoTable._CONFIG_CHANGES));
         mFlags =  cursor.getString(cursor.getColumnIndex(ActivityInfoTable._FLAGS));
         mLaunchMode = cursor.getString(cursor.getColumnIndex(ActivityInfoTable._LAUNCH_MODE));
@@ -65,7 +88,7 @@ public class ActivityMeta extends DatabaseEntity {
     @Override
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
-        values.put(ActivityInfoTable._ACTIVITY_NAME, mAssociatedActivity);
+        values.put(ActivityInfoTable._ACTIVITY_NAME, mActivityName);
         values.put(ActivityInfoTable._CONFIG_CHANGES, mConfigChanges);
         values.put(ActivityInfoTable._FLAGS, mFlags);
         values.put(ActivityInfoTable._LAUNCH_MODE, mLaunchMode);
@@ -84,7 +107,7 @@ public class ActivityMeta extends DatabaseEntity {
     }
 
     public String getAssociatedActivity() {
-        return mAssociatedActivity;
+        return mActivityName;
     }
 
     public String getConfigChanges() {

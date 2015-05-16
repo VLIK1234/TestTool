@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.bo.database;
+package amtt.epam.com.amtt.database.dao;
 
 import android.content.ContentValues;
 import android.database.Cursor;
