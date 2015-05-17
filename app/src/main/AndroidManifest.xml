@@ -62,6 +62,10 @@
         <activity
             android:name=".app.UserInfoActivity"
             android:label="@string/title_activity_user_info" />
+
+        <activity
+            android:name=".app.InfoActivity"
+            android:label="@string/title_activity_info" />
     </application>
 
 </manifest>
