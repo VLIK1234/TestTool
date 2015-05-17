@@ -223,6 +223,17 @@
                 android:background="@color/iv_divider_color"
                 android:paddingTop="@dimen/material_vertical_size_divider" />
             <!-- *******TESTER END****************************************-->
+            <AutoCompleteTextView
+                android:id="@+id/et_assignable_users"
+                style="@style/Material.Widget.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/material_vertical_size_divider"
+                android:hint="@string/label_tester"
+                android:inputType="textAutoComplete"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+                android:textColor="@color/primary_text" />
+
 
             <Button
                 android:id="@+id/btn_create"

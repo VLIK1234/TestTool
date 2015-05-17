@@ -66,6 +66,7 @@ public class JiraApi {
     public <ResultType, InputType> RestMethod buildDataSearch(final String requestSuffix, final Processor<ResultType, InputType> processor) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials());
+        headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
         Logger.d(TAG, requestSuffix);
         Logger.d(TAG, mCredentialsManager.getCredentials());
         mMethod = new RestMethod.Builder()

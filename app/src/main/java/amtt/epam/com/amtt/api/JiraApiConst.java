@@ -14,7 +14,7 @@ public final class JiraApiConst {
     private static String REST_PATH = "rest";
     private static String API_PATH = "api";
     private static String SLASH = "/";
-    private static String REST_API_PATH = SLASH + REST_PATH + SLASH + API_PATH + SLASH + DEFAULT_API_VERSION + SLASH;
+    public static String REST_API_PATH = SLASH + REST_PATH + SLASH + API_PATH + SLASH + DEFAULT_API_VERSION + SLASH;
     public static String EPAM_JIRA_SUFFIX = SLASH + "jira";
     private static String QUESTION = "?";
     private static String EQUAL = "=";
@@ -31,7 +31,7 @@ public final class JiraApiConst {
     private static String MULTI_PROJECT_SEARCH_TAG = "multiProjectSearch";
     private static String PRIORITY_TAG = "priority";
     private static String PROJECT_TAG = "project";
-    private static String PROJECT_KEYS_TAG = "projetKeys";
+    private static String PROJECT_KEYS_TAG = "projectKeys";
     private static String SESSION_TAG = "session";
     private static String USER_TAG = "user";
     private static String USER_NAME_TAG = "username";

@@ -1,21 +1,20 @@
 package amtt.epam.com.amtt.app;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.api.JiraContent;
-import amtt.epam.com.amtt.api.JiraContentConst;
-import amtt.epam.com.amtt.api.JiraGetContentCallback;
+import amtt.epam.com.amtt.ticket.JiraContent;
+import amtt.epam.com.amtt.ticket.JiraContentConst;
+import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.view.EditText;
 
@@ -32,6 +31,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraGetContentC
     private EditText mEditTextDescription;
     private EditText mEditTextEnvironment;
     private EditText mEditTextSummary;
+    private AutoCompleteTextView mACTextViewTesters;
     private Queue<JiraContentConst> mQueueRequests = new LinkedList<>();
     private Spinner mSpinnerAssignableUsers;
     private Spinner mSpinnerIssueTypes;
@@ -50,10 +50,28 @@ public class CreateIssueActivity extends BaseActivity implements JiraGetContentC
     }
 
     private void initViews() {
-        mEditTextEnvironment = (EditText) findViewById(R.id.et_environment);
-        mEditTextDescription = (EditText) findViewById(R.id.et_description);
+        mACTextViewTesters = (AutoCompleteTextView) findViewById(R.id.et_assignable_users);
+        mACTextViewTesters.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
 
-        mEditTextSummary = (EditText) findViewById(R.id.et_summary);
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(count >= 3){
+
+                }
+            }
+        });
+        mEditTextEnvironment = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_environment);
+        mEditTextDescription = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_description);
+
+        mEditTextSummary = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_summary);
         mEditTextSummary.clearErrorOnTextChanged(true);
         mEditTextSummary.clearErrorOnFocus(true);
 
@@ -70,7 +88,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraGetContentC
                 }
                 if (isValid) {
                     mQueueRequests.add(JiraContentConst.CREATE_ISSUE);
-                    JiraContent.getInstance().createIssueAsynchronously(getIssueTypeName(),
+                    JiraContent.getInstance().createIssue(getIssueTypeName(),
                         getPriorityName(), getVersionName(), mEditTextSummary.getText().toString(),
                         mEditTextDescription.getText().toString(), mEditTextEnvironment.getText().toString(),
                         CreateIssueActivity.this);
@@ -167,7 +185,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraGetContentC
             mQueueRequests.add(JiraContentConst.VERSIONS_NAMES);
             JiraContent.getInstance().getVersionsNames((String) result, CreateIssueActivity.this);
             mQueueRequests.add(JiraContentConst.USERS_ASSIGNABLE_NAMES);
-            JiraContent.getInstance().getUsersAssignableAsynchronously((String) result, CreateIssueActivity.this);
+            JiraContent.getInstance().getUsersAssignable((String) result, CreateIssueActivity.this);
         } else if (tagResult == JiraContentConst.ISSUE_TYPES_NAMES) {
             if (result != null) {
                 mIssueTypesAdapter = new ArrayAdapter<String>(CreateIssueActivity.this, R.layout.spinner_layout, (ArrayList<String>) result);
@@ -195,6 +213,8 @@ public class CreateIssueActivity extends BaseActivity implements JiraGetContentC
                 mAssignableUsersAdapter = new ArrayAdapter<String>(CreateIssueActivity.this, R.layout.spinner_layout, (ArrayList<String>) result);
                 mAssignableUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                 mSpinnerAssignableUsers.setAdapter(mAssignableUsersAdapter);
+                mACTextViewTesters.setAdapter(mAssignableUsersAdapter);
+                mACTextViewTesters.setThreshold(3);
             }
             mSpinnerAssignableUsers.setEnabled(true);
         }else if (tagResult == JiraContentConst.CREATE_ISSUE) {

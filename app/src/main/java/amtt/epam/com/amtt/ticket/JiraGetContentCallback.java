@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.api;
+package amtt.epam.com.amtt.ticket;
 
 /**
  * Created by Iryna_Monchanka on 5/13/2015.
