@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -42,6 +43,7 @@ public class TopButtonService extends Service {
     private NotificationCompat.Action action;
     private NotificationCompat.Builder builder;
     private AmttFileObserver fileObserver;
+    private static final String SCREENSHOTS_DIR_NAME = "Screenshots";
     //bellow field for cap code and will be delete after do work realization
     private static Context context;
     private static String pathToScreenshot;
@@ -87,8 +89,10 @@ public class TopButtonService extends Service {
         yInitPosition = displayMetrics.heightPixels / 2;
         initLayoutParams();
         view = new TopButtonView(getBaseContext(), layoutParams);
-        final String pathScreenshot = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath()+"/Screenshot";
-        fileObserver = new AmttFileObserver(pathScreenshot);
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), SCREENSHOTS_DIR_NAME);
+        file.mkdirs();
+        Log.d(TAG,file.getPath());
+        fileObserver = new AmttFileObserver(file.getAbsolutePath());
         fileObserver.startWatching();
     }
 
