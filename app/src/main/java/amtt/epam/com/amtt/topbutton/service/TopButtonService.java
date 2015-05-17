@@ -1,8 +1,10 @@
 package amtt.epam.com.amtt.topbutton.service;
 
+import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -21,6 +23,7 @@ import java.io.File;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
+import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
  * Created by Ivan_Bakach on 20.03.2015.
@@ -31,7 +34,8 @@ public class TopButtonService extends Service {
     public static final String ACTION_CLOSE = "CLOSE";
     private static final String TAG = "Log";
     public static final int ID = 7;
-    public static final String ACTION_HIDE_VIEW = "HIDE_VIEW";
+    //don't use REQUEST_CODE = 0 - it's broke action in notification for some device
+    public static final int REQUEST_CODE = 1;
     public static final String ACTION_AUTH_SUCCESS = "AUTHORIZATION_SUCCESS";
     public static final String ACTION_SHOW_SCREEN = "SHOW_SCREEN";
     private int xInitPosition;
@@ -72,6 +76,11 @@ public class TopButtonService extends Service {
 
     public static void authSuccess(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_AUTH_SUCCESS));
+    }
+
+    public static ComponentName getTopActivity() {
+        ActivityManager activityManager = (ActivityManager) ContextHolder.getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        return activityManager.getRunningTasks(Integer.MAX_VALUE).get(0).topActivity;
     }
 
     @Override
@@ -169,17 +178,19 @@ public class TopButtonService extends Service {
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(getString(R.string.notification_title))
                 .setOngoing(true)
-                .setContentText(getString(R.string.notification_text));
+                .setContentText(getString(R.string.notification_text))
+                .setContentIntent(PendingIntent.getActivity(getBaseContext(), ID, new Intent(getBaseContext(), MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
+
 
         action = new NotificationCompat.Action(
                 R.drawable.ic_stat_action_visibility_off,
                 getString(R.string.label_hide),
-                PendingIntent.getService(this, 0, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_HIDE_VIEW), PendingIntent.FLAG_UPDATE_CURRENT));
+                PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_HIDE_VIEW), PendingIntent.FLAG_UPDATE_CURRENT));
 
         NotificationCompat.Action closeService = new NotificationCompat.Action(
                 R.drawable.ic_close_service,
                 getString(R.string.label_close),
-                PendingIntent.getService(this, 0, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE), PendingIntent.FLAG_UPDATE_CURRENT));
+                PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE), PendingIntent.FLAG_UPDATE_CURRENT));
 
         builder.addAction(action);
         builder.addAction(closeService);
