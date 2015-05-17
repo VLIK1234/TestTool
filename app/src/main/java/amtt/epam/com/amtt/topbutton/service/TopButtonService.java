@@ -21,6 +21,7 @@ import android.view.WindowManager;
 import java.io.File;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.app.MainActivity;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 import amtt.epam.com.amtt.util.ContextHolder;
@@ -38,6 +39,7 @@ public class TopButtonService extends Service {
     public static final int REQUEST_CODE = 1;
     public static final String ACTION_AUTH_SUCCESS = "AUTHORIZATION_SUCCESS";
     public static final String ACTION_SHOW_SCREEN = "SHOW_SCREEN";
+    public static final String ACTION_HIDE_VIEW = "HIDE_VIEW";
     private int xInitPosition;
     private int yInitPosition;
     private TopButtonView view;
