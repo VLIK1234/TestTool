@@ -20,7 +20,7 @@ public class AmttFileObserver extends FileObserver {
     private static final String TIME_SCREENSHOT_PATTERN = "\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2}";
     private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s[.]png";
     private static final String SCREENSHOT_PATTERN = String.format(SCREENSHOT_FILE_NAME_TEMPLATE,TIME_SCREENSHOT_PATTERN);
-    private static final long TIMEOUT = 30000000L;
+    private static final long TIMEOUT = 3000L;
     private String absolutePath;
     private static ArrayList<String> imageArray;
     public AmttFileObserver(String path) {
@@ -38,7 +38,6 @@ public class AmttFileObserver extends FileObserver {
         if ((FileObserver.CREATE & event)!=0) {
             Log.d(TAG, absolutePath + "/" + path + " is created\n");
 
-            Log.d(TAG,isNewScreenshot(path)+" is Screenshot");
             if(isNewScreenshot(path)){
                 imageArray.add(absolutePath + "/" + path);
                 TopButtonService.sendActionScreenshot(absolutePath + "/" + path);
