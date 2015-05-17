@@ -90,6 +90,7 @@ public class TopButtonService extends Service {
         initLayoutParams();
         view = new TopButtonView(getBaseContext(), layoutParams);
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), SCREENSHOTS_DIR_NAME);
+//        File file = new File(Environment.getExternalStoragePublicDirectory("DCIM"), SCREENSHOTS_DIR_NAME);
         file.mkdirs();
         Log.d(TAG,file.getPath());
         fileObserver = new AmttFileObserver(file.getAbsolutePath());

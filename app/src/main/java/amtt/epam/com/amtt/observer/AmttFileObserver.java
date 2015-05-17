@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,13 +18,15 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 public class AmttFileObserver extends FileObserver {
     private static final String TAG = "TAG";
     private static final String TIME_SCREENSHOT_PATTERN = "\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2}";
-    private static final String SCREENSHOT_PATTERN = "Screenshot-" + TIME_SCREENSHOT_PATTERN + "[.]png";
-    private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.png";
-    private static final long TIMEOUT = 300000L;
+    private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s[.]png";
+    private static final String SCREENSHOT_PATTERN = String.format(SCREENSHOT_FILE_NAME_TEMPLATE,TIME_SCREENSHOT_PATTERN);
+    private static final long TIMEOUT = 30000000L;
     private String absolutePath;
+    private static ArrayList<String> imageArray;
     public AmttFileObserver(String path) {
         super(path, FileObserver.ALL_EVENTS);
         absolutePath = path;
+        imageArray = new ArrayList<>();
     }
 
     @Override
@@ -35,7 +38,9 @@ public class AmttFileObserver extends FileObserver {
         if ((FileObserver.CREATE & event)!=0) {
             Log.d(TAG, absolutePath + "/" + path + " is created\n");
 
+            Log.d(TAG,isNewScreenshot(path)+" is Screenshot");
             if(isNewScreenshot(path)){
+                imageArray.add(absolutePath + "/" + path);
                 TopButtonService.sendActionScreenshot(absolutePath + "/" + path);
             }
         }
@@ -87,19 +92,19 @@ public class AmttFileObserver extends FileObserver {
         Matcher matcherScreenshot = screenshotPattern.matcher(path);
         Pattern timePattern = Pattern.compile(TIME_SCREENSHOT_PATTERN);
         Matcher matcherTime = timePattern.matcher(path);
-        if(matcherScreenshot.find()){
-            Log.d(TAG,"Access");
+        if(matcherScreenshot.find()&&matcherTime.find()){
             long imageTime = System.currentTimeMillis();
             SimpleDateFormat imageDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
             try {
-                Date screenshotTime = imageDate.parse(matcherTime.group(0));
-                Log.d(TAG,screenshotTime.getTime() +" "+ imageTime);
+                Date screenshotTime = imageDate.parse(matcherTime.group());
                 return screenshotTime.getTime() - imageTime <= TIMEOUT;
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
-
         return false;
+    }
+    public ArrayList<String> getImageArray(){
+        return imageArray;
     }
 }
