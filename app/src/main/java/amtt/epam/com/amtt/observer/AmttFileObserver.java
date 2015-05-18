@@ -20,7 +20,8 @@ public class AmttFileObserver extends FileObserver {
     private static final String TIME_SCREENSHOT_PATTERN = "\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2}";
     private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s[.]png";
     private static final String SCREENSHOT_PATTERN = String.format(SCREENSHOT_FILE_NAME_TEMPLATE,TIME_SCREENSHOT_PATTERN);
-    private static final long TIMEOUT = 3000L;
+    private static final long TIMEOUT_SCREENSHOT_CREATE = 3000L;
+    public static final String SCREENSHOT_DATE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
     private String absolutePath;
     private static ArrayList<String> imageArray;
     public AmttFileObserver(String path) {
@@ -93,10 +94,10 @@ public class AmttFileObserver extends FileObserver {
         Matcher matcherTime = timePattern.matcher(path);
         if(matcherScreenshot.find()&&matcherTime.find()){
             long imageTime = System.currentTimeMillis();
-            SimpleDateFormat imageDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+            SimpleDateFormat imageDate = new SimpleDateFormat(SCREENSHOT_DATE_FORMAT);
             try {
                 Date screenshotTime = imageDate.parse(matcherTime.group());
-                return screenshotTime.getTime() - imageTime <= TIMEOUT;
+                return screenshotTime.getTime() - imageTime <= TIMEOUT_SCREENSHOT_CREATE;
             } catch (ParseException e) {
                 e.printStackTrace();
             }
