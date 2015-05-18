@@ -209,31 +209,22 @@
                 android:textColor="@color/primary_text"
                 android:textSize="@dimen/material_font_size_caption" />
 
-            <Spinner
-                android:id="@+id/spin_assignable_users"
-                style="@style/Material.Widget.Spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/label_tester"
-                android:paddingBottom="@dimen/spinner_padding_bottom" />
-
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/material_colored_divider_size"
-                android:background="@color/iv_divider_color"
-                android:paddingTop="@dimen/material_vertical_size_divider" />
-            <!-- *******TESTER END****************************************-->
             <AutoCompleteTextView
                 android:id="@+id/et_assignable_users"
                 style="@style/Material.Widget.EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:hint="@string/label_tester"
+                android:paddingTop="0dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
                 android:inputType="textAutoComplete"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
                 android:textColor="@color/primary_text" />
 
+            <!-- *******TESTER END****************************************-->
 
             <Button
                 android:id="@+id/btn_create"

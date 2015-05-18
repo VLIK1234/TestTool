@@ -17,7 +17,7 @@ import amtt.epam.com.amtt.processing.UsersAssignableProcessor;
 import amtt.epam.com.amtt.processing.VersionsProcessor;
 
 /**
- * Created by shiza on 15.05.2015.
+ * Created by Iryna_Monchanka on 15.05.2015.
  */
 public class ContentFromBackend {
 
@@ -83,10 +83,10 @@ public class ContentFromBackend {
     }
 
     @SuppressWarnings("unchecked")
-    public void getUsersAssignableAsynchronously(String projectKey,
+    public void getUsersAssignableAsynchronously(String projectKey, String userName,
                                                  final ContentLoadingCallback<JUserAssignableResponse> contentLoadingCallback,
                                                  final JiraGetContentCallback jiraGetContentCallback) {
-        String path = JiraApiConst.USERS_ASSIGNABLE_PATH + projectKey + JiraApiConst.USERS_ASSIGNABLE_PATH_MR;
+        String path = JiraApiConst.USERS_ASSIGNABLE_PATH + projectKey + JiraApiConst.USERS_ASSIGNABLE_PATH_UN + userName + JiraApiConst.USERS_ASSIGNABLE_PATH_MR;
         RestMethod<JUserAssignableResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new UsersAssignableProcessor());
         new JiraTask.Builder<JUserAssignableResponse>()
             .setRestMethod(searchMethod)

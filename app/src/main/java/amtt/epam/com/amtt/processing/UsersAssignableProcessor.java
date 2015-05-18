@@ -15,7 +15,7 @@ import org.apache.http.util.EntityUtils;
 import java.util.ArrayList;
 
 /**
- * Created by shiza on 06.05.2015.
+ * Created by Iryna_Monchanka on 06.05.2015.
  */
 public class UsersAssignableProcessor implements Processor<JUserAssignableResponse, HttpEntity> {
 

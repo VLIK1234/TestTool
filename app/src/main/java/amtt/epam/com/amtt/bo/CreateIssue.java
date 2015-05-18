@@ -9,6 +9,7 @@ import amtt.epam.com.amtt.bo.JCreatingIssueRequest;
 import amtt.epam.com.amtt.bo.issue.JiraIssueFields;
 import amtt.epam.com.amtt.bo.issue.JiraIssueProject;
 import amtt.epam.com.amtt.bo.issue.JiraIssueTypesIssueType;
+import amtt.epam.com.amtt.bo.user.JiraUser;
 import amtt.epam.com.amtt.processing.IssueGsonProcessor;
 
 /**
@@ -23,15 +24,18 @@ public class CreateIssue {
     private JiraIssueFields mFields = new JiraIssueFields();
     private JiraIssuePriority mPriority = new JiraIssuePriority();
     private JiraIssueVersion mVersion = new JiraIssueVersion();
+    private JiraUser mAssignee = new JiraUser();
     private JCreatingIssueRequest mBData = new JCreatingIssueRequest();
     private IssueGsonProcessor<JCreatingIssueRequest> mIssueGsonProcessor = new IssueGsonProcessor<>();
 
     public CreateIssue(String keyProject, String issueTypeId, String summary, String description,
-                                    String priorityId, String versionsId, String environment) {
+                                    String priorityId, String versionsId, String environment, String userAssigneId) {
         mProject.setKey(keyProject);
         mIssueType.setId(issueTypeId);
         mPriority.setId(priorityId);
         mVersion.setId(versionsId);
+        mAssignee.setName(userAssigneId);
+        mFields.setAssignee(mAssignee);
         mFields.setProject(mProject);
         mFields.setIssueType(mIssueType);
         mFields.setPriority(mPriority);
@@ -47,7 +51,6 @@ public class CreateIssue {
         String jsonString = null;
         try {
             jsonString = mIssueGsonProcessor.process(mBData);
-            Log.d(TAG, jsonString);
         } catch (Exception e) {
             e.printStackTrace();
         }

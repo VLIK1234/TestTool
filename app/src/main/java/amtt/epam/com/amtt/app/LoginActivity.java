@@ -43,15 +43,17 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
         mUserName = (EditText) findViewById(R.id.user_name);
         mUserName.clearErrorOnTextChanged(true);
         mUserName.clearErrorOnFocus(true);
+        mUserName.setText("admin");
 
         mPassword = (EditText) findViewById(R.id.password);
         mPassword.clearErrorOnTextChanged(true);
         mPassword.clearErrorOnFocus(true);
+        mPassword.setText("bujhm515");
         
         mUrl = (EditText) findViewById(R.id.jira_url);
         mUrl.clearErrorOnTextChanged(true);
         mUrl.clearErrorOnFocus(true);
-        mUrl.setText("https://jira.epam.com");
+        mUrl.setText("https://amtt04.atlassian.net");
 
         mEpamJira = (CheckBox) findViewById(R.id.epamJiraCheckBox);
  
