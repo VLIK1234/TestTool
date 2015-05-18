@@ -25,7 +25,7 @@ public class JiraContent implements ContentLoadingCallback {
     private ArrayList<String> mUsersAssignableNames;
     private JPriorityResponse mProjectPriorities;
     private ArrayList<String> mProjectPrioritiesNames;
-    private JProjects mExtendProject;
+    private JProjects mLastProject;
     private String mDeviceInfo = "***device info***";
     private String mVersionOS = "***version OS***";
     private String mActivityInfo = "***activity info***";
@@ -62,8 +62,8 @@ public class JiraContent implements ContentLoadingCallback {
     }
 
     public void getProjectKeyByName(String projectName, JiraGetContentCallback<String> jiraGetContentCallback) {
-        mExtendProject = mMetaResponse.getProjectByName(projectName);
-        mProjectKey = mExtendProject.getKey();
+        mLastProject = mMetaResponse.getProjectByName(projectName);
+        mProjectKey = mLastProject.getKey();
         mIssueTypesNames = null;
         mProjectVersions = null;
         mProjectVersionsNames = null;
@@ -74,19 +74,19 @@ public class JiraContent implements ContentLoadingCallback {
         if (mIssueTypesNames != null) {
             jiraGetContentCallback.resultOfDataLoading(mIssueTypesNames, JiraContentConst.ISSUE_TYPES_NAMES);
         } else {
-            mIssueTypesNames = mExtendProject.getIssueTypesNames();
+            mIssueTypesNames = mLastProject.getIssueTypesNames();
             jiraGetContentCallback.resultOfDataLoading(mIssueTypesNames, JiraContentConst.ISSUE_TYPES_NAMES);
         }
     }
 
     public String getIssueTypeIdByName(String issueName) {
-        return mExtendProject.getIssueTypeByName(issueName).getId();
+        return mLastProject.getIssueTypeByName(issueName).getId();
     }
 
     public void getVersionsNames(String projectKey,
                                  JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
         if (mIssueTypesNames != null) {
-            jiraGetContentCallback.resultOfDataLoading(mIssueTypesNames, JiraContentConst.VERSIONS_NAMES);
+            jiraGetContentCallback.resultOfDataLoading(mProjectVersionsNames, JiraContentConst.VERSIONS_NAMES);
         } else {
             getVersionsResponse(projectKey, jiraGetContentCallback);
         }
@@ -114,7 +114,7 @@ public class JiraContent implements ContentLoadingCallback {
     @SuppressWarnings("unchecked")
     public void getUsersAssignable(String userName,
                                    final JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
-        ContentFromBackend.getInstance().getUsersAssignableAsynchronously(mExtendProject.getKey(), userName, this, jiraGetContentCallback);
+        ContentFromBackend.getInstance().getUsersAssignableAsynchronously(mLastProject.getKey(), userName, this, jiraGetContentCallback);
     }
 
     @SuppressWarnings("unchecked")
@@ -127,7 +127,7 @@ public class JiraContent implements ContentLoadingCallback {
                             String description, String environment, String userAssigneId,
                             final JiraGetContentCallback<Boolean> jiraGetContentCallback) {
         String mProjectKey, issueTypeId, priorityId, versionId;
-        mProjectKey = mExtendProject.getKey();
+        mProjectKey = mLastProject.getKey();
         priorityId = getPriorityIdByName(priorityName);
         issueTypeId = getIssueTypeIdByName(issueTypeName);
         versionId = getVersionIdByName(versionName);
