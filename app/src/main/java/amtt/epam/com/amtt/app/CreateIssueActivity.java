@@ -16,28 +16,20 @@ import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.ticket.JiraContentConst;
 import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
 import amtt.epam.com.amtt.util.Constants;
-import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.view.EditText;
 
 @SuppressWarnings("unchecked")
 public class CreateIssueActivity extends BaseActivity implements JiraGetContentCallback {
 
     private final String TAG = this.getClass().getSimpleName();
-    private ArrayAdapter<String> mAssignableUsersAdapter;
-    private ArrayAdapter<String> mIssueTypesAdapter;
-    private ArrayAdapter<String> mVersionsAdapter;
-    private ArrayAdapter<String> mPrioritiesAdapter;
-    private ArrayAdapter<String> mProjectsAdapter;
-    private AutoCompleteTextView mACTextViewAssignableUsers;
-    private Button mButtonCreateIssue;
-    private EditText mEditTextDescription;
-    private EditText mEditTextEnvironment;
-    private EditText mEditTextSummary;
+    private AutoCompleteTextView mAssignableUsersACTextView;
+    private Button mCreateIssueButton;
+    private EditText mDescriptionEditText;
+    private EditText mEnvironmentEditText;
+    private EditText mSummaryEditText;
     private Queue<JiraContentConst> mQueueRequests = new LinkedList<>();
-    private Spinner mSpinnerIssueTypes;
-    private Spinner mSpinnerPriorities;
-    private Spinner mSpinnerProjectNames;
-    private Spinner mSpinnerVersions;
+    private Spinner mIssueTypesSpinner;
+    private Spinner mVersionsSpinner;
     private String mAssignableUserName;
     private String mIssueTypeName;
     private String mPriorityName;
@@ -51,9 +43,173 @@ public class CreateIssueActivity extends BaseActivity implements JiraGetContentC
     }
 
     private void initViews() {
-        mACTextViewAssignableUsers = (AutoCompleteTextView) findViewById(R.id.et_assignable_users);
-        mACTextViewAssignableUsers.setEnabled(false);
-        mACTextViewAssignableUsers.addTextChangedListener(new TextWatcher() {
+        initProjectNamesSpinner();
+        initSummaryEditText();
+        initEnvironmentEditText();
+        initDescriptionEditText();
+        initPrioritiesSpinner();
+        initCreateIssueButton();
+    }
+
+    private void reinitRelatedViews() {
+        initIssueTypesSpinner();
+        initVersionsSpinner();
+        initAssigneeSpinner();
+    }
+
+    private void initProjectNamesSpinner() {
+        final Spinner mProjectNamesSpinner = (Spinner) findViewById(R.id.spin_projects_name);
+        mProjectNamesSpinner.setEnabled(false);
+        mQueueRequests.add(JiraContentConst.PROJECTS_NAMES);
+        JiraContent.getInstance().getProjectsNames(new JiraGetContentCallback<ArrayList<String>>() {
+            @Override
+            public void resultOfDataLoading(ArrayList<String> result, JiraContentConst tagResult) {
+                if (result != null) {
+                    ArrayAdapter<String> mProjectsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
+                    mProjectsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                    mProjectNamesSpinner.setAdapter(mProjectsAdapter);
+                    mProjectNamesSpinner.setEnabled(true);
+                }
+            }
+        });
+        mProjectNamesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mQueueRequests.add(JiraContentConst.PROJECT_KEY_BY_NAME);
+                JiraContent.getInstance().getProjectKeyByName((String) parent.getItemAtPosition(position), new JiraGetContentCallback<String>() {
+                    @Override
+                    public void resultOfDataLoading(String result, JiraContentConst tagResult) {
+                        mQueueRequests.add(JiraContentConst.VERSIONS_NAMES);
+                        JiraContent.getInstance().getVersionsNames(result, CreateIssueActivity.this);
+                        mQueueRequests.add(JiraContentConst.USERS_ASSIGNABLE_NAMES);
+                        JiraContent.getInstance().getUsersAssignable("", CreateIssueActivity.this);
+                        mQueueRequests.add(JiraContentConst.ISSUE_TYPES_NAMES);
+                        JiraContent.getInstance().getIssueTypesNames(CreateIssueActivity.this);
+                    }
+                });
+                showProgressIfNeed();
+                reinitRelatedViews();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+    }
+
+    private void initPrioritiesSpinner() {
+        final Spinner mPrioritiesSpinner = (Spinner) findViewById(R.id.spin_priority);
+        mPrioritiesSpinner.setEnabled(false);
+        mQueueRequests.add(JiraContentConst.PRIORITIES_NAMES);
+        JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<ArrayList<String>>() {
+            @Override
+            public void resultOfDataLoading(ArrayList<String> result, JiraContentConst tagResult) {
+                if (result != null) {
+                    ArrayAdapter<String> mPrioritiesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
+                    mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                    mPrioritiesSpinner.setAdapter(mPrioritiesAdapter);
+                    mPrioritiesSpinner.setSelection(2);
+                    mPrioritiesSpinner.setEnabled(true);
+                }
+            }
+        });
+        mPrioritiesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mPriorityName = (String) parent.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+    }
+
+    private void initVersionsSpinner() {
+        mVersionsSpinner = (Spinner) findViewById(R.id.spin_affects_versions);
+        mVersionsSpinner.setEnabled(false);
+        mVersionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mVersionName = (String) parent.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+    }
+
+    private void initIssueTypesSpinner() {
+        mIssueTypesSpinner = (Spinner) findViewById(R.id.spin_issue_name);
+        mIssueTypesSpinner.setEnabled(false);
+        mIssueTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mIssueTypeName = (String) parent.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+    }
+
+    private void initDescriptionEditText() {
+        mDescriptionEditText = (EditText) findViewById(R.id.et_description);
+        JiraContent.getInstance().getDescription(new JiraGetContentCallback<String>() {
+            @Override
+            public void resultOfDataLoading(String result, JiraContentConst tagResult) {
+                if (result != null) {
+                    mDescriptionEditText.setText(result);
+                }
+            }
+        });
+    }
+
+    private void initEnvironmentEditText() {
+        mEnvironmentEditText = (EditText) findViewById(R.id.et_environment);
+        JiraContent.getInstance().getEnvironment(new JiraGetContentCallback<String>() {
+            @Override
+            public void resultOfDataLoading(String result, JiraContentConst tagResult) {
+                if (result != null) {
+                    mEnvironmentEditText.setText(result);
+                }
+            }
+        });
+    }
+
+    private void initCreateIssueButton() {
+        mCreateIssueButton = (Button) findViewById(R.id.btn_create);
+        mCreateIssueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Boolean isValid = true;
+                if (TextUtils.isEmpty(mSummaryEditText.getText().toString())) {
+                    mSummaryEditText.setError(Constants.DialogKeys.INPUT_SUMMARY);
+                    isValid = false;
+                }
+                if (isValid) {
+                    mQueueRequests.add(JiraContentConst.CREATE_ISSUE);
+                    JiraContent.getInstance().createIssue(mIssueTypeName,
+                            mPriorityName, mVersionName, mSummaryEditText.getText().toString(),
+                            mDescriptionEditText.getText().toString(), mEnvironmentEditText.getText().toString(),
+                            mAssignableUserName, CreateIssueActivity.this);
+                }
+            }
+        });
+    }
+
+    private void initSummaryEditText() {
+        mSummaryEditText = (EditText) findViewById(R.id.et_summary);
+        mSummaryEditText.clearErrorOnTextChanged(true);
+        mSummaryEditText.clearErrorOnFocus(true);
+    }
+
+    private void initAssigneeSpinner() {
+        mAssignableUsersACTextView = (AutoCompleteTextView) findViewById(R.id.et_assignable_users);
+        mAssignableUsersACTextView.setEnabled(false);
+        mAssignableUsersACTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() >= 3) {
@@ -71,173 +227,34 @@ public class CreateIssueActivity extends BaseActivity implements JiraGetContentC
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
-
-        mEditTextSummary = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_summary);
-        mEditTextSummary.clearErrorOnTextChanged(true);
-        mEditTextSummary.clearErrorOnFocus(true);
-
-        mButtonCreateIssue = (Button) findViewById(R.id.btn_create);
-        mButtonCreateIssue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Boolean isValid = true;
-                if (TextUtils.isEmpty(mEditTextSummary.getText().toString())) {
-                    mEditTextSummary.setError(Constants.DialogKeys.INPUT_SUMMARY);
-                    isValid = false;
-                }
-                if (isValid) {
-                    mQueueRequests.add(JiraContentConst.CREATE_ISSUE);
-                    JiraContent.getInstance().createIssue(getIssueTypeName(),
-                        getPriorityName(), getVersionName(), mEditTextSummary.getText().toString(),
-                        mEditTextDescription.getText().toString(), mEditTextEnvironment.getText().toString(),
-                            getAssignableUserName(), CreateIssueActivity.this);
-                }
-            }
-        });
-
-        mEditTextEnvironment = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_environment);
-        JiraContent.getInstance().getEnvironment(this);
-
-        mEditTextDescription = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_description);
-        JiraContent.getInstance().getDescription(this);
-
-        mSpinnerIssueTypes = (Spinner) findViewById(R.id.spin_issue_name);
-        mSpinnerIssueTypes.setEnabled(false);
-        mSpinnerIssueTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mIssueTypeName = (String) parent.getItemAtPosition(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
-        });
-
-        mSpinnerVersions = (Spinner) findViewById(R.id.spin_affects_versions);
-        mSpinnerVersions.setEnabled(false);
-        mSpinnerVersions.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mVersionName = (String) parent.getItemAtPosition(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
-        });
-
-        mSpinnerPriorities = (Spinner) findViewById(R.id.spin_priority);
-        mSpinnerPriorities.setEnabled(false);
-        mQueueRequests.add(JiraContentConst.PRIORITIES_NAMES);
-        JiraContent.getInstance().getPrioritiesNames(CreateIssueActivity.this);
-        mSpinnerPriorities.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mPriorityName = (String) parent.getItemAtPosition(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
-        });
-
-        mSpinnerProjectNames = (Spinner) findViewById(R.id.spin_projects_name);
-        mSpinnerProjectNames.setEnabled(false);
-        mQueueRequests.add(JiraContentConst.PROJECTS_NAMES);
-        JiraContent.getInstance().getProjectsNames(CreateIssueActivity.this);
-        mSpinnerProjectNames.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mSpinnerIssueTypes.setEnabled(false);
-                mSpinnerVersions.setEnabled(false);
-                mACTextViewAssignableUsers.setEnabled(false);
-                mQueueRequests.add(JiraContentConst.PROJECT_KEY_BY_NAME);
-                JiraContent.getInstance().getProjectKeyByName((String) parent.getItemAtPosition(position), CreateIssueActivity.this);
-                showProgressIfNeed();
-                mQueueRequests.add(JiraContentConst.ISSUE_TYPES_NAMES);
-                JiraContent.getInstance().getIssueTypesNames(CreateIssueActivity.this);
-                showProgressIfNeed();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
-        });
-
-    }
-
-    public String getIssueTypeName() {
-        return mIssueTypeName;
-    }
-
-    public String getPriorityName() {
-        return mPriorityName;
-    }
-
-    public String getVersionName() {
-        return mVersionName;
-    }
-
-    public String getAssignableUserName() {
-        return mAssignableUserName;
     }
 
     @Override
     public void resultOfDataLoading(Object result, JiraContentConst tagResult) {
-        if (tagResult == JiraContentConst.PROJECTS_NAMES) {
+        if (tagResult == JiraContentConst.ISSUE_TYPES_NAMES) {
             if (result != null) {
-                mProjectsAdapter = new ArrayAdapter<>(this, R.layout.spinner_layout, (ArrayList<String>) result);
-                mProjectsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                mSpinnerProjectNames.setAdapter(mProjectsAdapter);
-                mSpinnerProjectNames.setEnabled(true);
-            }
-
-        } else if (tagResult == JiraContentConst.PROJECT_KEY_BY_NAME) {
-            mQueueRequests.add(JiraContentConst.VERSIONS_NAMES);
-            JiraContent.getInstance().getVersionsNames((String) result, CreateIssueActivity.this);
-            mQueueRequests.add(JiraContentConst.USERS_ASSIGNABLE_NAMES);
-            JiraContent.getInstance().getUsersAssignable("", CreateIssueActivity.this);
-        } else if (tagResult == JiraContentConst.ISSUE_TYPES_NAMES) {
-            if (result != null) {
-                mIssueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, (ArrayList<String>) result);
+                ArrayAdapter<String> mIssueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, (ArrayList<String>) result);
                 mIssueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                mSpinnerIssueTypes.setAdapter(mIssueTypesAdapter);
-                mSpinnerIssueTypes.setEnabled(true);
+                mIssueTypesSpinner.setAdapter(mIssueTypesAdapter);
+                mIssueTypesSpinner.setEnabled(true);
             }
         } else if (tagResult == JiraContentConst.VERSIONS_NAMES) {
             if (result != null) {
-                mVersionsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, (ArrayList<String>) result);
+                ArrayAdapter<String> mVersionsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, (ArrayList<String>) result);
                 mVersionsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                mSpinnerVersions.setAdapter(mVersionsAdapter);
-                mSpinnerVersions.setEnabled(true);
-            }
-        } else if (tagResult == JiraContentConst.PRIORITIES_NAMES) {
-            if (result != null) {
-                mPrioritiesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, (ArrayList<String>) result);
-                mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                mSpinnerPriorities.setAdapter(mPrioritiesAdapter);
-                mSpinnerPriorities.setSelection(2);
-                mSpinnerPriorities.setEnabled(true);
+                mVersionsSpinner.setAdapter(mVersionsAdapter);
+                mVersionsSpinner.setEnabled(true);
             }
         } else if (tagResult == JiraContentConst.USERS_ASSIGNABLE_NAMES) {
             if (result != null) {
-                mAssignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, (ArrayList<String>) result);
+                ArrayAdapter<String> mAssignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, (ArrayList<String>) result);
                 mAssignableUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                mACTextViewAssignableUsers.setAdapter(mAssignableUsersAdapter);
-                mACTextViewAssignableUsers.setThreshold(3);
-                mACTextViewAssignableUsers.setEnabled(true);
+                mAssignableUsersACTextView.setAdapter(mAssignableUsersAdapter);
+                mAssignableUsersACTextView.setThreshold(3);
+                mAssignableUsersACTextView.setEnabled(true);
             }
 
-        } else if (tagResult == JiraContentConst.ENVIRONMENT) {
-            if (result != null) {
-                mEditTextEnvironment.setText(result.toString());
-            }
-        } else if (tagResult == JiraContentConst.DESCRIPTION) {
-            if (result != null) {
-                mEditTextDescription.setText(result.toString());
-            }
-        }else if (tagResult == JiraContentConst.CREATE_ISSUE) {
+        } else if (tagResult == JiraContentConst.CREATE_ISSUE) {
             if (result != null) {
                 if((Boolean)result){
                     finish();
@@ -251,10 +268,10 @@ public class CreateIssueActivity extends BaseActivity implements JiraGetContentC
     public void showProgressIfNeed() {
         if (!mQueueRequests.isEmpty()) {
             showProgress(true);
-            mButtonCreateIssue.setEnabled(false);
+            mCreateIssueButton.setEnabled(false);
         } else {
             showProgress(false);
-            mButtonCreateIssue.setEnabled(true);
+            mCreateIssueButton.setEnabled(true);
         }
     }
 

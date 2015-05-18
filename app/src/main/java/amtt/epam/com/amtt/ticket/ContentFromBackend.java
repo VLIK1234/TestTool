@@ -141,7 +141,7 @@ public class ContentFromBackend {
     @SuppressWarnings("unchecked")
     public void createIssueAsynchronously(String issueJson, final ContentLoadingCallback<Boolean> contentLoadingCallback,
                                           final JiraGetContentCallback jiraGetContentCallback) {
-        RestMethod<JMetaResponse> createIssue = JiraApi.getInstance().buildIssueCeating(issueJson);
+        RestMethod<JMetaResponse> createIssue = JiraApi.getInstance().buildIssueCreating(issueJson);
         new JiraTask.Builder<JMetaResponse>()
             .setRestMethod(createIssue)
             .setCallback(new JiraCallback() {

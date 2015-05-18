@@ -50,7 +50,7 @@ public class JiraApi {
         return mMethod;
     }
 
-    public RestMethod buildIssueCeating(final String postEntity) {
+    public RestMethod buildIssueCreating(final String postEntity) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
