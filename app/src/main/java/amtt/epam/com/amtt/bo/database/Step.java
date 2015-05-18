@@ -68,6 +68,10 @@ public class Step extends DatabaseEntity {
         return values;
     }
 
+    @Override
+    public String getWhere() {
+        return StepsTable._ID;
+    }
 
     public String getScreenPath() {
         return mScreenPath;

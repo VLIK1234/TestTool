@@ -6,6 +6,7 @@ import android.net.Uri;
 import java.util.List;
 
 import amtt.epam.com.amtt.database.constant.BaseColumns;
+import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
@@ -26,6 +27,14 @@ public class Dao implements DaoInterface<DatabaseEntity> {
     public Integer addOrUpdate(DatabaseEntity object) {
         Uri insertedItemUri = sContext.getContentResolver().insert(object.getUri(), object.getContentValues());
         return Integer.valueOf(insertedItemUri.getLastPathSegment());
+    }
+
+    @Override
+    public Integer update(DatabaseEntity objectPrototype) {
+        return sContext.getContentResolver().update(objectPrototype.getUri(),
+                objectPrototype.getContentValues(),
+                objectPrototype.getWhere() + "=?",
+                new String[]{String.valueOf(objectPrototype.getId())});
     }
 
     @Override

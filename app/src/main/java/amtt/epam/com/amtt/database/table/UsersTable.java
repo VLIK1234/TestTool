@@ -23,6 +23,10 @@ public class UsersTable extends Table {
     public static final String _AVATAR_24 = "_avatar_24";
     public static final String _AVATAR_32= "_avatar_32";
     public static final String _AVATAR_48 = "_avatar_48";
+    public static final String _ACTIVE = "_active";
+
+    public static final int ACTIVE_MARK = 1;
+    public static final int NORMAL_MARK = 0;
 
     private static MultiValueMap<String, String> sColumnsMap;
 
@@ -38,7 +42,8 @@ public class UsersTable extends Table {
             _AVATAR_16,
             _AVATAR_24,
             _AVATAR_32,
-            _AVATAR_48
+            _AVATAR_48,
+            _ACTIVE
     };
 
     static {
@@ -58,6 +63,9 @@ public class UsersTable extends Table {
         }});
         sColumnsMap.put(BaseColumns.TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);
+        }});
+        sColumnsMap.put(BaseColumns.TYPE_INTEGER, new ArrayList<String>() {{
+            add(_ACTIVE);
         }});
     }
 

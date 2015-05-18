@@ -21,4 +21,6 @@ public abstract class DatabaseEntity {
 
     public abstract int getId();
 
+    public abstract String getWhere();
+
 }

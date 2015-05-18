@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.database.task;
 
+import android.content.ContentValues;
 import android.content.pm.PackageManager.NameNotFoundException;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import amtt.epam.com.amtt.util.ActivityMetaUtil;
 /**
  * Created by Artyom on 16.05.2015.
  */
+@SuppressWarnings("unchecked")
 public class DataBaseCRUD {
 
     private static class DataBaseCRUDSingletonHolder {
@@ -57,14 +59,26 @@ public class DataBaseCRUD {
                 .create();
     }
 
-    public DataBaseMethod buildCheckUser(String userName) {
+    public DataBaseMethod buildCheckUser(String userName, String url) {
         return new DataBaseMethod.Builder()
                 .setMethodType(DatabaseMethodType.RAW_QUERY)
                 .setEntity(new JiraUserInfo())
-                .setSelection(UsersTable._USER_NAME)
-                .setSelectionArgs(new String[]{userName})
+                .setSelection(UsersTable._USER_NAME + "=? AND " + UsersTable._URL + "=?")
+                .setSelectionArgs(new String[]{userName, url})
                 .setProcessor(new UserCheckProcessor())
                 .create();
     }
+
+    public DataBaseMethod buildResetPreviousActiveUser() {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(UsersTable._ACTIVE, UsersTable.NORMAL_MARK);
+        return new DataBaseMethod.Builder()
+                .setMethodType(DatabaseMethodType.RAW_UPDATE)
+                .setEntity(new JiraUserInfo())
+                .setSelection(UsersTable._ACTIVE + "=?")
+                .setSelectionArgs(new String[]{String.valueOf(UsersTable.ACTIVE_MARK)})
+                .create();
+    }
+
 
 }

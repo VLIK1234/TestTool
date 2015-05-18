@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.database.task;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
@@ -16,10 +17,12 @@ public class DataBaseMethod<ResultType> {
     enum DatabaseMethodType {
 
         ADD_OR_UPDATE,
+        UPDATE,
         REMOVE,
         REMOVE_ALL,
         GET_BY_KEY,
-        RAW_QUERY
+        RAW_QUERY,
+        RAW_UPDATE
 
     }
 
@@ -30,6 +33,7 @@ public class DataBaseMethod<ResultType> {
         private String mSelection;
         private String[] mSelectionArgs;
         private Processor<ResultType, Cursor> mProcessor;
+        private ContentValues mContentValues;
 
         public Builder setMethodType(DatabaseMethodType methodType) {
             mMethodType = methodType;
@@ -56,6 +60,11 @@ public class DataBaseMethod<ResultType> {
             return this;
         }
 
+        public Builder setContentValues(ContentValues contentValues) {
+            mContentValues = contentValues;
+            return this;
+        }
+
         public DataBaseMethod create() {
             DataBaseMethod dataBaseMethod = new DataBaseMethod();
             dataBaseMethod.mEntity = this.mEntity;
@@ -63,6 +72,7 @@ public class DataBaseMethod<ResultType> {
             dataBaseMethod.mSelection = this.mSelection;
             dataBaseMethod.mSelectionArgs = this.mSelectionArgs;
             dataBaseMethod.mProcessor = this.mProcessor;
+            dataBaseMethod.mContentValues = this.mContentValues;
             return dataBaseMethod;
         }
 
@@ -75,6 +85,7 @@ public class DataBaseMethod<ResultType> {
     private String mSelection;
     private String[] mSelectionArgs;
     private Processor<ResultType, Cursor> mProcessor;
+    private ContentValues mContentValues;
 
     static {
         sContext = ContextHolder.getContext();
@@ -87,6 +98,9 @@ public class DataBaseMethod<ResultType> {
             case ADD_OR_UPDATE:
                 result = (ResultType)new Dao().addOrUpdate(mEntity);
                 break;
+            case UPDATE:
+                new Dao().update(mEntity);
+                break;
             case REMOVE:
                 new Dao().remove(mEntity);
                 break;
@@ -97,7 +111,10 @@ public class DataBaseMethod<ResultType> {
                 result = (ResultType)new Dao().getByKey(mEntity);
                 break;
             case RAW_QUERY:
-                cursor = sContext.getContentResolver().query(mEntity.getUri(), null, mSelection + "=?", mSelectionArgs, null);
+                cursor = sContext.getContentResolver().query(mEntity.getUri(), null, mSelection, mSelectionArgs, null);
+                break;
+            case RAW_UPDATE:
+                sContext.getContentResolver().update(mEntity.getUri(), mContentValues, mSelection, mSelectionArgs);
                 break;
         }
         if (mProcessor != null) {

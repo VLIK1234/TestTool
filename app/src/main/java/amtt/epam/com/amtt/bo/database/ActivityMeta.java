@@ -106,6 +106,11 @@ public class ActivityMeta extends DatabaseEntity {
         return values;
     }
 
+    @Override
+    public String getWhere() {
+        return ActivityInfoTable._ID;
+    }
+
     public String getAssociatedActivity() {
         return mActivityName;
     }
