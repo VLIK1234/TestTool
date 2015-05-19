@@ -62,20 +62,8 @@ public class AmttContentProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
-        int numberOfItems = values.length;
         String tableName = uri.getLastPathSegment();
-        DataBaseManager dataBaseManager = getDataBaseManager();
-        SQLiteDatabase database = dataBaseManager.getWritableDatabase();
-        try {
-            database.beginTransaction();
-            for (ContentValues value : values) {
-                database.insert(tableName, null, value);
-            }
-            database.setTransactionSuccessful();
-        } finally {
-            database.endTransaction();
-        }
-        return numberOfItems;
+        return getDataBaseManager().bulkInsert(tableName, values);
     }
 
 
