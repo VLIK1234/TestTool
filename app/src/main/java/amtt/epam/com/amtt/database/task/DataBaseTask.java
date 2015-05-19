@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import amtt.epam.com.amtt.bo.JMetaResponse;
+import amtt.epam.com.amtt.bo.JProjectsResponse;
 import amtt.epam.com.amtt.bo.JPriorityResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JIssueTypes;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
@@ -57,7 +57,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         private JIssueTypes mIssueTypes;
         private String mUserKey;
         private String mProjectKey;
-        private JMetaResponse mMetaResponse;
+        private JProjectsResponse mMetaResponse;
         private JPriorityResponse mPriorityResponse;
 
 
@@ -135,7 +135,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             return this;
         }
 
-        public Builder setMetaResponse(JMetaResponse metaResponse) {
+        public Builder setMetaResponse(JProjectsResponse metaResponse) {
             Logger.d(TAG, "setMetaResponse()"+ metaResponse.getProjectsKeys());
             mMetaResponse = metaResponse;
             return this;
@@ -265,7 +265,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     private JIssueTypes mIssueTypes;
     private String mUserKey;
     private String mProjectKey;
-    private JMetaResponse mMetaResponse;
+    private JProjectsResponse mMetaResponse;
     private JPriorityResponse mPriorityResponse;
 
     @Override
@@ -650,7 +650,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         Logger.d(TAG, "saveProject(ok)");
     }
 
-    private void saveListProject(JMetaResponse metaResponse, String email) {
+    private void saveListProject(JProjectsResponse metaResponse, String email) {
         Logger.d(TAG, "saveListProject(JMetaResponse metaResponse, String email)");
         ContentValues[] bulkToInsertProject;
         List<ContentValues> mValueListProject = new ArrayList<ContentValues>();

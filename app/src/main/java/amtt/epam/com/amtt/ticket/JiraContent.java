@@ -1,35 +1,32 @@
 package amtt.epam.com.amtt.ticket;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import amtt.epam.com.amtt.bo.CreateIssue;
-import amtt.epam.com.amtt.bo.JMetaResponse;
 import amtt.epam.com.amtt.bo.JPriorityResponse;
-import amtt.epam.com.amtt.bo.JProjectExtVersionsResponse;
+import amtt.epam.com.amtt.bo.JProjectsResponse;
 import amtt.epam.com.amtt.bo.JUserAssignableResponse;
+import amtt.epam.com.amtt.bo.JVersionsResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 
 /**
  * Created by Iryna_Monchanka on 12.05.2015.
  */
 
-public class JiraContent implements ContentLoadingCallback {
+public class JiraContent{
 
-    private JMetaResponse mMetaResponse;
-    private String mProjectKey;
-    private ArrayList<String> mProjectsNames;
     private ArrayList<String> mIssueTypesNames;
-    private JProjectExtVersionsResponse mProjectVersions;
-    private ArrayList<String> mProjectVersionsNames;
-    private JUserAssignableResponse mUsersAssignable;
     private ArrayList<String> mUsersAssignableNames;
-    private JPriorityResponse mProjectPriorities;
-    private ArrayList<String> mProjectPrioritiesNames;
+    private HashMap<JProjects, String> mProjectsNames;
+    private HashMap<String, String> mProjectPrioritiesNames;
+    private HashMap<String, String> mProjectVersionsNames;
     private JProjects mLastProject;
-    private String mDeviceInfo = "***device info***";
-    private String mVersionOS = "***version OS***";
     private String mActivityInfo = "***activity info***";
+    private String mDeviceInfo = "***device info***";
     private String mSteps = "***steps***";
+    private String mVersionOS = "***version OS***";
     private String mLogs;
     private String mScreenshots;
 
@@ -41,41 +38,58 @@ public class JiraContent implements ContentLoadingCallback {
         return JiraContentHolder.INSTANCE;
     }
 
-    public void getPrioritiesNames(JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
+    public void getPrioritiesNames(JiraGetContentCallback<HashMap<String, String>> jiraGetContentCallback) {
         if (mProjectPrioritiesNames != null) {
-            jiraGetContentCallback.resultOfDataLoading(mProjectPrioritiesNames, JiraContentConst.PRIORITIES_NAMES);
+            jiraGetContentCallback.resultOfDataLoading(mProjectPrioritiesNames);
         } else {
             getPriorities(jiraGetContentCallback);
         }
     }
 
-    public String getPriorityIdByName(String priorityName) {
-        return mProjectPriorities.getPriorityByName(priorityName).getId();
+    public void setPrioritiesNames(HashMap<String, String> prioritiesNames) {
+        this.mProjectPrioritiesNames = prioritiesNames;
     }
 
-    public void getProjectsNames(JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
+    public String getPriorityIdByName(String priorityName) {
+        String priorityId = null;
+        for (Map.Entry<String, String> entry : mProjectPrioritiesNames.entrySet()) {
+            if (priorityName == entry.getValue()) {
+                priorityId = entry.getKey();
+            }
+        }
+        return priorityId;
+    }
+
+    public void getProjectsNames(JiraGetContentCallback<HashMap<JProjects, String>> jiraGetContentCallback) {
         if (mProjectsNames != null) {
-            jiraGetContentCallback.resultOfDataLoading(mProjectsNames, JiraContentConst.PROJECTS_NAMES);
+            jiraGetContentCallback.resultOfDataLoading(mProjectsNames);
         } else {
             getMetaResponse(jiraGetContentCallback);
         }
     }
 
+    public void setProjectsNames(HashMap<JProjects, String> projectsNames) {
+        this.mProjectsNames = projectsNames;
+    }
+
     public void getProjectKeyByName(String projectName, JiraGetContentCallback<String> jiraGetContentCallback) {
-        mLastProject = mMetaResponse.getProjectByName(projectName);
-        mProjectKey = mLastProject.getKey();
+        for (Map.Entry<JProjects, String> entry : mProjectsNames.entrySet()) {
+            if (projectName == entry.getValue()) {
+                mLastProject = entry.getKey();
+            }
+        }
+        String mProjectKey = mLastProject.getKey();
         mIssueTypesNames = null;
-        mProjectVersions = null;
         mProjectVersionsNames = null;
-        jiraGetContentCallback.resultOfDataLoading(mProjectKey, JiraContentConst.PROJECT_KEY_BY_NAME);
+        jiraGetContentCallback.resultOfDataLoading(mProjectKey);
     }
 
     public void getIssueTypesNames(JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
         if (mIssueTypesNames != null) {
-            jiraGetContentCallback.resultOfDataLoading(mIssueTypesNames, JiraContentConst.ISSUE_TYPES_NAMES);
+            jiraGetContentCallback.resultOfDataLoading(mIssueTypesNames);
         } else {
             mIssueTypesNames = mLastProject.getIssueTypesNames();
-            jiraGetContentCallback.resultOfDataLoading(mIssueTypesNames, JiraContentConst.ISSUE_TYPES_NAMES);
+            jiraGetContentCallback.resultOfDataLoading(mIssueTypesNames);
         }
     }
 
@@ -84,42 +98,92 @@ public class JiraContent implements ContentLoadingCallback {
     }
 
     public void getVersionsNames(String projectKey,
-                                 JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
-        if (mIssueTypesNames != null) {
-            jiraGetContentCallback.resultOfDataLoading(mProjectVersionsNames, JiraContentConst.VERSIONS_NAMES);
+                                 JiraGetContentCallback<HashMap<String, String>> jiraGetContentCallback) {
+        if (mProjectVersionsNames != null) {
+            jiraGetContentCallback.resultOfDataLoading(mProjectVersionsNames);
         } else {
             getVersionsResponse(projectKey, jiraGetContentCallback);
         }
     }
 
+    public void setVersionsNames(HashMap<String, String> versionsNames) {
+        this.mProjectVersionsNames = versionsNames;
+    }
+
     public String getVersionIdByName(String versionName) {
-        if (versionName != null) {
-            return mProjectVersions.getIssueVersionByName(versionName).getId();
-        } else {
-            return null;
+        String versionId = null;
+        for (Map.Entry<String, String> entry : mProjectVersionsNames.entrySet()) {
+            if (versionName == entry.getValue()) {
+                versionId = entry.getKey();
+            }
         }
+        return versionId;
+    }
+
+    public void setUsersAssignableNames(ArrayList<String> usersAssignableNames){
+        this.mUsersAssignableNames = usersAssignableNames;
     }
 
     @SuppressWarnings("unchecked")
-    private void getMetaResponse(JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
-        ContentFromBackend.getInstance().getMetaAsynchronously(this, jiraGetContentCallback);
+    private void getMetaResponse(JiraGetContentCallback<HashMap<JProjects, String>> jiraGetContentCallback) {
+        ContentFromBackend.getInstance().getMetaAsynchronously(new ContentLoadingCallback<JProjectsResponse>() {
+            @Override
+            public void resultFromBackend(JProjectsResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
+                if (tag == JiraContentConst.META_RESPONSE) {
+                    if (result != null) {
+                        jiraGetContentCallback.resultOfDataLoading(mProjectsNames);
+                    } else {
+                        jiraGetContentCallback.resultOfDataLoading(null);
+                    }
+                }
+            }
+        }, jiraGetContentCallback);
     }
 
     @SuppressWarnings("unchecked")
     private void getVersionsResponse(String projectsKey,
-                                     JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
-        ContentFromBackend.getInstance().getVersionsAsynchronously(projectsKey, this, jiraGetContentCallback);
+                                     JiraGetContentCallback<HashMap<String, String>> jiraGetContentCallback) {
+        ContentFromBackend.getInstance().getVersionsAsynchronously(projectsKey, new ContentLoadingCallback<JVersionsResponse>() {
+            @Override
+            public void resultFromBackend(JVersionsResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
+                if (result != null) {
+                    jiraGetContentCallback.resultOfDataLoading(mProjectVersionsNames);
+                } else {
+                    jiraGetContentCallback.resultOfDataLoading(null);
+                }
+            }
+        }, jiraGetContentCallback);
     }
 
     @SuppressWarnings("unchecked")
     public void getUsersAssignable(String userName,
                                    final JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
-        ContentFromBackend.getInstance().getUsersAssignableAsynchronously(mLastProject.getKey(), userName, this, jiraGetContentCallback);
+        ContentFromBackend.getInstance().getUsersAssignableAsynchronously(mLastProject.getKey(), userName, new ContentLoadingCallback<JUserAssignableResponse>() {
+            @Override
+            public void resultFromBackend(JUserAssignableResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
+                if (result != null) {
+                    jiraGetContentCallback.resultOfDataLoading(mUsersAssignableNames);
+                } else {
+                    jiraGetContentCallback.resultOfDataLoading(null);
+                }
+            }
+        }, jiraGetContentCallback);
     }
 
     @SuppressWarnings("unchecked")
-    private void getPriorities(final JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
-        ContentFromBackend.getInstance().getPriorityAsynchronously(this, jiraGetContentCallback);
+    private void getPriorities(final JiraGetContentCallback<HashMap<String, String>> jiraGetContentCallback) {
+        ContentFromBackend.getInstance().getPriorityAsynchronously(new ContentLoadingCallback<JPriorityResponse>() {
+            @Override
+            public void resultFromBackend(JPriorityResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
+                if (tag == JiraContentConst.PRIORITIES_RESPONSE) {
+                    if (result != null) {
+                        jiraGetContentCallback.resultOfDataLoading(mProjectPrioritiesNames);
+                    } else {
+                        jiraGetContentCallback.resultOfDataLoading(null);
+                    }
+                }
+            }
+        }, jiraGetContentCallback);
     }
 
     @SuppressWarnings("unchecked")
@@ -133,93 +197,45 @@ public class JiraContent implements ContentLoadingCallback {
         versionId = getVersionIdByName(versionName);
         String issueJson = new CreateIssue(mProjectKey, issueTypeId, description, summary, priorityId, versionId,
                 environment, userAssigneId).getResultJson();
-        ContentFromBackend.getInstance().createIssueAsynchronously(issueJson, this, jiraGetContentCallback);
+        ContentFromBackend.getInstance().createIssueAsynchronously(issueJson, new ContentLoadingCallback<Boolean>() {
+            @Override
+            public void resultFromBackend(Boolean result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
+                jiraGetContentCallback.resultOfDataLoading(result);
+            }
+        }, jiraGetContentCallback);
     }
 
     public void getDescription(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(mActivityInfo);
-        stringBuilder.append("\n");
-        stringBuilder.append(mSteps);
-        String description = stringBuilder.toString();
-        jiraGetContentCallback.resultOfDataLoading(description, JiraContentConst.DESCRIPTION);
+        String description = mActivityInfo + "\n" + mSteps;
+        jiraGetContentCallback.resultOfDataLoading(description);
     }
 
     public void getEnvironment(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(mVersionOS);
-        stringBuilder.append("\n");
-        stringBuilder.append(mDeviceInfo);
-        String environment = stringBuilder.toString();
-        jiraGetContentCallback.resultOfDataLoading(environment, JiraContentConst.ENVIRONMENT);
+        String environment = mVersionOS + "\n" + mDeviceInfo;
+        jiraGetContentCallback.resultOfDataLoading(environment);
     }
 
     public void getDeviceInfo(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        jiraGetContentCallback.resultOfDataLoading(mDeviceInfo, JiraContentConst.DEVICE_INFO);
+        jiraGetContentCallback.resultOfDataLoading(mDeviceInfo);
     }
 
     public void getVersionOS(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        jiraGetContentCallback.resultOfDataLoading(mVersionOS, JiraContentConst.VERSION_OS);
+        jiraGetContentCallback.resultOfDataLoading(mVersionOS);
     }
 
     public void getActivityInfo(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        jiraGetContentCallback.resultOfDataLoading(mActivityInfo, JiraContentConst.ACTIVITY_INFO);
+        jiraGetContentCallback.resultOfDataLoading(mActivityInfo);
     }
 
     public void getSteps(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        jiraGetContentCallback.resultOfDataLoading(mSteps, JiraContentConst.STEPS);
+        jiraGetContentCallback.resultOfDataLoading(mSteps);
     }
 
     public void getLogs(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        jiraGetContentCallback.resultOfDataLoading(mLogs, JiraContentConst.LOGS);
+        jiraGetContentCallback.resultOfDataLoading(mLogs);
     }
 
     public void getScreenshots(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        jiraGetContentCallback.resultOfDataLoading(mScreenshots, JiraContentConst.SCREENSHOTS);
+        jiraGetContentCallback.resultOfDataLoading(mScreenshots);
     }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void resultFromBackend(Object result, JiraContentConst tagResult, JiraGetContentCallback jiraGetContentCallback) {
-        if (tagResult == JiraContentConst.META_RESPONSE) {
-            if (result != null) {
-                mMetaResponse = (JMetaResponse) result;
-                mProjectsNames = new ArrayList();
-                mProjectsNames = mMetaResponse.getProjectsNames();
-                jiraGetContentCallback.resultOfDataLoading(mProjectsNames, JiraContentConst.PROJECTS_NAMES);
-            } else {
-                jiraGetContentCallback.resultOfDataLoading(null, JiraContentConst.PROJECTS_NAMES);
-            }
-        } else if (tagResult == JiraContentConst.VERSIONS_RESPONSE) {
-            if (result != null) {
-                mProjectVersions = (JProjectExtVersionsResponse) result;
-                mProjectVersionsNames = new ArrayList();
-                mProjectVersionsNames = mProjectVersions.getVersionsNames();
-                jiraGetContentCallback.resultOfDataLoading(mProjectVersionsNames, JiraContentConst.VERSIONS_NAMES);
-            } else {
-                jiraGetContentCallback.resultOfDataLoading(null, JiraContentConst.VERSIONS_NAMES);
-            }
-        } else if (tagResult == JiraContentConst.CREATE_ISSUE_RESPONSE) {
-            jiraGetContentCallback.resultOfDataLoading(result, JiraContentConst.CREATE_ISSUE);
-        } else if (tagResult == JiraContentConst.PRIORITIES_RESPONSE) {
-            if (result != null) {
-                mProjectPriorities = (JPriorityResponse) result;
-                mProjectPrioritiesNames = new ArrayList();
-                mProjectPrioritiesNames = mProjectPriorities.getPriorityNames();
-                jiraGetContentCallback.resultOfDataLoading(mProjectPrioritiesNames, JiraContentConst.PRIORITIES_NAMES);
-            } else {
-                jiraGetContentCallback.resultOfDataLoading(null, JiraContentConst.PRIORITIES_NAMES);
-            }
-        } else if (tagResult == JiraContentConst.USERS_ASSIGNABLE_RESPONSE) {
-            if (result != null) {
-                mUsersAssignable = (JUserAssignableResponse) result;
-                mUsersAssignableNames = new ArrayList();
-                mUsersAssignableNames = mUsersAssignable.getAssignableUsersNames();
-                jiraGetContentCallback.resultOfDataLoading(mUsersAssignableNames, JiraContentConst.USERS_ASSIGNABLE_NAMES);
-            } else {
-                jiraGetContentCallback.resultOfDataLoading(null, JiraContentConst.USERS_ASSIGNABLE_NAMES);
-            }
-        }
-    }
-
 }

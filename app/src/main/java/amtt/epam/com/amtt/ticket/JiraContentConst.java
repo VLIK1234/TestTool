@@ -4,23 +4,6 @@ package amtt.epam.com.amtt.ticket;
  * Created by Iryna_Monchanka on 5/13/2015.
  */
 public enum JiraContentConst {
-
-    PRIORITIES_NAMES,
-    PROJECTS_NAMES,
-    PROJECT_KEY_BY_NAME,
-    ISSUE_TYPES_NAMES,
-    VERSIONS_NAMES,
-    CREATE_ISSUE,
-    USERS_ASSIGNABLE_NAMES,
-    DEVICE_INFO,
-    VERSION_OS,
-    ACTIVITY_INFO,
-    STEPS,
-    LOGS,
-    SCREENSHOTS,
-    DESCRIPTION,
-    ENVIRONMENT,
-
     META_RESPONSE,
     VERSIONS_RESPONSE,
     CREATE_ISSUE_RESPONSE,

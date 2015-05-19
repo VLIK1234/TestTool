@@ -3,26 +3,27 @@ package amtt.epam.com.amtt.bo;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 
 /**
  * Created by Iryna_Monchanka on 3/31/2015.
  */
-public class JMetaResponse {
+public class JProjectsResponse {
 
     @SerializedName("expand")
     private String mExpand;
     @SerializedName("projects")
     private ArrayList<JProjects> mProjects;
-    private ArrayList<String> mProjectsNames;
+    private HashMap<JProjects, String> mProjectsNames;
     private ArrayList<String> mProjectsKeys;
 
-    public JMetaResponse() {
+    public JProjectsResponse() {
 
     }
 
-    public JMetaResponse(String expand, ArrayList<JProjects> projects) {
+    public JProjectsResponse(String expand, ArrayList<JProjects> projects) {
         this.mExpand = expand;
         this.mProjects = projects;
     }
@@ -43,20 +44,15 @@ public class JMetaResponse {
         this.mProjects = projects;
     }
 
-    public ArrayList<String> getProjectsNames() {
-        if (mProjectsNames == null) {
-            mProjectsNames = new ArrayList<>();
+    public HashMap<JProjects, String> getProjectsNames() {
+        if (mProjects != null) {
+            mProjectsNames = new HashMap<>();
             int size = mProjects.size();
             for (int i = 0; i < size; i++) {
-                mProjectsNames.add(mProjects.get(i).getName());
+                mProjectsNames.put(mProjects.get(i), mProjects.get(i).getName());
             }
-            setProjectsNames(mProjectsNames);
         }
         return mProjectsNames;
-    }
-
-    private void setProjectsNames(ArrayList<String> projectsNames) {
-        this.mProjectsNames = projectsNames;
     }
 
     public ArrayList<String> getProjectsKeys() {

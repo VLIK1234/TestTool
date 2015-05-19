@@ -29,12 +29,12 @@ public class CreateIssue {
     private IssueGsonProcessor<JCreatingIssueRequest> mIssueGsonProcessor = new IssueGsonProcessor<>();
 
     public CreateIssue(String keyProject, String issueTypeId, String summary, String description,
-                                    String priorityId, String versionsId, String environment, String userAssigneId) {
+                                    String priorityId, String versionsId, String environment, String userAssigneName) {
         mProject.setKey(keyProject);
         mIssueType.setId(issueTypeId);
         mPriority.setId(priorityId);
         mVersion.setId(versionsId);
-        mAssignee.setName(userAssigneId);
+        mAssignee.setName(userAssigneName);
         mFields.setAssignee(mAssignee);
         mFields.setProject(mProject);
         mFields.setIssueType(mIssueType);

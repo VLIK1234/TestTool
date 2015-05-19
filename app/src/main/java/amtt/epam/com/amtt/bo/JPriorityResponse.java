@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.bo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import amtt.epam.com.amtt.bo.project.JPriority;
 
@@ -10,7 +11,6 @@ import amtt.epam.com.amtt.bo.project.JPriority;
 public class JPriorityResponse {
 
     private ArrayList<JPriority> mPriorities;
-    private ArrayList<String> mPriorityNames;
 
     public JPriorityResponse(){}
 
@@ -26,11 +26,12 @@ public class JPriorityResponse {
         this.mPriorities = priorities;
     }
 
-    public ArrayList<String> getPriorityNames() {
+    public HashMap<String, String> getPriorityNames() {
+        HashMap<String, String> mPriorityNames;
         if (mPriorities != null) {
-            mPriorityNames = new ArrayList<>();
+            mPriorityNames = new HashMap<>();
             for (int i = 0; i < mPriorities.size(); i++) {
-                mPriorityNames.add(mPriorities.get(i).getName());
+                mPriorityNames.put(mPriorities.get(i).getId(), mPriorities.get(i).getName());
             }
             return mPriorityNames;
         } else {

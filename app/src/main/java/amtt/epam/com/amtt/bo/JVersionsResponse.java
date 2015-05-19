@@ -1,30 +1,32 @@
 package amtt.epam.com.amtt.bo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import amtt.epam.com.amtt.bo.project.JiraIssueVersion;
 
 /**
  * Created by Iryna_Monchanka on 04.05.2015.
  */
-public class JProjectExtVersionsResponse {
+public class JVersionsResponse {
 
     private ArrayList<JiraIssueVersion> mVersions;
-    private ArrayList<String> mVersionsNames;
 
-    public JProjectExtVersionsResponse(){}
+    public JVersionsResponse(){}
 
-    public JProjectExtVersionsResponse(ArrayList<JiraIssueVersion> versions) {
+    public JVersionsResponse(ArrayList<JiraIssueVersion> versions) {
         this.mVersions = versions;
     }
 
-    public ArrayList<String> getVersionsNames(){
+    public HashMap<String, String> getVersionsNames(){
+        HashMap<String, String> mVersionsNames;
         if (mVersions != null) {
-           mVersionsNames = new ArrayList<>();
+            mVersionsNames = new HashMap<>();
             for (int i = 0; i < mVersions.size(); i++) {
-                mVersionsNames.add(mVersions.get(i).getName());
+                mVersionsNames.put(mVersions.get(i).getId(), mVersions.get(i).getName());
             }
-            return  mVersionsNames;
+            return mVersionsNames;
         } else {
             return null;
         }

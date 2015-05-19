@@ -1,14 +1,20 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.ticket.JiraContent;
+import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
 import amtt.epam.com.amtt.util.Constants;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
@@ -119,6 +125,11 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
                 CredentialsManager.getInstance().setAccess(true);
                 TopButtonService.authSuccess(this);
                 Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
+                JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
+                    @Override
+                    public void resultOfDataLoading(HashMap<String, String> result) {
+                    }
+                });
                 finish();
             }
 

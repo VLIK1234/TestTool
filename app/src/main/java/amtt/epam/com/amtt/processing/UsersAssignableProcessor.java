@@ -5,6 +5,8 @@ import amtt.epam.com.amtt.bo.JUserAssignableResponse;
 import amtt.epam.com.amtt.bo.project.JPriority;
 import amtt.epam.com.amtt.bo.user.JiraUser;
 import amtt.epam.com.amtt.bo.user.JiraUserInfo;
+import amtt.epam.com.amtt.ticket.JiraContent;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -32,6 +34,7 @@ public class UsersAssignableProcessor implements Processor<JUserAssignableRespon
             jiraUsers.add(jiraUser);
         }
         userAssignableResponse.setAssignableUsers(jiraUsers);
+        JiraContent.getInstance().setUsersAssignableNames(userAssignableResponse.getAssignableUsersNames());
         return userAssignableResponse;
     }
 }

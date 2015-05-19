@@ -19,45 +19,35 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.api.JiraApi;
-import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
-import amtt.epam.com.amtt.api.JiraTask;
 
 import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.exception.ExceptionHandler;
-import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
-import amtt.epam.com.amtt.app.UserInfoActivity;
-import amtt.epam.com.amtt.bo.JMetaResponse;
+import amtt.epam.com.amtt.bo.JProjectsResponse;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseOperationType;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
-import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
-import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.util.Converter;
-import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 import amtt.epam.com.amtt.util.UtilConstants;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResponse>, DataBaseCallback {
+public class TopButtonView extends FrameLayout implements DataBaseCallback {
 
     private final static String LOG_TAG = "TAG";
 
@@ -446,29 +436,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
                 .setCallback(TopButtonView.this)
                 .create()
                 .execute();
-    }
-
-
-    @Override
-    public void onRequestStarted() {
-
-    }
-
-    @Override
-    public void onRequestPerformed(RestResponse<JMetaResponse> restResponse) {
-        JMetaResponse jiraMetaResponse = restResponse.getResultObject();
-        ArrayList<String> projectsNames = jiraMetaResponse.getProjectsNames();
-        ArrayList<String> projectsKeys = jiraMetaResponse.getProjectsKeys();
-        PreferenceUtils.putSet(UtilConstants.SharedPreference.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
-        PreferenceUtils.putSet(UtilConstants.SharedPreference.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
-        Intent intent = new Intent(getContext(), CreateIssueActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getContext().getApplicationContext().startActivity(intent);
-    }
-
-    @Override
-    public void onRequestError(AmttException e) {
-        ExceptionHandler.getInstance().processError(e).showDialog(getContext(), TopButtonView.this);
     }
 
     public static void setStartRecord(boolean isStartRecord){
