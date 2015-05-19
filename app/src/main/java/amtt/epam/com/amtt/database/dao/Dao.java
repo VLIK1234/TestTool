@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.database.dao;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 
@@ -23,7 +24,6 @@ public class Dao implements DaoInterface<DatabaseEntity> {
         void onResult(T result);
     }
 
-    //TODO what bulk insert?
     /*
     * Use this method for updates. Exception won't be thrown, all the conflicts will be replaced.
     * */
@@ -32,7 +32,6 @@ public class Dao implements DaoInterface<DatabaseEntity> {
         Uri insertedItemUri = sContext.getContentResolver().insert(object.getUri(), object.getContentValues());
         return Integer.valueOf(insertedItemUri.getLastPathSegment());
     }
-
 
     public void addOrUpdateAsync(final DatabaseEntity object, final IResult<Integer> result) {
         new Thread(new Runnable() {
@@ -43,10 +42,12 @@ public class Dao implements DaoInterface<DatabaseEntity> {
         }).start();
     }
 
-    public int addOrUpdate(List<DatabaseEntity> object) {
-        //TODO fix with error checks and use transactions
-        Uri insertedItemUri = sContext.getContentResolver().insert(object.get(0).getUri(), object.get(0).getContentValues());
-        return Integer.valueOf(insertedItemUri.getLastPathSegment());
+    public int addOrUpdate(List<DatabaseEntity> objects) {
+        ContentValues[] contentValues = new ContentValues[objects.size()];
+        for(int i = 0; i < objects.size(); i++) {
+            contentValues[i] = objects.get(i).getContentValues();
+        }
+        return sContext.getContentResolver().bulkInsert(objects.get(0).getUri(), contentValues);
     }
 
     public void addOrUpdateAsync(final List<DatabaseEntity> object, final IResult<Integer> result) {

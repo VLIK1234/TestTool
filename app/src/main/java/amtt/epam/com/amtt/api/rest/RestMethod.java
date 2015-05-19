@@ -158,7 +158,6 @@ public class RestMethod<ResultType> {
         int statusCode = httpResponse.getStatusLine().getStatusCode();
         if (mRestMethodType == RestMethodType.GET && statusCode != HttpStatus.SC_OK ||
                 mRestMethodType == RestMethodType.POST && statusCode != HttpStatus.SC_CREATED) {
-            //TODO put error
             throw new AmttException(null, statusCode, this, null);
         }
 

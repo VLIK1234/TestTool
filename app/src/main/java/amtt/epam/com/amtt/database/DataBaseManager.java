@@ -118,7 +118,6 @@ public class DataBaseManager extends SQLiteOpenHelper {
     }
 
     public long insert(String tableName, ContentValues values) {
-        //TODO use instead of update method
         long id;
         SQLiteDatabase database = getWritableDatabase();
         try {

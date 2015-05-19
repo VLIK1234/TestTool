@@ -4,12 +4,8 @@ import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 import amtt.epam.com.amtt.database.DataBaseManager;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
@@ -63,6 +59,25 @@ public class AmttContentProvider extends ContentProvider {
         long id = getDataBaseManager().insert(tableName, values);
         return ContentUris.withAppendedId(uri, id);
     }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        int numberOfItems = values.length;
+        String tableName = uri.getLastPathSegment();
+        DataBaseManager dataBaseManager = getDataBaseManager();
+        SQLiteDatabase database = dataBaseManager.getWritableDatabase();
+        try {
+            database.beginTransaction();
+            for (ContentValues value : values) {
+                database.insert(tableName, null, value);
+            }
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+        }
+        return numberOfItems;
+    }
+
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
