@@ -64,6 +64,10 @@
             android:name=".app.UserInfoActivity"
             android:label="@string/title_activity_user_info" />
 
+        <activity
+            android:name=".app.AmttActivity"
+            android:label="@string/title_activity_amtt" />
+
     </application>
 
 </manifest>

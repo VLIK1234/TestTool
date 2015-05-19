@@ -33,7 +33,7 @@ public class Dao implements DaoInterface<DatabaseEntity> {
     public Integer update(DatabaseEntity objectPrototype) {
         return sContext.getContentResolver().update(objectPrototype.getUri(),
                 objectPrototype.getContentValues(),
-                objectPrototype.getWhere() + "=?",
+                BaseColumns._ID + "=?",
                 new String[]{String.valueOf(objectPrototype.getId())});
     }
 

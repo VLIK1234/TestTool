@@ -39,7 +39,11 @@ public class JiraUserInfo extends DatabaseEntity {
     }
 
     public JiraUserInfo(Cursor cursor) {
-        cursor.moveToFirst();
+        if (cursor.getPosition() == -1) {
+            cursor.moveToNext();
+        }
+        mName = cursor.getString(cursor.getColumnIndex(UsersTable._USER_NAME));
+        mUrl = cursor.getString(cursor.getColumnIndex(UsersTable._URL));
         mEmailAddress = cursor.getString(cursor.getColumnIndex(UsersTable._EMAIL));
         mDisplayName = cursor.getString(cursor.getColumnIndex(UsersTable._DISPLAY_NAME));
         mTimeZone = cursor.getString(cursor.getColumnIndex(UsersTable._TIME_ZONE));
@@ -114,10 +118,6 @@ public class JiraUserInfo extends DatabaseEntity {
         mUrl = url;
     }
 
-    private boolean isOtherFieldsEmpty() {
-        return mDisplayName == null && mTimeZone == null && mLocale == null && mUrl == null && mKey == null && mEmailAddress == null;
-    }
-
     @Override
     public int getId() {
         return mId;
@@ -132,25 +132,17 @@ public class JiraUserInfo extends DatabaseEntity {
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         values.put(UsersTable._USER_NAME, mName);
-        values.put(UsersTable._ACTIVE, UsersTable.ACTIVE_MARK);
-        if (!isOtherFieldsEmpty()) {
-            values.put(UsersTable._DISPLAY_NAME, mDisplayName);
-            values.put(UsersTable._TIME_ZONE, mTimeZone);
-            values.put(UsersTable._LOCALE, mLocale);
-            values.put(UsersTable._URL, mUrl);
-            values.put(UsersTable._KEY, mKey);
-            values.put(UsersTable._EMAIL, mEmailAddress);
-            values.put(UsersTable._AVATAR_16, getAvatarUrls().getAvatarXSmallUrl());
-            values.put(UsersTable._AVATAR_24, getAvatarUrls().getAvatarSmallUrl());
-            values.put(UsersTable._AVATAR_32, getAvatarUrls().getAvatarMediumUrl());
-            values.put(UsersTable._AVATAR_48, getAvatarUrls().getAvatarUrl());
-        }
+        values.put(UsersTable._DISPLAY_NAME, mDisplayName);
+        values.put(UsersTable._TIME_ZONE, mTimeZone);
+        values.put(UsersTable._LOCALE, mLocale);
+        values.put(UsersTable._URL, mUrl);
+        values.put(UsersTable._KEY, mKey);
+        values.put(UsersTable._EMAIL, mEmailAddress);
+        values.put(UsersTable._AVATAR_16, getAvatarUrls().getAvatarXSmallUrl());
+        values.put(UsersTable._AVATAR_24, getAvatarUrls().getAvatarSmallUrl());
+        values.put(UsersTable._AVATAR_32, getAvatarUrls().getAvatarMediumUrl());
+        values.put(UsersTable._AVATAR_48, getAvatarUrls().getAvatarUrl());
         return values;
-    }
-
-    @Override
-    public String getWhere() {
-        return UsersTable._ID;
     }
 
 }

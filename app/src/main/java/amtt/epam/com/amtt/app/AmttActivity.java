@@ -6,10 +6,13 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.UserAdapter;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 
@@ -26,7 +29,8 @@ public class AmttActivity extends BaseActivity implements LoaderCallbacks<Cursor
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mListView = (ListView)findViewById(android.R.id.list);
+        setContentView(R.layout.activity_amtt);
+        mListView = (ListView) findViewById(android.R.id.list);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -36,14 +40,32 @@ public class AmttActivity extends BaseActivity implements LoaderCallbacks<Cursor
                 finish();
             }
         });
-        getLoaderManager().restartLoader(CURSOR_LOADER_ID, null,this);
+        getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_amtt, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_change_user:
+                setResult(RESULT_OK);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     //Callback
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         showProgress(true);
-        return new CursorLoader(this, AmttUri.USER.get(), null, null,null,null);
+        return new CursorLoader(this, AmttUri.USER.get(), null, null, null, null);
     }
 
     @Override

@@ -69,16 +69,4 @@ public class DataBaseCRUD {
                 .create();
     }
 
-    public DataBaseMethod buildResetPreviousActiveUser() {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(UsersTable._ACTIVE, UsersTable.NORMAL_MARK);
-        return new DataBaseMethod.Builder()
-                .setMethodType(DatabaseMethodType.RAW_UPDATE)
-                .setEntity(new JiraUserInfo())
-                .setSelection(UsersTable._ACTIVE + "=?")
-                .setSelectionArgs(new String[]{String.valueOf(UsersTable.ACTIVE_MARK)})
-                .create();
-    }
-
-
 }

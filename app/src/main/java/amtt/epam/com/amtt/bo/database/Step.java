@@ -1,16 +1,12 @@
 package amtt.epam.com.amtt.bo.database;
 
-import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
-import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.net.Uri;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.dao.DatabaseEntity;
@@ -36,7 +32,8 @@ public class Step extends DatabaseEntity {
         sScreenBasePath = ContextHolder.getContext().getFilesDir().getPath() + SCREENSHOT_FOLDER;
     }
 
-    public Step() { }
+    public Step() {
+    }
 
     public Step(int stepNumber, ComponentName componentName) {
         mStepNumber = stepNumber;
@@ -66,11 +63,6 @@ public class Step extends DatabaseEntity {
         values.put(StepsTable._SCREEN_PATH, mScreenPath);
         values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity.getClassName());
         return values;
-    }
-
-    @Override
-    public String getWhere() {
-        return StepsTable._ID;
     }
 
     public String getScreenPath() {

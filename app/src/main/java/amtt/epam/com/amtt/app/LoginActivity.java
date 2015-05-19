@@ -9,8 +9,8 @@ import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.adapter.LoginItemAdapter;
-import amtt.epam.com.amtt.adapter.LoginItemAdapter.ViewHolder;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
@@ -53,6 +51,7 @@ import amtt.epam.com.amtt.view.EditText;
 public class LoginActivity extends BaseActivity implements JiraCallback<JiraUserInfo>, DataBaseCallback<Boolean>, LoaderCallbacks<Cursor> {
 
     private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
+    private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
 
     private AutoCompleteTextView mUserName;
     private EditText mPassword;
@@ -61,33 +60,8 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     private Button mLoginButton;
     private CheckBox mEpamJira;
     private String mRequestUrl;
-    private Map<String, String> mUserUrlMap;
     private Map<String, Integer> mUserIdMap;
     private boolean isInDatabase;
-
-    private LoaderCallbacks<Cursor> mSingleUserCallback = new LoaderCallbacks<Cursor>() {
-        @Override
-        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            return new CursorLoader(LoginActivity.this,
-                    AmttUri.USER.get(),
-                    null,
-                    UsersTable._ID + "=?",
-                    new String[] {String.valueOf(args.getLong(AmttActivity.KEY_USER_ID))},
-                    null);
-        }
-
-        @Override
-        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            JiraUserInfo user = new JiraUserInfo(data);
-            mUserName.setText(user.getName());
-            mUrl.setText(user.getEmailAddress());
-        }
-
-        @Override
-        public void onLoaderReset(Loader<Cursor> loader) {
-
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,9 +73,13 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        TopButtonService.start(this);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                showAmttActivity();
+                break;
+        }
+        return true;
     }
 
     @Override
@@ -110,18 +88,29 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case AMTT_ACTIVITY_REQUEST_CODE:
-                    getLoaderManager().initLoader(CURSOR_LOADER_ID, data.getBundleExtra(AmttActivity.KEY_USER_ID), mSingleUserCallback);
+                    if (data != null) {
+                        Bundle args = new Bundle();
+                        long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
+                        args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
+                        getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, this);
+                    } else {
+                        mUserName.setText(Str.EMPTY);
+                        mUrl.setText(Str.EMPTY);
+                        mPassword.setText(Str.EMPTY);
+                    }
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     break;
             }
+        } else if (resultCode == RESULT_CANCELED) {
+            finish();
         }
     }
 
+
     private void initViews() {
         mUserName = (AutoCompleteTextView) findViewById(R.id.user_name);
-        mUserName.setText("artsiom_kaliaha");
         mPassword = (EditText) findViewById(R.id.password);
         mUrl = (EditText) findViewById(R.id.jira_url);
-        mUrl.setText("https://amtt03.atlassian.net");
         mEpamJira = (CheckBox) findViewById(R.id.epam_jira_checkbox);
         mLoginButton = (Button) findViewById(R.id.login_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
@@ -168,11 +157,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
 
     private void insertUserToDatabase(JiraUserInfo user) {
         user.setUrl(mRequestUrl);
-        DataBaseMethod<Void> dataBaseMethod = new DataBaseCRUD().buildResetPreviousActiveUser();
-        new DataBaseTask.Builder<>()
-                .setCallback(this)
-                .setMethod(dataBaseMethod)
-                .createAndExecute();
         int userId = new Dao().addOrUpdate(user);
         ActiveUser.getInstance().setId(userId);
     }
@@ -211,9 +195,21 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         if (activeUser.getId() == ActiveUser.DEFAULT_ID) {
             int userId = mUserIdMap.get(userName);
             activeUser.setId(userId);
-            JiraUserInfo user = new JiraUserInfo();
-            user.setName(userName);
-            new Dao().update(user);
+        }
+    }
+
+    private void showAmttActivity() {
+        startActivityForResult(new Intent(this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
+    }
+
+    private void populateUsersIds(Cursor data) {
+        mUserIdMap = new HashMap<>();
+        String userName;
+        int userId;
+        while (data.moveToNext()) {
+            userName = data.getString(data.getColumnIndex(UsersTable._USER_NAME));
+            userId = data.getInt(data.getColumnIndex(UsersTable._ID));
+            mUserIdMap.put(userName, userId);
         }
     }
 
@@ -236,6 +232,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
             }
         }
         populateActiveUserInfo();
+        TopButtonService.start(this);
         finish();
     }
 
@@ -262,44 +259,39 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     //Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, AmttUri.USER.get(), null, null, null, null);
+        CursorLoader loader = null;
+        if (id == CURSOR_LOADER_ID) {
+            loader = new CursorLoader(this, AmttUri.USER.get(), null, null, null, null);
+        } else if (id == SINGLE_USER_CURSOR_LOADER_ID) {
+            loader = new CursorLoader(LoginActivity.this,
+                    AmttUri.USER.get(),
+                    null,
+                    UsersTable._ID + "=?",
+                    new String[]{String.valueOf(args.getLong(AmttActivity.KEY_USER_ID))},
+                    null);
+        }
+        return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        showProgress(false);
-        if (data != null) {
-            if (data.getCount() < 2) {
-                //TODO put userName and url to EditText
-                mUserUrlMap = new HashMap<>();
-                mUserIdMap = new HashMap<>();
-                String userName;
-                String url;
-                int userId;
-                while (data.moveToNext()) {
-                    url = data.getString(data.getColumnIndex(UsersTable._URL));
-                    userName = data.getString(data.getColumnIndex(UsersTable._USER_NAME));
-                    userId = data.getInt(data.getColumnIndex(UsersTable._ID));
-                    mUserUrlMap.put(userName, url);
-                    mUserIdMap.put(userName, userId);
-                }
-
-                LoginItemAdapter adapter = new LoginItemAdapter(this, data, NO_FLAGS);
-                mUserName.setAdapter(adapter);
-                mUserName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        ViewHolder vh = (ViewHolder) view.getTag();
-                        String userName = vh.getTextView().getText().toString();
-                        mUserName.setText(userName);
-                        mUrl.setText(mUserUrlMap.get(userName));
+        switch (loader.getId()) {
+            case CURSOR_LOADER_ID:
+                showProgress(false);
+                if (data != null) {
+                    if (data.getCount() > 2) {
+                        showAmttActivity();
                     }
-                });
-            } else {
-                startActivityForResult(new Intent(this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
-            }
-
+                    populateUsersIds(data);
+                }
+                break;
+            case SINGLE_USER_CURSOR_LOADER_ID:
+                JiraUserInfo user = new JiraUserInfo(data);
+                mUserName.setText(user.getName());
+                mUrl.setText(user.getUrl());
+                break;
         }
+
     }
 
     @Override
