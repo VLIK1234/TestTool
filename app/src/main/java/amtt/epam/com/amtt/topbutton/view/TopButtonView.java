@@ -46,6 +46,7 @@ import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
+import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.app.InfoActivity;
 import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
@@ -156,30 +157,33 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         screenshotView = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot)+" Vova what will be here?", Toast.LENGTH_LONG).show();
-                sStepNumber++;
-                new DataBaseTask.Builder()
-                        .setOperationType(DataBaseOperationType.SAVE_STEP)
-                        .setContext(getContext())
-                        .setCallback(TopButtonView.this)
-                        .setStepNumber(sStepNumber)
-                        .create()
-                        .execute();
+                Intent intentHideView = new Intent(getContext(), TopButtonService.class).setAction(TopButtonService.ACTION_HIDE_VIEW);
+                intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startService(intentHideView);
+
+                Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
+                intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intentHelp);
             }
         });
         activityInfoView = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), new ITouchAction() {
             @Override
             public void TouchAction() {
-                InfoActivity.callInfoActivity(TopButtonService.getTopActivity());
+                String topActivityName = "Not found";
+                try {
+                    topActivityName = getContext().getPackageManager()
+                            .getActivityInfo(TopButtonService.getTopActivity(), PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS).name;
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(getContext(), topActivityName, Toast.LENGTH_SHORT).show();
+//                InfoActivity.callInfoActivity(TopButtonService.getTopActivity());
             }
         });
         stepView = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_step_view), Toast.LENGTH_LONG).show();
-                Intent intentStep = new Intent(getContext(), StepsActivity.class);
-                intentStep.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().getApplicationContext().startActivity(intentStep);
+                Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot) + " Vova what will be here?", Toast.LENGTH_LONG).show();
             }
         });
         cancelRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), new ITouchAction() {
