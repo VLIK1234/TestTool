@@ -19,6 +19,11 @@ public class Dao implements DaoInterface<DatabaseEntity> {
         sContext = ContextHolder.getContext();
     }
 
+    public interface IResult<T> {
+        void onResult(T result);
+    }
+
+    //TODO what bulk insert?
     /*
     * Use this method for updates. Exception won't be thrown, all the conflicts will be replaced.
     * */
@@ -26,6 +31,31 @@ public class Dao implements DaoInterface<DatabaseEntity> {
     public Integer addOrUpdate(DatabaseEntity object) {
         Uri insertedItemUri = sContext.getContentResolver().insert(object.getUri(), object.getContentValues());
         return Integer.valueOf(insertedItemUri.getLastPathSegment());
+    }
+
+
+    public void addOrUpdateAsync(final DatabaseEntity object, final IResult<Integer> result) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result.onResult(addOrUpdate(object));
+            }
+        }).start();
+    }
+
+    public int addOrUpdate(List<DatabaseEntity> object) {
+        //TODO fix with error checks and use transactions
+        Uri insertedItemUri = sContext.getContentResolver().insert(object.get(0).getUri(), object.get(0).getContentValues());
+        return Integer.valueOf(insertedItemUri.getLastPathSegment());
+    }
+
+    public void addOrUpdateAsync(final List<DatabaseEntity> object, final IResult<Integer> result) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                result.onResult(addOrUpdate(object));
+            }
+        }).start();
     }
 
     @Override
@@ -47,5 +77,6 @@ public class Dao implements DaoInterface<DatabaseEntity> {
     public DatabaseEntity getByKey(DatabaseEntity objectPrototype) {
         return null;
     }
+
 
 }
