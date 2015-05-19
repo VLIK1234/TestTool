@@ -66,6 +66,13 @@
         <activity
             android:name=".app.InfoActivity"
             android:label="@string/title_activity_info" />
+
+        <activity
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
+            android:name=".app.HelpDialogActivity"
+            android:label="@string/title_activity_help_dialog"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"/>
     </application>
 
 </manifest>

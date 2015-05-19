@@ -41,6 +41,7 @@ public class TopButtonService extends Service {
     public static final String ACTION_AUTH_SUCCESS = "AUTHORIZATION_SUCCESS";
     public static final String ACTION_SHOW_SCREEN = "SHOW_SCREEN";
     public static final String ACTION_HIDE_VIEW = "HIDE_VIEW";
+    public static final String ACTION_SHOW_VIEW = "SHOW_VIEW";
     public static final String PATH_TO_SCREEENSHOT_KEY = "PATH_TO_SCREENSHOT";
     private static final String SCREENSHOTS_DIR_NAME = "Screenshots";
     private int xInitPosition;
@@ -70,6 +71,11 @@ public class TopButtonService extends Service {
         context.startService(intent);
     }
 
+    public static void sendActionVisibleView(){
+        Intent intentHideView = new Intent(context, TopButtonService.class).setAction(TopButtonService.ACTION_SHOW_VIEW);
+        intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.getApplicationContext().startService(intentHideView);
+    }
     public static void start(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_START));
     }
@@ -127,6 +133,9 @@ public class TopButtonService extends Service {
                     closeService();
                     break;
                 case ACTION_HIDE_VIEW:
+                    changeStateNotificationAction();
+                    break;
+                case ACTION_SHOW_VIEW:
                     changeStateNotificationAction();
                     break;
                 case ACTION_AUTH_SUCCESS:
