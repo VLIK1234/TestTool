@@ -38,7 +38,6 @@ public class CreateIssueActivity extends BaseActivity {
     private String mIssueTypeName;
     private String mPriorityName;
     private String mVersionName;
-    private String mDelayedRun;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

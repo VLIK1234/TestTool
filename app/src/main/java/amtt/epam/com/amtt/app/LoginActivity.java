@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
 import amtt.epam.com.amtt.util.Constants;
@@ -125,6 +126,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
                 Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
                 JiraContent.getInstance().getPrioritiesNames(null);
                 JiraContent.getInstance().getProjectsNames(null);
+                JiraContent.getInstance().setEnvironment(SystemInfoHelper.getDeviceOsInfo());
                 finish();
             }
 

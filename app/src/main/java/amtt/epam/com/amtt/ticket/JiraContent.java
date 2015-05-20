@@ -24,9 +24,8 @@ public class JiraContent{
     private HashMap<String, String> mProjectVersionsNames;
     private JProjects mLastProject;
     private String mActivityInfo = "***activity info***";
-    private String mDeviceInfo = "***device info***";
     private String mSteps = "***steps***";
-    private String mVersionOS = "***version OS***";
+    private String mEnvironment;
     private String mLogs;
     private String mScreenshots;
 
@@ -215,16 +214,12 @@ public class JiraContent{
     }
 
     public void getEnvironment(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        String environment = mVersionOS + "\n" + mDeviceInfo;
-        jiraGetContentCallback.resultOfDataLoading(environment);
+        jiraGetContentCallback.resultOfDataLoading(mEnvironment);
     }
 
-    public void getDeviceInfo(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        jiraGetContentCallback.resultOfDataLoading(mDeviceInfo);
-    }
 
-    public void getVersionOS(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        jiraGetContentCallback.resultOfDataLoading(mVersionOS);
+    public void setEnvironment(String environment) {
+        this.mEnvironment = environment;
     }
 
     public void getActivityInfo(final JiraGetContentCallback<String> jiraGetContentCallback) {

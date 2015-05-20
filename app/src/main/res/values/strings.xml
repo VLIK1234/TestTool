@@ -7,6 +7,8 @@
     <string name="title_activity_login">Login to Jira</string>
     <string name="title_activity_steps">StepsActivity</string>
     <string name="title_activity_user_info">UserInfoActivity</string>
+    <string name="title_activity_info">InfoActivity</string>
+    <string name="title_activity_help_dialog">How make screenshot?</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
     <string name="issue_created">Issue created</string>
@@ -104,5 +106,9 @@
     <string name="label_step_view">Step</string>
     <string name="label_cancel_record">Cancel record</string>
     <string name="label_button_main">Main button</string>
+    <string name="title_help">Help</string>
+    <string name="dialog_description">To make screenshot please use next combination button: \nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nXiaomi phone - volume down+power \nHTC - power+home</string>
+    <string name="dialog_label_checkbox">Don\'t show again</string>
+    <string name="dialog_button_text">OK</string>
 
 </resources>
