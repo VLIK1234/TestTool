@@ -11,14 +11,14 @@ import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.bo.user.JiraUserInfo;
+import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.view.TextView;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.UtilConstants;
 
-public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraUserInfo> {
+public class UserInfoActivity extends BaseActivity implements JiraCallback<JUserInfo> {
 
     private TextView mName;
     private TextView mEmailAddress;
@@ -45,8 +45,8 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     @SuppressWarnings("unchecked")
     private void executeAsynchronously() {
         String requestSuffix = JiraApiConst.USER_INFO_PATH + CredentialsManager.getInstance().getUserName() + JiraApiConst.EXPAND_GROUPS;
-        RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix, new UserInfoProcessor());
-        new JiraTask.Builder<JiraUserInfo>()
+        RestMethod<JUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix, new UserInfoProcessor());
+        new JiraTask.Builder<JUserInfo>()
                 .setRestMethod(userInfoMethod)
                 .setCallback(UserInfoActivity.this)
                 .createAndExecute();
@@ -58,10 +58,10 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     }
 
     @Override
-    public void onRequestPerformed(RestResponse<JiraUserInfo> restResponse) {
+    public void onRequestPerformed(RestResponse<JUserInfo> restResponse) {
 
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
-            JiraUserInfo user = restResponse.getResultObject();
+            JUserInfo user = restResponse.getResultObject();
             mName.setText(getResources().getString(R.string.label_user_name) + UtilConstants.SharedPreference.COLON + user.getName());
             mEmailAddress.setText(getResources().getString(R.string.label_email) + UtilConstants.SharedPreference.COLON + user.getEmailAddress());
             mDisplayName.setText(user.getDisplayName());

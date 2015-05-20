@@ -6,6 +6,8 @@ package amtt.epam.com.amtt.bo.issue.createmeta;
 
 import com.google.gson.annotations.SerializedName;
 
+import amtt.epam.com.amtt.bo.issue.createmeta.issuetypes.JFields;
+
 /**
  * JiraIssueTypes = JIssueTypes
  * <p/>
@@ -36,12 +38,12 @@ public class JIssueTypes {
     @SerializedName("expand")
     private String mExpand;
     @SerializedName("fields")
-    private JITFields mFields;
+    private JFields mFields;
 
     public JIssueTypes() {
     }
 
-    public JIssueTypes(String self, String id, String description, String iconUrl, String name, Boolean subTask, String expand, JITFields fields) {
+    public JIssueTypes(String self, String id, String description, String iconUrl, String name, Boolean subTask, String expand, JFields fields) {
         this.mSelf = self;
         this.mId = id;
         this.mDescription = description;
@@ -124,11 +126,11 @@ public class JIssueTypes {
         this.mExpand = expand;
     }
 
-    public JITFields getFields() {
+    public JFields getFields() {
         return mFields;
     }
 
-    public void setFields(JITFields fields) {
+    public void setFields(JFields fields) {
         this.mFields = fields;
     }
 }

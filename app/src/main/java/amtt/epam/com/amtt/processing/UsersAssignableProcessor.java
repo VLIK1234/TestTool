@@ -1,10 +1,7 @@
 package amtt.epam.com.amtt.processing;
 
-import amtt.epam.com.amtt.bo.JPriorityResponse;
 import amtt.epam.com.amtt.bo.JUserAssignableResponse;
-import amtt.epam.com.amtt.bo.project.JPriority;
-import amtt.epam.com.amtt.bo.user.JiraUser;
-import amtt.epam.com.amtt.bo.user.JiraUserInfo;
+import amtt.epam.com.amtt.bo.user.JUser;
 import amtt.epam.com.amtt.ticket.JiraContent;
 
 import com.google.gson.JsonArray;
@@ -27,13 +24,13 @@ public class UsersAssignableProcessor implements Processor<JUserAssignableRespon
         JsonParser parser = new JsonParser();
         JsonArray jsonArray = parser.parse(_response).getAsJsonArray();
         JUserAssignableResponse userAssignableResponse = new JUserAssignableResponse();
-        ArrayList<JiraUser> jiraUsers = new ArrayList<JiraUser>();
+        ArrayList<JUser> jUsers = new ArrayList<JUser>();
         for(JsonElement obj : jsonArray )
         {
-            JiraUser jiraUser = Gson.getInstance().fromJson(obj, JiraUser.class);
-            jiraUsers.add(jiraUser);
+            JUser jUser = Gson.getInstance().fromJson(obj, JUser.class);
+            jUsers.add(jUser);
         }
-        userAssignableResponse.setAssignableUsers(jiraUsers);
+        userAssignableResponse.setAssignableUsers(jUsers);
         JiraContent.getInstance().setUsersAssignableNames(userAssignableResponse.getAssignableUsersNames());
         return userAssignableResponse;
     }

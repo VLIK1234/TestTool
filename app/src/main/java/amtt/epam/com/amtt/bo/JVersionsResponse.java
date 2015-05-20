@@ -2,20 +2,19 @@ package amtt.epam.com.amtt.bo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
-import amtt.epam.com.amtt.bo.project.JiraIssueVersion;
+import amtt.epam.com.amtt.bo.project.JIssueVersion;
 
 /**
  * Created by Iryna_Monchanka on 04.05.2015.
  */
 public class JVersionsResponse {
 
-    private ArrayList<JiraIssueVersion> mVersions;
+    private ArrayList<JIssueVersion> mVersions;
 
     public JVersionsResponse(){}
 
-    public JVersionsResponse(ArrayList<JiraIssueVersion> versions) {
+    public JVersionsResponse(ArrayList<JIssueVersion> versions) {
         this.mVersions = versions;
     }
 
@@ -32,17 +31,17 @@ public class JVersionsResponse {
         }
     }
 
-    public ArrayList<JiraIssueVersion> getVersions() {
+    public ArrayList<JIssueVersion> getVersions() {
         return mVersions;
     }
 
-    public void setVersions(ArrayList<JiraIssueVersion> versions) {
+    public void setVersions(ArrayList<JIssueVersion> versions) {
         this.mVersions = versions;
     }
 
-    public JiraIssueVersion getIssueVersionByName(String versionName) {
-        JiraIssueVersion issueVersion = null;
-        for (JiraIssueVersion version : mVersions) {
+    public JIssueVersion getIssueVersionByName(String versionName) {
+        JIssueVersion issueVersion = null;
+        for (JIssueVersion version : mVersions) {
             if (version.getName().equals(versionName)) {
                 issueVersion = version;
             }

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-import amtt.epam.com.amtt.bo.issue.JiraAvatarUrls;
+import amtt.epam.com.amtt.bo.issue.JAvatarUrls;
 
 /**
  * Created by Iryna_Monchanka on 3/31/2015.
@@ -22,14 +22,14 @@ public class JProjects {
     @SerializedName("name")
     private String mName;
     @SerializedName("avatarUrls")
-    private JiraAvatarUrls mAvatarUrls;
+    private JAvatarUrls mAvatarUrls;
     @SerializedName("issuetypes")
     private ArrayList<JIssueTypes> mIssueTypes;
 
     public JProjects() {
     }
 
-    public JProjects(String expand, String self, String id, String key, String name, JiraAvatarUrls avatarUrls, ArrayList<JIssueTypes> issueTypes) {
+    public JProjects(String expand, String self, String id, String key, String name, JAvatarUrls avatarUrls, ArrayList<JIssueTypes> issueTypes) {
         this.mExpand = expand;
         this.mSelf = self;
         this.mId = id;
@@ -39,7 +39,7 @@ public class JProjects {
         this.mIssueTypes = issueTypes;
     }
 
-    public JProjects(String self, String id, String key, String name, JiraAvatarUrls avatarUrls, ArrayList<JIssueTypes> issueTypes) {
+    public JProjects(String self, String id, String key, String name, JAvatarUrls avatarUrls, ArrayList<JIssueTypes> issueTypes) {
         this.mSelf = self;
         this.mId = id;
         this.mKey = key;
@@ -96,11 +96,11 @@ public class JProjects {
         this.mName = name;
     }
 
-    public JiraAvatarUrls getAvatarUrls() {
+    public JAvatarUrls getAvatarUrls() {
         return mAvatarUrls;
     }
 
-    public void setAvatarUrls(JiraAvatarUrls avatarUrls) {
+    public void setAvatarUrls(JAvatarUrls avatarUrls) {
         this.mAvatarUrls = avatarUrls;
     }
 

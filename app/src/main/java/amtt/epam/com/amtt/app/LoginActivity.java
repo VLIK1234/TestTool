@@ -123,11 +123,8 @@ public class LoginActivity extends BaseActivity implements JiraCallback<String> 
                 CredentialsManager.getInstance().setAccess(true);
                 TopButtonService.authSuccess(this);
                 Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-                JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
-                    @Override
-                    public void resultOfDataLoading(HashMap<String, String> result) {
-                    }
-                });
+                JiraContent.getInstance().getPrioritiesNames(null);
+                JiraContent.getInstance().getProjectsNames(null);
                 finish();
             }
 

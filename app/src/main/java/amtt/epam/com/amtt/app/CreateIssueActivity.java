@@ -9,9 +9,8 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,14 +20,16 @@ import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
 import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.view.ACTextViewWithProgress;
 import amtt.epam.com.amtt.view.EditText;
+import amtt.epam.com.amtt.view.SpinnerWithProgress;
 
 @SuppressWarnings("unchecked")
 public class CreateIssueActivity extends BaseActivity {
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_TEXT_CHANGED = 100;
-    private AutoCompleteTextView mAssignableUsersACTextView;
+    private ACTextViewWithProgress mAssignableUsersACTextView;
     private Button mCreateIssueButton;
     private EditText mDescriptionEditText;
     private EditText mEnvironmentEditText;
@@ -57,12 +58,13 @@ public class CreateIssueActivity extends BaseActivity {
 
     private void reinitRelatedViews(String projectKey) {
         initIssueTypesSpinner(projectKey);
-        initAssigneeSpinner();
+        initAssigneeACTextView();
     }
 
     private void initProjectNamesSpinner() {
-        final Spinner mProjectNamesSpinner = (Spinner) findViewById(R.id.spin_projects_name);
+        final SpinnerWithProgress mProjectNamesSpinner = (SpinnerWithProgress) findViewById(R.id.spin_projects_name);
         mProjectNamesSpinner.setEnabled(false);
+        mProjectNamesSpinner.showProgress(true);
         JiraContent.getInstance().getProjectsNames(new JiraGetContentCallback<HashMap<JProjects, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<JProjects, String> result) {
@@ -72,6 +74,7 @@ public class CreateIssueActivity extends BaseActivity {
                     ArrayAdapter<String> mProjectsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, projectNames);
                     mProjectsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                     mProjectNamesSpinner.setAdapter(mProjectsAdapter);
+                    mProjectNamesSpinner.showProgress(false);
                     mProjectNamesSpinner.setEnabled(true);
                 }
             }
@@ -94,8 +97,9 @@ public class CreateIssueActivity extends BaseActivity {
     }
 
     private void initPrioritiesSpinner() {
-        final Spinner mPrioritiesSpinner = (Spinner) findViewById(R.id.spin_priority);
+        final SpinnerWithProgress mPrioritiesSpinner = (SpinnerWithProgress) findViewById(R.id.spin_priority);
         mPrioritiesSpinner.setEnabled(false);
+        mPrioritiesSpinner.showProgress(true);
         JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
@@ -106,6 +110,7 @@ public class CreateIssueActivity extends BaseActivity {
                     mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                     mPrioritiesSpinner.setAdapter(mPrioritiesAdapter);
                     mPrioritiesSpinner.setSelection(2);
+                    mPrioritiesSpinner.showProgress(false);
                     mPrioritiesSpinner.setEnabled(true);
                 }
             }
@@ -123,8 +128,9 @@ public class CreateIssueActivity extends BaseActivity {
     }
 
     private void initVersionsSpinner(String projectKey) {
-        final Spinner mVersionsSpinner = (Spinner) findViewById(R.id.spin_affects_versions);
+        final SpinnerWithProgress mVersionsSpinner = (SpinnerWithProgress) findViewById(R.id.spin_affects_versions);
         mVersionsSpinner.setEnabled(false);
+        mVersionsSpinner.showProgress(true);
         JiraContent.getInstance().getVersionsNames(projectKey, new JiraGetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
@@ -134,6 +140,7 @@ public class CreateIssueActivity extends BaseActivity {
                     ArrayAdapter<String> mVersionsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, versionNames);
                     mVersionsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                     mVersionsSpinner.setAdapter(mVersionsAdapter);
+                    mVersionsSpinner.showProgress(false);
                     mVersionsSpinner.setEnabled(true);
                 }
             }
@@ -151,8 +158,9 @@ public class CreateIssueActivity extends BaseActivity {
     }
 
     private void initIssueTypesSpinner(String projectKey) {
-        final Spinner mIssueTypesSpinner = (Spinner) findViewById(R.id.spin_issue_name);
+        final SpinnerWithProgress mIssueTypesSpinner = (SpinnerWithProgress) findViewById(R.id.spin_issue_name);
         mIssueTypesSpinner.setEnabled(false);
+        mIssueTypesSpinner.showProgress(true);
         JiraContent.getInstance().getIssueTypesNames(new JiraGetContentCallback<ArrayList<String>>() {
             @Override
             public void resultOfDataLoading(ArrayList<String> result) {
@@ -160,6 +168,7 @@ public class CreateIssueActivity extends BaseActivity {
                     ArrayAdapter<String> mIssueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
                     mIssueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                     mIssueTypesSpinner.setAdapter(mIssueTypesAdapter);
+                    mIssueTypesSpinner.showProgress(false);
                     mIssueTypesSpinner.setEnabled(true);
                 }
             }
@@ -236,9 +245,11 @@ public class CreateIssueActivity extends BaseActivity {
         mSummaryEditText.clearErrorOnFocus(true);
     }
 
-    private void initAssigneeSpinner() {
-        mAssignableUsersACTextView = (AutoCompleteTextView) findViewById(R.id.et_assignable_users);
+    private void initAssigneeACTextView() {
+        mAssignableUsersACTextView = (ACTextViewWithProgress) findViewById(R.id.et_assignable_users);
         mAssignableUsersACTextView.setEnabled(false);
+        mAssignableUsersACTextView.showProgress(true);
+        mAssignableUsersACTextView.showProgress(true);
         JiraContent.getInstance().getUsersAssignable("", new JiraGetContentCallback<ArrayList<String>>() {
             @Override
             public void resultOfDataLoading(ArrayList<String> result) {
@@ -248,6 +259,7 @@ public class CreateIssueActivity extends BaseActivity {
                     mAssignableUsersACTextView.setAdapter(mAssignableUsersAdapter);
                     mAssignableUsersACTextView.setThreshold(3);
                     mAssignableUsersACTextView.setEnabled(true);
+                    mAssignableUsersACTextView.showProgress(false);
                     mCreateIssueButton.setEnabled(true);
                 }
             }
@@ -273,6 +285,7 @@ public class CreateIssueActivity extends BaseActivity {
     }
 
     private void setAssignableNames(Editable s, int keyCode) {
+        mAssignableUsersACTextView.showProgress(true);
         JiraContent.getInstance().getUsersAssignable(s.toString(), new JiraGetContentCallback<ArrayList<String>>() {
             @Override
             public void resultOfDataLoading(ArrayList<String> result) {
@@ -281,6 +294,7 @@ public class CreateIssueActivity extends BaseActivity {
                     mAssignableUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                     mAssignableUsersACTextView.setAdapter(mAssignableUsersAdapter);
                     mAssignableUsersACTextView.setThreshold(3);
+                    mAssignableUsersACTextView.showProgress(false);
                     mAssignableUsersACTextView.setEnabled(true);
                 }
             }

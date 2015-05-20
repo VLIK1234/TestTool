@@ -24,7 +24,7 @@ import amtt.epam.com.amtt.bo.JPriorityResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JIssueTypes;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.project.JPriority;
-import amtt.epam.com.amtt.bo.user.JiraUserInfo;
+import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttContentProvider;
 import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
@@ -50,7 +50,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         private DataBaseCallback mCallback;
         private int mStepNumber;
         private String mUrl;
-        private JiraUserInfo mJiraUserInfo;
+        private JUserInfo mJiraUserInfo;
         private JPriority mPriority;
         private JProjects mProjects;
         private String mEmail;
@@ -93,7 +93,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
             return this;
         }
 
-        public Builder setJiraUserInfo(JiraUserInfo jiraUserInfo) {
+        public Builder setJiraUserInfo(JUserInfo jiraUserInfo) {
             Logger.d(TAG, "setJiraUserInfo()");
             mJiraUserInfo = jiraUserInfo;
             return this;
@@ -258,7 +258,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
     private String mPath;
     private int mCurrentSdkVersion;
     private String mUrl;
-    private JiraUserInfo mJiraUserInfo;
+    private JUserInfo mJiraUserInfo;
     private JPriority mPriority;
     private JProjects mProjects;
     private String mEmail;
@@ -593,7 +593,7 @@ public class DataBaseTask extends AsyncTask<Void, Void, DataBaseTaskResult> impl
         mContext.getContentResolver().insert(AmttContentProvider.STEP_CONTENT_URI, values);
     }
 
-    public void saveUser(JiraUserInfo jiraUserInfo, String url) {
+    public void saveUser(JUserInfo jiraUserInfo, String url) {
         Logger.d(TAG, "saveUser(JiraUserInfo jiraUserInfo, String url)");
         ContentValues values = new ContentValues();
         values.put(UsersTable._AVATAR_MEDIUM_URL, jiraUserInfo.getAvatarUrls().getAvatarMediumUrl());

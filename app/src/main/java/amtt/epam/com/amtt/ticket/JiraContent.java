@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import amtt.epam.com.amtt.bo.CreateIssue;
+import amtt.epam.com.amtt.bo.JCreateIssue;
 import amtt.epam.com.amtt.bo.JPriorityResponse;
 import amtt.epam.com.amtt.bo.JProjectsResponse;
 import amtt.epam.com.amtt.bo.JUserAssignableResponse;
@@ -130,10 +130,12 @@ public class JiraContent{
             @Override
             public void resultFromBackend(JProjectsResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
                 if (tag == JiraContentConst.META_RESPONSE) {
-                    if (result != null) {
-                        jiraGetContentCallback.resultOfDataLoading(mProjectsNames);
-                    } else {
-                        jiraGetContentCallback.resultOfDataLoading(null);
+                    if (jiraGetContentCallback != null) {
+                        if (result != null) {
+                            jiraGetContentCallback.resultOfDataLoading(mProjectsNames);
+                        } else {
+                            jiraGetContentCallback.resultOfDataLoading(null);
+                        }
                     }
                 }
             }
@@ -176,10 +178,12 @@ public class JiraContent{
             @Override
             public void resultFromBackend(JPriorityResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
                 if (tag == JiraContentConst.PRIORITIES_RESPONSE) {
-                    if (result != null) {
-                        jiraGetContentCallback.resultOfDataLoading(mProjectPrioritiesNames);
-                    } else {
-                        jiraGetContentCallback.resultOfDataLoading(null);
+                    if (jiraGetContentCallback != null) {
+                        if (result != null) {
+                            jiraGetContentCallback.resultOfDataLoading(mProjectPrioritiesNames);
+                        } else {
+                            jiraGetContentCallback.resultOfDataLoading(null);
+                        }
                     }
                 }
             }
@@ -195,7 +199,7 @@ public class JiraContent{
         priorityId = getPriorityIdByName(priorityName);
         issueTypeId = getIssueTypeIdByName(issueTypeName);
         versionId = getVersionIdByName(versionName);
-        String issueJson = new CreateIssue(mProjectKey, issueTypeId, description, summary, priorityId, versionId,
+        String issueJson = new JCreateIssue(mProjectKey, issueTypeId, description, summary, priorityId, versionId,
                 environment, userAssigneId).getResultJson();
         ContentFromBackend.getInstance().createIssueAsynchronously(issueJson, new ContentLoadingCallback<Boolean>() {
             @Override

@@ -11,7 +11,7 @@ import org.apache.http.util.EntityUtils;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.bo.JVersionsResponse;
-import amtt.epam.com.amtt.bo.project.JiraIssueVersion;
+import amtt.epam.com.amtt.bo.project.JIssueVersion;
 import amtt.epam.com.amtt.ticket.JiraContent;
 
 /**
@@ -25,12 +25,12 @@ public class VersionsProcessor implements Processor<JVersionsResponse, HttpEntit
         JsonParser parser = new JsonParser();
         JsonArray jsonArray = parser.parse(_response).getAsJsonArray();
         JVersionsResponse projectExtVersionsResponse = new JVersionsResponse();
-        ArrayList<JiraIssueVersion> jiraIssueVersions = new ArrayList<JiraIssueVersion>();
+        ArrayList<JIssueVersion> jIssueVersions = new ArrayList<JIssueVersion>();
         for (JsonElement obj : jsonArray) {
-            JiraIssueVersion jiraIssueVersion = Gson.getInstance().fromJson(obj, JiraIssueVersion.class);
-            jiraIssueVersions.add(jiraIssueVersion);
+            JIssueVersion jIssueVersion = Gson.getInstance().fromJson(obj, JIssueVersion.class);
+            jIssueVersions.add(jIssueVersion);
         }
-        projectExtVersionsResponse.setVersions(jiraIssueVersions);
+        projectExtVersionsResponse.setVersions(jIssueVersions);
         JiraContent.getInstance().setVersionsNames(projectExtVersionsResponse.getVersionsNames());
         return projectExtVersionsResponse;
     }

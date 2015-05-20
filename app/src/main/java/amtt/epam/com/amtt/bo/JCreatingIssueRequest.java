@@ -2,27 +2,27 @@ package amtt.epam.com.amtt.bo;
 
 import com.google.gson.annotations.SerializedName;
 
-import amtt.epam.com.amtt.bo.issue.JiraIssueFields;
+import amtt.epam.com.amtt.bo.issue.JIssueFields;
 
 /**
  * Created by Iryna_Monchanka on 3/26/2015.
  */
 public class JCreatingIssueRequest {
     @SerializedName("fields")
-    private JiraIssueFields mFields;
+    private JIssueFields mFields;
 
     public JCreatingIssueRequest() {
     }
 
-    public JCreatingIssueRequest(JiraIssueFields fields) {
+    public JCreatingIssueRequest(JIssueFields fields) {
         this.mFields = fields;
     }
 
-    public JiraIssueFields getFields() {
+    public JIssueFields getFields() {
         return mFields;
     }
 
-    public void setFields(JiraIssueFields fields) {
+    public void setFields(JIssueFields fields) {
         this.mFields = fields;
     }
 }

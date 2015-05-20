@@ -1,6 +1,6 @@
 package amtt.epam.com.amtt.bo;
 
-import amtt.epam.com.amtt.bo.user.JiraUser;
+import amtt.epam.com.amtt.bo.user.JUser;
 
 import java.util.ArrayList;
 
@@ -9,20 +9,20 @@ import java.util.ArrayList;
  */
 public class JUserAssignableResponse {
 
-    private ArrayList<JiraUser> mAssignableUsers;
+    private ArrayList<JUser> mAssignableUsers;
     private ArrayList<String> mAssignableUsersNames;
 
     public JUserAssignableResponse(){}
 
-    public JUserAssignableResponse(ArrayList<JiraUser> assignableUsers) {
+    public JUserAssignableResponse(ArrayList<JUser> assignableUsers) {
         this.mAssignableUsers = assignableUsers;
     }
 
-    public ArrayList<JiraUser> getAssignableUsers() {
+    public ArrayList<JUser> getAssignableUsers() {
         return mAssignableUsers;
     }
 
-    public void setAssignableUsers(ArrayList<JiraUser> assignableUsers) {
+    public void setAssignableUsers(ArrayList<JUser> assignableUsers) {
         this.mAssignableUsers = assignableUsers;
     }
 
