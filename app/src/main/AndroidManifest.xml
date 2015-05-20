@@ -46,9 +46,6 @@
         <activity
             android:name=".app.StepsActivity"
             android:label="@string/title_activity_steps" />
-        <activity
-            android:name=".app.UsersActivity"
-            android:label="@string/title_activity_settings" />
 
         <activity
             android:name=".app.LoginActivity"
@@ -64,6 +61,16 @@
             android:name=".app.UserInfoActivity"
             android:label="@string/title_activity_user_info" />
 
+        <activity
+            android:name=".app.InfoActivity"
+            android:label="@string/title_activity_info" />
+
+        <activity
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
+            android:name=".app.HelpDialogActivity"
+            android:label="@string/title_activity_help_dialog"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"/>
     </application>
 
 </manifest>
