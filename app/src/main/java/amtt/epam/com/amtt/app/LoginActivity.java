@@ -38,6 +38,7 @@ import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.task.DataBaseCRUD;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseMethod;
+import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -85,9 +86,9 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         mEpamJira = (CheckBox) findViewById(R.id.epam_jira_checkbox);
         mLoginButton = (Button) findViewById(R.id.login_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
-            @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
+                Toast.makeText(getBaseContext(),"Click",Toast.LENGTH_SHORT).show();
                 checkFields();
             }
         });
@@ -118,19 +119,19 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         }
     }
 
-    private Boolean isUserAlreadyInDatabase() {
+    private void isUserAlreadyInDatabase() {
         DataBaseMethod<Boolean> dataBaseMethod = DataBaseCRUD.INSTANCE.buildCheckUser(mUserName.getText().toString());
-//        new DataBaseTask.Builder<Boolean>()
-//                .setCallback(this)
-//                .setMethod(dataBaseMethod)
-//                .createAndExecute();
-        return dataBaseMethod.execute().mResult;
+        new DataBaseTask.Builder<Boolean>()
+                .setCallback(this)
+                .setMethod(dataBaseMethod)
+                .createAndExecute();
+//        return dataBaseMethod.execute().mResult;
     }
 
     private void insertUserToDatabase(final JiraUserInfo user) {
         user.setUrl(mRequestUrl);
         final int[] userId = new int[1];
-        DbObjectManger.INSTANCE.addOrUpdateAsync(user, new IResult() {
+        DbObjectManger.INSTANCE.addOrUpdateAsync(user, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
                 userId[0] = result;

@@ -5,6 +5,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
+import java.io.IOException;
+
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 
 
@@ -14,8 +16,13 @@ import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 public class ProjectsProcessor implements Processor<JMetaResponse, HttpEntity> {
 
     @Override
-    public JMetaResponse process(HttpEntity inputStream) throws Exception {
-        String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
+    public JMetaResponse process(HttpEntity inputStream){
+        String _response = null;
+        try {
+            _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return Gson.getInstance().fromJson(_response, JMetaResponse.class);
     }
 }

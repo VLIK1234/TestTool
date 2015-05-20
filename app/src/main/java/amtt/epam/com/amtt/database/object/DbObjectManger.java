@@ -2,6 +2,8 @@ package amtt.epam.com.amtt.database.object;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteQuery;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 import java.util.List;
@@ -34,7 +36,7 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
         return ContextHolder.getContext().getContentResolver().bulkInsert(objects.get(0).getUri(), contentValues);
     }
 
-    public void addOrUpdateAsync(final DatabaseEntity object, final IResult result) {
+    public void addOrUpdateAsync(final DatabaseEntity object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -45,7 +47,7 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
         }).start();
     }
 
-    public void addOrUpdateAsync(final List<DatabaseEntity> object, final IResult result) {
+    public void addOrUpdateAsync(final List<DatabaseEntity> object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -75,6 +77,10 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
     @Override
     public DatabaseEntity getByKey(DatabaseEntity objectPrototype) {
         return null;
+    }
+
+    public Cursor query(DatabaseEntity objcet, String mSelection, String[] mSelectionArgs){
+        return ContextHolder.getContext().getContentResolver().query(objcet.getUri(), null, mSelection + "=?", mSelectionArgs, null);
     }
 
 

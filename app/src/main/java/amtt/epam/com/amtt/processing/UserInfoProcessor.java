@@ -4,6 +4,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
+import java.io.IOException;
+
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 
 
@@ -13,8 +15,13 @@ import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 public class UserInfoProcessor implements Processor<JiraUserInfo, HttpEntity> {
 
     @Override
-    public JiraUserInfo process(HttpEntity httpEntity) throws Exception {
-        String _response = EntityUtils.toString(httpEntity, HTTP.UTF_8);
+    public JiraUserInfo process(HttpEntity httpEntity) {
+        String _response = null;
+        try {
+            _response = EntityUtils.toString(httpEntity, HTTP.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return Gson.getInstance().fromJson(_response, JiraUserInfo.class);
     }
 }
