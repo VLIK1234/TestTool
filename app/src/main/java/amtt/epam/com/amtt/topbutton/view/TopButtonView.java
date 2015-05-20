@@ -152,12 +152,12 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
             @Override
             public void TouchAction() {
                 try {
-                    DataBaseMethod<Void> activityMetaSaving = DataBaseCRUD.getInstance().buildActivityMetaSaving();
+                    DataBaseMethod<Void> activityMetaSaving = DataBaseCRUD.INSTANCE.buildActivityMetaSaving();
                     new DataBaseTask.Builder()
                             .setCallback(TopButtonView.this)
                             .setMethod(activityMetaSaving)
                             .createAndExecute();
-                    DataBaseMethod<Void> stepSaving = DataBaseCRUD.getInstance().buildStepSaving(++sStepNumber);
+                    DataBaseMethod<Void> stepSaving = DataBaseCRUD.INSTANCE.buildStepSaving(++sStepNumber);
                     new DataBaseTask.Builder()
                             .setCallback(TopButtonView.this)
                             .setMethod(stepSaving)

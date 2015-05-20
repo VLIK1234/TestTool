@@ -3,8 +3,8 @@ package amtt.epam.com.amtt.database.task;
 import android.content.Context;
 import android.database.Cursor;
 
-import amtt.epam.com.amtt.database.dao.Dao;
-import amtt.epam.com.amtt.database.dao.DatabaseEntity;
+import amtt.epam.com.amtt.database.object.DbObjectManger;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.util.ContextHolder;
 
@@ -68,36 +68,34 @@ public class DataBaseMethod<ResultType> {
 
     }
 
-    private static Context sContext;
-
     private DatabaseMethodType mMethodType;
     private DatabaseEntity mEntity;
     private String mSelection;
     private String[] mSelectionArgs;
     private Processor<ResultType, Cursor> mProcessor;
 
-    static {
-        sContext = ContextHolder.getContext();
-    }
 
-    public DataBaseTask.DataBaseResponse<ResultType> execute() throws Exception {
+
+    public DataBaseTask.DataBaseResponse<ResultType> execute(){
         ResultType result = null;
         Cursor cursor = null;
         switch (mMethodType) {
             case ADD_OR_UPDATE:
-                result = (ResultType)new Dao().addOrUpdate(mEntity);
+                result = (ResultType) DbObjectManger.INSTANCE.addOrUpdate(mEntity);
                 break;
             case REMOVE:
-                new Dao().remove(mEntity);
+                DbObjectManger.INSTANCE.remove(mEntity);
                 break;
             case REMOVE_ALL:
-                new Dao().removeAll(mEntity);
+                DbObjectManger.INSTANCE.removeAll(mEntity);
                 break;
             case GET_BY_KEY:
-                result = (ResultType)new Dao().getByKey(mEntity);
+                result = (ResultType) DbObjectManger.INSTANCE.getByKey(mEntity);
                 break;
             case RAW_QUERY:
-                cursor = sContext.getContentResolver().query(mEntity.getUri(), null, mSelection + "=?", mSelectionArgs, null);
+                cursor = ContextHolder.getContext().getContentResolver().query(mEntity.getUri(), null, mSelection + "=?", mSelectionArgs, null);
+                break;
+            default:
                 break;
         }
         if (mProcessor != null) {

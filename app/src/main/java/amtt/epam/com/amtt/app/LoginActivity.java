@@ -32,12 +32,12 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.dao.Dao;
+import amtt.epam.com.amtt.database.object.DbObjectManger;
+import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.task.DataBaseCRUD;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseMethod;
-import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -118,18 +118,25 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         }
     }
 
-    private void isUserAlreadyInDatabase() {
-        DataBaseMethod<Boolean> dataBaseMethod = DataBaseCRUD.getInstance().buildCheckUser(mUserName.getText().toString());
-        new DataBaseTask.Builder<Boolean>()
-                .setCallback(this)
-                .setMethod(dataBaseMethod)
-                .createAndExecute();
+    private Boolean isUserAlreadyInDatabase() {
+        DataBaseMethod<Boolean> dataBaseMethod = DataBaseCRUD.INSTANCE.buildCheckUser(mUserName.getText().toString());
+//        new DataBaseTask.Builder<Boolean>()
+//                .setCallback(this)
+//                .setMethod(dataBaseMethod)
+//                .createAndExecute();
+        return dataBaseMethod.execute().mResult;
     }
 
-    private void insertUserToDatabase(JiraUserInfo user) {
+    private void insertUserToDatabase(final JiraUserInfo user) {
         user.setUrl(mRequestUrl);
-        int userId = new Dao().addOrUpdate(user);
-        ActiveUser.getInstance().setId(userId);
+        final int[] userId = new int[1];
+        DbObjectManger.INSTANCE.addOrUpdateAsync(user, new IResult() {
+            @Override
+            public void onResult(Integer result) {
+                userId[0] = result;
+            }
+        });
+        ActiveUser.getInstance().setId(userId[0]);
     }
 
     private void checkFields() {

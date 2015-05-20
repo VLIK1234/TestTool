@@ -1,15 +1,13 @@
 package amtt.epam.com.amtt.bo.database;
 
 import android.content.ContentValues;
-import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.net.Uri;
 
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.dao.DatabaseEntity;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
-import amtt.epam.com.amtt.util.ActivityMetaUtil;
 
 /**
  * Created by Artsiom_Kaliaha on 15.05.2015.

@@ -15,17 +15,9 @@ import amtt.epam.com.amtt.util.ActivityMetaUtil;
 /**
  * Created by Artyom on 16.05.2015.
  */
-public class DataBaseCRUD {
+public enum DataBaseCRUD {
 
-    private static class DataBaseCRUDSingletonHolder {
-
-        public static final DataBaseCRUD INSTANCE = new DataBaseCRUD();
-
-    }
-
-    public static DataBaseCRUD getInstance() {
-        return DataBaseCRUDSingletonHolder.INSTANCE;
-    }
+    INSTANCE;
 
     public DataBaseMethod buildStepSaving(int stepNumber) throws IOException, NameNotFoundException {
         Step step = new Step(stepNumber, ActivityMetaUtil.getTopActivityComponent());

@@ -6,7 +6,7 @@ import android.net.Uri;
 
 import com.google.gson.annotations.SerializedName;
 
-import amtt.epam.com.amtt.database.dao.DatabaseEntity;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
 

@@ -5,5 +5,5 @@ package amtt.epam.com.amtt.processing;
  */
 public interface Processor<ProcessingResult, Source> {
 
-    ProcessingResult process(Source source) throws Exception;
+    ProcessingResult process(Source source);
 }

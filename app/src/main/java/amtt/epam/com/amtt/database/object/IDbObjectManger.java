@@ -1,11 +1,11 @@
-package amtt.epam.com.amtt.database.dao;
+package amtt.epam.com.amtt.database.object;
 
 import java.util.List;
 
 /**
  * Created by Artsiom_Kaliaha on 11.05.2015.
  */
-public interface DaoInterface<ObjectType> {
+public interface IDbObjectManger<ObjectType> {
 
     Integer addOrUpdate(ObjectType object);
 
@@ -13,7 +13,7 @@ public interface DaoInterface<ObjectType> {
 
     void removeAll(ObjectType objectPrototype);
 
-    List<ObjectType> getAll();
+    List<ObjectType> getAll(ObjectType object);
 
     ObjectType getByKey(ObjectType objectPrototype);
 

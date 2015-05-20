@@ -23,7 +23,7 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.dao.Dao;
+import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -114,7 +114,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
 
     private void updateUserInfo(JiraUserInfo user) {
         try {
-            new Dao().addOrUpdate(user);
+            DbObjectManger.INSTANCE.addOrUpdate(user);
         } catch (Exception e) {
 
         }
