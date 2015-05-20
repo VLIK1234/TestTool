@@ -2,13 +2,10 @@ package amtt.epam.com.amtt.topbutton.view;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -24,49 +21,43 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
-
 import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.HelpDialogActivity;
-import amtt.epam.com.amtt.app.InfoActivity;
-import amtt.epam.com.amtt.app.LoginActivity;
-import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
+import amtt.epam.com.amtt.database.task.DataBaseCRUD;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
-import amtt.epam.com.amtt.database.task.DataBaseOperationType;
+import amtt.epam.com.amtt.database.task.DataBaseMethod;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
-import amtt.epam.com.amtt.database.task.DataBaseTaskResult;
+import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.util.ContextHolder;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
-import amtt.epam.com.amtt.util.CredentialsManager;
 import amtt.epam.com.amtt.util.PreferenceUtils;
-import amtt.epam.com.amtt.util.UtilConstants;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
+
 public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResponse>, DataBaseCallback {
 
     private final static String LOG_TAG = "TAG";
@@ -102,7 +93,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
 
     //Database fields
     private static int sStepNumber; //responsible for steps ordering in database
-    private int mScreenNumber; //responsible for nonrecurring screenshot names
 
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);
@@ -139,24 +129,44 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         createTicketView = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket) +" Ira doing this task", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket) + " Ira doing this task", Toast.LENGTH_LONG).show();
             }
         });
         openAmttView = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), new ITouchAction() {
             @Override
             public void TouchAction() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_open_amtt) + " don't have logic yet.", Toast.LENGTH_LONG).show();
+                Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
+                userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(userInfoIntent);
+
             }
         });
         expectedResultView = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result)+" Vova what will be here?", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result) + " Vova what will be here?", Toast.LENGTH_LONG).show();
             }
         });
         screenshotView = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), new ITouchAction() {
             @Override
             public void TouchAction() {
+                try {
+                    DataBaseMethod<Void> activityMetaSaving = DataBaseCRUD.getInstance().buildActivityMetaSaving();
+                    new DataBaseTask.Builder()
+                            .setCallback(TopButtonView.this)
+                            .setMethod(activityMetaSaving)
+                            .createAndExecute();
+                    DataBaseMethod<Void> stepSaving = DataBaseCRUD.getInstance().buildStepSaving(++sStepNumber);
+                    new DataBaseTask.Builder()
+                            .setCallback(TopButtonView.this)
+                            .setMethod(stepSaving)
+                            .createAndExecute();
+                } catch (NameNotFoundException e) {
+                    Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    Toast.makeText(getContext(), R.string.screenshot_saving_error, Toast.LENGTH_SHORT).show();
+                }
                 Intent intentHideView = new Intent(getContext(), TopButtonService.class).setAction(TopButtonService.ACTION_HIDE_VIEW);
                 intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startService(intentHideView);
@@ -191,10 +201,17 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
             public void TouchAction() {
                 TopButtonView.setStartRecord(false);
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
+                RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH,
+                        new ProjectsProcessor(),
+                        null,
+                        null,
+                        null);
+                new JiraTask.Builder<JMetaResponse>()
+                        .setRestMethod(searchMethod)
+                        .setCallback(TopButtonView.this)
+                        .createAndExecute();
             }
         });
-
-        clearDatabase();
     }
 
     private void checkFreeSpace() {
@@ -310,7 +327,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
                         if (buttonsBar.getVisibility() == VISIBLE) {
-                            playRotateAnimationMainButton(300,180,0);
+                            playRotateAnimationMainButton(300, 180, 0);
                             final Animation translateUp = AnimationUtils.loadAnimation(getContext(), R.anim.abc_fade_out);
                             translateUp.setAnimationListener(new Animation.AnimationListener() {
                                 @Override
@@ -354,13 +371,13 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
                         } else {
                             if (!getStartRecord()) {
                                 startRecordState();
-                            }else{
+                            } else {
                                 cancelRecordState();
                             }
                             buttonsBar.setVisibility(VISIBLE);
                             xButton = layoutParams.x;
                             yButton = layoutParams.y;
-                            playRotateAnimationMainButton(300,0,180);
+                            playRotateAnimationMainButton(300, 0, 180);
                             Animation translate = AnimationUtils.loadAnimation(getContext(), R.anim.translate);
                             buttonsBar.startAnimation(translate);
                             checkFreeSpace();
@@ -380,7 +397,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         }
     }
 
-    private void playRotateAnimationMainButton(int duration, int fromAngle, int toAngle){
+    private void playRotateAnimationMainButton(int duration, int fromAngle, int toAngle) {
         AnimatorSet expand = new AnimatorSet().setDuration(duration);
         LayerDrawable layerDrawable = (LayerDrawable) getResources().getDrawable(R.drawable.background_main_button);
         RotatingDrawable drawable = new RotatingDrawable(layerDrawable.findDrawableByLayerId(R.id.main_button_background));
@@ -403,7 +420,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
 
     private static class RotatingDrawable extends LayerDrawable {
         public RotatingDrawable(Drawable drawable) {
-            super(new Drawable[] { drawable });
+            super(new Drawable[]{drawable});
         }
 
         private float mRotation;
@@ -429,32 +446,14 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     }
 
     @Override
-    public void onDataBaseActionDone(DataBaseTaskResult result) {
-        int resultMessage;
-        switch (result) {
-            case DONE:
-                resultMessage = R.string.data_base_action_done;
-                break;
-            case ERROR:
-                resultMessage = R.string.data_base_action_error;
-                break;
-            default:
-                resultMessage = R.string.data_base_cleared;
-                break;
-        }
-        Toast.makeText(getContext(), resultMessage, Toast.LENGTH_SHORT).show();
+    public void onDataBaseRequestPerformed(DataBaseResponse dataBaseResponse) {
+        Toast.makeText(getContext(), R.string.data_base_action_done, Toast.LENGTH_SHORT).show();
     }
 
-
-    private void clearDatabase() {
-        new DataBaseTask.Builder()
-                .setOperationType(DataBaseOperationType.CLEAR)
-                .setContext(getContext())
-                .setCallback(TopButtonView.this)
-                .create()
-                .execute();
+    @Override
+    public void onDataBaseRequestError(Exception e) {
+        Toast.makeText(getContext(), R.string.database_operation_error, Toast.LENGTH_SHORT).show();
     }
-
 
     @Override
     public void onRequestStarted() {
@@ -466,8 +465,8 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         JMetaResponse jiraMetaResponse = restResponse.getResultObject();
         ArrayList<String> projectsNames = jiraMetaResponse.getProjectsNames();
         ArrayList<String> projectsKeys = jiraMetaResponse.getProjectsKeys();
-        PreferenceUtils.putSet(UtilConstants.SharedPreference.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
-        PreferenceUtils.putSet(UtilConstants.SharedPreference.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
+        PreferenceUtils.putSet(Constants.SharedPreference.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
+        PreferenceUtils.putSet(Constants.SharedPreference.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
         Intent intent = new Intent(getContext(), CreateIssueActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getContext().getApplicationContext().startActivity(intent);
@@ -478,21 +477,23 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         ExceptionHandler.getInstance().processError(e).showDialog(getContext(), TopButtonView.this);
     }
 
-    public static void setStartRecord(boolean isStartRecord){
+    public static void setStartRecord(boolean isStartRecord) {
         TopButtonView.isStartRecord = isStartRecord;
     }
-    public static boolean getStartRecord(){
+
+    public static boolean getStartRecord() {
         return isStartRecord;
     }
 
-    public void startRecordState(){
+    public void startRecordState() {
         buttonsBar.removeAllViews();
         buttonsBar.addView(startRecordView);
         buttonsBar.addView(createTicketView);
         buttonsBar.addView(expectedResultView);
         buttonsBar.addView(openAmttView);
     }
-    public void cancelRecordState(){
+
+    public void cancelRecordState() {
         buttonsBar.removeAllViews();
         buttonsBar.addView(screenshotView);
         buttonsBar.addView(activityInfoView);

@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.database.task;
+package amtt.epam.com.amtt.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,11 +14,12 @@ import amtt.epam.com.amtt.database.constant.SqlQueryConstants;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.Table;
+import amtt.epam.com.amtt.database.table.UsersTable;
 
 /**
  * Created by Artsiom_Kaliaha on 18.03.2015.
  */
-public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstants, BaseColumns {
+public class DataBaseManager extends SQLiteOpenHelper {
 
     private static final Integer DATA_BASE_VERSION = 3;
     private static final String DATA_BASE_NAME = "amtt.db";
@@ -28,6 +29,7 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
         sTables = new ArrayList<>();
         sTables.add(ActivityInfoTable.class);
         sTables.add(StepsTable.class);
+        sTables.add(UsersTable.class);
     }
 
     public DataBaseManager(Context context) {
@@ -60,7 +62,7 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
     private void dropTables(SQLiteDatabase db) {
         try {
             for (Class table : sTables) {
-                db.execSQL(DROP + ((Table)table.newInstance()).getTableName());
+                db.execSQL(BaseColumns.DROP + ((Table) table.newInstance()).getTableName());
             }
         } catch (IllegalAccessException e) {
             //ignored
@@ -75,33 +77,32 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
 
         try {
             database.beginTransaction();
-            cursor = getReadableDatabase().query(tableName, projection, selection + "=?", selectionArgs, null, null, sortOrder);
+            cursor = getReadableDatabase().query(tableName, projection, selection, selectionArgs, null, null, sortOrder);
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();
         }
-
         return cursor;
     }
 
     public Cursor joinQuery(String[] tablesName, String[] projection, String[] connectionColumns) {
         StringBuilder rawQueryBuilder = new StringBuilder();
-        rawQueryBuilder.append(SELECT);
+        rawQueryBuilder.append(SqlQueryConstants.SELECT);
 
         for (int i = 0; i < projection.length; i++) {
             rawQueryBuilder.append(projection[i]);
             if (i != projection.length - 1) {
-                rawQueryBuilder.append(COMMA);
+                rawQueryBuilder.append(SqlQueryConstants.COMMA);
             }
         }
 
         final String firstTable = tablesName[0];
         final String secondTable = tablesName[1];
-        rawQueryBuilder.append(FROM).append(firstTable)
-                .append(JOIN).append(secondTable)
-                .append(ON).append(firstTable).append(DOT).append(connectionColumns[0])
-                .append(EQUALS)
-                .append(secondTable).append(DOT).append(connectionColumns[1]);
+        rawQueryBuilder.append(SqlQueryConstants.FROM).append(firstTable)
+                .append(SqlQueryConstants.JOIN).append(secondTable)
+                .append(SqlQueryConstants.ON).append(firstTable).append(SqlQueryConstants.DOT).append(connectionColumns[0])
+                .append(SqlQueryConstants.EQUALS)
+                .append(secondTable).append(SqlQueryConstants.DOT).append(connectionColumns[1]);
 
         Cursor cursor;
         SQLiteDatabase database = getReadableDatabase();
@@ -113,25 +114,34 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
         } finally {
             database.endTransaction();
         }
-
         return cursor;
     }
 
     public long insert(String tableName, ContentValues values) {
         long id;
-
         SQLiteDatabase database = getWritableDatabase();
-
         try {
             database.beginTransaction();
-            id = database.insert(tableName, null, values);
+            id = database.insertWithOnConflict(tableName, null, values, SQLiteDatabase.CONFLICT_REPLACE);
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();
-            database.close();
         }
-
         return id;
+    }
+
+    public int bulkInsert(String tableName, ContentValues[] values) {
+        SQLiteDatabase database = getWritableDatabase();
+        try {
+            database.beginTransaction();
+            for (ContentValues value : values) {
+                database.insert(tableName, null, value);
+            }
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+        }
+        return values.length;
     }
 
     public int delete(String tableName, String selection, String[] selectionArgs) {
@@ -144,9 +154,7 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();
-            database.close();
         }
-
         return deletedRows;
     }
 
@@ -160,7 +168,6 @@ public class DataBaseManager extends SQLiteOpenHelper implements SqlQueryConstan
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();
-            database.close();
         }
         return updatedRows;
     }

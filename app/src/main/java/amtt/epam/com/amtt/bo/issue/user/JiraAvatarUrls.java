@@ -16,9 +16,6 @@ public class JiraAvatarUrls {
     @SerializedName("32x32")
     private String mAvatarMediumUrl;
 
-    public JiraAvatarUrls() {
-    }
-
     public JiraAvatarUrls(String avatarUrl, String avatarSmallUrl, String avatarXSmallUrl, String avatarMediumUrl) {
         this.mAvatarUrl = avatarUrl;
         this.mAvatarSmallUrl = avatarSmallUrl;
@@ -30,31 +27,16 @@ public class JiraAvatarUrls {
         return mAvatarUrl;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.mAvatarUrl = avatarUrl;
-    }
-
     public String getAvatarSmallUrl() {
         return mAvatarSmallUrl;
-    }
-
-    public void setAvatarSmallUrl(String avatarSmallUrl) {
-        this.mAvatarSmallUrl = avatarSmallUrl;
     }
 
     public String getAvatarXSmallUrl() {
         return mAvatarXSmallUrl;
     }
 
-    public void setAvatarXSmallUrl(String avatarXSmallUrl) {
-        this.mAvatarXSmallUrl = avatarXSmallUrl;
-    }
-
     public String getAvatarMediumUrl() {
         return mAvatarMediumUrl;
     }
 
-    public void setAvatarMediumUrl(String avatarMediumUrl) {
-        this.mAvatarMediumUrl = avatarMediumUrl;
-    }
 }

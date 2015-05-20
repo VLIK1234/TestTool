@@ -1,8 +1,8 @@
 package amtt.epam.com.amtt.app;
 
-import amtt.epam.com.amtt.util.Constants;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,7 +28,7 @@ import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 import amtt.epam.com.amtt.view.EditText;
-import amtt.epam.com.amtt.util.UtilConstants;
+import amtt.epam.com.amtt.util.Constants.SharedPreference;
 
 
 @SuppressWarnings("unchecked")
@@ -44,6 +44,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         etDescription = (EditText) findViewById(R.id.et_description);
         etSummary = (EditText) findViewById(R.id.et_summary);
         etSummary.clearErrorOnTextChanged(true);
@@ -71,7 +72,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
                 Boolean isValid = true;
 
                 if (TextUtils.isEmpty(etSummary.getText().toString())) {
-                    etSummary.setError(Constants.DialogKeys.INPUT_SUMMARY);
+                    etSummary.setError("");
                     isValid = false;
                 }
 
@@ -83,17 +84,28 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     public int getSelectedItemPositionProject() {
         return this.spinnerProjectsKey.getSelectedItemPosition();
     }
 
     public ArrayList<String> getProjectsNames() {
-        projectsNames = Converter.setToArrayList(PreferenceUtils.getSet(UtilConstants.SharedPreference.PROJECTS_NAMES, null));
+        projectsNames = Converter.setToArrayList(PreferenceUtils.getSet(SharedPreference.PROJECTS_NAMES, null));
         return projectsNames;
     }
 
     public ArrayList<String> getProjectsKeys() {
-        projectsKeys = Converter.setToArrayList(PreferenceUtils.getSet(UtilConstants.SharedPreference.PROJECTS_KEYS, null));
+        projectsKeys = Converter.setToArrayList(PreferenceUtils.getSet(SharedPreference.PROJECTS_KEYS, null));
         return projectsKeys;
     }
 
@@ -121,7 +133,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
         issueType = spinnerIssueTypes.getSelectedItem().toString();
         projectKey = getProjectKey();
 
-        RestMethod<JMetaResponse> createIssue = JiraApi.getInstance().buildIssueCeating(issue.createSimpleIssue(projectKey, issueType, description, summary));
+        RestMethod<JMetaResponse> createIssue = JiraApi.getInstance().buildIssueCreating(issue.createSimpleIssue(projectKey, issueType, description, summary));
         new JiraTask.Builder<JMetaResponse>()
                 .setRestMethod(createIssue)
                 .setCallback(CreateIssueActivity.this)
@@ -129,7 +141,7 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
     }
 
     private void getMetaAsynchronously() {
-        RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor());
+        RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor(), null, null,null);
         new JiraTask.Builder<JMetaResponse>()
                 .setRestMethod(searchMethod)
                 .setCallback(CreateIssueActivity.this)
@@ -166,4 +178,5 @@ public class CreateIssueActivity extends BaseActivity implements JiraCallback<JM
     public void onRequestError(AmttException e) {
         ExceptionHandler.getInstance().processError(e).showDialog(this, CreateIssueActivity.this);
     }
+
 }

@@ -1,57 +1,151 @@
 package amtt.epam.com.amtt.app;
 
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ImageView;
 
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.exception.AmttException;
+import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
-import amtt.epam.com.amtt.view.TextView;
+import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.dao.Dao;
+import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
-import amtt.epam.com.amtt.util.CredentialsManager;
-import amtt.epam.com.amtt.util.UtilConstants;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.view.TextView;
 
-public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraUserInfo> {
+/**
+ * Created by Artsiom_Kaliaha on 07.05.2015.
+ */
+@SuppressWarnings("unchecked")
+public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraUserInfo>, LoaderCallbacks<Cursor> {
 
     private TextView mName;
     private TextView mEmailAddress;
     private TextView mDisplayName;
     private TextView mTimeZone;
     private TextView mLocale;
-    private TextView mSize;
-    private TextView mNamesGroups;
+    private ActiveUser mUser;
+    private ImageView mUserImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_user_info);
-        mName = (TextView) findViewById(R.id.tv_name);
-        mEmailAddress = (TextView) findViewById(R.id.tv_email_address);
-        mDisplayName = (TextView) findViewById(R.id.tv_display_name);
-        mTimeZone = (TextView) findViewById(R.id.tv_time_zone);
-        mLocale = (TextView) findViewById(R.id.tv_locale);
-        mSize = (TextView) findViewById(R.id.tv_size);
-        mNamesGroups = (TextView) findViewById(R.id.tv_names);
-        executeAsynchronously();
+        TopButtonService.close(this);
+        initViews();
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
     }
 
-    @SuppressWarnings("unchecked")
-    private void executeAsynchronously() {
-        String requestSuffix = JiraApiConst.USER_INFO_PATH + CredentialsManager.getInstance().getUserName() + JiraApiConst.EXPAND_GROUPS;
-        RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix, new UserInfoProcessor());
-        new JiraTask.Builder<JiraUserInfo>()
-                .setRestMethod(userInfoMethod)
-                .setCallback(UserInfoActivity.this)
-                .createAndExecute();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        TopButtonService.start(this);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_user_info, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_change_user:
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            case R.id.action_refresh_user_info:
+                showProgress(true);
+                String requestSuffix = JiraApiConst.USER_INFO_PATH + ActiveUser.getInstance().getUserName() + JiraApiConst.EXPAND_GROUPS;
+                RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
+                        new UserInfoProcessor(),
+                        null,
+                        null,
+                        null);
+                new JiraTask.Builder<JiraUserInfo>()
+                        .setRestMethod(userInfoMethod)
+                        .setCallback(UserInfoActivity.this)
+                        .createAndExecute();
+                return true;
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void initViews() {
+        mName = (TextView) findViewById(R.id.user_name);
+        mEmailAddress = (TextView) findViewById(R.id.user_email);
+        mDisplayName = (TextView) findViewById(R.id.user_display_name);
+        mTimeZone = (TextView) findViewById(R.id.user_time_zone);
+        mLocale = (TextView) findViewById(R.id.user_locale);
+        mUserImage = (ImageView) findViewById(R.id.user_image);
+    }
+
+    public void populateUserInfo(JiraUserInfo user) {
+        mName.setText(user.getName());
+        mEmailAddress.setText(user.getEmailAddress());
+        mDisplayName.setText(user.getDisplayName());
+        mTimeZone.setText(user.getTimeZone());
+        mLocale.setText(user.getLocale());
+    }
+
+    private void updateUserInfo(JiraUserInfo user) {
+        try {
+            new Dao().addOrUpdate(user);
+        } catch (Exception e) {
+
+        }
+    }
+
+    //Callback
+    //Loader
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this,
+                AmttUri.USER.get(),
+                null,
+                UsersTable._ID + "=?",
+                new String[]{ String.valueOf(ActiveUser.getInstance().getId()) },
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mUser = ActiveUser.getInstance();
+        JiraUserInfo userInfo = new JiraUserInfo(data);
+        populateUserInfo(userInfo);
+        CoreApplication.getImageLoader().displayImage(userInfo.getAvatarUrls().getAvatarUrl(), mUserImage);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    //Jira
     @Override
     public void onRequestStarted() {
         showProgress(true);
@@ -59,22 +153,11 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
 
     @Override
     public void onRequestPerformed(RestResponse<JiraUserInfo> restResponse) {
-
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
             JiraUserInfo user = restResponse.getResultObject();
-            mName.setText(getResources().getString(R.string.label_user_name) + UtilConstants.SharedPreference.COLON + user.getName());
-            mEmailAddress.setText(getResources().getString(R.string.label_email) + UtilConstants.SharedPreference.COLON + user.getEmailAddress());
-            mDisplayName.setText(user.getDisplayName());
-            mTimeZone.setText(getResources().getString(R.string.label_time_zone) + UtilConstants.SharedPreference.COLON + user.getTimeZone());
-            mLocale.setText(getResources().getString(R.string.label_locale) + UtilConstants.SharedPreference.COLON + user.getLocale());
-            mSize.setText(getResources().getString(R.string.label_size) + UtilConstants.SharedPreference.COLON + String.valueOf(user.getGroups().getSize()));
-            String groups = "";
-            for (int i = 0; i < user.getGroups().getItems().size(); i++) {
-                groups += user.getGroups().getItems().get(i).getName() + UtilConstants.Dialog.NEW_LINE;
-            }
-            mNamesGroups.setText(getResources().getString(R.string.label_names_groups) + UtilConstants.SharedPreference.COLON + groups);
+            populateUserInfo(user);
+            updateUserInfo(user);
             showProgress(false);
-
         }
     }
 
@@ -83,4 +166,5 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
         ExceptionHandler.getInstance().processError(e).showDialog(this, UserInfoActivity.this);
         showProgress(false);
     }
+
 }

@@ -9,7 +9,7 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.processing.AuthResponseProcessor;
 import amtt.epam.com.amtt.processing.Processor;
-import amtt.epam.com.amtt.util.CredentialsManager;
+import amtt.epam.com.amtt.util.ActiveUser;
 
 /**
  * Created by Artsiom_Kaliaha on 24.03.2015.
@@ -28,16 +28,16 @@ public class JiraApi {
         return JiraApiSingletonHolder.INSTANCE;
     }
 
-    private final CredentialsManager mCredentialsManager;
+    private final ActiveUser mUser;
     private RestMethod mMethod;
 
     private JiraApi() {
-        mCredentialsManager = CredentialsManager.getInstance();
+        mUser = ActiveUser.getInstance();
     }
 
     public RestMethod buildAuth(final String userName, final String password, final String url) {
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials(userName, password));
+        headers.put(JiraApiConst.AUTH, mUser.makeTempCredentials(userName, password));
         mMethod = new RestMethod.Builder<String>()
                 .setType(RestMethodType.GET)
                 .setUrl(url + JiraApiConst.LOGIN_PATH)
@@ -47,26 +47,39 @@ public class JiraApi {
         return mMethod;
     }
 
-    public RestMethod buildIssueCeating(final String postEntity) {
+    public RestMethod buildIssueCreating(final String postEntity) {
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials());
+        headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
         mMethod = new RestMethod.Builder<Void>()
                 .setType(RestMethodType.POST)
-                .setUrl(mCredentialsManager.getUrl() + JiraApiConst.ISSUE_PATH)
+                .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH)
                 .setHeadersMap(headers)
                 .setPostEntity(postEntity)
                 .create();
         return mMethod;
     }
 
-    public <ResultType, InputType> RestMethod buildDataSearch(final String requestSuffix, final Processor<ResultType, InputType> processor) {
+    public <ResultType, InputType> RestMethod buildDataSearch(final String requestSuffix,
+                                                              final Processor<ResultType, InputType> processor,
+                                                              final String userName,
+                                                              final String password,
+                                                              String url) {
+        String credentials;
+        if (userName != null && password != null) {
+            //this code is used when new user is added and we need to get all the info about a user and authorize him/her in one request
+            credentials = mUser.makeTempCredentials(userName,password);
+        } else {
+            credentials = mUser.getCredentials();
+            url = mUser.getUrl();
+        }
+
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, mCredentialsManager.getCredentials());
+        headers.put(JiraApiConst.AUTH, credentials);
 
         mMethod = new RestMethod.Builder()
                 .setType(RestMethodType.GET)
-                .setUrl(mCredentialsManager.getUrl() + requestSuffix)
+                .setUrl(url + requestSuffix)
                 .setHeadersMap(headers)
                 .setProcessor(processor)
                 .create();
