@@ -1,6 +1,8 @@
 package amtt.epam.com.amtt.app;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -25,6 +27,8 @@ import amtt.epam.com.amtt.view.EditText;
 public class CreateIssueActivity extends BaseActivity {
 
     private final String TAG = this.getClass().getSimpleName();
+    private static final int MESSAGE_TEXT_CHANGED = 100;
+    private AutoCompleteTextView mAssignableUsersACTextView;
     private Button mCreateIssueButton;
     private EditText mDescriptionEditText;
     private EditText mEnvironmentEditText;
@@ -33,6 +37,7 @@ public class CreateIssueActivity extends BaseActivity {
     private String mIssueTypeName;
     private String mPriorityName;
     private String mVersionName;
+    private String mDelayedRun;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,7 +237,7 @@ public class CreateIssueActivity extends BaseActivity {
     }
 
     private void initAssigneeSpinner() {
-        final AutoCompleteTextView mAssignableUsersACTextView = (AutoCompleteTextView) findViewById(R.id.et_assignable_users);
+        mAssignableUsersACTextView = (AutoCompleteTextView) findViewById(R.id.et_assignable_users);
         mAssignableUsersACTextView.setEnabled(false);
         JiraContent.getInstance().getUsersAssignable("", new JiraGetContentCallback<ArrayList<String>>() {
             @Override
@@ -250,20 +255,9 @@ public class CreateIssueActivity extends BaseActivity {
         mAssignableUsersACTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() >= 3) {
-                    mAssignableUsersACTextView.setEnabled(false);
-                    JiraContent.getInstance().getUsersAssignable(s.toString(), new JiraGetContentCallback<ArrayList<String>>() {
-                        @Override
-                        public void resultOfDataLoading(ArrayList<String> result) {
-                            if (result != null) {
-                                ArrayAdapter<String> mAssignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
-                                mAssignableUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                                mAssignableUsersACTextView.setAdapter(mAssignableUsersAdapter);
-                                mAssignableUsersACTextView.setThreshold(3);
-                                mAssignableUsersACTextView.setEnabled(true);
-                            }
-                        }
-                    });
+                if (s.length() >= 2) {
+                    mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
+                    mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
                     mAssignableUserName = s.toString();
                 }
             }
@@ -277,4 +271,27 @@ public class CreateIssueActivity extends BaseActivity {
             }
         });
     }
+
+    private void setAssignableNames(Editable s, int keyCode) {
+        JiraContent.getInstance().getUsersAssignable(s.toString(), new JiraGetContentCallback<ArrayList<String>>() {
+            @Override
+            public void resultOfDataLoading(ArrayList<String> result) {
+                if (result != null) {
+                    ArrayAdapter<String> mAssignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
+                    mAssignableUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                    mAssignableUsersACTextView.setAdapter(mAssignableUsersAdapter);
+                    mAssignableUsersACTextView.setThreshold(3);
+                    mAssignableUsersACTextView.setEnabled(true);
+                }
+            }
+        });
+    }
+
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            CreateIssueActivity.this.setAssignableNames((Editable) msg.obj, msg.arg1);
+        }
+    };
+
 }
