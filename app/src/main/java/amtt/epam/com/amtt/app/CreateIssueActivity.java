@@ -221,6 +221,7 @@ public class CreateIssueActivity extends BaseActivity {
                     isValid = false;
                 }
                 if (isValid) {
+                    showProgress(true);
                     JiraContent.getInstance().createIssue(mIssueTypeName,
                             mPriorityName, mVersionName, mSummaryEditText.getText().toString(),
                             mDescriptionEditText.getText().toString(), mEnvironmentEditText.getText().toString(),
@@ -232,6 +233,7 @@ public class CreateIssueActivity extends BaseActivity {
                                             finish();
                                         }
                                     }
+                                    showProgress(false);
                                 }
                             });
                 }
