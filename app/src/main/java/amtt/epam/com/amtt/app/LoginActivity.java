@@ -45,6 +45,7 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Constants.Str;
+import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.view.EditText;
 
 /**
@@ -281,24 +282,27 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch (loader.getId()) {
-            case CURSOR_LOADER_ID:
-                showProgress(false);
-                if (data != null) {
-                    if (data.getCount() > 1) {
-                        showAmttActivity();
+        try {
+            switch (loader.getId()) {
+                case CURSOR_LOADER_ID:
+                    showProgress(false);
+                    if (data != null) {
+                        if (data.getCount() > 1) {
+                            showAmttActivity();
+                        }
+                        populateUsersIds(data);
                     }
-                    populateUsersIds(data);
-                }
-                break;
-            case SINGLE_USER_CURSOR_LOADER_ID:
-                JUserInfo user = new JUserInfo(data);
-                mUserName.setText(user.getName());
-                mUrl.setText(user.getUrl());
-                mPassword.setText(Str.EMPTY);
-                break;
+                    break;
+                case SINGLE_USER_CURSOR_LOADER_ID:
+                    JUserInfo user = new JUserInfo(data);
+                    mUserName.setText(user.getName());
+                    mUrl.setText(user.getUrl());
+                    mPassword.setText(Str.EMPTY);
+                    break;
+            }
+        } finally {
+            IOUtils.close(data);
         }
-
     }
 
     @Override
