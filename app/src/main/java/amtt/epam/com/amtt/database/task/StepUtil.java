@@ -17,7 +17,7 @@ import amtt.epam.com.amtt.util.ActivityMetaUtil;
 /**
  * Created by Artyom on 16.05.2015.
  */
-public enum DataBaseCRUD {
+public enum StepUtil {
 
     INSTANCE;
 

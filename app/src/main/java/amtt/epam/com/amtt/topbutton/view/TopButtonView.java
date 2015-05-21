@@ -27,7 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
@@ -44,10 +43,8 @@ import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
-import amtt.epam.com.amtt.database.task.DataBaseCRUD;
+import amtt.epam.com.amtt.database.task.StepUtil;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
-import amtt.epam.com.amtt.database.task.DataBaseMethod;
-import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -125,8 +122,8 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(true);
-                DataBaseCRUD.INSTANCE.buildStepCleaning();
-                DataBaseCRUD.INSTANCE.buildActivityMetaCleaning();
+                StepUtil.INSTANCE.buildStepCleaning();
+                StepUtil.INSTANCE.buildActivityMetaCleaning();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
             }
         });
@@ -163,7 +160,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
             @Override
             public void TouchAction() {
                 try {
-                    DataBaseCRUD.INSTANCE.buildActivityMetaSaving(ActivityMetaUtil.createMeta());
+                    StepUtil.INSTANCE.buildActivityMetaSaving(ActivityMetaUtil.createMeta());
                 } catch (NameNotFoundException e) {
                     Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
                 }
@@ -203,8 +200,8 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(false);
-                DataBaseCRUD.INSTANCE.buildStepCleaning();
-                DataBaseCRUD.INSTANCE.buildActivityMetaCleaning();
+                StepUtil.INSTANCE.buildStepCleaning();
+                StepUtil.INSTANCE.buildActivityMetaCleaning();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
             }
         });

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import amtt.epam.com.amtt.database.task.DataBaseCRUD;
+import amtt.epam.com.amtt.database.task.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
@@ -55,7 +55,7 @@ public class AmttFileObserver extends FileObserver {
                 Runnable task = new Runnable() {
                     public void run() {
                         try {
-                            DataBaseCRUD.INSTANCE.buildStepSaving(absolutePath + "/" + createPath);
+                            StepUtil.INSTANCE.buildStepSaving(absolutePath + "/" + createPath);
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (PackageManager.NameNotFoundException e) {

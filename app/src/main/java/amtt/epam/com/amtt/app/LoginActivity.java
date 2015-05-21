@@ -1,12 +1,9 @@
 package amtt.epam.com.amtt.app;
 
-import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Loader;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,7 +13,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -40,7 +36,7 @@ import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.database.task.DataBaseCRUD;
+import amtt.epam.com.amtt.database.task.StepUtil;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseMethod;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
@@ -124,11 +120,12 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     }
 
     private void isUserAlreadyInDatabase() {
-        DataBaseMethod<Boolean> dataBaseMethod = DataBaseCRUD.INSTANCE.buildCheckUser(mUserName.getText().toString());
-        new DataBaseTask.Builder<Boolean>()
-                .setCallback(this)
-                .setMethod(dataBaseMethod)
-                .createAndExecute();
+        StepUtil.INSTANCE.buildCheckUser(mUserName.getText().toString());
+//        DataBaseMethod<Boolean> dataBaseMethod = StepUtil.INSTANCE.buildCheckUser(mUserName.getText().toString());
+//        new DataBaseTask.Builder<Boolean>()
+//                .setCallback(this)
+//                .setMethod(dataBaseMethod)
+//                .createAndExecute();
 //        return dataBaseMethod.execute().mResult;
     }
 

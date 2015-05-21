@@ -79,9 +79,14 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
         return null;
     }
 
-    public Cursor query(DatabaseEntity objcet, String mSelection, String[] mSelectionArgs){
-        return ContextHolder.getContext().getContentResolver().query(objcet.getUri(), null, mSelection + "=?", mSelectionArgs, null);
+    public Cursor query(final DatabaseEntity objcet, final String mSelection, final String[] mSelectionArgs, IResult<DatabaseEntity> result){
+        final Cursor[] cursor = new Cursor[1];
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                cursor[0] = ContextHolder.getContext().getContentResolver().query(objcet.getUri(), null, mSelection + "=?", mSelectionArgs, null);
+            }
+        });
+        return cursor[0];
     }
-
-
 }
