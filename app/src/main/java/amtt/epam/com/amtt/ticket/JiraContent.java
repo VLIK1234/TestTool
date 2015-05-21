@@ -179,6 +179,7 @@ public class JiraContent{
                 if (tag == JiraContentConst.PRIORITIES_RESPONSE) {
                     if (jiraGetContentCallback != null) {
                         if (result != null) {
+                            JiraContent.getInstance().setPrioritiesNames(result.getPriorityNames());
                             jiraGetContentCallback.resultOfDataLoading(mProjectPrioritiesNames);
                         } else {
                             jiraGetContentCallback.resultOfDataLoading(null);

@@ -54,7 +54,8 @@ public class CreateIssueActivity extends BaseActivity {
     }
 
     private void reinitRelatedViews(String projectKey) {
-        initIssueTypesSpinner(projectKey);
+        initIssueTypesSpinner();
+        initVersionsSpinner(projectKey);
         initAssigneeACTextView();
     }
 
@@ -154,7 +155,7 @@ public class CreateIssueActivity extends BaseActivity {
         });
     }
 
-    private void initIssueTypesSpinner(String projectKey) {
+    private void initIssueTypesSpinner() {
         final SpinnerProgress mIssueTypesSpinner = (SpinnerProgress) findViewById(R.id.spin_issue_name);
         mIssueTypesSpinner.setEnabled(false);
         mIssueTypesSpinner.showProgress(true);
@@ -170,7 +171,6 @@ public class CreateIssueActivity extends BaseActivity {
                 }
             }
         });
-        initVersionsSpinner(projectKey);
         mIssueTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -247,28 +247,13 @@ public class CreateIssueActivity extends BaseActivity {
     private void initAssigneeACTextView() {
         mAssignableUsersACTextView = (AutocompleteProgressView) findViewById(R.id.et_assignable_users);
         mAssignableUsersACTextView.setEnabled(false);
-        mAssignableUsersACTextView.showProgress(true);
-        mAssignableUsersACTextView.showProgress(true);
-        JiraContent.getInstance().getUsersAssignable("", new JiraGetContentCallback<ArrayList<String>>() {
-            @Override
-            public void resultOfDataLoading(ArrayList<String> result) {
-                if (result != null) {
-                    ArrayAdapter<String> mAssignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
-                    mAssignableUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                    mAssignableUsersACTextView.setAdapter(mAssignableUsersAdapter);
-                    mAssignableUsersACTextView.setThreshold(3);
-                    mAssignableUsersACTextView.setEnabled(true);
-                    mAssignableUsersACTextView.showProgress(false);
-                    mCreateIssueButton.setEnabled(true);
-                }
-            }
-        });
+        setAssignableNames("", MESSAGE_TEXT_CHANGED);
         mAssignableUsersACTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() >= 2) {
                     mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
-                    mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
+                    mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s.toString()), 750);
                     mAssignableUserName = s.toString();
                 }
             }
@@ -283,9 +268,9 @@ public class CreateIssueActivity extends BaseActivity {
         });
     }
 
-    private void setAssignableNames(Editable s, int keyCode) {
+    private void setAssignableNames(String s, int keyCode) {
         mAssignableUsersACTextView.showProgress(true);
-        JiraContent.getInstance().getUsersAssignable(s.toString(), new JiraGetContentCallback<ArrayList<String>>() {
+        JiraContent.getInstance().getUsersAssignable(s, new JiraGetContentCallback<ArrayList<String>>() {
             @Override
             public void resultOfDataLoading(ArrayList<String> result) {
                 if (result != null) {
@@ -303,7 +288,7 @@ public class CreateIssueActivity extends BaseActivity {
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            CreateIssueActivity.this.setAssignableNames((Editable) msg.obj, msg.arg1);
+            CreateIssueActivity.this.setAssignableNames((String) msg.obj, msg.arg1);
         }
     };
 

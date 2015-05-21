@@ -31,7 +31,6 @@ public class PriorityProcessor  implements Processor<JPriorityResponse, HttpEnti
             priorities.add(jiraIssueVersion);
         }
         priorityResponse.setPriorities(priorities);
-        JiraContent.getInstance().setPrioritiesNames(priorityResponse.getPriorityNames());
         return priorityResponse;
     }
 }
