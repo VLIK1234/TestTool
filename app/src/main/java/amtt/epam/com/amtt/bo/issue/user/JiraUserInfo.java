@@ -38,7 +38,6 @@ public class JiraUserInfo extends DatabaseEntity {
     public JiraUserInfo() { }
 
     public JiraUserInfo(Cursor cursor) {
-        cursor.moveToFirst();
         mEmailAddress = cursor.getString(cursor.getColumnIndex(UsersTable._EMAIL));
         mDisplayName= cursor.getString(cursor.getColumnIndex(UsersTable._DISPLAY_NAME));
         mTimeZone= cursor.getString(cursor.getColumnIndex(UsersTable._TIME_ZONE));

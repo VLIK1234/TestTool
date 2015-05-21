@@ -220,6 +220,7 @@ public class TopButtonService extends Service implements DataBaseCallback {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (view.getVisibility() == View.VISIBLE) {
             view.setVisibility(View.GONE);
+            view.buttonsBar.setVisibility(View.GONE);
             action.icon = R.drawable.ic_stat_action_visibility;
             action.title = getString(R.string.label_show);
             notificationManager.notify(ID, builder.build());

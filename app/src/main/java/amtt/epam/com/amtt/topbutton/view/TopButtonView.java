@@ -63,7 +63,7 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
 
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
-    private LinearLayout buttonsBar;
+    public LinearLayout buttonsBar;
     public ImageButton mainButton;
     private DisplayMetrics metrics;
     private int currentOrientation;

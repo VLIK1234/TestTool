@@ -120,12 +120,12 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     }
 
     private void isUserAlreadyInDatabase() {
-        StepUtil.INSTANCE.buildCheckUser(mUserName.getText().toString());
-//        DataBaseMethod<Boolean> dataBaseMethod = StepUtil.INSTANCE.buildCheckUser(mUserName.getText().toString());
-//        new DataBaseTask.Builder<Boolean>()
-//                .setCallback(this)
-//                .setMethod(dataBaseMethod)
-//                .createAndExecute();
+//        StepUtil.INSTANCE.buildCheckUser(mUserName.getText().toString());
+        DataBaseMethod<Boolean> dataBaseMethod = StepUtil.INSTANCE.buildCheckUser(mUserName.getText().toString());
+        new DataBaseTask.Builder<Boolean>()
+                .setCallback(this)
+                .setMethod(dataBaseMethod)
+                .createAndExecute();
 //        return dataBaseMethod.execute().mResult;
     }
 
