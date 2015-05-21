@@ -145,5 +145,8 @@
     <string name="activity_info_unavailable">Activity information isn\'t available</string>
     <string name="screenshot_saving_error">Error while saving screenshot</string>
     <string name="database_operation_error">Error while executing database operation</string>
+    <string name="helper_url">Enter url</string>
+    <string name="helper_user_name">Enter username</string>
+    <string name="helper_password">Enter password</string>
 
 </resources>

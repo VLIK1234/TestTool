@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
@@ -54,10 +53,9 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
 
-    private AutoCompleteTextView mUserName;
+    private EditText mUserName;
     private EditText mPassword;
     private EditText mUrl;
-    private String mToastText;
     private Button mLoginButton;
     private CheckBox mEpamJira;
     private String mRequestUrl;
@@ -113,7 +111,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     }
 
     private void initViews() {
-        mUserName = (AutoCompleteTextView) findViewById(R.id.user_name);
+        mUserName = (EditText) findViewById(R.id.user_name);
         mPassword = (EditText) findViewById(R.id.password);
         mUrl = (EditText) findViewById(R.id.jira_url);
         mEpamJira = (CheckBox) findViewById(R.id.epam_jira_checkbox);
@@ -167,29 +165,22 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     }
 
     private void checkFields() {
+        boolean isAnyEmptyField = false;
         if (TextUtils.isEmpty(mUserName.getText().toString())) {
-            mToastText = getString(R.string.enter_prefix) + getString(R.string.enter_username);
+            mUserName.setError("");
+            isAnyEmptyField = true;
         }
         if (TextUtils.isEmpty(mPassword.getText().toString())) {
-            if (TextUtils.isEmpty(mToastText)) {
-                mToastText = getString(R.string.enter_prefix) + getString(R.string.enter_password);
-            } else {
-                mToastText += Str.COMMA + getString(R.string.enter_password);
-            }
+            isAnyEmptyField = true;
+            mPassword.setError("");
         }
         if (TextUtils.isEmpty(mUrl.getText().toString())) {
-            if (TextUtils.isEmpty(mToastText)) {
-                mToastText = getString(R.string.enter_prefix) + getString(R.string.enter_url);
-            } else {
-                mToastText += Str.COMMA + getString(R.string.enter_url);
-            }
+            isAnyEmptyField = true;
+            mUrl.setError("");
         }
-        if (!TextUtils.isEmpty(mToastText)) {
-            Toast.makeText(this, mToastText, Toast.LENGTH_LONG).show();
-        } else {
+        if (!isAnyEmptyField) {
             isUserAlreadyInDatabase();
         }
-        mToastText = Str.EMPTY;
     }
 
     private void populateActiveUserInfo() {
