@@ -1,16 +1,12 @@
 package amtt.epam.com.amtt.bo.database;
 
-import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.ContentValues;
-import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.database.Cursor;
 import android.net.Uri;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.dao.DatabaseEntity;

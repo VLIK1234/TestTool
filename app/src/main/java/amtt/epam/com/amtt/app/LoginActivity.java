@@ -1,9 +1,8 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.ticket.JiraContent;
-import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
-import amtt.epam.com.amtt.util.Constants;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -34,7 +33,6 @@ import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
-import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.dao.Dao;
 import amtt.epam.com.amtt.database.table.UsersTable;
@@ -53,7 +51,7 @@ import amtt.epam.com.amtt.view.EditText;
  * Created by Artsiom_Kaliaha on 07.05.2015.
  */
 @SuppressWarnings("unchecked")
-public class LoginActivity extends BaseActivity implements JiraCallback<JiraUserInfo>, DataBaseCallback<Boolean>, LoaderCallbacks<Cursor> {
+public class LoginActivity extends BaseActivity implements JiraCallback<JUserInfo>, DataBaseCallback<Boolean>, LoaderCallbacks<Cursor> {
 
     private AutoCompleteTextView mUserName;
     private EditText mPassword;
@@ -74,40 +72,20 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
     }
 
-<<<<<<< HEAD
-        mUserName = (EditText) findViewById(R.id.user_name);
-        mUserName.clearErrorOnTextChanged(true);
-        mUserName.clearErrorOnFocus(true);
-        mUserName.setText("admin");
-=======
     @Override
     protected void onDestroy() {
         super.onDestroy();
         TopButtonService.start(this);
     }
->>>>>>> 905074568412719f465dd3ac02608a146e1613d8
 
     private void initViews() {
         mUserName = (AutoCompleteTextView) findViewById(R.id.user_name);
-        mUserName.setText("artsiom_kaliaha");
+        mUserName.setText("admin");
         mPassword = (EditText) findViewById(R.id.password);
-<<<<<<< HEAD
-        mPassword.clearErrorOnTextChanged(true);
-        mPassword.clearErrorOnFocus(true);
         mPassword.setText("bujhm515");
-        
         mUrl = (EditText) findViewById(R.id.jira_url);
-        mUrl.clearErrorOnTextChanged(true);
-        mUrl.clearErrorOnFocus(true);
         mUrl.setText("https://amtt04.atlassian.net");
-
-        mEpamJira = (CheckBox) findViewById(R.id.epamJiraCheckBox);
- 
-=======
-        mUrl = (EditText) findViewById(R.id.jira_url);
-        mUrl.setText("https://amtt03.atlassian.net");
         mEpamJira = (CheckBox) findViewById(R.id.epam_jira_checkbox);
->>>>>>> 905074568412719f465dd3ac02608a146e1613d8
         mLoginButton = (Button) findViewById(R.id.login_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -131,12 +109,12 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         } else {
             //get user info and perform auth in one request
             String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserName.getText().toString() + JiraApiConst.EXPAND_GROUPS;
-            RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
+            RestMethod<JUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
                     new UserInfoProcessor(),
                     userName,
                     password,
                     mRequestUrl);
-            new JiraTask.Builder<JiraUserInfo>()
+            new JiraTask.Builder<JUserInfo>()
                     .setRestMethod(userInfoMethod)
                     .setCallback(LoginActivity.this)
                     .createAndExecute();
@@ -151,7 +129,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
                 .createAndExecute();
     }
 
-    private void insertUserToDatabase(JiraUserInfo user) {
+    private void insertUserToDatabase(JUserInfo user) {
         user.setUrl(mRequestUrl);
         int userId = new Dao().addOrUpdate(user);
         ActiveUser.getInstance().setId(userId);
@@ -203,16 +181,19 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     }
 
     @Override
-    public void onRequestPerformed(RestResponse<JiraUserInfo> restResponse) {
+    public void onRequestPerformed(RestResponse<JUserInfo> restResponse) {
         showProgress(false);
         Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
-            if (restResponse.getResultObject() instanceof JiraUserInfo) {
-                JiraUserInfo user = restResponse.getResultObject();
+            if (restResponse.getResultObject() instanceof JUserInfo) {
+                JUserInfo user = (JUserInfo)restResponse.getResultObject();
                 insertUserToDatabase(user);
             }
         }
         populateActiveUserInfo();
+        JiraContent.getInstance().getPrioritiesNames(null);
+        JiraContent.getInstance().getProjectsNames(null);
+        JiraContent.getInstance().setEnvironment(SystemInfoHelper.getDeviceOsInfo());
         finish();
     }
 
@@ -223,30 +204,12 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         mLoginButton.setEnabled(true);
     }
 
-<<<<<<< HEAD
-            @Override
-            public void onRequestPerformed(RestResponse<String> restResponse) {
-                showProgress(false);
-                mLoginButton.setEnabled(true);
-                String resultMessage = restResponse.getResultObject();
-                CredentialsManager.getInstance().setUrl(mUrl.getText().toString());
-                CredentialsManager.getInstance().setCredentials(mUserName.getText().toString(), mPassword.getText().toString());
-                CredentialsManager.getInstance().setAccess(true);
-                TopButtonService.authSuccess(this);
-                Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show();
-                JiraContent.getInstance().getPrioritiesNames(null);
-                JiraContent.getInstance().getProjectsNames(null);
-                JiraContent.getInstance().setEnvironment(SystemInfoHelper.getDeviceOsInfo());
-                finish();
-            }
-=======
     //Database task
     @Override
     public void onDataBaseRequestPerformed(DataBaseResponse<Boolean> dataBaseResponse) {
         sendAuthRequest(dataBaseResponse.getResult());
         TopButtonService.authSuccess(this);
     }
->>>>>>> 905074568412719f465dd3ac02608a146e1613d8
 
     @Override
     public void onDataBaseRequestError(Exception e) {

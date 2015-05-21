@@ -125,13 +125,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settings_activity">Settings</string>
     <string name="user_already_exists">User with this name already exists</string>
-
-    <string name="label_start">Start</string>
     <string name="enter_prefix">Please, enter</string>
     <string name="enter_username">" username"</string>
     <string name="enter_password">" password"</string>
     <string name="enter_url">" url"</string>
-    <string name="enter_summary"> summary</string>
+    <string name="enter_summary">" summary"</string>
     <string name="auth_passed">Authorization passed</string>
     <string name="action_refresh_user_info">Refresh info</string>
     <string name="error_title_database">Data base error</string>

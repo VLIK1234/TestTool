@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.api.rest;
 
+import amtt.epam.com.amtt.util.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -9,8 +10,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -19,12 +18,16 @@ import java.util.Map;
 
 import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.processing.Processor;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 
 /**
  * Class for performing REST methods to Jira api
  * Created by Artsiom_Kaliaha on 15.04.2015.
  */
 public class RestMethod<ResultType> {
+
+    private final String TAG = this.getClass().getSimpleName();
 
     public enum RestMethodType {
 
@@ -34,6 +37,7 @@ public class RestMethod<ResultType> {
     }
 
     public static class Builder<ResultType> {
+
 
         private RestMethodType mRestMethodType;
         private Map<String, String> mHeaders;
@@ -100,6 +104,7 @@ public class RestMethod<ResultType> {
 
     private HttpResponse get() throws AmttException {
         HttpGet httpGet = new HttpGet(mUrl);
+        Logger.d(TAG, mUrl);
         for (Map.Entry<String, String> keyValuePair : mHeaders.entrySet()) {
             httpGet.setHeader(keyValuePair.getKey(), keyValuePair.getValue());
         }
@@ -108,14 +113,19 @@ public class RestMethod<ResultType> {
         try {
             httpResponse = mHttpClient.execute(httpGet);
         } catch (IllegalStateException e) {
+            Logger.e(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IllegalArgumentException e) {
+            Logger.e(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (UnknownHostException e) {
+            Logger.e(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (ClientProtocolException e) {
+            Logger.e(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IOException e) {
+            Logger.e(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }
         return httpResponse;
@@ -123,6 +133,7 @@ public class RestMethod<ResultType> {
 
     private HttpResponse post() throws AmttException {
         HttpPost httpPost = new HttpPost(mUrl);
+        Logger.d(TAG, mUrl);
         try {
             httpPost.setEntity(new StringEntity(mPostEntity));
         } catch (UnsupportedEncodingException e) {
@@ -136,8 +147,10 @@ public class RestMethod<ResultType> {
         try {
             httpResponse = mHttpClient.execute(httpPost);
         } catch (ClientProtocolException e) {
+            Logger.e(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IOException e) {
+            Logger.e(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }
         return httpResponse;

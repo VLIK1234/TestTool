@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,17 +18,16 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
-import amtt.epam.com.amtt.util.Constants;
-import amtt.epam.com.amtt.view.ACTextViewWithProgress;
+import amtt.epam.com.amtt.view.AutocompleteProgressView;
 import amtt.epam.com.amtt.view.EditText;
-import amtt.epam.com.amtt.view.SpinnerWithProgress;
+import amtt.epam.com.amtt.view.SpinnerProgress;
 
 @SuppressWarnings("unchecked")
 public class CreateIssueActivity extends BaseActivity {
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_TEXT_CHANGED = 100;
-    private ACTextViewWithProgress mAssignableUsersACTextView;
+    private AutocompleteProgressView mAssignableUsersACTextView;
     private Button mCreateIssueButton;
     private EditText mDescriptionEditText;
     private EditText mEnvironmentEditText;
@@ -61,7 +59,7 @@ public class CreateIssueActivity extends BaseActivity {
     }
 
     private void initProjectNamesSpinner() {
-        final SpinnerWithProgress mProjectNamesSpinner = (SpinnerWithProgress) findViewById(R.id.spin_projects_name);
+        final SpinnerProgress mProjectNamesSpinner = (SpinnerProgress) findViewById(R.id.spin_projects_name);
         mProjectNamesSpinner.setEnabled(false);
         mProjectNamesSpinner.showProgress(true);
         JiraContent.getInstance().getProjectsNames(new JiraGetContentCallback<HashMap<JProjects, String>>() {
@@ -96,7 +94,7 @@ public class CreateIssueActivity extends BaseActivity {
     }
 
     private void initPrioritiesSpinner() {
-        final SpinnerWithProgress mPrioritiesSpinner = (SpinnerWithProgress) findViewById(R.id.spin_priority);
+        final SpinnerProgress mPrioritiesSpinner = (SpinnerProgress) findViewById(R.id.spin_priority);
         mPrioritiesSpinner.setEnabled(false);
         mPrioritiesSpinner.showProgress(true);
         JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
@@ -127,7 +125,7 @@ public class CreateIssueActivity extends BaseActivity {
     }
 
     private void initVersionsSpinner(String projectKey) {
-        final SpinnerWithProgress mVersionsSpinner = (SpinnerWithProgress) findViewById(R.id.spin_affects_versions);
+        final SpinnerProgress mVersionsSpinner = (SpinnerProgress) findViewById(R.id.spin_affects_versions);
         mVersionsSpinner.setEnabled(false);
         mVersionsSpinner.showProgress(true);
         JiraContent.getInstance().getVersionsNames(projectKey, new JiraGetContentCallback<HashMap<String, String>>() {
@@ -157,7 +155,7 @@ public class CreateIssueActivity extends BaseActivity {
     }
 
     private void initIssueTypesSpinner(String projectKey) {
-        final SpinnerWithProgress mIssueTypesSpinner = (SpinnerWithProgress) findViewById(R.id.spin_issue_name);
+        final SpinnerProgress mIssueTypesSpinner = (SpinnerProgress) findViewById(R.id.spin_issue_name);
         mIssueTypesSpinner.setEnabled(false);
         mIssueTypesSpinner.showProgress(true);
         JiraContent.getInstance().getIssueTypesNames(new JiraGetContentCallback<ArrayList<String>>() {
@@ -216,7 +214,7 @@ public class CreateIssueActivity extends BaseActivity {
             public void onClick(View v) {
                 Boolean isValid = true;
                 if (TextUtils.isEmpty(mSummaryEditText.getText().toString())) {
-                    mSummaryEditText.setError(Constants.DialogKeys.INPUT_SUMMARY);
+                    mSummaryEditText.setError(getString(R.string.enter_prefix)+ getString(R.string.enter_summary));
                     isValid = false;
                 }
                 if (isValid) {
@@ -247,7 +245,7 @@ public class CreateIssueActivity extends BaseActivity {
     }
 
     private void initAssigneeACTextView() {
-        mAssignableUsersACTextView = (ACTextViewWithProgress) findViewById(R.id.et_assignable_users);
+        mAssignableUsersACTextView = (AutocompleteProgressView) findViewById(R.id.et_assignable_users);
         mAssignableUsersACTextView.setEnabled(false);
         mAssignableUsersACTextView.showProgress(true);
         mAssignableUsersACTextView.showProgress(true);

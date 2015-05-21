@@ -33,7 +33,10 @@ public class ContentFromBackend {
     public void getMetaAsynchronously(final ContentLoadingCallback<JProjectsResponse> contentLoadingCallback,
                                       final JiraGetContentCallback jiraGetContentCallback) {
         RestMethod<JProjectsResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH,
-            new ProjectsProcessor());
+            new ProjectsProcessor(),
+            null,
+            null,
+            null);
         new JiraTask.Builder<JProjectsResponse>()
             .setRestMethod(searchMethod)
             .setCallback(new JiraCallback() {
@@ -60,7 +63,7 @@ public class ContentFromBackend {
                                           final ContentLoadingCallback<JVersionsResponse> contentLoadingCallback,
                                           final JiraGetContentCallback jiraGetContentCallback) {
         String path = JiraApiConst.PROJECT_VERSIONS_PATH + projectsKey + JiraApiConst.PROJECT_VERSIONS_PATH_V;
-        RestMethod<JVersionsResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new VersionsProcessor());
+        RestMethod<JVersionsResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new VersionsProcessor(), null, null, null);
         new JiraTask.Builder<JVersionsResponse>()
             .setRestMethod(searchMethod)
             .setCallback(new JiraCallback() {
@@ -87,7 +90,7 @@ public class ContentFromBackend {
                                                  final ContentLoadingCallback<JUserAssignableResponse> contentLoadingCallback,
                                                  final JiraGetContentCallback jiraGetContentCallback) {
         String path = JiraApiConst.USERS_ASSIGNABLE_PATH + projectKey + JiraApiConst.USERS_ASSIGNABLE_PATH_UN + userName + JiraApiConst.USERS_ASSIGNABLE_PATH_MR;
-        RestMethod<JUserAssignableResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new UsersAssignableProcessor());
+        RestMethod<JUserAssignableResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new UsersAssignableProcessor(), null, null, null);
         new JiraTask.Builder<JUserAssignableResponse>()
             .setRestMethod(searchMethod)
             .setCallback(new JiraCallback() {
@@ -113,7 +116,7 @@ public class ContentFromBackend {
     public void getPriorityAsynchronously(final ContentLoadingCallback<JPriorityResponse> contentLoadingCallback,
                                           final JiraGetContentCallback jiraGetContentCallback) {
         String path = JiraApiConst.PROJECT_PRIORITY_PATH;
-        RestMethod<JPriorityResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new PriorityProcessor());
+        RestMethod<JPriorityResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new PriorityProcessor(), null, null, null);
         new JiraTask.Builder<JPriorityResponse>()
             .setRestMethod(searchMethod)
             .setCallback(new JiraCallback() {

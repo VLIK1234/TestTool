@@ -34,7 +34,7 @@ public class SpinnerProgress extends RelativeLayout {
         String[] strings = new String[]{};
         List<String> items = new ArrayList<>(Arrays.asList(strings));
         mEmptyAdapter = new ArrayAdapter<>(context,
-                android.R.layout.simple_spinner_item, items);
+                R.layout.spinner_layout, items);
         initViews();
     }
 
@@ -43,10 +43,10 @@ public class SpinnerProgress extends RelativeLayout {
         mProgress = (ProgressBar) findViewById(R.id.progress);
     }
 
-    public void showProgress(boolean flag) {
-        if (flag)
+    public void showProgress(boolean enabled) {
+        if (enabled)
             mSpinner.setAdapter(mEmptyAdapter);
-        mProgress.setVisibility(flag ? View.VISIBLE : View.GONE);
+        mProgress.setVisibility(enabled ? View.VISIBLE : View.GONE);
 
     }
 
