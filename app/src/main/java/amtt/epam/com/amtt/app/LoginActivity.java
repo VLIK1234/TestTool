@@ -5,6 +5,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -106,6 +107,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         }
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
 
     private void initViews() {
         mUserName = (AutoCompleteTextView) findViewById(R.id.user_name);
@@ -279,7 +284,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
             case CURSOR_LOADER_ID:
                 showProgress(false);
                 if (data != null) {
-                    if (data.getCount() > 2) {
+                    if (data.getCount() > 1) {
                         showAmttActivity();
                     }
                     populateUsersIds(data);

@@ -40,7 +40,7 @@ public class AmttActivity extends BaseActivity implements LoaderCallbacks<Cursor
                 finish();
             }
         });
-        getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
     }
 
     @Override
