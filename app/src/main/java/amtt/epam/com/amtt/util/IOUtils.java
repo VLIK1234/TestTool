@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.util;
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import java.io.BufferedReader;
@@ -22,6 +23,14 @@ public class IOUtils {
                 } catch (IOException e) {
                     Logger.e(CLASS_NAME, e.getMessage());
                 }
+            }
+        }
+    }
+
+    public static void destroyProcesses(@NonNull Process... processArray) {
+        for (Process process : processArray) {
+            if (process != null) {
+                process.destroy();
             }
         }
     }

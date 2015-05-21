@@ -1,54 +1,62 @@
 package amtt.epam.com.amtt.database.table;
 
+import java.util.ArrayList;
+
 import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.util.MultiValueMap;
-
-import java.util.ArrayList;
 
 /**
  * Created by Artsiom_Kaliaha on 29.04.2015.
  */
-public class UsersTable extends Table implements BaseColumns {
+public class UsersTable extends Table {
 
     public static final String TABLE_NAME = "users";
 
-    public static final String _AVATAR_MEDIUM_URL = "_avatar_medium_url";
-    public static final String _AVATAR_SMALL_URL = "_avatar_small_url";
-    public static final String _AVATAR_URL = "_avatar_url";
-    public static final String _AVATAR_X_SMALL_URL = "_avatar_x_small_url";
-    public static final String _EMAIL = "_email";
-    public static final String _KEY = "_key";
-    public static final String _URL = "_url";
     public static final String _USER_NAME = "_user_name";
-
+    public static final String _DISPLAY_NAME = "_display_name";
+    public static final String _TIME_ZONE = "_time_zone";
+    public static final String _LOCALE = "_locale";
+    public static final String _URL = "_url";
+    public static final String _KEY = "_key";
+    public static final String _EMAIL = "_email";
+    public static final String _AVATAR_16 = "_avatar_16";
+    public static final String _AVATAR_24 = "_avatar_24";
+    public static final String _AVATAR_32= "_avatar_32";
+    public static final String _AVATAR_48 = "_avatar_48";
 
     private static MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
             _ID,
-            _AVATAR_MEDIUM_URL,
-            _AVATAR_SMALL_URL,
-            _AVATAR_URL,
-            _AVATAR_X_SMALL_URL,
-            _EMAIL,
-            _KEY,
+            _USER_NAME,
+            _DISPLAY_NAME,
+            _TIME_ZONE,
+            _LOCALE,
             _URL,
-            _USER_NAME
+            _KEY,
+            _EMAIL,
+            _AVATAR_16,
+            _AVATAR_24,
+            _AVATAR_32,
+            _AVATAR_48
     };
 
     static {
         sColumnsMap = new MultiValueMap<>();
-        sColumnsMap.put(TYPE_TEXT, new ArrayList<String>() {{
-            add(_AVATAR_MEDIUM_URL);
-            add(_AVATAR_SMALL_URL);
-            add(_AVATAR_URL);
-            add(_AVATAR_X_SMALL_URL);
-            add(_EMAIL);
+        sColumnsMap.put(BaseColumns.TYPE_TEXT, new ArrayList<String>() {{
+            add(_USER_NAME);
+            add(_DISPLAY_NAME);
+            add(_TIME_ZONE);
+            add(_LOCALE);
             add(_KEY);
             add(_URL);
-            add(_USER_NAME);
+            add(_EMAIL);
+            add(_AVATAR_16);
+            add(_AVATAR_24);
+            add(_AVATAR_32);
+            add(_AVATAR_48);
         }});
-        sColumnsMap.put(TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
+        sColumnsMap.put(BaseColumns.TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);
         }});
     }

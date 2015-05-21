@@ -1,7 +1,5 @@
 package amtt.epam.com.amtt.api.exception;
 
-import org.apache.http.HttpEntity;
-
 import amtt.epam.com.amtt.api.rest.RestMethod;
 
 /**
@@ -10,17 +8,22 @@ import amtt.epam.com.amtt.api.rest.RestMethod;
  */
 public class AmttException extends Exception {
 
-    private final Exception mSuppressedException;
+    private Exception mSuppressedException;
     private final int mStatusCode;
     private final RestMethod mRestMethod;
-    //TODO It's not a good idea to put Entity or response here. Let it be just a converted String
-    private final HttpEntity mEntity; //field isn't used at the time, but resides here for future exception handling logic complication
+    private String mEntity; //field isn't used at the time, but resides here for future exception handling logic complication
 
-    public AmttException(Exception suppressedException, int resultCode, RestMethod restMethod, HttpEntity httpEntity) {
+    public AmttException(Exception suppressedException, int resultCode, RestMethod restMethod, String entityString) {
         mSuppressedException = suppressedException;
         mStatusCode = resultCode;
         mRestMethod = restMethod;
-        mEntity = httpEntity;
+        mEntity = entityString;
+    }
+
+    public AmttException(Exception suppressedException, int resultCode, RestMethod restMethod) {
+        mSuppressedException = suppressedException;
+        mStatusCode = resultCode;
+        mRestMethod = restMethod;
     }
 
 
@@ -34,6 +37,15 @@ public class AmttException extends Exception {
 
     public RestMethod getRestMethod() {
         return mRestMethod;
+    }
+
+
+    public void setEntity(String entityString) {
+        mEntity = entityString;
+    }
+
+    public void replaceSuppressedOne(Exception e) {
+        mSuppressedException = e;
     }
 
 }

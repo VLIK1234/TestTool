@@ -21,12 +21,12 @@ import amtt.epam.com.amtt.R;
  * Created by Iryna_Monchanka on 5/20/2015.
  */
 
-public class SpinnerWithProgress extends RelativeLayout {
+public class SpinnerProgress extends RelativeLayout {
     private Spinner mSpinner;
     private ProgressBar mProgress;
     private ArrayAdapter<String> mEmptyAdapter;
 
-    public SpinnerWithProgress(Context context, AttributeSet attrs) {
+    public SpinnerProgress(Context context, AttributeSet attrs) {
         super(context, attrs);
         Context mContext = context;
         LayoutInflater.from(mContext).inflate(R.layout.spinner_with_progress_layout, this,

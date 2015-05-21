@@ -7,9 +7,7 @@ import android.content.DialogInterface;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.rest.RestMethod;
-import amtt.epam.com.amtt.api.rest.RestResponse;
 
 /**
  * Created by Artsiom_Kaliaha on 29.04.2015.
@@ -39,7 +37,7 @@ public class DialogUtils {
 
         @SuppressWarnings("unchecked")
         public Builder setPositiveButton(int textId, final RestMethod restMethod, final JiraCallback callback) {
-            if (textId != UtilConstants.Dialog.EMPTY_FIELD) {
+            if (textId != Constants.Dialog.EMPTY_FIELD) {
                 DialogInterface.OnClickListener positiveListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -56,7 +54,7 @@ public class DialogUtils {
         }
 
         public Builder setNeutralButton(int textId, DialogInterface.OnClickListener listener) {
-            if (textId != UtilConstants.Dialog.EMPTY_FIELD && listener != null) {
+            if (textId != Constants.Dialog.EMPTY_FIELD && listener != null) {
                 mBuilder.setNeutralButton(textId, listener);
             }
             return this;

@@ -1,30 +1,16 @@
 package amtt.epam.com.amtt.contentprovider;
 
 import android.content.ContentProvider;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
+import amtt.epam.com.amtt.database.DataBaseManager;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
-import amtt.epam.com.amtt.database.table.IssuetypeTable;
-import amtt.epam.com.amtt.database.table.PriorityTable;
-import amtt.epam.com.amtt.database.table.ProjectTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
-import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.database.task.DataBaseManager;
-import amtt.epam.com.amtt.util.Logger;
 
 
 /**
@@ -32,115 +18,9 @@ import amtt.epam.com.amtt.util.Logger;
  */
 public class AmttContentProvider extends ContentProvider {
 
-    private final String TAG = this.getClass().getSimpleName();
+    public static final String AUTHORITY = "amtt.epam.com.amtt.contentprovider";
 
-    private static final String AUTHORITY = "amtt.epam.com.amtt.contentprovider";
-
-    public static final Uri ACTIVITY_META_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + ActivityInfoTable.TABLE_NAME);
-    public static final Uri STEP_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + StepsTable.TABLE_NAME);
-    public static final Uri STEP_WITH_META_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + StepsWithMetaTable.TABLE_NAME);
-    public static final Uri USER_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + UsersTable.TABLE_NAME);
-    public static final Uri PRIORITY_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + PriorityTable.TABLE_NAME);
-    public static final Uri PROJECT_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + ProjectTable.TABLE_NAME);
-    public static final Uri ISSUETYPE_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + IssuetypeTable.TABLE_NAME);
-
-    public static final String ACTIVITY_META_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + ActivityInfoTable.TABLE_NAME;
-    public static final String ACTIVITY_META_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + ActivityInfoTable.TABLE_NAME;
-
-    public static final String STEP_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsTable.TABLE_NAME;
-    public static final String STEP_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsTable.TABLE_NAME;
-
-    public static final String STEP_WITH_META_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsWithMetaTable.TABLE_NAME;
-    public static final String STEP_WITH_META_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + StepsWithMetaTable.TABLE_NAME;
-
-    public static final String USER_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + UsersTable.TABLE_NAME;
-    public static final String USER_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + UsersTable.TABLE_NAME;
-
-    public static final String PRIORITY_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + PriorityTable.TABLE_NAME;
-    public static final String PRIORITY_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + PriorityTable.TABLE_NAME;
-
-    public static final String PROJECT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + ProjectTable.TABLE_NAME;
-    public static final String PROJECT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + ProjectTable.TABLE_NAME;
-
-    public static final String ISSUETYPE_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/vnd." + AUTHORITY + "." + IssuetypeTable.TABLE_NAME;
-    public static final String ISSUETYPE_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/vnd." + AUTHORITY + "." + IssuetypeTable.TABLE_NAME;
-
-    private static final UriMatcher sUriMatcher;
-    private static Map<Integer, String> sContentType;
-    private static Map<Integer, String[]> sProjections;
     private static DataBaseManager mDataBaseManager;
-
-    static {
-        sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        sUriMatcher.addURI(AUTHORITY, ActivityInfoTable.TABLE_NAME, AmttUri.ACTIVITY_META.ordinal());
-        sUriMatcher.addURI(AUTHORITY, ActivityInfoTable.TABLE_NAME + "/#", AmttUri.ACTIVITY_META_BY_NAME.ordinal());
-
-        sUriMatcher.addURI(AUTHORITY, StepsTable.TABLE_NAME, AmttUri.STEP.ordinal());
-        sUriMatcher.addURI(AUTHORITY, StepsTable.TABLE_NAME + "/#", AmttUri.STEP_ID.ordinal());
-
-        sUriMatcher.addURI(AUTHORITY, StepsWithMetaTable.TABLE_NAME, AmttUri.STEP_WITH_META.ordinal());
-        sUriMatcher.addURI(AUTHORITY, StepsWithMetaTable.TABLE_NAME + "/#", AmttUri.STEP_WITH_META_ID.ordinal());
-
-        sUriMatcher.addURI(AUTHORITY, UsersTable.TABLE_NAME, AmttUri.USER.ordinal());
-        sUriMatcher.addURI(AUTHORITY, UsersTable.TABLE_NAME + "/#", AmttUri.USER_BY_KEY.ordinal());
-        sUriMatcher.addURI(AUTHORITY, UsersTable.TABLE_NAME + "/#", AmttUri.USER_BY_URL.ordinal());
-
-        sUriMatcher.addURI(AUTHORITY, PriorityTable.TABLE_NAME, AmttUri.PRIORITY.ordinal());
-        sUriMatcher.addURI(AUTHORITY, PriorityTable.TABLE_NAME + "/#", AmttUri.PRIORITY_BY_USER_URL.ordinal());
-
-        sUriMatcher.addURI(AUTHORITY, ProjectTable.TABLE_NAME, AmttUri.PROJECT.ordinal());
-        sUriMatcher.addURI(AUTHORITY, ProjectTable.TABLE_NAME + "/#", AmttUri.PROJECT_BY_USER_EMAIL.ordinal());
-
-        sUriMatcher.addURI(AUTHORITY, IssuetypeTable.TABLE_NAME, AmttUri.ISSUETYPE.ordinal());
-        sUriMatcher.addURI(AUTHORITY, IssuetypeTable.TABLE_NAME + "/#", AmttUri.ISSUETYPE_BY_PROJECT_KEY.ordinal());
-
-        sContentType = new HashMap<>();
-        sContentType.put(AmttUri.ACTIVITY_META.ordinal(), ACTIVITY_META_CONTENT_TYPE);
-        sContentType.put(AmttUri.ACTIVITY_META_BY_NAME.ordinal(), ACTIVITY_META_CONTENT_ITEM_TYPE);
-
-        sContentType.put(AmttUri.STEP.ordinal(), STEP_CONTENT_TYPE);
-        sContentType.put(AmttUri.STEP_ID.ordinal(), STEP_CONTENT_ITEM_TYPE);
-
-        sContentType.put(AmttUri.STEP_WITH_META.ordinal(), STEP_WITH_META_CONTENT_TYPE);
-        sContentType.put(AmttUri.STEP_WITH_META_ID.ordinal(), STEP_WITH_META_CONTENT_ITEM_TYPE);
-
-        sContentType.put(AmttUri.USER.ordinal(), USER_CONTENT_TYPE);
-        sContentType.put(AmttUri.USER_BY_KEY.ordinal(), USER_CONTENT_ITEM_TYPE);
-        sContentType.put(AmttUri.USER_BY_KEY.ordinal(), USER_CONTENT_ITEM_TYPE);
-
-        sContentType.put(AmttUri.PRIORITY.ordinal(), PRIORITY_CONTENT_TYPE);
-        sContentType.put(AmttUri.PRIORITY_BY_USER_URL.ordinal(), PRIORITY_CONTENT_ITEM_TYPE);
-
-        sContentType.put(AmttUri.PROJECT.ordinal(), PROJECT_CONTENT_TYPE);
-        sContentType.put(AmttUri.PROJECT.ordinal(), PROJECT_CONTENT_ITEM_TYPE);
-
-        sContentType.put(AmttUri.ISSUETYPE.ordinal(), ISSUETYPE_CONTENT_TYPE);
-        sContentType.put(AmttUri.ISSUETYPE_BY_PROJECT_KEY.ordinal(), ISSUETYPE_CONTENT_ITEM_TYPE);
-
-        sProjections = new HashMap<>();
-        sProjections.put(AmttUri.ACTIVITY_META.ordinal(), ActivityInfoTable.PROJECTION);
-        sProjections.put(AmttUri.ACTIVITY_META_BY_NAME.ordinal(), ActivityInfoTable.PROJECTION);
-
-        sProjections.put(AmttUri.STEP.ordinal(), StepsTable.PROJECTION);
-        sProjections.put(AmttUri.STEP_ID.ordinal(), StepsTable.PROJECTION);
-
-        sProjections.put(AmttUri.STEP_WITH_META.ordinal(), StepsWithMetaTable.PROJECTION);
-        sProjections.put(AmttUri.STEP_WITH_META_ID.ordinal(), StepsWithMetaTable.PROJECTION);
-
-        sProjections.put(AmttUri.USER.ordinal(), UsersTable.PROJECTION);
-        sProjections.put(AmttUri.USER_BY_KEY.ordinal(), UsersTable.PROJECTION);
-        sProjections.put(AmttUri.USER_BY_URL.ordinal(), UsersTable.PROJECTION);
-
-        sProjections.put(AmttUri.PRIORITY.ordinal(), PriorityTable.PROJECTION);
-        sProjections.put(AmttUri.PRIORITY_BY_USER_URL.ordinal(), PriorityTable.PROJECTION);
-
-        sProjections.put(AmttUri.PROJECT.ordinal(), ProjectTable.PROJECTION);
-        sProjections.put(AmttUri.PROJECT_BY_USER_EMAIL.ordinal(), ProjectTable.PROJECTION);
-
-        sProjections.put(AmttUri.ISSUETYPE.ordinal(), IssuetypeTable.PROJECTION);
-        sProjections.put(AmttUri.ISSUETYPE_BY_PROJECT_KEY.ordinal(), IssuetypeTable.PROJECTION);
-
-    }
 
     @Override
     public boolean onCreate() {
@@ -149,18 +29,15 @@ public class AmttContentProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        int matchedUri = sUriMatcher.match(uri);
-        if (!isProjectionCorrect(matchedUri, projection)) {
-            throw new IllegalArgumentException("Incorrect projection column(s)");
-        }
-
+        AmttUri matchedUri = AmttUri.match(uri);
         Cursor cursor;
-        if (matchedUri == AmttUri.STEP_WITH_META.ordinal() || matchedUri == AmttUri.STEP_WITH_META_ID.ordinal()) {
+        //if step should be retrieved, join query is executed
+        if (matchedUri == AmttUri.STEP_WITH_META) {
             String[] tablesName = {StepsTable.TABLE_NAME, ActivityInfoTable.TABLE_NAME};
             cursor = getDataBaseManager().joinQuery(tablesName,
                     StepsWithMetaTable.PROJECTION,
                     new String[]{StepsTable._ASSOCIATED_ACTIVITY, ActivityInfoTable._ACTIVITY_NAME});
-        } else{
+        } else {
             String tableName = uri.getLastPathSegment();
             cursor = getDataBaseManager().query(tableName, projection, selection, selectionArgs, sortOrder);
         }
@@ -170,32 +47,25 @@ public class AmttContentProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-        int uriType = sUriMatcher.match(uri);
-        return sContentType.get(uriType);
+        return AmttUri.matchType(uri);
     }
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
+        if (values == null) {
+            return null;
+        }
         String tableName = uri.getLastPathSegment();
         long id = getDataBaseManager().insert(tableName, values);
         return ContentUris.withAppendedId(uri, id);
     }
 
     @Override
-    public int bulkInsert(Uri uri, @NonNull ContentValues[] values) {
+    public int bulkInsert(Uri uri, ContentValues[] values) {
         String tableName = uri.getLastPathSegment();
-        int numValues = values.length;
-        for (int i = 0; i < numValues; i++) {
-            long newID = getDataBaseManager().insert(tableName, values[i]);
-            if (newID <= 0) {
-                Logger.e(TAG, "Failed to insert row into " + tableName);
-                return 0;
-            }
-
-        }
-        Logger.e(TAG, numValues + " insert " + tableName);
-        return numValues;
+        return getDataBaseManager().bulkInsert(tableName, values);
     }
+
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
@@ -211,21 +81,6 @@ public class AmttContentProvider extends ContentProvider {
         int updatedRows = getDataBaseManager().update(tableName, values, selection, selectionArgs);
         getContext().getContentResolver().notifyChange(uri, null);
         return updatedRows;
-    }
-
-    private static boolean isProjectionCorrect(int uriType, String[] projection) {
-        if(projection == null) {
-            return true;
-        }
-        String[] existingColumns = sProjections.get(uriType);
-        Set<String> availableProjection;
-        Set<String> receivedProjection = new HashSet<>(Arrays.asList(projection));
-        if (existingColumns != null) {
-            availableProjection = new HashSet<>(Arrays.asList(existingColumns));
-        } else {
-            availableProjection = Collections.EMPTY_SET;
-        }
-        return availableProjection.containsAll(receivedProjection);
     }
 
     private DataBaseManager getDataBaseManager() {

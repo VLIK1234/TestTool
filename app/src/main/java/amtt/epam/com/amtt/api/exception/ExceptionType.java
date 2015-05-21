@@ -1,5 +1,7 @@
 package amtt.epam.com.amtt.api.exception;
 
+import android.database.sqlite.SQLiteException;
+
 import com.google.gson.JsonSyntaxException;
 
 import org.apache.http.HttpStatus;
@@ -11,7 +13,7 @@ import java.util.Map;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.rest.RestMethod;
-import amtt.epam.com.amtt.util.UtilConstants;
+import amtt.epam.com.amtt.util.Constants;
 
 /**
  * Constants containing information for error dialog
@@ -20,12 +22,12 @@ import amtt.epam.com.amtt.util.UtilConstants;
 public enum ExceptionType {
 
 
-    AUTH(R.string.error_title_auth, R.string.error_message_auth, R.string.error_button_try, UtilConstants.Dialog.EMPTY_FIELD),
-    AUTH_FORBIDDEN(R.string.error_title_auth, R.string.error_message_auth_forbidden, UtilConstants.Dialog.EMPTY_FIELD, UtilConstants.Dialog.EMPTY_FIELD),
+    AUTH(R.string.error_title_auth, R.string.error_message_auth, R.string.error_button_try, Constants.Dialog.EMPTY_FIELD),
+    AUTH_FORBIDDEN(R.string.error_title_auth, R.string.error_message_auth_forbidden, Constants.Dialog.EMPTY_FIELD, Constants.Dialog.EMPTY_FIELD),
     NO_INTERNET(R.string.error_title_request, R.string.error_message_no_internet, R.string.error_button_try, R.string.error_button_settings),
-    UNKNOWN(R.string.error_title_request, R.string.error_message_unknown, UtilConstants.Dialog.EMPTY_FIELD, UtilConstants.Dialog.EMPTY_FIELD),
-    BAD_GATEWAY(R.string.error_title_request, R.string.error_message_gateway, UtilConstants.Dialog.EMPTY_FIELD, UtilConstants.Dialog.EMPTY_FIELD),
-    NOT_FOUND(R.string.error_title_request, R.string.error_message_web_address, UtilConstants.Dialog.EMPTY_FIELD, UtilConstants.Dialog.EMPTY_FIELD);
+    UNKNOWN(R.string.error_title_request, R.string.error_message_unknown, Constants.Dialog.EMPTY_FIELD, Constants.Dialog.EMPTY_FIELD),
+    BAD_GATEWAY(R.string.error_title_request, R.string.error_message_gateway, Constants.Dialog.EMPTY_FIELD, Constants.Dialog.EMPTY_FIELD),
+    NOT_FOUND(R.string.error_title_request, R.string.error_message_web_address, Constants.Dialog.EMPTY_FIELD, Constants.Dialog.EMPTY_FIELD);
 
     private static Map<Class, ExceptionType> mExceptionsMap;
     private static Map<Integer, ExceptionType> mStatusCodeMap;

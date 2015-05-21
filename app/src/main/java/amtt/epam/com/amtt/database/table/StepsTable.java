@@ -25,11 +25,11 @@ public class StepsTable extends Table {
 
     static {
         sColumnsMap = new MultiValueMap<>();
-        sColumnsMap.put(TYPE_TEXT, new ArrayList<String>() {{
+        sColumnsMap.put(BaseColumns.TYPE_TEXT, new ArrayList<String>() {{
             add(_SCREEN_PATH);
             add(_ASSOCIATED_ACTIVITY);
         }});
-        sColumnsMap.put(TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
+        sColumnsMap.put(BaseColumns.TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);
         }});
     }

@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.database.table;
 
 import java.util.ArrayList;
 
+import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.util.MultiValueMap;
 
 /**
@@ -49,7 +50,7 @@ public final class ActivityInfoTable extends Table {
 
     static {
         sColumnsMap = new MultiValueMap<>();
-        sColumnsMap.put(TYPE_TEXT, new ArrayList<String>() {{
+        sColumnsMap.put(BaseColumns.TYPE_TEXT, new ArrayList<String>() {{
             add(_ACTIVITY_NAME);
             add(_CONFIG_CHANGES);
             add(_FLAGS);
@@ -65,6 +66,9 @@ public final class ActivityInfoTable extends Table {
             add(_PROCESS_NAME);
             add(_PACKAGE_NAME);
             add(_MAX_RECENTS);
+        }});
+        sColumnsMap.put(BaseColumns.ON_CONFLICT_REPLACE, new ArrayList<String>() {{
+            add(BaseColumns.UNIQUE + "(" + _ACTIVITY_NAME + ")");
         }});
     }
 

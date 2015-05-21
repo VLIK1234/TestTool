@@ -15,12 +15,12 @@ import amtt.epam.com.amtt.R;
 /**
  * Created by Iryna_Monchanka on 5/20/2015.
  */
-public class ACTextViewWithProgress extends RelativeLayout {
+public class AutocompleteProgressView extends RelativeLayout {
 
     private AutoCompleteTextView mACTextView;
     private ProgressBar mProgress;
 
-    public ACTextViewWithProgress(Context context, AttributeSet attrs) {
+    public AutocompleteProgressView(Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.autocomplete_text_view_layout, this, true);
         initViews();

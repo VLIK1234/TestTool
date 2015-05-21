@@ -17,7 +17,7 @@ public class PreferenceUtils {
     }
 
     public static String getString(String key) {
-        return getPref().getString(key, UtilConstants.SharedPreference.EMPTY_STRING);
+        return getPref().getString(key, Constants.Str.EMPTY);
     }
 
     public static Set<String> getSet(String key, Set<String> defaultValue) {

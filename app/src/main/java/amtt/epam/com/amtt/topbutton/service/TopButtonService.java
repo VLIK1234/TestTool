@@ -22,6 +22,8 @@ import android.view.WindowManager;
 import java.io.File;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.database.task.DataBaseCallback;
+import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.app.MainActivity;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
@@ -30,7 +32,7 @@ import amtt.epam.com.amtt.util.ContextHolder;
 /**
  * Created by Ivan_Bakach on 20.03.2015.
  */
-public class TopButtonService extends Service {
+public class TopButtonService extends Service implements DataBaseCallback {
 
     public static final String ACTION_START = "SHOW";
     public static final String ACTION_CLOSE = "CLOSE";
@@ -179,7 +181,8 @@ public class TopButtonService extends Service {
         }
         stopSelf();
     }
-//Delete after create logic with choose user activity and start service after authorization resultOfDataLoading
+
+//Delete after create logic with choose user activity and start service after authorization success
 //    private void changeUiAuthSuccess(){
 //        view.buttonAuth.setText(R.string.label_logout);
 //        view.buttonAuth.setTextColor(getResources().getColor(R.color.red));
@@ -226,5 +229,14 @@ public class TopButtonService extends Service {
             action.title = getString(R.string.label_hide);
             notificationManager.notify(ID, builder.build());
         }
+    }
+
+    @Override
+    public void onDataBaseRequestPerformed(DataBaseResponse dataBaseResponse) {
+    }
+
+    @Override
+    public void onDataBaseRequestError(Exception e) {
+
     }
 }
