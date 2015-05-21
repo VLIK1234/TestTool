@@ -41,6 +41,7 @@ import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.HelpDialogActivity;
+import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.database.task.DataBaseCRUD;
@@ -50,6 +51,7 @@ import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.PreferenceUtils;
@@ -123,19 +125,28 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(true);
+                DataBaseCRUD.INSTANCE.buildStepCleaning();
+                DataBaseCRUD.INSTANCE.buildActivityMetaCleaning();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
             }
         });
         createTicketView = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket) + " Ira doing this task", Toast.LENGTH_LONG).show();
+                RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH,
+                        new ProjectsProcessor(),
+                        null,
+                        null,
+                        null);
+                new JiraTask.Builder<JMetaResponse>()
+                        .setRestMethod(searchMethod)
+                        .setCallback(TopButtonView.this)
+                        .createAndExecute();
             }
         });
         openAmttView = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_open_amtt) + " don't have logic yet.", Toast.LENGTH_LONG).show();
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
                 userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(userInfoIntent);
@@ -152,20 +163,9 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
             @Override
             public void TouchAction() {
                 try {
-                    DataBaseMethod<Void> activityMetaSaving = DataBaseCRUD.INSTANCE.buildActivityMetaSaving();
-                    new DataBaseTask.Builder()
-                            .setCallback(TopButtonView.this)
-                            .setMethod(activityMetaSaving)
-                            .createAndExecute();
-                    DataBaseMethod<Void> stepSaving = DataBaseCRUD.INSTANCE.buildStepSaving(++sStepNumber);
-                    new DataBaseTask.Builder()
-                            .setCallback(TopButtonView.this)
-                            .setMethod(stepSaving)
-                            .createAndExecute();
+                    DataBaseCRUD.INSTANCE.buildActivityMetaSaving(ActivityMetaUtil.createMeta());
                 } catch (NameNotFoundException e) {
                     Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    Toast.makeText(getContext(), R.string.screenshot_saving_error, Toast.LENGTH_SHORT).show();
                 }
                 Intent intentHideView = new Intent(getContext(), TopButtonService.class).setAction(TopButtonService.ACTION_HIDE_VIEW);
                 intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -194,22 +194,18 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
             @Override
             public void TouchAction() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot) + " Vova what will be here?", Toast.LENGTH_LONG).show();
+                Intent intentStep = new Intent(getContext(), StepsActivity.class);
+                intentStep.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intentStep);
             }
         });
         cancelRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), new ITouchAction() {
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(false);
+                DataBaseCRUD.INSTANCE.buildStepCleaning();
+                DataBaseCRUD.INSTANCE.buildActivityMetaCleaning();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
-                RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH,
-                        new ProjectsProcessor(),
-                        null,
-                        null,
-                        null);
-                new JiraTask.Builder<JMetaResponse>()
-                        .setRestMethod(searchMethod)
-                        .setCallback(TopButtonView.this)
-                        .createAndExecute();
             }
         });
     }

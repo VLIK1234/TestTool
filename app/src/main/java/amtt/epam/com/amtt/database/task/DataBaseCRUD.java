@@ -7,6 +7,8 @@ import java.io.IOException;
 import amtt.epam.com.amtt.bo.database.ActivityMeta;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
+import amtt.epam.com.amtt.database.object.DbObjectManger;
+import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.task.DataBaseMethod.DatabaseMethodType;
 import amtt.epam.com.amtt.processing.database.UserCheckProcessor;
@@ -19,34 +21,33 @@ public enum DataBaseCRUD {
 
     INSTANCE;
 
-    public DataBaseMethod buildStepSaving(int stepNumber) throws IOException, NameNotFoundException {
-        Step step = new Step(stepNumber, ActivityMetaUtil.getTopActivityComponent());
-        step.saveScreen();
-        return new DataBaseMethod.Builder()
-                .setMethodType(DatabaseMethodType.ADD_OR_UPDATE)
-                .setEntity(step)
-                .create();
+    public void buildStepSaving(String mScreenPath) throws IOException, NameNotFoundException {
+        Step step = new Step(ActivityMetaUtil.getTopActivityComponent());
+        step.saveScreen(mScreenPath);
+        DbObjectManger.INSTANCE.addOrUpdateAsync(step, new IResult<Integer>() {
+            @Override
+            public void onResult(Integer result) {
+            }
+        });
     }
 
-    public DataBaseMethod buildActivityMetaSaving() throws NameNotFoundException {
-        return new DataBaseMethod.Builder()
-                .setMethodType(DatabaseMethodType.ADD_OR_UPDATE)
-                .setEntity(ActivityMetaUtil.createMeta())
-                .create();
+    public void buildActivityMetaSaving(ActivityMeta activityMeta){
+        DbObjectManger.INSTANCE.addOrUpdateAsync(activityMeta, new IResult<Integer>() {
+            @Override
+            public void onResult(Integer result) {
+
+            }
+        });
     }
 
-    public DataBaseMethod buildStepCleaning() {
-        return new DataBaseMethod.Builder()
-                .setMethodType(DatabaseMethodType.REMOVE_ALL)
-                .setEntity(new Step())
-                .create();
+    public void buildStepCleaning() {
+        Step step = new Step();
+        step.restartStepNumber();
+        DbObjectManger.INSTANCE.removeAll(step);
     }
 
-    public DataBaseMethod buildActivityMetaCleaning() {
-        return new DataBaseMethod.Builder()
-                .setMethodType(DatabaseMethodType.REMOVE_ALL)
-                .setEntity(new ActivityMeta())
-                .create();
+    public void buildActivityMetaCleaning() {
+        DbObjectManger.INSTANCE.removeAll(new ActivityMeta());
     }
 
     public DataBaseMethod buildCheckUser(String userName) {

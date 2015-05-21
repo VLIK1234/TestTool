@@ -45,6 +45,7 @@
 
         <activity
             android:name=".app.StepsActivity"
+            android:launchMode="singleTask"
             android:label="@string/title_activity_steps" />
 
         <activity

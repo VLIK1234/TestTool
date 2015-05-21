@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,8 +16,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.LoginItemAdapter;
@@ -88,7 +93,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getBaseContext(),"Click",Toast.LENGTH_SHORT).show();
                 checkFields();
             }
         });
@@ -167,14 +171,21 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     }
 
     private void populateActiveUserInfo() {
-        ActiveUser activeUser = ActiveUser.getInstance();
-        String userName = mUserName.getText().toString();
-        String password = mPassword.getText().toString();
-        activeUser.setCredentials(userName, password, mRequestUrl);
-        if (activeUser.getId() == ActiveUser.DEFAULT_ID) {
-            int userId = mUserIdMap.get(userName);
-            activeUser.setId(userId);
-        }
+        final ActiveUser activeUser = ActiveUser.getInstance();
+        final String userName = mUserName.getText().toString();
+        final String password = mPassword.getText().toString();
+        ScheduledExecutorService worker =
+                Executors.newSingleThreadScheduledExecutor();
+        Runnable task = new Runnable() {
+            public void run() {
+                activeUser.setCredentials(userName, password, mRequestUrl);
+                if (activeUser.getId() == ActiveUser.DEFAULT_ID) {
+                    int userId = mUserIdMap.get(userName);
+                    activeUser.setId(userId);
+                }
+            }
+        };
+        worker.schedule(task, 1, TimeUnit.SECONDS);
     }
 
     //Callbacks
