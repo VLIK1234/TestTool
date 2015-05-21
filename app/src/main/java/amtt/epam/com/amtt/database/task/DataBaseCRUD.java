@@ -1,13 +1,13 @@
 package amtt.epam.com.amtt.database.task;
 
 import android.content.ContentValues;
+import amtt.epam.com.amtt.bo.user.JUserInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 
 import java.io.IOException;
 
 import amtt.epam.com.amtt.bo.database.ActivityMeta;
 import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.task.DataBaseMethod.DatabaseMethodType;
 import amtt.epam.com.amtt.processing.database.UserCheckProcessor;
@@ -62,7 +62,7 @@ public class DataBaseCRUD {
     public DataBaseMethod buildCheckUser(String userName, String url) {
         return new DataBaseMethod.Builder()
                 .setMethodType(DatabaseMethodType.RAW_QUERY)
-                .setEntity(new JiraUserInfo())
+                .setEntity(new JUserInfo())
                 .setSelection(UsersTable._USER_NAME + "=? AND " + UsersTable._URL + "=?")
                 .setSelectionArgs(new String[]{userName, url})
                 .setProcessor(new UserCheckProcessor())

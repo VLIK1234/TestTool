@@ -6,11 +6,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import amtt.epam.com.amtt.database.DataBaseManager;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
@@ -63,6 +58,13 @@ public class AmttContentProvider extends ContentProvider {
         long id = getDataBaseManager().insert(tableName, values);
         return ContentUris.withAppendedId(uri, id);
     }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        String tableName = uri.getLastPathSegment();
+        return getDataBaseManager().bulkInsert(tableName, values);
+    }
+
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {

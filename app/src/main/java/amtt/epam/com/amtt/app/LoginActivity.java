@@ -1,5 +1,8 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.bo.user.JUserInfo;
+import amtt.epam.com.amtt.helper.SystemInfoHelper;
+import amtt.epam.com.amtt.ticket.JiraContent;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -29,7 +32,6 @@ import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
-import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.dao.Dao;
 import amtt.epam.com.amtt.database.table.UsersTable;
@@ -41,6 +43,7 @@ import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Constants.Str;
 import amtt.epam.com.amtt.view.EditText;
 
@@ -48,7 +51,7 @@ import amtt.epam.com.amtt.view.EditText;
  * Created by Artsiom_Kaliaha on 07.05.2015.
  */
 @SuppressWarnings("unchecked")
-public class LoginActivity extends BaseActivity implements JiraCallback<JiraUserInfo>, DataBaseCallback<Boolean>, LoaderCallbacks<Cursor> {
+public class LoginActivity extends BaseActivity implements JiraCallback<JUserInfo>, DataBaseCallback<Boolean>, LoaderCallbacks<Cursor> {
 
     private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
@@ -112,12 +115,16 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
 
     private void initViews() {
         mUserName = (EditText) findViewById(R.id.user_name);
+        mUserName.setText("admin");
         mPassword = (EditText) findViewById(R.id.password);
+        mPassword.setText("bujhm515");
+        mPassword.clearErrorOnTextChanged(true);
+        mPassword.clearErrorOnFocus(true);
         mUrl = (EditText) findViewById(R.id.jira_url);
+        mUrl.setText("https://amtt04.atlassian.net");
         mEpamJira = (CheckBox) findViewById(R.id.epam_jira_checkbox);
         mLoginButton = (Button) findViewById(R.id.login_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
-            @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
                 checkFields();
@@ -138,12 +145,12 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         } else {
             //get user info and perform auth in one request
             String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserName.getText().toString() + JiraApiConst.EXPAND_GROUPS;
-            RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
+            RestMethod<JUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
                     new UserInfoProcessor(),
                     userName,
                     password,
                     mRequestUrl);
-            new JiraTask.Builder<JiraUserInfo>()
+            new JiraTask.Builder<JUserInfo>()
                     .setRestMethod(userInfoMethod)
                     .setCallback(LoginActivity.this)
                     .createAndExecute();
@@ -158,7 +165,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
                 .createAndExecute();
     }
 
-    private void insertUserToDatabase(JiraUserInfo user) {
+    private void insertUserToDatabase(JUserInfo user) {
         user.setUrl(mRequestUrl);
         int userId = new Dao().addOrUpdate(user);
         ActiveUser.getInstance().setId(userId);
@@ -218,17 +225,20 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
     }
 
     @Override
-    public void onRequestPerformed(RestResponse<JiraUserInfo> restResponse) {
+    public void onRequestPerformed(RestResponse<JUserInfo> restResponse) {
         showProgress(false);
         Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
-            if (restResponse.getResultObject() instanceof JiraUserInfo && !isInDatabase) {
-                JiraUserInfo user = restResponse.getResultObject();
+            if (restResponse.getResultObject() instanceof JUserInfo && !isInDatabase) {
+                JUserInfo user = restResponse.getResultObject();
                 insertUserToDatabase(user);
             }
         }
         populateActiveUserInfo();
         TopButtonService.start(this);
+        JiraContent.getInstance().getPrioritiesNames(null);
+        JiraContent.getInstance().getProjectsNames(null);
+        JiraContent.getInstance().setEnvironment(SystemInfoHelper.getDeviceOsInfo());
         finish();
     }
 
@@ -282,9 +292,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
                 }
                 break;
             case SINGLE_USER_CURSOR_LOADER_ID:
-                JiraUserInfo user = new JiraUserInfo(data);
+                JUserInfo user = new JUserInfo(data);
                 mUserName.setText(user.getName());
                 mUrl.setText(user.getUrl());
+                mPassword.setText(Str.EMPTY);
                 break;
         }
 

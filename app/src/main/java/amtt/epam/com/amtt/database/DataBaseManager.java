@@ -118,7 +118,6 @@ public class DataBaseManager extends SQLiteOpenHelper {
     }
 
     public long insert(String tableName, ContentValues values) {
-        //TODO use instead of update method
         long id;
         SQLiteDatabase database = getWritableDatabase();
         try {
@@ -129,6 +128,20 @@ public class DataBaseManager extends SQLiteOpenHelper {
             database.endTransaction();
         }
         return id;
+    }
+
+    public int bulkInsert(String tableName, ContentValues[] values) {
+        SQLiteDatabase database = getWritableDatabase();
+        try {
+            database.beginTransaction();
+            for (ContentValues value : values) {
+                database.insert(tableName, null, value);
+            }
+            database.setTransactionSuccessful();
+        } finally {
+            database.endTransaction();
+        }
+        return values.length;
     }
 
     public int delete(String tableName, String selection, String[] selectionArgs) {

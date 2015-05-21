@@ -28,37 +28,22 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.api.JiraApi;
-import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.api.JiraCallback;
-import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.exception.AmttException;
-import amtt.epam.com.amtt.api.exception.ExceptionHandler;
-import amtt.epam.com.amtt.api.rest.RestMethod;
-import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
-import amtt.epam.com.amtt.app.StepsActivity;
+import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
-import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
 import amtt.epam.com.amtt.database.task.DataBaseCRUD;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseMethod;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
-import amtt.epam.com.amtt.processing.ProjectsProcessor;
-import amtt.epam.com.amtt.util.Constants;
-import amtt.epam.com.amtt.util.Converter;
-import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-
-public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResponse>, DataBaseCallback {
+public class TopButtonView extends FrameLayout implements DataBaseCallback {
 
     private final static String LOG_TAG = "TAG";
 
@@ -129,7 +114,10 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         createTicketView = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket) + " Ira doing this task", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket), Toast.LENGTH_LONG).show();
+                Intent intentTicket = new Intent(getContext(), CreateIssueActivity.class);
+                intentTicket.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intentTicket);
             }
         });
         openAmttView = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), new ITouchAction() {
@@ -138,7 +126,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
                 userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(userInfoIntent);
-
             }
         });
         expectedResultView = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), new ITouchAction() {
@@ -166,21 +153,33 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
                 } catch (IOException e) {
                     Toast.makeText(getContext(), R.string.screenshot_saving_error, Toast.LENGTH_SHORT).show();
                 }
+                Intent intentHideView = new Intent(getContext(), TopButtonService.class).setAction(TopButtonService.ACTION_HIDE_VIEW);
+                intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startService(intentHideView);
+
+                Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
+                intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intentHelp);
             }
         });
         activityInfoView = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_activity_info) + " don't have logic yet.", Toast.LENGTH_LONG).show();
+                String topActivityName = "Not found";
+                try {
+                    topActivityName = getContext().getPackageManager()
+                            .getActivityInfo(TopButtonService.getTopActivity(), PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS).name;
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Toast.makeText(getContext(), topActivityName, Toast.LENGTH_SHORT).show();
+//                InfoActivity.callInfoActivity(TopButtonService.getTopActivity());
             }
         });
         stepView = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_step_view), Toast.LENGTH_LONG).show();
-                Intent intentStep = new Intent(getContext(), StepsActivity.class);
-                intentStep.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().getApplicationContext().startActivity(intentStep);
+                Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot) + " Vova what will be here?", Toast.LENGTH_LONG).show();
             }
         });
         cancelRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), new ITouchAction() {
@@ -188,15 +187,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
             public void TouchAction() {
                 TopButtonView.setStartRecord(false);
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
-                RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH,
-                        new ProjectsProcessor(),
-                        null,
-                        null,
-                        null);
-                new JiraTask.Builder<JMetaResponse>()
-                        .setRestMethod(searchMethod)
-                        .setCallback(TopButtonView.this)
-                        .createAndExecute();
             }
         });
     }
@@ -440,28 +430,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
     @Override
     public void onDataBaseRequestError(Exception e) {
         Toast.makeText(getContext(), R.string.database_operation_error, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRequestStarted() {
-
-    }
-
-    @Override
-    public void onRequestPerformed(RestResponse<JMetaResponse> restResponse) {
-        JMetaResponse jiraMetaResponse = restResponse.getResultObject();
-        ArrayList<String> projectsNames = jiraMetaResponse.getProjectsNames();
-        ArrayList<String> projectsKeys = jiraMetaResponse.getProjectsKeys();
-        PreferenceUtils.putSet(Constants.SharedPreference.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
-        PreferenceUtils.putSet(Constants.SharedPreference.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
-        Intent intent = new Intent(getContext(), CreateIssueActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getContext().getApplicationContext().startActivity(intent);
-    }
-
-    @Override
-    public void onRequestError(AmttException e) {
-        ExceptionHandler.getInstance().processError(e).showDialog(getContext(), TopButtonView.this);
     }
 
     public static void setStartRecord(boolean isStartRecord) {
