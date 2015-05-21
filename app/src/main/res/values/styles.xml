@@ -49,6 +49,7 @@
         <item name="et_supportTextSize">8dp</item>
         <item name="et_supportEllipsize">end</item>
         <item name="et_autoCompleteMode">none</item>
+        <item name="et_supportMode">4</item>
     </style>
 
 </resources>

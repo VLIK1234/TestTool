@@ -51,6 +51,7 @@ public class EditText extends FrameLayout {
     public static final int SUPPORT_MODE_HELPER = 1;
     public static final int SUPPORT_MODE_HELPER_WITH_ERROR = 2;
     public static final int SUPPORT_MODE_CHAR_COUNTER = 3;
+    public static final int SUPPORT_MODE_ERROR = 4;
 
     public static final int AUTOCOMPLETE_MODE_NONE = 0;
     public static final int AUTOCOMPLETE_MODE_SINGLE = 1;
@@ -275,6 +276,10 @@ public class EditText extends FrameLayout {
                     mSupportHelper = ThemeUtil.getCharSequence(a, R.styleable.EditText_et_helper, supportHelper);
                     setError(ThemeUtil.getCharSequence(a, R.styleable.EditText_et_error, supportError));
                     break;
+                case SUPPORT_MODE_ERROR:
+                    mSupportView.setGravity(GravityCompat.START);
+                    setError(ThemeUtil.getCharSequence(a, R.styleable.EditText_et_error, supportError));
+                    break;
             }
             addView(mSupportView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
@@ -391,14 +396,18 @@ public class EditText extends FrameLayout {
     public void setError(CharSequence error) {
         mSupportError = error;
 
-        if (mSupportMode != SUPPORT_MODE_HELPER && mSupportMode != SUPPORT_MODE_HELPER_WITH_ERROR)
+        if (mSupportMode != SUPPORT_MODE_HELPER && mSupportMode != SUPPORT_MODE_HELPER_WITH_ERROR && mSupportMode != SUPPORT_MODE_ERROR)
             return;
 
-        if (mSupportError != null) {
+        if (mSupportHelper != null && mSupportError!=null) {
             mSupportView.setTextColor(mSupportErrorColors);
             mDivider.setColor(mDividerErrorColors);
             mSupportView.setText(mSupportMode == SUPPORT_MODE_HELPER ? mSupportError : TextUtils.concat(mSupportHelper, ", ", mSupportError));
-        } else {
+        } else  if (mSupportHelper == null && mSupportError!=null) {
+            mSupportView.setTextColor(mSupportErrorColors);
+            mDivider.setColor(mDividerErrorColors);
+            mSupportView.setText(mSupportMode == SUPPORT_MODE_ERROR ? mSupportError : mSupportError);
+        } else{
             mSupportView.setTextColor(mSupportColors);
             mDivider.setColor(mDividerColors);
             mSupportView.setText(mSupportHelper);

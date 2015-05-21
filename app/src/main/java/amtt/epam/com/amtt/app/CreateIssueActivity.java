@@ -236,6 +236,7 @@ public class CreateIssueActivity extends BaseActivity {
                 }
             }
         });
+        mCreateIssueButton.setEnabled(true);
     }
 
     private void initSummaryEditText() {
