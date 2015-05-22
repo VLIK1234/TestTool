@@ -74,17 +74,16 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
 
     @Override
     public List<DatabaseEntity> getAll(DatabaseEntity object) {
-        Cursor c = ContextHolder.getContext().getContentResolver().query(object.getUri(), null, null, null, null);
-        return null;
+        return query(object, null, null, null);
     }
 
     @Override
     public DatabaseEntity getByKey(DatabaseEntity objectPrototype) {
-        return null;
+        return query(objectPrototype, null, null, null).get(0);
     }
 
-    public void query(final DatabaseEntity entity, String[] projection, String mSelection, String[] mSelectionArgs, IResult<List<DatabaseEntity>> result){
-        Cursor cursor = ContextHolder.getContext().getContentResolver().query(entity.getUri(), null, mSelection, mSelectionArgs, null);
+    public List<DatabaseEntity> query(final DatabaseEntity entity, String[] projection, String mSelection, String[] mSelectionArgs){
+        Cursor cursor = ContextHolder.getContext().getContentResolver().query(entity.getUri(), null, mSelection + "=?", mSelectionArgs, null);
         List<DatabaseEntity> listObject = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
@@ -108,6 +107,6 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        result.onResult(listObject);
+        return listObject;
     }
 }

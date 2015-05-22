@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.database.task;
+package amtt.epam.com.amtt.util;
 
 import android.content.pm.PackageManager.NameNotFoundException;
 
@@ -12,7 +12,6 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.database.task.DataBaseMethod.DatabaseMethodType;
 import amtt.epam.com.amtt.processing.database.UserCheckProcessor;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 
@@ -63,27 +62,7 @@ public enum StepUtil {
     }
 
     public Boolean buildCheckUser(String userName) {
-        final boolean[] isUserCheck = new boolean[1];
-        DbObjectManger.INSTANCE.query(new JiraUserInfo(), null, UsersTable._USER_NAME, new String[]{userName}, new IResult<List<DatabaseEntity>>() {
-            @Override
-            public void onResult(List<DatabaseEntity> result) {
-                isUserCheck[0] = result.size()>0;
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        });
-        return isUserCheck[0];
-
-//        return new DataBaseMethod.Builder()
-//                .setMethodType(DatabaseMethodType.RAW_QUERY)
-//                .setEntity(new JiraUserInfo())
-//                .setSelection(UsersTable._USER_NAME)
-//                .setSelectionArgs(new String[]{userName})
-//                .setProcessor(new UserCheckProcessor())
-//                .create();
+        return DbObjectManger.INSTANCE.query(new JiraUserInfo(), null, UsersTable._USER_NAME, new String[]{userName}).size()>0;
     }
 
 }

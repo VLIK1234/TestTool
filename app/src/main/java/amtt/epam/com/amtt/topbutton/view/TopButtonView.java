@@ -43,9 +43,7 @@ import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
-import amtt.epam.com.amtt.database.task.StepUtil;
-import amtt.epam.com.amtt.database.task.DataBaseCallback;
-import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
+import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
@@ -57,7 +55,7 @@ import amtt.epam.com.amtt.util.PreferenceUtils;
  * Created by Ivan_Bakach on 23.03.2015.
  */
 
-public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResponse>, DataBaseCallback {
+public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResponse>{
 
     private final static String LOG_TAG = "TAG";
 
@@ -436,16 +434,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
             super.draw(canvas);
             canvas.restore();
         }
-    }
-
-    @Override
-    public void onDataBaseRequestPerformed(DataBaseResponse dataBaseResponse) {
-        Toast.makeText(getContext(), R.string.data_base_action_done, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onDataBaseRequestError(Exception e) {
-        Toast.makeText(getContext(), R.string.database_operation_error, Toast.LENGTH_SHORT).show();
     }
 
     @Override

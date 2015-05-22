@@ -36,11 +36,7 @@ import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.database.task.StepUtil;
-import amtt.epam.com.amtt.database.task.DataBaseCallback;
-import amtt.epam.com.amtt.database.task.DataBaseMethod;
-import amtt.epam.com.amtt.database.task.DataBaseTask;
-import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
+import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
@@ -51,7 +47,7 @@ import amtt.epam.com.amtt.view.EditText;
  * Created by Artsiom_Kaliaha on 07.05.2015.
  */
 @SuppressWarnings("unchecked")
-public class LoginActivity extends BaseActivity implements JiraCallback<JiraUserInfo>, DataBaseCallback<Boolean>, LoaderCallbacks<Cursor> {
+public class LoginActivity extends BaseActivity implements JiraCallback<JiraUserInfo>, LoaderCallbacks<Cursor> {
 
     private AutoCompleteTextView mUserName;
     private EditText mPassword;
@@ -218,18 +214,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         ExceptionHandler.getInstance().processError(e).showDialog(this, this);
         showProgress(false);
         mLoginButton.setEnabled(true);
-    }
-
-    //Database task
-    @Override
-    public void onDataBaseRequestPerformed(DataBaseResponse<Boolean> dataBaseResponse) {
-        sendAuthRequest(dataBaseResponse.getResult());
-        TopButtonService.authSuccess(this);
-    }
-
-    @Override
-    public void onDataBaseRequestError(Exception e) {
-        Toast.makeText(this, R.string.database_operation_error, Toast.LENGTH_SHORT).show();
     }
 
     //Loader
