@@ -214,29 +214,28 @@ public class CreateIssueActivity extends BaseActivity {
             public void onClick(View v) {
                 Boolean isValid = true;
                 if (TextUtils.isEmpty(mSummaryEditText.getText().toString())) {
-                    mSummaryEditText.setError(getString(R.string.enter_prefix)+ getString(R.string.enter_summary));
+                    mSummaryEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
                     isValid = false;
                 }
                 if (isValid) {
                     showProgress(true);
                     JiraContent.getInstance().createIssue(mIssueTypeName,
-                            mPriorityName, mVersionName, mSummaryEditText.getText().toString(),
-                            mDescriptionEditText.getText().toString(), mEnvironmentEditText.getText().toString(),
-                            mAssignableUserName, new JiraGetContentCallback<Boolean>() {
-                                @Override
-                                public void resultOfDataLoading(Boolean result) {
-                                    if (result != null) {
-                                        if (result) {
-                                            finish();
-                                        }
+                        mPriorityName, mVersionName, mSummaryEditText.getText().toString(),
+                        mDescriptionEditText.getText().toString(), mEnvironmentEditText.getText().toString(),
+                        mAssignableUserName, new JiraGetContentCallback<Boolean>() {
+                            @Override
+                            public void resultOfDataLoading(Boolean result) {
+                                if (result != null) {
+                                    if (result) {
+                                        finish();
                                     }
-                                    showProgress(false);
                                 }
-                            });
+                                showProgress(false);
+                            }
+                        });
                 }
             }
         });
-        mCreateIssueButton.setEnabled(true);
     }
 
     private void initSummaryEditText() {
@@ -247,12 +246,10 @@ public class CreateIssueActivity extends BaseActivity {
 
     private void initAssigneeACTextView() {
         mAssignableUsersACTextView = (AutocompleteProgressView) findViewById(R.id.et_assignable_users);
-        mAssignableUsersACTextView.setEnabled(false);
-        setAssignableNames("", MESSAGE_TEXT_CHANGED);
         mAssignableUsersACTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() >= 2) {
+                if (s.length() > 2) {
                     mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
                     mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s.toString()), 750);
                     mAssignableUserName = s.toString();
@@ -270,6 +267,7 @@ public class CreateIssueActivity extends BaseActivity {
     }
 
     private void setAssignableNames(String s, int keyCode) {
+        mAssignableUsersACTextView.setEnabled(false);
         mAssignableUsersACTextView.showProgress(true);
         JiraContent.getInstance().getUsersAssignable(s, new JiraGetContentCallback<ArrayList<String>>() {
             @Override
@@ -278,7 +276,8 @@ public class CreateIssueActivity extends BaseActivity {
                     ArrayAdapter<String> mAssignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
                     mAssignableUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                     mAssignableUsersACTextView.setAdapter(mAssignableUsersAdapter);
-                    mAssignableUsersACTextView.setThreshold(3);
+                    mAssignableUsersAdapter.notifyDataSetChanged();
+                    mAssignableUsersACTextView.setThreshold(2);
                     mAssignableUsersACTextView.showProgress(false);
                     mAssignableUsersACTextView.setEnabled(true);
                 }
