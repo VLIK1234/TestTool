@@ -255,7 +255,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     public void onDataBaseRequestPerformed(DataBaseResponse<Boolean> dataBaseResponse) {
         isInDatabase = dataBaseResponse.getResult();
         sendAuthRequest(dataBaseResponse.getResult());
-        TopButtonService.authSuccess(this);
     }
 
     @Override

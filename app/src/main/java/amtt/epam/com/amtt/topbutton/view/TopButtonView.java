@@ -39,6 +39,7 @@ import amtt.epam.com.amtt.database.task.DataBaseMethod;
 import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.ActivityMetaUtil;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
@@ -63,6 +64,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
     public boolean moving;
     private int xButton = 0;
     private int yButton = 0;
+    private static final int threshold = 10;
 
     private RelativeLayout topButtonLayout;
     private static boolean isStartRecord = false;
@@ -167,8 +169,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
             public void TouchAction() {
                 String topActivityName = "Not found";
                 try {
-                    topActivityName = getContext().getPackageManager()
-                            .getActivityInfo(TopButtonService.getTopActivity(), PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS).name;
+                    topActivityName = ActivityMetaUtil.getTopActivityInfo().name;
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -254,7 +255,6 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int threshold = 10;
         int totalDeltaX = lastX - firstX;
         int totalDeltaY = lastY - firstY;
 

@@ -132,7 +132,7 @@ public class ActivityMetaUtil {
         return topTaskInfo.topActivity;
     }
 
-    private static ActivityInfo getTopActivityInfo() throws NameNotFoundException {
+    public static ActivityInfo getTopActivityInfo() throws NameNotFoundException {
         return ContextHolder.getContext()
                     .getPackageManager()
                     .getActivityInfo(getTopActivityComponent(), PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);

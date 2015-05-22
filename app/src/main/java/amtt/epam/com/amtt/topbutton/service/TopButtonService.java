@@ -1,10 +1,8 @@
 package amtt.epam.com.amtt.topbutton.service;
 
-import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
@@ -22,28 +20,26 @@ import android.view.WindowManager;
 import java.io.File;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.app.MainActivity;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
-import amtt.epam.com.amtt.app.MainActivity;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
-import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
  * Created by Ivan_Bakach on 20.03.2015.
  */
 public class TopButtonService extends Service implements DataBaseCallback {
 
-    public static final String ACTION_START = "SHOW";
-    public static final String ACTION_CLOSE = "CLOSE";
+    public static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.SHOW";
+    public static final String ACTION_CLOSE = "amtt.epam.com.amtt.topbutton.service.CLOSE";
     private static final String TAG = "Log";
-    public static final int ID = 7;
+    public static final int NOTIFICATION_ID = 7;
     //don't use REQUEST_CODE = 0 - it's broke action in notification for some device
     public static final int REQUEST_CODE = 1;
-    public static final String ACTION_AUTH_SUCCESS = "AUTHORIZATION_SUCCESS";
-    public static final String ACTION_SHOW_SCREEN = "SHOW_SCREEN";
-    public static final String ACTION_HIDE_VIEW = "HIDE_VIEW";
-    public static final String ACTION_SHOW_VIEW = "SHOW_VIEW";
+    public static final String ACTION_SHOW_SCREEN = "amtt.epam.com.amtt.topbutton.service.SHOW_SCREEN";
+    public static final String ACTION_HIDE_VIEW = "amtt.epam.com.amtt.topbutton.service.HIDE_VIEW";
+    public static final String ACTION_SHOW_VIEW = "amtt.epam.com.amtt.topbutton.service.SHOW_VIEW";
     public static final String PATH_TO_SCREEENSHOT_KEY = "PATH_TO_SCREENSHOT";
     private static final String SCREENSHOTS_DIR_NAME = "Screenshots";
     private int xInitPosition;
@@ -58,7 +54,7 @@ public class TopButtonService extends Service implements DataBaseCallback {
     //bellow field for cap code and will be delete after do work realization
     private static Context context;
 
-    public void showScreen(String pathToScreenshot){
+    public void showScreenInGallery(String pathToScreenshot) {
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);
         File file = new File(pathToScreenshot);
@@ -67,32 +63,24 @@ public class TopButtonService extends Service implements DataBaseCallback {
         startActivity(intent);
     }
 
-    public static void sendActionScreenshot(String pathToScreenshot){
+    public static void sendActionShowScreenInGallery(String pathToScreenshot) {
         Intent intent = new Intent(context, TopButtonService.class).setAction(ACTION_SHOW_SCREEN);
         intent.putExtra(PATH_TO_SCREEENSHOT_KEY, pathToScreenshot);
         context.startService(intent);
     }
 
-    public static void sendActionVisibleView(){
-        Intent intentHideView = new Intent(context, TopButtonService.class).setAction(TopButtonService.ACTION_SHOW_VIEW);
-        intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.getApplicationContext().startService(intentHideView);
+    public static void sendActionShowBotton() {
+        Intent intentShowView = new Intent(context, TopButtonService.class).setAction(TopButtonService.ACTION_SHOW_VIEW);
+        intentShowView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.getApplicationContext().startService(intentShowView);
     }
+
     public static void start(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_START));
     }
 
     public static void close(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE));
-    }
-
-    public static void authSuccess(Context context) {
-        context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_AUTH_SUCCESS));
-    }
-
-    public static ComponentName getTopActivity() {
-        ActivityManager activityManager = (ActivityManager) ContextHolder.getContext().getSystemService(Context.ACTIVITY_SERVICE);
-        return activityManager.getRunningTasks(Integer.MAX_VALUE).get(0).topActivity;
     }
 
     @Override
@@ -140,13 +128,10 @@ public class TopButtonService extends Service implements DataBaseCallback {
                 case ACTION_SHOW_VIEW:
                     changeStateNotificationAction();
                     break;
-                case ACTION_AUTH_SUCCESS:
-//                    changeUiAuthSuccess();
-                    break;
                 case ACTION_SHOW_SCREEN:
                     Bundle extra = intent.getExtras();
-                    if (extra!=null) {
-                        showScreen(extra.getString(PATH_TO_SCREEENSHOT_KEY));
+                    if (extra != null) {
+                        showScreenInGallery(extra.getString(PATH_TO_SCREEENSHOT_KEY));
                     }
                     break;
             }
@@ -176,21 +161,11 @@ public class TopButtonService extends Service implements DataBaseCallback {
     private void closeService() {
         if (view != null && isViewAdd) {
             isViewAdd = false;
-            ((WindowManager) getSystemService(WINDOW_SERVICE)).removeView(view);
+            wm.removeView(view);
             view = null;
         }
         stopSelf();
     }
-
-//Delete after create logic with choose user activity and start service after authorization success
-//    private void changeUiAuthSuccess(){
-//        view.buttonAuth.setText(R.string.label_logout);
-//        view.buttonAuth.setTextColor(getResources().getColor(R.color.red));
-//        view.buttonBugRep.setEnabled(true);
-//        view.buttonUserInfo.setEnabled(true);
-//        view.layoutUserInfo.setClickable(true);
-//        view.layoutBugRep.setClickable(true);
-//    }
 
     private void showNotification() {
         builder = new NotificationCompat.Builder(this)
@@ -198,7 +173,7 @@ public class TopButtonService extends Service implements DataBaseCallback {
                 .setContentTitle(getString(R.string.notification_title))
                 .setOngoing(true)
                 .setContentText(getString(R.string.notification_text))
-                .setContentIntent(PendingIntent.getActivity(getBaseContext(), ID, new Intent(getBaseContext(), MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
+                .setContentIntent(PendingIntent.getActivity(getBaseContext(), NOTIFICATION_ID, new Intent(getBaseContext(), MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
 
 
         action = new NotificationCompat.Action(
@@ -213,7 +188,7 @@ public class TopButtonService extends Service implements DataBaseCallback {
 
         builder.addAction(action);
         builder.addAction(closeService);
-        startForeground(ID, builder.build());
+        startForeground(NOTIFICATION_ID, builder.build());
     }
 
     public final void changeStateNotificationAction() {
@@ -222,12 +197,12 @@ public class TopButtonService extends Service implements DataBaseCallback {
             view.setVisibility(View.GONE);
             action.icon = R.drawable.ic_stat_action_visibility;
             action.title = getString(R.string.label_show);
-            notificationManager.notify(ID, builder.build());
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
         } else {
             view.setVisibility(View.VISIBLE);
             action.icon = R.drawable.ic_stat_action_visibility_off;
             action.title = getString(R.string.label_hide);
-            notificationManager.notify(ID, builder.build());
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
         }
     }
 

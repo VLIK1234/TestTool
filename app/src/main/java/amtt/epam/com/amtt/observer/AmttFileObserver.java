@@ -51,8 +51,8 @@ public class AmttFileObserver extends FileObserver {
                 final String createPath = path;
                 Runnable task = new Runnable() {
                     public void run() {
-                        TopButtonService.sendActionScreenshot(absolutePath + "/" + createPath);
-                        TopButtonService.sendActionVisibleView();
+                        TopButtonService.sendActionShowScreenInGallery(absolutePath + "/" + createPath);
+                        TopButtonService.sendActionShowBotton();
                     }
                 };
                 worker.schedule(task, 1, TimeUnit.SECONDS);
