@@ -5,4 +5,5 @@ package amtt.epam.com.amtt.database.object;
  */
 public interface IResult<T> {
     void onResult(T result);
+    void onError(Exception e);
 }

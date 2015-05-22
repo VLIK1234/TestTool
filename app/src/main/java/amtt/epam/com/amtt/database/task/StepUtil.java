@@ -3,10 +3,12 @@ package amtt.epam.com.amtt.database.task;
 import android.content.pm.PackageManager.NameNotFoundException;
 
 import java.io.IOException;
+import java.util.List;
 
 import amtt.epam.com.amtt.bo.database.ActivityMeta;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
@@ -28,6 +30,11 @@ public enum StepUtil {
             @Override
             public void onResult(Integer result) {
             }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
         });
     }
 
@@ -35,6 +42,11 @@ public enum StepUtil {
         DbObjectManger.INSTANCE.addOrUpdateAsync(activityMeta, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
+
+            }
+
+            @Override
+            public void onError(Exception e) {
 
             }
         });
@@ -50,14 +62,28 @@ public enum StepUtil {
         DbObjectManger.INSTANCE.removeAll(new ActivityMeta());
     }
 
-    public DataBaseMethod buildCheckUser(String userName) {
-        return new DataBaseMethod.Builder()
-                .setMethodType(DatabaseMethodType.RAW_QUERY)
-                .setEntity(new JiraUserInfo())
-                .setSelection(UsersTable._USER_NAME)
-                .setSelectionArgs(new String[]{userName})
-                .setProcessor(new UserCheckProcessor())
-                .create();
+    public Boolean buildCheckUser(String userName) {
+        final boolean[] isUserCheck = new boolean[1];
+        DbObjectManger.INSTANCE.query(new JiraUserInfo(), null, UsersTable._USER_NAME, new String[]{userName}, new IResult<List<DatabaseEntity>>() {
+            @Override
+            public void onResult(List<DatabaseEntity> result) {
+                isUserCheck[0] = result.size()>0;
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+        return isUserCheck[0];
+
+//        return new DataBaseMethod.Builder()
+//                .setMethodType(DatabaseMethodType.RAW_QUERY)
+//                .setEntity(new JiraUserInfo())
+//                .setSelection(UsersTable._USER_NAME)
+//                .setSelectionArgs(new String[]{userName})
+//                .setProcessor(new UserCheckProcessor())
+//                .create();
     }
 
 }

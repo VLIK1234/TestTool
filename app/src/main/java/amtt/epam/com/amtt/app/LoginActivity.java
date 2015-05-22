@@ -119,13 +119,13 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         }
     }
 
-    private void isUserAlreadyInDatabase() {
-//        StepUtil.INSTANCE.buildCheckUser(mUserName.getText().toString());
-        DataBaseMethod<Boolean> dataBaseMethod = StepUtil.INSTANCE.buildCheckUser(mUserName.getText().toString());
-        new DataBaseTask.Builder<Boolean>()
-                .setCallback(this)
-                .setMethod(dataBaseMethod)
-                .createAndExecute();
+    private boolean isUserAlreadyInDatabase() {
+        return StepUtil.INSTANCE.buildCheckUser(mUserName.getText().toString());
+//        DataBaseMethod<Boolean> dataBaseMethod = StepUtil.INSTANCE.buildCheckUser(mUserName.getText().toString());
+//        new DataBaseTask.Builder<Boolean>()
+//                .setCallback(this)
+//                .setMethod(dataBaseMethod)
+//                .createAndExecute();
 //        return dataBaseMethod.execute().mResult;
     }
 
@@ -136,6 +136,11 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
             @Override
             public void onResult(Integer result) {
                 userId[0] = result;
+            }
+
+            @Override
+            public void onError(Exception e) {
+
             }
         });
         ActiveUser.getInstance().setId(userId[0]);
@@ -162,7 +167,8 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JiraUser
         if (!TextUtils.isEmpty(mToastText)) {
             Toast.makeText(this, mToastText, Toast.LENGTH_LONG).show();
         } else {
-            isUserAlreadyInDatabase();
+            sendAuthRequest(isUserAlreadyInDatabase());
+            TopButtonService.authSuccess(this);
         }
         mToastText = Str.EMPTY;
     }

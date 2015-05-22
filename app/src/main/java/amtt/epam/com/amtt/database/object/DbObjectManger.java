@@ -2,12 +2,16 @@ package amtt.epam.com.amtt.database.object;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCursor;
 import android.database.sqlite.SQLiteQuery;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import amtt.epam.com.amtt.bo.database.ActivityMeta;
+import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.util.ContextHolder;
 
@@ -79,14 +83,31 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
         return null;
     }
 
-    public Cursor query(final DatabaseEntity objcet, final String mSelection, final String[] mSelectionArgs, IResult<DatabaseEntity> result){
-        final Cursor[] cursor = new Cursor[1];
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                cursor[0] = ContextHolder.getContext().getContentResolver().query(objcet.getUri(), null, mSelection + "=?", mSelectionArgs, null);
-            }
-        });
-        return cursor[0];
+    public void query(final DatabaseEntity entity, String[] projection, String mSelection, String[] mSelectionArgs, IResult<List<DatabaseEntity>> result){
+        Cursor cursor = ContextHolder.getContext().getContentResolver().query(entity.getUri(), null, mSelection, mSelectionArgs, null);
+        List<DatabaseEntity> listObject = new ArrayList<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                listObject.add(new DatabaseEntity(cursor) {
+                    @Override
+                    public ContentValues getContentValues() {
+                        return entity.getContentValues();
+                    }
+
+                    @Override
+                    public Uri getUri() {
+                        return entity.getUri();
+                    }
+
+                    @Override
+                    public int getId() {
+                        return entity.getId();
+                    }
+                });
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        result.onResult(listObject);
     }
 }
