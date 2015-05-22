@@ -1,5 +1,12 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
+import amtt.epam.com.amtt.ticket.JiraContent;
+import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
+import amtt.epam.com.amtt.view.AutocompleteProgressView;
+import amtt.epam.com.amtt.view.EditText;
+import amtt.epam.com.amtt.view.SpinnerProgress;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,17 +17,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
-import amtt.epam.com.amtt.ticket.JiraContent;
-import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
-import amtt.epam.com.amtt.view.AutocompleteProgressView;
-import amtt.epam.com.amtt.view.EditText;
-import amtt.epam.com.amtt.view.SpinnerProgress;
 
 @SuppressWarnings("unchecked")
 public class CreateIssueActivity extends BaseActivity {
@@ -32,7 +32,7 @@ public class CreateIssueActivity extends BaseActivity {
     private EditText mDescriptionEditText;
     private EditText mEnvironmentEditText;
     private EditText mSummaryEditText;
-    private String mAssignableUserName;
+    private String mAssignableUserName = null;
     private String mIssueTypeName;
     private String mPriorityName;
     private String mVersionName;
@@ -214,8 +214,10 @@ public class CreateIssueActivity extends BaseActivity {
             public void onClick(View v) {
                 Boolean isValid = true;
                 if (TextUtils.isEmpty(mSummaryEditText.getText().toString())) {
+                    mSummaryEditText.requestFocus();
                     mSummaryEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
                     isValid = false;
+                    Toast.makeText(CreateIssueActivity.this, getString(R.string.enter_prefix) + getString(R.string.enter_summary), Toast.LENGTH_LONG).show();
                 }
                 if (isValid) {
                     showProgress(true);
@@ -227,7 +229,10 @@ public class CreateIssueActivity extends BaseActivity {
                             public void resultOfDataLoading(Boolean result) {
                                 if (result != null) {
                                     if (result) {
+                                        Toast.makeText(CreateIssueActivity.this, "Ticket success created", Toast.LENGTH_LONG).show();
                                         finish();
+                                    } else {
+                                        Toast.makeText(CreateIssueActivity.this, "Error", Toast.LENGTH_LONG).show();
                                     }
                                 }
                                 showProgress(false);
@@ -275,9 +280,9 @@ public class CreateIssueActivity extends BaseActivity {
                 if (result != null) {
                     ArrayAdapter<String> mAssignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
                     mAssignableUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                    mAssignableUsersACTextView.setAdapter(mAssignableUsersAdapter);
-                    mAssignableUsersAdapter.notifyDataSetChanged();
                     mAssignableUsersACTextView.setThreshold(2);
+                    mAssignableUsersAdapter.notifyDataSetChanged();
+                    mAssignableUsersACTextView.setAdapter(mAssignableUsersAdapter);
                     mAssignableUsersACTextView.showProgress(false);
                     mAssignableUsersACTextView.setEnabled(true);
                 }

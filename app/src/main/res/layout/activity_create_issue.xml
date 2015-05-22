@@ -208,7 +208,7 @@
 
             <amtt.epam.com.amtt.view.AutocompleteProgressView
                 android:id="@+id/et_assignable_users"
-                style="@style/Material.Widget.EditText"
+                style="@style/Material.Widget.Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/label_tester"
@@ -229,7 +229,6 @@
                 android:layout_height="@dimen/material_vertical_button_height_size"
                 android:layout_gravity="right"
                 android:layout_marginTop="@dimen/material_vertical_button_padding_top"
-                android:enabled="false"
                 android:minWidth="@dimen/material_vertical_button_min_width_size"
                 android:text="@string/label_create"
                 android:textSize="@dimen/material_font_size_button" />
