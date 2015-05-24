@@ -17,16 +17,6 @@
 
     <style name="Material.Widget.Spinner">
         <item name="android:textSize">@dimen/material_font_size_subhead</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Caption</item>
-        <item name="spn_labelEllipsize">end</item>
-        <item name="spn_dividerHeight">1dp</item>
-        <item name="spn_dividerPadding">0dp</item>
-        <item name="spn_dividerAnimDuration">@android:integer/config_longAnimTime</item>
-        <item name="spn_arrowColor">?attr/colorControlNormal</item>
-        <item name="spn_arrowSize">4dp</item>
-        <item name="spn_arrowPadding">8dp</item>
-        <item name="spn_popupItemAnimation">@anim/abc_slide_in_bottom</item>
-        <item name="spn_popupItemAnimOffset">120</item>
     </style>
 
     <style name="Material.Widget.EditText">
@@ -50,6 +40,21 @@
         <item name="et_supportEllipsize">end</item>
         <item name="et_autoCompleteMode">none</item>
         <item name="et_supportMode">4</item>
+    </style>
+
+    <style name="Material.Widget.AutocompleteProgressView">
+        <item name="android:dropDownItemStyle">@style/Material.Widget.DropDownItem</item>
+        <item name="android:spinnerStyle">@style/Material.Widget.Spinner</item>
+    </style>
+
+    <style name="Material.Widget.DropDownItem">
+        <item name="android:height">@dimen/material_menu_item_vertical_height</item>
+        <item name="android:layout_height">@dimen/material_menu_item_vertical_height</item>
+        <item name="android:paddingLeft">@dimen/material_menu_item_vertical_width</item>
+        <item name="android:paddingRight">@dimen/material_menu_item_vertical_width</item>
+        <item name="android:paddingBottom">@dimen/material_menu_item_vertical_bottom_padding</item>
+        <item name="android:textSize">@dimen/material_font_size_subhead</item>
+        <item name="android:gravity">bottom</item>
     </style>
 
 </resources>

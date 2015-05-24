@@ -281,8 +281,9 @@ public class CreateIssueActivity extends BaseActivity {
                     ArrayAdapter<String> mAssignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
                     mAssignableUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                     mAssignableUsersACTextView.setThreshold(2);
-                    mAssignableUsersAdapter.notifyDataSetChanged();
                     mAssignableUsersACTextView.setAdapter(mAssignableUsersAdapter);
+                    mAssignableUsersAdapter.notifyDataSetChanged();
+
                     mAssignableUsersACTextView.showProgress(false);
                     mAssignableUsersACTextView.setEnabled(true);
                 }

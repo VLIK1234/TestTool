@@ -6,16 +6,11 @@
 
     <AutoCompleteTextView
         android:id="@+id/autocomplete_text_view"
-        style="@style/Material.Widget.EditText"
+        style="@style/Material.Widget.AutocompleteProgressView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
+        android:layout_height="match_parent"
         android:inputType="textAutoComplete"
-        android:paddingLeft="0dp"
-        android:paddingRight="0dp"
-        android:paddingTop="0dp"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+        android:textSize="@dimen/material_font_size_subhead"
         android:textColor="@color/primary_text" />
 
     <ProgressBar
