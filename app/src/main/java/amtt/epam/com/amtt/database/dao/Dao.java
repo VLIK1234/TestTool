@@ -7,6 +7,7 @@ import android.net.Uri;
 import java.util.List;
 
 import amtt.epam.com.amtt.database.constant.BaseColumns;
+import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
@@ -57,6 +58,14 @@ public class Dao implements DaoInterface<DatabaseEntity> {
                 result.onResult(addOrUpdate(object));
             }
         }).start();
+    }
+
+    @Override
+    public Integer update(DatabaseEntity objectPrototype) {
+        return sContext.getContentResolver().update(objectPrototype.getUri(),
+                objectPrototype.getContentValues(),
+                BaseColumns._ID + "=?",
+                new String[]{String.valueOf(objectPrototype.getId())});
     }
 
     @Override

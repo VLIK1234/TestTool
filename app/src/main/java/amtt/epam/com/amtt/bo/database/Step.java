@@ -32,7 +32,8 @@ public class Step extends DatabaseEntity {
         sScreenBasePath = ContextHolder.getContext().getFilesDir().getPath() + SCREENSHOT_FOLDER;
     }
 
-    public Step() { }
+    public Step() {
+    }
 
     public Step(int stepNumber, ComponentName componentName) {
         mStepNumber = stepNumber;
@@ -63,7 +64,6 @@ public class Step extends DatabaseEntity {
         values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity.getClassName());
         return values;
     }
-
 
     public String getScreenPath() {
         return mScreenPath;

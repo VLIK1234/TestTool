@@ -1,14 +1,15 @@
 package amtt.epam.com.amtt.bo.user;
 
-import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.dao.DatabaseEntity;
-import amtt.epam.com.amtt.database.table.UsersTable;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+
 import com.google.gson.annotations.SerializedName;
 
 import amtt.epam.com.amtt.bo.issue.JAvatarUrls;
+import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.dao.DatabaseEntity;
+import amtt.epam.com.amtt.database.table.UsersTable;
 
 /**
  * Created by Iryna_Monchanka on 3/31/2015.
@@ -36,14 +37,19 @@ public class JUserInfo extends DatabaseEntity {
     private String mUrl;
     private int mId;
 
-    public JUserInfo() { }
+    public JUserInfo() {
+    }
 
     public JUserInfo(Cursor cursor) {
-        cursor.moveToFirst();
+        if (cursor.getPosition() == -1) {
+            cursor.moveToNext();
+        }
+        mName = cursor.getString(cursor.getColumnIndex(UsersTable._USER_NAME));
+        mUrl = cursor.getString(cursor.getColumnIndex(UsersTable._URL));
         mEmailAddress = cursor.getString(cursor.getColumnIndex(UsersTable._EMAIL));
-        mDisplayName= cursor.getString(cursor.getColumnIndex(UsersTable._DISPLAY_NAME));
-        mTimeZone= cursor.getString(cursor.getColumnIndex(UsersTable._TIME_ZONE));
-        mLocale= cursor.getString(cursor.getColumnIndex(UsersTable._LOCALE));
+        mDisplayName = cursor.getString(cursor.getColumnIndex(UsersTable._DISPLAY_NAME));
+        mTimeZone = cursor.getString(cursor.getColumnIndex(UsersTable._TIME_ZONE));
+        mLocale = cursor.getString(cursor.getColumnIndex(UsersTable._LOCALE));
         String avatar16 = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_16));
         String avatar24 = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_24));
         String avatar32 = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_32));

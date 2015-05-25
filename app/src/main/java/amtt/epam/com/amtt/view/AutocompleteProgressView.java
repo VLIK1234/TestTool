@@ -23,31 +23,23 @@ public class AutocompleteProgressView extends RelativeLayout {
 
     private AutoCompleteTextView mACTextView;
     private ProgressBar mProgress;
-    private ArrayAdapter<String> mEmptyAdapter;
     private Context mContext;
 
     public AutocompleteProgressView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         LayoutInflater.from(mContext).inflate(R.layout.autocomplete_progress_layout, this, true);
-        String[] strings = new String[]{};
-        List<String> items = new ArrayList<>(Arrays.asList(strings));
-        mEmptyAdapter = new ArrayAdapter<>(mContext, R.layout.spinner_dropdown_item, items);
-        //mEmptyAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         initViews();
     }
 
     private void initViews() {
         mACTextView = (AutoCompleteTextView) findViewById(R.id.autocomplete_text_view);
-        mACTextView.setAdapter(mEmptyAdapter);
-        mEmptyAdapter.notifyDataSetChanged();
         mProgress = (ProgressBar) findViewById(R.id.progress);
     }
 
     public void showProgress(boolean enabled) {
         if (enabled) {
             mProgress.setVisibility(View.VISIBLE);
-            mACTextView.setAdapter(mEmptyAdapter);
         } else {
             mProgress.setVisibility(View.GONE);
         }
@@ -56,6 +48,7 @@ public class AutocompleteProgressView extends RelativeLayout {
     public void setAdapter(ArrayAdapter<String> adapter) {
         mACTextView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        mACTextView.showDropDown();
     }
 
     public void setThreshold(int threshold) {

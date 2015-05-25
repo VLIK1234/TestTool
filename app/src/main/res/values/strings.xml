@@ -9,6 +9,7 @@
     <string name="title_activity_login">Login to Jira</string>
     <string name="title_activity_steps">StepsActivity</string>
     <string name="title_activity_user_info">UserInfoActivity</string>
+    <string name="title_activity_amtt">Choose user</string>
     <string name="title_activity_info">InfoActivity</string>
     <string name="title_activity_help_dialog">How make screenshot?</string>
 
@@ -147,6 +148,9 @@
     <string name="activity_info_unavailable">Activity information isn\'t available</string>
     <string name="screenshot_saving_error">Error while saving screenshot</string>
     <string name="database_operation_error">Error while executing database operation</string>
+    <string name="helper_url">Enter url</string>
+    <string name="helper_user_name">Enter username</string>
+    <string name="helper_password">Enter password</string>
     <string name="title_help">Help</string>
     <string name="dialog_description">To make screenshot please use next combination button: \nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nXiaomi phone - volume down+power \nHTC - power+home</string>
     <string name="dialog_label_checkbox">Don\'t show again</string>
