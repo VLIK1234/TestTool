@@ -54,7 +54,6 @@
         <item name="android:paddingRight">@dimen/material_menu_item_vertical_width</item>
         <item name="android:paddingBottom">@dimen/material_menu_item_vertical_bottom_padding</item>
         <item name="android:textSize">@dimen/material_font_size_subhead</item>
-        <item name="android:gravity">bottom</item>
     </style>
 
 </resources>

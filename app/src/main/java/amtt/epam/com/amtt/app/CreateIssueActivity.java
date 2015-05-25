@@ -278,8 +278,8 @@ public class CreateIssueActivity extends BaseActivity {
             @Override
             public void resultOfDataLoading(ArrayList<String> result) {
                 if (result != null) {
-                    ArrayAdapter<String> mAssignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
-                    mAssignableUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                    ArrayAdapter<String> mAssignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
+                   // mAssignableUsersAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                     mAssignableUsersACTextView.setThreshold(2);
                     mAssignableUsersACTextView.setAdapter(mAssignableUsersAdapter);
                     mAssignableUsersAdapter.notifyDataSetChanged();
