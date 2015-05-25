@@ -63,7 +63,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private CheckBox mEpamJira;
     private String mRequestUrl;
     private Map<String, Integer> mUserIdMap;
-    private boolean isInDatabase;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -240,7 +239,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         showProgress(false);
         Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
-            if (restResponse.getResultObject() instanceof JUserInfo && !isInDatabase) {
+            if (restResponse.getResultObject() != null && !isUserAlreadyInDatabase()) {
                 JUserInfo user = restResponse.getResultObject();
                 insertUserToDatabase(user);
             }

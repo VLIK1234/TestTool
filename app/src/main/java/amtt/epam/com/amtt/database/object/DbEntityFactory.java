@@ -18,7 +18,7 @@ public class DbEntityFactory {
             case ACTIVITY_META:
                 return new ActivityMeta(cursor);
             case JUSER_INFO:
-                return new Step(cursor);
+                return new JUserInfo(cursor);
             default:
                 return null;
         }
