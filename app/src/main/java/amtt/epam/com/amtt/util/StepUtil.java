@@ -20,30 +20,11 @@ public class StepUtil {
 
     public static void buildStepSaving(String mScreenPath) throws IOException, NameNotFoundException {
         Step step = new Step(ActivityMetaUtil.getTopActivityComponent(), mScreenPath);
-        DbObjectManger.INSTANCE.addOrUpdateAsync(step, new IResult<Integer>() {
-            @Override
-            public void onResult(Integer result) {
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        });
+        DbObjectManger.INSTANCE.addOrUpdateAsync(step, null);
     }
 
     public static void buildActivityMetaSaving(ActivityMeta activityMeta){
-        DbObjectManger.INSTANCE.addOrUpdateAsync(activityMeta, new IResult<Integer>() {
-            @Override
-            public void onResult(Integer result) {
-
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        });
+        DbObjectManger.INSTANCE.addOrUpdateAsync(activityMeta, null);
     }
 
     public static void buildStepCleaning() {

@@ -10,6 +10,7 @@ import android.net.Uri;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.StepsTable;
@@ -22,16 +23,15 @@ import amtt.epam.com.amtt.util.IOUtils;
 public class Step extends DatabaseEntity {
 
     private static int mStepNumber = 0;
-    private ComponentName mActivity;
+    private String mActivity;
     private String mScreenPath;
 
     public Step() {
         mScreenPath = "";
-        mActivity = null;
     }
 
     public Step(ComponentName componentName, String mScreenPath) {
-        mActivity = componentName;
+        mActivity = componentName.getClassName();
         this.mScreenPath = mScreenPath;
         mStepNumber++;
     }
@@ -40,7 +40,7 @@ public class Step extends DatabaseEntity {
         super(cursor);
         mStepNumber = cursor.getInt(cursor.getColumnIndex(StepsTable._ID));
         mScreenPath = cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH));
-        mActivity = null;
+        mActivity =  cursor.getString(cursor.getColumnIndex(StepsTable._ASSOCIATED_ACTIVITY));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class Step extends DatabaseEntity {
         ContentValues values = new ContentValues();
         values.put(StepsTable._ID, mStepNumber);
         values.put(StepsTable._SCREEN_PATH, mScreenPath);
-        values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity.getClassName());
+        values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity);
         return values;
     }
 

@@ -49,6 +49,8 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
             public void run() {
                 if (result!=null) {
                     result.onResult(addOrUpdate(object));
+                }else{
+                    addOrUpdate(object);
                 }
             }
         }).start();
@@ -60,6 +62,8 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
             public void run() {
                 if (result != null) {
                     result.onResult(addOrUpdate(object));
+                }else{
+                    addOrUpdate(object);
                 }
             }
         }).start();
