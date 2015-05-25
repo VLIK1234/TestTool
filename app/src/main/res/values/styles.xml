@@ -52,8 +52,10 @@
         <item name="android:layout_height">@dimen/material_menu_item_vertical_height</item>
         <item name="android:paddingLeft">@dimen/material_menu_item_vertical_width</item>
         <item name="android:paddingRight">@dimen/material_menu_item_vertical_width</item>
-        <item name="android:paddingBottom">@dimen/material_menu_item_vertical_bottom_padding</item>
+        <item name="android:paddingBottom">15dp</item>
+        <item name="android:paddingTop">15dp</item>
         <item name="android:textSize">@dimen/material_font_size_subhead</item>
+        <item name="android:baselineAlignBottom">true</item>
     </style>
 
 </resources>
