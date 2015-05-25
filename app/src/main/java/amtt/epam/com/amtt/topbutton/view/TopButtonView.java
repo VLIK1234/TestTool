@@ -28,8 +28,12 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
@@ -168,14 +172,19 @@ public class TopButtonView extends FrameLayout{
         activityInfoView = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), new ITouchAction() {
             @Override
             public void TouchAction() {
-                String topActivityName = "Not found";
-                try {
-                    topActivityName = getContext().getPackageManager()
-                            .getActivityInfo(TopButtonService.getTopActivity(), PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS).name;
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-                Toast.makeText(getContext(), topActivityName, Toast.LENGTH_SHORT).show();
+                ScheduledExecutorService worker =
+                        Executors.newSingleThreadScheduledExecutor();
+                Runnable task = new Runnable() {
+                    public void run() {
+                        try {
+                            StepUtil.buildActivityMetaSaving(ActivityMetaUtil.createMeta());
+                        } catch (NameNotFoundException e) {
+                            Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
+                        }
+                        StepUtil.buildStepSaving(ActivityMetaUtil.getTopActivityComponent(), null);
+                    }
+                };
+                worker.schedule(task, 1, TimeUnit.SECONDS);
             }
         });
         stepView = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), new ITouchAction() {

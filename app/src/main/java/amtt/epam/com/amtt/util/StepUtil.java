@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.util;
 
+import android.content.ComponentName;
 import android.content.pm.PackageManager.NameNotFoundException;
 
 import java.io.IOException;
@@ -18,8 +19,8 @@ import amtt.epam.com.amtt.database.table.UsersTable;
  */
 public class StepUtil {
 
-    public static void buildStepSaving(String mScreenPath) throws IOException, NameNotFoundException {
-        Step step = new Step(ActivityMetaUtil.getTopActivityComponent(), mScreenPath);
+    public static void buildStepSaving(ComponentName componentName, String mScreenPath){
+        Step step = new Step(componentName, mScreenPath);
         DbObjectManger.INSTANCE.addOrUpdateAsync(step, null);
     }
 

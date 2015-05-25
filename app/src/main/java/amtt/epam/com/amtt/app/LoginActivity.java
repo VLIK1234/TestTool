@@ -239,7 +239,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         showProgress(false);
         Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
-            if (restResponse.getResultObject() != null && !isUserAlreadyInDatabase()) {
+            if (restResponse.getResultObject() instanceof JUserInfo && !isUserAlreadyInDatabase()) {
                 JUserInfo user = restResponse.getResultObject();
                 insertUserToDatabase(user);
             }
