@@ -191,7 +191,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         }
         if (!isAnyEmptyField) {
             sendAuthRequest(isUserAlreadyInDatabase());
-            TopButtonService.authSuccess(this);
         }
     }
 

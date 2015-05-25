@@ -23,6 +23,9 @@ public class Step extends DatabaseEntity {
     private ComponentName mActivity;
     private String mScreenPath;
 
+    public Step() {
+    }
+
     public Step(ComponentName componentName) {
         mActivity = componentName;
     }
@@ -56,7 +59,7 @@ public class Step extends DatabaseEntity {
         return mScreenPath;
     }
 
-    public void restartStepNumber(){
+    public static void restartStepNumber(){
         mStepNumber = 0;
     }
 

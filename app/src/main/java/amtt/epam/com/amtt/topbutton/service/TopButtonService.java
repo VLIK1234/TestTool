@@ -38,7 +38,6 @@ public class TopButtonService extends Service{
     public static final int ID = 7;
     //don't use REQUEST_CODE = 0 - it's broke action in notification for some device
     public static final int REQUEST_CODE = 1;
-    public static final String ACTION_AUTH_SUCCESS = "AUTHORIZATION_SUCCESS";
     public static final String ACTION_SHOW_SCREEN = "SHOW_SCREEN";
     public static final String ACTION_HIDE_VIEW = "HIDE_VIEW";
     public static final String ACTION_SHOW_VIEW = "SHOW_VIEW";
@@ -82,10 +81,6 @@ public class TopButtonService extends Service{
 
     public static void close(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE));
-    }
-
-    public static void authSuccess(Context context) {
-        context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_AUTH_SUCCESS));
     }
 
     public static ComponentName getTopActivity() {
@@ -138,9 +133,6 @@ public class TopButtonService extends Service{
                 case ACTION_SHOW_VIEW:
                     changeStateNotificationAction();
                     break;
-                case ACTION_AUTH_SUCCESS:
-//                    changeUiAuthSuccess();
-                    break;
                 case ACTION_SHOW_SCREEN:
                     Bundle extra = intent.getExtras();
                     if (extra!=null) {
@@ -179,16 +171,6 @@ public class TopButtonService extends Service{
         }
         stopSelf();
     }
-
-//Delete after create logic with choose user activity and start service after authorization success
-//    private void changeUiAuthSuccess(){
-//        view.buttonAuth.setText(R.string.label_logout);
-//        view.buttonAuth.setTextColor(getResources().getColor(R.color.red));
-//        view.buttonBugRep.setEnabled(true);
-//        view.buttonUserInfo.setEnabled(true);
-//        view.layoutUserInfo.setClickable(true);
-//        view.layoutBugRep.setClickable(true);
-//    }
 
     private void showNotification() {
         builder = new NotificationCompat.Builder(this)

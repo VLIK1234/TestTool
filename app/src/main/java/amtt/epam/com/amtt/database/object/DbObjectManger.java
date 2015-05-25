@@ -66,13 +66,23 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
     }
 
     @Override
-    public void remove(DatabaseEntity object) {
-        ContextHolder.getContext().getContentResolver().delete(object.getUri(), BaseColumns._ID + "?", new String[]{String.valueOf(object.getId())});
+    public void remove(final DatabaseEntity object) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ContextHolder.getContext().getContentResolver().delete(object.getUri(), BaseColumns._ID + "?", new String[]{String.valueOf(object.getId())});
+            }
+        });
     }
 
     @Override
-    public void removeAll(DatabaseEntity objectPrototype) {
-        ContextHolder.getContext().getContentResolver().delete(objectPrototype.getUri(), null, null);
+    public void removeAll(final DatabaseEntity objectPrototype) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                ContextHolder.getContext().getContentResolver().delete(objectPrototype.getUri(), null, null);
+            }
+        });
     }
 
     @Override
@@ -82,7 +92,7 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
 
     @Override
     public void getByKey(DatabaseEntity objectPrototype, IResult<List<DatabaseEntity>> result) {
-        query(objectPrototype, null, BaseColumns._ID, new String[]{String.valueOf(objectPrototype.getId())}, result);
+        query(objectPrototype, null, BaseColumns._ID + "?", new String[]{String.valueOf(objectPrototype.getId())}, result);
     }
 
     public void query(final DatabaseEntity entity, String[] projection, final String mSelection, final String[] mSelectionArgs, final IResult<List<DatabaseEntity>> result) {

@@ -48,9 +48,8 @@ public class StepUtil {
     }
 
     public static void buildStepCleaning() {
-        Step step = new Step();
-        step.restartStepNumber();
-        DbObjectManger.INSTANCE.removeAll(step);
+        Step.restartStepNumber();
+        DbObjectManger.INSTANCE.removeAll(new Step());
     }
 
     public static void buildActivityMetaCleaning() {
