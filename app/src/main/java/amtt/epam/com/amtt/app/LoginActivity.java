@@ -162,11 +162,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
-        final int[] userId = new int[1];
         DbObjectManger.INSTANCE.addOrUpdateAsync(user, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
-                userId[0] = result;
+                ActiveUser.getInstance().setId(result);
             }
 
             @Override
@@ -174,7 +173,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
 
             }
         });
-        ActiveUser.getInstance().setId(userId[0]);
     }
 
     private void checkFields() {
