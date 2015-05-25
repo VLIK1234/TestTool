@@ -2,6 +2,8 @@ package amtt.epam.com.amtt.bo.database;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -24,16 +26,21 @@ public class Step extends DatabaseEntity {
     private String mScreenPath;
 
     public Step() {
+        mScreenPath = "";
+        mActivity = null;
     }
 
-    public Step(ComponentName componentName) {
+    public Step(ComponentName componentName, String mScreenPath) {
         mActivity = componentName;
+        this.mScreenPath = mScreenPath;
+        mStepNumber++;
     }
 
     public Step(Cursor cursor) {
         super(cursor);
         mStepNumber = cursor.getInt(cursor.getColumnIndex(StepsTable._ID));
         mScreenPath = cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH));
+        mActivity = null;
     }
 
     @Override
@@ -61,12 +68,6 @@ public class Step extends DatabaseEntity {
 
     public static void restartStepNumber(){
         mStepNumber = 0;
-    }
-
-    //help methods
-    public void saveScreen(String mScreenPath) throws IOException {
-        this.mScreenPath = mScreenPath;
-        mStepNumber++;
     }
 
 }

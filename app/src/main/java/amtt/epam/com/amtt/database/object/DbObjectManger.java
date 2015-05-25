@@ -7,6 +7,9 @@ import android.net.Uri;
 import java.util.ArrayList;
 import java.util.List;
 
+import amtt.epam.com.amtt.bo.database.ActivityMeta;
+import amtt.epam.com.amtt.bo.database.Step;
+import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.util.ContextHolder;
 
@@ -23,6 +26,8 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
 
     public static final String SIGN_SELECTION = "=?";
     public static final String OR = " OR ";
+
+
 
     @Override
     public Integer addOrUpdate(DatabaseEntity object) {
@@ -72,7 +77,7 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
             public void run() {
                 ContextHolder.getContext().getContentResolver().delete(object.getUri(), BaseColumns._ID + "?", new String[]{String.valueOf(object.getId())});
             }
-        });
+        }).start();
     }
 
     @Override
@@ -82,7 +87,7 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
             public void run() {
                 ContextHolder.getContext().getContentResolver().delete(objectPrototype.getUri(), null, null);
             }
-        });
+        }).start();
     }
 
     @Override
@@ -112,18 +117,19 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
                         }
                     }
                 }
+
+                DbEntityType entityType = DbEntityFactory.getTypeEntityEnum(entity);
                 Cursor cursor = ContextHolder.getContext().getContentResolver().query(entity.getUri(), null, selectionString, mSelectionArgs, null);
                 List<DatabaseEntity> listObject = new ArrayList<>();
 
                 if (cursor.moveToFirst()) {
                     do {
-                        listObject.add(new DatabaseEntity(cursor));
+                        listObject.add(DbEntityFactory.createEntity(entityType,cursor));
                     } while (cursor.moveToNext());
                 }
                 cursor.close();
                 result.onResult(listObject);
             }
-        });
-
+        }).start();
     }
 }

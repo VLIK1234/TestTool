@@ -131,7 +131,7 @@ public class AmttFileObserver extends FileObserver {
         return false;
     }
 
-    public ArrayList<String> getImageArray() {
+    public static ArrayList<String> getImageArray() {
         return imageArray;
     }
 }

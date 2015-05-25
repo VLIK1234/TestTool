@@ -19,8 +19,7 @@ import amtt.epam.com.amtt.database.table.UsersTable;
 public class StepUtil {
 
     public static void buildStepSaving(String mScreenPath) throws IOException, NameNotFoundException {
-        Step step = new Step(ActivityMetaUtil.getTopActivityComponent());
-        step.saveScreen(mScreenPath);
+        Step step = new Step(ActivityMetaUtil.getTopActivityComponent(), mScreenPath);
         DbObjectManger.INSTANCE.addOrUpdateAsync(step, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
