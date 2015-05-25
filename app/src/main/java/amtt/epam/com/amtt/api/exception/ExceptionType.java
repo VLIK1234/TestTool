@@ -1,7 +1,5 @@
 package amtt.epam.com.amtt.api.exception;
 
-import android.database.sqlite.SQLiteException;
-
 import com.google.gson.JsonSyntaxException;
 
 import org.apache.http.HttpStatus;

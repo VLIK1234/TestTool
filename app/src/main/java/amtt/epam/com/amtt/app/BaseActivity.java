@@ -50,13 +50,10 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void showProgress(boolean show) {
-        View progressBar = findViewById(getProgressViewId());
+        View progressBar = findViewById(android.R.id.progress);
         if (progressBar != null) {
-            findViewById(R.id.progress).setVisibility(show ? View.VISIBLE : View.GONE);
+            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
 
-    protected int getProgressViewId() {
-        return R.id.progress;
-    }
 }

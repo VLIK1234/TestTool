@@ -28,7 +28,7 @@ public class SystemInfoHelper {
     }
 
     public static String getDeviceOsInfo(){
-        String deviceInfo = "\n\n---Device info---"
+        String deviceInfo = "---Device info---"
                 + StringFormatHelper.format("Version", Build.VERSION.SDK_INT)
                 + StringFormatHelper.format("Board", Build.BOARD)
                 + StringFormatHelper.format("Brand", Build.BRAND)

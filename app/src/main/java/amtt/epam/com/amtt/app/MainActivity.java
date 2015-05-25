@@ -18,7 +18,7 @@ import io.fabric.sdk.android.Fabric;
 
 
 public class MainActivity extends BaseActivity {
-
+//Spank
     private String mCrashFilePath;
     private static final String CRASH_DIALOG_TAG = "crash_dialog_tag";
 

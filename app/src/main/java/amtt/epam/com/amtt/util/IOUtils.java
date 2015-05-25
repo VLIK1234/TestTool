@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.util;
 
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import java.io.BufferedReader;

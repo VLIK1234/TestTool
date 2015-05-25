@@ -104,6 +104,7 @@ public class ActivityMeta extends DatabaseEntity {
         return values;
     }
 
+
     public String getAssociatedActivity() {
         return mActivityName;
     }

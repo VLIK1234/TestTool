@@ -1,5 +1,9 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.api.JiraCallback;
+import amtt.epam.com.amtt.api.rest.RestMethod;
+import amtt.epam.com.amtt.api.rest.RestResponse;
+import amtt.epam.com.amtt.bo.user.JUserInfo;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -14,14 +18,10 @@ import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.exception.ExceptionHandler;
-import amtt.epam.com.amtt.api.rest.RestMethod;
-import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
-import amtt.epam.com.amtt.bo.issue.user.JiraUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.table.UsersTable;
@@ -34,7 +34,7 @@ import amtt.epam.com.amtt.view.TextView;
  * Created by Artsiom_Kaliaha on 07.05.2015.
  */
 @SuppressWarnings("unchecked")
-public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraUserInfo>, LoaderCallbacks<Cursor> {
+public class UserInfoActivity extends BaseActivity implements JiraCallback<JUserInfo>, LoaderCallbacks<Cursor> {
 
     private TextView mName;
     private TextView mEmailAddress;
@@ -77,12 +77,12 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
             case R.id.action_refresh_user_info:
                 showProgress(true);
                 String requestSuffix = JiraApiConst.USER_INFO_PATH + ActiveUser.getInstance().getUserName() + JiraApiConst.EXPAND_GROUPS;
-                RestMethod<JiraUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
+                RestMethod<JUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
                         new UserInfoProcessor(),
                         null,
                         null,
                         null);
-                new JiraTask.Builder<JiraUserInfo>()
+                new JiraTask.Builder<JUserInfo>()
                         .setRestMethod(userInfoMethod)
                         .setCallback(UserInfoActivity.this)
                         .createAndExecute();
@@ -104,7 +104,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
         mUserImage = (ImageView) findViewById(R.id.user_image);
     }
 
-    public void populateUserInfo(JiraUserInfo user) {
+    public void populateUserInfo(JUserInfo user) {
         mName.setText(user.getName());
         mEmailAddress.setText(user.getEmailAddress());
         mDisplayName.setText(user.getDisplayName());
@@ -112,7 +112,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
         mLocale.setText(user.getLocale());
     }
 
-    private void updateUserInfo(JiraUserInfo user) {
+    private void updateUserInfo(JUserInfo user) {
         try {
             DbObjectManger.INSTANCE.addOrUpdate(user);
         } catch (Exception e) {
@@ -135,7 +135,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mUser = ActiveUser.getInstance();
-        JiraUserInfo userInfo = new JiraUserInfo(data);
+        JUserInfo userInfo = new JUserInfo(data);
         populateUserInfo(userInfo);
         CoreApplication.getImageLoader().displayImage(userInfo.getAvatarUrls().getAvatarUrl(), mUserImage);
     }
@@ -152,9 +152,9 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JiraU
     }
 
     @Override
-    public void onRequestPerformed(RestResponse<JiraUserInfo> restResponse) {
+    public void onRequestPerformed(RestResponse<JUserInfo> restResponse) {
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
-            JiraUserInfo user = restResponse.getResultObject();
+            JUserInfo user = restResponse.getResultObject();
             populateUserInfo(user);
             updateUserInfo(user);
             showProgress(false);

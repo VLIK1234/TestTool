@@ -23,7 +23,8 @@ public class Step extends DatabaseEntity {
     private ComponentName mActivity;
     private String mScreenPath;
 
-    public Step() { }
+    public Step() {
+    }
 
     public Step(ComponentName componentName) {
         mActivity = componentName;
@@ -53,7 +54,6 @@ public class Step extends DatabaseEntity {
         values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity.getClassName());
         return values;
     }
-
 
     public String getScreenPath() {
         return mScreenPath;

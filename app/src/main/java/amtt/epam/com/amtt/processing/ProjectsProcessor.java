@@ -4,26 +4,20 @@ package amtt.epam.com.amtt.processing;
 import org.apache.http.HttpEntity;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-
-import java.io.IOException;
-
-import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
+import amtt.epam.com.amtt.bo.JProjectsResponse;
+import amtt.epam.com.amtt.ticket.JiraContent;
 
 
 /**
  * Created by Irina Monchenko on 01.04.2015.
  */
-public class ProjectsProcessor implements Processor<JMetaResponse, HttpEntity> {
+public class ProjectsProcessor implements Processor<JProjectsResponse, HttpEntity> {
 
     @Override
-    public JMetaResponse process(HttpEntity inputStream){
-        String _response = null;
-        try {
-            _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return Gson.getInstance().fromJson(_response, JMetaResponse.class);
+    public JProjectsResponse process(HttpEntity inputStream) throws Exception {
+        String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
+        JProjectsResponse result = Gson.getInstance().fromJson(_response, JProjectsResponse.class);
+        JiraContent.getInstance().setProjectsNames(result.getProjectsNames());
+        return result;
     }
 }
-

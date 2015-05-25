@@ -27,35 +27,35 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.exception.ExceptionHandler;
-import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
-import amtt.epam.com.amtt.bo.issue.createmeta.JMetaResponse;
-import amtt.epam.com.amtt.util.StepUtil;
+import amtt.epam.com.amtt.bo.JProjectsResponse;
+import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
-import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
 import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.util.StepUtil;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.ActivityMetaUtil;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-
-public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResponse>{
+public class TopButtonView extends FrameLayout{
 
     private final static String LOG_TAG = "TAG";
 
@@ -128,15 +128,10 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
         createTicketView = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), new ITouchAction() {
             @Override
             public void TouchAction() {
-                RestMethod<JMetaResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH,
-                        new ProjectsProcessor(),
-                        null,
-                        null,
-                        null);
-                new JiraTask.Builder<JMetaResponse>()
-                        .setRestMethod(searchMethod)
-                        .setCallback(TopButtonView.this)
-                        .createAndExecute();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket), Toast.LENGTH_LONG).show();
+                Intent intentTicket = new Intent(getContext(), CreateIssueActivity.class);
+                intentTicket.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intentTicket);
             }
         });
         openAmttView = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), new ITouchAction() {
@@ -145,7 +140,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
                 userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(userInfoIntent);
-
             }
         });
         expectedResultView = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), new ITouchAction() {
@@ -434,28 +428,6 @@ public class TopButtonView extends FrameLayout implements JiraCallback<JMetaResp
             super.draw(canvas);
             canvas.restore();
         }
-    }
-
-    @Override
-    public void onRequestStarted() {
-
-    }
-
-    @Override
-    public void onRequestPerformed(RestResponse<JMetaResponse> restResponse) {
-        JMetaResponse jiraMetaResponse = restResponse.getResultObject();
-        ArrayList<String> projectsNames = jiraMetaResponse.getProjectsNames();
-        ArrayList<String> projectsKeys = jiraMetaResponse.getProjectsKeys();
-        PreferenceUtils.putSet(Constants.SharedPreference.PROJECTS_NAMES, Converter.arrayListToSet(projectsNames));
-        PreferenceUtils.putSet(Constants.SharedPreference.PROJECTS_KEYS, Converter.arrayListToSet(projectsKeys));
-        Intent intent = new Intent(getContext(), CreateIssueActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getContext().getApplicationContext().startActivity(intent);
-    }
-
-    @Override
-    public void onRequestError(AmttException e) {
-        ExceptionHandler.getInstance().processError(e).showDialog(getContext(), TopButtonView.this);
     }
 
     public static void setStartRecord(boolean isStartRecord) {

@@ -19,6 +19,8 @@
     <dimen name="margin_buttons_bar">4dp</dimen>
     <dimen name="margin_background_circle">5dp</dimen>
 
+    <dimen name="material_colored_divider_size">1dp</dimen>
+
     <dimen name="material_font_size_display_4">112sp</dimen>
     <dimen name="material_font_size_display_3">56sp</dimen>
     <dimen name="material_font_size_display_2">45sp</dimen>
@@ -41,6 +43,8 @@
     <dimen name="material_vertical_button_height_size">48dp</dimen>
 
     <dimen name="material_vertical_size_divider">8dp</dimen>
+
+    <dimen name="spinner_padding_bottom">7dp</dimen>
     <dimen name="dialog_button_width">64dp</dimen>
     <dimen name="dialo_button_height">36dp</dimen>
     <dimen name="dialo_button_margin">4dp</dimen>

@@ -26,43 +26,79 @@ public class Logger {
     public Logger() {
     }
 
-    public static void d(String className, String message) {
+    public static void d(String tag, String message) {
         if (IS_SHOW_LOGS) {
-            android.util.Log.d(className, message);
+            android.util.Log.d(tag, message);
         }
     }
 
-    public static void i(String className, String message) {
+    public static void d(String tag, String message, Throwable throwable) {
         if (IS_SHOW_LOGS) {
-            android.util.Log.i(className, message);
+            android.util.Log.d(tag, message, throwable);
         }
     }
 
-    public static void e(String className, String message) {
+    public static void i(String tag, String message) {
         if (IS_SHOW_LOGS) {
-            android.util.Log.e(className, message);
+            android.util.Log.i(tag, message);
+        }
+    }
+
+    public static void i(String tag, String message, Throwable throwable) {
+        if (IS_SHOW_LOGS) {
+            android.util.Log.i(tag, message, throwable);
+        }
+    }
+
+    public static void e(String tag, String message) {
+        if (IS_SHOW_LOGS) {
+            android.util.Log.e(tag, message);
+        }
+    }
+
+    public static void e(String tag, String message, Throwable throwable) {
+        if (IS_SHOW_LOGS) {
+            android.util.Log.e(tag, message, throwable);
+        }
+    }
+
+    public static void v(String tag, String message) {
+        if (IS_SHOW_LOGS) {
+            android.util.Log.v(tag, message);
+        }
+    }
+
+    public static void v(String tag, String message, Throwable throwable) {
+        if (IS_SHOW_LOGS) {
+            android.util.Log.v(tag, message, throwable);
+        }
+    }
+
+    public static void w(String tag, Throwable throwable) {
+        if (IS_SHOW_LOGS) {
+            android.util.Log.w(tag, throwable);
+        }
+    }
+
+    public static void w(String tag, String message, Throwable throwable) {
+        if (IS_SHOW_LOGS) {
+            android.util.Log.w(tag, message, throwable);
         }
     }
 
     public static void printRequestPost(HttpPost post) throws IOException {
         HttpEntity entity = post.getEntity();
-
-        //
-        // Read the contents of an entity and return it as a String.
-        //
         String content = EntityUtils.toString(entity);
         Logger.i(TAG, PROTOCOL_VERSION + post.getRequestLine().getProtocolVersion());
         Logger.i(TAG, METHOD + post.getRequestLine().getMethod());
         Logger.i(TAG, URI + post.getRequestLine().getUri());
         Logger.i(TAG, BODY + content);
-
     }
 
     public static void printRequestGet(HttpGet get) throws IOException {
         Logger.i(TAG, PROTOCOL_VERSION + get.getRequestLine().getProtocolVersion());
         Logger.i(TAG, METHOD + get.getRequestLine().getMethod());
         Logger.i(TAG, URI + get.getRequestLine().getUri());
-
     }
 
     public static void printResponseLog(HttpResponse response) throws IOException {
@@ -73,5 +109,4 @@ public class Logger {
         Logger.i(TAG, REASON_PHRASE + response.getStatusLine().getReasonPhrase());
         Logger.i(TAG, BODY + content);
     }
-
 }

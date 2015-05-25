@@ -61,6 +61,11 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
     }
 
     @Override
+    public Integer update(DatabaseEntity objectPrototype) {
+        return null;
+    }
+
+    @Override
     public void remove(DatabaseEntity object) {
         ContextHolder.getContext().getContentResolver().delete(object.getUri(), BaseColumns._ID + "?", new String[]{String.valueOf(object.getId())});
     }

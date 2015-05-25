@@ -9,6 +9,7 @@
     <string name="title_activity_login">Login to Jira</string>
     <string name="title_activity_steps">StepsActivity</string>
     <string name="title_activity_user_info">UserInfoActivity</string>
+    <string name="title_activity_amtt">Choose user</string>
     <string name="title_activity_info">InfoActivity</string>
     <string name="title_activity_help_dialog">How make screenshot?</string>
 
@@ -28,6 +29,7 @@
     <string name="error_button_close">Close</string>
 
     <string name="label_activity">"Activity: "</string>
+    <string name="label_add">Add</string>
     <string name="label_add_step">Add step</string>
     <string name="label_affects_versions">Affects Version/s</string>
     <string name="label_attachment">Attachment</string>
@@ -50,6 +52,8 @@
     <string name="label_hint">Hint</string>
     <string name="label_issue">Issue</string>
     <string name="label_issue_type">Issue Type</string>
+    <string name="label_jira_id">Jira ID</string>
+    <string name="label_key">Key</string>
     <string name="label_label">Label</string>
     <string name="label_launch_mode">"Launch mode: "</string>
     <string name="label_locale">Locale</string>
@@ -57,6 +61,7 @@
     <string name="label_logout">Log Out</string>
     <string name="label_make_crash">Make crash</string>
     <string name="label_max_recents">"Max recents: "</string>
+    <string name="label_name">Name</string>
     <string name="label_names_groups">Names groups</string>
     <string name="label_package_name">"Package name: "</string>
     <string name="label_parent_app">"Parent app: "</string>
@@ -72,6 +77,7 @@
     <string name="label_show_step">Show step</string>
     <string name="label_size">Size</string>
     <string name="label_soft_input_mode">"Soft input mode: "</string>
+    <string name="label_start">Start</string>
     <string name="label_step">"Step "</string>
     <string name="label_summary">Summary</string>
     <string name="label_target_app_name">"Target app name: "</string>
@@ -89,13 +95,11 @@
 
     <string name="screenshot_image_description">image view for screenshot</string>
 
-
     <string name="lack_of_crashes_text">There were no crashes recently</string>
     <string name="file_deleted">Deletion done</string>
     <string name="file_not_deleted">Deletion hasn\'t been done</string>
     <string name="notification_title">AMTT</string>
     <string name="notification_text">Button-assistant is running.</string>
-
     <string name="display_name">Display Name</string>
     <string name="user_email">Email</string>
     <string name="time_zone">Time zone</string>
@@ -122,13 +126,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settings_activity">Settings</string>
     <string name="user_already_exists">User with this name already exists</string>
-
-    <string name="label_start">Start</string>
     <string name="enter_prefix">Please, enter</string>
     <string name="enter_username">" username"</string>
     <string name="enter_password">" password"</string>
     <string name="enter_url">" url"</string>
-    <string name="enter_summary"> summary</string>
+    <string name="enter_summary">" summary"</string>
     <string name="auth_passed">Authorization passed</string>
     <string name="action_refresh_user_info">Refresh info</string>
     <string name="error_title_database">Data base error</string>
@@ -146,6 +148,9 @@
     <string name="activity_info_unavailable">Activity information isn\'t available</string>
     <string name="screenshot_saving_error">Error while saving screenshot</string>
     <string name="database_operation_error">Error while executing database operation</string>
+    <string name="helper_url">Enter url</string>
+    <string name="helper_user_name">Enter username</string>
+    <string name="helper_password">Enter password</string>
     <string name="title_help">Help</string>
     <string name="dialog_description">To make screenshot please use next combination button: \nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nXiaomi phone - volume down+power \nHTC - power+home</string>
     <string name="dialog_label_checkbox">Don\'t show again</string>

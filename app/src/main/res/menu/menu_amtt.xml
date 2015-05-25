@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="amtt.epam.com.amtt.app.AmttActivity">
+
+    <item android:id="@+id/action_change_user"
+        android:title="@string/action_new_user"
+        android:icon="@drawable/ic_action_add_qa"
+        app:showAsAction="always"/>
+
+</menu>

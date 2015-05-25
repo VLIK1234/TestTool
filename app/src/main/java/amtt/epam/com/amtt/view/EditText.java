@@ -16,6 +16,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -396,7 +397,9 @@ public class EditText extends FrameLayout {
         if (mSupportError != null) {
             mSupportView.setTextColor(mSupportErrorColors);
             mDivider.setColor(mDividerErrorColors);
-            mSupportView.setText(mSupportMode == SUPPORT_MODE_HELPER ? mSupportError : TextUtils.concat(mSupportHelper, ", ", mSupportError));
+            //TODO use this string if you want to append description
+            //mSupportView.setText(mSupportMode == SUPPORT_MODE_HELPER ? mSupportError : TextUtils.concat(mSupportHelper, ", ", mSupportError));
+            mSupportView.setText(mSupportMode == SUPPORT_MODE_HELPER ? mSupportError : TextUtils.concat(mSupportHelper, " ", mSupportError));
         } else {
             mSupportView.setTextColor(mSupportColors);
             mDivider.setColor(mDividerColors);
@@ -753,6 +756,11 @@ public class EditText extends FrameLayout {
         @Override
         protected int[] onCreateDrawableState(int extraSpace) {
             return mInputView.getDrawableState();
+        }
+        @Override
+        public boolean onTouchEvent(@NonNull MotionEvent event) {
+            boolean result = super.onTouchEvent(event);
+            return  mInputView.onTouchEvent(event) || result;
         }
 
     }

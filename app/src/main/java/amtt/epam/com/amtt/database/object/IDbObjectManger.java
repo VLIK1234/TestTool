@@ -9,6 +9,8 @@ public interface IDbObjectManger<ObjectType> {
 
     Integer addOrUpdate(ObjectType object);
 
+    Integer update(ObjectType objectPrototype);
+
     void remove(ObjectType object);
 
     void removeAll(ObjectType objectPrototype);
