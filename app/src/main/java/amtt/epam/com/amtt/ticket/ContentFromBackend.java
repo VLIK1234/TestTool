@@ -164,4 +164,28 @@ public class ContentFromBackend {
             .createAndExecute();
     }
 
+    @SuppressWarnings("unchecked")
+    public void sendAttachmentAsynchronously(String issueKey, String fullFileName, final ContentLoadingCallback<Boolean> contentLoadingCallback,
+                                             final JiraGetContentCallback<Boolean> jiraGetContentCallback) {
+        RestMethod<JProjectsResponse> sendAttachment = JiraApi.getInstance().buildAttachmentCreating(issueKey, fullFileName);
+        new JiraTask.Builder<JProjectsResponse>()
+                .setRestMethod(sendAttachment)
+                .setCallback(new JiraCallback() {
+                    @Override
+                    public void onRequestStarted() {
+                    }
+
+                    @Override
+                    public void onRequestPerformed(RestResponse restResponse) {
+                        contentLoadingCallback.resultFromBackend(true, JiraContentConst.SEND_ATTACHMENT, jiraGetContentCallback);
+                    }
+
+                    @Override
+                    public void onRequestError(AmttException e) {
+                        contentLoadingCallback.resultFromBackend(false, JiraContentConst.SEND_ATTACHMENT, jiraGetContentCallback);
+                    }
+                })
+                .createAndExecute();
+    }
+
 }

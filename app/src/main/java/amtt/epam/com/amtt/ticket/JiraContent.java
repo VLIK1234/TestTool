@@ -209,6 +209,17 @@ public class JiraContent{
         }, jiraGetContentCallback);
     }
 
+    @SuppressWarnings("unchecked")
+    public void sendAttachment(String issueKey, String fullFileName,
+                            final JiraGetContentCallback<Boolean> jiraGetContentCallback) {
+        ContentFromBackend.getInstance().sendAttachmentAsynchronously(issueKey, fullFileName, new ContentLoadingCallback<Boolean>() {
+            @Override
+            public void resultFromBackend(Boolean result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
+                jiraGetContentCallback.resultOfDataLoading(result);
+            }
+        }, jiraGetContentCallback);
+    }
+
     public void getDescription(final JiraGetContentCallback<String> jiraGetContentCallback) {
         String description = mActivityInfo + "\n" + mSteps;
         jiraGetContentCallback.resultOfDataLoading(description);

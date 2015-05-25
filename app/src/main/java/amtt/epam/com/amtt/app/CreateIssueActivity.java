@@ -10,14 +10,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
+import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
+import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
 import amtt.epam.com.amtt.view.EditText;
 import amtt.epam.com.amtt.view.SpinnerProgress;
@@ -214,7 +217,14 @@ public class CreateIssueActivity extends BaseActivity {
             public void onClick(View v) {
                 Boolean isValid = true;
                 if (TextUtils.isEmpty(mSummaryEditText.getText().toString())) {
-                    mSummaryEditText.setError(getString(R.string.enter_prefix)+ getString(R.string.enter_summary));
+                    mSummaryEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
+                    Logger.d(TAG, AmttFileObserver.getImageArray().get(0));
+                    JiraContent.getInstance().sendAttachment("ONE-1", AmttFileObserver.getImageArray().get(1), new JiraGetContentCallback<Boolean>() {
+                        @Override
+                        public void resultOfDataLoading(Boolean result) {
+                            Toast.makeText(CreateIssueActivity.this, result.toString(), Toast.LENGTH_LONG).show();
+                        }
+                    });
                     isValid = false;
                 }
                 if (isValid) {
