@@ -152,7 +152,7 @@
     <string name="helper_user_name">Enter username</string>
     <string name="helper_password">Enter password</string>
     <string name="title_help">Help</string>
-    <string name="dialog_description">To make screenshot please use next combination button: \nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nXiaomi phone - volume down+power \nHTC - power+home</string>
+    <string name="dialog_description">To make screenshot please use next combination button for your device - </string>
     <string name="dialog_label_checkbox">Don\'t show again</string>
     <string name="dialog_button_text">OK</string>
 

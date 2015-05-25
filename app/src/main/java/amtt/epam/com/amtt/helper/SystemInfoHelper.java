@@ -19,8 +19,8 @@ public class SystemInfoHelper {
 
         try {
             final PackageInfo packageInfo =  ContextHolder.getContext().getPackageManager().getPackageInfo(ContextHolder.getContext().getPackageName(), 0);
-            appInfo += StringFormatHelper.format("Version app", packageInfo.versionName);
-            appInfo += StringFormatHelper.format("Name", ContextHolder.getContext().getResources().getString(packageInfo.applicationInfo.labelRes));
+            appInfo += StringHelper.format("Version app", packageInfo.versionName);
+            appInfo += StringHelper.format("Name", ContextHolder.getContext().getResources().getString(packageInfo.applicationInfo.labelRes));
         } catch (final PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -29,23 +29,23 @@ public class SystemInfoHelper {
 
     public static String getDeviceOsInfo(){
         String deviceInfo = "---Device info---"
-                + StringFormatHelper.format("Version", Build.VERSION.SDK_INT)
-                + StringFormatHelper.format("Board", Build.BOARD)
-                + StringFormatHelper.format("Brand", Build.BRAND)
+                + StringHelper.format("Version", Build.VERSION.SDK_INT)
+                + StringHelper.format("Board", Build.BOARD)
+                + StringHelper.format("Brand", Build.BRAND)
                 + getCompatAbi()
-                + StringFormatHelper.format("Display", Build.DISPLAY)
-                + StringFormatHelper.format("Device", Build.DEVICE)
-                + StringFormatHelper.format("Fingerprint", Build.FINGERPRINT)
-                + StringFormatHelper.format("Id", Build.ID)
-                + StringFormatHelper.format("Manufacturer", Build.MANUFACTURER)
-                + StringFormatHelper.format("Model", Build.MODEL)
-                + StringFormatHelper.format("Product", Build.PRODUCT);
+                + StringHelper.format("Display", Build.DISPLAY)
+                + StringHelper.format("Device", Build.DEVICE)
+                + StringHelper.format("Fingerprint", Build.FINGERPRINT)
+                + StringHelper.format("Id", Build.ID)
+                + StringHelper.format("Manufacturer", Build.MANUFACTURER)
+                + StringHelper.format("Model", Build.MODEL)
+                + StringHelper.format("Product", Build.PRODUCT);
         String systemProperties = "\n\n---System properties---"
-                + StringFormatHelper.format("Bootloader", Build.BOOTLOADER)
-                + StringFormatHelper.format("Hardware", Build.HARDWARE)
-                + StringFormatHelper.format("Radio firmware", Build.getRadioVersion())
-                + StringFormatHelper.format("Serial number", Build.SERIAL)
-                + StringFormatHelper.format("Build type", Build.TYPE);
+                + StringHelper.format("Bootloader", Build.BOOTLOADER)
+                + StringHelper.format("Hardware", Build.HARDWARE)
+                + StringHelper.format("Radio firmware", Build.getRadioVersion())
+                + StringHelper.format("Serial number", Build.SERIAL)
+                + StringHelper.format("Build type", Build.TYPE);
 
         return deviceInfo + systemProperties;
 
@@ -53,11 +53,11 @@ public class SystemInfoHelper {
 
     public static String getCompatAbi() {
         if (Build.VERSION.SDK_INT<Build.VERSION_CODES.LOLLIPOP) {
-            return StringFormatHelper.format("Cpu Abi", Build.CPU_ABI)+StringFormatHelper.format("Cpu Abi2", Build.CPU_ABI2);
+            return StringHelper.format("Cpu Abi", Build.CPU_ABI)+ StringHelper.format("Cpu Abi2", Build.CPU_ABI2);
         }else{
-            return StringFormatHelper.format("Supported abis", Build.SUPPORTED_ABIS)
-                    +StringFormatHelper.format("Supported 32 bit abis", Build.SUPPORTED_32_BIT_ABIS)
-                    +StringFormatHelper.format("Supported 64 bit abis", Build.SUPPORTED_64_BIT_ABIS);
+            return StringHelper.format("Supported abis", Build.SUPPORTED_ABIS)
+                    + StringHelper.format("Supported 32 bit abis", Build.SUPPORTED_32_BIT_ABIS)
+                    + StringHelper.format("Supported 64 bit abis", Build.SUPPORTED_64_BIT_ABIS);
         }
     }
 
