@@ -72,7 +72,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         setContentView(R.layout.activity_login);
         TopButtonService.close(this);
         initViews();
-        getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
+
+
+        //TODO remove before merge
+        TopButtonService.start(this);
     }
 
     @Override

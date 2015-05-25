@@ -15,6 +15,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -67,7 +68,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
     private static final int threshold = 10;
 
     private RelativeLayout topButtonLayout;
-    private static boolean isStartRecord = false;
+    private static boolean isRecordStarted = false;
 
     private TopUnitView startRecordView;
     private TopUnitView createTicketView;
@@ -77,6 +78,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
     private TopUnitView activityInfoView;
     private TopUnitView stepView;
     private TopUnitView cancelRecordView;
+    private TopUnitView mCloseApp;
 
     //Database fields
     private static int sStepNumber; //responsible for steps ordering in database
@@ -106,14 +108,14 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
         mainButton = (ImageButton) findViewById(R.id.main_button);
         buttonsBar.setOrientation(LinearLayout.VERTICAL);
         buttonsBar.setVisibility(GONE);
-        startRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), new ITouchAction() {
+        startRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), R.drawable.background_start_record, new ITouchAction() {
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(true);
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
             }
         });
-        createTicketView = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), new ITouchAction() {
+        createTicketView = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), R.drawable.background_create_ticket, new ITouchAction() {
             @Override
             public void TouchAction() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket), Toast.LENGTH_LONG).show();
@@ -122,7 +124,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
                 getContext().getApplicationContext().startActivity(intentTicket);
             }
         });
-        openAmttView = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), new ITouchAction() {
+        openAmttView = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), R.drawable.background_user_info, new ITouchAction() {
             @Override
             public void TouchAction() {
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
@@ -130,13 +132,13 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
                 getContext().getApplicationContext().startActivity(userInfoIntent);
             }
         });
-        expectedResultView = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), new ITouchAction() {
+        expectedResultView = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result) + " Vova what will be here?", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result), Toast.LENGTH_LONG).show();
             }
         });
-        screenshotView = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), new ITouchAction() {
+        screenshotView = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), R.drawable.background_take_screenshot, new ITouchAction() {
             @Override
             public void TouchAction() {
                 try {
@@ -164,7 +166,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
                 getContext().getApplicationContext().startActivity(intentHelp);
             }
         });
-        activityInfoView = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), new ITouchAction() {
+        activityInfoView = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info),R.drawable.background_activity_info, new ITouchAction() {
             @Override
             public void TouchAction() {
                 String topActivityName = "Not found";
@@ -177,47 +179,59 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
 //                InfoActivity.callInfoActivity(TopButtonService.getTopActivity());
             }
         });
-        stepView = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), new ITouchAction() {
+        stepView = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), R.drawable.background_add_step, new ITouchAction() {
             @Override
             public void TouchAction() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot) + " Vova what will be here?", Toast.LENGTH_LONG).show();
             }
         });
-        cancelRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), new ITouchAction() {
+        cancelRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), R.drawable.background_stop_record, new ITouchAction() {
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(false);
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
             }
         });
+        mCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.label_close_app), R.drawable.background_close, new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                TopButtonService.close(getContext());
+            }
+        });
     }
 
     private void checkFreeSpace() {
-        RelativeLayout.LayoutParams topButtonLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            buttonsBar.setOrientation(LinearLayout.HORIZONTAL);
-            topButtonLayoutParams.addRule(RelativeLayout.RIGHT_OF, mainButton.getId());
-            buttonsBar.setLayoutParams(topButtonLayoutParams);
-        } else {
-            buttonsBar.setOrientation(LinearLayout.VERTICAL);
-            topButtonLayoutParams.addRule(RelativeLayout.BELOW, mainButton.getId());
-            buttonsBar.setLayoutParams(topButtonLayoutParams);
-        }
-
         ViewTreeObserver viewTreeObserver = buttonsBar.getViewTreeObserver();
         viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 buttonsBar.getViewTreeObserver().removeOnPreDrawListener(this);
-                if (layoutParams.x + buttonsBar.getWidth() > metrics.widthPixels) {
-                    layoutParams.x -= (layoutParams.x + buttonsBar.getWidth() - metrics.widthPixels);
-                    windowManager.updateViewLayout(TopButtonView.this, layoutParams);
+                RelativeLayout.LayoutParams barLayoutParams = (RelativeLayout.LayoutParams)buttonsBar.getLayoutParams();
+                RelativeLayout.LayoutParams mainButtonLayoutParams = (RelativeLayout.LayoutParams)mainButton.getLayoutParams();
+
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    buttonsBar.setOrientation(LinearLayout.HORIZONTAL);
+
+                    barLayoutParams.addRule(RelativeLayout.RIGHT_OF, mainButton.getId());
+                    buttonsBar.setLayoutParams(barLayoutParams);
+                } else {
+                    buttonsBar.setOrientation(LinearLayout.VERTICAL);
+
+                    if (layoutParams.x + buttonsBar.getWidth() > metrics.widthPixels) {
+                        layoutParams.x = -(buttonsBar.getWidth() - metrics.widthPixels);
+                    }
+                    if (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
+                        mainButtonLayoutParams.addRule(RelativeLayout.BELOW, buttonsBar.getId());
+                        barLayoutParams.removeRule(RelativeLayout.BELOW);
+                        mainButton.setLayoutParams(mainButtonLayoutParams);
+                        layoutParams.y -= buttonsBar.getHeight();
+                    } else {
+                        mainButtonLayoutParams.removeRule(RelativeLayout.BELOW);
+                        barLayoutParams.addRule(RelativeLayout.BELOW, mainButton.getId());
+                        buttonsBar.setLayoutParams(barLayoutParams);
+                        mainButton.setLayoutParams(mainButtonLayoutParams);
+                    }
                 }
-                if (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
-                    layoutParams.y -= (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() - metrics.heightPixels + getStatusBarHeight());
-                    windowManager.updateViewLayout(TopButtonView.this, layoutParams);
-                }
+                windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                 return true;
             }
         });
@@ -346,7 +360,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
                             buttonsBar.startAnimation(translateUp);
 
                         } else {
-                            if (!getStartRecord()) {
+                            if (!isRecordStarted) {
                                 startRecordState();
                             } else {
                                 cancelRecordState();
@@ -356,7 +370,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
                             yButton = layoutParams.y;
                             playRotateAnimationMainButton(300, 0, 180);
                             Animation translate = AnimationUtils.loadAnimation(getContext(), R.anim.translate);
-                            buttonsBar.startAnimation(translate);
+//                            buttonsBar.startAnimation(translate);
                             checkFreeSpace();
                         }
                     }
@@ -433,11 +447,11 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
     }
 
     public static void setStartRecord(boolean isStartRecord) {
-        TopButtonView.isStartRecord = isStartRecord;
+        TopButtonView.isRecordStarted = isStartRecord;
     }
 
     public static boolean getStartRecord() {
-        return isStartRecord;
+        return isRecordStarted;
     }
 
     public void startRecordState() {
@@ -446,6 +460,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
         buttonsBar.addView(createTicketView);
         buttonsBar.addView(expectedResultView);
         buttonsBar.addView(openAmttView);
+        buttonsBar.addView(mCloseApp);
     }
 
     public void cancelRecordState() {
@@ -458,4 +473,5 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
         buttonsBar.addView(cancelRecordView);
         buttonsBar.addView(openAmttView);
     }
+
 }

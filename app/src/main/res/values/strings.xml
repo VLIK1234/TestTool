@@ -155,5 +155,6 @@
     <string name="dialog_description">To make screenshot please use next combination button: \nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nXiaomi phone - volume down+power \nHTC - power+home</string>
     <string name="dialog_label_checkbox">Don\'t show again</string>
     <string name="dialog_button_text">OK</string>
+    <string name="label_close_app">Close Amtt</string>
 
 </resources>

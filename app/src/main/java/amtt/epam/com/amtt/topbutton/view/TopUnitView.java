@@ -20,11 +20,13 @@ public class TopUnitView extends LinearLayout {
 
     private String title;
     private ITouchAction touchAction;
+    private int mBackgroundIconId;
 
-    public TopUnitView(Context context, String title, ITouchAction touchAction) {
+    public TopUnitView(Context context, String title, int backgroundIconId, ITouchAction touchAction) {
         super(context);
         this.title = title;
         this.touchAction = touchAction;
+        mBackgroundIconId = backgroundIconId;
         //Change when will be support landscape orientation
 //        if (orientation==VERTICAL||orientation==HORIZONTAL) {
 //            setOrientation(orientation);
@@ -32,7 +34,7 @@ public class TopUnitView extends LinearLayout {
 //            Toast.makeText(context,"Wrong orientation! Set default value = HORIZONTAL",Toast.LENGTH_LONG).show();
 //        }
         setOrientation(HORIZONTAL);
-        this.setMargin(this, (int) getResources().getDimension(R.dimen.margin_buttons_bar), 0, 0, 0);
+        this.setMargin((int) getResources().getDimension(R.dimen.margin_buttons_bar), 0, 0, 0);
         addView(getButton());
         CardView cardView = new CardView(context);
         LayoutParams params = new LinearLayout.LayoutParams(
@@ -44,16 +46,16 @@ public class TopUnitView extends LinearLayout {
         cardView.setRadius((int) getResources().getDimension(R.dimen.card_corner_radius));
         cardView.addView(getTextView(this.title));
         cardView.setCardElevation((int) getResources().getDimension(R.dimen.card_elevation));
-        addView(cardView);
+//        addView(cardView);
     }
 
-    private void setMargin(View view, int left, int right, int top, int bottom) {
+    private void setMargin(int left, int right, int top, int bottom) {
         LinearLayout.LayoutParams params = new LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         params.setMargins(left, top, right, bottom);
-        view.setLayoutParams(params);
+        this.setLayoutParams(params);
     }
 
     private void setBackgroundCompat(View view, Drawable drawable) {
@@ -66,7 +68,7 @@ public class TopUnitView extends LinearLayout {
 
     private Button getButton() {
         Button button = new Button(getContext());
-        setBackgroundCompat(button, getResources().getDrawable(R.drawable.background_main_button));
+        setBackgroundCompat(button, getResources().getDrawable(mBackgroundIconId));
         button.setClickable(false);
         button.setLayoutParams(new LinearLayout.LayoutParams(
                 (int) getResources().getDimension(R.dimen.button_small_size),
