@@ -76,53 +76,44 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
     }
 
     @Override
-    public List<DatabaseEntity> getAll(DatabaseEntity object) {
-        return query(object, null, null, null);
+    public void getAll(DatabaseEntity object, IResult<List<DatabaseEntity>> result){
+        query(object, null, null, null, result);
     }
 
     @Override
-    public DatabaseEntity getByKey(DatabaseEntity objectPrototype) {
-        return query(objectPrototype, null, BaseColumns._ID, new String[]{String.valueOf(objectPrototype.getId())}).get(0);
+    public void getByKey(DatabaseEntity objectPrototype, IResult<List<DatabaseEntity>> result) {
+        query(objectPrototype, null, BaseColumns._ID, new String[]{String.valueOf(objectPrototype.getId())}, result);
     }
 
-    public List<DatabaseEntity> query(final DatabaseEntity entity, String[] projection, String mSelection, String[] mSelectionArgs) {
-        String selectionString="";
+    public void query(final DatabaseEntity entity, String[] projection, final String mSelection, final String[] mSelectionArgs, final IResult<List<DatabaseEntity>> result) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String selectionString="";
 
-        if (mSelectionArgs.length==1) {
-            selectionString = mSelection + SIGN_SELECTION;
-        }else {
-            for (int i = 0; i < mSelectionArgs.length; i++) {
-                if (i!=mSelectionArgs.length-1) {
-                    selectionString +=  mSelection + i + SIGN_SELECTION + OR;
-                }else{
-                    selectionString +=  mSelection + i + SIGN_SELECTION;
+                if (mSelectionArgs.length==1) {
+                    selectionString = mSelection + SIGN_SELECTION;
+                }else {
+                    for (int i = 0; i < mSelectionArgs.length; i++) {
+                        if (i!=mSelectionArgs.length-1) {
+                            selectionString +=  mSelection + i + SIGN_SELECTION + OR;
+                        }else{
+                            selectionString +=  mSelection + i + SIGN_SELECTION;
+                        }
+                    }
                 }
+                Cursor cursor = ContextHolder.getContext().getContentResolver().query(entity.getUri(), null, selectionString, mSelectionArgs, null);
+                List<DatabaseEntity> listObject = new ArrayList<>();
+
+                if (cursor.moveToFirst()) {
+                    do {
+                        listObject.add(new DatabaseEntity(cursor));
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
+                result.onResult(listObject);
             }
-        }
-        Cursor cursor = ContextHolder.getContext().getContentResolver().query(entity.getUri(), null, selectionString, mSelectionArgs, null);
-        List<DatabaseEntity> listObject = new ArrayList<>();
+        });
 
-        if (cursor.moveToFirst()) {
-            do {
-                listObject.add(new DatabaseEntity(cursor) {
-                    @Override
-                    public ContentValues getContentValues() {
-                        return entity.getContentValues();
-                    }
-
-                    @Override
-                    public Uri getUri() {
-                        return entity.getUri();
-                    }
-
-                    @Override
-                    public int getId() {
-                        return entity.getId();
-                    }
-                });
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return listObject;
     }
 }

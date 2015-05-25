@@ -7,7 +7,7 @@ import android.net.Uri;
 /**
  * Created by Artsiom_Kaliaha on 15.05.2015.
  */
-public abstract class DatabaseEntity {
+public class DatabaseEntity implements IDatabaseEntityMethod{
 
     public DatabaseEntity() {
     }
@@ -15,10 +15,18 @@ public abstract class DatabaseEntity {
     public DatabaseEntity(Cursor cursor) {
     }
 
-    public abstract ContentValues getContentValues();
+    @Override
+    public ContentValues getContentValues() {
+        return null;
+    }
 
-    public abstract Uri getUri();
+    @Override
+    public Uri getUri() {
+        return null;
+    }
 
-    public abstract int getId();
-
+    @Override
+    public int getId() {
+        return 0;
+    }
 }

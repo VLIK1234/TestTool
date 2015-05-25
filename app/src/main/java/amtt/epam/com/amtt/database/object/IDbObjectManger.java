@@ -15,8 +15,8 @@ public interface IDbObjectManger<ObjectType> {
 
     void removeAll(ObjectType objectPrototype);
 
-    List<ObjectType> getAll(ObjectType object);
+    void getAll(ObjectType object, IResult<List<ObjectType>> result);
 
-    ObjectType getByKey(ObjectType objectPrototype);
+    void getByKey(ObjectType objectPrototype, IResult<List<ObjectType>> result);
 
 }

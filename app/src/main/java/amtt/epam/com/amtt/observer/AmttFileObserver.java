@@ -55,7 +55,7 @@ public class AmttFileObserver extends FileObserver {
                 Runnable task = new Runnable() {
                     public void run() {
                         try {
-                            StepUtil.INSTANCE.buildStepSaving(absolutePath + "/" + createPath);
+                            StepUtil.buildStepSaving(absolutePath + "/" + createPath);
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (PackageManager.NameNotFoundException e) {

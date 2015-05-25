@@ -158,7 +158,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private boolean isUserAlreadyInDatabase() {
-        return StepUtil.INSTANCE.buildCheckUser(mUserName.getText().toString());
+        return StepUtil.buildCheckUser(mUserName.getText().toString());
     }
 
     private void insertUserToDatabase(final JUserInfo user) {

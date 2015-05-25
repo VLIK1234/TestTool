@@ -120,8 +120,8 @@ public class TopButtonView extends FrameLayout{
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(true);
-                StepUtil.INSTANCE.buildStepCleaning();
-                StepUtil.INSTANCE.buildActivityMetaCleaning();
+                StepUtil.buildStepCleaning();
+                StepUtil.buildActivityMetaCleaning();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
             }
         });
@@ -152,7 +152,7 @@ public class TopButtonView extends FrameLayout{
             @Override
             public void TouchAction() {
                 try {
-                    StepUtil.INSTANCE.buildActivityMetaSaving(ActivityMetaUtil.createMeta());
+                    StepUtil.buildActivityMetaSaving(ActivityMetaUtil.createMeta());
                 } catch (NameNotFoundException e) {
                     Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
                 }
@@ -176,7 +176,6 @@ public class TopButtonView extends FrameLayout{
                     e.printStackTrace();
                 }
                 Toast.makeText(getContext(), topActivityName, Toast.LENGTH_SHORT).show();
-//                InfoActivity.callInfoActivity(TopButtonService.getTopActivity());
             }
         });
         stepView = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), new ITouchAction() {
@@ -192,8 +191,8 @@ public class TopButtonView extends FrameLayout{
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(false);
-                StepUtil.INSTANCE.buildStepCleaning();
-                StepUtil.INSTANCE.buildActivityMetaCleaning();
+                StepUtil.buildStepCleaning();
+                StepUtil.buildActivityMetaCleaning();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
             }
         });
