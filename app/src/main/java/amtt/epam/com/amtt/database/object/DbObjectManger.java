@@ -2,16 +2,11 @@ package amtt.epam.com.amtt.database.object;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteCursor;
-import android.database.sqlite.SQLiteQuery;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.bo.database.ActivityMeta;
-import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.util.ContextHolder;
 
@@ -79,11 +74,24 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
 
     @Override
     public DatabaseEntity getByKey(DatabaseEntity objectPrototype) {
-        return query(objectPrototype, null, null, null).get(0);
+        return query(objectPrototype, null, BaseColumns._ID, new String[]{String.valueOf(objectPrototype.getId())}).get(0);
     }
 
-    public List<DatabaseEntity> query(final DatabaseEntity entity, String[] projection, String mSelection, String[] mSelectionArgs){
-        Cursor cursor = ContextHolder.getContext().getContentResolver().query(entity.getUri(), null, mSelection + "=?", mSelectionArgs, null);
+    public List<DatabaseEntity> query(final DatabaseEntity entity, String[] projection, String mSelection, String[] mSelectionArgs) {
+        String selectionString="";
+
+        if (mSelectionArgs.length==1) {
+            selectionString = mSelection + "=?";
+        }else {
+            for (int i = 0; i < mSelectionArgs.length; i++) {
+                if (i!=mSelectionArgs.length-1) {
+                    selectionString +=  mSelection + "=?" + " OR ";
+                }else{
+                    selectionString +=  mSelection + "=?";
+                }
+            }
+        }
+        Cursor cursor = ContextHolder.getContext().getContentResolver().query(entity.getUri(), null, selectionString, mSelectionArgs, null);
         List<DatabaseEntity> listObject = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
