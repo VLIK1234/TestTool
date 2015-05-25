@@ -21,6 +21,9 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
     * Use this method for updates. Exception won't be thrown, all the conflicts will be replaced.
     * */
 
+    public static final String SIGN_SELECTION = "=?";
+    public static final String OR = " OR ";
+
     @Override
     public Integer addOrUpdate(DatabaseEntity object) {
         Uri insertedItemUri = ContextHolder.getContext().getContentResolver().insert(object.getUri(), object.getContentValues());
@@ -81,13 +84,13 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
         String selectionString="";
 
         if (mSelectionArgs.length==1) {
-            selectionString = mSelection + "=?";
+            selectionString = mSelection + SIGN_SELECTION;
         }else {
             for (int i = 0; i < mSelectionArgs.length; i++) {
                 if (i!=mSelectionArgs.length-1) {
-                    selectionString +=  mSelection + "=?" + " OR ";
+                    selectionString +=  mSelection + i + SIGN_SELECTION + OR;
                 }else{
-                    selectionString +=  mSelection + "=?";
+                    selectionString +=  mSelection + i + SIGN_SELECTION;
                 }
             }
         }
