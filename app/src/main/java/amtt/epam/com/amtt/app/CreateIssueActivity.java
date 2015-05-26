@@ -3,6 +3,9 @@ package amtt.epam.com.amtt.app;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -19,6 +22,8 @@ import java.util.HashMap;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
+import amtt.epam.com.amtt.ticket.ScreenshotAdapter;
+import amtt.epam.com.amtt.ticket.ScreenshotManager;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
 import amtt.epam.com.amtt.util.Logger;
@@ -72,6 +77,7 @@ public class CreateIssueActivity extends BaseActivity {
         initDescriptionEditText();
         initPrioritiesSpinner();
         initCreateIssueButton();
+        initAttachmentsView();
     }
 
     private void reinitRelatedViews(String projectKey) {
@@ -292,6 +298,15 @@ public class CreateIssueActivity extends BaseActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
         });
+    }
+
+    private void initAttachmentsView() {
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.listScreens);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(CreateIssueActivity.this));
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setHasFixedSize(true);
+        ScreenshotAdapter mAdapter = new ScreenshotAdapter(ScreenshotManager.getInstance().getCountries(), R.layout.item_screenshot, CreateIssueActivity.this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     private void setAssignableNames(String s) {

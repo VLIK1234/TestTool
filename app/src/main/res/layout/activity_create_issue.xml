@@ -1,5 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".app.CreateIssueActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -118,21 +120,12 @@
                 android:textColor="@color/primary_text"
                 android:textSize="@dimen/material_font_size_caption" />
 
-            <FrameLayout
-                android:id="@+id/container_with_dotted_border"
-                android:layout_width="fill_parent"
-                android:layout_height="150dp"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:background="@drawable/dotted_border"
-                android:padding="20dp">
-
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_action_file_cloud_download" />
-            </FrameLayout>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/listScreens"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scrollbars="horizontal"
+                    tools:context=".app.CreateIssueActivity" />
             <!-- *******ATTACHMENT END*************************************************-->
 
             <!-- *******AFFECTS VERSIONS BEGIN****************************************-->
@@ -223,14 +216,13 @@
                 android:inputType="textAutoComplete"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/primary_text" />
-
             <!-- *******TESTER END****************************************-->
 
             <Button
                 android:id="@+id/btn_create"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/material_vertical_button_height_size"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_marginTop="@dimen/material_vertical_button_padding_top"
                 android:minWidth="@dimen/material_vertical_button_min_width_size"
                 android:text="@string/label_create"
