@@ -37,20 +37,8 @@ public class StepUtil {
         DbObjectManger.INSTANCE.removeAll(new ActivityMeta());
     }
 
-    public static boolean buildCheckUser(String userName) {
-        final boolean[] returnResult = new boolean[1];
-        DbObjectManger.INSTANCE.query(new JUserInfo(), null, new String[]{UsersTable._USER_NAME}, new String[]{userName}, new IResult<List<DatabaseEntity>>() {
-            @Override
-            public void onResult(List<DatabaseEntity> result) {
-                returnResult[0] = result.size() > 0;
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        });
-        return returnResult[0];
+    public static void buildCheckUser(String userName, IResult<List<DatabaseEntity>> result) {
+        DbObjectManger.INSTANCE.query(new JUserInfo(), null, new String[]{UsersTable._USER_NAME}, new String[]{userName}, result);
     }
 
 }

@@ -1,9 +1,9 @@
 package amtt.epam.com.amtt.app;
 
 import amtt.epam.com.amtt.bo.user.JUserInfo;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.ticket.JiraContent;
-import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -19,6 +19,7 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -42,7 +43,6 @@ import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
-import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Constants.Str;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.view.EditText;
@@ -63,6 +63,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private CheckBox mEpamJira;
     private String mRequestUrl;
     private Map<String, Integer> mUserIdMap;
+    private boolean isUserInDatabase;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -157,7 +158,18 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private boolean isUserAlreadyInDatabase() {
-        return StepUtil.buildCheckUser(mUserName.getText().toString());
+        StepUtil.buildCheckUser(mUserName.getText().toString(), new IResult<List<DatabaseEntity>>() {
+            @Override
+            public void onResult(List<DatabaseEntity> result) {
+                isUserInDatabase = result.size()>0;
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+        return isUserInDatabase;
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
