@@ -3,10 +3,6 @@
     android:id="@android:id/text1"
     android:singleLine="true"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/material_menu_item_vertical_height"
-    android:ellipsize="marquee"
-    android:paddingLeft="@dimen/material_menu_item_vertical_width"
-    android:paddingRight="@dimen/material_menu_item_vertical_width"
-    android:paddingBottom="@dimen/material_menu_item_vertical_bottom_padding"
-    android:textSize="@dimen/material_font_size_subhead"
-    android:gravity="bottom"/>
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    style="@style/Material.Widget.DropDownItem"/>
