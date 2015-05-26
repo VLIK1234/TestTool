@@ -59,6 +59,7 @@
             <enum name="helper" value="0x00000001" />
             <enum name="helperWithError" value="0x00000002" />
             <enum name="charCounter" value="0x00000003" />
+            <enum name="error" value="0x00000004" />
         </attr>
         <attr name="et_supportMaxChars" format="reference|integer"/>
         <attr name="et_helper" format="reference|string"/>

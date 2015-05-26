@@ -29,7 +29,7 @@ public class SpinnerProgress extends RelativeLayout {
     public SpinnerProgress(Context context, AttributeSet attrs) {
         super(context, attrs);
         Context mContext = context;
-        LayoutInflater.from(mContext).inflate(R.layout.spinner_with_progress_layout, this,
+        LayoutInflater.from(mContext).inflate(R.layout.spinner_progress_layout, this,
                 true);
         String[] strings = new String[]{};
         List<String> items = new ArrayList<>(Arrays.asList(strings));
