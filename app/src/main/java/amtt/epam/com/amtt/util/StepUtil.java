@@ -39,7 +39,7 @@ public class StepUtil {
 
     public static boolean buildCheckUser(String userName) {
         final boolean[] returnResult = new boolean[1];
-        DbObjectManger.INSTANCE.query(new JUserInfo(), null, UsersTable._USER_NAME, new String[]{userName}, new IResult<List<DatabaseEntity>>() {
+        DbObjectManger.INSTANCE.query(new JUserInfo(), null, new String[]{UsersTable._USER_NAME}, new String[]{userName}, new IResult<List<DatabaseEntity>>() {
             @Override
             public void onResult(List<DatabaseEntity> result) {
                 returnResult[0] = result.size() > 0;

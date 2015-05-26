@@ -94,33 +94,33 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
 
     @SuppressWarnings("unchecked")
     public <T extends DatabaseEntity> void query(final T entity, final String[] projection,
-                                                 final String mSelection, final String[] mSelectionArgs, final IResult<List<T>> result) {
+                                                 final String[] mSelection, final String[] mSelectionArgs, final IResult<List<T>> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String selectionString = "";
-                if (mSelectionArgs!=null&&mSelection!=null) {
-                    if(mSelectionArgs.length==1){
-                        selectionString = mSelection + SIGN_SELECTION;
+                if (mSelectionArgs != null && mSelection != null) {
+                    if (mSelection.length!=mSelectionArgs.length) {
+                        throw new IllegalStateException("Count Selection and SelectionArgs must be equals!");
                     }
-
-                    else{
+                    if (mSelectionArgs.length == 1) {
+                        selectionString = mSelection[0] + SIGN_SELECTION;
+                    } else {
                         for (int i = 0; i < mSelectionArgs.length; i++) {
                             if (i != mSelectionArgs.length - 1) {
-                                selectionString += mSelection + SIGN_SELECTION + SIGN_AND;
+                                selectionString += mSelection[i] + SIGN_SELECTION + SIGN_AND;
                             } else {
-                                selectionString += mSelection + SIGN_SELECTION;
+                                selectionString += mSelection[i] + SIGN_SELECTION;
                             }
                         }
                     }
                 }
 
-
                 Cursor cursor = ContextHolder.getContext().getContentResolver()
                         .query(entity.getUri(), projection, selectionString, mSelectionArgs, null);
                 List<T> listObject = new ArrayList<>();
 
-                if(cursor.moveToFirst())
+                if (cursor.moveToFirst())
 
                 {
                     do {
