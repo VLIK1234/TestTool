@@ -22,7 +22,7 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
     * */
 
     public static final String SIGN_SELECTION = "=?";
-    public static final String OR = " OR ";
+    public static final String SIGN_AND = " AND ";
 
 
 
@@ -102,7 +102,7 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
         query(objectPrototype, null, BaseColumns._ID + "?",
                 new String[]{String.valueOf(objectPrototype.getId())}, result);
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T extends DatabaseEntity> void query(final T entity, String[] projection,
                                                  final String mSelection, final String[] mSelectionArgs, final IResult<List<T>> result) {
@@ -118,9 +118,9 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
                 else{
                     for (int i = 0; i < mSelectionArgs.length; i++) {
                         if (i != mSelectionArgs.length - 1) {
-                            selectionString += mSelection + i + SIGN_SELECTION + OR;
+                            selectionString += mSelection + SIGN_SELECTION + SIGN_AND;
                         } else {
-                            selectionString += mSelection + i + SIGN_SELECTION;
+                            selectionString += mSelection + SIGN_SELECTION;
                         }
                     }
                 }

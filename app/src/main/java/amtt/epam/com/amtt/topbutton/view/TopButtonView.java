@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +50,11 @@ import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.bo.JProjectsResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
+import amtt.epam.com.amtt.bo.user.JUserInfo;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
+import amtt.epam.com.amtt.database.object.DbObjectManger;
+import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Converter;
@@ -150,6 +157,17 @@ public class TopButtonView extends FrameLayout{
             @Override
             public void TouchAction() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result) + " Vova what will be here?", Toast.LENGTH_LONG).show();
+                DbObjectManger.INSTANCE.query(new JUserInfo(), null, UsersTable._USER_NAME, new String[]{"ivan_bakach"}, new IResult<List<DatabaseEntity>>() {
+                    @Override
+                    public void onResult(List<DatabaseEntity> result) {
+                        Log.d(LOG_TAG, result.size()+" ");
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+
+                    }
+                });
             }
         });
         screenshotView = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), new ITouchAction() {
