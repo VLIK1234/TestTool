@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.database.task;
 
+import android.content.ContentValues;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 
@@ -15,6 +16,7 @@ import amtt.epam.com.amtt.util.ActivityMetaUtil;
 /**
  * Created by Artyom on 16.05.2015.
  */
+@SuppressWarnings("unchecked")
 public class DataBaseCRUD {
 
     private static class DataBaseCRUDSingletonHolder {
@@ -57,12 +59,12 @@ public class DataBaseCRUD {
                 .create();
     }
 
-    public DataBaseMethod buildCheckUser(String userName) {
+    public DataBaseMethod buildCheckUser(String userName, String url) {
         return new DataBaseMethod.Builder()
                 .setMethodType(DatabaseMethodType.RAW_QUERY)
                 .setEntity(new JUserInfo())
-                .setSelection(UsersTable._USER_NAME)
-                .setSelectionArgs(new String[]{userName})
+                .setSelection(UsersTable._USER_NAME + "=? AND " + UsersTable._URL + "=?")
+                .setSelectionArgs(new String[]{userName, url})
                 .setProcessor(new UserCheckProcessor())
                 .create();
     }

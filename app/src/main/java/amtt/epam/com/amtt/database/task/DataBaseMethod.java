@@ -16,10 +16,12 @@ public class DataBaseMethod<ResultType> {
     enum DatabaseMethodType {
 
         ADD_OR_UPDATE,
+        UPDATE,
         REMOVE,
         REMOVE_ALL,
         GET_BY_KEY,
-        RAW_QUERY
+        RAW_QUERY,
+        RAW_UPDATE
 
     }
 
@@ -85,7 +87,10 @@ public class DataBaseMethod<ResultType> {
         Cursor cursor = null;
         switch (mMethodType) {
             case ADD_OR_UPDATE:
-                result = (ResultType)new Dao().addOrUpdate(mEntity);
+                result = (ResultType) new Dao().addOrUpdate(mEntity);
+                break;
+            case UPDATE:
+                new Dao().update(mEntity);
                 break;
             case REMOVE:
                 new Dao().remove(mEntity);
@@ -94,10 +99,10 @@ public class DataBaseMethod<ResultType> {
                 new Dao().removeAll(mEntity);
                 break;
             case GET_BY_KEY:
-                result = (ResultType)new Dao().getByKey(mEntity);
+                result = (ResultType) new Dao().getByKey(mEntity);
                 break;
             case RAW_QUERY:
-                cursor = sContext.getContentResolver().query(mEntity.getUri(), null, mSelection + "=?", mSelectionArgs, null);
+                cursor = sContext.getContentResolver().query(mEntity.getUri(), null, mSelection, mSelectionArgs, null);
                 break;
         }
         if (mProcessor != null) {

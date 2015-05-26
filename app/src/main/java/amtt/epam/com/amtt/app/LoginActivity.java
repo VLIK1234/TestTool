@@ -6,14 +6,15 @@ import amtt.epam.com.amtt.ticket.JiraContent;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
@@ -22,8 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.adapter.LoginItemAdapter;
-import amtt.epam.com.amtt.adapter.LoginItemAdapter.ViewHolder;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
@@ -44,7 +43,9 @@ import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Constants.Str;
+import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.view.EditText;
 
 /**
@@ -53,15 +54,17 @@ import amtt.epam.com.amtt.view.EditText;
 @SuppressWarnings("unchecked")
 public class LoginActivity extends BaseActivity implements JiraCallback<JUserInfo>, DataBaseCallback<Boolean>, LoaderCallbacks<Cursor> {
 
-    private AutoCompleteTextView mUserName;
+    private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
+    private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
+
+    private EditText mUserName;
     private EditText mPassword;
     private EditText mUrl;
-    private String mToastText;
     private Button mLoginButton;
     private CheckBox mEpamJira;
     private String mRequestUrl;
-    private Map<String, String> mUserUrlMap;
     private Map<String, Integer> mUserIdMap;
+    private boolean isInDatabase;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,22 +76,56 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        TopButtonService.start(this);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                showAmttActivity();
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case AMTT_ACTIVITY_REQUEST_CODE:
+                    if (data != null) {
+                        Bundle args = new Bundle();
+                        long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
+                        args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
+                        getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, this);
+                    } else {
+                        mUserName.setText(Str.EMPTY);
+                        mUrl.setText(Str.EMPTY);
+                        mPassword.setText(Str.EMPTY);
+                    }
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    break;
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            finish();
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     private void initViews() {
-        mUserName = (AutoCompleteTextView) findViewById(R.id.user_name);
+        mUserName = (EditText) findViewById(R.id.user_name);
         mUserName.setText("admin");
         mPassword = (EditText) findViewById(R.id.password);
         mPassword.setText("bujhm515");
+        mPassword.clearErrorOnTextChanged(true);
+        mPassword.clearErrorOnFocus(true);
         mUrl = (EditText) findViewById(R.id.jira_url);
         mUrl.setText("https://amtt05.atlassian.net");
         mEpamJira = (CheckBox) findViewById(R.id.epam_jira_checkbox);
         mLoginButton = (Button) findViewById(R.id.login_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
-            @TargetApi(Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
                 checkFields();
@@ -122,7 +159,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private void isUserAlreadyInDatabase() {
-        DataBaseMethod<Boolean> dataBaseMethod = DataBaseCRUD.getInstance().buildCheckUser(mUserName.getText().toString());
+        DataBaseMethod<Boolean> dataBaseMethod = DataBaseCRUD.getInstance().buildCheckUser(mUserName.getText().toString(), mUrl.getText().toString());
         new DataBaseTask.Builder<Boolean>()
                 .setCallback(this)
                 .setMethod(dataBaseMethod)
@@ -136,29 +173,22 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private void checkFields() {
+        boolean isAnyEmptyField = false;
         if (TextUtils.isEmpty(mUserName.getText().toString())) {
-            mToastText = getString(R.string.enter_prefix) + getString(R.string.enter_username);
+            mUserName.setError("");
+            isAnyEmptyField = true;
         }
         if (TextUtils.isEmpty(mPassword.getText().toString())) {
-            if (TextUtils.isEmpty(mToastText)) {
-                mToastText = getString(R.string.enter_prefix) + getString(R.string.enter_password);
-            } else {
-                mToastText += Str.COMMA + getString(R.string.enter_password);
-            }
+            isAnyEmptyField = true;
+            mPassword.setError("");
         }
         if (TextUtils.isEmpty(mUrl.getText().toString())) {
-            if (TextUtils.isEmpty(mToastText)) {
-                mToastText = getString(R.string.enter_prefix) + getString(R.string.enter_url);
-            } else {
-                mToastText += Str.COMMA + getString(R.string.enter_url);
-            }
+            isAnyEmptyField = true;
+            mUrl.setError("");
         }
-        if (!TextUtils.isEmpty(mToastText)) {
-            Toast.makeText(this, mToastText, Toast.LENGTH_LONG).show();
-        } else {
+        if (!isAnyEmptyField) {
             isUserAlreadyInDatabase();
         }
-        mToastText = Str.EMPTY;
     }
 
     private void populateActiveUserInfo() {
@@ -169,6 +199,21 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         if (activeUser.getId() == ActiveUser.DEFAULT_ID) {
             int userId = mUserIdMap.get(userName);
             activeUser.setId(userId);
+        }
+    }
+
+    private void showAmttActivity() {
+        startActivityForResult(new Intent(this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
+    }
+
+    private void populateUsersIds(Cursor data) {
+        mUserIdMap = new HashMap<>();
+        String userName;
+        int userId;
+        while (data.moveToNext()) {
+            userName = data.getString(data.getColumnIndex(UsersTable._USER_NAME));
+            userId = data.getInt(data.getColumnIndex(UsersTable._ID));
+            mUserIdMap.put(userName, userId);
         }
     }
 
@@ -185,12 +230,13 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         showProgress(false);
         Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
-            if (restResponse.getResultObject() instanceof JUserInfo) {
-                JUserInfo user = (JUserInfo)restResponse.getResultObject();
+            if (restResponse.getResultObject() instanceof JUserInfo && !isInDatabase) {
+                JUserInfo user = restResponse.getResultObject();
                 insertUserToDatabase(user);
             }
         }
         populateActiveUserInfo();
+        TopButtonService.start(this);
         JiraContent.getInstance().getPrioritiesNames(null);
         JiraContent.getInstance().getProjectsNames(null);
         JiraContent.getInstance().setEnvironment(SystemInfoHelper.getDeviceOsInfo());
@@ -207,6 +253,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     //Database task
     @Override
     public void onDataBaseRequestPerformed(DataBaseResponse<Boolean> dataBaseResponse) {
+        isInDatabase = dataBaseResponse.getResult();
         sendAuthRequest(dataBaseResponse.getResult());
         TopButtonService.authSuccess(this);
     }
@@ -219,37 +266,42 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     //Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, AmttUri.USER.get(), null, null, null, null);
+        CursorLoader loader = null;
+        if (id == CURSOR_LOADER_ID) {
+            loader = new CursorLoader(this, AmttUri.USER.get(), null, null, null, null);
+        } else if (id == SINGLE_USER_CURSOR_LOADER_ID) {
+            loader = new CursorLoader(LoginActivity.this,
+                    AmttUri.USER.get(),
+                    null,
+                    UsersTable._ID + "=?",
+                    new String[]{String.valueOf(args.getLong(AmttActivity.KEY_USER_ID))},
+                    null);
+        }
+        return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        showProgress(false);
-        if (data != null && data.getCount() > 0) {
-            mUserUrlMap = new HashMap<>();
-            mUserIdMap = new HashMap<>();
-            String userName;
-            String url;
-            int userId;
-            while (data.moveToNext()) {
-                url = data.getString(data.getColumnIndex(UsersTable._URL));
-                userName = data.getString(data.getColumnIndex(UsersTable._USER_NAME));
-                userId = data.getInt(data.getColumnIndex(UsersTable._ID));
-                mUserUrlMap.put(userName, url);
-                mUserIdMap.put(userName, userId);
+        try {
+            switch (loader.getId()) {
+                case CURSOR_LOADER_ID:
+                    showProgress(false);
+                    if (data != null) {
+                        if (data.getCount() > 1) {
+                            showAmttActivity();
+                        }
+                        populateUsersIds(data);
+                    }
+                    break;
+                case SINGLE_USER_CURSOR_LOADER_ID:
+                    JUserInfo user = new JUserInfo(data);
+                    mUserName.setText(user.getName());
+                    mUrl.setText(user.getUrl());
+                    mPassword.setText(Str.EMPTY);
+                    break;
             }
-
-            LoginItemAdapter adapter = new LoginItemAdapter(this, data, NO_FLAGS);
-            mUserName.setAdapter(adapter);
-            mUserName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    ViewHolder vh = (ViewHolder) view.getTag();
-                    String userName = vh.getTextView().getText().toString();
-                    mUserName.setText(userName);
-                    mUrl.setText(mUserUrlMap.get(userName));
-                }
-            });
+        } finally {
+            IOUtils.close(data);
         }
     }
 
