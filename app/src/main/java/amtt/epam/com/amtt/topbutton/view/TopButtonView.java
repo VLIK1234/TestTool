@@ -201,37 +201,31 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
     }
 
     private void checkFreeSpace() {
+        RelativeLayout.LayoutParams topButtonLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            buttonsBar.setOrientation(LinearLayout.HORIZONTAL);
+            topButtonLayoutParams.addRule(RelativeLayout.RIGHT_OF, mainButton.getId());
+            buttonsBar.setLayoutParams(topButtonLayoutParams);
+        } else {
+            buttonsBar.setOrientation(LinearLayout.VERTICAL);
+            topButtonLayoutParams.addRule(RelativeLayout.BELOW, mainButton.getId());
+            buttonsBar.setLayoutParams(topButtonLayoutParams);
+        }
+
         ViewTreeObserver viewTreeObserver = buttonsBar.getViewTreeObserver();
         viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             public boolean onPreDraw() {
                 buttonsBar.getViewTreeObserver().removeOnPreDrawListener(this);
-                RelativeLayout.LayoutParams barLayoutParams = (RelativeLayout.LayoutParams)buttonsBar.getLayoutParams();
-                RelativeLayout.LayoutParams mainButtonLayoutParams = (RelativeLayout.LayoutParams)mainButton.getLayoutParams();
-
-                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    buttonsBar.setOrientation(LinearLayout.HORIZONTAL);
-
-                    barLayoutParams.addRule(RelativeLayout.RIGHT_OF, mainButton.getId());
-                    buttonsBar.setLayoutParams(barLayoutParams);
-                } else {
-                    buttonsBar.setOrientation(LinearLayout.VERTICAL);
-
-                    if (layoutParams.x + buttonsBar.getWidth() > metrics.widthPixels) {
-                        layoutParams.x = -(buttonsBar.getWidth() - metrics.widthPixels);
-                    }
-                    if (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
-                        mainButtonLayoutParams.addRule(RelativeLayout.BELOW, buttonsBar.getId());
-                        barLayoutParams.removeRule(RelativeLayout.BELOW);
-                        mainButton.setLayoutParams(mainButtonLayoutParams);
-                        layoutParams.y -= buttonsBar.getHeight();
-                    } else {
-                        mainButtonLayoutParams.removeRule(RelativeLayout.BELOW);
-                        barLayoutParams.addRule(RelativeLayout.BELOW, mainButton.getId());
-                        buttonsBar.setLayoutParams(barLayoutParams);
-                        mainButton.setLayoutParams(mainButtonLayoutParams);
-                    }
+                if (layoutParams.x + buttonsBar.getWidth() > metrics.widthPixels) {
+                    layoutParams.x -= (layoutParams.x + buttonsBar.getWidth() - metrics.widthPixels);
+                    windowManager.updateViewLayout(TopButtonView.this, layoutParams);
                 }
-                windowManager.updateViewLayout(TopButtonView.this, layoutParams);
+                if (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
+                    layoutParams.y -= (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() - metrics.heightPixels + getStatusBarHeight());
+                    windowManager.updateViewLayout(TopButtonView.this, layoutParams);
+                }
                 return true;
             }
         });
@@ -370,7 +364,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
                             yButton = layoutParams.y;
                             playRotateAnimationMainButton(300, 0, 180);
                             Animation translate = AnimationUtils.loadAnimation(getContext(), R.anim.translate);
-//                            buttonsBar.startAnimation(translate);
+                            buttonsBar.startAnimation(translate);
                             checkFreeSpace();
                         }
                     }
