@@ -20,7 +20,7 @@ import amtt.epam.com.amtt.util.IOUtils;
 /**
  * Created by Artsiom_Kaliaha on 12.05.2015.
  */
-public class Step extends DatabaseEntity {
+public class Step extends DatabaseEntity<Step> {
 
     private static int mStepNumber = 0;
     private String mActivity;
@@ -51,6 +51,11 @@ public class Step extends DatabaseEntity {
     @Override
     public Uri getUri() {
         return AmttUri.STEP.get();
+    }
+
+    @Override
+    public Step parse(Cursor cursor) {
+        return new Step(cursor);
     }
 
     @Override

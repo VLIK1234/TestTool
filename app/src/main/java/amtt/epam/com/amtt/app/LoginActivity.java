@@ -197,18 +197,11 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         final ActiveUser activeUser = ActiveUser.getInstance();
         final String userName = mUserName.getText().toString();
         final String password = mPassword.getText().toString();
-        ScheduledExecutorService worker =
-                Executors.newSingleThreadScheduledExecutor();
-        Runnable task = new Runnable() {
-            public void run() {
-                activeUser.setCredentials(userName, password, mRequestUrl);
-                if (activeUser.getId() == ActiveUser.DEFAULT_ID) {
-                    int userId = mUserIdMap.get(userName);
-                    activeUser.setId(userId);
-                }
-            }
-        };
-        worker.schedule(task, 1, TimeUnit.SECONDS);
+        activeUser.setCredentials(userName, password, mRequestUrl);
+        if (activeUser.getId() == ActiveUser.DEFAULT_ID) {
+            int userId = mUserIdMap.get(userName);
+            activeUser.setId(userId);
+        }
     }
 
     private void showAmttActivity() {
@@ -239,16 +232,23 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         showProgress(false);
         Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
-            if (restResponse.getResultObject() instanceof JUserInfo && !isUserAlreadyInDatabase()) {
+            if (restResponse.getResultObject() != null && !isUserAlreadyInDatabase()) {
                 JUserInfo user = restResponse.getResultObject();
                 insertUserToDatabase(user);
             }
         }
-        populateActiveUserInfo();
-        TopButtonService.start(this);
-        JiraContent.getInstance().getPrioritiesNames(null);
-        JiraContent.getInstance().getProjectsNames(null);
-        JiraContent.getInstance().setEnvironment(SystemInfoHelper.getDeviceOsInfo());
+        ScheduledExecutorService worker =
+                Executors.newSingleThreadScheduledExecutor();
+        Runnable task = new Runnable() {
+            public void run() {
+                populateActiveUserInfo();
+                TopButtonService.start(getBaseContext());
+                JiraContent.getInstance().getPrioritiesNames(null);
+                JiraContent.getInstance().getProjectsNames(null);
+                JiraContent.getInstance().setEnvironment(SystemInfoHelper.getDeviceOsInfo());
+            }
+        };
+        worker.schedule(task, 1, TimeUnit.SECONDS);
         finish();
     }
 

@@ -7,9 +7,6 @@ import android.net.Uri;
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.bo.database.ActivityMeta;
-import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.util.ContextHolder;
 
@@ -40,7 +37,8 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
         for(int i = 0; i < objects.size(); i++) {
             contentValues[i] = objects.get(i).getContentValues();
         }
-        return ContextHolder.getContext().getContentResolver().bulkInsert(objects.get(0).getUri(), contentValues);
+        return ContextHolder.getContext().getContentResolver().bulkInsert(objects.get(0).getUri(),
+                contentValues);
     }
 
     public void addOrUpdateAsync(final DatabaseEntity object, final IResult<Integer> result) {
@@ -101,36 +99,48 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
 
     @Override
     public void getByKey(DatabaseEntity objectPrototype, IResult<List<DatabaseEntity>> result) {
-        query(objectPrototype, null, BaseColumns._ID + "?", new String[]{String.valueOf(objectPrototype.getId())}, result);
+        query(objectPrototype, null, BaseColumns._ID + "?",
+                new String[]{String.valueOf(objectPrototype.getId())}, result);
     }
-
-    public void query(final DatabaseEntity entity, String[] projection, final String mSelection, final String[] mSelectionArgs, final IResult<List<DatabaseEntity>> result) {
+    
+    @SuppressWarnings("unchecked")
+    public <T extends DatabaseEntity> void query(final T entity, String[] projection,
+                                                 final String mSelection, final String[] mSelectionArgs, final IResult<List<T>> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String selectionString="";
+                String selectionString = "";
 
-                if (mSelectionArgs.length==1) {
+                if(mSelectionArgs.length==1){
                     selectionString = mSelection + SIGN_SELECTION;
-                }else {
+                }
+
+                else{
                     for (int i = 0; i < mSelectionArgs.length; i++) {
-                        if (i!=mSelectionArgs.length-1) {
-                            selectionString +=  mSelection + i + SIGN_SELECTION + OR;
-                        }else{
-                            selectionString +=  mSelection + i + SIGN_SELECTION;
+                        if (i != mSelectionArgs.length - 1) {
+                            selectionString += mSelection + i + SIGN_SELECTION + OR;
+                        } else {
+                            selectionString += mSelection + i + SIGN_SELECTION;
                         }
                     }
                 }
 
-                DbEntityType entityType = DbEntityFactory.getTypeEntityEnum(entity);
-                Cursor cursor = ContextHolder.getContext().getContentResolver().query(entity.getUri(), null, selectionString, mSelectionArgs, null);
-                List<DatabaseEntity> listObject = new ArrayList<>();
+                Cursor cursor = ContextHolder.getContext().getContentResolver()
+                        .query(entity.getUri(), null, selectionString, mSelectionArgs, null);
+                List<T> listObject = new ArrayList<>();
 
-                if (cursor.moveToFirst()) {
+                if(cursor.moveToFirst())
+
+                {
                     do {
-                        listObject.add(DbEntityFactory.createEntity(entityType,cursor));
+                        try {
+                            listObject.add((T) entity.parse(cursor));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     } while (cursor.moveToNext());
                 }
+
                 cursor.close();
                 result.onResult(listObject);
             }

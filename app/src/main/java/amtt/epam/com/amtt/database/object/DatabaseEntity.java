@@ -7,7 +7,7 @@ import android.net.Uri;
 /**
  * Created by Artsiom_Kaliaha on 15.05.2015.
  */
-public class DatabaseEntity implements IDatabaseEntityMethod{
+public abstract class DatabaseEntity<B> implements IDatabaseEntityMethod<B>{
 
     public DatabaseEntity() {
     }

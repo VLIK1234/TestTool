@@ -12,7 +12,7 @@ import amtt.epam.com.amtt.database.table.StepsTable;
 /**
  * Created by Artsiom_Kaliaha on 15.05.2015.
  */
-public class ActivityMeta extends DatabaseEntity {
+public class ActivityMeta extends DatabaseEntity<ActivityMeta> {
 
     private int mId;
     private String mActivityName;
@@ -81,6 +81,11 @@ public class ActivityMeta extends DatabaseEntity {
     @Override
     public Uri getUri() {
         return AmttUri.ACTIVITY_META.get();
+    }
+
+    @Override
+    public ActivityMeta parse(Cursor cursor) {
+        return new ActivityMeta(cursor);
     }
 
     @Override
