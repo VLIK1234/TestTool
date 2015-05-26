@@ -25,16 +25,15 @@ public class SpinnerProgress extends RelativeLayout {
     private Spinner mSpinner;
     private ProgressBar mProgress;
     private ArrayAdapter<String> mEmptyAdapter;
+    private  Context mContext;
 
     public SpinnerProgress(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Context mContext = context;
-        LayoutInflater.from(mContext).inflate(R.layout.spinner_progress_layout, this,
-                true);
+        mContext = context;
+        LayoutInflater.from(mContext).inflate(R.layout.spinner_progress_layout, this, true);
         String[] strings = new String[]{};
         List<String> items = new ArrayList<>(Arrays.asList(strings));
-        mEmptyAdapter = new ArrayAdapter<>(context,
-                R.layout.spinner_layout, items);
+        mEmptyAdapter = new ArrayAdapter<>(context, R.layout.spinner_layout, items);
         initViews();
     }
 

@@ -12,10 +12,6 @@ import android.widget.RelativeLayout;
 
 import amtt.epam.com.amtt.R;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Created by Iryna_Monchanka on 5/20/2015.
  */
@@ -48,7 +44,6 @@ public class AutocompleteProgressView extends RelativeLayout {
     public void setAdapter(ArrayAdapter<String> adapter) {
         mACTextView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        mACTextView.showDropDown();
     }
 
     public void setThreshold(int threshold) {
@@ -57,5 +52,9 @@ public class AutocompleteProgressView extends RelativeLayout {
 
     public void addTextChangedListener(TextWatcher watcher) {
         mACTextView.addTextChangedListener(watcher);
+    }
+
+    public void showDropDown() {
+        mACTextView.showDropDown();
     }
 }

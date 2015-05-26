@@ -26,7 +26,6 @@
         app:et_labelTextColor="@drawable/color_label"
         app:et_supportMode="helperWithError"
         app:et_supportTextErrorColor="#FFFF0000"
-        android:layout_below="@+id/user_name"
         android:paddingTop="8dp"/>
     <!-- *******USER NAME END***************************************************-->
 
@@ -49,24 +48,6 @@
         app:et_supportTextErrorColor="#FFFF0000"
         android:layout_below="@+id/user_name"/>
     <!-- *******URL END***********************************************************-->
-
-
-    <!--<amtt.epam.com.amtt.view.EditText-->
-        <!--style="@style/Material.Widget.EditText"-->
-        <!--android:id="@+id/user_name"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_marginTop="@dimen/material_vertical_size_divider"-->
-        <!--android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"-->
-        <!--android:textColor="@color/primary_text"-->
-        <!--android:inputType="text"-->
-        <!--android:hint="@string/label_user_name"-->
-        <!--app:et_inputId="@+id/user_name_error"-->
-        <!--app:et_dividerErrorColor="#FFFF0000"-->
-        <!--app:et_helper="Enter username"-->
-        <!--app:et_labelTextColor="@drawable/color_label"-->
-        <!--app:et_supportMode="helperWithError"-->
-        <!--app:et_supportTextErrorColor="#FFFF0000"/>-->
 
     <!-- *******PASSWORD BEGIN***************************************************-->
     <amtt.epam.com.amtt.view.EditText

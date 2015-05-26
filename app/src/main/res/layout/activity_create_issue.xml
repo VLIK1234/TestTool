@@ -207,7 +207,7 @@
                 android:textSize="@dimen/material_font_size_caption" />
 
             <amtt.epam.com.amtt.view.AutocompleteProgressView
-                android:id="@+id/et_assignable_users"
+                android:id="@+id/atv_assignable_users"
                 style="@style/Material.Widget.AutocompleteProgressView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,12 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
-import amtt.epam.com.amtt.ticket.JiraContent;
-import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
-import amtt.epam.com.amtt.view.AutocompleteProgressView;
-import amtt.epam.com.amtt.view.EditText;
-import amtt.epam.com.amtt.view.SpinnerProgress;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -37,8 +31,7 @@ public class CreateIssueActivity extends BaseActivity {
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_TEXT_CHANGED = 100;
-    private AutocompleteProgressView mAssignableUsersACTextView;
-    private Button mCreateIssueButton;
+    private AutocompleteProgressView mAssignableAutocompleteView;
     private EditText mDescriptionEditText;
     private EditText mEnvironmentEditText;
     private EditText mSummaryEditText;
@@ -46,11 +39,29 @@ public class CreateIssueActivity extends BaseActivity {
     private String mIssueTypeName;
     private String mPriorityName;
     private String mVersionName;
+    private AssigneeHandler mHandler;
+
+    public static class AssigneeHandler extends Handler {
+
+        private final WeakReference<CreateIssueActivity> mActivity;
+
+        AssigneeHandler(CreateIssueActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            CreateIssueActivity service = mActivity.get();
+            service.setAssignableNames((String) msg.obj);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
+        mHandler = new AssigneeHandler(this);
         initViews();
     }
 
@@ -66,7 +77,7 @@ public class CreateIssueActivity extends BaseActivity {
     private void reinitRelatedViews(String projectKey) {
         initIssueTypesSpinner();
         initVersionsSpinner(projectKey);
-        initAssigneeACTextView();
+        initAssigneeAutocompleteView();
     }
 
     private void initProjectNamesSpinner() {
@@ -218,20 +229,14 @@ public class CreateIssueActivity extends BaseActivity {
     }
 
     private void initCreateIssueButton() {
-        mCreateIssueButton = (Button) findViewById(R.id.btn_create);
+        Button mCreateIssueButton = (Button) findViewById(R.id.btn_create);
         mCreateIssueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Boolean isValid = true;
                 if (TextUtils.isEmpty(mSummaryEditText.getText().toString())) {
                     mSummaryEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
-                    Logger.d(TAG, AmttFileObserver.getImageArray().get(0));
-                    JiraContent.getInstance().sendAttachment("ONE-1", AmttFileObserver.getImageArray().get(1), new JiraGetContentCallback<Boolean>() {
-                        @Override
-                        public void resultOfDataLoading(Boolean result) {
-                            Toast.makeText(CreateIssueActivity.this, result.toString(), Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    attachFile("ONE-1", AmttFileObserver.getImageArray().get(1));
                     mSummaryEditText.requestFocus();
                     mSummaryEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
                     isValid = false;
@@ -240,22 +245,22 @@ public class CreateIssueActivity extends BaseActivity {
                 if (isValid) {
                     showProgress(true);
                     JiraContent.getInstance().createIssue(mIssueTypeName,
-                        mPriorityName, mVersionName, mSummaryEditText.getText().toString(),
-                        mDescriptionEditText.getText().toString(), mEnvironmentEditText.getText().toString(),
-                        mAssignableUserName, new JiraGetContentCallback<Boolean>() {
-                            @Override
-                            public void resultOfDataLoading(Boolean result) {
-                                if (result != null) {
-                                    if (result) {
-                                        Toast.makeText(CreateIssueActivity.this, "Ticket success created", Toast.LENGTH_LONG).show();
-                                        finish();
-                                    } else {
-                                        Toast.makeText(CreateIssueActivity.this, "Error", Toast.LENGTH_LONG).show();
+                            mPriorityName, mVersionName, mSummaryEditText.getText().toString(),
+                            mDescriptionEditText.getText().toString(), mEnvironmentEditText.getText().toString(),
+                            mAssignableUserName, new JiraGetContentCallback<Boolean>() {
+                                @Override
+                                public void resultOfDataLoading(Boolean result) {
+                                    if (result != null) {
+                                        if (result) {
+                                            Toast.makeText(CreateIssueActivity.this, "Ticket success created", Toast.LENGTH_LONG).show();
+                                            finish();
+                                        } else {
+                                            Toast.makeText(CreateIssueActivity.this, "Error", Toast.LENGTH_LONG).show();
+                                        }
                                     }
+                                    showProgress(false);
                                 }
-                                showProgress(false);
-                            }
-                        });
+                            });
                 }
             }
         });
@@ -267,9 +272,9 @@ public class CreateIssueActivity extends BaseActivity {
         mSummaryEditText.clearErrorOnFocus(true);
     }
 
-    private void initAssigneeACTextView() {
-        mAssignableUsersACTextView = (AutocompleteProgressView) findViewById(R.id.et_assignable_users);
-        mAssignableUsersACTextView.addTextChangedListener(new TextWatcher() {
+    private void initAssigneeAutocompleteView() {
+        mAssignableAutocompleteView = (AutocompleteProgressView) findViewById(R.id.atv_assignable_users);
+        mAssignableAutocompleteView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() > 2) {
@@ -289,29 +294,35 @@ public class CreateIssueActivity extends BaseActivity {
         });
     }
 
-    private void setAssignableNames(String s, int keyCode) {
-        mAssignableUsersACTextView.setEnabled(false);
-        mAssignableUsersACTextView.showProgress(true);
+    private void setAssignableNames(String s) {
+        mAssignableAutocompleteView.setEnabled(false);
+        mAssignableAutocompleteView.showProgress(true);
         JiraContent.getInstance().getUsersAssignable(s, new JiraGetContentCallback<ArrayList<String>>() {
             @Override
             public void resultOfDataLoading(ArrayList<String> result) {
                 if (result != null) {
                     ArrayAdapter<String> mAssignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
-                    mAssignableUsersACTextView.setThreshold(2);
-                    mAssignableUsersACTextView.setAdapter(mAssignableUsersAdapter);
+                    mAssignableAutocompleteView.setThreshold(2);
+                    mAssignableAutocompleteView.setAdapter(mAssignableUsersAdapter);
                     mAssignableUsersAdapter.notifyDataSetChanged();
-                    mAssignableUsersACTextView.showProgress(false);
-                    mAssignableUsersACTextView.setEnabled(true);
+                    mAssignableAutocompleteView.showDropDown();
+                    mAssignableAutocompleteView.showProgress(false);
+                    mAssignableAutocompleteView.setEnabled(true);
                 }
             }
         });
     }
 
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            CreateIssueActivity.this.setAssignableNames((String) msg.obj, msg.arg1);
-        }
-    };
+    public void attachFile(String issueKey, String fileFullName) {
+        showProgress(true);
+        Logger.d(TAG, AmttFileObserver.getImageArray().get(0));
+        JiraContent.getInstance().sendAttachment(issueKey, fileFullName, new JiraGetContentCallback<Boolean>() {
+            @Override
+            public void resultOfDataLoading(Boolean result) {
+                Toast.makeText(CreateIssueActivity.this, result.toString(), Toast.LENGTH_LONG).show();
+                showProgress(false);
+            }
+        });
+    }
 
 }
