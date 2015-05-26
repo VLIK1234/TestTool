@@ -68,11 +68,6 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
     }
 
     @Override
-    public Integer update(DatabaseEntity objectPrototype) {
-        return null;
-    }
-
-    @Override
     public void remove(final DatabaseEntity object) {
         new Thread(new Runnable() {
             @Override
@@ -97,36 +92,32 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
         query(object, null, null, null, result);
     }
 
-    @Override
-    public void getByKey(DatabaseEntity objectPrototype, IResult<List<DatabaseEntity>> result) {
-        query(objectPrototype, null, BaseColumns._ID + "?",
-                new String[]{String.valueOf(objectPrototype.getId())}, result);
-    }
-
     @SuppressWarnings("unchecked")
-    public <T extends DatabaseEntity> void query(final T entity, String[] projection,
+    public <T extends DatabaseEntity> void query(final T entity, final String[] projection,
                                                  final String mSelection, final String[] mSelectionArgs, final IResult<List<T>> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String selectionString = "";
+                if (mSelectionArgs!=null&&mSelection!=null) {
+                    if(mSelectionArgs.length==1){
+                        selectionString = mSelection + SIGN_SELECTION;
+                    }
 
-                if(mSelectionArgs.length==1){
-                    selectionString = mSelection + SIGN_SELECTION;
-                }
-
-                else{
-                    for (int i = 0; i < mSelectionArgs.length; i++) {
-                        if (i != mSelectionArgs.length - 1) {
-                            selectionString += mSelection + SIGN_SELECTION + SIGN_AND;
-                        } else {
-                            selectionString += mSelection + SIGN_SELECTION;
+                    else{
+                        for (int i = 0; i < mSelectionArgs.length; i++) {
+                            if (i != mSelectionArgs.length - 1) {
+                                selectionString += mSelection + SIGN_SELECTION + SIGN_AND;
+                            } else {
+                                selectionString += mSelection + SIGN_SELECTION;
+                            }
                         }
                     }
                 }
 
+
                 Cursor cursor = ContextHolder.getContext().getContentResolver()
-                        .query(entity.getUri(), null, selectionString, mSelectionArgs, null);
+                        .query(entity.getUri(), projection, selectionString, mSelectionArgs, null);
                 List<T> listObject = new ArrayList<>();
 
                 if(cursor.moveToFirst())

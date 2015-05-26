@@ -4,7 +4,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
@@ -12,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,37 +26,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.api.JiraApi;
-import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.exception.AmttException;
-import amtt.epam.com.amtt.api.exception.ExceptionHandler;
-import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
-import amtt.epam.com.amtt.bo.JProjectsResponse;
-import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
-import amtt.epam.com.amtt.bo.user.JUserInfo;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.database.object.DbObjectManger;
-import amtt.epam.com.amtt.database.object.IResult;
-import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.processing.ProjectsProcessor;
-import amtt.epam.com.amtt.util.Constants;
-import amtt.epam.com.amtt.util.Converter;
-import amtt.epam.com.amtt.util.PreferenceUtils;
 import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
@@ -157,17 +133,6 @@ public class TopButtonView extends FrameLayout{
             @Override
             public void TouchAction() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result) + " Vova what will be here?", Toast.LENGTH_LONG).show();
-                DbObjectManger.INSTANCE.query(new JUserInfo(), null, UsersTable._USER_NAME, new String[]{"ivan_bakach"}, new IResult<List<DatabaseEntity>>() {
-                    @Override
-                    public void onResult(List<DatabaseEntity> result) {
-                        Log.d(LOG_TAG, result.size()+" ");
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-
-                    }
-                });
             }
         });
         screenshotView = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), new ITouchAction() {
