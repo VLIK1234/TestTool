@@ -12,7 +12,6 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -64,7 +63,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private CheckBox mEpamJira;
     private String mRequestUrl;
     private Map<String, Integer> mUserIdMap;
-    private boolean isUserInDatabase;
+    private boolean mIsUserInDatabase;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -192,8 +191,8 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
             StepUtil.buildCheckUser(mUserName.getText().toString(), new IResult<List<DatabaseEntity>>() {
                 @Override
                 public void onResult(List<DatabaseEntity> result) {
-                    isUserInDatabase = result.size() > 0;
-                    sendAuthRequest(isUserInDatabase);
+                    mIsUserInDatabase = result.size() > 0;
+                    sendAuthRequest(mIsUserInDatabase);
                 }
 
                 @Override
@@ -241,7 +240,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         showProgress(false);
         Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
-            if (restResponse.getResultObject() != null && !isUserInDatabase) {
+            if (restResponse.getResultObject() != null && !mIsUserInDatabase) {
                 JUserInfo user = restResponse.getResultObject();
                 insertUserToDatabase(user);
             }
