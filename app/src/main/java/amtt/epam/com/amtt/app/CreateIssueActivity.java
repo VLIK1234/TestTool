@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -302,10 +303,14 @@ public class CreateIssueActivity extends BaseActivity {
 
     private void initAttachmentsView() {
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.listScreens);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(CreateIssueActivity.this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CreateIssueActivity.this);
+        linearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        ScreenshotAdapter mAdapter = new ScreenshotAdapter(ScreenshotManager.getInstance().getCountries(), R.layout.item_screenshot, CreateIssueActivity.this);
+        ScreenshotAdapter mAdapter = new ScreenshotAdapter(ScreenshotManager.getInstance().getScreenshotList(), R.layout.item_screenshot);
         mRecyclerView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+        mRecyclerView.refreshDrawableState();
     }
 
     private void setAssignableNames(String s) {
