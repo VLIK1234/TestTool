@@ -24,7 +24,7 @@ public class HelpDialogActivity extends Activity {
         setContentView(R.layout.activity_dialog);
         
         TextView textView = (TextView) findViewById(R.id.message_dialog);
-        textView.append(Build.MANUFACTURER+" "+Build.MODEL);
+        textView.append(Build.BRAND.toUpperCase()+" "+Build.MODEL.toUpperCase());
         textView.append(getMessageForCurrentDevice());
 
         CheckBox checkShowAgain = (CheckBox) findViewById(R.id.dialog_check_show_again);
@@ -45,11 +45,11 @@ public class HelpDialogActivity extends Activity {
     private String getMessageForCurrentDevice(){
         if (StringHelper.containsInsensetive(Build.MODEL, "Nexus")){
             return "\nNexus - volume down+power";
-        }else if (StringHelper.containsInsensetive(Build.MANUFACTURER, "samsung")){
+        }else if (StringHelper.containsInsensetive(Build.BRAND, "samsung")){
             return "\nSamsung - power+home";
-        }else if (StringHelper.containsInsensetive(Build.MANUFACTURER, "HTC")) {
+        }else if (StringHelper.containsInsensetive(Build.BRAND, "HTC")) {
             return "\nHTC - power+home";
-        }else if (StringHelper.containsInsensetive(Build.MANUFACTURER, "Xiaomi")) {
+        }else if (StringHelper.containsInsensetive(Build.BRAND, "Xiaomi")) {
             return "\nXiaomi tablet - power+options \nXiaomi phone - volume down+power ";
         }else{
             return "\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nXiaomi phone - volume down+power \nHTC - power+home";

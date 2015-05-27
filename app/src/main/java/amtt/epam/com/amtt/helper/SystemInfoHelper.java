@@ -38,22 +38,8 @@ public class SystemInfoHelper {
     public static String getDeviceOsInfo(){
         String deviceInfo = "---Device info---"
                 + StringHelper.format("System info", getNameVersionSystem() + ", API version - "+Build.VERSION.SDK_INT)
-                + StringHelper.format("Device", Build.MANUFACTURER.toUpperCase() +" "+ Build.MODEL.toUpperCase())
+                + StringHelper.format("Device", Build.BRAND.toUpperCase() +" "+ Build.MODEL.toUpperCase())
                 + StringHelper.format("Display", getInfoSizeDisplay());
-
-//        + StringHelper.format("Brand", Build.BRAND)
-//                + StringHelper.format("Device", Build.DEVICE)
-//                + StringHelper.format("Fingerprint", Build.FINGERPRINT)
-//                + StringHelper.format("Id", Build.ID)
-//                + StringHelper.format("Manufacturer", Build.MANUFACTURER)
-//                + StringHelper.format("Model", Build.MODEL)
-//                + StringHelper.format("Product", Build.PRODUCT)
-//        String systemProperties = "\n\n---System properties---"
-//                + StringHelper.format("Bootloader", Build.BOOTLOADER)
-//                + StringHelper.format("Hardware", Build.HARDWARE)
-//                + StringHelper.format("Radio firmware", Build.getRadioVersion())
-//                + StringHelper.format("Serial number", Build.SERIAL)
-//                + StringHelper.format("Build type", Build.TYPE);
 
         return deviceInfo;
 
