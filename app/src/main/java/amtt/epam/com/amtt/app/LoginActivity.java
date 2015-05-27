@@ -12,6 +12,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -157,21 +158,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         }
     }
 
-    private boolean isUserAlreadyInDatabase() {
-        StepUtil.buildCheckUser(mUserName.getText().toString(), new IResult<List<DatabaseEntity>>() {
-            @Override
-            public void onResult(List<DatabaseEntity> result) {
-                isUserInDatabase = result.size()>0;
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        });
-        return isUserInDatabase;
-    }
-
     private void insertUserToDatabase(final JUserInfo user) {
         DbObjectManger.INSTANCE.addOrUpdateAsync(user, new IResult<Integer>() {
             @Override
@@ -201,7 +187,20 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
             mUrl.setError("");
         }
         if (!isAnyEmptyField) {
-            sendAuthRequest(isUserAlreadyInDatabase());
+            showProgress(true);
+            mLoginButton.setEnabled(false);
+            StepUtil.buildCheckUser(mUserName.getText().toString(), new IResult<List<DatabaseEntity>>() {
+                @Override
+                public void onResult(List<DatabaseEntity> result) {
+                    isUserInDatabase = result.size() > 0;
+                    sendAuthRequest(isUserInDatabase);
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                }
+            });
         }
     }
 
@@ -235,8 +234,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     //Jira
     @Override
     public void onRequestStarted() {
-        showProgress(true);
-        mLoginButton.setEnabled(false);
     }
 
     @Override
@@ -244,7 +241,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         showProgress(false);
         Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
-            if (restResponse.getResultObject() != null && !isUserAlreadyInDatabase()) {
+            if (restResponse.getResultObject() != null && !isUserInDatabase) {
                 JUserInfo user = restResponse.getResultObject();
                 insertUserToDatabase(user);
             }
