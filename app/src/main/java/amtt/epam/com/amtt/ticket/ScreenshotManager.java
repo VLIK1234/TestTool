@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.ticket;
 
-import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.util.Logger;
 import android.os.Environment;
 

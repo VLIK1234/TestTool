@@ -13,8 +13,10 @@ import android.widget.RelativeLayout;
 import amtt.epam.com.amtt.R;
 
 /**
- * Created by Iryna_Monchanka on 5/20/2015.
+ @author Iryna Monchanka
+ @version on 5/20/2015
  */
+
 public class AutocompleteProgressView extends RelativeLayout {
 
     private AutoCompleteTextView mACTextView;

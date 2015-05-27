@@ -6,8 +6,10 @@ import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.util.Constants.SharedPreference;
 
 /**
- * Created by Iryna_Monchanka on 4/8/2015.
+ @author Iryna Monchanka
+ @version on 4/8/2015
  */
+
 public class ActiveUser {
 
     private static final ActiveUser INSTANCE = new ActiveUser();

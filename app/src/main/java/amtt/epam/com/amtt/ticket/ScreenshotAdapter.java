@@ -1,7 +1,6 @@
 package amtt.epam.com.amtt.ticket;
 
 import amtt.epam.com.amtt.util.Logger;
-import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

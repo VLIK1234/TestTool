@@ -9,8 +9,10 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 
 /**
- * Created by Iryna_Monchanka on 3/27/2015.
+ @author Iryna Monchanka
+ @version on 3/27/2015
  */
+
 public class Logger {
 
     private static final String TAG = Logger.class.getSimpleName();
