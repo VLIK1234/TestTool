@@ -7,18 +7,14 @@ import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.bo.JProjectsResponse;
-import amtt.epam.com.amtt.bo.JPriorityResponse;
-import amtt.epam.com.amtt.bo.JUserAssignableResponse;
-import amtt.epam.com.amtt.bo.JVersionsResponse;
-import amtt.epam.com.amtt.processing.PriorityProcessor;
-import amtt.epam.com.amtt.processing.ProjectsProcessor;
-import amtt.epam.com.amtt.processing.UsersAssignableProcessor;
-import amtt.epam.com.amtt.processing.VersionsProcessor;
+import amtt.epam.com.amtt.bo.*;
+import amtt.epam.com.amtt.processing.*;
 
 /**
- * Created by Iryna_Monchanka on 15.05.2015.
+ @author Iryna Monchanka
+ @version on 15.05.2015
  */
+
 public class ContentFromBackend {
 
     private static class ContentFromBackendHolder {
@@ -141,10 +137,10 @@ public class ContentFromBackend {
 
 
     @SuppressWarnings("unchecked")
-    public void createIssueAsynchronously(String issueJson, final ContentLoadingCallback<Boolean> contentLoadingCallback,
+    public void createIssueAsynchronously(String issueJson, final ContentLoadingCallback<JCreateIssueResponse> contentLoadingCallback,
                                           final JiraGetContentCallback jiraGetContentCallback) {
-        RestMethod<JProjectsResponse> createIssue = JiraApi.getInstance().buildIssueCreating(issueJson);
-        new JiraTask.Builder<JProjectsResponse>()
+        RestMethod<JCreateIssueResponse> createIssue = JiraApi.getInstance().buildIssueCreating(issueJson, new PostCreateIssueProcessor());
+        new JiraTask.Builder<JCreateIssueResponse>()
             .setRestMethod(createIssue)
             .setCallback(new JiraCallback() {
                 @Override
@@ -153,12 +149,12 @@ public class ContentFromBackend {
 
                 @Override
                 public void onRequestPerformed(RestResponse restResponse) {
-                    contentLoadingCallback.resultFromBackend(true, JiraContentConst.CREATE_ISSUE_RESPONSE, jiraGetContentCallback);
+                    contentLoadingCallback.resultFromBackend((JCreateIssueResponse) restResponse.getResultObject(), JiraContentConst.CREATE_ISSUE_RESPONSE, jiraGetContentCallback);
                 }
 
                 @Override
                 public void onRequestError(AmttException e) {
-                    contentLoadingCallback.resultFromBackend(false, JiraContentConst.CREATE_ISSUE_RESPONSE, jiraGetContentCallback);
+                    contentLoadingCallback.resultFromBackend(null, JiraContentConst.CREATE_ISSUE_RESPONSE, jiraGetContentCallback);
                 }
             })
             .createAndExecute();

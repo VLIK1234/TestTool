@@ -54,7 +54,7 @@ public class JiraApi {
         return mMethod;
     }
 
-    public RestMethod buildIssueCreating(final String postStringEntity) {
+    public <ResultType, InputType> RestMethod buildIssueCreating(final String postStringEntity, final Processor<ResultType, InputType> processor) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
@@ -69,6 +69,7 @@ public class JiraApi {
                 .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH)
                 .setHeadersMap(headers)
                 .setPostEntity(postEntity)
+                .setProcessor(processor)
                 .create();
         return mMethod;
     }

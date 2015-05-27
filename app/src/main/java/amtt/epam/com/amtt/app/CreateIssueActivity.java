@@ -1,5 +1,17 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.bo.JCreateIssueResponse;
+import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
+import amtt.epam.com.amtt.observer.AmttFileObserver;
+import amtt.epam.com.amtt.ticket.JiraContent;
+import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
+import amtt.epam.com.amtt.ticket.ScreenshotAdapter;
+import amtt.epam.com.amtt.ticket.ScreenshotManager;
+import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.view.AutocompleteProgressView;
+import amtt.epam.com.amtt.view.EditText;
+import amtt.epam.com.amtt.view.SpinnerProgress;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,18 +31,6 @@ import android.widget.Toast;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
-import amtt.epam.com.amtt.observer.AmttFileObserver;
-import amtt.epam.com.amtt.ticket.ScreenshotAdapter;
-import amtt.epam.com.amtt.ticket.ScreenshotManager;
-import amtt.epam.com.amtt.ticket.JiraContent;
-import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
-import amtt.epam.com.amtt.util.Logger;
-import amtt.epam.com.amtt.view.AutocompleteProgressView;
-import amtt.epam.com.amtt.view.EditText;
-import amtt.epam.com.amtt.view.SpinnerProgress;
 
 @SuppressWarnings("unchecked")
 public class CreateIssueActivity extends BaseActivity {
@@ -242,8 +242,6 @@ public class CreateIssueActivity extends BaseActivity {
             public void onClick(View v) {
                 Boolean isValid = true;
                 if (TextUtils.isEmpty(mSummaryEditText.getText().toString())) {
-                    mSummaryEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
-                    attachFile("ONE-1", AmttFileObserver.getImageArray().get(1));
                     mSummaryEditText.requestFocus();
                     mSummaryEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
                     isValid = false;
@@ -252,22 +250,28 @@ public class CreateIssueActivity extends BaseActivity {
                 if (isValid) {
                     showProgress(true);
                     JiraContent.getInstance().createIssue(mIssueTypeName,
-                            mPriorityName, mVersionName, mSummaryEditText.getText().toString(),
-                            mDescriptionEditText.getText().toString(), mEnvironmentEditText.getText().toString(),
-                            mAssignableUserName, new JiraGetContentCallback<Boolean>() {
-                                @Override
-                                public void resultOfDataLoading(Boolean result) {
-                                    if (result != null) {
-                                        if (result) {
-                                            Toast.makeText(CreateIssueActivity.this, "Ticket success created", Toast.LENGTH_LONG).show();
-                                            finish();
-                                        } else {
-                                            Toast.makeText(CreateIssueActivity.this, "Error", Toast.LENGTH_LONG).show();
+                        mPriorityName, mVersionName, mSummaryEditText.getText().toString(),
+                        mDescriptionEditText.getText().toString(), mEnvironmentEditText.getText().toString(),
+                        mAssignableUserName, new JiraGetContentCallback<JCreateIssueResponse>() {
+                            @Override
+                            public void resultOfDataLoading(JCreateIssueResponse result) {
+                                if (result != null) {
+                                    JiraContent.getInstance().getRecentIssueKey(new JiraGetContentCallback<String>() {
+                                        @Override
+                                        public void resultOfDataLoading(String result) {
+                                            if (result != null) {
+                                                attachFile(result, AmttFileObserver.getImageArray().get(1));
+                                            }
                                         }
-                                    }
-                                    showProgress(false);
+                                    });
+                                    Toast.makeText(CreateIssueActivity.this, "Ticket success created", Toast.LENGTH_LONG).show();
+                                    finish();
+                                } else {
+                                    Toast.makeText(CreateIssueActivity.this, "Error", Toast.LENGTH_LONG).show();
                                 }
-                            });
+                                showProgress(false);
+                            }
+                        });
                 }
             }
         });
