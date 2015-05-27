@@ -72,6 +72,8 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         setContentView(R.layout.activity_login);
         TopButtonService.close(this);
         initViews();
+
+        TopButtonService.start(this);
     }
 
     @Override

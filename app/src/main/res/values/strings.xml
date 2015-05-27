@@ -156,5 +156,6 @@
     <string name="dialog_label_checkbox">Don\'t show again</string>
     <string name="dialog_button_text">OK</string>
     <string name="label_close_app">Close Amtt</string>
+    <string name="label_show_steps">Show recorded steps</string>
 
 </resources>

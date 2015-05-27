@@ -24,6 +24,7 @@ import amtt.epam.com.amtt.app.MainActivity;
 import amtt.epam.com.amtt.database.task.DataBaseCallback;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
+import amtt.epam.com.amtt.topbutton.view.TopButtonBarView;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
 /**
@@ -97,7 +98,7 @@ public class TopButtonService extends Service implements DataBaseCallback {
         xInitPosition = displayMetrics.widthPixels / 2;
         yInitPosition = displayMetrics.heightPixels / 2;
         initLayoutParams();
-        view = new TopButtonView(getBaseContext(), layoutParams);
+        view = new TopButtonView(getBaseContext(), layoutParams, new TopButtonBarView(getBaseContext()));
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), SCREENSHOTS_DIR_NAME);
 //        File file = new File(Environment.getExternalStoragePublicDirectory("DCIM"), SCREENSHOTS_DIR_NAME);
         file.mkdirs();

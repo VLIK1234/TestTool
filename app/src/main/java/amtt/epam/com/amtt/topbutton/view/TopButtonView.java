@@ -15,13 +15,8 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -41,6 +36,7 @@ import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
+import amtt.epam.com.amtt.util.UIUtil;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
@@ -80,10 +76,12 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
     private TopUnitView cancelRecordView;
     private TopUnitView mCloseApp;
 
+    private final TopButtonBarView mButtonBar;
+
     //Database fields
     private static int sStepNumber; //responsible for steps ordering in database
 
-    public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
+    public TopButtonView(Context context, WindowManager.LayoutParams layoutParams, TopButtonBarView buttonBarView) {
         super(context);
         initComponent();
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -92,6 +90,8 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
         this.layoutParams = layoutParams;
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
+
+        mButtonBar = buttonBarView;
     }
 
     @Override
@@ -111,7 +111,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
         startRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), R.drawable.background_start_record, new ITouchAction() {
             @Override
             public void TouchAction() {
-                TopButtonView.setStartRecord(true);
+                isRecordStarted = true;
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
             }
         });
@@ -188,7 +188,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
         cancelRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), R.drawable.background_stop_record, new ITouchAction() {
             @Override
             public void TouchAction() {
-                TopButtonView.setStartRecord(false);
+                isRecordStarted = false;
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
             }
         });
@@ -201,35 +201,16 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
     }
 
     private void checkFreeSpace() {
-        RelativeLayout.LayoutParams topButtonLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            buttonsBar.setOrientation(LinearLayout.HORIZONTAL);
-            topButtonLayoutParams.addRule(RelativeLayout.RIGHT_OF, mainButton.getId());
-            buttonsBar.setLayoutParams(topButtonLayoutParams);
-        } else {
-            buttonsBar.setOrientation(LinearLayout.VERTICAL);
-            topButtonLayoutParams.addRule(RelativeLayout.BELOW, mainButton.getId());
-            buttonsBar.setLayoutParams(topButtonLayoutParams);
+        if (layoutParams.x + mButtonBar.getWidth() > metrics.widthPixels) {
+            layoutParams.x =  metrics.widthPixels - buttonsBar.getWidth();
         }
-
-        ViewTreeObserver viewTreeObserver = buttonsBar.getViewTreeObserver();
-        viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            public boolean onPreDraw() {
-                buttonsBar.getViewTreeObserver().removeOnPreDrawListener(this);
-                if (layoutParams.x + buttonsBar.getWidth() > metrics.widthPixels) {
-                    layoutParams.x -= (layoutParams.x + buttonsBar.getWidth() - metrics.widthPixels);
-                    windowManager.updateViewLayout(TopButtonView.this, layoutParams);
-                }
-                if (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
-                    layoutParams.y -= (layoutParams.y + mainButton.getHeight() + buttonsBar.getHeight() - metrics.heightPixels + getStatusBarHeight());
-                    windowManager.updateViewLayout(TopButtonView.this, layoutParams);
-                }
-                return true;
-            }
-        });
-
+        if (layoutParams.y + mainButton.getHeight() + mButtonBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
+            layoutParams.y = metrics.heightPixels - mainButton.getHeight() - mButtonBar.getHeight() - getStatusBarHeight();
+            mButtonBar.setAbove(layoutParams.x, layoutParams.y);
+        } else {
+            mButtonBar.setBelow(layoutParams.x, layoutParams.y + mainButton.getHeight());
+        }
+        windowManager.updateViewLayout(TopButtonView.this, layoutParams);
     }
 
     private void savePositionAfterTurnScreen() {
@@ -311,62 +292,65 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
                     boolean tap = Math.abs(totalDeltaX) < threshold
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
-                        if (buttonsBar.getVisibility() == VISIBLE) {
+                        if (mButtonBar.getVisibility() == VISIBLE) {
+                            mButtonBar.setVisibility(GONE);
                             playRotateAnimationMainButton(300, 180, 0);
-                            final Animation translateUp = AnimationUtils.loadAnimation(getContext(), R.anim.abc_fade_out);
-                            translateUp.setAnimationListener(new Animation.AnimationListener() {
-                                @Override
-                                public void onAnimationStart(Animation animation) {
-                                    Animation translateMainButton = new TranslateAnimation(0, xButton - layoutParams.x, 0, yButton - layoutParams.y);
-                                    translateMainButton.setDuration(300);
-                                    translateMainButton.setInterpolator(new DecelerateInterpolator());
-                                    translateMainButton.setAnimationListener(new Animation.AnimationListener() {
-                                        @Override
-                                        public void onAnimationStart(Animation animation) {
-
-                                        }
-
-                                        @Override
-                                        public void onAnimationEnd(Animation animation) {
-                                            layoutParams.x = xButton;
-                                            layoutParams.y = yButton;
-                                            windowManager.updateViewLayout(TopButtonView.this, layoutParams);
-                                        }
-
-                                        @Override
-                                        public void onAnimationRepeat(Animation animation) {
-
-                                        }
-                                    });
-                                    topButtonLayout.startAnimation(translateMainButton);
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animation animation) {
-                                    buttonsBar.setVisibility(GONE);
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animation animation) {
-
-                                }
-                            });
-                            buttonsBar.startAnimation(translateUp);
+//                            final Animation translateUp = AnimationUtils.loadAnimation(getContext(), R.anim.abc_fade_out);
+//                            translateUp.setAnimationListener(new Animation.AnimationListener() {
+//                                @Override
+//                                public void onAnimationStart(Animation animation) {
+//                                    Animation translateMainButton = new TranslateAnimation(0, xButton - layoutParams.x, 0, yButton - layoutParams.y);
+//                                    translateMainButton.setDuration(300);
+//                                    translateMainButton.setInterpolator(new DecelerateInterpolator());
+//                                    translateMainButton.setAnimationListener(new Animation.AnimationListener() {
+//                                        @Override
+//                                        public void onAnimationStart(Animation animation) {
+//
+//                                        }
+//
+//                                        @Override
+//                                        public void onAnimationEnd(Animation animation) {
+//                                            layoutParams.x = xButton;
+//                                            layoutParams.y = yButton;
+//                                            windowManager.updateViewLayout(TopButtonView.this, layoutParams);
+//                                        }
+//
+//                                        @Override
+//                                        public void onAnimationRepeat(Animation animation) {
+//
+//                                        }
+//                                    });
+//                                    topButtonLayout.startAnimation(translateMainButton);
+//                                }
+//
+//                                @Override
+//                                public void onAnimationEnd(Animation animation) {
+//                                    buttonsBar.setVisibility(GONE);
+//                                }
+//
+//                                @Override
+//                                public void onAnimationRepeat(Animation animation) {
+//
+//                                }
+//                            });
+//                            buttonsBar.startAnimation(translateUp);
 
                         } else {
-                            if (!isRecordStarted) {
-                                startRecordState();
-                            } else {
-                                cancelRecordState();
-                            }
-                            buttonsBar.setVisibility(VISIBLE);
-                            xButton = layoutParams.x;
-                            yButton = layoutParams.y;
+                            mButtonBar.setVisibility(VISIBLE);
+//                            if (!isRecordStarted) {
+//                                startRecordState();
+//                            } else {
+//                                cancelRecordState();
+//                            }
+//                            buttonsBar.setVisibility(VISIBLE);
+//                            xButton = layoutParams.x;
+//                            yButton = layoutParams.y;
                             playRotateAnimationMainButton(300, 0, 180);
-                            Animation translate = AnimationUtils.loadAnimation(getContext(), R.anim.translate);
-                            buttonsBar.startAnimation(translate);
-                            checkFreeSpace();
+//                            Animation translate = AnimationUtils.loadAnimation(getContext(), R.anim.translate);
+//                            buttonsBar.startAnimation(translate);
+
                         }
+                        checkFreeSpace();
                     }
                 }
                 break;
@@ -438,10 +422,6 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
     @Override
     public void onDataBaseRequestError(Exception e) {
         Toast.makeText(getContext(), R.string.database_operation_error, Toast.LENGTH_SHORT).show();
-    }
-
-    public static void setStartRecord(boolean isStartRecord) {
-        TopButtonView.isRecordStarted = isStartRecord;
     }
 
     public static boolean getStartRecord() {
