@@ -1,12 +1,12 @@
 package amtt.epam.com.amtt.ticket;
 
 import amtt.epam.com.amtt.observer.AmttFileObserver;
+import amtt.epam.com.amtt.util.Logger;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -41,22 +41,18 @@ public class AttachmentService extends Service {
             String action = intent.getAction();
             switch (action) {
                 case ACTION_START:
-                    JiraContent.getInstance().getRecentIssueKey(new JiraGetContentCallback<String>() {
-                        @Override
-                        public void resultOfDataLoading(String result) {
-                            if (result != null) {
-                                attachFile(result, AmttFileObserver.getImageArray());
-                            }
-                        }
-                    });
+                    checkIssueKey();
+                    Logger.d(TAG, ACTION_START);
                     break;
                 case ACTION_CLOSE:
                     Bundle extra = intent.getExtras();
-                    if (extra!=null) {
-                       if(extra.getBoolean(RESULT)){
-                           stopSelf();
-                       }
+                    if (extra != null) {
+                        if (extra.getBoolean(RESULT)) {
+                            stopSelf();
+                            Logger.d(TAG, String.valueOf(extra.getBoolean(RESULT)));
+                        }
                     }
+                    Logger.d(TAG, ACTION_CLOSE);
                     break;
             }
         } else {
@@ -65,10 +61,15 @@ public class AttachmentService extends Service {
         return START_NOT_STICKY;
     }
 
-    @Override
-    public void onDestroy()
-    {
-
+    private void checkIssueKey() {
+        JiraContent.getInstance().getRecentIssueKey(new JiraGetContentCallback<String>() {
+            @Override
+            public void resultOfDataLoading(String result) {
+                if (result != null) {
+                    attachFile(result, AmttFileObserver.getImageArray());
+                }
+            }
+        });
     }
 
     public static void start(Context context) {
