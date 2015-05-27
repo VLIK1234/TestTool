@@ -304,7 +304,6 @@ public class CreateIssueActivity extends BaseActivity {
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.listScreens);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(CreateIssueActivity.this));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setHasFixedSize(true);
         ScreenshotAdapter mAdapter = new ScreenshotAdapter(ScreenshotManager.getInstance().getCountries(), R.layout.item_screenshot, CreateIssueActivity.this);
         mRecyclerView.setAdapter(mAdapter);
     }

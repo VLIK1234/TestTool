@@ -1,8 +1,7 @@
 package amtt.epam.com.amtt.ticket;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,11 +31,10 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
         return new ViewHolder(v);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Screenshot screenshot = screenshots.get(i);
         viewHolder.screenshotName.setText(screenshot.name);
-        viewHolder.screenshotImage.setImageDrawable(mContext.getDrawable(screenshot.getImageResourceId(mContext)));
+        viewHolder.screenshotImage.setImageURI(Uri.parse(screenshot.imageName));
     }
 
     @Override
