@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 public class GsonSerializeProcessor<T> implements Processor<String, T> {
 
     @Override
-    public String process(T inputObject) throws Exception {
+    public String process(T inputObject){
         Gson gson = amtt.epam.com.amtt.processing.Gson.getInstance();
         String issue = null;
         try {

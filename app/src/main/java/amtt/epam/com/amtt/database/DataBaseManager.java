@@ -53,9 +53,9 @@ public class DataBaseManager extends SQLiteOpenHelper {
                 db.execSQL(((Table) table.newInstance()).getCreateQuery());
             }
         } catch (IllegalAccessException e) {
-            //ignored
+            e.printStackTrace();
         } catch (InstantiationException e) {
-            //ignored
+            e.printStackTrace();
         }
     }
 
@@ -65,9 +65,9 @@ public class DataBaseManager extends SQLiteOpenHelper {
                 db.execSQL(BaseColumns.DROP + ((Table) table.newInstance()).getTableName());
             }
         } catch (IllegalAccessException e) {
-            //ignored
+            e.printStackTrace();
         } catch (InstantiationException e) {
-            //ignored
+            e.printStackTrace();
         }
     }
 

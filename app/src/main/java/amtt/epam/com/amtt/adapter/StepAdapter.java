@@ -2,6 +2,9 @@ package amtt.epam.com.amtt.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.hardware.display.DisplayManager;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +17,7 @@ import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
 import amtt.epam.com.amtt.loader.InternalStorageImageLoader;
+import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
  * Created by Artsiom_Kaliaha on 31.03.2015.
@@ -44,6 +48,9 @@ public class StepAdapter extends CursorAdapter {
 
         ViewHolder vh = new ViewHolder();
         vh.mImageView = (ImageView) view.findViewById(R.id.screenshot_image);
+        vh.mImageView.setAdjustViewBounds(true);
+        vh.mImageView.setMaxWidth(180);
+        vh.mImageView.setMaxHeight(320);
         vh.mActivityInfo = (TextView) view.findViewById(R.id.activity_info_text);
         vh.mStep = (TextView) view.findViewById(R.id.step_text);
         view.setTag(vh);
@@ -73,7 +80,9 @@ public class StepAdapter extends CursorAdapter {
         vh.mActivityInfo.setText(activityInfo);
         vh.mStep.setText(context.getString(R.string.label_step) + cursor.getString(cursor.getColumnIndex(StepsWithMetaTable._ID)));
 
-        setBitmap(vh.mImageView, cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH)));
+        if (cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH))!=null) {
+            setBitmap(vh.mImageView, cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH)));
+        }
     }
 
     private void setBitmap(ImageView imageView, String path) {

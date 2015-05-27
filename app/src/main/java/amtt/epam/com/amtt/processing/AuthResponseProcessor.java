@@ -9,8 +9,10 @@ import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthenticationException;
 import org.apache.http.protocol.HTTP;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 import amtt.epam.com.amtt.bo.auth.AuthResponse;
 import amtt.epam.com.amtt.bo.auth.AuthResponseDeserializer;
@@ -22,7 +24,7 @@ import amtt.epam.com.amtt.util.IOUtils;
 public class AuthResponseProcessor implements Processor<String, HttpEntity> {
 
     @Override
-    public String process(HttpEntity httpEntity) throws Exception {
+    public String process(HttpEntity httpEntity){
         InputStream content = null;
         InputStreamReader inputStreamReader = null;
         try {
@@ -33,6 +35,12 @@ public class AuthResponseProcessor implements Processor<String, HttpEntity> {
                     .create();
             AuthResponse authResponse = gson.fromJson(inputStreamReader, AuthResponse.class);
             return authResponse.getPrettyResponse();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         } finally {
             IOUtils.close(content, inputStreamReader);
         }
