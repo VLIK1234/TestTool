@@ -41,7 +41,6 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     private TextView mDisplayName;
     private TextView mTimeZone;
     private TextView mLocale;
-    private ActiveUser mUser;
     private ImageView mUserImage;
 
     @Override
@@ -112,14 +111,6 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         mLocale.setText(user.getLocale());
     }
 
-    private void updateUserInfo(JUserInfo user) {
-        try {
-            DbObjectManger.INSTANCE.addOrUpdate(user);
-        } catch (Exception e) {
-
-        }
-    }
-
     //Callback
     //Loader
     @Override
@@ -134,7 +125,6 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mUser = ActiveUser.getInstance();
         JUserInfo userInfo = new JUserInfo(data);
         populateUserInfo(userInfo);
         CoreApplication.getImageLoader().displayImage(userInfo.getAvatarUrls().getAvatarUrl(), mUserImage);
@@ -156,7 +146,6 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
             JUserInfo user = restResponse.getResultObject();
             populateUserInfo(user);
-            updateUserInfo(user);
             showProgress(false);
         }
     }
