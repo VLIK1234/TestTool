@@ -23,7 +23,7 @@ import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.dao.Dao;
+import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -41,7 +41,6 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     private TextView mDisplayName;
     private TextView mTimeZone;
     private TextView mLocale;
-    private ActiveUser mUser;
     private ImageView mUserImage;
 
     @Override
@@ -112,14 +111,6 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         mLocale.setText(user.getLocale());
     }
 
-    private void updateUserInfo(JUserInfo user) {
-        try {
-            new Dao().addOrUpdate(user);
-        } catch (Exception e) {
-
-        }
-    }
-
     //Callback
     //Loader
     @Override
@@ -134,7 +125,6 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mUser = ActiveUser.getInstance();
         JUserInfo userInfo = new JUserInfo(data);
         populateUserInfo(userInfo);
         CoreApplication.getImageLoader().displayImage(userInfo.getAvatarUrls().getAvatarUrl(), mUserImage);
@@ -156,7 +146,6 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
             JUserInfo user = restResponse.getResultObject();
             populateUserInfo(user);
-            updateUserInfo(user);
             showProgress(false);
         }
     }

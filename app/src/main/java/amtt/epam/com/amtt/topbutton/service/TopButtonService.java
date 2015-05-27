@@ -22,8 +22,6 @@ import android.view.WindowManager;
 import java.io.File;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.database.task.DataBaseCallback;
-import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.app.MainActivity;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
@@ -32,7 +30,7 @@ import amtt.epam.com.amtt.util.ContextHolder;
 /**
  * Created by Ivan_Bakach on 20.03.2015.
  */
-public class TopButtonService extends Service implements DataBaseCallback {
+public class TopButtonService extends Service{
 
     public static final String ACTION_START = "SHOW";
     public static final String ACTION_CLOSE = "CLOSE";
@@ -40,7 +38,6 @@ public class TopButtonService extends Service implements DataBaseCallback {
     public static final int ID = 7;
     //don't use REQUEST_CODE = 0 - it's broke action in notification for some device
     public static final int REQUEST_CODE = 1;
-    public static final String ACTION_AUTH_SUCCESS = "AUTHORIZATION_SUCCESS";
     public static final String ACTION_SHOW_SCREEN = "SHOW_SCREEN";
     public static final String ACTION_HIDE_VIEW = "HIDE_VIEW";
     public static final String ACTION_SHOW_VIEW = "SHOW_VIEW";
@@ -84,10 +81,6 @@ public class TopButtonService extends Service implements DataBaseCallback {
 
     public static void close(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE));
-    }
-
-    public static void authSuccess(Context context) {
-        context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_AUTH_SUCCESS));
     }
 
     public static ComponentName getTopActivity() {
@@ -140,9 +133,6 @@ public class TopButtonService extends Service implements DataBaseCallback {
                 case ACTION_SHOW_VIEW:
                     changeStateNotificationAction();
                     break;
-                case ACTION_AUTH_SUCCESS:
-//                    changeUiAuthSuccess();
-                    break;
                 case ACTION_SHOW_SCREEN:
                     Bundle extra = intent.getExtras();
                     if (extra!=null) {
@@ -182,16 +172,6 @@ public class TopButtonService extends Service implements DataBaseCallback {
         stopSelf();
     }
 
-//Delete after create logic with choose user activity and start service after authorization success
-//    private void changeUiAuthSuccess(){
-//        view.buttonAuth.setText(R.string.label_logout);
-//        view.buttonAuth.setTextColor(getResources().getColor(R.color.red));
-//        view.buttonBugRep.setEnabled(true);
-//        view.buttonUserInfo.setEnabled(true);
-//        view.layoutUserInfo.setClickable(true);
-//        view.layoutBugRep.setClickable(true);
-//    }
-
     private void showNotification() {
         builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification)
@@ -220,6 +200,7 @@ public class TopButtonService extends Service implements DataBaseCallback {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (view.getVisibility() == View.VISIBLE) {
             view.setVisibility(View.GONE);
+            view.buttonsBar.setVisibility(View.GONE);
             action.icon = R.drawable.ic_stat_action_visibility;
             action.title = getString(R.string.label_show);
             notificationManager.notify(ID, builder.build());
@@ -229,14 +210,5 @@ public class TopButtonService extends Service implements DataBaseCallback {
             action.title = getString(R.string.label_hide);
             notificationManager.notify(ID, builder.build());
         }
-    }
-
-    @Override
-    public void onDataBaseRequestPerformed(DataBaseResponse dataBaseResponse) {
-    }
-
-    @Override
-    public void onDataBaseRequestError(Exception e) {
-
     }
 }

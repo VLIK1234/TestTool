@@ -26,7 +26,6 @@
         app:et_labelTextColor="@drawable/color_label"
         app:et_supportMode="helperWithError"
         app:et_supportTextErrorColor="#FFFF0000"
-        android:layout_below="@+id/user_name"
         android:paddingTop="8dp"/>
     <!-- *******USER NAME END***************************************************-->
 

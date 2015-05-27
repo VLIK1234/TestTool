@@ -4,7 +4,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
@@ -27,29 +26,29 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.HelpDialogActivity;
+import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
-import amtt.epam.com.amtt.database.task.DataBaseCRUD;
-import amtt.epam.com.amtt.database.task.DataBaseCallback;
-import amtt.epam.com.amtt.database.task.DataBaseMethod;
-import amtt.epam.com.amtt.database.task.DataBaseTask;
-import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
+import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.ActivityMetaUtil;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
  */
-public class TopButtonView extends FrameLayout implements DataBaseCallback {
+public class TopButtonView extends FrameLayout{
 
     private final static String LOG_TAG = "TAG";
 
     private WindowManager windowManager;
     private WindowManager.LayoutParams layoutParams;
-    private LinearLayout buttonsBar;
+    public LinearLayout buttonsBar;
     public ImageButton mainButton;
     private DisplayMetrics metrics;
     private int currentOrientation;
@@ -108,6 +107,8 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(true);
+                StepUtil.buildStepCleaning();
+                StepUtil.buildActivityMetaCleaning();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
             }
         });
@@ -138,20 +139,9 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
             @Override
             public void TouchAction() {
                 try {
-                    DataBaseMethod<Void> activityMetaSaving = DataBaseCRUD.getInstance().buildActivityMetaSaving();
-                    new DataBaseTask.Builder()
-                            .setCallback(TopButtonView.this)
-                            .setMethod(activityMetaSaving)
-                            .createAndExecute();
-                    DataBaseMethod<Void> stepSaving = DataBaseCRUD.getInstance().buildStepSaving(++sStepNumber);
-                    new DataBaseTask.Builder()
-                            .setCallback(TopButtonView.this)
-                            .setMethod(stepSaving)
-                            .createAndExecute();
+                    StepUtil.buildActivityMetaSaving(ActivityMetaUtil.createMeta());
                 } catch (NameNotFoundException e) {
                     Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    Toast.makeText(getContext(), R.string.screenshot_saving_error, Toast.LENGTH_SHORT).show();
                 }
                 Intent intentHideView = new Intent(getContext(), TopButtonService.class).setAction(TopButtonService.ACTION_HIDE_VIEW);
                 intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -165,27 +155,36 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
         activityInfoView = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), new ITouchAction() {
             @Override
             public void TouchAction() {
-                String topActivityName = "Not found";
-                try {
-                    topActivityName = getContext().getPackageManager()
-                            .getActivityInfo(TopButtonService.getTopActivity(), PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS).name;
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-                Toast.makeText(getContext(), topActivityName, Toast.LENGTH_SHORT).show();
-//                InfoActivity.callInfoActivity(TopButtonService.getTopActivity());
+                ScheduledExecutorService worker =
+                        Executors.newSingleThreadScheduledExecutor();
+                Runnable task = new Runnable() {
+                    public void run() {
+                        try {
+                            StepUtil.buildActivityMetaSaving(ActivityMetaUtil.createMeta());
+                        } catch (NameNotFoundException e) {
+                            Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
+                        }
+                        StepUtil.buildStepSaving(ActivityMetaUtil.getTopActivityComponent(), null);
+                    }
+                };
+                worker.schedule(task, 1, TimeUnit.SECONDS);
             }
         });
         stepView = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), new ITouchAction() {
             @Override
             public void TouchAction() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot) + " Vova what will be here?", Toast.LENGTH_LONG).show();
+                Intent intentStep = new Intent(getContext(), StepsActivity.class);
+                intentStep.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intentStep);
             }
         });
         cancelRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), new ITouchAction() {
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(false);
+                StepUtil.buildStepCleaning();
+                StepUtil.buildActivityMetaCleaning();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
             }
         });
@@ -420,16 +419,6 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
             super.draw(canvas);
             canvas.restore();
         }
-    }
-
-    @Override
-    public void onDataBaseRequestPerformed(DataBaseResponse dataBaseResponse) {
-        Toast.makeText(getContext(), R.string.data_base_action_done, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onDataBaseRequestError(Exception e) {
-        Toast.makeText(getContext(), R.string.database_operation_error, Toast.LENGTH_SHORT).show();
     }
 
     public static void setStartRecord(boolean isStartRecord) {

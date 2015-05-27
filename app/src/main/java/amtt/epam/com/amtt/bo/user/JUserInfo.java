@@ -8,14 +8,14 @@ import com.google.gson.annotations.SerializedName;
 
 import amtt.epam.com.amtt.bo.issue.JAvatarUrls;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.dao.DatabaseEntity;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.UsersTable;
 
 /**
  * Created by Iryna_Monchanka on 3/31/2015.
  */
 
-public class JUserInfo extends DatabaseEntity {
+public class JUserInfo extends DatabaseEntity<JUserInfo> {
 
     @SerializedName("key")
     private String mKey;
@@ -66,6 +66,11 @@ public class JUserInfo extends DatabaseEntity {
         this.mDisplayName = displayName;
         this.mTimeZone = timeZone;
         this.mLocale = locale;
+    }
+
+    @Override
+    public JUserInfo parse(Cursor cursor) {
+        return new JUserInfo(cursor);
     }
 
     public String getKey() {
