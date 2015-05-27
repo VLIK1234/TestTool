@@ -7,6 +7,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -100,14 +101,19 @@ public class JiraApi {
         return mMethod;
     }
 
-    public RestMethod buildAttachmentCreating(final String issueKey, String fullfilename){
+    public RestMethod buildAttachmentCreating(final String issueKey, ArrayList<String> fullfilename){
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
-        File fileToUpload = new File(fullfilename);
-        HttpEntity postEntity = MultipartEntityBuilder.create()
-                .addBinaryBody("file", fileToUpload, ContentType.create("image/jpeg"), fileToUpload.getName())
-                .build();
+        HttpEntity postEntity;
+        MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
+        for (int i = 0; i < fullfilename.size(); i++) {
+           String file =  fullfilename.get(i);
+            File fileToUpload = new File(file);
+            multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("image/jpeg"),
+                fileToUpload.getName());
+        }
+       postEntity = multipartEntityBuilder.build();
             mMethod = new RestMethod.Builder<Void>()
                     .setType(RestMethodType.POST)
                     .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)

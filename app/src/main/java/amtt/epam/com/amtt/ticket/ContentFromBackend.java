@@ -10,6 +10,8 @@ import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.bo.*;
 import amtt.epam.com.amtt.processing.*;
 
+import java.util.ArrayList;
+
 /**
  @author Iryna Monchanka
  @version on 15.05.2015
@@ -161,7 +163,7 @@ public class ContentFromBackend {
     }
 
     @SuppressWarnings("unchecked")
-    public void sendAttachmentAsynchronously(String issueKey, String fullFileName, final ContentLoadingCallback<Boolean> contentLoadingCallback,
+    public void sendAttachmentAsynchronously(String issueKey, ArrayList<String> fullFileName, final ContentLoadingCallback<Boolean> contentLoadingCallback,
                                              final JiraGetContentCallback<Boolean> jiraGetContentCallback) {
         RestMethod<JProjectsResponse> sendAttachment = JiraApi.getInstance().buildAttachmentCreating(issueKey, fullFileName);
         new JiraTask.Builder<JProjectsResponse>()

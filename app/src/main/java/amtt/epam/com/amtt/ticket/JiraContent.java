@@ -212,7 +212,7 @@ public class JiraContent{
     }
 
     @SuppressWarnings("unchecked")
-    public void sendAttachment(String issueKey, String fullFileName,
+    public void sendAttachment(String issueKey, ArrayList<String> fullFileName,
                             final JiraGetContentCallback<Boolean> jiraGetContentCallback) {
         ContentFromBackend.getInstance().sendAttachmentAsynchronously(issueKey, fullFileName, new ContentLoadingCallback<Boolean>() {
             @Override

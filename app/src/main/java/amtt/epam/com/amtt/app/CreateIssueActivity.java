@@ -260,7 +260,7 @@ public class CreateIssueActivity extends BaseActivity {
                                         @Override
                                         public void resultOfDataLoading(String result) {
                                             if (result != null) {
-                                                attachFile(result, AmttFileObserver.getImageArray().get(1));
+                                                attachFile(result, AmttFileObserver.getImageArray());
                                             }
                                         }
                                     });
@@ -336,7 +336,7 @@ public class CreateIssueActivity extends BaseActivity {
         });
     }
 
-    public void attachFile(String issueKey, String fileFullName) {
+    public void attachFile(String issueKey, ArrayList<String> fileFullName) {
         showProgress(true);
         Logger.d(TAG, AmttFileObserver.getImageArray().get(0));
         JiraContent.getInstance().sendAttachment(issueKey, fileFullName, new JiraGetContentCallback<Boolean>() {
