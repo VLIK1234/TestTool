@@ -3,12 +3,7 @@ package amtt.epam.com.amtt.app;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
-import amtt.epam.com.amtt.observer.AmttFileObserver;
-import amtt.epam.com.amtt.ticket.JiraContent;
-import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
-import amtt.epam.com.amtt.ticket.ScreenshotAdapter;
-import amtt.epam.com.amtt.ticket.ScreenshotManager;
-import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.ticket.*;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
 import amtt.epam.com.amtt.view.EditText;
 import amtt.epam.com.amtt.view.SpinnerProgress;
@@ -256,14 +251,7 @@ public class CreateIssueActivity extends BaseActivity {
                             @Override
                             public void resultOfDataLoading(JCreateIssueResponse result) {
                                 if (result != null) {
-                                    JiraContent.getInstance().getRecentIssueKey(new JiraGetContentCallback<String>() {
-                                        @Override
-                                        public void resultOfDataLoading(String result) {
-                                            if (result != null) {
-                                                attachFile(result, AmttFileObserver.getImageArray());
-                                            }
-                                        }
-                                    });
+                                    AttachmentService.start(CreateIssueActivity.this);
                                     Toast.makeText(CreateIssueActivity.this, "Ticket success created", Toast.LENGTH_LONG).show();
                                     finish();
                                 } else {
@@ -332,18 +320,6 @@ public class CreateIssueActivity extends BaseActivity {
                     mAssignableAutocompleteView.showProgress(false);
                     mAssignableAutocompleteView.setEnabled(true);
                 }
-            }
-        });
-    }
-
-    public void attachFile(String issueKey, ArrayList<String> fileFullName) {
-        showProgress(true);
-        Logger.d(TAG, AmttFileObserver.getImageArray().get(0));
-        JiraContent.getInstance().sendAttachment(issueKey, fileFullName, new JiraGetContentCallback<Boolean>() {
-            @Override
-            public void resultOfDataLoading(Boolean result) {
-                Toast.makeText(CreateIssueActivity.this, result.toString(), Toast.LENGTH_LONG).show();
-                showProgress(false);
             }
         });
     }
