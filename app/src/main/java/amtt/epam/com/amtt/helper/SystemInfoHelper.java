@@ -39,6 +39,7 @@ public class SystemInfoHelper {
         String deviceInfo = "---Device info---"
                 + StringHelper.format("System info", getNameVersionSystem() + ", API version - "+Build.VERSION.SDK_INT)
                 + StringHelper.format("Device", Build.BRAND.toUpperCase() +" "+ Build.MODEL.toUpperCase())
+                + StringHelper.format("Baseband version", Build.getRadioVersion())
                 + StringHelper.format("Display", getInfoSizeDisplay());
 
         return deviceInfo;
