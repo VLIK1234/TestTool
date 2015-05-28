@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.helper.StringHelper;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.util.ContextHolder;
 

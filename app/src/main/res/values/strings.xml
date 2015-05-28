@@ -155,6 +155,7 @@
     <string name="dialog_description">To make screenshot please use next combination button for your device - </string>
     <string name="dialog_label_checkbox">Don\'t show again</string>
     <string name="dialog_button_text">OK</string>
+    <string name="label_close_app">Close Amtt</string>
     <string name="nexus_help_message">\nNexus - volume down+power</string>
     <string name="samsung_help_message">\nSamsung - power+home</string>
     <string name="htc_help_message">\nHTC - power+home</string>

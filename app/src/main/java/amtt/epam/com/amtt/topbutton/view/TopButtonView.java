@@ -14,6 +14,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -62,9 +63,10 @@ public class TopButtonView extends FrameLayout{
     public boolean moving;
     private int xButton = 0;
     private int yButton = 0;
+    private static final int threshold = 10;
 
     private RelativeLayout topButtonLayout;
-    private static boolean isStartRecord = false;
+    private static boolean isRecordStarted = false;
 
     private TopUnitView startRecordView;
     private TopUnitView createTicketView;
@@ -74,6 +76,7 @@ public class TopButtonView extends FrameLayout{
     private TopUnitView activityInfoView;
     private TopUnitView stepView;
     private TopUnitView cancelRecordView;
+    private TopUnitView mCloseApp;
 
     //Database fields
     private static int sStepNumber; //responsible for steps ordering in database
@@ -103,7 +106,7 @@ public class TopButtonView extends FrameLayout{
         mainButton = (ImageButton) findViewById(R.id.main_button);
         buttonsBar.setOrientation(LinearLayout.VERTICAL);
         buttonsBar.setVisibility(GONE);
-        startRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), new ITouchAction() {
+        startRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), R.drawable.background_start_record, new ITouchAction() {
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(true);
@@ -112,7 +115,7 @@ public class TopButtonView extends FrameLayout{
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
             }
         });
-        createTicketView = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), new ITouchAction() {
+        createTicketView = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), R.drawable.background_create_ticket, new ITouchAction() {
             @Override
             public void TouchAction() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket), Toast.LENGTH_LONG).show();
@@ -121,7 +124,7 @@ public class TopButtonView extends FrameLayout{
                 getContext().getApplicationContext().startActivity(intentTicket);
             }
         });
-        openAmttView = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), new ITouchAction() {
+        openAmttView = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), R.drawable.background_user_info, new ITouchAction() {
             @Override
             public void TouchAction() {
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
@@ -129,13 +132,13 @@ public class TopButtonView extends FrameLayout{
                 getContext().getApplicationContext().startActivity(userInfoIntent);
             }
         });
-        expectedResultView = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), new ITouchAction() {
+        expectedResultView = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result) + " Vova what will be here?", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result), Toast.LENGTH_LONG).show();
             }
         });
-        screenshotView = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), new ITouchAction() {
+        screenshotView = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), R.drawable.background_take_screenshot, new ITouchAction() {
             @Override
             public void TouchAction() {
                 try {
@@ -152,7 +155,7 @@ public class TopButtonView extends FrameLayout{
                 getContext().getApplicationContext().startActivity(intentHelp);
             }
         });
-        activityInfoView = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), new ITouchAction() {
+        activityInfoView = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info),R.drawable.background_activity_info, new ITouchAction() {
             @Override
             public void TouchAction() {
                 ScheduledExecutorService worker =
@@ -170,7 +173,7 @@ public class TopButtonView extends FrameLayout{
                 worker.schedule(task, 1, TimeUnit.SECONDS);
             }
         });
-        stepView = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), new ITouchAction() {
+        stepView = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), R.drawable.background_add_step, new ITouchAction() {
             @Override
             public void TouchAction() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot) + " Vova what will be here?", Toast.LENGTH_LONG).show();
@@ -179,13 +182,19 @@ public class TopButtonView extends FrameLayout{
                 getContext().getApplicationContext().startActivity(intentStep);
             }
         });
-        cancelRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), new ITouchAction() {
+        cancelRecordView = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), R.drawable.background_stop_record, new ITouchAction() {
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(false);
                 StepUtil.buildStepCleaning();
                 StepUtil.buildActivityMetaCleaning();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
+            }
+        });
+        mCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.label_close_app), R.drawable.background_close, new ITouchAction() {
+            @Override
+            public void TouchAction() {
+                TopButtonService.close(getContext());
             }
         });
     }
@@ -253,7 +262,6 @@ public class TopButtonView extends FrameLayout{
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int threshold = 10;
         int totalDeltaX = lastX - firstX;
         int totalDeltaY = lastY - firstY;
 
@@ -345,7 +353,7 @@ public class TopButtonView extends FrameLayout{
                             buttonsBar.startAnimation(translateUp);
 
                         } else {
-                            if (!getStartRecord()) {
+                            if (!isRecordStarted) {
                                 startRecordState();
                             } else {
                                 cancelRecordState();
@@ -422,11 +430,11 @@ public class TopButtonView extends FrameLayout{
     }
 
     public static void setStartRecord(boolean isStartRecord) {
-        TopButtonView.isStartRecord = isStartRecord;
+        TopButtonView.isRecordStarted = isStartRecord;
     }
 
     public static boolean getStartRecord() {
-        return isStartRecord;
+        return isRecordStarted;
     }
 
     public void startRecordState() {
@@ -435,6 +443,7 @@ public class TopButtonView extends FrameLayout{
         buttonsBar.addView(createTicketView);
         buttonsBar.addView(expectedResultView);
         buttonsBar.addView(openAmttView);
+        buttonsBar.addView(mCloseApp);
     }
 
     public void cancelRecordState() {
@@ -447,4 +456,5 @@ public class TopButtonView extends FrameLayout{
         buttonsBar.addView(cancelRecordView);
         buttonsBar.addView(openAmttView);
     }
+
 }
