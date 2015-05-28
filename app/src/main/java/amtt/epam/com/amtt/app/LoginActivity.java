@@ -166,7 +166,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
 
             @Override
             public void onError(Exception e) {
-
             }
         });
     }

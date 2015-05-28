@@ -13,8 +13,7 @@
                 android:left="@dimen/margin_background_circle"
                 android:right="@dimen/margin_background_circle"
                 android:top="@dimen/margin_background_circle" />
-            <solid android:color="@color/blue_grey" />
-
+            <solid android:color="@color/primary" />
         </shape>
     </item>
 </layer-list>
