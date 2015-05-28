@@ -40,14 +40,14 @@ public class InfoActivity extends BaseActivity {
         TextView infoTextView = (TextView) findViewById(R.id.info);
         infoTextView.setText("---Activity info---");
         infoTextView.append(getReceivedInfoAboutActivity());
-        infoTextView.append(StringHelper.format("Internet status", SystemInfoHelper.getIntenetStatus()));
+        infoTextView.append(String.format(SystemInfoHelper.TEMPLATE,"Internet status", SystemInfoHelper.getIntenetStatus()));
     }
 
     public String getReceivedInfoAboutActivity() {
         Bundle extras = getIntent().getExtras();
         String out = "";
         if (extras != null) {
-            out += (StringHelper.format(ACTIVITY_NAME, extras.getString(ACTIVITY_NAME)));
+            out += (String.format(SystemInfoHelper.TEMPLATE, ACTIVITY_NAME, extras.getString(ACTIVITY_NAME)));
         }
         return out;
     }

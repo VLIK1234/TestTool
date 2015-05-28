@@ -8,9 +8,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import java.util.regex.Pattern;
-
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.helper.HelpTakeScreen;
 import amtt.epam.com.amtt.helper.StringHelper;
 
 /**
@@ -42,17 +41,20 @@ public class HelpDialogActivity extends Activity {
             }
         });
     }
-    private String getMessageForCurrentDevice(){
-        if (StringHelper.containsInsensetive(Build.MODEL, "Nexus")){
-            return "\nNexus - volume down+power";
-        }else if (StringHelper.containsInsensetive(Build.BRAND, "samsung")){
-            return "\nSamsung - power+home";
-        }else if (StringHelper.containsInsensetive(Build.BRAND, "HTC")) {
-            return "\nHTC - power+home";
-        }else if (StringHelper.containsInsensetive(Build.BRAND, "Xiaomi")) {
-            return "\nXiaomi tablet - power+options \nXiaomi phone - volume down+power ";
-        }else{
-            return "\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nXiaomi phone - volume down+power \nHTC - power+home";
+    private String getMessageForCurrentDevice() {
+        if (Build.MODEL.equalsIgnoreCase(HelpTakeScreen.Constants.NEXUS)) {
+            return HelpTakeScreen.NEXUS.getValue();
+        } else {
+            switch (Build.BRAND.toUpperCase()){
+                case HelpTakeScreen.Constants.SAMSUNG:
+                    return HelpTakeScreen.SAMSUNG.getValue();
+                case HelpTakeScreen.Constants.HTC:
+                    return HelpTakeScreen.HTC.getValue();
+                case HelpTakeScreen.Constants.XIAOMI:
+                    return HelpTakeScreen.XIAOMI.getValue();
+                default:
+                    return HelpTakeScreen.ALL.getValue();
+            }
         }
     }
 }

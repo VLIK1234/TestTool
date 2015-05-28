@@ -23,13 +23,15 @@ public class SystemInfoHelper {
     public static final String API_SDK = "API SDK=";
     public static final String DPI = "dpi";
 
+    public static String TEMPLATE = "\n%s: %s";
+
     public static String getAppInfo(){
         String appInfo = "";
 
         try {
             final PackageInfo packageInfo =  ContextHolder.getContext().getPackageManager().getPackageInfo(ContextHolder.getContext().getPackageName(), 0);
-            appInfo += StringHelper.format("Version app", packageInfo.versionName);
-            appInfo += StringHelper.format("Name", ContextHolder.getContext().getResources().getString(packageInfo.applicationInfo.labelRes));
+            appInfo += String.format(TEMPLATE, "Version app", packageInfo.versionName);
+            appInfo += String.format(TEMPLATE, "Name", ContextHolder.getContext().getResources().getString(packageInfo.applicationInfo.labelRes));
         } catch (final PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -38,10 +40,10 @@ public class SystemInfoHelper {
 
     public static String getDeviceOsInfo(){
         String deviceInfo = "---Device info---"
-                + StringHelper.format("OS", getSystemVersionName())
-                + StringHelper.format("Device", Build.BRAND.toUpperCase() +" "+ Build.MODEL.toUpperCase())
-                + StringHelper.format("Baseband version", Build.getRadioVersion())
-                + StringHelper.format("Display", getInfoSizeDisplay());
+                + String.format(TEMPLATE, "OS", getSystemVersionName())
+                + String.format(TEMPLATE, "Device", Build.BRAND.toUpperCase() +" "+ Build.MODEL.toUpperCase())
+                + String.format(TEMPLATE, "Baseband version", Build.getRadioVersion())
+                + String.format(TEMPLATE, "Display", getInfoSizeDisplay());
 
         return deviceInfo;
 
