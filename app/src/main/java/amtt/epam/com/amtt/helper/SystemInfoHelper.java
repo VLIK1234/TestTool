@@ -3,9 +3,15 @@ package amtt.epam.com.amtt.helper;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.WindowManager;
+
+import java.lang.reflect.Field;
 
 import amtt.epam.com.amtt.util.ContextHolder;
 
@@ -14,13 +20,18 @@ import amtt.epam.com.amtt.util.ContextHolder;
  */
 public class SystemInfoHelper {
 
+    public static final String API_SDK = "API SDK=";
+    public static final String DPI = "dpi";
+
+    public static String TEMPLATE = "\n%s: %s";
+
     public static String getAppInfo(){
         String appInfo = "";
 
         try {
             final PackageInfo packageInfo =  ContextHolder.getContext().getPackageManager().getPackageInfo(ContextHolder.getContext().getPackageName(), 0);
-            appInfo += StringFormatHelper.format("Version app", packageInfo.versionName);
-            appInfo += StringFormatHelper.format("Name", ContextHolder.getContext().getResources().getString(packageInfo.applicationInfo.labelRes));
+            appInfo += String.format(TEMPLATE, "Version app", packageInfo.versionName);
+            appInfo += String.format(TEMPLATE, "Name", ContextHolder.getContext().getResources().getString(packageInfo.applicationInfo.labelRes));
         } catch (final PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -29,41 +40,70 @@ public class SystemInfoHelper {
 
     public static String getDeviceOsInfo(){
         String deviceInfo = "---Device info---"
-                + StringFormatHelper.format("Version", Build.VERSION.SDK_INT)
-                + StringFormatHelper.format("Board", Build.BOARD)
-                + StringFormatHelper.format("Brand", Build.BRAND)
-                + getCompatAbi()
-                + StringFormatHelper.format("Display", Build.DISPLAY)
-                + StringFormatHelper.format("Device", Build.DEVICE)
-                + StringFormatHelper.format("Fingerprint", Build.FINGERPRINT)
-                + StringFormatHelper.format("Id", Build.ID)
-                + StringFormatHelper.format("Manufacturer", Build.MANUFACTURER)
-                + StringFormatHelper.format("Model", Build.MODEL)
-                + StringFormatHelper.format("Product", Build.PRODUCT);
-        String systemProperties = "\n\n---System properties---"
-                + StringFormatHelper.format("Bootloader", Build.BOOTLOADER)
-                + StringFormatHelper.format("Hardware", Build.HARDWARE)
-                + StringFormatHelper.format("Radio firmware", Build.getRadioVersion())
-                + StringFormatHelper.format("Serial number", Build.SERIAL)
-                + StringFormatHelper.format("Build type", Build.TYPE);
+                + String.format(TEMPLATE, "OS", getSystemVersionName())
+                + String.format(TEMPLATE, "Device", Build.BRAND.toUpperCase() +" "+ Build.MODEL.toUpperCase())
+                + String.format(TEMPLATE, "Baseband version", Build.getRadioVersion())
+                + String.format(TEMPLATE, "Display", getInfoSizeDisplay());
 
-        return deviceInfo + systemProperties;
+        return deviceInfo;
 
-    }
-
-    public static String getCompatAbi() {
-        if (Build.VERSION.SDK_INT<Build.VERSION_CODES.LOLLIPOP) {
-            return StringFormatHelper.format("Cpu Abi", Build.CPU_ABI)+StringFormatHelper.format("Cpu Abi2", Build.CPU_ABI2);
-        }else{
-            return StringFormatHelper.format("Supported abis", Build.SUPPORTED_ABIS)
-                    +StringFormatHelper.format("Supported 32 bit abis", Build.SUPPORTED_32_BIT_ABIS)
-                    +StringFormatHelper.format("Supported 64 bit abis", Build.SUPPORTED_64_BIT_ABIS);
-        }
     }
 
     public static String getIntenetStatus(){
         return isOnline()? "Connection active": "Connection non active";
     }
+
+    public static String getInfoSizeDisplay(){
+        WindowManager wm = (WindowManager) ContextHolder.getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        DisplayMetrics metrics = ContextHolder.getContext().getResources().getDisplayMetrics();
+
+        StringBuilder infoDensity = new StringBuilder();
+
+        Field[] fields = DisplayMetrics.class.getFields();
+        for (Field field : fields) {
+            String fieldName = field.getName();
+            int fieldValue = -1;
+
+            try {
+                fieldValue = field.getInt(new Object());
+            } catch (IllegalArgumentException | IllegalAccessException | NullPointerException e) {
+                e.printStackTrace();
+            }
+
+            if (fieldValue == metrics.densityDpi&&!fieldName.equals("DENSITY_DEVICE")) {
+                infoDensity.append(" ").append(fieldName).append(", ");
+                infoDensity.append(fieldValue).append(DPI);
+            }
+        }
+        return size.x+ " x "+size.y + infoDensity.toString();
+    }
+
+    public static String getSystemVersionName() {
+        StringBuilder versionName = new StringBuilder();
+        versionName.append("Android ").append(Build.VERSION.RELEASE);
+
+        int fieldValue = -1;
+        Field[] fields = Build.VERSION_CODES.class.getFields();
+        for (Field field : fields) {
+            String fieldName = field.getName();
+
+            try {
+                fieldValue = field.getInt(new Object());
+            } catch (IllegalArgumentException | IllegalAccessException | NullPointerException e) {
+                e.printStackTrace();
+            }
+
+            if (fieldValue == Build.VERSION.SDK_INT) {
+                versionName.append(" ").append(fieldName).append(", ");
+            }
+        }
+        versionName.append(API_SDK).append(fieldValue);
+        return versionName.toString();
+    }
+
 
     public static boolean isOnline() {
         ConnectivityManager cm =

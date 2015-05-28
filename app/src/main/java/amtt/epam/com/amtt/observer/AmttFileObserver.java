@@ -1,8 +1,10 @@
 package amtt.epam.com.amtt.observer;
 
+import android.content.pm.PackageManager;
 import android.os.FileObserver;
 import android.util.Log;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import amtt.epam.com.amtt.util.ActivityMetaUtil;
+import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
@@ -51,8 +55,9 @@ public class AmttFileObserver extends FileObserver {
                 final String createPath = path;
                 Runnable task = new Runnable() {
                     public void run() {
-                        TopButtonService.sendActionShowScreenInGallery(absolutePath + "/" + createPath);
-                        TopButtonService.sendActionShowBotton();
+                        StepUtil.buildStepSaving(ActivityMetaUtil.getTopActivityComponent(), absolutePath + "/" + createPath);
+//                        TopButtonService.sendActionScreenshot(absolutePath + "/" + createPath);
+                        TopButtonService.sendActionShowButton();
                     }
                 };
                 worker.schedule(task, 1, TimeUnit.SECONDS);
@@ -121,7 +126,7 @@ public class AmttFileObserver extends FileObserver {
         return false;
     }
 
-    public ArrayList<String> getImageArray() {
+    public static ArrayList<String> getImageArray() {
         return imageArray;
     }
 }
