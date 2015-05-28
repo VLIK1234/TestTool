@@ -80,14 +80,11 @@ public class AttachmentService extends Service {
         JiraContent.getInstance().sendAttachment(issueKey, fileFullName, new JiraGetContentCallback<Boolean>() {
             @Override
             public void resultOfDataLoading(Boolean result) {
-                sendActionScreenshot(result);
+                if (result) {
+                    //add notification
+                }
+                stopSelf();
             }
         });
-    }
-
-    public static void sendActionScreenshot(Boolean result){
-        Intent intent = new Intent(context, AttachmentService.class).setAction(ACTION_CLOSE);
-        intent.putExtra(RESULT, result);
-        context.startService(intent);
     }
 }

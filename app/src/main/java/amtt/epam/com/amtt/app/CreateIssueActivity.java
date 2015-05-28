@@ -278,11 +278,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
         mAssignableAutocompleteView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() > 2) {
-                    mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
-                    mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s.toString()), 750);
-                    mAssignableUserName = s.toString();
-                }
+
             }
 
             @Override
@@ -291,6 +287,11 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 2) {
+                    mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
+                    mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
+                    mAssignableUserName = s.toString();
+                }
             }
         });
     }
