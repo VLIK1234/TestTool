@@ -20,7 +20,8 @@ import amtt.epam.com.amtt.util.ContextHolder;
  */
 public class SystemInfoHelper {
 
-    public static final int LOLIPOP_MR1 = 22;
+    public static final String API_SDK = "API SDK=";
+    public static final String DPI = "dpi";
 
     public static String getAppInfo(){
         String appInfo = "";
@@ -37,7 +38,7 @@ public class SystemInfoHelper {
 
     public static String getDeviceOsInfo(){
         String deviceInfo = "---Device info---"
-                + StringHelper.format("System info", getNameVersionSystem() + ", API version - "+Build.VERSION.SDK_INT)
+                + StringHelper.format("OS", getSystemVersionName())
                 + StringHelper.format("Device", Build.BRAND.toUpperCase() +" "+ Build.MODEL.toUpperCase())
                 + StringHelper.format("Baseband version", Build.getRadioVersion())
                 + StringHelper.format("Display", getInfoSizeDisplay());
@@ -57,65 +58,50 @@ public class SystemInfoHelper {
         display.getSize(size);
         DisplayMetrics metrics = ContextHolder.getContext().getResources().getDisplayMetrics();
 
-        String dpiInfo = "";
-        switch (metrics.densityDpi) {
-            case DisplayMetrics.DENSITY_LOW:
-                dpiInfo = " ldpi, "+ DisplayMetrics.DENSITY_LOW +"dpi";break;
-            case DisplayMetrics.DENSITY_MEDIUM:
-                dpiInfo = " mdpi, "+ DisplayMetrics.DENSITY_MEDIUM +"dpi";break;
-            case DisplayMetrics.DENSITY_HIGH:
-                dpiInfo = " hdpi, "+ DisplayMetrics.DENSITY_HIGH +"dpi";break;
-            case DisplayMetrics.DENSITY_XHIGH:
-                dpiInfo = " xhdpi, "+ DisplayMetrics.DENSITY_XHIGH +"dpi";break;
-            case DisplayMetrics.DENSITY_400:
-                dpiInfo = " xhdpi, "+ DisplayMetrics.DENSITY_400 +"dpi";break;
-            case DisplayMetrics.DENSITY_XXHIGH:
-                dpiInfo = " xxhdpi, "+ DisplayMetrics.DENSITY_XXHIGH +"dpi";break;
-            case DisplayMetrics.DENSITY_560:
-                dpiInfo = " xxxhdpi, "+ DisplayMetrics.DENSITY_560 +"dpi";break;
-            case DisplayMetrics.DENSITY_XXXHIGH:
-                dpiInfo = " xxxhdpi, "+ DisplayMetrics.DENSITY_XXXHIGH +"dpi";break;
-        }
+        StringBuilder infoDensity = new StringBuilder();
 
-        return size.x+ " x "+size.y + dpiInfo;
+        Field[] fields = DisplayMetrics.class.getFields();
+        for (Field field : fields) {
+            String fieldName = field.getName();
+            int fieldValue = -1;
+
+            try {
+                fieldValue = field.getInt(new Object());
+            } catch (IllegalArgumentException | IllegalAccessException | NullPointerException e) {
+                e.printStackTrace();
+            }
+
+            if (fieldValue == metrics.densityDpi&&!fieldName.equals("DENSITY_DEVICE")) {
+                infoDensity.append(" ").append(fieldName).append(", ");
+                infoDensity.append(fieldValue).append(DPI);
+            }
+        }
+        return size.x+ " x "+size.y + infoDensity.toString();
     }
 
-    public static String getNameVersionSystem() {
-        switch (Build.VERSION.SDK_INT) {
-            case Build.VERSION_CODES.FROYO:
-                return "Android 2.2 Froyo";
-            case Build.VERSION_CODES.GINGERBREAD:
-                return "Android 2.3 Gingerbread";
-            case Build.VERSION_CODES.GINGERBREAD_MR1:
-                return "Android 2.3.3 Gingerbread";
-            case Build.VERSION_CODES.HONEYCOMB:
-                return "Android 3.0 Honeycomb";
-            case Build.VERSION_CODES.HONEYCOMB_MR1:
-                return "Android 3.1 Honeycomb";
-            case Build.VERSION_CODES.HONEYCOMB_MR2:
-                return "Android 3.2 Honeycomb";
-            case Build.VERSION_CODES.ICE_CREAM_SANDWICH:
-                return "Android 4.0 Ice cream sandwich";
-            case Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1:
-                return "Android 4.0.3 Ice cream sandwich";
-            case Build.VERSION_CODES.JELLY_BEAN:
-                return "Android 4.1 Jelly bean";
-            case Build.VERSION_CODES.JELLY_BEAN_MR1:
-                return "Android 4.2 Jelly bean";
-            case Build.VERSION_CODES.JELLY_BEAN_MR2:
-                return "Android 4.3 Jelly bean";
-            case Build.VERSION_CODES.KITKAT:
-                return "Android 4.4 Kitkat";
-            case Build.VERSION_CODES.KITKAT_WATCH:
-                return "Android 4.4W Kitkat for watches";
-            case Build.VERSION_CODES.LOLLIPOP:
-                return "Android 5.0 Lolipop";
-            case LOLIPOP_MR1:
-                return "Android 5.1 Lolipop";
-            default:
-                return "Android "+Build.VERSION_CODES.CUR_DEVELOPMENT+".0" + " A long time ago in a galaxy far, far away....";
+    public static String getSystemVersionName() {
+        StringBuilder versionName = new StringBuilder();
+        versionName.append("Android ").append(Build.VERSION.RELEASE);
+
+        int fieldValue = -1;
+        Field[] fields = Build.VERSION_CODES.class.getFields();
+        for (Field field : fields) {
+            String fieldName = field.getName();
+
+            try {
+                fieldValue = field.getInt(new Object());
+            } catch (IllegalArgumentException | IllegalAccessException | NullPointerException e) {
+                e.printStackTrace();
+            }
+
+            if (fieldValue == Build.VERSION.SDK_INT) {
+                versionName.append(" ").append(fieldName).append(", ");
+            }
         }
+        versionName.append(API_SDK).append(fieldValue);
+        return versionName.toString();
     }
+
 
     public static boolean isOnline() {
         ConnectivityManager cm =
