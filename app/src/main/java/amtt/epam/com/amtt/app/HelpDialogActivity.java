@@ -42,7 +42,7 @@ public class HelpDialogActivity extends Activity {
         });
     }
     private String getMessageForCurrentDevice() {
-        if (Build.MODEL.equalsIgnoreCase(HelpTakeScreen.Constants.NEXUS)) {
+        if (Build.MODEL.toUpperCase().contains(HelpTakeScreen.Constants.NEXUS.toUpperCase())) {
             return HelpTakeScreen.NEXUS.getValue();
         } else {
             switch (Build.BRAND.toUpperCase()){
