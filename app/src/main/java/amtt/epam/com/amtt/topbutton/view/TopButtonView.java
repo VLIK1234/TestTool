@@ -15,7 +15,6 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -36,7 +35,6 @@ import amtt.epam.com.amtt.database.task.DataBaseTask;
 import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
-import amtt.epam.com.amtt.util.UIUtil;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
@@ -76,7 +74,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
     private TopUnitView cancelRecordView;
     private TopUnitView mCloseApp;
 
-    private final TopButtonBarView mButtonBar;
+    private final TopButtonBarView mButtonsBar;
 
     //Database fields
     private static int sStepNumber; //responsible for steps ordering in database
@@ -91,7 +89,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
         widthProportion = (float) layoutParams.x / metrics.widthPixels;
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
 
-        mButtonBar = buttonBarView;
+        mButtonsBar = buttonBarView;
     }
 
     @Override
@@ -200,18 +198,18 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
         });
     }
 
-    private void checkFreeSpace() {
-        if (layoutParams.x + mButtonBar.getWidth() > metrics.widthPixels) {
-            layoutParams.x =  metrics.widthPixels - buttonsBar.getWidth();
-        }
-        if (layoutParams.y + mainButton.getHeight() + mButtonBar.getHeight() > metrics.heightPixels - getStatusBarHeight()) {
-            layoutParams.y = metrics.heightPixels - mainButton.getHeight() - mButtonBar.getHeight() - getStatusBarHeight();
-            mButtonBar.setAbove(layoutParams.x, layoutParams.y);
-        } else {
-            mButtonBar.setBelow(layoutParams.x, layoutParams.y + mainButton.getHeight());
-        }
-        windowManager.updateViewLayout(TopButtonView.this, layoutParams);
-    }
+//    private void checkFreeSpace() {
+//        if (layoutParams.x + mButtonsBar.getWidth() > metrics.widthPixels) {
+//            layoutParams.x = metrics.widthPixels - buttonsBar.getWidth();
+//        }
+//        if (layoutParams.y + mainButton.getHeight() + mButtonsBar.getLastHeight() > metrics.heightPixels - getStatusBarHeight()) {
+//            layoutParams.y = metrics.heightPixels - mButtonsBar.getLastHeight() - getStatusBarHeight();
+//            mButtonsBar.setAbove(layoutParams.x, layoutParams.y);
+//        } else {
+//            mButtonsBar.setBelow(layoutParams.x, layoutParams.y + mainButton.getHeight());
+//        }
+//        windowManager.updateViewLayout(TopButtonView.this, layoutParams);
+//    }
 
     private void savePositionAfterTurnScreen() {
         int overWidth;
@@ -269,20 +267,21 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
 
                     // update the position of the view
                     if (event.getPointerCount() == 1) {
-                        if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
+                        if ((layoutParams.x + mButtonsBar.getWidth() + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
                             layoutParams.x += deltaX;
                             xButton = layoutParams.x;
                         }
-                        if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
+                        if ((layoutParams.y + mButtonsBar.getHeight() + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - getStatusBarHeight())) {
                             layoutParams.y += deltaY;
                             yButton = layoutParams.y;
                         }
-
+                        mButtonsBar.move(layoutParams.x, layoutParams.y + mainButton.getHeight());
                         widthProportion = (float) layoutParams.x / metrics.widthPixels;
                         heightProportion = (float) layoutParams.y / metrics.heightPixels;
                     }
                     windowManager.updateViewLayout(this, layoutParams);
                 }
+                //checkFreeSpace();
                 break;
             case MotionEvent.ACTION_UP:
                 moving = false;
@@ -292,8 +291,8 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
                     boolean tap = Math.abs(totalDeltaX) < threshold
                             && Math.abs(totalDeltaY) < threshold;
                     if (tap) {
-                        if (mButtonBar.getVisibility() == VISIBLE) {
-                            mButtonBar.setVisibility(GONE);
+                        if (mButtonsBar.getVisibility() == VISIBLE) {
+                            mButtonsBar.hide();
                             playRotateAnimationMainButton(300, 180, 0);
 //                            final Animation translateUp = AnimationUtils.loadAnimation(getContext(), R.anim.abc_fade_out);
 //                            translateUp.setAnimationListener(new Animation.AnimationListener() {
@@ -336,7 +335,7 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
 //                            buttonsBar.startAnimation(translateUp);
 
                         } else {
-                            mButtonBar.setVisibility(VISIBLE);
+                            mButtonsBar.show(layoutParams.x, layoutParams.y, mainButton.getHeight());
 //                            if (!isRecordStarted) {
 //                                startRecordState();
 //                            } else {
@@ -350,9 +349,9 @@ public class TopButtonView extends FrameLayout implements DataBaseCallback {
 //                            buttonsBar.startAnimation(translate);
 
                         }
-                        checkFreeSpace();
                     }
                 }
+                //checkFreeSpace();
                 break;
         }
         return true;
