@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.helper.HelpTakeScreen;
-import amtt.epam.com.amtt.helper.StringHelper;
 
 /**
  * Created by Ivan_Bakach on 19.05.2015.
