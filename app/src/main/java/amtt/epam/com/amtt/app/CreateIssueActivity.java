@@ -4,6 +4,7 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.ticket.*;
+import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
 import amtt.epam.com.amtt.view.EditText;
 import amtt.epam.com.amtt.view.SpinnerProgress;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @SuppressWarnings("unchecked")
-public class CreateIssueActivity extends BaseActivity {
+public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapter.ViewHolder.ClickListener {
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_TEXT_CHANGED = 100;
@@ -41,6 +42,7 @@ public class CreateIssueActivity extends BaseActivity {
     private String mPriorityName;
     private String mVersionName;
     private AssigneeHandler mHandler;
+    private ScreenshotAdapter mAdapter;
 
     public static class AssigneeHandler extends Handler {
 
@@ -245,21 +247,21 @@ public class CreateIssueActivity extends BaseActivity {
                 if (isValid) {
                     showProgress(true);
                     JiraContent.getInstance().createIssue(mIssueTypeName,
-                        mPriorityName, mVersionName, mSummaryEditText.getText().toString(),
-                        mDescriptionEditText.getText().toString(), mEnvironmentEditText.getText().toString(),
-                        mAssignableUserName, new JiraGetContentCallback<JCreateIssueResponse>() {
-                            @Override
-                            public void resultOfDataLoading(JCreateIssueResponse result) {
-                                if (result != null) {
-                                    AttachmentService.start(CreateIssueActivity.this);
-                                    Toast.makeText(CreateIssueActivity.this, "Ticket success created", Toast.LENGTH_LONG).show();
-                                    finish();
-                                } else {
-                                    Toast.makeText(CreateIssueActivity.this, "Error", Toast.LENGTH_LONG).show();
+                            mPriorityName, mVersionName, mSummaryEditText.getText().toString(),
+                            mDescriptionEditText.getText().toString(), mEnvironmentEditText.getText().toString(),
+                            mAssignableUserName, new JiraGetContentCallback<JCreateIssueResponse>() {
+                                @Override
+                                public void resultOfDataLoading(JCreateIssueResponse result) {
+                                    if (result != null) {
+                                        AttachmentService.start(CreateIssueActivity.this);
+                                        Toast.makeText(CreateIssueActivity.this, "Ticket success created", Toast.LENGTH_LONG).show();
+                                        finish();
+                                    } else {
+                                        Toast.makeText(CreateIssueActivity.this, "Error", Toast.LENGTH_LONG).show();
+                                    }
+                                    showProgress(false);
                                 }
-                                showProgress(false);
-                            }
-                        });
+                            });
                 }
             }
         });
@@ -295,14 +297,12 @@ public class CreateIssueActivity extends BaseActivity {
 
     private void initAttachmentsView() {
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.listScreens);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CreateIssueActivity.this);
-        linearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
+        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(CreateIssueActivity.this);
+        mLinearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        ScreenshotAdapter mAdapter = new ScreenshotAdapter(ScreenshotManager.getInstance().getScreenshotList(), R.layout.item_screenshot);
+        mAdapter = new ScreenshotAdapter(ScreenshotManager.getInstance().getScreenshotList(), R.layout.item_screenshot, CreateIssueActivity.this);
         mRecyclerView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
-        mRecyclerView.refreshDrawableState();
     }
 
     private void setAssignableNames(String s) {
@@ -322,6 +322,12 @@ public class CreateIssueActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+        mAdapter.removeItem(position);
+        Logger.d(TAG, String.valueOf(position));
     }
 
 }

@@ -7,12 +7,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+@author Iryna Monchanka
+@version on 27.05.2015
+ */
+
 public class ScreenshotManager {
 
     private final String TAG = this.getClass().getSimpleName();
     private static ArrayList<String> screenArray;
     private static ScreenshotManager mInstance;
     private List<Screenshot> screenshotList;
+    private String screenPath;
 
     public static ScreenshotManager getInstance() {
         if (mInstance == null) {
@@ -23,7 +29,8 @@ public class ScreenshotManager {
 
     public void setScreenshotList() {
         screenArray = new ArrayList<>();
-        List<File> files = getListFiles(new File(Environment.getExternalStorageDirectory().getPath() + "/Pictures"));
+        screenPath = Environment.getExternalStorageDirectory().getPath();
+        List<File> files = getListFiles(new File( screenPath+ "/Pictures"));
         for (int i = 0; i < files.size(); i++) {
             File screenshot = files.get(i);
             screenArray.add(screenshot.getAbsolutePath());
@@ -54,7 +61,7 @@ public class ScreenshotManager {
             if (screenArray != null) {
                 for (int i = 0; i < screenArray.size(); i++) {
                     Screenshot screenshot = new Screenshot();
-                    screenshot.name = screenArray.get(i);
+                    screenshot.name = screenArray.get(i).replaceAll(screenPath + "/Pictures/Screenshots/", "/");
                     screenshot.imageName = screenArray.get(i);
                     screenshotList.add(screenshot);
                 }

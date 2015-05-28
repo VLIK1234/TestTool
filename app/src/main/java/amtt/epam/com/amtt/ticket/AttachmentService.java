@@ -11,8 +11,8 @@ import android.os.IBinder;
 import java.util.ArrayList;
 
 /**
- * @author Iryna Monchanka
- * @version on 27.05.2015
+ @author Iryna Monchanka
+ @version on 27.05.2015
  */
 
 public class AttachmentService extends Service {
@@ -74,10 +74,6 @@ public class AttachmentService extends Service {
 
     public static void start(Context context) {
         context.startService(new Intent(context, AttachmentService.class).setAction(ACTION_START));
-    }
-
-    public static void close(Context context) {
-        context.startService(new Intent(context, AttachmentService.class).setAction(ACTION_CLOSE));
     }
 
     public void attachFile(String issueKey, ArrayList<String> fileFullName) {

@@ -44,6 +44,9 @@ public class StepAdapter extends CursorAdapter {
 
         ViewHolder vh = new ViewHolder();
         vh.mImageView = (ImageView) view.findViewById(R.id.screenshot_image);
+        vh.mImageView.setAdjustViewBounds(true);
+        vh.mImageView.setMaxWidth(180);
+        vh.mImageView.setMaxHeight(320);
         vh.mActivityInfo = (TextView) view.findViewById(R.id.activity_info_text);
         vh.mStep = (TextView) view.findViewById(R.id.step_text);
         view.setTag(vh);
@@ -73,7 +76,9 @@ public class StepAdapter extends CursorAdapter {
         vh.mActivityInfo.setText(activityInfo);
         vh.mStep.setText(context.getString(R.string.label_step) + cursor.getString(cursor.getColumnIndex(StepsWithMetaTable._ID)));
 
-        setBitmap(vh.mImageView, cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH)));
+        if (cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH))!=null) {
+            setBitmap(vh.mImageView, cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH)));
+        }
     }
 
     private void setBitmap(ImageView imageView, String path) {
