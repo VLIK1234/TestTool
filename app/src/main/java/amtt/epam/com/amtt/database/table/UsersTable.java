@@ -12,6 +12,7 @@ public class UsersTable extends Table {
 
     public static final String TABLE_NAME = "users";
 
+    public static final String _CREDENTIALS = "_credentials";
     public static final String _USER_NAME = "_user_name";
     public static final String _DISPLAY_NAME = "_display_name";
     public static final String _TIME_ZONE = "_time_zone";
@@ -38,7 +39,8 @@ public class UsersTable extends Table {
             _AVATAR_16,
             _AVATAR_24,
             _AVATAR_32,
-            _AVATAR_48
+            _AVATAR_48,
+            _CREDENTIALS
     };
 
     static {
@@ -55,6 +57,7 @@ public class UsersTable extends Table {
             add(_AVATAR_24);
             add(_AVATAR_32);
             add(_AVATAR_48);
+            add(_CREDENTIALS);
         }});
         sColumnsMap.put(BaseColumns.TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);

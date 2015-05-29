@@ -1,96 +1,132 @@
 package amtt.epam.com.amtt.app;
 
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import com.crashlytics.android.Crashlytics;
-
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.crash.AmttExceptionHandler;
-import amtt.epam.com.amtt.fragment.CrashDialogFragment;
+import amtt.epam.com.amtt.bo.user.JUserInfo;
+import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.helper.SystemInfoHelper;
+import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.util.Logger;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.os.Bundle;
+import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends BaseActivity {
-//Spank
-    private String mCrashFilePath;
-    private static final String CRASH_DIALOG_TAG = "crash_dialog_tag";
+public class MainActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
+    private static final int SINGLE_USER_CURSOR_LOADER_ID = 2;
+    private final String TAG = this.getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
-        setContentView(R.layout.activity_main);
-
-        Button crashButton = (Button) findViewById(R.id.crash_button);
-        crashButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                throw new IllegalStateException("stakkato caused crash");
-            }
-        });
-
-        Thread.currentThread().setUncaughtExceptionHandler(new AmttExceptionHandler(this));
-
-        final Button showCrashInfoButton = (Button) findViewById(R.id.show_crash_info);
-        showCrashInfoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String rawString = loadCrashData();
-                if (rawString != null) {
-                    CrashDialogFragment crashDialogFragment = CrashDialogFragment.newInstance(rawString, mCrashFilePath);
-                    crashDialogFragment.show(getFragmentManager(), CRASH_DIALOG_TAG);
-                }
-            }
-        });
-
-        Button start = (Button) findViewById(R.id.start);
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TopButtonService.start(MainActivity.this);
-            }
-        });
-        Button close = (Button) findViewById(R.id.close);
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TopButtonService.close(MainActivity.this);
-            }
-        });
-
-        mCrashFilePath = getFilesDir().getPath() + "/crash.txt";
+        getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, MainActivity.this);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
-
-    }
-
-
-    private String loadCrashData() {
-        String rawString = null;
-        try {
-            rawString = IOUtils.loadStringFromInternalStorage(mCrashFilePath);
-        } catch (Exception e) {
-            Toast.makeText(MainActivity.this, R.string.lack_of_crashes_text, Toast.LENGTH_SHORT).show();
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        CursorLoader loader = null;
+        if (id == CURSOR_LOADER_ID) {
+            loader = new CursorLoader(MainActivity.this, AmttUri.USER.get(), null, null, null, null);
+        } else if (id == SINGLE_USER_CURSOR_LOADER_ID) {
+            loader = new CursorLoader(MainActivity.this,
+                AmttUri.USER.get(),
+                null,
+                UsersTable._ID + "=?",
+                new String[]{String.valueOf(args.getLong(AmttActivity.KEY_USER_ID))},
+                null);
         }
-        return rawString;
+        return loader;
     }
 
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        try {
+            switch (loader.getId()) {
+                case CURSOR_LOADER_ID:
+                    if (data != null) {
+                        if (data.getCount() > 1) {
+                            showAmttActivity();
+                        } else if (data.getCount() == 1) {
+                            setActiveUser(data);
+                        }
+                        else { Logger.d(TAG, String.valueOf(data.getCount()));
+                            showLoginActivity();}
+                    } else {
+                        showLoginActivity();
+                    }
+                    break;
+                case SINGLE_USER_CURSOR_LOADER_ID:
+                    setActiveUser(data);
+                    break;
+            }
+        } finally {
+            IOUtils.close(data);
+        }
+    }
+
+    private void setActiveUser(Cursor data) {
+        JUserInfo userInfo = new JUserInfo(data);
+        ActiveUser.getInstance().setUrl(userInfo.getUrl());
+        ActiveUser.getInstance().setCredentials(userInfo.getCredentials());
+        ActiveUser.getInstance().setId(userInfo.getId());
+        Logger.e(TAG, "ID " + userInfo.getId());
+        ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
+        Runnable task = new Runnable() {
+            public void run() {
+                JiraContent.getInstance().getPrioritiesNames(null);
+                JiraContent.getInstance().getProjectsNames(null);
+                JiraContent.getInstance().setEnvironment(SystemInfoHelper.getDeviceOsInfo());
+            }
+        };
+        worker.schedule(task, 1, TimeUnit.SECONDS);
+        TopButtonService.start(this);
+        finish();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Logger.d(TAG, "onLoaderReset");
+    }
+
+    private void showLoginActivity() {
+        Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(loginIntent);
+        finish();
+    }
+
+    private void showAmttActivity() {
+        startActivityForResult(new Intent(MainActivity.this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case AMTT_ACTIVITY_REQUEST_CODE:
+                    if (data != null) {
+                        Bundle args = new Bundle();
+                        long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
+                        args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
+                        getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, this);
+                    }
+                    break;
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            finish();
+        }
+    }
 }

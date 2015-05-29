@@ -1,9 +1,25 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.CoreApplication;
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.api.JiraApi;
+import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
+import amtt.epam.com.amtt.api.JiraTask;
+import amtt.epam.com.amtt.api.exception.AmttException;
+import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
+import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.processing.UserInfoProcessor;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.view.TextView;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -13,22 +29,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-
-import amtt.epam.com.amtt.CoreApplication;
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.api.JiraApi;
-import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.exception.AmttException;
-import amtt.epam.com.amtt.api.exception.ExceptionHandler;
-import amtt.epam.com.amtt.api.result.JiraOperationResult;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.object.DbObjectManger;
-import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.processing.UserInfoProcessor;
-import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.util.ActiveUser;
-import amtt.epam.com.amtt.view.TextView;
 
 /**
  * Created by Artsiom_Kaliaha on 07.05.2015.
@@ -42,6 +42,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     private TextView mTimeZone;
     private TextView mLocale;
     private ImageView mUserImage;
+    private final String TAG = this.getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,19 +116,33 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     //Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this,
+        CursorLoader loader = null;
+        loader = new CursorLoader(this,
                 AmttUri.USER.get(),
                 null,
                 UsersTable._ID + "=?",
                 new String[]{ String.valueOf(ActiveUser.getInstance().getId()) },
                 null);
+        return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        JUserInfo userInfo = new JUserInfo(data);
-        populateUserInfo(userInfo);
-        CoreApplication.getImageLoader().displayImage(userInfo.getAvatarUrls().getAvatarUrl(), mUserImage);
+        try {
+            if (data != null) {
+                if (data.getCount() > 0) {
+                    JUserInfo userInfo = new JUserInfo(data);
+                    populateUserInfo(userInfo);
+                    CoreApplication.getImageLoader().displayImage(userInfo.getAvatarUrls().getAvatarUrl(), mUserImage);
+                } else {
+                    Logger.d(TAG, "data==0");
+                }
+            } else {
+                Logger.d(TAG, "data==null");
+            }
+        } finally {
+            IOUtils.close(data);
+        }
     }
 
     @Override

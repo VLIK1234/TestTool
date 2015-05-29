@@ -137,6 +137,7 @@ public class RestMethod<ResultType> {
         try {
             httpPost.setEntity(new StringEntity(mPostEntity));
         } catch (UnsupportedEncodingException e) {
+            Logger.e(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }
         for (Map.Entry<String, String> keyValuePair : mHeaders.entrySet()) {
@@ -184,6 +185,7 @@ public class RestMethod<ResultType> {
                 restResponse.setResultObject(result);
             }
         } catch (Exception e) {
+            Logger.e(TAG, e.getMessage());
             throw prepareException(e, statusCode, entity);
         }
 
@@ -201,6 +203,7 @@ public class RestMethod<ResultType> {
         try {
             entityString = EntityUtils.toString(entity, HTTP.UTF_8);
         } catch (IOException entityParseException) {
+            Logger.e(TAG, e.getMessage());
             //TODO for reviewer: addSuppressed requires API19, project API is 14th
             //amttException.getSuppressedOne().addSuppressed(entityParseException);
             amttException.replaceSuppressedOne(entityParseException);
