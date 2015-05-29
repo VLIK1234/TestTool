@@ -5,7 +5,7 @@ package amtt.epam.com.amtt.ticket;
  @version on 27.05.2015
  */
 
-public class Screenshot {
+public class Attachment {
 
     public String name;
     public String imageName;

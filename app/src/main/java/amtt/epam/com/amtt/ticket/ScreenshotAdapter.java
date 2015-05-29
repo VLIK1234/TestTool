@@ -21,7 +21,7 @@ import amtt.epam.com.amtt.R;
 public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.ViewHolder>{
 
     private final String TAG = this.getClass().getSimpleName();
-    private List<Screenshot> screenshots;
+    private List<Attachment> screenshots;
     private int rowLayout;
     private static final InternalStorageImageLoader sImageLoader;
     public static final int IMAGE_VIEW_WIDTH = 360;
@@ -32,7 +32,7 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
         sImageLoader = new InternalStorageImageLoader(10, IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT);
     }
 
-        public ScreenshotAdapter(List<Screenshot> screenshots, int rowLayout, ViewHolder.ClickListener clickListener) {
+        public ScreenshotAdapter(List<Attachment> screenshots, int rowLayout, ViewHolder.ClickListener clickListener) {
         this.screenshots = screenshots;
         this.rowLayout = rowLayout;
         this.clickListener = clickListener;
@@ -47,7 +47,7 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
     }
 
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Screenshot screenshot = screenshots.get(i);
+        Attachment screenshot = screenshots.get(i);
         Logger.d(TAG, screenshot.name);
         viewHolder.screenshotName.setText(screenshot.name);
         sImageLoader.load(viewHolder.screenshotImage, screenshot.imageName);
@@ -59,7 +59,7 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
         return screenshots == null ? 0 : screenshots.size();
     }
 
-    public void addItem(int position, Screenshot data) {
+    public void addItem(int position, Attachment data) {
         screenshots.add(position, data);
         notifyItemInserted(position);
     }

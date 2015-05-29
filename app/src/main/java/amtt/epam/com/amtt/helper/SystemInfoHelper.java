@@ -69,7 +69,7 @@ public class SystemInfoHelper {
 
             try {
                 fieldValue = field.getInt(new Object());
-            } catch (IllegalArgumentException | IllegalAccessException | NullPointerException e) {
+            } catch (IllegalAccessException | NullPointerException e) {
                 e.printStackTrace();
             }
 
@@ -92,7 +92,7 @@ public class SystemInfoHelper {
 
             try {
                 fieldValue = field.getInt(new Object());
-            } catch (IllegalArgumentException | IllegalAccessException | NullPointerException e) {
+            } catch (IllegalAccessException | NullPointerException e) {
                 e.printStackTrace();
             }
 

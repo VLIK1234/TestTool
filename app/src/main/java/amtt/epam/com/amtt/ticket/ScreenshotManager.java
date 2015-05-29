@@ -17,7 +17,7 @@ public class ScreenshotManager {
     private final String TAG = this.getClass().getSimpleName();
     private static ArrayList<String> screenArray;
     private static ScreenshotManager mInstance;
-    private List<Screenshot> screenshotList;
+    private List<Attachment> screenshotList;
     private String screenPath;
 
     public static ScreenshotManager getInstance() {
@@ -54,13 +54,13 @@ public class ScreenshotManager {
         return inFiles;
     }
 
-    public List<Screenshot> getScreenshotList() {
+    public List<Attachment> getScreenshotList() {
         setScreenshotList();
         if (screenshotList == null) {
             screenshotList = new ArrayList<>();}
             if (screenArray != null) {
                 for (int i = 0; i < screenArray.size(); i++) {
-                    Screenshot screenshot = new Screenshot();
+                    Attachment screenshot = new Attachment();
                     screenshot.name = screenArray.get(i).replaceAll(screenPath + "/Pictures/Screenshots/", "/");
                     screenshot.imageName = screenArray.get(i);
                     screenshotList.add(screenshot);

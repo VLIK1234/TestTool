@@ -1,12 +1,16 @@
 package amtt.epam.com.amtt.ticket;
 
+import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.util.Logger;
+
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 
 import java.util.ArrayList;
 
@@ -21,17 +25,11 @@ public class AttachmentService extends Service {
     public static final String ACTION_CLOSE = "CLOSE";
     public static final String RESULT = "RESULT";
     private static final String TAG = "Log";
-    private static Context context;
+    public static final int NOTIFICATION_ATTACH_ID = 100;
 
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    @Override
-    public void onCreate()
-    {
-        context = getBaseContext();
     }
 
     @Override
@@ -80,9 +78,14 @@ public class AttachmentService extends Service {
         JiraContent.getInstance().sendAttachment(issueKey, fileFullName, new JiraGetContentCallback<Boolean>() {
             @Override
             public void resultOfDataLoading(Boolean result) {
-                if (result) {
-                    //add notification
-                }
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(getBaseContext())
+                        .setSmallIcon(R.drawable.ic_stat_action_done)
+                        .setContentTitle(getString(R.string.notification_attach_title))
+                        .setContentText(getString(R.string.notification_attachment_text))
+                        .setTicker(getString(R.string.notification_attach_title))
+                        .setAutoCancel(true);
+                NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                manager.notify(NOTIFICATION_ATTACH_ID, builder.build());
                 stopSelf();
             }
         });

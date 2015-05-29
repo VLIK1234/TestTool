@@ -145,6 +145,7 @@ public class RestMethod<ResultType> {
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IOException e) {
             Logger.e(TAG, e.getMessage());
+            e.printStackTrace();
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }
         return httpResponse;
@@ -163,8 +164,9 @@ public class RestMethod<ResultType> {
         }
 
         int statusCode = httpResponse.getStatusLine().getStatusCode();
-        if (mRestMethodType == RestMethodType.GET && statusCode != HttpStatus.SC_OK ||
-                mRestMethodType == RestMethodType.POST && statusCode != HttpStatus.SC_CREATED) {
+
+        if ((mRestMethodType == RestMethodType.GET && statusCode != HttpStatus.SC_OK) ||
+                (mRestMethodType == RestMethodType.POST && statusCode != HttpStatus.SC_CREATED)) {
             throw new AmttException(null, statusCode, this, null);
         }
 
@@ -178,6 +180,7 @@ public class RestMethod<ResultType> {
                 restResponse.setResultObject(result);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             throw prepareException(e, statusCode, entity);
         }
 
@@ -197,6 +200,7 @@ public class RestMethod<ResultType> {
         } catch (IOException entityParseException) {
             //TODO for reviewer: addSuppressed requires API19, project API is 14th
             //amttException.getSuppressedOne().addSuppressed(entityParseException);
+            e.printStackTrace();
             amttException.replaceSuppressedOne(entityParseException);
         }
         amttException.setEntity(entityString);
