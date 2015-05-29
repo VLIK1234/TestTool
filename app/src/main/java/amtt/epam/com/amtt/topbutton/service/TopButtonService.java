@@ -98,7 +98,7 @@ public class TopButtonService extends Service implements DataBaseCallback {
         xInitPosition = displayMetrics.widthPixels / 2;
         yInitPosition = displayMetrics.heightPixels / 2;
         initLayoutParams();
-        view = new TopButtonView(getBaseContext(), layoutParams, new TopButtonBarView(getBaseContext()));
+        view = new TopButtonView(getBaseContext(), layoutParams);
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), SCREENSHOTS_DIR_NAME);
 //        File file = new File(Environment.getExternalStoragePublicDirectory("DCIM"), SCREENSHOTS_DIR_NAME);
         file.mkdirs();

@@ -32,4 +32,8 @@ public final class UIUtil {
         return result;
     }
 
+    public static int getOrientation() {
+        return sContext.getResources().getConfiguration().orientation;
+    }
+
 }

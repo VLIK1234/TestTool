@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.topbutton.view;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.CardView;
@@ -12,19 +13,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.util.UIUtil;
 
 /**
  * Created by Ivan_Bakach on 11.05.2015.
  */
 public class TopUnitView extends LinearLayout {
 
-    private String title;
     private ITouchAction touchAction;
     private int mBackgroundIconId;
+    private CardView mCardView;
 
     public TopUnitView(Context context, String title, int backgroundIconId, ITouchAction touchAction) {
         super(context);
-        this.title = title;
         this.touchAction = touchAction;
         mBackgroundIconId = backgroundIconId;
         //Change when will be support landscape orientation
@@ -34,19 +35,17 @@ public class TopUnitView extends LinearLayout {
 //            Toast.makeText(context,"Wrong orientation! Set default value = HORIZONTAL",Toast.LENGTH_LONG).show();
 //        }
         setOrientation(HORIZONTAL);
-        this.setMargin((int) getResources().getDimension(R.dimen.margin_buttons_bar), 0, 0, 0);
+        setMargin((int) getResources().getDimension(R.dimen.margin_buttons_bar), 0, 0, 0);
         addView(getButton());
-        CardView cardView = new CardView(context);
-        LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        mCardView = new CardView(context);
+        LayoutParams params = new LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
-        cardView.setLayoutParams(params);
-        cardView.setUseCompatPadding(true);
-        cardView.setRadius((int) getResources().getDimension(R.dimen.card_corner_radius));
-        cardView.addView(getTextView(this.title));
-        cardView.setCardElevation((int) getResources().getDimension(R.dimen.card_elevation));
-//        addView(cardView);
+        mCardView.setLayoutParams(params);
+        mCardView.setUseCompatPadding(true);
+        mCardView.setRadius((int) getResources().getDimension(R.dimen.card_corner_radius));
+        mCardView.addView(getTextView(title));
+        mCardView.setCardElevation((int) getResources().getDimension(R.dimen.card_elevation));
+        addCardView();
     }
 
     private void setMargin(int left, int right, int top, int bottom) {
@@ -56,6 +55,14 @@ public class TopUnitView extends LinearLayout {
         );
         params.setMargins(left, top, right, bottom);
         this.setLayoutParams(params);
+    }
+
+    private void addCardView() {
+        if (UIUtil.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
+            addView(mCardView);
+        } else {
+            removeView(mCardView);
+        }
     }
 
     private void setBackgroundCompat(View view, Drawable drawable) {
@@ -93,11 +100,18 @@ public class TopUnitView extends LinearLayout {
         return super.onTouchEvent(event);
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (mCardView != null) {
+            if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                if (!mCardView.isShown()) {
+                    addView(mCardView);
+                }
+            } else {
+                removeView(mCardView);
+            }
+        }
     }
 
-    public String getTitle() {
-        return this.title;
-    }
 }

@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.topbutton.view.TopButtonBarView;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
 /**
@@ -44,7 +45,7 @@ public class AmttFileObserver extends FileObserver {
         if ((FileObserver.CREATE & event) != 0) {
             Log.d(TAG, absolutePath + "/" + path + " is created\n");
 
-            if (isNewScreenshot(path) && TopButtonView.getStartRecord()) {
+            if (isNewScreenshot(path) && TopButtonBarView.isRecordStarted()) {
                 imageArray.add(absolutePath + "/" + path);
                 ScheduledExecutorService worker =
                         Executors.newSingleThreadScheduledExecutor();

@@ -3,11 +3,15 @@ package amtt.epam.com.amtt.topbutton.view;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -35,7 +39,8 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
     private WindowManager.LayoutParams mLayout;
     private final WindowManager mWindowManager;
     private LinearLayout mButtonsBar;
-    private int mLastHeight;
+    private int mMainButtonHeight;
+    private int mMainButtonWidth;
 
     private TopUnitView mButtonStartRecord;
     private TopUnitView mButtonCreateTicket;
@@ -48,12 +53,18 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
     private TopUnitView mButtonShowSteps;
     private TopUnitView mButtonCloseApp;
 
-    private static int sStepNumber;
-    private boolean isRecordStarted = false;
+    private static int sStepNumber; //responsible for steps ordering in database
+    private static boolean isRecordStarted;
 
-    public TopButtonBarView(Context context) {
+    static {
+        isRecordStarted = false;
+    }
+
+    public TopButtonBarView(Context context, int mainButtonHeight, int mainButtonWidth) {
         super(context);
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        mMainButtonHeight = mainButtonHeight;
+        mMainButtonWidth = mainButtonWidth;
         initLayout();
         initButtonsBar();
         initButtonsHandlers();
@@ -80,7 +91,8 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
         mButtonStartRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), R.drawable.background_start_record, new ITouchAction() {
             @Override
             public void TouchAction() {
-                setRecordButtons();
+                isRecordStarted = true;
+                hide();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
             }
         });
@@ -162,7 +174,8 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
         mButtonStopRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), R.drawable.background_stop_record, new ITouchAction() {
             @Override
             public void TouchAction() {
-                setInitialButtons();
+                isRecordStarted = false;
+                hide();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
             }
         });
@@ -172,17 +185,6 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
                 TopButtonService.close(getContext());
             }
         });
-    }
-
-    //Database callback
-    @Override
-    public void onDataBaseRequestPerformed(DataBaseTask.DataBaseResponse dataBaseResponse) {
-        Toast.makeText(getContext(), R.string.data_base_action_done, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onDataBaseRequestError(Exception e) {
-        Toast.makeText(getContext(), R.string.database_operation_error, Toast.LENGTH_SHORT).show();
     }
 
     private void setInitialButtons() {
@@ -208,38 +210,54 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
         mWindowManager.updateViewLayout(this, mLayout);
     }
 
-    public void setVisibility(int visibility) {
-        if (UIUtil.isLandscape()) {
-            mButtonsBar.setOrientation(LinearLayout.HORIZONTAL);
-        } else {
-            mButtonsBar.setOrientation(LinearLayout.VERTICAL);
-        }
-        mButtonsBar.setVisibility(visibility);
-        mWindowManager.updateViewLayout(TopButtonBarView.this, mLayout);
-    }
 
-    public void setBelow(int x, int y) {
+    private void setBelow(int x, int y) {
         mLayout.x = x;
-        mLayout.y = y;
+        mLayout.y = y + mMainButtonHeight;
     }
 
-    public void setAbove(int x, int y) {
+    private void setAbove(int x, int y) {
         mLayout.x = x;
         mLayout.y = y - mButtonsBar.getHeight();
     }
 
-    public void show(final int x, final int y, final int mainButtonHeight) {
+    private void setOnTheLeft(int x, int y) {
+        mLayout.x = x - mButtonsBar.getWidth();
+        mLayout.y = y;
+    }
+
+    private void setOnTheRight(int x, int y) {
+        mLayout.x = x + mMainButtonWidth;
+        mLayout.y = y;
+    }
+
+    public void show(final int x, final int y) {
         mButtonsBar.setVisibility(VISIBLE);
-        ViewTreeObserver observer = mButtonsBar.getViewTreeObserver();
-        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        Animation fadeIn = AnimationUtils.loadAnimation(getContext(), R.anim.abc_fade_in);
+        mButtonsBar.startAnimation(fadeIn);
+        mButtonsBar.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
                 mButtonsBar.getViewTreeObserver().removeOnPreDrawListener(this);
-                mLayout.x = x;
-                if (y + mButtonsBar.getHeight() > UIUtil.getDisplayMetrics().heightPixels - UIUtil.getStatusBarHeight()) {
-                    setAbove(x, y);
+                if (isRecordStarted) {
+                    setRecordButtons();
                 } else {
-                    setBelow(x, y + mainButtonHeight);
+                    setInitialButtons();
+                }
+                if (UIUtil.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
+                    mButtonsBar.setOrientation(LinearLayout.VERTICAL);
+                    if (y + mButtonsBar.getHeight() > UIUtil.getDisplayMetrics().heightPixels - UIUtil.getStatusBarHeight()) {
+                        setAbove(x, y);
+                    } else {
+                        setBelow(x, y);
+                    }
+                } else {
+                    mButtonsBar.setOrientation(LinearLayout.HORIZONTAL);
+                    if (x + mButtonsBar.getWidth() > UIUtil.getDisplayMetrics().widthPixels) {
+                        setOnTheLeft(x, y);
+                    } else {
+                        setOnTheRight(x, y);
+                    }
                 }
                 mWindowManager.updateViewLayout(TopButtonBarView.this, mLayout);
                 return true;
@@ -248,15 +266,48 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
     }
 
     public void hide() {
-        mButtonsBar.setVisibility(GONE);
+        Animation translateUp = AnimationUtils.loadAnimation(getContext(), R.anim.abc_fade_out);
+        translateUp.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mButtonsBar.setVisibility(GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mButtonsBar.startAnimation(translateUp);
     }
 
     public void move(int x, int y) {
         if (mButtonsBar.getVisibility() == VISIBLE) {
-            mLayout.x = x;
-            mLayout.y = y;
+            if (UIUtil.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
+                mButtonsBar.setOrientation(LinearLayout.VERTICAL);
+                if (y + mButtonsBar.getHeight() > UIUtil.getDisplayMetrics().heightPixels - UIUtil.getStatusBarHeight()) {
+                    setAbove(x, y);
+                } else {
+                    setBelow(x, y);
+                }
+            } else {
+                mButtonsBar.setOrientation(LinearLayout.HORIZONTAL);
+                if (x + mButtonsBar.getWidth() > UIUtil.getDisplayMetrics().widthPixels) {
+                    setOnTheLeft(x, y);
+                } else {
+                    setOnTheRight(x, y);
+                }
+            }
             mWindowManager.updateViewLayout(this, mLayout);
         }
+    }
+
+    public static boolean isRecordStarted() {
+        return isRecordStarted;
     }
 
     @Override
@@ -267,5 +318,15 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
         return GONE;
     }
 
+    //Database callback
+    @Override
+    public void onDataBaseRequestPerformed(DataBaseTask.DataBaseResponse dataBaseResponse) {
+        Toast.makeText(getContext(), R.string.data_base_action_done, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDataBaseRequestError(Exception e) {
+        Toast.makeText(getContext(), R.string.database_operation_error, Toast.LENGTH_SHORT).show();
+    }
 
 }
