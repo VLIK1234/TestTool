@@ -161,7 +161,9 @@
     <string name="htc_help_message">\nHTC - power+home</string>
     <string name="xiaomi_help_message">\nXiaomi tablet - power+options \nXiaomi phone - volume down+power</string>
     <string name="all_help_message">\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nXiaomi phone - volume down+power \nHTC - power+home</string>
-    <string name="notification_attach_title">Sent done</string>
-    <string name="notification_attachment_text">Attachment sent successfully.</string>
+    <string name="notification_attach_title_done">Uploaded done</string>
+    <string name="notification_attachment_text_done">Uploaded successfully %s attached items.</string>
+    <string name="notification_attach_title_init">Uploading items</string>
+    <string name="notification_attachment_text_init">Uploading %s attached items.</string>
 
 </resources>

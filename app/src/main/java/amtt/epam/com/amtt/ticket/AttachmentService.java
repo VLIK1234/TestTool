@@ -4,7 +4,6 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.util.Logger;
 
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +24,6 @@ public class AttachmentService extends Service {
     public static final String ACTION_CLOSE = "CLOSE";
     public static final String RESULT = "RESULT";
     private static final String TAG = "Log";
-    public static final int NOTIFICATION_ATTACH_ID = 100;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -74,18 +72,13 @@ public class AttachmentService extends Service {
         context.startService(new Intent(context, AttachmentService.class).setAction(ACTION_START));
     }
 
-    public void attachFile(String issueKey, ArrayList<String> fileFullName) {
+    public void attachFile(final String issueKey, final ArrayList<String> fileFullName) {
+        AttachNotificationHelper.showNotification(getBaseContext(), AttachNotificationHelper.getInitBuilder(getBaseContext(), fileFullName.size()));
+        final int notificationId = AttachNotificationHelper.getCurrentNotificationId();
         JiraContent.getInstance().sendAttachment(issueKey, fileFullName, new JiraGetContentCallback<Boolean>() {
             @Override
             public void resultOfDataLoading(Boolean result) {
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(getBaseContext())
-                        .setSmallIcon(R.drawable.ic_stat_action_done)
-                        .setContentTitle(getString(R.string.notification_attach_title))
-                        .setContentText(getString(R.string.notification_attachment_text))
-                        .setTicker(getString(R.string.notification_attach_title))
-                        .setAutoCancel(true);
-                NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                manager.notify(NOTIFICATION_ATTACH_ID, builder.build());
+                AttachNotificationHelper.updateNotification(getBaseContext(), AttachNotificationHelper.getFinalBuilder(getBaseContext(), fileFullName.size()), notificationId);
                 stopSelf();
             }
         });

@@ -56,7 +56,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             CreateIssueActivity service = mActivity.get();
-            service.setAssignableNames((String) msg.obj);
+            service.setAssignableNames(msg.obj.toString());
         }
     }
 
