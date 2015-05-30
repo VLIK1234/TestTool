@@ -49,7 +49,7 @@ public class AttachNotificationHelper {
     }
 
     public static int getNotificationId() {
-        if (notificationId <= 5) {
+        if (notificationId < 5) {
             notificationId++;
             return notificationId;
         }else{
