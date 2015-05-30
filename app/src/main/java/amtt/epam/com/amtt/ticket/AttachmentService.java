@@ -1,17 +1,15 @@
 package amtt.epam.com.amtt.ticket;
 
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.observer.AmttFileObserver;
-import amtt.epam.com.amtt.util.Logger;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 
 import java.util.ArrayList;
+
+import amtt.epam.com.amtt.observer.AmttFileObserver;
+import amtt.epam.com.amtt.util.Logger;
 
 /**
  @author Iryna Monchanka
@@ -73,14 +71,17 @@ public class AttachmentService extends Service {
     }
 
     public void attachFile(final String issueKey, final ArrayList<String> fileFullName) {
-        AttachNotificationHelper.showNotification(getBaseContext(), AttachNotificationHelper.getInitBuilder(getBaseContext(), fileFullName.size()));
-        final int notificationId = AttachNotificationHelper.getCurrentNotificationId();
-        JiraContent.getInstance().sendAttachment(issueKey, fileFullName, new JiraGetContentCallback<Boolean>() {
-            @Override
-            public void resultOfDataLoading(Boolean result) {
-                AttachNotificationHelper.updateNotification(getBaseContext(), AttachNotificationHelper.getFinalBuilder(getBaseContext(), fileFullName.size()), notificationId);
-                stopSelf();
-            }
-        });
+        if (fileFullName.size()>0){
+            final int notificationId = AttachNotificationHelper.showNotification(getBaseContext(),
+                    AttachNotificationHelper.getInitBuilder(getBaseContext(), issueKey, fileFullName.size()));
+            JiraContent.getInstance().sendAttachment(issueKey, fileFullName, new JiraGetContentCallback<Boolean>() {
+                @Override
+                public void resultOfDataLoading(Boolean result) {
+                    AttachNotificationHelper.updateNotification(getBaseContext(),
+                            AttachNotificationHelper.getFinalBuilder(getBaseContext(), issueKey, fileFullName.size()), notificationId);
+                    stopSelf();
+                }
+            });
+        }
     }
 }
