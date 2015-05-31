@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.app;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
+import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.ticket.*;
 import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapter.ViewHolder.ClickListener {
@@ -43,6 +45,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     private String mVersionName;
     private AssigneeHandler mHandler;
     private ScreenshotAdapter mAdapter;
+    private ArrayList<String> listScreenshot;
 
     public static class AssigneeHandler extends Handler {
 
@@ -65,6 +68,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
         mHandler = new AssigneeHandler(this);
+        listScreenshot = (ArrayList<String>) AmttFileObserver.getImageArray().clone();
         initViews();
     }
 
@@ -253,7 +257,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                                 @Override
                                 public void resultOfDataLoading(JCreateIssueResponse result) {
                                     if (result != null) {
-                                        AttachmentService.start(CreateIssueActivity.this);
+                                        AttachmentService.start(CreateIssueActivity.this, listScreenshot);
                                         Toast.makeText(CreateIssueActivity.this, "Ticket success created", Toast.LENGTH_LONG).show();
                                         finish();
                                     } else {
@@ -287,7 +291,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 2) {
+                if (s.length() > 2 && before!=count) {
                     mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
                     mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
                     mAssignableUserName = s.toString();
@@ -302,7 +306,8 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
         mLinearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new ScreenshotAdapter(ScreenshotManager.getInstance().getScreenshotList(), R.layout.item_screenshot, CreateIssueActivity.this);
+        List<Attachment> screenArray = ScreenshotManager.getInstance().getScreenshotList();
+        mAdapter = new ScreenshotAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -314,9 +319,8 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
             public void resultOfDataLoading(ArrayList<String> result) {
                 if (result != null) {
                     ArrayAdapter<String> mAssignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
-                    mAssignableAutocompleteView.setThreshold(2);
+                    mAssignableAutocompleteView.setThreshold(1);
                     mAssignableAutocompleteView.setAdapter(mAssignableUsersAdapter);
-                    mAssignableUsersAdapter.notifyDataSetChanged();
                     mAssignableAutocompleteView.showDropDown();
                     mAssignableAutocompleteView.showProgress(false);
                     mAssignableAutocompleteView.setEnabled(true);
@@ -328,7 +332,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     @Override
     public void onItemClicked(int position) {
         mAdapter.removeItem(position);
-        Logger.d(TAG, String.valueOf(position));
+        listScreenshot.remove(position);
     }
 
 }

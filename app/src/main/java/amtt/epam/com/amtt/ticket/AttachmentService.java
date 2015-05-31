@@ -22,6 +22,7 @@ public class AttachmentService extends Service {
     public static final String ACTION_CLOSE = "CLOSE";
     public static final String RESULT = "RESULT";
     private static final String TAG = "Log";
+    private static ArrayList<String> attachmentList;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -60,13 +61,14 @@ public class AttachmentService extends Service {
             @Override
             public void resultOfDataLoading(String result) {
                 if (result != null) {
-                    attachFile(result, AmttFileObserver.getImageArray());
+                    attachFile(result, attachmentList);
                 }
             }
         });
     }
 
-    public static void start(Context context) {
+    public static void start(Context context, ArrayList<String> attachmentList) {
+        AttachmentService.attachmentList = attachmentList;
         context.startService(new Intent(context, AttachmentService.class).setAction(ACTION_START));
     }
 
@@ -79,6 +81,7 @@ public class AttachmentService extends Service {
                 public void resultOfDataLoading(Boolean result) {
                     AttachNotificationHelper.updateNotification(getBaseContext(),
                             AttachNotificationHelper.getFinalBuilder(getBaseContext(), issueKey, fileFullName.size()), notificationId);
+                    AmttFileObserver.clearImageArray();
                     stopSelf();
                 }
             });

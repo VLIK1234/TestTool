@@ -129,4 +129,8 @@ public class AmttFileObserver extends FileObserver {
     public static ArrayList<String> getImageArray() {
         return imageArray;
     }
+
+    public static void clearImageArray() {
+        imageArray.clear();
+    }
 }

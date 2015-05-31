@@ -21,12 +21,10 @@ public class AutocompleteProgressView extends RelativeLayout {
 
     private AutoCompleteTextView mACTextView;
     private ProgressBar mProgress;
-    private Context mContext;
 
     public AutocompleteProgressView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
-        LayoutInflater.from(mContext).inflate(R.layout.autocomplete_progress_layout, this, true);
+        LayoutInflater.from(context).inflate(R.layout.autocomplete_progress_layout, this, true);
         initViews();
     }
 
@@ -45,7 +43,6 @@ public class AutocompleteProgressView extends RelativeLayout {
 
     public void setAdapter(ArrayAdapter<String> adapter) {
         mACTextView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
     }
 
     public void setThreshold(int threshold) {

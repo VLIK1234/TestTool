@@ -83,7 +83,7 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
             screenshotName = (TextView)itemView.findViewById(R.id.tv_screenName);
             screenshotClose = (ImageView)itemView.findViewById(R.id.iv_close);
             this.listener = listener;
-            itemView.setOnClickListener(this);
+            screenshotClose.setOnClickListener(this);
         }
 
         @Override
