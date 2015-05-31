@@ -98,7 +98,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     public void initViews() {
         mName = (TextView) findViewById(R.id.user_name);
         mEmailAddress = (TextView) findViewById(R.id.user_email);
-        mDisplayName = (TextView) findViewById(R.id.user_display_name);
+        mDisplayName = (TextView) findViewById(R.id.user_full_name);
         mTimeZone = (TextView) findViewById(R.id.user_time_zone);
         mLocale = (TextView) findViewById(R.id.user_locale);
         mUserImage = (ImageView) findViewById(R.id.user_image);

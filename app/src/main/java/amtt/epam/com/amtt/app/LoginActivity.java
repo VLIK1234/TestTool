@@ -50,7 +50,6 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("unchecked")
 public class LoginActivity extends BaseActivity implements JiraCallback<JUserInfo>, LoaderCallbacks<Cursor> {
 
-    private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
 
     private EditText mUserName;
