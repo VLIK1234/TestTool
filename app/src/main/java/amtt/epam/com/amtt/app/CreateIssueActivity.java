@@ -9,6 +9,8 @@ import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
 import amtt.epam.com.amtt.view.EditText;
 import amtt.epam.com.amtt.view.SpinnerProgress;
+import amtt.epam.com.amtt.view.TextView;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +25,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
@@ -156,12 +159,17 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
 
     private void initVersionsSpinner(String projectKey) {
         final SpinnerProgress mVersionsSpinner = (SpinnerProgress) findViewById(R.id.spin_affects_versions);
+        final TextView affectTextView = (TextView)findViewById(R.id.tv_affects_versions);
+        final ImageView dividerAffectVersion = (ImageView) findViewById(R.id.affect_divider);
         mVersionsSpinner.setEnabled(false);
         mVersionsSpinner.showProgress(true);
         JiraContent.getInstance().getVersionsNames(projectKey, new JiraGetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
-                if (result != null) {
+                if (result != null&&result.size()>0) {
+                    mVersionsSpinner.setVisibility(View.VISIBLE);
+                    affectTextView.setVisibility(View.VISIBLE);
+                    dividerAffectVersion.setVisibility(View.VISIBLE);
                     ArrayList<String> versionNames = new ArrayList<>();
                     versionNames.addAll(result.values());
                     ArrayAdapter<String> mVersionsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, versionNames);
@@ -169,6 +177,10 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                     mVersionsSpinner.setAdapter(mVersionsAdapter);
                     mVersionsSpinner.showProgress(false);
                     mVersionsSpinner.setEnabled(true);
+                }else{
+                    mVersionsSpinner.setVisibility(View.GONE);
+                    affectTextView.setVisibility(View.GONE);
+                    dividerAffectVersion.setVisibility(View.GONE);
                 }
             }
         });
