@@ -70,7 +70,7 @@ public class DialogUtils {
             return this;
         }
 
-        public void cerateAndShow() {
+        public void createAndShow() {
             mBuilder.create().show();
         }
 

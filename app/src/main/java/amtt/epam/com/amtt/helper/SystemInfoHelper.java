@@ -69,8 +69,10 @@ public class SystemInfoHelper {
 
             try {
                 fieldValue = field.getInt(new Object());
-            } catch (IllegalArgumentException | IllegalAccessException | NullPointerException e) {
+            } catch (IllegalArgumentException | NullPointerException e) {
                 e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.getMessage();
             }
 
             if (fieldValue == metrics.densityDpi&&!fieldName.equals("DENSITY_DEVICE")) {
@@ -92,8 +94,10 @@ public class SystemInfoHelper {
 
             try {
                 fieldValue = field.getInt(new Object());
-            } catch (IllegalArgumentException | IllegalAccessException | NullPointerException e) {
+            } catch (IllegalArgumentException | NullPointerException e) {
                 e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.getMessage();
             }
 
             if (fieldValue == Build.VERSION.SDK_INT) {

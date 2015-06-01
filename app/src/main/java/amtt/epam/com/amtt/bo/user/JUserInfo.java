@@ -12,7 +12,8 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.UsersTable;
 
 /**
- * Created by Iryna_Monchanka on 3/31/2015.
+ @author Iryna Monchanka
+ @version on 3/31/2015
  */
 
 public class JUserInfo extends DatabaseEntity<JUserInfo> {
@@ -36,6 +37,7 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
 
     private String mUrl;
     private int mId;
+    private String mCredentials;
 
     public JUserInfo() {
     }
@@ -44,6 +46,7 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         if (cursor.getPosition() == -1) {
             cursor.moveToNext();
         }
+        mId = cursor.getInt(cursor.getColumnIndex(UsersTable._ID));
         mName = cursor.getString(cursor.getColumnIndex(UsersTable._USER_NAME));
         mUrl = cursor.getString(cursor.getColumnIndex(UsersTable._URL));
         mEmailAddress = cursor.getString(cursor.getColumnIndex(UsersTable._EMAIL));
@@ -54,6 +57,7 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         String avatar24 = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_24));
         String avatar32 = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_32));
         String avatar48 = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_48));
+        mCredentials = cursor.getString(cursor.getColumnIndex(UsersTable._CREDENTIALS));
         mAvatarUrls = new JAvatarUrls(avatar48, avatar24, avatar16, avatar32);
     }
 
@@ -125,6 +129,14 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         mUrl = url;
     }
 
+    public String getCredentials() {
+        return mCredentials;
+    }
+
+    public void setCredentials(String credentials) {
+        this.mCredentials = credentials;
+    }
+
     @Override
     public int getId() {
         return mId;
@@ -149,6 +161,7 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         values.put(UsersTable._AVATAR_24, getAvatarUrls().getAvatarSmallUrl());
         values.put(UsersTable._AVATAR_32, getAvatarUrls().getAvatarMediumUrl());
         values.put(UsersTable._AVATAR_48, getAvatarUrls().getAvatarUrl());
+        values.put(UsersTable._CREDENTIALS, mCredentials);
         return values;
     }
 

@@ -40,13 +40,13 @@
     <string name="label_create_issue">Create issue</string>
     <string name="label_delete_and_close">Delete and close</string>
     <string name="label_description">Description</string>
-    <string name="label_display_name">Display Name</string>
     <string name="label_divider">Divider</string>
     <string name="label_email">Email</string>
     <string name="label_environment">Environment</string>
     <string name="label_epam_employee_sign">Sign in as a EPAM employee</string>
     <string name="label_error_label">Error label</string>
     <string name="label_flags">"Flags: "</string>
+    <string name="label_full_name">Full Name</string>
     <string name="label_groups">Groups</string>
     <string name="label_hide">Hide</string>
     <string name="label_hint">Hint</string>
