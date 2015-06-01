@@ -7,9 +7,9 @@ import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -55,6 +55,7 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
 
     private static int sStepNumber; //responsible for steps ordering in database
     private static boolean isRecordStarted;
+    private static boolean isShowAction;
 
     static {
         isRecordStarted = false;
@@ -84,6 +85,15 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
         LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layoutInflater.inflate(R.layout.top_button_bar_layout, this, true);
         mButtonsBar = (LinearLayout) findViewById(R.id.buttons_bar);
+        findViewById(R.id.top_button_layout).addOnLayoutChangeListener(new OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (isShowAction) {
+                    setDisplayPoint(mLayout.x, mLayout.y);
+                    isShowAction = false;
+                }
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -168,7 +178,9 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
         mButtonShowSteps = new TopUnitView(getContext(), getContext().getString(R.string.label_show_steps), R.drawable.background_show_step, new ITouchAction() {
             @Override
             public void TouchAction() {
-                getContext().getApplicationContext().startActivity(new Intent(getContext(), StepsActivity.class));
+                Intent intent = new Intent(getContext(), StepsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intent);
             }
         });
         mButtonStopRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), R.drawable.background_stop_record, new ITouchAction() {
@@ -194,7 +206,6 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
         mButtonsBar.addView(mButtonExpectedResult);
         mButtonsBar.addView(mButtonOpenUserInfo);
         mButtonsBar.addView(mButtonCloseApp);
-        mWindowManager.updateViewLayout(this, mLayout);
     }
 
     private void setRecordButtons() {
@@ -207,7 +218,6 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
         mButtonsBar.addView(mButtonCreateTicket);
         mButtonsBar.addView(mButtonStopRecord);
         mButtonsBar.addView(mButtonOpenUserInfo);
-        mWindowManager.updateViewLayout(this, mLayout);
     }
 
 
@@ -239,25 +249,13 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
             @Override
             public boolean onPreDraw() {
                 mButtonsBar.getViewTreeObserver().removeOnPreDrawListener(this);
+                mLayout.x = x;
+                mLayout.y = y;
+                isShowAction = true;
                 if (isRecordStarted) {
                     setRecordButtons();
                 } else {
                     setInitialButtons();
-                }
-                if (UIUtil.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
-                    mButtonsBar.setOrientation(LinearLayout.VERTICAL);
-                    if (y + mButtonsBar.getHeight() > UIUtil.getDisplayMetrics().heightPixels - UIUtil.getStatusBarHeight()) {
-                        setAbove(x, y);
-                    } else {
-                        setBelow(x, y);
-                    }
-                } else {
-                    mButtonsBar.setOrientation(LinearLayout.HORIZONTAL);
-                    if (x + mButtonsBar.getWidth() > UIUtil.getDisplayMetrics().widthPixels) {
-                        setOnTheLeft(x, y);
-                    } else {
-                        setOnTheRight(x, y);
-                    }
                 }
                 mWindowManager.updateViewLayout(TopButtonBarView.this, mLayout);
                 return true;
@@ -287,23 +285,27 @@ public class TopButtonBarView extends FrameLayout implements DataBaseCallback {
 
     public void move(int x, int y) {
         if (mButtonsBar.getVisibility() == VISIBLE) {
-            if (UIUtil.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
-                mButtonsBar.setOrientation(LinearLayout.VERTICAL);
-                if (y + mButtonsBar.getHeight() > UIUtil.getDisplayMetrics().heightPixels - UIUtil.getStatusBarHeight()) {
-                    setAbove(x, y);
-                } else {
-                    setBelow(x, y);
-                }
-            } else {
-                mButtonsBar.setOrientation(LinearLayout.HORIZONTAL);
-                if (x + mButtonsBar.getWidth() > UIUtil.getDisplayMetrics().widthPixels) {
-                    setOnTheLeft(x, y);
-                } else {
-                    setOnTheRight(x, y);
-                }
-            }
-            mWindowManager.updateViewLayout(this, mLayout);
+            setDisplayPoint(x, y);
         }
+    }
+
+    private void setDisplayPoint(int x, int y) {
+        if (UIUtil.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
+            mButtonsBar.setOrientation(LinearLayout.VERTICAL);
+            if (y + mButtonsBar.getHeight() > UIUtil.getDisplayMetrics().heightPixels - UIUtil.getStatusBarHeight()) {
+                setAbove(x, y);
+            } else {
+                setBelow(x, y);
+            }
+        } else {
+            mButtonsBar.setOrientation(LinearLayout.HORIZONTAL);
+            if (x + mButtonsBar.getWidth() > UIUtil.getDisplayMetrics().widthPixels) {
+                setOnTheLeft(x, y);
+            } else {
+                setOnTheRight(x, y);
+            }
+        }
+        mWindowManager.updateViewLayout(this, mLayout);
     }
 
     public static boolean isRecordStarted() {

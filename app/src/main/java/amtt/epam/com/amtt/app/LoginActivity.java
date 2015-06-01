@@ -72,8 +72,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         setContentView(R.layout.activity_login);
         TopButtonService.close(this);
         initViews();
-
-        TopButtonService.start(this);
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
     }
 
     @Override
@@ -117,13 +116,13 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
 
     private void initViews() {
         mUserName = (EditText) findViewById(R.id.user_name);
-        mUserName.setText("admin");
+        mUserName.setText("artsiom_kaliaha");
         mPassword = (EditText) findViewById(R.id.password);
-        mPassword.setText("bujhm515");
+        mPassword.setText("");
         mPassword.clearErrorOnTextChanged(true);
         mPassword.clearErrorOnFocus(true);
         mUrl = (EditText) findViewById(R.id.jira_url);
-        mUrl.setText("https://amtt04.atlassian.net");
+        mUrl.setText("https://amtt05.atlassian.net");
         mEpamJira = (CheckBox) findViewById(R.id.epam_jira_checkbox);
         mLoginButton = (Button) findViewById(R.id.login_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {

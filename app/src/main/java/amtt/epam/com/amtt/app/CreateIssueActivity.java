@@ -4,6 +4,7 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
 import amtt.epam.com.amtt.view.EditText;
 import amtt.epam.com.amtt.view.SpinnerProgress;
@@ -40,8 +41,15 @@ public class CreateIssueActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TopButtonService.close(this);
         setContentView(R.layout.activity_create_issue);
         initViews();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        TopButtonService.start(this);
     }
 
     private void initViews() {

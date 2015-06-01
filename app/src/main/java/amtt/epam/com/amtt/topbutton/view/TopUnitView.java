@@ -28,24 +28,43 @@ public class TopUnitView extends LinearLayout {
         super(context);
         this.touchAction = touchAction;
         mBackgroundIconId = backgroundIconId;
-        //Change when will be support landscape orientation
-//        if (orientation==VERTICAL||orientation==HORIZONTAL) {
-//            setOrientation(orientation);
-//        }else{
-//            Toast.makeText(context,"Wrong orientation! Set default value = HORIZONTAL",Toast.LENGTH_LONG).show();
-//        }
         setOrientation(HORIZONTAL);
         setMargin((int) getResources().getDimension(R.dimen.margin_buttons_bar), 0, 0, 0);
         addView(getButton());
+        addCardView(context, title);
+        addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                addCardWithOrientationCheck();
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                addCardWithOrientationCheck();
+            }
+        });
+    }
+
+    private void addCardView(Context context, String title) {
         mCardView = new CardView(context);
-        LayoutParams params = new LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
         mCardView.setLayoutParams(params);
         mCardView.setUseCompatPadding(true);
         mCardView.setRadius((int) getResources().getDimension(R.dimen.card_corner_radius));
         mCardView.addView(getTextView(title));
         mCardView.setCardElevation((int) getResources().getDimension(R.dimen.card_elevation));
-        addCardView();
+        addView(mCardView);
+    }
+
+    private void addCardWithOrientationCheck() {
+        if (UIUtil.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
+            if (mCardView.getParent() == null) {
+                addView(mCardView);
+            }
+        } else {
+            removeView(mCardView);
+        }
     }
 
     private void setMargin(int left, int right, int top, int bottom) {
@@ -55,14 +74,6 @@ public class TopUnitView extends LinearLayout {
         );
         params.setMargins(left, top, right, bottom);
         this.setLayoutParams(params);
-    }
-
-    private void addCardView() {
-        if (UIUtil.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
-            addView(mCardView);
-        } else {
-            removeView(mCardView);
-        }
     }
 
     private void setBackgroundCompat(View view, Drawable drawable) {
@@ -98,20 +109,6 @@ public class TopUnitView extends LinearLayout {
                 break;
         }
         return super.onTouchEvent(event);
-    }
-
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (mCardView != null) {
-            if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (!mCardView.isShown()) {
-                    addView(mCardView);
-                }
-            } else {
-                removeView(mCardView);
-            }
-        }
     }
 
 }

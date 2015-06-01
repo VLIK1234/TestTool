@@ -82,7 +82,6 @@ public class TopButtonView extends FrameLayout {
         heightProportion = (float) layoutParams.y / metrics.heightPixels;
     }
 
-
     @SuppressWarnings("unchecked")
     private void initComponent() {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -143,7 +142,6 @@ public class TopButtonView extends FrameLayout {
 
         firstX = lastX;
         firstY = lastY;
-        return;
     }
 
     private void handleMoveAction(MotionEvent event, int totalDeltaX, int totalDeltaY) {
@@ -217,7 +215,9 @@ public class TopButtonView extends FrameLayout {
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation != currentOrientation) {
             savePositionAfterScreenRotation();
-            mButtonsBar.show(layoutParams.x, layoutParams.y);
+            if (mButtonsBar.getVisibility() == VISIBLE) {
+                mButtonsBar.show(layoutParams.x, layoutParams.y);
+            }
         }
     }
 
