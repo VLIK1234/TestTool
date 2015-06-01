@@ -16,11 +16,14 @@ import amtt.epam.com.amtt.helper.HelpTakeScreen;
  */
 public class HelpDialogActivity extends Activity {
 
+    private static boolean isCanTakeScreenshot;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
-        
+        isCanTakeScreenshot = false;
+
         TextView textView = (TextView) findViewById(R.id.message_dialog);
         textView.append(Build.BRAND.toUpperCase()+" "+Build.MODEL.toUpperCase());
         textView.append(getMessageForCurrentDevice());
@@ -37,6 +40,7 @@ public class HelpDialogActivity extends Activity {
             @Override
             public void onClick(View v) {
                 finish();
+                isCanTakeScreenshot = true;
             }
         });
     }
@@ -55,5 +59,8 @@ public class HelpDialogActivity extends Activity {
                     return HelpTakeScreen.ALL.getValue();
             }
         }
+    }
+    public static boolean getIsCanTakeScreenshot(){
+        return isCanTakeScreenshot;
     }
 }

@@ -252,7 +252,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 TopButtonService.start(getBaseContext());
                 JiraContent.getInstance().getPrioritiesNames(null);
                 JiraContent.getInstance().getProjectsNames(null);
-                JiraContent.getInstance().setEnvironment(SystemInfoHelper.getDeviceOsInfo());
             }
         };
         worker.schedule(task, 1, TimeUnit.SECONDS);

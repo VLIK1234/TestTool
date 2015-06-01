@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -48,7 +49,7 @@ public class AmttFileObserver extends FileObserver {
         if ((FileObserver.CREATE & event) != 0) {
             Log.d(TAG, absolutePath + "/" + path + " is created\n");
 
-            if (isNewScreenshot(path) && TopButtonView.getStartRecord()) {
+            if (isNewScreenshot(path) && HelpDialogActivity.getIsCanTakeScreenshot()) {
                 imageArray.add(absolutePath + "/" + path);
                 ScheduledExecutorService worker =
                         Executors.newSingleThreadScheduledExecutor();

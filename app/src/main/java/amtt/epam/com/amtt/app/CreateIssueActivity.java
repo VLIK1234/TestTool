@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.app;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
+import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.ticket.*;
 import amtt.epam.com.amtt.util.Logger;
@@ -11,6 +12,7 @@ import amtt.epam.com.amtt.view.EditText;
 import amtt.epam.com.amtt.view.SpinnerProgress;
 import amtt.epam.com.amtt.view.TextView;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -49,6 +51,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     private AssigneeHandler mHandler;
     private ScreenshotAdapter mAdapter;
     private ArrayList<String> listScreenshot;
+    public SpinnerProgress mProjectNamesSpinner;
 
     public static class AssigneeHandler extends Handler {
 
@@ -92,7 +95,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     }
 
     private void initProjectNamesSpinner() {
-        final SpinnerProgress mProjectNamesSpinner = (SpinnerProgress) findViewById(R.id.spin_projects_name);
+        mProjectNamesSpinner = (SpinnerProgress) findViewById(R.id.spin_projects_name);
         mProjectNamesSpinner.setEnabled(false);
         mProjectNamesSpinner.showProgress(true);
         JiraContent.getInstance().getProjectsNames(new JiraGetContentCallback<HashMap<JProjects, String>>() {
@@ -238,14 +241,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
 
     private void initEnvironmentEditText() {
         mEnvironmentEditText = (EditText) findViewById(R.id.et_environment);
-        JiraContent.getInstance().getEnvironment(new JiraGetContentCallback<String>() {
-            @Override
-            public void resultOfDataLoading(String result) {
-                if (result != null) {
-                    mEnvironmentEditText.setText(result);
-                }
-            }
-        });
+        mEnvironmentEditText.setText(SystemInfoHelper.getDeviceOsInfo());
     }
 
     private void initCreateIssueButton() {

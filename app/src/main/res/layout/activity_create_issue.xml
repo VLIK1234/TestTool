@@ -31,7 +31,8 @@
                 android:id="@+id/spin_projects_name"
                 style="@style/Material.Widget.Spinner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:focusable="true"/>
 
             <ImageView
                 android:layout_width="fill_parent"
@@ -79,7 +80,6 @@
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/primary_text"
                 app:et_dividerErrorColor="@color/et_divider_error"
-                app:et_inputId="@+id/summary_error"
                 app:et_labelTextColor="@drawable/color_label"
                 app:et_supportMode="error"
                 app:et_supportTextErrorColor="@color/et_divider_error" />
@@ -177,7 +177,6 @@
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                 android:textColor="@color/primary_text"
                 app:et_dividerErrorColor="@color/et_divider_error"
-                app:et_inputId="@+id/summary_error"
                 app:et_labelTextColor="@drawable/color_label"
                 app:et_supportMode="error"
                 app:et_supportTextErrorColor="@color/et_divider_error" />
