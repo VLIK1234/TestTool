@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.view;
 
 import android.content.Context;
+import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -55,5 +56,9 @@ public class AutocompleteProgressView extends RelativeLayout {
 
     public void showDropDown() {
         mACTextView.showDropDown();
+    }
+
+    public Editable getText(){
+        return mACTextView.getText();
     }
 }

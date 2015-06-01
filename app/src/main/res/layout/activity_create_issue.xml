@@ -147,7 +147,8 @@
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_affects_versions"
                 android:textColor="@color/primary_text"
-                android:textSize="@dimen/material_font_size_caption" />
+                android:textSize="@dimen/material_font_size_caption"
+                android:visibility="gone"/>
 
             <amtt.epam.com.amtt.view.SpinnerProgress
                 android:id="@+id/spin_affects_versions"
@@ -155,14 +156,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/label_affects_versions"
-                android:paddingBottom="@dimen/spinner_padding_bottom" />
+                android:paddingBottom="@dimen/spinner_padding_bottom"
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/affect_divider"
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/material_colored_divider_size"
                 android:background="@color/iv_divider_color"
-                android:paddingTop="@dimen/material_vertical_size_divider" />
+                android:paddingTop="@dimen/material_vertical_size_divider"
+                android:visibility="gone" />
             <!-- *******AFFECTS VERSIONS END****************************************-->
 
             <!-- *******ENVIRONMENT BEGIN****************************************-->

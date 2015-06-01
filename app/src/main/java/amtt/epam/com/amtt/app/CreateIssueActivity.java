@@ -23,6 +23,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -299,7 +300,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 2 && before!=count) {
+                if (s.length() > 2) {
                     mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
                     mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
                     mAssignableUserName = s.toString();
@@ -329,7 +330,9 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                     ArrayAdapter<String> mAssignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
                     mAssignableAutocompleteView.setThreshold(1);
                     mAssignableAutocompleteView.setAdapter(mAssignableUsersAdapter);
-                    mAssignableAutocompleteView.showDropDown();
+                    if(!mAssignableAutocompleteView.getText().toString().equals(mAssignableUsersAdapter.getItem(0))) {
+                        mAssignableAutocompleteView.showDropDown();
+                    }
                     mAssignableAutocompleteView.showProgress(false);
                     mAssignableAutocompleteView.setEnabled(true);
                 }
