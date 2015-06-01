@@ -315,7 +315,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
         linearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        List<Attachment> screenArray = ScreenshotManager.getInstance().getScreenshotList();
+        List<Attachment> screenArray = ScreenshotManager.getInstance().getScreenshotList(listScreenshot);
         mAdapter = new ScreenshotAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
         recyclerView.setAdapter(mAdapter);
     }

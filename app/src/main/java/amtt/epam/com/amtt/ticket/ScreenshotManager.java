@@ -21,14 +21,13 @@ public class ScreenshotManager {
         return mInstance;
     }
 
-    public List<Attachment> getScreenshotList() {
-        ArrayList<String> screenArray = AmttFileObserver.getImageArray();
+    public List<Attachment> getScreenshotList(ArrayList<String> listScreenshot) {
         screenshotList.clear();
-        if (screenArray != null) {
-            for (int i = 0; i < screenArray.size(); i++) {
+        if (listScreenshot != null) {
+            for (int i = 0; i < listScreenshot.size(); i++) {
                 Attachment screenshot = new Attachment();
-                screenshot.name = screenArray.get(i).replaceAll("/Pictures/Screenshots/", "/");
-                screenshot.imageName = screenArray.get(i);
+                screenshot.name = listScreenshot.get(i).replaceAll("/Pictures/Screenshots/", "/");
+                screenshot.imageName = listScreenshot.get(i);
                 screenshotList.add(screenshot);
             }
         }
