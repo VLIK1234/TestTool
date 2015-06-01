@@ -105,9 +105,9 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                 if (result != null) {
                     ArrayList<String> projectNames = new ArrayList<>();
                     projectNames.addAll(result.values());
-                    ArrayAdapter<String> mProjectsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, projectNames);
-                    mProjectsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                    mProjectNamesSpinner.setAdapter(mProjectsAdapter);
+                    ArrayAdapter<String> projectsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, projectNames);
+                    projectsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                    mProjectNamesSpinner.setAdapter(projectsAdapter);
                     mProjectNamesSpinner.showProgress(false);
                     mProjectNamesSpinner.setEnabled(true);
                 }
@@ -131,9 +131,9 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     }
 
     private void initPrioritiesSpinner() {
-        final SpinnerProgress mPrioritiesSpinner = (SpinnerProgress) findViewById(R.id.spin_priority);
-        mPrioritiesSpinner.setEnabled(false);
-        mPrioritiesSpinner.showProgress(true);
+        final SpinnerProgress prioritiesSpinner = (SpinnerProgress) findViewById(R.id.spin_priority);
+        prioritiesSpinner.setEnabled(false);
+        prioritiesSpinner.showProgress(true);
         JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
@@ -142,14 +142,14 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                     priorityNames.addAll(result.values());
                     ArrayAdapter<String> mPrioritiesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, priorityNames);
                     mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                    mPrioritiesSpinner.setAdapter(mPrioritiesAdapter);
-                    mPrioritiesSpinner.setSelection(2);
-                    mPrioritiesSpinner.showProgress(false);
-                    mPrioritiesSpinner.setEnabled(true);
+                    prioritiesSpinner.setAdapter(mPrioritiesAdapter);
+                    prioritiesSpinner.setSelection(2);
+                    prioritiesSpinner.showProgress(false);
+                    prioritiesSpinner.setEnabled(true);
                 }
             }
         });
-        mPrioritiesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        prioritiesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mPriorityName = (String) parent.getItemAtPosition(position);
@@ -162,33 +162,33 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     }
 
     private void initVersionsSpinner(String projectKey) {
-        final SpinnerProgress mVersionsSpinner = (SpinnerProgress) findViewById(R.id.spin_affects_versions);
+        final SpinnerProgress versionsSpinner = (SpinnerProgress) findViewById(R.id.spin_affects_versions);
         final TextView affectTextView = (TextView)findViewById(R.id.tv_affects_versions);
         final ImageView dividerAffectVersion = (ImageView) findViewById(R.id.affect_divider);
-        mVersionsSpinner.setEnabled(false);
-        mVersionsSpinner.showProgress(true);
+        versionsSpinner.setEnabled(false);
+        versionsSpinner.showProgress(true);
         JiraContent.getInstance().getVersionsNames(projectKey, new JiraGetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
                 if (result != null&&result.size()>0) {
-                    mVersionsSpinner.setVisibility(View.VISIBLE);
+                    versionsSpinner.setVisibility(View.VISIBLE);
                     affectTextView.setVisibility(View.VISIBLE);
                     dividerAffectVersion.setVisibility(View.VISIBLE);
                     ArrayList<String> versionNames = new ArrayList<>();
                     versionNames.addAll(result.values());
-                    ArrayAdapter<String> mVersionsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, versionNames);
-                    mVersionsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                    mVersionsSpinner.setAdapter(mVersionsAdapter);
-                    mVersionsSpinner.showProgress(false);
-                    mVersionsSpinner.setEnabled(true);
+                    ArrayAdapter<String> versionsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, versionNames);
+                    versionsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                    versionsSpinner.setAdapter(versionsAdapter);
+                    versionsSpinner.showProgress(false);
+                    versionsSpinner.setEnabled(true);
                 }else{
-                    mVersionsSpinner.setVisibility(View.GONE);
+                    versionsSpinner.setVisibility(View.GONE);
                     affectTextView.setVisibility(View.GONE);
                     dividerAffectVersion.setVisibility(View.GONE);
                 }
             }
         });
-        mVersionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        versionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mVersionName = (String) parent.getItemAtPosition(position);
@@ -201,22 +201,22 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     }
 
     private void initIssueTypesSpinner() {
-        final SpinnerProgress mIssueTypesSpinner = (SpinnerProgress) findViewById(R.id.spin_issue_name);
-        mIssueTypesSpinner.setEnabled(false);
-        mIssueTypesSpinner.showProgress(true);
+        final SpinnerProgress issueTypesSpinner = (SpinnerProgress) findViewById(R.id.spin_issue_name);
+        issueTypesSpinner.setEnabled(false);
+        issueTypesSpinner.showProgress(true);
         JiraContent.getInstance().getIssueTypesNames(new JiraGetContentCallback<ArrayList<String>>() {
             @Override
             public void resultOfDataLoading(ArrayList<String> result) {
                 if (result != null) {
-                    ArrayAdapter<String> mIssueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
-                    mIssueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                    mIssueTypesSpinner.setAdapter(mIssueTypesAdapter);
-                    mIssueTypesSpinner.showProgress(false);
-                    mIssueTypesSpinner.setEnabled(true);
+                    ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
+                    issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                    issueTypesSpinner.setAdapter(issueTypesAdapter);
+                    issueTypesSpinner.showProgress(false);
+                    issueTypesSpinner.setEnabled(true);
                 }
             }
         });
-        mIssueTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        issueTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mIssueTypeName = (String) parent.getItemAtPosition(position);
@@ -246,8 +246,8 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     }
 
     private void initCreateIssueButton() {
-        Button mCreateIssueButton = (Button) findViewById(R.id.btn_create);
-        mCreateIssueButton.setOnClickListener(new View.OnClickListener() {
+        Button createIssueButton = (Button) findViewById(R.id.btn_create);
+        createIssueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Boolean isValid = true;
@@ -310,14 +310,14 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     }
 
     private void initAttachmentsView() {
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.listScreens);
-        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(CreateIssueActivity.this);
-        mLinearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
-        mRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.listScreens);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CreateIssueActivity.this);
+        linearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         List<Attachment> screenArray = ScreenshotManager.getInstance().getScreenshotList();
         mAdapter = new ScreenshotAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);
     }
 
     private void setAssignableNames(String s) {
@@ -327,10 +327,10 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
             @Override
             public void resultOfDataLoading(ArrayList<String> result) {
                 if (result != null) {
-                    ArrayAdapter<String> mAssignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
+                    ArrayAdapter<String> assignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
                     mAssignableAutocompleteView.setThreshold(1);
-                    mAssignableAutocompleteView.setAdapter(mAssignableUsersAdapter);
-                    if(!mAssignableAutocompleteView.getText().toString().equals(mAssignableUsersAdapter.getItem(0))) {
+                    mAssignableAutocompleteView.setAdapter(assignableUsersAdapter);
+                    if(!mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
                         mAssignableAutocompleteView.showDropDown();
                     }
                     mAssignableAutocompleteView.showProgress(false);
@@ -343,7 +343,6 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     @Override
     public void onItemClicked(int position) {
         mAdapter.removeItem(position);
-        listScreenshot.remove(position);
     }
 
 }
