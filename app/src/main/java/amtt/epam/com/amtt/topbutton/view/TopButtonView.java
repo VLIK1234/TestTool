@@ -3,6 +3,9 @@ package amtt.epam.com.amtt.topbutton.view;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
+
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -17,8 +20,26 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
+
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.util.UIUtil;
+
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.app.CreateIssueActivity;
+import amtt.epam.com.amtt.app.HelpDialogActivity;
+import amtt.epam.com.amtt.app.StepsActivity;
+import amtt.epam.com.amtt.app.UserInfoActivity;
+import amtt.epam.com.amtt.util.StepUtil;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.ActivityMetaUtil;
 
 /**
  * Created by Ivan_Bakach on 23.03.2015.
@@ -208,6 +229,10 @@ public class TopButtonView extends FrameLayout {
         expand.play(animator);
         layerDrawable.setDrawableByLayerId(R.id.main_button_background, drawable);
         setBackgroundCompat(mainButton, layerDrawable);
+    }
+
+    public TopButtonBarView getButtonsBar() {
+        return mButtonsBar;
     }
 
     @Override

@@ -2,14 +2,17 @@ package amtt.epam.com.amtt.bo.database;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
+import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.dao.DatabaseEntity;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.util.IOUtils;
@@ -17,33 +20,27 @@ import amtt.epam.com.amtt.util.IOUtils;
 /**
  * Created by Artsiom_Kaliaha on 12.05.2015.
  */
-public class Step extends DatabaseEntity {
+public class Step extends DatabaseEntity<Step> {
 
-    private static final String SCREENSHOT_COMMAND = "/system/bin/screencap -p ";
-    private static final String CHANGE_PERMISSION_COMMAND = "chmod 777 ";
-    public static final String SCREENSHOT_FOLDER = "/screenshot/";
-
-    private static final String sScreenBasePath;
-    private int mStepNumber;
-    private ComponentName mActivity;
+    private static int mStepNumber = 0;
+    private String mActivity;
     private String mScreenPath;
 
-    static {
-        sScreenBasePath = ContextHolder.getContext().getFilesDir().getPath() + SCREENSHOT_FOLDER;
-    }
-
     public Step() {
+        mScreenPath = "";
     }
 
-    public Step(int stepNumber, ComponentName componentName) {
-        mStepNumber = stepNumber;
-        mActivity = componentName;
+    public Step(ComponentName componentName, String mScreenPath) {
+        mActivity = componentName.getClassName();
+        this.mScreenPath = mScreenPath;
+        mStepNumber++;
     }
 
     public Step(Cursor cursor) {
         super(cursor);
         mStepNumber = cursor.getInt(cursor.getColumnIndex(StepsTable._ID));
         mScreenPath = cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH));
+        mActivity =  cursor.getString(cursor.getColumnIndex(StepsTable._ASSOCIATED_ACTIVITY));
     }
 
     @Override
@@ -57,11 +54,16 @@ public class Step extends DatabaseEntity {
     }
 
     @Override
+    public Step parse(Cursor cursor) {
+        return new Step(cursor);
+    }
+
+    @Override
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         values.put(StepsTable._ID, mStepNumber);
         values.put(StepsTable._SCREEN_PATH, mScreenPath);
-        values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity.getClassName());
+        values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity);
         return values;
     }
 
@@ -69,31 +71,8 @@ public class Step extends DatabaseEntity {
         return mScreenPath;
     }
 
-    //help methods
-    public String saveScreen() throws IOException {
-        String screenPath = null;
-        Process fileSavingProcess = null;
-        Process changeModeProcess = null;
-        OutputStream fileSavingStream = null;
-        OutputStream changeModeStream = null;
-        try {
-            fileSavingProcess = Runtime.getRuntime().exec("su");
-            fileSavingStream = fileSavingProcess.getOutputStream();
-            fileSavingStream.write((SCREENSHOT_COMMAND + (mScreenPath = sScreenBasePath + "screen" + mStepNumber + ".png")).getBytes("ASCII"));
-            fileSavingStream.flush();
-            fileSavingStream.close();
-
-            changeModeProcess = Runtime.getRuntime().exec("su");
-            changeModeStream = changeModeProcess.getOutputStream();
-            changeModeStream.write((CHANGE_PERMISSION_COMMAND + mScreenPath + "\n").getBytes("ASCII"));
-            changeModeStream.flush();
-            changeModeStream.close();
-            changeModeProcess.destroy();
-        } finally {
-            IOUtils.close(fileSavingStream, changeModeStream);
-            IOUtils.destroyProcesses(fileSavingProcess, changeModeProcess);
-        }
-        return screenPath;
+    public static void restartStepNumber(){
+        mStepNumber = 0;
     }
 
 }

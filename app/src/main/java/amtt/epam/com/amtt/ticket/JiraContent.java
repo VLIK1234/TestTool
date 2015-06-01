@@ -4,19 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import amtt.epam.com.amtt.bo.JCreateIssue;
-import amtt.epam.com.amtt.bo.JPriorityResponse;
-import amtt.epam.com.amtt.bo.JProjectsResponse;
-import amtt.epam.com.amtt.bo.JUserAssignableResponse;
-import amtt.epam.com.amtt.bo.JVersionsResponse;
+import amtt.epam.com.amtt.bo.*;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
+import amtt.epam.com.amtt.util.Logger;
 
 /**
- * Created by Iryna_Monchanka on 12.05.2015.
+ @author Iryna Monchanka
+ @version on 12.05.2015
  */
 
 public class JiraContent{
 
+    private final String TAG = this.getClass().getSimpleName();
     private ArrayList<String> mIssueTypesNames;
     private ArrayList<String> mUsersAssignableNames;
     private HashMap<JProjects, String> mProjectsNames;
@@ -28,6 +27,7 @@ public class JiraContent{
     private String mEnvironment;
     private String mLogs;
     private String mScreenshots;
+    private String mRecentIssueKey;
 
     private static class JiraContentHolder {
         public static final JiraContent INSTANCE = new JiraContent();
@@ -193,7 +193,7 @@ public class JiraContent{
     @SuppressWarnings("unchecked")
     public void createIssue(String issueTypeName, String priorityName, String versionName, String summary,
                             String description, String environment, String userAssigneName,
-                            final JiraGetContentCallback<Boolean> jiraGetContentCallback) {
+                            final JiraGetContentCallback<JCreateIssueResponse> jiraGetContentCallback) {
         String mProjectKey, issueTypeId, priorityId, versionId;
         mProjectKey = mLastProject.getKey();
         priorityId = getPriorityIdByName(priorityName);
@@ -201,7 +201,20 @@ public class JiraContent{
         versionId = getVersionIdByName(versionName);
         String issueJson = new JCreateIssue(mProjectKey, issueTypeId, description, summary, priorityId, versionId,
                 environment, userAssigneName).getResultJson();
-        ContentFromBackend.getInstance().createIssueAsynchronously(issueJson, new ContentLoadingCallback<Boolean>() {
+        ContentFromBackend.getInstance().createIssueAsynchronously(issueJson, new ContentLoadingCallback<JCreateIssueResponse>() {
+            @Override
+            public void resultFromBackend(JCreateIssueResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
+                mRecentIssueKey = result.getKey();
+                Logger.d(TAG, mRecentIssueKey);
+                jiraGetContentCallback.resultOfDataLoading(result);
+            }
+        }, jiraGetContentCallback);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void sendAttachment(String issueKey, ArrayList<String> fullFileName,
+                            final JiraGetContentCallback<Boolean> jiraGetContentCallback) {
+        ContentFromBackend.getInstance().sendAttachmentAsynchronously(issueKey, fullFileName, new ContentLoadingCallback<Boolean>() {
             @Override
             public void resultFromBackend(Boolean result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
                 jiraGetContentCallback.resultOfDataLoading(result);
@@ -217,7 +230,6 @@ public class JiraContent{
     public void getEnvironment(final JiraGetContentCallback<String> jiraGetContentCallback) {
         jiraGetContentCallback.resultOfDataLoading(mEnvironment);
     }
-
 
     public void setEnvironment(String environment) {
         this.mEnvironment = environment;
@@ -238,4 +250,9 @@ public class JiraContent{
     public void getScreenshots(final JiraGetContentCallback<String> jiraGetContentCallback) {
         jiraGetContentCallback.resultOfDataLoading(mScreenshots);
     }
+
+    public void getRecentIssueKey(final JiraGetContentCallback<String> jiraGetContentCallback) {
+        jiraGetContentCallback.resultOfDataLoading(mRecentIssueKey);
+    }
+
 }

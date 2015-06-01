@@ -23,6 +23,7 @@ public final class JiraApiConst {
 
     //Tags
     private static String ASSIGNABLE_TAG = "assignable";
+    private static String ATTACHMENTS_TAG = "attachments";
     private static String AUTH_TAG = "auth";
     private static String CREATEMETA_TAG = "createmeta";
     private static String GROUPS_TAG = "groups";
@@ -50,12 +51,18 @@ public final class JiraApiConst {
     public static String PROJECT_VERSIONS_PATH_V = SLASH + VERSIONS_TAG;
     public static String PROJECT_PRIORITY_PATH = REST_API_PATH + PRIORITY_TAG;
     public static String EXPAND_GROUPS = AND + EXPAND + EQUAL + GROUPS_TAG;
+    public static String ATTACHMENTS_PATH = SLASH + ATTACHMENTS_TAG;
+
 
     //Header keys
     public static String AUTH = "Authorization";
     public static String CONTENT_TYPE = "content-type";
+    public static String MEDIA_TYPE = "media-type";
+    public static String ATLASSIAN_TOKEN = "X-Atlassian-Token";
 
     //Header values
     public static String APPLICATION_JSON = "application/json";
     public static String BASIC_AUTH = "Basic ";
+    public static String NO_CHECK = "nocheck";
+    public static String MULTIPART_FORM_DATA = "multipart/form-data";
 }

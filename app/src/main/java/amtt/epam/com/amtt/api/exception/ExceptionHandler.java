@@ -74,7 +74,7 @@ public class ExceptionHandler {
                     .setPositiveButton(mLastType.getPositiveText(), mLastProcessedException.getRestMethod(), jiraCallback)
                     .setNeutralButton(mLastType.getNeutralText(), getNeutralListener(context))
                     .setNegativeButton()
-                    .cerateAndShow();
+                    .createAndShow();
             mReceivedExceptionsMap.remove(mLastType);
         }
     }

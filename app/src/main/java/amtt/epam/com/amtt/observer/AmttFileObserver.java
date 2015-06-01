@@ -13,6 +13,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import amtt.epam.com.amtt.app.HelpDialogActivity;
+import amtt.epam.com.amtt.util.ActivityMetaUtil;
+import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.topbutton.view.TopButtonBarView;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
@@ -45,15 +48,16 @@ public class AmttFileObserver extends FileObserver {
         if ((FileObserver.CREATE & event) != 0) {
             Log.d(TAG, absolutePath + "/" + path + " is created\n");
 
-            if (isNewScreenshot(path) && TopButtonBarView.isRecordStarted()) {
+            if (isNewScreenshot(path) && HelpDialogActivity.getIsCanTakeScreenshot()) {
                 imageArray.add(absolutePath + "/" + path);
                 ScheduledExecutorService worker =
                         Executors.newSingleThreadScheduledExecutor();
                 final String createPath = path;
                 Runnable task = new Runnable() {
                     public void run() {
-                        TopButtonService.sendActionShowScreenInGallery(absolutePath + "/" + createPath);
-                        TopButtonService.sendActionShowBotton();
+                        StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), absolutePath + "/" + createPath);
+//                        TopButtonService.sendActionScreenshot(absolutePath + "/" + createPath);
+                        TopButtonService.sendActionShowButton();
                     }
                 };
                 worker.schedule(task, 1, TimeUnit.SECONDS);
@@ -122,7 +126,11 @@ public class AmttFileObserver extends FileObserver {
         return false;
     }
 
-    public ArrayList<String> getImageArray() {
+    public static ArrayList<String> getImageArray() {
         return imageArray;
+    }
+
+    public static void clearImageArray() {
+        imageArray.clear();
     }
 }

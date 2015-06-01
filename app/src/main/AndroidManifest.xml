@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="amtt.epam.com.amtt">
+    package="amtt.epam.com.amtt" >
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -24,15 +24,20 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Material">
-
+        android:theme="@style/Material" >
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="ca8d47b0e2c3c9351a1eec35690b1719ab1aa869" />
-
+        <activity
+            android:name=".app.MainActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <service
             android:name=".topbutton.service.TopButtonService"
-            android:exported="false" />
+            android:exported="false"/>
 
         <activity
             android:name=".app.CreateIssueActivity"
@@ -45,33 +50,29 @@
 
         <activity
             android:name=".app.StepsActivity"
-            android:label="@string/title_activity_steps" />
-
+            android:label="@string/title_activity_steps"
+            android:launchMode="singleTask" />
         <activity
             android:name=".app.LoginActivity"
-            android:label="@string/app_name"
-            android:configChanges="orientation|screenSize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:configChanges="orientation|screenSize"
+            android:label="@string/app_name" >
         </activity>
-
         <activity
             android:name=".app.UserInfoActivity"
             android:label="@string/title_activity_user_info" />
-
         <activity
             android:name=".app.AmttActivity"
             android:label="@string/title_activity_amtt" />
-
         <activity
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
             android:name=".app.HelpDialogActivity"
+            android:excludeFromRecents="true"
             android:label="@string/title_activity_help_dialog"
             android:launchMode="singleInstance"
-            android:excludeFromRecents="true"/>
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+
+        <service
+            android:name=".ticket.AttachmentService"
+            android:exported="false" />
     </application>
 
 </manifest>

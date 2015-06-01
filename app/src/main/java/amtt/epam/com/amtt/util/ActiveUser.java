@@ -6,12 +6,12 @@ import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.util.Constants.SharedPreference;
 
 /**
- * Created by Iryna_Monchanka on 4/8/2015.
+ @author Iryna Monchanka
+ @version on 4/8/2015
  */
-public class ActiveUser {
 
+public class ActiveUser {
     private static final ActiveUser INSTANCE = new ActiveUser();
-    public static final int DEFAULT_ID = 0 ;
 
     private String mUserName;
     private String mUrl;
@@ -52,6 +52,9 @@ public class ActiveUser {
         mUrl = url;
         String credentialsString = JiraApiConst.BASIC_AUTH + Base64.encodeToString((mUserName + Constants.Str.COLON + password).getBytes(), Base64.NO_WRAP);
         PreferenceUtils.putString(Constants.SharedPreference.CREDENTIALS, credentialsString);
+    }
+    public void setCredentials(String credentials) {
+       PreferenceUtils.putString(Constants.SharedPreference.CREDENTIALS, credentials);
     }
 
     public int getId() {

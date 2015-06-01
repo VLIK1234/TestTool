@@ -21,8 +21,6 @@ import java.io.File;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.MainActivity;
-import amtt.epam.com.amtt.database.task.DataBaseCallback;
-import amtt.epam.com.amtt.database.task.DataBaseTask.DataBaseResponse;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonBarView;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
@@ -30,9 +28,9 @@ import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 /**
  * Created by Ivan_Bakach on 20.03.2015.
  */
-public class TopButtonService extends Service implements DataBaseCallback {
+public class TopButtonService extends Service{
 
-    public static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.SHOW";
+    public static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.START";
     public static final String ACTION_CLOSE = "amtt.epam.com.amtt.topbutton.service.CLOSE";
     private static final String TAG = "Log";
     public static final int NOTIFICATION_ID = 7;
@@ -70,7 +68,7 @@ public class TopButtonService extends Service implements DataBaseCallback {
         context.startService(intent);
     }
 
-    public static void sendActionShowBotton() {
+    public static void sendActionShowButton() {
         Intent intentShowView = new Intent(context, TopButtonService.class).setAction(TopButtonService.ACTION_SHOW_VIEW);
         intentShowView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.getApplicationContext().startService(intentShowView);
@@ -163,6 +161,7 @@ public class TopButtonService extends Service implements DataBaseCallback {
         if (view != null && isViewAdd) {
             isViewAdd = false;
             wm.removeView(view);
+            wm.removeView(view.getButtonsBar());
             view = null;
         }
         stopSelf();
@@ -196,6 +195,7 @@ public class TopButtonService extends Service implements DataBaseCallback {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (view.getVisibility() == View.VISIBLE) {
             view.setVisibility(View.GONE);
+            view.getButtonsBar().hide();
             action.icon = R.drawable.ic_stat_action_visibility;
             action.title = getString(R.string.label_show);
             notificationManager.notify(NOTIFICATION_ID, builder.build());
@@ -205,14 +205,5 @@ public class TopButtonService extends Service implements DataBaseCallback {
             action.title = getString(R.string.label_hide);
             notificationManager.notify(NOTIFICATION_ID, builder.build());
         }
-    }
-
-    @Override
-    public void onDataBaseRequestPerformed(DataBaseResponse dataBaseResponse) {
-    }
-
-    @Override
-    public void onDataBaseRequestError(Exception e) {
-
     }
 }

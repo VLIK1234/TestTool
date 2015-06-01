@@ -43,7 +43,7 @@ public class RestMethod<ResultType> {
         private Map<String, String> mHeaders;
         private String mUrl;
         private Processor<ResultType, HttpEntity> mProcessor; //processor for retrieving OBJECTS
-        private String mPostEntity;
+        private HttpEntity mPostEntity;
 
         public Builder setType(RestMethodType methodType) {
             mRestMethodType = methodType;
@@ -69,7 +69,7 @@ public class RestMethod<ResultType> {
             return this;
         }
 
-        public Builder setPostEntity(String postEntity) {
+        public Builder setPostEntity(HttpEntity postEntity) {
             mPostEntity = postEntity;
             return this;
         }
@@ -93,7 +93,7 @@ public class RestMethod<ResultType> {
     private Map<String, String> mHeaders;
     private String mUrl;
     private Processor<ResultType, HttpEntity> mProcessor;
-    private String mPostEntity;
+    private HttpEntity mPostEntity;
 
     static {
         mHttpClient = new DefaultHttpClient();
@@ -134,11 +134,8 @@ public class RestMethod<ResultType> {
     private HttpResponse post() throws AmttException {
         HttpPost httpPost = new HttpPost(mUrl);
         Logger.d(TAG, mUrl);
-        try {
-            httpPost.setEntity(new StringEntity(mPostEntity));
-        } catch (UnsupportedEncodingException e) {
-            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
-        }
+        httpPost.setEntity(mPostEntity);
+
         for (Map.Entry<String, String> keyValuePair : mHeaders.entrySet()) {
             httpPost.setHeader(keyValuePair.getKey(), keyValuePair.getValue());
         }
@@ -184,6 +181,7 @@ public class RestMethod<ResultType> {
                 restResponse.setResultObject(result);
             }
         } catch (Exception e) {
+            Logger.e(TAG, e.getMessage());
             throw prepareException(e, statusCode, entity);
         }
 
@@ -201,6 +199,7 @@ public class RestMethod<ResultType> {
         try {
             entityString = EntityUtils.toString(entity, HTTP.UTF_8);
         } catch (IOException entityParseException) {
+            Logger.e(TAG, e.getMessage());
             //TODO for reviewer: addSuppressed requires API19, project API is 14th
             //amttException.getSuppressedOne().addSuppressed(entityParseException);
             amttException.replaceSuppressedOne(entityParseException);

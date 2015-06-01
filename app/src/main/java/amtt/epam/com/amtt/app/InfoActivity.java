@@ -1,18 +1,13 @@
 package amtt.epam.com.amtt.app;
 
-import android.app.ActivityManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.helper.StringFormatHelper;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.util.ContextHolder;
 
@@ -44,14 +39,14 @@ public class InfoActivity extends BaseActivity {
         TextView infoTextView = (TextView) findViewById(R.id.info);
         infoTextView.setText("---Activity info---");
         infoTextView.append(getReceivedInfoAboutActivity());
-        infoTextView.append(StringFormatHelper.format("Internet status", SystemInfoHelper.getIntenetStatus()));
+        infoTextView.append(String.format(SystemInfoHelper.TEMPLATE,"Internet status", SystemInfoHelper.getIntenetStatus()));
     }
 
     public String getReceivedInfoAboutActivity() {
         Bundle extras = getIntent().getExtras();
         String out = "";
         if (extras != null) {
-            out += (StringFormatHelper.format(ACTIVITY_NAME, extras.getString(ACTIVITY_NAME)));
+            out += (String.format(SystemInfoHelper.TEMPLATE, ACTIVITY_NAME, extras.getString(ACTIVITY_NAME)));
         }
         return out;
     }

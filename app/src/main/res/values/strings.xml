@@ -40,13 +40,13 @@
     <string name="label_create_issue">Create issue</string>
     <string name="label_delete_and_close">Delete and close</string>
     <string name="label_description">Description</string>
-    <string name="label_display_name">Display Name</string>
     <string name="label_divider">Divider</string>
     <string name="label_email">Email</string>
     <string name="label_environment">Environment</string>
     <string name="label_epam_employee_sign">Sign in as a EPAM employee</string>
     <string name="label_error_label">Error label</string>
     <string name="label_flags">"Flags: "</string>
+    <string name="label_full_name">Full Name</string>
     <string name="label_groups">Groups</string>
     <string name="label_hide">Hide</string>
     <string name="label_hint">Hint</string>
@@ -141,7 +141,7 @@
     <string name="label_open_amtt">Open Amtt</string>
     <string name="label_expected_result">Expected result</string>
     <string name="label_screenshot">Screenshot</string>
-    <string name="label_activity_info">Activity info</string>
+    <string name="label_activity_info">Add info about current activity</string>
     <string name="label_step_view">Step</string>
     <string name="label_cancel_record">Cancel record</string>
     <string name="label_button_main">Main button</string>
@@ -152,10 +152,19 @@
     <string name="helper_user_name">Enter username</string>
     <string name="helper_password">Enter password</string>
     <string name="title_help">Help</string>
-    <string name="dialog_description">To make screenshot please use next combination button: \nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nXiaomi phone - volume down+power \nHTC - power+home</string>
+    <string name="dialog_description">To make screenshot please use next combination button for your device - </string>
     <string name="dialog_label_checkbox">Don\'t show again</string>
     <string name="dialog_button_text">OK</string>
     <string name="label_close_app">Close Amtt</string>
     <string name="label_show_steps">Show recorded steps</string>
+    <string name="nexus_help_message">\nNexus - volume down+power</string>
+    <string name="samsung_help_message">\nSamsung - power+home</string>
+    <string name="htc_help_message">\nHTC - power+home</string>
+    <string name="xiaomi_help_message">\nXiaomi tablet - power+options \nXiaomi phone - volume down+power</string>
+    <string name="all_help_message">\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nXiaomi phone - volume down+power \nHTC - power+home</string>
+    <string name="notification_attach_title_done">Uploaded %s done</string>
+    <string name="notification_attachment_text_done">Uploaded successfully %s attached items.</string>
+    <string name="notification_attach_title_init">Uploading %s</string>
+    <string name="notification_attachment_text_init">Uploading %s attached items.</string>
 
 </resources>

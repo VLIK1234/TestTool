@@ -10,7 +10,7 @@ import amtt.epam.com.amtt.processing.Processor;
 public class UserCheckProcessor implements Processor<Boolean, Cursor> {
 
     @Override
-    public Boolean process(Cursor cursor) throws Exception {
+    public Boolean process(Cursor cursor){
         return cursor.getCount() != 0;
     }
 }

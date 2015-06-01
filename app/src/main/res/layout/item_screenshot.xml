@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="120dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="1dp"
+    android:orientation="horizontal"
+    android:duplicateParentState="false">
+
+    <ImageView
+        android:id="@+id/iv_screenImage"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:scaleType="centerCrop"
+        android:tint="@color/photo_tint" />
+
+    <TextView
+        android:id="@+id/tv_screenName"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:paddingBottom="16dp"
+        android:textColor="@color/primary_light"
+        android:textSize="@dimen/material_font_size_body_1" />
+
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="12dp"
+        android:background="?android:selectableItemBackground"
+        android:gravity="center"
+        android:src="@android:drawable/ic_delete" />
+</RelativeLayout>
