@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.util.StepUtil;
 
 /**
  @author Iryna Monchanka
@@ -82,6 +83,7 @@ public class AttachmentService extends Service {
                     AttachNotificationHelper.updateNotification(getBaseContext(),
                             AttachNotificationHelper.getFinalBuilder(getBaseContext(), issueKey, fileFullName.size()), notificationId);
                     AmttFileObserver.clearImageArray();
+                    StepUtil.buildAllStepClear();
                     stopSelf();
                 }
             });

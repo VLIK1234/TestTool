@@ -37,6 +37,11 @@ public class StepUtil {
         DbObjectManger.INSTANCE.removeAll(new ActivityMeta());
     }
 
+    public static void buildAllStepClear(){
+        buildStepCleaning();
+        buildActivityMetaCleaning();
+    }
+
     public static void buildCheckUser(String userName, IResult<List<DatabaseEntity>> result) {
         DbObjectManger.INSTANCE.query(new JUserInfo(), null, new String[]{UsersTable._USER_NAME}, new String[]{userName}, result);
     }

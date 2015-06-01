@@ -110,8 +110,7 @@ public class TopButtonView extends FrameLayout{
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(true);
-                StepUtil.buildStepCleaning();
-                StepUtil.buildActivityMetaCleaning();
+                StepUtil.buildAllStepClear();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
             }
         });
@@ -187,8 +186,7 @@ public class TopButtonView extends FrameLayout{
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(false);
-                StepUtil.buildStepCleaning();
-                StepUtil.buildActivityMetaCleaning();
+                StepUtil.buildAllStepClear();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
             }
         });
