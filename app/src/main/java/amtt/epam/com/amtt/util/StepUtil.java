@@ -1,9 +1,7 @@
 package amtt.epam.com.amtt.util;
 
 import android.content.ComponentName;
-import android.content.pm.PackageManager.NameNotFoundException;
 
-import java.io.IOException;
 import java.util.List;
 
 import amtt.epam.com.amtt.bo.database.ActivityMeta;
@@ -19,30 +17,30 @@ import amtt.epam.com.amtt.database.table.UsersTable;
  */
 public class StepUtil {
 
-    public static void buildStepSaving(ComponentName componentName, String mScreenPath){
+    public static void saveStep(ComponentName componentName, String mScreenPath){
         Step step = new Step(componentName, mScreenPath);
         DbObjectManger.INSTANCE.addOrUpdateAsync(step, null);
     }
 
-    public static void buildActivityMetaSaving(ActivityMeta activityMeta){
+    public static void saveActivityMeta(ActivityMeta activityMeta){
         DbObjectManger.INSTANCE.addOrUpdateAsync(activityMeta, null);
     }
 
-    public static void buildStepCleaning() {
+    public static void cleanStep() {
         Step.restartStepNumber();
         DbObjectManger.INSTANCE.removeAll(new Step());
     }
 
-    public static void buildActivityMetaCleaning() {
+    public static void cleanActivityMeta() {
         DbObjectManger.INSTANCE.removeAll(new ActivityMeta());
     }
 
-    public static void buildAllStepClear(){
-        buildStepCleaning();
-        buildActivityMetaCleaning();
+    public static void clearAllStep(){
+        cleanStep();
+        cleanActivityMeta();
     }
 
-    public static void buildCheckUser(String userName, IResult<List<DatabaseEntity>> result) {
+    public static void checkUser(String userName, IResult<List<DatabaseEntity>> result) {
         DbObjectManger.INSTANCE.query(new JUserInfo(), null, new String[]{UsersTable._USER_NAME}, new String[]{userName}, result);
     }
 

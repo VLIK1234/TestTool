@@ -83,7 +83,7 @@ public class AttachmentService extends Service {
                     AttachNotificationHelper.updateNotification(getBaseContext(),
                             AttachNotificationHelper.getFinalBuilder(getBaseContext(), issueKey, fileFullName.size()), notificationId);
                     AmttFileObserver.clearImageArray();
-                    StepUtil.buildAllStepClear();
+                    StepUtil.clearAllStep();
                     stopSelf();
                 }
             });

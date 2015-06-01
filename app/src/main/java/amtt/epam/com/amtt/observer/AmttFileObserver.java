@@ -1,10 +1,8 @@
 package amtt.epam.com.amtt.observer;
 
-import android.content.pm.PackageManager;
 import android.os.FileObserver;
 import android.util.Log;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,7 +17,6 @@ import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
 /**
  * Created by Ivan_Bakach on 06.05.2015.
@@ -56,7 +53,7 @@ public class AmttFileObserver extends FileObserver {
                 final String createPath = path;
                 Runnable task = new Runnable() {
                     public void run() {
-                        StepUtil.buildStepSaving(ActivityMetaUtil.getTopActivityComponent(), absolutePath + "/" + createPath);
+                        StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), absolutePath + "/" + createPath);
 //                        TopButtonService.sendActionScreenshot(absolutePath + "/" + createPath);
                         TopButtonService.sendActionShowButton();
                     }
