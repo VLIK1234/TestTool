@@ -25,7 +25,6 @@ public final class JiraApiConst {
     private static String ASSIGNABLE_TAG = "assignable";
     private static String AUTH_TAG = "auth";
     private static String CREATEMETA_TAG = "createmeta";
-    private static String GROUPS_TAG = "groups";
     private static String ISSUE_TAG = "issue";
     private static String MAX_RESULTS_TAG = "maxResults";
     private static String MULTI_PROJECT_SEARCH_TAG = "multiProjectSearch";
@@ -49,7 +48,6 @@ public final class JiraApiConst {
     public static String PROJECT_VERSIONS_PATH = REST_API_PATH + PROJECT_TAG + SLASH;
     public static String PROJECT_VERSIONS_PATH_V = SLASH + VERSIONS_TAG;
     public static String PROJECT_PRIORITY_PATH = REST_API_PATH + PRIORITY_TAG;
-    public static String EXPAND_GROUPS = AND + EXPAND + EQUAL + GROUPS_TAG;
 
     //Header keys
     public static String AUTH = "Authorization";

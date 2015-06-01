@@ -82,6 +82,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         ActiveUser.getInstance().setUrl(userInfo.getUrl());
         ActiveUser.getInstance().setCredentials(userInfo.getCredentials());
         ActiveUser.getInstance().setId(userInfo.getId());
+        ActiveUser.getInstance().setUserName(userInfo.getName());
         Logger.e(TAG, "ID " + userInfo.getId());
         ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
@@ -123,10 +124,13 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
                         getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, this);
                     }
+                    else{
+                        showLoginActivity();
+                    }
                     break;
             }
         } else if (resultCode == RESULT_CANCELED) {
-            finish();
+
         }
     }
 }

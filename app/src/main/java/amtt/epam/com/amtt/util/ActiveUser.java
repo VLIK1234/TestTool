@@ -65,5 +65,8 @@ public class ActiveUser {
         mId = id;
     }
 
+    public void setUserName(String userName) {
+        this.mUserName = userName;
+    }
 }
 

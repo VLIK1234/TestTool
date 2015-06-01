@@ -33,7 +33,7 @@ public class SystemInfoHelper {
             appInfo += String.format(TEMPLATE, "Version app", packageInfo.versionName);
             appInfo += String.format(TEMPLATE, "Name", ContextHolder.getContext().getResources().getString(packageInfo.applicationInfo.labelRes));
         } catch (final PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            e.getMessage();
         }
         return appInfo;
     }
@@ -70,7 +70,7 @@ public class SystemInfoHelper {
             try {
                 fieldValue = field.getInt(new Object());
             } catch (IllegalArgumentException | NullPointerException e) {
-                e.printStackTrace();
+                e.getMessage();
             } catch (IllegalAccessException e) {
                 e.getMessage();
             }
@@ -95,7 +95,7 @@ public class SystemInfoHelper {
             try {
                 fieldValue = field.getInt(new Object());
             } catch (IllegalArgumentException | NullPointerException e) {
-                e.printStackTrace();
+                e.getMessage();
             } catch (IllegalAccessException e) {
                 e.getMessage();
             }

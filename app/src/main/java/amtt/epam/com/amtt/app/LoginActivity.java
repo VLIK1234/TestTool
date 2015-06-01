@@ -34,7 +34,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.Toast;
 
 import java.util.List;
@@ -56,7 +55,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private EditText mPassword;
     private EditText mUrl;
     private Button mLoginButton;
-    private CheckBox mEpamJira;
     private String mRequestUrl;
     private boolean mIsUserInDatabase;
 
@@ -81,7 +79,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         mPassword.clearErrorOnFocus(true);
         mUrl = (EditText) findViewById(R.id.jira_url);
         mUrl.setText("https://amtt05.atlassian.net");
-        mEpamJira = (CheckBox) findViewById(R.id.epam_jira_checkbox);
         mLoginButton = (Button) findViewById(R.id.login_button);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,11 +89,11 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private void sendAuthRequest() {
-        mRequestUrl = mEpamJira.isChecked() ? mUrl.getText().toString() + JiraApiConst.EPAM_JIRA_SUFFIX : mUrl.getText().toString();
+        mRequestUrl = mUrl.getText().toString();
         String userName = mUserName.getText().toString();
         String password = mPassword.getText().toString();
             //get user info and perform auth in one request
-            String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserName.getText().toString() + JiraApiConst.EXPAND_GROUPS;
+            String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserName.getText().toString();
             RestMethod<JUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
                     new UserInfoProcessor(),
                     userName,
@@ -158,6 +155,8 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         final String userName = mUserName.getText().toString();
         final String password = mPassword.getText().toString();
         activeUser.setCredentials(userName, password, mRequestUrl);
+        activeUser.setUserName(userName);
+        activeUser.setUrl(mUrl.getText().toString());
     }
 
     //Callbacks

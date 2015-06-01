@@ -26,23 +26,52 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
-/**
- * Created by Artsiom_Kaliaha on 07.05.2015.
- */
-@SuppressWarnings("unchecked")
-public class UserInfoActivity extends BaseActivity implements JiraCallback<JUserInfo>, LoaderCallbacks<Cursor> {
+import java.lang.ref.WeakReference;
 
-    private TextView mName;
-    private TextView mEmailAddress;
-    private TextView mDisplayName;
-    private TextView mTimeZone;
-    private TextView mLocale;
-    private ImageView mUserImage;
+/**
+ @author Artsiom_Kaliaha
+ @version on 07.05.2015
+ */
+
+@SuppressWarnings("unchecked")
+public class UserInfoActivity extends BaseActivity implements JiraCallback<JUserInfo>, LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
+
     private final String TAG = this.getClass().getSimpleName();
+    private static final int MESSAGE_TEXT_CHANGED = 100;
+    private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
+    private static final int SINGLE_USER_CURSOR_LOADER_ID = 2;
+    private TextView mNameTextView;
+    private TextView mEmailAddressTextView;
+    private TextView mDisplayNameTextView;
+    private TextView mTimeZoneTextView;
+    private TextView mLocaleTextView;
+    private TextView mJiraUrlTextView;
+    private ImageView mUserImageImageView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private AssigneeHandler mHandler;
+
+    public static class AssigneeHandler extends Handler {
+
+        private final WeakReference<UserInfoActivity> mActivity;
+
+        AssigneeHandler(UserInfoActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            UserInfoActivity service = mActivity.get();
+            service.refreshUserInfo();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +81,8 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         TopButtonService.close(this);
         initViews();
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
+        mHandler = new AssigneeHandler(this);
+        mSwipeRefreshLayout.setOnRefreshListener(UserInfoActivity.this);
     }
 
     @Override
@@ -69,47 +100,52 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_change_user:
+            case R.id.action_add: {
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
                 finish();
-                return true;
-            case R.id.action_refresh_user_info:
+            }
+            return true;
+            case R.id.action_refresh: {
                 showProgress(true);
-                String requestSuffix = JiraApiConst.USER_INFO_PATH + ActiveUser.getInstance().getUserName() + JiraApiConst.EXPAND_GROUPS;
-                RestMethod<JUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
-                        new UserInfoProcessor(),
-                        null,
-                        null,
-                        null);
-                new JiraTask.Builder<JUserInfo>()
-                        .setRestMethod(userInfoMethod)
-                        .setCallback(UserInfoActivity.this)
-                        .createAndExecute();
-                return true;
-            case android.R.id.home:
+                UserInfoActivity.this.onRefresh();
+            }
+            return true;
+            case R.id.action_list: {
+                startActivityForResult(new Intent(UserInfoActivity.this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
+            }
+            return true;
+            case android.R.id.home: {
                 finish();
-                return true;
+            }
+            return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
     public void initViews() {
-        mName = (TextView) findViewById(R.id.user_name);
-        mEmailAddress = (TextView) findViewById(R.id.user_email);
-        mDisplayName = (TextView) findViewById(R.id.user_full_name);
-        mTimeZone = (TextView) findViewById(R.id.user_time_zone);
-        mLocale = (TextView) findViewById(R.id.user_locale);
-        mUserImage = (ImageView) findViewById(R.id.user_image);
+        mNameTextView = (TextView) findViewById(R.id.user_name);
+        mEmailAddressTextView = (TextView) findViewById(R.id.user_email);
+        mDisplayNameTextView = (TextView) findViewById(R.id.user_full_name);
+        mTimeZoneTextView = (TextView) findViewById(R.id.user_time_zone);
+        mLocaleTextView = (TextView) findViewById(R.id.user_locale);
+        mJiraUrlTextView = (TextView) findViewById(R.id.jira_url);
+        mUserImageImageView = (ImageView) findViewById(R.id.user_image);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
     }
 
     public void populateUserInfo(JUserInfo user) {
-        mName.setText(user.getName());
-        mEmailAddress.setText(user.getEmailAddress());
-        mDisplayName.setText(user.getDisplayName());
-        mTimeZone.setText(user.getTimeZone());
-        mLocale.setText(user.getLocale());
+        ActiveUser.getInstance().setUrl(user.getUrl());
+        ActiveUser.getInstance().setCredentials(user.getCredentials());
+        ActiveUser.getInstance().setId(user.getId());
+        ActiveUser.getInstance().setUserName(user.getName());
+        mNameTextView.setText(user.getName());
+        mEmailAddressTextView.setText(user.getEmailAddress());
+        mDisplayNameTextView.setText(user.getDisplayName());
+        mTimeZoneTextView.setText(user.getTimeZone());
+        mLocaleTextView.setText(user.getLocale());
+        mJiraUrlTextView.setText(user.getUrl());
     }
 
     //Callback
@@ -117,32 +153,53 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader loader = null;
-        loader = new CursorLoader(this,
-                AmttUri.USER.get(),
-                null,
-                UsersTable._ID + "=?",
-                new String[]{ String.valueOf(ActiveUser.getInstance().getId()) },
-                null);
+        if (id == CURSOR_LOADER_ID) {
+            loader = new CursorLoader(this,
+                    AmttUri.USER.get(),
+                    null,
+                    UsersTable._ID + "=?",
+                    new String[]{ String.valueOf(ActiveUser.getInstance().getId()) },
+                    null);
+        } else if (id == SINGLE_USER_CURSOR_LOADER_ID) {
+            loader = new CursorLoader(UserInfoActivity.this,
+                    AmttUri.USER.get(),
+                    null,
+                    UsersTable._ID + "=?",
+                    new String[]{String.valueOf(args.getLong(AmttActivity.KEY_USER_ID))},
+                    null);
+        }
         return loader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         try {
-            if (data != null) {
-                if (data.getCount() > 0) {
-                    JUserInfo userInfo = new JUserInfo(data);
-                    populateUserInfo(userInfo);
-                    CoreApplication.getImageLoader().displayImage(userInfo.getAvatarUrls().getAvatarUrl(), mUserImage);
-                } else {
-                    Logger.d(TAG, "data==0");
-                }
-            } else {
-                Logger.d(TAG, "data==null");
+            switch (loader.getId()) {
+                case CURSOR_LOADER_ID:
+                    if (data != null) {
+                        if (data.getCount() > 0) {
+                            reloadData(data);
+                        } else {
+                            Logger.d(TAG, "data==0");
+                        }
+                    } else {
+                        Logger.d(TAG, "data==null");
+                    }
+                    break;
+                case SINGLE_USER_CURSOR_LOADER_ID:
+                    reloadData(data);
+                    break;
+
             }
         } finally {
             IOUtils.close(data);
         }
+    }
+
+    private void reloadData(Cursor data) {
+        JUserInfo userInfo = new JUserInfo(data);
+        populateUserInfo(userInfo);
+        CoreApplication.getImageLoader().displayImage(userInfo.getAvatarUrls().getAvatarUrl(), mUserImageImageView);
     }
 
     @Override
@@ -153,15 +210,16 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     //Jira
     @Override
     public void onRequestStarted() {
-        showProgress(true);
     }
 
     @Override
     public void onRequestPerformed(RestResponse<JUserInfo> restResponse) {
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
             JUserInfo user = restResponse.getResultObject();
+            user.setUrl(ActiveUser.getInstance().getUrl());
             populateUserInfo(user);
             showProgress(false);
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -169,6 +227,50 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     public void onRequestError(AmttException e) {
         ExceptionHandler.getInstance().processError(e).showDialog(this, UserInfoActivity.this);
         showProgress(false);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+
+    private void refreshUserInfo() {
+        String requestSuffix = JiraApiConst.USER_INFO_PATH + ActiveUser.getInstance().getUserName();
+        RestMethod<JUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
+                new UserInfoProcessor(),
+                null,
+                null,
+                null);
+        new JiraTask.Builder<JUserInfo>()
+                .setRestMethod(userInfoMethod)
+                .setCallback(UserInfoActivity.this)
+                .createAndExecute();
+    }
+
+    @Override
+    public void onRefresh() {
+        mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
+        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED), 750);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case AMTT_ACTIVITY_REQUEST_CODE:
+                    if (data != null) {
+                        Bundle args = new Bundle();
+                        long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
+                        args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
+                        getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
+                    }else{
+                        Intent loginIntent = new Intent(UserInfoActivity.this, LoginActivity.class);
+                        startActivity(loginIntent);
+                        finish();
+                    }
+                    break;
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+
+        }
     }
 
 }

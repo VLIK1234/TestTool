@@ -66,14 +66,7 @@
         android:layout_below="@+id/jira_url"/>
     <!-- *******PASSWORD END***************************************************-->
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/label_epam_employee_sign"
-        android:id="@+id/epam_jira_checkbox"
-        android:layout_below="@+id/password"/>
-
-    <Button
+      <Button
         android:id="@+id/login_button"
         android:layout_height="@dimen/material_vertical_button_height_size"
         android:layout_width="wrap_content"
@@ -81,7 +74,7 @@
         android:minWidth="@dimen/material_vertical_button_min_width_size"
         android:text="@string/label_login"
         android:textSize="@dimen/material_font_size_button"
-        android:layout_below="@id/epam_jira_checkbox"
+        android:layout_below="@id/password"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
 
