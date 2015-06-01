@@ -14,7 +14,6 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -110,8 +109,7 @@ public class TopButtonView extends FrameLayout{
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(true);
-                StepUtil.buildStepCleaning();
-                StepUtil.buildActivityMetaCleaning();
+                StepUtil.clearAllStep();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
             }
         });
@@ -142,7 +140,7 @@ public class TopButtonView extends FrameLayout{
             @Override
             public void TouchAction() {
                 try {
-                    StepUtil.buildActivityMetaSaving(ActivityMetaUtil.createMeta());
+                    StepUtil.saveActivityMeta(ActivityMetaUtil.createMeta());
                 } catch (NameNotFoundException e) {
                     Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
                 }
@@ -158,16 +156,17 @@ public class TopButtonView extends FrameLayout{
         activityInfoView = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info),R.drawable.background_activity_info, new ITouchAction() {
             @Override
             public void TouchAction() {
+                Toast.makeText(getContext(), getContext().getString(R.string.label_activity_info), Toast.LENGTH_LONG).show();
                 ScheduledExecutorService worker =
                         Executors.newSingleThreadScheduledExecutor();
                 Runnable task = new Runnable() {
                     public void run() {
                         try {
-                            StepUtil.buildActivityMetaSaving(ActivityMetaUtil.createMeta());
+                            StepUtil.saveActivityMeta(ActivityMetaUtil.createMeta());
                         } catch (NameNotFoundException e) {
                             Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
                         }
-                        StepUtil.buildStepSaving(ActivityMetaUtil.getTopActivityComponent(), null);
+                        StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), null);
                     }
                 };
                 worker.schedule(task, 1, TimeUnit.SECONDS);
@@ -186,8 +185,7 @@ public class TopButtonView extends FrameLayout{
             @Override
             public void TouchAction() {
                 TopButtonView.setStartRecord(false);
-                StepUtil.buildStepCleaning();
-                StepUtil.buildActivityMetaCleaning();
+                StepUtil.clearAllStep();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
             }
         });

@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.view;
 
 import android.content.Context;
+import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -12,23 +13,19 @@ import android.widget.RelativeLayout;
 
 import amtt.epam.com.amtt.R;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 /**
- * Created by Iryna_Monchanka on 5/20/2015.
+ @author Iryna Monchanka
+ @version on 5/20/2015
  */
+
 public class AutocompleteProgressView extends RelativeLayout {
 
     private AutoCompleteTextView mACTextView;
     private ProgressBar mProgress;
-    private Context mContext;
 
     public AutocompleteProgressView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mContext = context;
-        LayoutInflater.from(mContext).inflate(R.layout.autocomplete_progress_layout, this, true);
+        LayoutInflater.from(context).inflate(R.layout.autocomplete_progress_layout, this, true);
         initViews();
     }
 
@@ -47,8 +44,6 @@ public class AutocompleteProgressView extends RelativeLayout {
 
     public void setAdapter(ArrayAdapter<String> adapter) {
         mACTextView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        mACTextView.showDropDown();
     }
 
     public void setThreshold(int threshold) {
@@ -57,5 +52,13 @@ public class AutocompleteProgressView extends RelativeLayout {
 
     public void addTextChangedListener(TextWatcher watcher) {
         mACTextView.addTextChangedListener(watcher);
+    }
+
+    public void showDropDown() {
+        mACTextView.showDropDown();
+    }
+
+    public Editable getText(){
+        return mACTextView.getText();
     }
 }

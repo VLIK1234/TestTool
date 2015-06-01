@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import java.lang.reflect.Field;
 
 import amtt.epam.com.amtt.util.ContextHolder;
+import amtt.epam.com.amtt.util.RootUtil;
 
 /**
  * Created by Ivan_Bakach on 14.05.2015.
@@ -39,13 +40,11 @@ public class SystemInfoHelper {
     }
 
     public static String getDeviceOsInfo(){
-        String deviceInfo = "---Device info---"
+        return "---Device info---"
                 + String.format(TEMPLATE, "OS", getSystemVersionName())
                 + String.format(TEMPLATE, "Device", Build.BRAND.toUpperCase() +" "+ Build.MODEL.toUpperCase())
-                + String.format(TEMPLATE, "Baseband version", Build.getRadioVersion())
-                + String.format(TEMPLATE, "Display", getInfoSizeDisplay());
-
-        return deviceInfo;
+                + String.format(TEMPLATE, "Display", getInfoSizeDisplay())
+                + String.format(TEMPLATE, "Root", RootUtil.isDeviceRooted());
 
     }
 
@@ -69,10 +68,8 @@ public class SystemInfoHelper {
 
             try {
                 fieldValue = field.getInt(new Object());
-            } catch (IllegalArgumentException | NullPointerException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.getMessage();
+            } catch (IllegalArgumentException|IllegalAccessException | NullPointerException e) {
+                //ignore because reflection produce some exception during searched field value
             }
 
             if (fieldValue == metrics.densityDpi&&!fieldName.equals("DENSITY_DEVICE")) {
@@ -94,10 +91,8 @@ public class SystemInfoHelper {
 
             try {
                 fieldValue = field.getInt(new Object());
-            } catch (IllegalArgumentException | NullPointerException e) {
+            } catch (IllegalAccessException | NullPointerException e) {
                 e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.getMessage();
             }
 
             if (fieldValue == Build.VERSION.SDK_INT) {

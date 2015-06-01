@@ -24,5 +24,5 @@
     <color name="et_divider_error">#FFFF0000</color>
     <color name="iv_divider_color">#FF8D8D8D</color>
 
-
+    <color name="photo_tint">#88101010</color>
 </resources>

@@ -19,7 +19,7 @@
     <Button
         android:id="@+id/dialog_button_ok"
         android:layout_width="@dimen/dialog_button_width"
-        android:layout_height="@dimen/dialo_button_height"
+        android:layout_height="@dimen/dialog_button_height"
         android:layout_margin="@dimen/dialo_button_margin"
         android:layout_gravity="end"
         android:text="@string/dialog_button_text"

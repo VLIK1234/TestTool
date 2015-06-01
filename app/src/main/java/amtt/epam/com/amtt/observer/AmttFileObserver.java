@@ -1,10 +1,8 @@
 package amtt.epam.com.amtt.observer;
 
-import android.content.pm.PackageManager;
 import android.os.FileObserver;
 import android.util.Log;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,10 +13,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
 /**
  * Created by Ivan_Bakach on 06.05.2015.
@@ -48,14 +46,14 @@ public class AmttFileObserver extends FileObserver {
         if ((FileObserver.CREATE & event) != 0) {
             Log.d(TAG, absolutePath + "/" + path + " is created\n");
 
-            if (isNewScreenshot(path) && TopButtonView.getStartRecord()) {
+            if (isNewScreenshot(path) && HelpDialogActivity.getIsCanTakeScreenshot()) {
                 imageArray.add(absolutePath + "/" + path);
                 ScheduledExecutorService worker =
                         Executors.newSingleThreadScheduledExecutor();
                 final String createPath = path;
                 Runnable task = new Runnable() {
                     public void run() {
-                        StepUtil.buildStepSaving(ActivityMetaUtil.getTopActivityComponent(), absolutePath + "/" + createPath);
+                        StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), absolutePath + "/" + createPath);
 //                        TopButtonService.sendActionScreenshot(absolutePath + "/" + createPath);
                         TopButtonService.sendActionShowButton();
                     }
@@ -128,5 +126,9 @@ public class AmttFileObserver extends FileObserver {
 
     public static ArrayList<String> getImageArray() {
         return imageArray;
+    }
+
+    public static void clearImageArray() {
+        imageArray.clear();
     }
 }
