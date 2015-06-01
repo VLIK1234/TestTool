@@ -29,7 +29,7 @@ import amtt.epam.com.amtt.topbutton.view.TopButtonView;
  */
 public class TopButtonService extends Service{
 
-    public static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.SHOW";
+    public static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.START";
     public static final String ACTION_CLOSE = "amtt.epam.com.amtt.topbutton.service.CLOSE";
     private static final String TAG = "Log";
     public static final int NOTIFICATION_ID = 7;

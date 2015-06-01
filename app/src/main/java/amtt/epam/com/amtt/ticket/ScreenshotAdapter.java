@@ -50,7 +50,7 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
         Attachment screenshot = screenshots.get(i);
         Logger.d(TAG, screenshot.name);
         viewHolder.screenshotName.setText(screenshot.name);
-        sImageLoader.load(viewHolder.screenshotImage, screenshot.imageName);
+        sImageLoader.load(viewHolder.screenshotImage, screenshot.filePath);
         viewHolder.screenshotClose.setEnabled(true);
     }
 
@@ -66,7 +66,7 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
 
     public void removeItem(int position) {
         screenshots.remove(position);
-        notifyDataSetChanged();
+        notifyItemRemoved(position);
         Logger.d(TAG, String.valueOf(position));
     }
 

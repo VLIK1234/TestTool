@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.ticket;
 
-import amtt.epam.com.amtt.observer.AmttFileObserver;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class ScreenshotManager {
             for (int i = 0; i < listScreenshot.size(); i++) {
                 Attachment screenshot = new Attachment();
                 screenshot.name = listScreenshot.get(i).replaceAll("/Pictures/Screenshots/", "/");
-                screenshot.imageName = listScreenshot.get(i);
+                screenshot.filePath = listScreenshot.get(i);
                 screenshotList.add(screenshot);
             }
         }

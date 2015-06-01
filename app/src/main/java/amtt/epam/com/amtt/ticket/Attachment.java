@@ -8,6 +8,6 @@ package amtt.epam.com.amtt.ticket;
 public class Attachment {
 
     public String name;
-    public String imageName;
+    public String filePath;
 
 }

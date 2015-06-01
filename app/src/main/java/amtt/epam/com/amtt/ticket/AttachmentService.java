@@ -18,7 +18,7 @@ import amtt.epam.com.amtt.util.Logger;
 
 public class AttachmentService extends Service {
 
-    public static final String ACTION_START = "SHOW";
+    public static final String ACTION_START = "START";
     public static final String ACTION_CLOSE = "CLOSE";
     public static final String RESULT = "RESULT";
     private static final String TAG = "Log";

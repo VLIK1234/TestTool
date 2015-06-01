@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 
-/** @author Kevin Kowalewski */
+/** @author Kevin Kowalewski http://stackoverflow.com/a/8097801*/
 public class RootUtil {
     public static boolean isDeviceRooted() {
         return checkRootMethod1() || checkRootMethod2() || checkRootMethod3() || checkRootMethod4();
