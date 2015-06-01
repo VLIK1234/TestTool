@@ -8,9 +8,11 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
 import java.util.Map;
 
@@ -133,6 +135,7 @@ public class RestMethod<ResultType> {
         HttpPost httpPost = new HttpPost(mUrl);
         Logger.d(TAG, mUrl);
         httpPost.setEntity(mPostEntity);
+
         for (Map.Entry<String, String> keyValuePair : mHeaders.entrySet()) {
             httpPost.setHeader(keyValuePair.getKey(), keyValuePair.getValue());
         }
@@ -145,7 +148,6 @@ public class RestMethod<ResultType> {
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IOException e) {
             Logger.e(TAG, e.getMessage());
-            e.printStackTrace();
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }
         return httpResponse;
@@ -164,9 +166,8 @@ public class RestMethod<ResultType> {
         }
 
         int statusCode = httpResponse.getStatusLine().getStatusCode();
-
-        if ((mRestMethodType == RestMethodType.GET && statusCode != HttpStatus.SC_OK) ||
-                (mRestMethodType == RestMethodType.POST && statusCode != HttpStatus.SC_CREATED)) {
+        if (mRestMethodType == RestMethodType.GET && statusCode != HttpStatus.SC_OK ||
+                mRestMethodType == RestMethodType.POST && statusCode != HttpStatus.SC_CREATED) {
             throw new AmttException(null, statusCode, this, null);
         }
 
@@ -180,7 +181,7 @@ public class RestMethod<ResultType> {
                 restResponse.setResultObject(result);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.e(TAG, e.getMessage());
             throw prepareException(e, statusCode, entity);
         }
 
@@ -198,9 +199,9 @@ public class RestMethod<ResultType> {
         try {
             entityString = EntityUtils.toString(entity, HTTP.UTF_8);
         } catch (IOException entityParseException) {
+            Logger.e(TAG, e.getMessage());
             //TODO for reviewer: addSuppressed requires API19, project API is 14th
             //amttException.getSuppressedOne().addSuppressed(entityParseException);
-            e.printStackTrace();
             amttException.replaceSuppressedOne(entityParseException);
         }
         amttException.setEntity(entityString);
