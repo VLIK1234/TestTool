@@ -41,8 +41,8 @@ public class LoginItemAdapter extends CursorAdapter {
         View view = LayoutInflater.from(context).inflate(R.layout.adapter_login_dropdown_item, parent, false);
 
         ViewHolder vh = new ViewHolder();
-        vh.mUserImage = (ImageView)view.findViewById(R.id.user_image);
-        vh.mUserName = (TextView)view.findViewById(R.id.user_name);
+        vh.mUserImage = (ImageView)view.findViewById(R.id.tv_avatar);
+        vh.mUserName = (TextView)view.findViewById(R.id.tv_user_name);
         view.setTag(vh);
         return view;
     }

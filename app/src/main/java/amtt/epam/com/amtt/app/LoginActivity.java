@@ -20,7 +20,7 @@ import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
-import amtt.epam.com.amtt.util.Constants.Str;
+import amtt.epam.com.amtt.util.Constants.Symbols;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.view.EditText;
@@ -33,7 +33,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.Toast;
 
 import java.util.List;
@@ -51,11 +50,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
 
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
 
-    private EditText mUserName;
-    private EditText mPassword;
-    private EditText mUrl;
+    private EditText mUserNameEditText;
+    private EditText mPasswordEditText;
+    private EditText mUrlEditText;
     private Button mLoginButton;
-    private CheckBox mEpamJira;
     private String mRequestUrl;
     private boolean mIsUserInDatabase;
 
@@ -72,16 +70,17 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private void initViews() {
-        mUserName = (EditText) findViewById(R.id.user_name);
-        mUserName.setText("admin");
-        mPassword = (EditText) findViewById(R.id.password);
-        mPassword.setText("bujhm515");
-        mPassword.clearErrorOnTextChanged(true);
-        mPassword.clearErrorOnFocus(true);
-        mUrl = (EditText) findViewById(R.id.jira_url);
-        mUrl.setText("https://amtt05.atlassian.net");
-        mEpamJira = (CheckBox) findViewById(R.id.epam_jira_checkbox);
-        mLoginButton = (Button) findViewById(R.id.login_button);
+        mUserNameEditText = (EditText) findViewById(R.id.et_username);
+        mUserNameEditText.clearErrorOnTextChanged(true);
+        mUserNameEditText.clearErrorOnFocus(true);
+        mPasswordEditText = (EditText) findViewById(R.id.et_password);
+        mPasswordEditText.clearErrorOnTextChanged(true);
+        mPasswordEditText.clearErrorOnFocus(true);
+        mUrlEditText = (EditText) findViewById(R.id.et_jira_url);
+        mUrlEditText.setText("https://");
+        mUrlEditText.clearErrorOnTextChanged(true);
+        mUrlEditText.clearErrorOnFocus(true);
+        mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,11 +90,11 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private void sendAuthRequest() {
-        mRequestUrl = mEpamJira.isChecked() ? mUrl.getText().toString() + JiraApiConst.EPAM_JIRA_SUFFIX : mUrl.getText().toString();
-        String userName = mUserName.getText().toString();
-        String password = mPassword.getText().toString();
+        mRequestUrl = mUrlEditText.getText().toString();
+        String userName = mUserNameEditText.getText().toString();
+        String password = mPasswordEditText.getText().toString();
             //get user info and perform auth in one request
-            String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserName.getText().toString() + JiraApiConst.EXPAND_GROUPS;
+            String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameEditText.getText().toString();
             RestMethod<JUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
                     new UserInfoProcessor(),
                     userName,
@@ -122,22 +121,25 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
 
     private void checkFields() {
         boolean isAnyEmptyField = false;
-        if (TextUtils.isEmpty(mUserName.getText().toString())) {
-            mUserName.setError("");
+        if (TextUtils.isEmpty(mUserNameEditText.getText().toString())) {
+            mUserNameEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username));
             isAnyEmptyField = true;
         }
-        if (TextUtils.isEmpty(mPassword.getText().toString())) {
+        if (TextUtils.isEmpty(mPasswordEditText.getText().toString())) {
             isAnyEmptyField = true;
-            mPassword.setError("");
+            mPasswordEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_password));
         }
-        if (TextUtils.isEmpty(mUrl.getText().toString())) {
+        if (TextUtils.isEmpty(mUrlEditText.getText().toString()) || "https://".equals(mUrlEditText.getText().toString())) {
             isAnyEmptyField = true;
-            mUrl.setError("");
+            mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_url));
+        } else if(getString(R.string.epam_url).equals(mUrlEditText.getText().toString())){
+            isAnyEmptyField = true;
+            mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_postfix_jira));
         }
         if (!isAnyEmptyField) {
             showProgress(true);
             mLoginButton.setEnabled(false);
-            StepUtil.checkUser(mUserName.getText().toString(), new IResult<List<DatabaseEntity>>() {
+            StepUtil.checkUser(mUserNameEditText.getText().toString(), new IResult<List<DatabaseEntity>>() {
                 @Override
                 public void onResult(List<DatabaseEntity> result) {
                     mIsUserInDatabase = result.size() > 0;
@@ -152,11 +154,13 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         }
     }
 
-    private void populateActiveUserInfo() {
+    private void setActiveUser() {
         final ActiveUser activeUser = ActiveUser.getInstance();
-        final String userName = mUserName.getText().toString();
-        final String password = mPassword.getText().toString();
+        final String userName = mUserNameEditText.getText().toString();
+        final String password = mPasswordEditText.getText().toString();
         activeUser.setCredentials(userName, password, mRequestUrl);
+        activeUser.setUserName(userName);
+        activeUser.setUrl(mUrlEditText.getText().toString());
     }
 
     //Callbacks
@@ -172,12 +176,12 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
             if (restResponse.getResultObject() != null && !mIsUserInDatabase) {
                 JUserInfo user = restResponse.getResultObject();
-                user.setUrl(mUrl.getText().toString());
+                user.setUrl(mUrlEditText.getText().toString());
                 if (ActiveUser.getInstance().getCredentials() == null) {
-                    populateActiveUserInfo();
+                    setActiveUser();
                 }
                 else {
-                    populateActiveUserInfo();
+                    setActiveUser();
                     user.setCredentials(ActiveUser.getInstance().getCredentials());
                 }
                 insertUserToDatabase(user);
@@ -187,7 +191,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
             public void run() {
-                populateActiveUserInfo();
+                setActiveUser();
                 TopButtonService.start(getBaseContext());
                 JiraContent.getInstance().getPrioritiesNames(null);
                 JiraContent.getInstance().getProjectsNames(null);
@@ -225,9 +229,9 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
             switch (loader.getId()) {
                 case SINGLE_USER_CURSOR_LOADER_ID:
                     JUserInfo user = new JUserInfo(data);
-                    mUserName.setText(user.getName());
-                    mUrl.setText(user.getUrl());
-                    mPassword.setText(Str.EMPTY);
+                    mUserNameEditText.setText(user.getName());
+                    mUrlEditText.setText(user.getUrl());
+                    mPasswordEditText.setText(Symbols.EMPTY);
                     break;
             }
         } finally {

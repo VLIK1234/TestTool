@@ -7,8 +7,10 @@ import android.support.v4.app.NotificationCompat;
 import amtt.epam.com.amtt.R;
 
 /**
- * Created by Ivan_Bakach on 29.05.2015.
+ @author Ivan_Bakach
+ @version on 29.05.2015
  */
+
 public class AttachNotificationHelper {
     public static final String NOTIFICATION_ATTACH_GROUP = "Attach";
     public static int notificationId = 1;

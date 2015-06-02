@@ -40,8 +40,10 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 
 /**
- * Created by Ivan_Bakach on 23.03.2015.
+ @author Ivan_Bakach
+ @version on 23.03.2015
  */
+
 public class TopButtonView extends FrameLayout{
 
     private final static String LOG_TAG = "TAG";

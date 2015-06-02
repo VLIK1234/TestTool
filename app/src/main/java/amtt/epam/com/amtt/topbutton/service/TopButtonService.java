@@ -25,8 +25,10 @@ import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
 /**
- * Created by Ivan_Bakach on 20.03.2015.
+ @author Ivan_Bakach
+ @version on 20.03.2015
  */
+
 public class TopButtonService extends Service{
 
     public static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.START";

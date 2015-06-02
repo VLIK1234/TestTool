@@ -32,8 +32,8 @@ public class UserAdapter extends CursorAdapter {
         View layout = LayoutInflater.from(context).inflate(R.layout.adapter_user, parent, false);
 
         ViewHolder vh = new ViewHolder();
-        vh.mUserImage = (ImageView)layout.findViewById(R.id.user_image);
-        vh.mUserName = (TextView)layout.findViewById(R.id.user_name);
+        vh.mUserImage = (ImageView)layout.findViewById(R.id.tv_avatar);
+        vh.mUserName = (TextView)layout.findViewById(R.id.tv_user_name);
         layout.setTag(vh);
         return layout;
     }

@@ -16,8 +16,10 @@ import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
 import amtt.epam.com.amtt.loader.InternalStorageImageLoader;
 
 /**
- * Created by Artsiom_Kaliaha on 31.03.2015.
+ @author Artsiom_Kaliaha
+ @version on 31.03.2015
  */
+
 public class StepAdapter extends CursorAdapter {
 
     private static class ViewHolder {

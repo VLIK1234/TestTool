@@ -12,8 +12,10 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.helper.HelpTakeScreen;
 
 /**
- * Created by Ivan_Bakach on 19.05.2015.
+ @author Ivan_Bakach
+ @version on 19.05.2015
  */
+
 public class HelpDialogActivity extends Activity {
 
     private static boolean isCanTakeScreenshot;
