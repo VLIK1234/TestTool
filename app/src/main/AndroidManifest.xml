@@ -69,6 +69,10 @@
             android:label="@string/title_activity_help_dialog"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+
+        <service
+            android:name=".ticket.AttachmentService"
+            android:exported="false" />
     </application>
 
 </manifest>

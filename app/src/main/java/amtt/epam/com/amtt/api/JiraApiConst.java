@@ -1,8 +1,10 @@
 package amtt.epam.com.amtt.api;
 
 /**
- * Created by Artsiom_Kaliaha on 15.04.2015.
+ @author Artsiom_Kaliaha
+ @version on 15.04.2015
  */
+
 public final class JiraApiConst {
 
     //Default values
@@ -23,6 +25,7 @@ public final class JiraApiConst {
 
     //Tags
     private static String ASSIGNABLE_TAG = "assignable";
+    private static String ATTACHMENTS_TAG = "attachments";
     private static String AUTH_TAG = "auth";
     private static String CREATEMETA_TAG = "createmeta";
     private static String ISSUE_TAG = "issue";
@@ -48,12 +51,15 @@ public final class JiraApiConst {
     public static String PROJECT_VERSIONS_PATH = REST_API_PATH + PROJECT_TAG + SLASH;
     public static String PROJECT_VERSIONS_PATH_V = SLASH + VERSIONS_TAG;
     public static String PROJECT_PRIORITY_PATH = REST_API_PATH + PRIORITY_TAG;
+    public static String ATTACHMENTS_PATH = SLASH + ATTACHMENTS_TAG;
 
     //Header keys
     public static String AUTH = "Authorization";
     public static String CONTENT_TYPE = "content-type";
+    public static String ATLASSIAN_TOKEN = "X-Atlassian-Token";
 
     //Header values
     public static String APPLICATION_JSON = "application/json";
     public static String BASIC_AUTH = "Basic ";
+    public static String NO_CHECK = "nocheck";
 }

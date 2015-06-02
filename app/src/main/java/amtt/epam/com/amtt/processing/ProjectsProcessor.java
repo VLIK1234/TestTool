@@ -7,9 +7,9 @@ import org.apache.http.util.EntityUtils;
 import amtt.epam.com.amtt.bo.JProjectsResponse;
 import amtt.epam.com.amtt.ticket.JiraContent;
 
-
 /**
- * Created by Irina Monchenko on 01.04.2015.
+ @author Iryna Monchanka
+ @version on 01.04.2015
  */
 public class ProjectsProcessor implements Processor<JProjectsResponse, HttpEntity> {
 

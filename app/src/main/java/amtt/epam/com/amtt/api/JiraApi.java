@@ -1,5 +1,13 @@
 package amtt.epam.com.amtt.api;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +20,8 @@ import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.util.ActiveUser;
 
 /**
- * Created by Artsiom_Kaliaha on 24.03.2015.
+ @author Artsiom_Kaliaha
+ @version on 24.03.2015
  */
 
 @SuppressWarnings("unchecked")
@@ -47,15 +56,22 @@ public class JiraApi {
         return mMethod;
     }
 
-    public RestMethod buildIssueCreating(final String postEntity) {
+    public <ResultType, InputType> RestMethod buildIssueCreating(final String postStringEntity, final Processor<ResultType, InputType> processor) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
+        HttpEntity postEntity = null;
+        try {
+            postEntity = new StringEntity(postStringEntity);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         mMethod = new RestMethod.Builder<Void>()
                 .setType(RestMethodType.POST)
                 .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH)
                 .setHeadersMap(headers)
                 .setPostEntity(postEntity)
+                .setProcessor(processor)
                 .create();
         return mMethod;
     }
@@ -83,6 +99,28 @@ public class JiraApi {
                 .setHeadersMap(headers)
                 .setProcessor(processor)
                 .create();
+        return mMethod;
+    }
+
+    public RestMethod buildAttachmentCreating(final String issueKey, ArrayList<String> fullfilename){
+        Map<String, String> headers = new HashMap<>();
+        headers.put(JiraApiConst.AUTH, mUser.getCredentials());
+        headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
+        HttpEntity postEntity;
+        MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
+        for (int i = 0; i < fullfilename.size(); i++) {
+           String file =  fullfilename.get(i);
+            File fileToUpload = new File(file);
+            multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("image/jpeg"),
+                fileToUpload.getName());
+        }
+       postEntity = multipartEntityBuilder.build();
+            mMethod = new RestMethod.Builder<Void>()
+                    .setType(RestMethodType.POST)
+                    .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
+                    .setHeadersMap(headers)
+                    .setPostEntity(postEntity)
+                    .create();
         return mMethod;
     }
 

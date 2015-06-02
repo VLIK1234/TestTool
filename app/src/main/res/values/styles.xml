@@ -40,6 +40,7 @@
         <item name="et_supportEllipsize">end</item>
         <item name="et_autoCompleteMode">none</item>
         <item name="et_supportMode">4</item>
+        <item name="android:textCursorDrawable">@null</item>
     </style>
 
     <style name="Material.Widget.AutocompleteProgressView">

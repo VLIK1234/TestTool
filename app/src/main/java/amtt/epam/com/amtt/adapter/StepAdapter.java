@@ -2,9 +2,6 @@ package amtt.epam.com.amtt.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.hardware.display.DisplayManager;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +14,12 @@ import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
 import amtt.epam.com.amtt.loader.InternalStorageImageLoader;
-import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
- * Created by Artsiom_Kaliaha on 31.03.2015.
+ @author Artsiom_Kaliaha
+ @version on 31.03.2015
  */
+
 public class StepAdapter extends CursorAdapter {
 
     private static class ViewHolder {

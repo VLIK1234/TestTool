@@ -16,7 +16,6 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -135,7 +134,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         if (!isAnyEmptyField) {
             showProgress(true);
             mLoginButton.setEnabled(false);
-            StepUtil.buildCheckUser(mUserNameEditText.getText().toString(), new IResult<List<DatabaseEntity>>() {
+            StepUtil.checkUser(mUserNameEditText.getText().toString(), new IResult<List<DatabaseEntity>>() {
                 @Override
                 public void onResult(List<DatabaseEntity> result) {
                     mIsUserInDatabase = result.size() > 0;
@@ -191,7 +190,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 TopButtonService.start(getBaseContext());
                 JiraContent.getInstance().getPrioritiesNames(null);
                 JiraContent.getInstance().getProjectsNames(null);
-                JiraContent.getInstance().setEnvironment(SystemInfoHelper.getDeviceOsInfo());
             }
         };
         worker.schedule(task, 1, TimeUnit.SECONDS);

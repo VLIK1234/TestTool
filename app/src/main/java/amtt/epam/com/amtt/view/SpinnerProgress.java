@@ -18,7 +18,8 @@ import java.util.List;
 import amtt.epam.com.amtt.R;
 
 /**
- * Created by Iryna_Monchanka on 5/20/2015.
+ @author Iryna Monchanka
+ @version on 5/20/2015
  */
 
 public class SpinnerProgress extends RelativeLayout {
@@ -28,13 +29,10 @@ public class SpinnerProgress extends RelativeLayout {
 
     public SpinnerProgress(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Context mContext = context;
-        LayoutInflater.from(mContext).inflate(R.layout.spinner_progress_layout, this,
-                true);
+        LayoutInflater.from(getContext()).inflate(R.layout.spinner_progress_layout, this, true);
         String[] strings = new String[]{};
         List<String> items = new ArrayList<>(Arrays.asList(strings));
-        mEmptyAdapter = new ArrayAdapter<>(context,
-                R.layout.spinner_layout, items);
+        mEmptyAdapter = new ArrayAdapter<>(context, R.layout.spinner_layout, items);
         initViews();
     }
 
