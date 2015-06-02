@@ -71,13 +71,15 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
 
     private void initViews() {
         mUserNameEditText = (EditText) findViewById(R.id.et_username);
-        mUserNameEditText.setText("admin");
+        mUserNameEditText.clearErrorOnTextChanged(true);
+        mUserNameEditText.clearErrorOnFocus(true);
         mPasswordEditText = (EditText) findViewById(R.id.et_password);
-        mPasswordEditText.setText("bujhm515");
         mPasswordEditText.clearErrorOnTextChanged(true);
         mPasswordEditText.clearErrorOnFocus(true);
         mUrlEditText = (EditText) findViewById(R.id.et_jira_url);
-        mUrlEditText.setText("https://amtt05.atlassian.net");
+        mUrlEditText.setText("https://");
+        mUrlEditText.clearErrorOnTextChanged(true);
+        mUrlEditText.clearErrorOnFocus(true);
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,16 +122,19 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private void checkFields() {
         boolean isAnyEmptyField = false;
         if (TextUtils.isEmpty(mUserNameEditText.getText().toString())) {
-            mUserNameEditText.setError("");
+            mUserNameEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username));
             isAnyEmptyField = true;
         }
         if (TextUtils.isEmpty(mPasswordEditText.getText().toString())) {
             isAnyEmptyField = true;
-            mPasswordEditText.setError("");
+            mPasswordEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_password));
         }
-        if (TextUtils.isEmpty(mUrlEditText.getText().toString())) {
+        if (TextUtils.isEmpty(mUrlEditText.getText().toString()) || "https://".equals(mUrlEditText.getText().toString())) {
             isAnyEmptyField = true;
-            mUrlEditText.setError("");
+            mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_url));
+        } else if(getString(R.string.epam_url).equals(mUrlEditText.getText().toString())){
+            isAnyEmptyField = true;
+            mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_postfix_jira));
         }
         if (!isAnyEmptyField) {
             showProgress(true);

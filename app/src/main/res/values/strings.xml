@@ -131,6 +131,7 @@
     <string name="enter_password">" password"</string>
     <string name="enter_url">" url"</string>
     <string name="enter_summary">" summary"</string>
+    <string name="enter_postfix_jira">" postfix '/jira'"</string>
     <string name="auth_passed">Authorization passed</string>
     <string name="label_refresh_user_info">Refresh info</string>
     <string name="error_title_database">Data base error</string>
@@ -167,5 +168,5 @@
     <string name="notification_attachment_text_done">Uploaded successfully %s attached items.</string>
     <string name="notification_attach_title_init">Uploading %s</string>
     <string name="notification_attachment_text_init">Uploading %s attached items.</string>
-
+    <string name="epam_url">https://jira.epam.com</string>
 </resources>
