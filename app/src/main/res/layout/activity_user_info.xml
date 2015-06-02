@@ -6,7 +6,8 @@
     tools:context="amtt.epam.com.amtt.app.UserInfoActivity">
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/activity_main_swipe_refresh_layout"
+        android:id="@+id/swipe_refresh_layout"
+        android:paddingTop="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -27,21 +28,21 @@
                     android:paddingTop="@dimen/abc_dialog_list_padding_vertical_material">
 
                     <ImageView
-                        android:id="@+id/user_image"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:id="@+id/tv_avatar"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:layout_centerVertical="true"
                         android:scaleType="centerCrop" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_toRightOf="@+id/user_image"
+                        android:layout_toRightOf="@+id/tv_avatar"
                         android:paddingBottom="@dimen/abc_dialog_list_padding_vertical_material"
                         android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material">
 
                         <amtt.epam.com.amtt.view.TextView
-                            android:id="@+id/user_name"
+                            android:id="@+id/tv_user_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/label_user_name"
@@ -52,7 +53,7 @@
                             android:id="@+id/user_name_subhead"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/user_name"
+                            android:layout_below="@id/tv_user_name"
                             android:text="@string/label_user_name"
                             android:textColor="@color/abc_secondary_text_material_light"
                             android:textSize="@dimen/material_font_size_body_1" />
@@ -63,12 +64,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingBottom="@dimen/abc_dialog_list_padding_vertical_material"
-                    android:paddingLeft="72dp"
+                    android:paddingLeft="80dp"
                     android:paddingRight="@dimen/abc_action_bar_icon_vertical_padding_material"
                     android:paddingTop="@dimen/abc_dialog_list_padding_vertical_material">
 
                     <amtt.epam.com.amtt.view.TextView
-                        android:id="@+id/jira_url"
+                        android:id="@+id/tv_jira_url"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_jira_url"
@@ -79,7 +80,7 @@
                         android:id="@+id/jira_url_subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/jira_url"
+                        android:layout_below="@id/tv_jira_url"
                         android:text="@string/label_jira_url"
                         android:textColor="@color/abc_secondary_text_material_light"
                         android:textSize="@dimen/material_font_size_body_1" />
@@ -90,12 +91,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/abc_dialog_list_padding_vertical_material"
-                    android:paddingLeft="72dp"
+                    android:paddingLeft="80dp"
                     android:paddingRight="@dimen/abc_action_bar_icon_vertical_padding_material"
                     android:paddingTop="@dimen/abc_action_bar_icon_vertical_padding_material">
 
                     <amtt.epam.com.amtt.view.TextView
-                        android:id="@+id/user_full_name"
+                        android:id="@+id/tv_fullname"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_full_name"
@@ -106,7 +107,7 @@
                         android:id="@+id/user_display_name_subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/user_full_name"
+                        android:layout_below="@id/tv_fullname"
                         android:text="@string/label_full_name"
                         android:textColor="@color/abc_secondary_text_material_light"
                         android:textSize="@dimen/material_font_size_body_1" />
@@ -117,12 +118,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/abc_dialog_list_padding_vertical_material"
-                    android:paddingLeft="72dp"
+                    android:paddingLeft="80dp"
                     android:paddingRight="@dimen/abc_action_bar_icon_vertical_padding_material"
                     android:paddingTop="@dimen/abc_dialog_list_padding_vertical_material">
 
                     <amtt.epam.com.amtt.view.TextView
-                        android:id="@+id/user_email"
+                        android:id="@+id/tv_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_email"
@@ -133,7 +134,7 @@
                         android:id="@+id/user_email_subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/user_email"
+                        android:layout_below="@id/tv_email"
                         android:text="@string/label_email"
                         android:textColor="@color/abc_secondary_text_material_light"
                         android:textSize="@dimen/material_font_size_body_1" />
@@ -144,12 +145,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/abc_dialog_list_padding_vertical_material"
-                    android:paddingLeft="72dp"
+                    android:paddingLeft="80dp"
                     android:paddingRight="@dimen/abc_action_bar_icon_vertical_padding_material"
                     android:paddingTop="@dimen/abc_dialog_list_padding_vertical_material">
 
                     <amtt.epam.com.amtt.view.TextView
-                        android:id="@+id/user_time_zone"
+                        android:id="@+id/tv_time_zone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_time_zone"
@@ -160,7 +161,7 @@
                         android:id="@+id/user_time_zone_subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/user_time_zone"
+                        android:layout_below="@id/tv_time_zone"
                         android:text="@string/label_time_zone"
                         android:textColor="@color/abc_secondary_text_material_light"
                         android:textSize="@dimen/material_font_size_body_1" />
@@ -171,12 +172,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/abc_dialog_list_padding_vertical_material"
-                    android:paddingLeft="72dp"
+                    android:paddingLeft="80dp"
                     android:paddingRight="@dimen/abc_action_bar_icon_vertical_padding_material"
                     android:paddingTop="@dimen/abc_dialog_list_padding_vertical_material">
 
                     <amtt.epam.com.amtt.view.TextView
-                        android:id="@+id/user_locale"
+                        android:id="@+id/tv_locale"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_locale"
@@ -187,7 +188,7 @@
                         android:id="@+id/user_locale_subhead"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/user_locale"
+                        android:layout_below="@id/tv_locale"
                         android:text="@string/label_locale"
                         android:textColor="@color/abc_secondary_text_material_light"
                         android:textSize="@dimen/material_font_size_body_1" />

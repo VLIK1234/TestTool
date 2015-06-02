@@ -29,7 +29,7 @@ public class ActiveUser {
     }
 
     public String makeTempCredentials(final String userName, final String password) {
-        return JiraApiConst.BASIC_AUTH + Base64.encodeToString((userName + Constants.Str.COLON + password).getBytes(), Base64.NO_WRAP);
+        return JiraApiConst.BASIC_AUTH + Base64.encodeToString((userName + Constants.Symbols.COLON + password).getBytes(), Base64.NO_WRAP);
     }
 
     public String getUserName() {
@@ -50,7 +50,7 @@ public class ActiveUser {
     public void setCredentials(String userName, String password, String url) {
         mUserName = userName;
         mUrl = url;
-        String credentialsString = JiraApiConst.BASIC_AUTH + Base64.encodeToString((mUserName + Constants.Str.COLON + password).getBytes(), Base64.NO_WRAP);
+        String credentialsString = JiraApiConst.BASIC_AUTH + Base64.encodeToString((mUserName + Constants.Symbols.COLON + password).getBytes(), Base64.NO_WRAP);
         PreferenceUtils.putString(Constants.SharedPreference.CREDENTIALS, credentialsString);
     }
     public void setCredentials(String credentials) {
