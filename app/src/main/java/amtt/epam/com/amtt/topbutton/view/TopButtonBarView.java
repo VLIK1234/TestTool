@@ -193,6 +193,9 @@ public class TopButtonBarView extends FrameLayout {
         mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.label_close_app), R.drawable.background_close, new ITouchAction() {
             @Override
             public void TouchAction() {
+                Intent intentHideView = new Intent(getContext(), TopButtonService.class).setAction(TopButtonService.ACTION_HIDE_VIEW);
+                intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startService(intentHideView);
                 Intent intentAsk = new Intent(getContext(), AskExitActivity.class);
                 intentAsk.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentAsk);
