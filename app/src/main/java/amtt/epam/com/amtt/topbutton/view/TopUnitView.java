@@ -1,9 +1,11 @@
 package amtt.epam.com.amtt.topbutton.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -16,17 +18,20 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
- * Created by Ivan_Bakach on 11.05.2015.
+ @author Ivan_Bakach
+ @version on 11.05.2015
  */
+
+@SuppressLint("ViewConstructor")
 public class TopUnitView extends LinearLayout {
 
-    private ITouchAction touchAction;
+    private ITouchAction mTouchAction;
     private int mBackgroundIconId;
     private CardView mCardView;
 
     public TopUnitView(Context context, String title, int backgroundIconId, ITouchAction touchAction) {
         super(context);
-        this.touchAction = touchAction;
+        this.mTouchAction = touchAction;
         mBackgroundIconId = backgroundIconId;
         setOrientation(HORIZONTAL);
         setMargin((int) getResources().getDimension(R.dimen.margin_buttons_bar), 0, 0, 0);
@@ -102,10 +107,10 @@ public class TopUnitView extends LinearLayout {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                touchAction.TouchAction();
+                mTouchAction.TouchAction();
                 break;
         }
         return super.onTouchEvent(event);

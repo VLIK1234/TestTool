@@ -22,7 +22,6 @@ import java.io.File;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.MainActivity;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
-import amtt.epam.com.amtt.topbutton.view.TopButtonBarView;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
 /**
@@ -32,28 +31,28 @@ import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
 public class TopButtonService extends Service{
 
-    public static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.START";
-    public static final String ACTION_CLOSE = "amtt.epam.com.amtt.topbutton.service.CLOSE";
-    private static final String TAG = "Log";
-    public static final int NOTIFICATION_ID = 7;
-    //don't use REQUEST_CODE = 0 - it's broke action in notification for some device
-    public static final int REQUEST_CODE = 1;
-    public static final String ACTION_SHOW_SCREEN = "amtt.epam.com.amtt.topbutton.service.SHOW_SCREEN";
-    public static final String ACTION_HIDE_VIEW = "amtt.epam.com.amtt.topbutton.service.HIDE_VIEW";
-    public static final String ACTION_SHOW_VIEW = "amtt.epam.com.amtt.topbutton.service.SHOW_VIEW";
-    public static final String PATH_TO_SCREEENSHOT_KEY = "PATH_TO_SCREENSHOT";
     private static final String SCREENSHOTS_DIR_NAME = "Screenshots";
-    private int xInitPosition;
-    private int yInitPosition;
-    private TopButtonView view;
-    private WindowManager wm;
-    private WindowManager.LayoutParams layoutParams;
-    private boolean isViewAdd = false;
-    private NotificationCompat.Action action;
-    private NotificationCompat.Builder builder;
-    private AmttFileObserver fileObserver;
+    private static final String TAG = "Log";
+    public static final String ACTION_CLOSE = "amtt.epam.com.amtt.topbutton.service.CLOSE";
+    public static final String ACTION_HIDE_VIEW = "amtt.epam.com.amtt.topbutton.service.HIDE_VIEW";
+    public static final String ACTION_SHOW_SCREEN = "amtt.epam.com.amtt.topbutton.service.SHOW_SCREEN";
+    public static final String ACTION_SHOW_VIEW = "amtt.epam.com.amtt.topbutton.service.SHOW_VIEW";
+    public static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.START";
+    public static final String PATH_TO_SCREEENSHOT_KEY = "PATH_TO_SCREENSHOT";
+    //don't use REQUEST_CODE = 0 - it's broke mActionNotificationCompat in notification for some device
+    public static final int REQUEST_CODE = 1;
+    public static final int NOTIFICATION_ID = 7;
     //bellow field for cap code and will be delete after do work realization
-    private static Context context;
+    private static Context mContext;
+    private AmttFileObserver mFileObserver;
+    private NotificationCompat.Action mActionNotificationCompat;
+    private NotificationCompat.Builder mBuilderNotificationCompat;
+    private TopButtonView mTopButtonView;
+    private WindowManager mWindowManager;
+    private WindowManager.LayoutParams mLayoutParams;
+    private boolean isViewAdd = false;
+    private int mXInitPosition;
+    private int mYInitPosition;
 
     public void showScreenInGallery(String pathToScreenshot) {
         Intent intent = new Intent();
@@ -64,16 +63,10 @@ public class TopButtonService extends Service{
         startActivity(intent);
     }
 
-    public static void sendActionShowScreenInGallery(String pathToScreenshot) {
-        Intent intent = new Intent(context, TopButtonService.class).setAction(ACTION_SHOW_SCREEN);
-        intent.putExtra(PATH_TO_SCREEENSHOT_KEY, pathToScreenshot);
-        context.startService(intent);
-    }
-
     public static void sendActionShowButton() {
-        Intent intentShowView = new Intent(context, TopButtonService.class).setAction(TopButtonService.ACTION_SHOW_VIEW);
+        Intent intentShowView = new Intent(mContext, TopButtonService.class).setAction(TopButtonService.ACTION_SHOW_VIEW);
         intentShowView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.getApplicationContext().startService(intentShowView);
+        mContext.getApplicationContext().startService(intentShowView);
     }
 
     public static void start(Context context) {
@@ -92,19 +85,17 @@ public class TopButtonService extends Service{
     @Override
     public void onCreate() {
         super.onCreate();
-        context = getBaseContext();
-        wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        mContext = getBaseContext();
+        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
-        xInitPosition = displayMetrics.widthPixels / 2;
-        yInitPosition = displayMetrics.heightPixels / 2;
+        mXInitPosition = displayMetrics.widthPixels / 2;
+        mYInitPosition = displayMetrics.heightPixels / 2;
         initLayoutParams();
-        view = new TopButtonView(getBaseContext(), layoutParams);
+        mTopButtonView = new TopButtonView(getBaseContext(), mLayoutParams);
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), SCREENSHOTS_DIR_NAME);
-//        File file = new File(Environment.getExternalStoragePublicDirectory("DCIM"), SCREENSHOTS_DIR_NAME);
-        file.mkdirs();
         Log.d(TAG, file.getPath());
-        fileObserver = new AmttFileObserver(file.getAbsolutePath());
-        fileObserver.startWatching();
+        mFileObserver = new AmttFileObserver(file.getAbsolutePath());
+        mFileObserver.startWatching();
     }
 
     @Override
@@ -120,7 +111,7 @@ public class TopButtonService extends Service{
                     showNotification();
                     break;
                 case ACTION_CLOSE:
-                    fileObserver.stopWatching();
+                    mFileObserver.stopWatching();
                     closeService();
                     break;
                 case ACTION_HIDE_VIEW:
@@ -146,31 +137,31 @@ public class TopButtonService extends Service{
         int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
 
-        layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT, xInitPosition, yInitPosition, WindowManager.LayoutParams.TYPE_PHONE,
+        mLayoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT, mXInitPosition, mYInitPosition, WindowManager.LayoutParams.TYPE_PHONE,
                 flags, PixelFormat.TRANSLUCENT);
-        layoutParams.gravity = Gravity.TOP | Gravity.START;
+        mLayoutParams.gravity = Gravity.TOP | Gravity.START;
     }
 
     private void addView() {
         if (!isViewAdd) {
-            wm.addView(view, layoutParams);
+            mWindowManager.addView(mTopButtonView, mLayoutParams);
             isViewAdd = true;
         }
     }
 
     private void closeService() {
-        if (view != null && isViewAdd) {
+        if (mTopButtonView != null && isViewAdd) {
             isViewAdd = false;
-            wm.removeView(view);
-            wm.removeView(view.getButtonsBar());
-            view = null;
+            mWindowManager.removeView(mTopButtonView);
+            mWindowManager.removeView(mTopButtonView.getButtonsBar());
+            mTopButtonView = null;
         }
         stopSelf();
     }
 
     private void showNotification() {
-        builder = new NotificationCompat.Builder(this)
+        mBuilderNotificationCompat = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(getString(R.string.notification_title))
                 .setOngoing(true)
@@ -178,7 +169,7 @@ public class TopButtonService extends Service{
                 .setContentIntent(PendingIntent.getActivity(getBaseContext(), NOTIFICATION_ID, new Intent(getBaseContext(), MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
 
 
-        action = new NotificationCompat.Action(
+        mActionNotificationCompat = new NotificationCompat.Action(
                 R.drawable.ic_stat_action_visibility_off,
                 getString(R.string.label_hide),
                 PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_HIDE_VIEW), PendingIntent.FLAG_UPDATE_CURRENT));
@@ -188,24 +179,24 @@ public class TopButtonService extends Service{
                 getString(R.string.label_close),
                 PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE), PendingIntent.FLAG_UPDATE_CURRENT));
 
-        builder.addAction(action);
-        builder.addAction(closeService);
-        startForeground(NOTIFICATION_ID, builder.build());
+        mBuilderNotificationCompat.addAction(mActionNotificationCompat);
+        mBuilderNotificationCompat.addAction(closeService);
+        startForeground(NOTIFICATION_ID, mBuilderNotificationCompat.build());
     }
 
     public final void changeStateNotificationAction() {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (view.getVisibility() == View.VISIBLE) {
-            view.setVisibility(View.GONE);
-            view.getButtonsBar().hide();
-            action.icon = R.drawable.ic_stat_action_visibility;
-            action.title = getString(R.string.label_show);
-            notificationManager.notify(NOTIFICATION_ID, builder.build());
+        if (mTopButtonView.getVisibility() == View.VISIBLE) {
+            mTopButtonView.setVisibility(View.GONE);
+            mTopButtonView.getButtonsBar().hide();
+            mActionNotificationCompat.icon = R.drawable.ic_stat_action_visibility;
+            mActionNotificationCompat.title = getString(R.string.label_show);
+            notificationManager.notify(NOTIFICATION_ID, mBuilderNotificationCompat.build());
         } else {
-            view.setVisibility(View.VISIBLE);
-            action.icon = R.drawable.ic_stat_action_visibility_off;
-            action.title = getString(R.string.label_hide);
-            notificationManager.notify(NOTIFICATION_ID, builder.build());
+            mTopButtonView.setVisibility(View.VISIBLE);
+            mActionNotificationCompat.icon = R.drawable.ic_stat_action_visibility_off;
+            mActionNotificationCompat.title = getString(R.string.label_hide);
+            notificationManager.notify(NOTIFICATION_ID, mBuilderNotificationCompat.build());
         }
     }
 }

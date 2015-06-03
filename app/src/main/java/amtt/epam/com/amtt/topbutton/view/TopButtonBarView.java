@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.topbutton.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,7 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,16 +32,18 @@ import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
- * Created by Artsiom_Kaliaha on 27.05.2015.
+ @author Artsiom_Kaliaha
+ @version on 27.05.2015
  */
+
+@SuppressLint("ViewConstructor")
 public class TopButtonBarView extends FrameLayout {
 
-    private WindowManager.LayoutParams mLayout;
     private final WindowManager mWindowManager;
+    private static boolean isRecordStarted;
+    private static boolean isShowAction;
+    private WindowManager.LayoutParams mLayout;
     private LinearLayout mButtonsBar;
-    private int mMainButtonHeight;
-    private int mMainButtonWidth;
-
     private TopUnitView mButtonStartRecord;
     private TopUnitView mButtonCreateTicket;
     private TopUnitView mButtonOpenUserInfo;
@@ -52,10 +54,8 @@ public class TopButtonBarView extends FrameLayout {
     private TopUnitView mButtonStopRecord;
     private TopUnitView mButtonShowSteps;
     private TopUnitView mButtonCloseApp;
-
-    private static int sStepNumber; //responsible for steps ordering in database
-    private static boolean isRecordStarted;
-    private static boolean isShowAction;
+    private int mMainButtonHeight;
+    private int mMainButtonWidth;
 
     static {
         isRecordStarted = false;
@@ -303,10 +303,6 @@ public class TopButtonBarView extends FrameLayout {
             }
         }
         mWindowManager.updateViewLayout(this, mLayout);
-    }
-
-    public static boolean isRecordStarted() {
-        return isRecordStarted;
     }
 
     @Override
