@@ -52,7 +52,7 @@ public class AmttActivity extends BaseActivity implements LoaderCallbacks<Cursor
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_change_user:
+            case R.id.action_add:
                 setResult(RESULT_OK);
                 finish();
                 return true;

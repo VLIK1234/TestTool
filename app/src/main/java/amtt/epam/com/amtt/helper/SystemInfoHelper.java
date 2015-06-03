@@ -17,8 +17,10 @@ import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.util.RootUtil;
 
 /**
- * Created by Ivan_Bakach on 14.05.2015.
+ @author Ivan_Bakach
+ @version on 14.05.2015
  */
+
 public class SystemInfoHelper {
 
     public static final String API_SDK = "API SDK=";
@@ -34,7 +36,7 @@ public class SystemInfoHelper {
             appInfo += String.format(TEMPLATE, "Version app", packageInfo.versionName);
             appInfo += String.format(TEMPLATE, "Name", ContextHolder.getContext().getResources().getString(packageInfo.applicationInfo.labelRes));
         } catch (final PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            e.getMessage();
         }
         return appInfo;
     }

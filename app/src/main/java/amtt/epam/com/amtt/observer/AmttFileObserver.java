@@ -21,8 +21,10 @@ import amtt.epam.com.amtt.topbutton.view.TopButtonBarView;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
 /**
- * Created by Ivan_Bakach on 06.05.2015.
+ @author Ivan_Bakach
+ @version on 06.05.2015
  */
+
 public class AmttFileObserver extends FileObserver {
     private static final String TAG = "TAG";
     private static final String TIME_SCREENSHOT_PATTERN = "\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2}";

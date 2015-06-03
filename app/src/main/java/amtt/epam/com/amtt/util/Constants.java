@@ -21,7 +21,7 @@ public final class Constants {
 
     }
 
-    public final class Str {
+    public final class Symbols {
 
         public static final String NEW_LINE = "\n";
         public static final String COLON = ":";

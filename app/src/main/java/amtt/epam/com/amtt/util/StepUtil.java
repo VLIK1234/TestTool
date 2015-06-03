@@ -13,7 +13,8 @@ import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
 
 /**
- * Created by Artyom on 16.05.2015.
+ @author Artsiom_Kaliaha
+ @version on 16.05.2015
  */
 public class StepUtil {
 

@@ -3,14 +3,12 @@ package amtt.epam.com.amtt.topbutton.view;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager.NameNotFoundException;
-
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,30 +18,14 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
-
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.util.UIUtil;
 
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Toast;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.app.CreateIssueActivity;
-import amtt.epam.com.amtt.app.HelpDialogActivity;
-import amtt.epam.com.amtt.app.StepsActivity;
-import amtt.epam.com.amtt.app.UserInfoActivity;
-import amtt.epam.com.amtt.util.StepUtil;
-import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.util.ActivityMetaUtil;
-
 /**
- * Created by Ivan_Bakach on 23.03.2015.
+ @author Ivan_Bakach
+ @version on 23.03.2015
  */
+
 public class TopButtonView extends FrameLayout {
 
     private static class RotatingDrawable extends LayerDrawable {
@@ -86,8 +68,6 @@ public class TopButtonView extends FrameLayout {
     private int lastX;
     private int lastY;
     public boolean moving;
-    private int xButton = 0;
-    private int yButton = 0;
     private static final int threshold = 10;
 
     private TopButtonBarView mButtonsBar;
@@ -139,7 +119,7 @@ public class TopButtonView extends FrameLayout {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         int totalDeltaX = lastX - firstX;
         int totalDeltaY = lastY - firstY;
 
@@ -179,11 +159,9 @@ public class TopButtonView extends FrameLayout {
             if (event.getPointerCount() == 1) {
                 if ((layoutParams.x + deltaX) > 0 && (layoutParams.x + deltaX) <= (metrics.widthPixels - getWidth())) {
                     layoutParams.x += deltaX;
-                    xButton = layoutParams.x;
                 }
                 if ((layoutParams.y + deltaY) > 0 && (layoutParams.y + deltaY) <= (metrics.heightPixels - getHeight() - UIUtil.getStatusBarHeight())) {
                     layoutParams.y += deltaY;
-                    yButton = layoutParams.y;
                 }
                 widthProportion = (float) layoutParams.x / metrics.widthPixels;
                 heightProportion = (float) layoutParams.y / metrics.heightPixels;
@@ -223,6 +201,7 @@ public class TopButtonView extends FrameLayout {
     private void playMainButtonRotateAnimation(int duration, int fromAngle, int toAngle) {
         AnimatorSet expand = new AnimatorSet().setDuration(duration);
         LayerDrawable layerDrawable = (LayerDrawable) getResources().getDrawable(R.drawable.background_main_button);
+        assert layerDrawable != null;
         RotatingDrawable drawable = new RotatingDrawable(layerDrawable.findDrawableByLayerId(R.id.main_button_background));
         ObjectAnimator animator = ObjectAnimator.ofFloat(drawable, "rotation", fromAngle, toAngle);
         animator.start();

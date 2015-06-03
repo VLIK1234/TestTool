@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="amtt.epam.com.amtt.app.AmttActivity">
 
-    <item android:id="@+id/action_change_user"
-        android:title="@string/action_new_user"
+    <item android:id="@+id/action_add"
+        android:title="@string/label_new_user"
         android:icon="@drawable/ic_action_add_qa"
         app:showAsAction="always"/>
 

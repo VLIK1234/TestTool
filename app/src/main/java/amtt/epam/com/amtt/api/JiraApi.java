@@ -20,7 +20,8 @@ import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.util.ActiveUser;
 
 /**
- * Created by Artsiom_Kaliaha on 24.03.2015.
+ @author Artsiom_Kaliaha
+ @version on 24.03.2015
  */
 
 @SuppressWarnings("unchecked")
