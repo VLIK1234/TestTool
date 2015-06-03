@@ -73,6 +73,14 @@
         <service
             android:name=".ticket.AttachmentService"
             android:exported="false" />
+
+        <activity
+            android:name=".app.AskExitActivity"
+            android:excludeFromRecents="true"
+            android:label="@string/dialog_are_you_sure"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+
     </application>
 
 </manifest>

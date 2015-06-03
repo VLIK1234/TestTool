@@ -17,8 +17,6 @@ import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.topbutton.view.TopButtonBarView;
-import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
 /**
  @author Ivan_Bakach

@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.io.File;
 
@@ -121,6 +122,7 @@ public class TopButtonService extends Service{
                     changeStateNotificationAction();
                     break;
                 case ACTION_SHOW_SCREEN:
+                    changeStateNotificationAction();
                     Bundle extra = intent.getExtras();
                     if (extra != null) {
                         showScreenInGallery(extra.getString(PATH_TO_SCREEENSHOT_KEY));
