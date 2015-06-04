@@ -15,6 +15,7 @@ public class GlobalBroadcastReciever extends BroadcastReceiver {
 
     public static final String SHOW = "SHOW";
     public static final String LOG_FILE = "LOG_FILE";
+    public static String logFilePath = "";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -26,7 +27,8 @@ public class GlobalBroadcastReciever extends BroadcastReceiver {
                     fielPath = extras.getString("filePath");
                 }
                 intent.getExtras();
-                Toast.makeText(context, fielPath, Toast.LENGTH_LONG).show();break;
+                logFilePath = fielPath;
+                Toast.makeText(context, logFilePath, Toast.LENGTH_LONG).show();break;
 
         }
     }
