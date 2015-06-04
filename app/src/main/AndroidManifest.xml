@@ -59,7 +59,8 @@
         </activity>
         <activity
             android:name=".app.UserInfoActivity"
-            android:label="@string/title_activity_user_info" />
+            android:label="@string/title_activity_user_info"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".app.AmttActivity"
             android:label="@string/title_activity_amtt" />

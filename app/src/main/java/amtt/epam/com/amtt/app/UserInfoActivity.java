@@ -79,8 +79,8 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_user_info);
         initViews();
-        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
-        mHandler = new AssigneeHandler(this);
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, UserInfoActivity.this);
+        mHandler = new AssigneeHandler(UserInfoActivity.this);
         mSwipeRefreshLayout.setOnRefreshListener(UserInfoActivity.this);
     }
 
