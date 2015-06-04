@@ -4,6 +4,9 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.ticket.ScreenshotAdapter;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
+import amtt.epam.com.amtt.ticket.JiraContent;
+import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.ticket.*;
@@ -71,10 +74,17 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TopButtonService.sendActionHideButton();
         setContentView(R.layout.activity_create_issue);
         mHandler = new AssigneeHandler(this);
         mListScreenshot = (ArrayList<String>) AmttFileObserver.getImageArray().clone();
         initViews();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        TopButtonService.sendActionShowButton();
     }
 
     private void initViews() {
