@@ -21,6 +21,7 @@ import java.io.File;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.MainActivity;
+import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReciever;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
@@ -53,6 +54,7 @@ public class TopButtonService extends Service{
     private AmttFileObserver fileObserver;
     //bellow field for cap code and will be delete after do work realization
     private static Context context;
+    public GlobalBroadcastReciever globalBroadcastReciever;
 
     public void showScreenInGallery(String pathToScreenshot) {
         Intent intent = new Intent();
@@ -104,6 +106,8 @@ public class TopButtonService extends Service{
         Log.d(TAG, file.getPath());
         fileObserver = new AmttFileObserver(file.getAbsolutePath());
         fileObserver.startWatching();
+        globalBroadcastReciever = new GlobalBroadcastReciever();
+        GlobalBroadcastReciever.registerBroadcastReciver(getBaseContext(), globalBroadcastReciever);
     }
 
     @Override
@@ -120,6 +124,7 @@ public class TopButtonService extends Service{
                     break;
                 case ACTION_CLOSE:
                     fileObserver.stopWatching();
+                    GlobalBroadcastReciever.unregisterBroadcastReciver(getBaseContext(), globalBroadcastReciever);
                     closeService();
                     break;
                 case ACTION_HIDE_VIEW:

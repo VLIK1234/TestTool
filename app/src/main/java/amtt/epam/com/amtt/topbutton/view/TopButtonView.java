@@ -135,7 +135,13 @@ public class TopButtonView extends FrameLayout{
         expectedResultView = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result), Toast.LENGTH_LONG).show();
+                Intent broadcastIntent = new Intent();
+                broadcastIntent.setAction("SHOW");
+                broadcastIntent.addCategory("android.intent.category.DEFAULT");
+                getContext().sendBroadcast(broadcastIntent);
+                broadcastIntent.setAction("LOG");
+                getContext().sendBroadcast(broadcastIntent);
+//                Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result), Toast.LENGTH_LONG).show();
             }
         });
         screenshotView = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), R.drawable.background_take_screenshot, new ITouchAction() {

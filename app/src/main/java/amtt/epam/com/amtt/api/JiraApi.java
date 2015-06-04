@@ -124,6 +124,25 @@ public class JiraApi {
         return mMethod;
     }
 
+    public RestMethod buildAttachmentTxtCreating(final String issueKey, String fullfilename){
+        Map<String, String> headers = new HashMap<>();
+        headers.put(JiraApiConst.AUTH, mUser.getCredentials());
+        headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
+        HttpEntity postEntity;
+        MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
+        File fileToUpload = new File(fullfilename);
+        multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("text/plain"),
+                fileToUpload.getName());
+        postEntity = multipartEntityBuilder.build();
+        mMethod = new RestMethod.Builder<Void>()
+                .setType(RestMethodType.POST)
+                .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
+                .setHeadersMap(headers)
+                .setPostEntity(postEntity)
+                .create();
+        return mMethod;
+    }
+
     public RestResponse execute() throws Exception {
         RestResponse<Void> restResponse = mMethod.execute();
         restResponse.setOperationResult(JiraOperationResult.REQUEST_PERFORMED);

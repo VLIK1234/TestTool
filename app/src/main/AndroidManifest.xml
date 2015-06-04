@@ -73,6 +73,15 @@
         <service
             android:name=".ticket.AttachmentService"
             android:exported="false" />
+
+        <receiver android:name=".broadcastreceiver.GlobalBroadcastReciever"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="SHOW"/>
+                <action android:name="LOG_FILE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
