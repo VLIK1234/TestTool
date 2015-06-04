@@ -1,8 +1,11 @@
 package amtt.epam.com.amtt.topbutton.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -12,41 +15,61 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.util.UIUtil;
 
 /**
- * Created by Ivan_Bakach on 11.05.2015.
+ @author Ivan_Bakach
+ @version on 11.05.2015
  */
+
+@SuppressLint("ViewConstructor")
 public class TopUnitView extends LinearLayout {
 
-    private String title;
-    private ITouchAction touchAction;
+    private ITouchAction mTouchAction;
     private int mBackgroundIconId;
+    private CardView mCardView;
 
     public TopUnitView(Context context, String title, int backgroundIconId, ITouchAction touchAction) {
         super(context);
-        this.title = title;
-        this.touchAction = touchAction;
+        this.mTouchAction = touchAction;
         mBackgroundIconId = backgroundIconId;
-        //Change when will be support landscape orientation
-//        if (orientation==VERTICAL||orientation==HORIZONTAL) {
-//            setOrientation(orientation);
-//        }else{
-//            Toast.makeText(context,"Wrong orientation! Set default value = HORIZONTAL",Toast.LENGTH_LONG).show();
-//        }
         setOrientation(HORIZONTAL);
-        this.setMargin((int) getResources().getDimension(R.dimen.margin_buttons_bar), 0, 0, 0);
+        setMargin((int) getResources().getDimension(R.dimen.margin_buttons_bar), 0, 0, 0);
         addView(getButton());
-        CardView cardView = new CardView(context);
-        LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        addCardView(context, title);
+        addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                addCardWithOrientationCheck();
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                addCardWithOrientationCheck();
+            }
+        });
+    }
+
+    private void addCardView(Context context, String title) {
+        mCardView = new CardView(context);
+        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.CENTER;
-        cardView.setLayoutParams(params);
-        cardView.setUseCompatPadding(true);
-        cardView.setRadius((int) getResources().getDimension(R.dimen.card_corner_radius));
-        cardView.addView(getTextView(this.title));
-        cardView.setCardElevation((int) getResources().getDimension(R.dimen.card_elevation));
-//        addView(cardView);
+        mCardView.setLayoutParams(params);
+        mCardView.setUseCompatPadding(true);
+        mCardView.setRadius((int) getResources().getDimension(R.dimen.card_corner_radius));
+        mCardView.addView(getTextView(title));
+        mCardView.setCardElevation((int) getResources().getDimension(R.dimen.card_elevation));
+        addView(mCardView);
+    }
+
+    private void addCardWithOrientationCheck() {
+        if (UIUtil.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
+            if (mCardView.getParent() == null) {
+                addView(mCardView);
+            }
+        } else {
+            removeView(mCardView);
+        }
     }
 
     private void setMargin(int left, int right, int top, int bottom) {
@@ -84,20 +107,13 @@ public class TopUnitView extends LinearLayout {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                touchAction.TouchAction();
+                mTouchAction.TouchAction();
                 break;
         }
         return super.onTouchEvent(event);
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getTitle() {
-        return this.title;
-    }
 }

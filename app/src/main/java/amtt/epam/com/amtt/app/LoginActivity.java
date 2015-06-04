@@ -62,6 +62,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initViews();
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
     }
 
     @Override
