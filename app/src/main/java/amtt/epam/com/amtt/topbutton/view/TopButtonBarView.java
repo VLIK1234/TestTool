@@ -120,6 +120,7 @@ public class TopButtonBarView extends FrameLayout {
         mButtonOpenUserInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), R.drawable.background_user_info, new ITouchAction() {
             @Override
             public void TouchAction() {
+                TopButtonService.sendActionHideButton();
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
                 userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(userInfoIntent);
@@ -143,9 +144,7 @@ public class TopButtonBarView extends FrameLayout {
                 Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
                 intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentHelp);
-                Intent intentHideView = new Intent(getContext(), TopButtonService.class).setAction(TopButtonService.ACTION_HIDE_VIEW);
-                intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().getApplicationContext().startService(intentHideView);
+                TopButtonService.sendActionHideButton();
 
             }
         });
@@ -193,9 +192,7 @@ public class TopButtonBarView extends FrameLayout {
         mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.label_close_app), R.drawable.background_close, new ITouchAction() {
             @Override
             public void TouchAction() {
-                Intent intentHideView = new Intent(getContext(), TopButtonService.class).setAction(TopButtonService.ACTION_HIDE_VIEW);
-                intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().getApplicationContext().startService(intentHideView);
+                TopButtonService.sendActionHideButton();
                 Intent intentAsk = new Intent(getContext(), AskExitActivity.class);
                 intentAsk.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentAsk);

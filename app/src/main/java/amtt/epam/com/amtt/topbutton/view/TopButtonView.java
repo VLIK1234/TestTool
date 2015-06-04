@@ -69,6 +69,8 @@ public class TopButtonView extends FrameLayout {
     private int mFirstY;
     private int mLastX;
     private int mLastY;
+    private int mMainButtonHeight;
+    private int mMainButtonWidth;
     public ImageButton mMainImageButton;
     public boolean isMoving;
 
@@ -92,7 +94,9 @@ public class TopButtonView extends FrameLayout {
             @Override
             public boolean onPreDraw() {
                 mMainImageButton.getViewTreeObserver().removeOnPreDrawListener(this);
-                mTopButtonBarView = new TopButtonBarView(getContext(), mMainImageButton.getHeight(), mMainImageButton.getWidth());
+                mMainButtonHeight = mMainImageButton.getHeight();
+                mMainButtonWidth = mMainImageButton.getWidth();
+                mTopButtonBarView = new TopButtonBarView(getContext(), mMainButtonHeight, mMainButtonWidth);
                 return true;
             }
         });
@@ -101,17 +105,17 @@ public class TopButtonView extends FrameLayout {
     private void savePositionAfterScreenRotation() {
         int overWidth;
         int overHeight;
-        if (Math.round(mDisplayMetrics.widthPixels * mWidthProportion) + mMainImageButton.getWidth() < mDisplayMetrics.widthPixels) {
+        if (Math.round(mDisplayMetrics.widthPixels * mWidthProportion) + mMainButtonWidth < mDisplayMetrics.widthPixels) {
             mLayoutParams.x = Math.round(mDisplayMetrics.widthPixels * mWidthProportion);
         } else {
-            overWidth = Math.round(mDisplayMetrics.widthPixels * mWidthProportion) + mMainImageButton.getWidth() - mDisplayMetrics.widthPixels;
+            overWidth = Math.round(mDisplayMetrics.widthPixels * mWidthProportion) + mMainButtonWidth - mDisplayMetrics.widthPixels;
             mLayoutParams.x = Math.round(mDisplayMetrics.widthPixels * mWidthProportion) - overWidth - UIUtil.getStatusBarHeight();
         }
 
-        if (Math.round(mDisplayMetrics.heightPixels * mHeightProportion) + mMainImageButton.getWidth() < mDisplayMetrics.heightPixels - UIUtil.getStatusBarHeight()) {
+        if (Math.round(mDisplayMetrics.heightPixels * mHeightProportion) + mMainButtonWidth < mDisplayMetrics.heightPixels - UIUtil.getStatusBarHeight()) {
             mLayoutParams.y = Math.round(mDisplayMetrics.heightPixels * mHeightProportion);
         } else {
-            overHeight = Math.round(mDisplayMetrics.heightPixels * mHeightProportion) + mMainImageButton.getHeight() - mDisplayMetrics.heightPixels;
+            overHeight = Math.round(mDisplayMetrics.heightPixels * mHeightProportion) + mMainButtonHeight - mDisplayMetrics.heightPixels;
             mLayoutParams.y = Math.round(mDisplayMetrics.heightPixels * mHeightProportion) - overHeight - UIUtil.getStatusBarHeight();
         }
         mWindowManager.updateViewLayout(this, mLayoutParams);

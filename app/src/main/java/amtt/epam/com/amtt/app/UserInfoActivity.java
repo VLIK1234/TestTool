@@ -78,7 +78,6 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_user_info);
-        TopButtonService.close(this);
         initViews();
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
         mHandler = new AssigneeHandler(this);
@@ -88,7 +87,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        TopButtonService.start(this);
+        TopButtonService.sendActionShowButton();
     }
 
     @Override

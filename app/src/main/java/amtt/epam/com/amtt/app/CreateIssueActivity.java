@@ -74,7 +74,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TopButtonService.close(this);
+        TopButtonService.sendActionHideButton();
         setContentView(R.layout.activity_create_issue);
         mHandler = new AssigneeHandler(this);
         mListScreenshot = (ArrayList<String>) AmttFileObserver.getImageArray().clone();
@@ -84,7 +84,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        TopButtonService.start(this);
+        TopButtonService.sendActionShowButton();
     }
 
     private void initViews() {

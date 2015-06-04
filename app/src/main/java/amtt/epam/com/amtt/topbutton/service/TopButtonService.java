@@ -69,6 +69,12 @@ public class TopButtonService extends Service{
         mContext.getApplicationContext().startService(intentShowView);
     }
 
+    public static void sendActionHideButton() {
+        Intent intentHideView = new Intent(mContext, TopButtonService.class).setAction(TopButtonService.ACTION_HIDE_VIEW);
+        intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mContext.getApplicationContext().startService(intentHideView);
+    }
+
     public static void start(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_START));
     }
