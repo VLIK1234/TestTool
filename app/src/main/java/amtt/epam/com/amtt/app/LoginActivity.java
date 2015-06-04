@@ -204,7 +204,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
 
     @Override
     public void onRequestError(AmttException e) {
-        ExceptionHandler.getInstance().processError(e).showDialog(this, this);
+        ExceptionHandler.getInstance().processError(e).showDialog(LoginActivity.this, LoginActivity.this);
         showProgress(false);
         mLoginButton.setEnabled(true);
     }
