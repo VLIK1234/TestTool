@@ -114,4 +114,5 @@
     <string name="label_cannot_whitespaces">" cannot begin and end to whitespace"</string>
     <string name="label_cannot_at">" nor email and symbol @"</string>
     <string name="enter_correct_url">" url"</string>
+    <string name="label_no_whitespaces">" cannot contain whitespaces"</string>
 </resources>

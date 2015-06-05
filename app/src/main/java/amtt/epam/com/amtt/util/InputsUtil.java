@@ -39,4 +39,12 @@ public class InputsUtil {
         return mMatcher.matches();
     }
 
+    public static Boolean haveWhitespaces(String string) {
+        //check To Whitespace After And Before
+        mPattern = Pattern.compile(".*(\\s)+.*");
+        mMatcher = mPattern.matcher(string.toLowerCase());
+        Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": not passed.");
+        return mMatcher.matches();
+    }
+
 }

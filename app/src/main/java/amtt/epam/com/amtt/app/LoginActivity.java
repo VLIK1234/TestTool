@@ -127,8 +127,8 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         if (TextUtils.isEmpty(mUserNameEditText.getText().toString())) {
             mUserNameEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username));
             isAnyEmptyField = true;
-        } else if (InputsUtil.checkToWhitespaceEnds(mUserNameEditText.getText().toString())) {
-            mUserNameEditText.setError(getString(R.string.label_user_name) + getString(R.string.label_cannot_whitespaces));
+        } else if (InputsUtil.haveWhitespaces(mUserNameEditText.getText().toString())) {
+            mUserNameEditText.setError(getString(R.string.label_user_name) + getString(R.string.label_no_whitespaces));
             isAnyEmptyField = true;
         } else if (InputsUtil.checkToAt(mUserNameEditText.getText().toString())) {
             mUserNameEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username) + getString(R.string.label_cannot_at));

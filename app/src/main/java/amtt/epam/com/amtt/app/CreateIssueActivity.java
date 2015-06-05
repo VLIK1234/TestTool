@@ -319,9 +319,13 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 2) {
-                    mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
-                    mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
-                    mAssignableUserName = s.toString();
+                    if (InputsUtil.haveWhitespaces(s.toString())) {
+                        Toast.makeText(CreateIssueActivity.this, getString(R.string.label_tester) + getString(R.string.label_no_whitespaces), Toast.LENGTH_LONG).show();
+                    } else {
+                        mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
+                        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
+                        mAssignableUserName = s.toString();
+                    }
                 }
             }
         });
