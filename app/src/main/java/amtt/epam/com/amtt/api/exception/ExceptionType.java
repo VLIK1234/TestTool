@@ -41,7 +41,7 @@ public enum ExceptionType {
         mExceptionsMap.put(JsonSyntaxException.class, ExceptionType.AUTH);
         mExceptionsMap.put(IllegalStateException.class, NOT_FOUND);
         mExceptionsMap.put(IllegalArgumentException.class, NOT_FOUND);
-        mExceptionsMap.put(UnknownHostException.class, ExceptionType.NO_INTERNET);
+        mExceptionsMap.put(UnknownHostException.class, ExceptionType.NOT_FOUND);
 
         mStatusCodeMap = new HashMap<>();
         mStatusCodeMap.put(HttpStatus.SC_UNAUTHORIZED, ExceptionType.AUTH);
