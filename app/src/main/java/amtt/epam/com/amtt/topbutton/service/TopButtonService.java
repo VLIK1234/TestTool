@@ -5,13 +5,11 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -49,7 +47,7 @@ public class TopButtonService extends Service{
     private AmttFileObserver mFileObserver;
     private NotificationCompat.Action mActionNotificationCompat;
     private NotificationCompat.Builder mBuilderNotificationCompat;
-    private TopButtonView mTopButtonView;
+    private static TopButtonView mTopButtonView;
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mLayoutParams;
     private boolean isViewAdd = false;
@@ -192,19 +190,19 @@ public class TopButtonService extends Service{
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (mTopButtonView.getVisibility() == View.VISIBLE) {
             mTopButtonView.setVisibility(View.GONE);
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-            sharedPref.edit().putBoolean(getString(R.string.key_topbutton_show), false).apply();
             mTopButtonView.getButtonsBar().hide();
             mActionNotificationCompat.icon = R.drawable.ic_stat_action_visibility;
             mActionNotificationCompat.title = getString(R.string.label_show);
             notificationManager.notify(NOTIFICATION_ID, mBuilderNotificationCompat.build());
         } else {
             mTopButtonView.setVisibility(View.VISIBLE);
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-            sharedPref.edit().putBoolean(getString(R.string.key_topbutton_show), true).apply();
             mActionNotificationCompat.icon = R.drawable.ic_stat_action_visibility_off;
             mActionNotificationCompat.title = getString(R.string.label_hide);
             notificationManager.notify(NOTIFICATION_ID, mBuilderNotificationCompat.build());
         }
+    }
+
+    public static boolean isTopButtonViewVisible(){
+        return mTopButtonView.isShown();
     }
 }

@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.fragment.SettingsFragment;
