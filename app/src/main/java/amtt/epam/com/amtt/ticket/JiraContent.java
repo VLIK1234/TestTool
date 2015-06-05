@@ -204,8 +204,10 @@ public class JiraContent{
         ContentFromBackend.getInstance().createIssueAsynchronously(issueJson, new ContentLoadingCallback<JCreateIssueResponse>() {
             @Override
             public void resultFromBackend(JCreateIssueResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
+                if(result!=null){
                 mRecentIssueKey = result.getKey();
                 Logger.d(TAG, mRecentIssueKey);
+                }
                 jiraGetContentCallback.resultOfDataLoading(result);
             }
         }, jiraGetContentCallback);
