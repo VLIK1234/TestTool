@@ -16,12 +16,26 @@
         android:layout_marginLeft="@dimen/dialog_margin"
         android:layout_marginStart="@dimen/dialog_margin"
         android:text="@string/dialog_label_checkbox"/>
-    <Button
-        android:id="@+id/dialog_button_ok"
-        android:layout_width="@dimen/dialog_button_width"
-        android:layout_height="@dimen/dialog_button_height"
-        android:layout_margin="@dimen/dialo_button_margin"
-        android:layout_gravity="end"
-        android:text="@string/dialog_button_text"
-        android:textColor="@android:color/holo_blue_dark"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/dialog_button_ok"
+            android:layout_width="@dimen/dialog_button_width"
+            android:layout_height="@dimen/dialog_button_height"
+            android:layout_margin="@dimen/dialog_button_margin"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/dialog_button_ok"
+            android:textColor="@android:color/holo_blue_dark"/>
+        <Button
+            android:id="@+id/dialog_button_cancel"
+            android:layout_width="@dimen/dialog_button_width"
+            android:layout_height="@dimen/dialog_button_height"
+            android:layout_margin="@dimen/dialog_button_margin"
+            android:layout_toLeftOf="@id/dialog_button_ok"
+            android:layout_toStartOf="@id/dialog_button_ok"
+            android:text="@string/dialog_button_cancel"
+            android:textColor="@android:color/holo_blue_dark"/>
+    </RelativeLayout>
 </LinearLayout>
