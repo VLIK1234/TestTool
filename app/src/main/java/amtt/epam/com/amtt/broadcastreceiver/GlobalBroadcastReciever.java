@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
+import amtt.epam.com.amtt.observer.AmttFileObserver;
+
 /**
  * Created by Ivan_Bakach on 02.06.2015.
  */
@@ -25,10 +27,10 @@ public class GlobalBroadcastReciever extends BroadcastReceiver {
                 String fielPath="";
                 if (extras!=null) {
                     fielPath = extras.getString("filePath");
+                    logFilePath = fielPath;
+                    Toast.makeText(context, logFilePath, Toast.LENGTH_LONG).show();break;
                 }
-                intent.getExtras();
-                logFilePath = fielPath;
-                Toast.makeText(context, logFilePath, Toast.LENGTH_LONG).show();break;
+
 
         }
     }
