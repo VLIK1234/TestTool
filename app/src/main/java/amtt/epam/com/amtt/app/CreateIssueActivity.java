@@ -128,7 +128,9 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                 JiraContent.getInstance().getProjectKeyByName((String) parent.getItemAtPosition(position), new JiraGetContentCallback<String>() {
                     @Override
                     public void resultOfDataLoading(String result) {
-                        reinitRelatedViews(result);
+                        if (result != null) {
+                            reinitRelatedViews(result);
+                        }
                     }
                 });
             }
@@ -265,7 +267,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                     mSummaryEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
                     isValid = false;
                     Toast.makeText(CreateIssueActivity.this, getString(R.string.enter_prefix) + getString(R.string.enter_summary), Toast.LENGTH_LONG).show();
-                }else if (InputsUtil.checkToWhitespaceEnds(mSummaryEditText.getText().toString())) {
+                }else if (InputsUtil.hasWhitespaceMargins(mSummaryEditText.getText().toString())) {
                     mSummaryEditText.requestFocus();
                     mSummaryEditText.setError(getString(R.string.label_summary) + getString(R.string.label_cannot_whitespaces));
                     isValid = false;
