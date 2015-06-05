@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.helper.HelpTakeScreen;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
  @author Ivan_Bakach
@@ -43,6 +44,15 @@ public class HelpDialogActivity extends Activity {
             public void onClick(View v) {
                 finish();
                 isCanTakeScreenshot = true;
+            }
+        });
+        Button buttonCancel = (Button) findViewById(R.id.dialog_button_cancel);
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TopButtonService.sendActionShowButton();
+                finish();
+                isCanTakeScreenshot = false;
             }
         });
     }

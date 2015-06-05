@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Help dialog">
+        <CheckBoxPreference
+            android:key="dialog_show"
+            android:summary="@string/dialog_label_checkbox"
+            android:title="Help dialog" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Top button">
+        <SwitchPreference
+            android:key="topbutton_show"
+            android:title="Show"/>
+    </PreferenceCategory>
+</PreferenceScreen>

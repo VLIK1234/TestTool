@@ -59,7 +59,8 @@
         </activity>
         <activity
             android:name=".app.UserInfoActivity"
-            android:label="@string/title_activity_user_info" />
+            android:label="@string/title_activity_user_info"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".app.AmttActivity"
             android:label="@string/title_activity_amtt" />
@@ -69,6 +70,9 @@
             android:label="@string/title_activity_help_dialog"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+        <activity
+            android:name=".app.SettingActivity"
+            android:label="@string/title_activity_settings" />
 
         <activity
             android:name=".app.AskExitActivity"

@@ -47,6 +47,6 @@
     <dimen name="spinner_padding_bottom">7dp</dimen>
     <dimen name="dialog_button_width">64dp</dimen>
     <dimen name="dialog_button_height">40dp</dimen>
-    <dimen name="dialo_button_margin">4dp</dimen>
+    <dimen name="dialog_button_margin">8dp</dimen>
     <dimen name="dialog_margin">24dp</dimen>
 </resources>

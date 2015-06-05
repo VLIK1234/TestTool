@@ -22,6 +22,7 @@ import java.io.File;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.MainActivity;
 import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReciever;
+import amtt.epam.com.amtt.app.SettingActivity;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
@@ -178,7 +179,7 @@ public class TopButtonService extends Service{
                 .setContentTitle(getString(R.string.notification_title))
                 .setOngoing(true)
                 .setContentText(getString(R.string.notification_text))
-                .setContentIntent(PendingIntent.getActivity(getBaseContext(), NOTIFICATION_ID, new Intent(getBaseContext(), MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT));
+                .setContentIntent(PendingIntent.getActivity(getBaseContext(), NOTIFICATION_ID, new Intent(getBaseContext(), SettingActivity.class),PendingIntent.FLAG_UPDATE_CURRENT));
 
 
         mActionNotificationCompat = new NotificationCompat.Action(
