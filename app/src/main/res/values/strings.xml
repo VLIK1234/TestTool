@@ -70,7 +70,7 @@
     <string name="screenshot_image_description">image view for screenshot</string>
 
     <string name="notification_title">AMTT</string>
-    <string name="notification_text">Button-assistant is running.</string>
+    <string name="notification_text">Tap to go to the settings</string>
     <string name="enter_prefix">Please, enter</string>
     <string name="enter_username">" username"</string>
     <string name="enter_password">" password"</string>
