@@ -52,7 +52,7 @@ public class JiraContent{
     public String getPriorityIdByName(String priorityName) {
         String priorityId = null;
         for (Map.Entry<String, String> entry : mProjectPrioritiesNames.entrySet()) {
-            if (priorityName == entry.getValue()) {
+            if (priorityName.equals(entry.getValue())) {
                 priorityId = entry.getKey();
             }
         }
@@ -73,7 +73,7 @@ public class JiraContent{
 
     public void getProjectKeyByName(String projectName, JiraGetContentCallback<String> jiraGetContentCallback) {
         for (Map.Entry<JProjects, String> entry : mProjectsNames.entrySet()) {
-            if (projectName == entry.getValue()) {
+            if (projectName.equals(entry.getValue())) {
                 mLastProject = entry.getKey();
             }
         }
@@ -112,7 +112,7 @@ public class JiraContent{
     public String getVersionIdByName(String versionName) {
         String versionId = null;
         for (Map.Entry<String, String> entry : mProjectVersionsNames.entrySet()) {
-            if (versionName == entry.getValue()) {
+            if (versionName.equals(entry.getValue())) {
                 versionId = entry.getKey();
             }
         }
