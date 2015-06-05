@@ -10,6 +10,7 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.ticket.*;
+import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
 import amtt.epam.com.amtt.view.EditText;
 import amtt.epam.com.amtt.view.SpinnerProgress;
@@ -264,6 +265,15 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                     mSummaryEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
                     isValid = false;
                     Toast.makeText(CreateIssueActivity.this, getString(R.string.enter_prefix) + getString(R.string.enter_summary), Toast.LENGTH_LONG).show();
+                }else if (InputsUtil.checkToWhitespaceEnds(mSummaryEditText.getText().toString())) {
+                    mSummaryEditText.requestFocus();
+                    mSummaryEditText.setError(getString(R.string.label_summary) + getString(R.string.label_cannot_whitespaces));
+                    isValid = false;
+                    Toast.makeText(CreateIssueActivity.this, getString(R.string.label_summary) + getString(R.string.label_cannot_whitespaces), Toast.LENGTH_LONG).show();
+                }
+                if (mIssueTypeName == null) {
+                    isValid = false;
+                    Toast.makeText(CreateIssueActivity.this, getString(R.string.error_message_unknown), Toast.LENGTH_LONG).show();
                 }
                 if (isValid) {
                     showProgress(true);

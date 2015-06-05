@@ -22,6 +22,7 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants.Symbols;
 import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.view.EditText;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -122,17 +123,30 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
 
     private void checkFields() {
         boolean isAnyEmptyField = false;
+        //check username
         if (TextUtils.isEmpty(mUserNameEditText.getText().toString())) {
             mUserNameEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username));
             isAnyEmptyField = true;
+        } else if (InputsUtil.checkToWhitespaceEnds(mUserNameEditText.getText().toString())) {
+            mUserNameEditText.setError(getString(R.string.label_user_name) + getString(R.string.label_cannot_whitespaces));
+            isAnyEmptyField = true;
+        } else if (InputsUtil.checkToAt(mUserNameEditText.getText().toString())) {
+            mUserNameEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username) + getString(R.string.label_cannot_at));
+            isAnyEmptyField = true;
         }
+
         if (TextUtils.isEmpty(mPasswordEditText.getText().toString())) {
             isAnyEmptyField = true;
             mPasswordEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_password));
         }
+
+        //check url
         if (TextUtils.isEmpty(mUrlEditText.getText().toString()) || "https://".equals(mUrlEditText.getText().toString())) {
             isAnyEmptyField = true;
             mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_url));
+        } else if (InputsUtil.checkUrl(mUrlEditText.getText().toString())){
+            isAnyEmptyField = true;
+            mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_correct_url));
         } else if(getString(R.string.epam_url).equals(mUrlEditText.getText().toString())){
             isAnyEmptyField = true;
             mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_postfix_jira));

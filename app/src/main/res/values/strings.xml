@@ -108,8 +108,10 @@
     <string name="notification_attach_title_init">Uploading %s</string>
     <string name="notification_attachment_text_init">Uploading %s attached items.</string>
     <string name="epam_url">https://jira.epam.com</string>
-    <string name="label_added_step">Added step</string>
     <string name="dialog_are_you_sure">Are you sure?</string>
     <string name="dialog_exit">Do you want to close AMTT application?</string>
     <string name="label_return">Return</string>
+    <string name="label_cannot_whitespaces">" cannot begin and end to whitespace"</string>
+    <string name="label_cannot_at">" nor email and symbol @"</string>
+    <string name="enter_correct_url">" url"</string>
 </resources>
