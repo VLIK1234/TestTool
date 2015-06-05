@@ -4,32 +4,24 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.widget.Toast;
+import android.preference.SwitchPreference;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
  * Created by Ivan_Bakach on 05.06.2015.
  */
 public class SettingsFragment extends PreferenceFragment {
+
+    public static CheckBoxPreference checkBoxPreference;
+    public static SwitchPreference switchPreference;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.setting);
-        CheckBoxPreference  checkBoxPreference = (CheckBoxPreference) findPreference("dialog_show");
-        checkBoxPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Toast.makeText(getActivity().getBaseContext(),  preference.isSelectable()+ " is cheked", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
-        checkBoxPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                Toast.makeText(getActivity().getBaseContext(),  preference.isSelectable()+ " is cheked", Toast.LENGTH_SHORT).show();
-                return preference.isEnabled();
-            }
-        });
+        checkBoxPreference = (CheckBoxPreference) findPreference(getActivity().getBaseContext().getString(R.string.key_dialog_hide));
+        switchPreference = (SwitchPreference) findPreference(getActivity().getBaseContext().getString(R.string.key_topbutton_show));
     }
 }

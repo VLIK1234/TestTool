@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.app;
 
+import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
@@ -15,6 +16,8 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
@@ -32,6 +35,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
+        PreferenceManager.setDefaultValues(this, R.xml.setting, false);
         getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, MainActivity.this);
     }
 

@@ -1,11 +1,14 @@
 package amtt.epam.com.amtt.app;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
@@ -25,17 +28,18 @@ public class HelpDialogActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
-        isCanTakeScreenshot = false;
+        setIsCanTakeScreenshot(false);
 
         TextView textView = (TextView) findViewById(R.id.message_dialog);
         textView.append(Build.BRAND.toUpperCase()+" "+Build.MODEL.toUpperCase());
         textView.append(getMessageForCurrentDevice());
 
         CheckBox checkShowAgain = (CheckBox) findViewById(R.id.dialog_check_show_again);
-        checkShowAgain.setOnClickListener(new View.OnClickListener() {
+        checkShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                sharedPref.edit().putBoolean(getString(R.string.key_dialog_hide), isChecked).apply();
             }
         });
         Button buttonOk = (Button) findViewById(R.id.dialog_button_ok);
@@ -43,16 +47,16 @@ public class HelpDialogActivity extends Activity {
             @Override
             public void onClick(View v) {
                 finish();
-                isCanTakeScreenshot = true;
+                setIsCanTakeScreenshot(true);
             }
         });
         Button buttonCancel = (Button) findViewById(R.id.dialog_button_cancel);
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TopButtonService.sendActionShowButton();
+                TopButtonService.sendActionChangeVisibilityButton();
                 finish();
-                isCanTakeScreenshot = false;
+                setIsCanTakeScreenshot(false);
             }
         });
     }
@@ -74,5 +78,8 @@ public class HelpDialogActivity extends Activity {
     }
     public static boolean getIsCanTakeScreenshot(){
         return isCanTakeScreenshot;
+    }
+    public static void setIsCanTakeScreenshot(boolean value){
+        isCanTakeScreenshot = value;
     }
 }

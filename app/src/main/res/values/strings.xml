@@ -114,4 +114,10 @@
     <string name="dialog_are_you_sure">Are you sure?</string>
     <string name="dialog_exit">Do you want to close AMTT application?</string>
     <string name="label_return">Return</string>
+    <string name="key_dialog_hide">dialog_hide</string>
+    <string name="key_topbutton_show">topbutton_show</string>
+    <string name="title_preff_topbutton_show">Show</string>
+    <string name="title_preff_dialog_hide">Hide dialog</string>
+    <string name="preff_category_topbutton">Top button</string>
+    <string name="preff_category_help_dialog">Help dialog</string>
 </resources>

@@ -57,7 +57,8 @@ public class AmttFileObserver extends FileObserver {
                     public void run() {
                         StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), absolutePath + "/" + createPath);
 //                        TopButtonService.sendActionScreenshot(absolutePath + "/" + createPath);
-                        TopButtonService.sendActionShowButton();
+                        TopButtonService.sendActionChangeVisibilityButton();
+                        HelpDialogActivity.setIsCanTakeScreenshot(false);
                     }
                 };
                 worker.schedule(task, 1, TimeUnit.SECONDS);

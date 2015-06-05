@@ -72,6 +72,7 @@
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
         <activity
             android:name=".app.SettingActivity"
+            android:launchMode="singleInstance"
             android:label="@string/title_activity_settings" />
 
         <activity
