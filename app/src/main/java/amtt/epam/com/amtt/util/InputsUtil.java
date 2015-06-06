@@ -17,7 +17,7 @@ public class InputsUtil {
     private static Matcher mMatcher;
     private static final String mNoWhitespaceAfterAndBefore = "(\\S)+.+(\\S)";
     private static final String mHaveWhitespaces = ".*(\\s)+.*";
-    private static final String mHasAtSymbol = ".+@.+";
+    private static final String mHasAtSymbol = ".*@.*";
 
     public static Boolean checkUrl(String url) {
         mPattern = Patterns.WEB_URL;

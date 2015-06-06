@@ -14,7 +14,9 @@ import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
+import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.IOUtils;
@@ -34,6 +36,9 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  @author Artsiom_Kaliaha
@@ -141,6 +146,14 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         mLocaleTextView.setText(user.getLocale());
         mJiraUrlTextView.setText(user.getUrl());
         CoreApplication.getImageLoader().displayImage(user.getAvatarUrls().getAvatarUrl(), mUserImageImageView);
+        ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
+        Runnable task = new Runnable() {
+            public void run() {
+                JiraContent.getInstance().getPrioritiesNames(null);
+                JiraContent.getInstance().getProjectsNames(null);
+            }
+        };
+        worker.schedule(task, 1, TimeUnit.SECONDS);
     }
 
     //Callback
