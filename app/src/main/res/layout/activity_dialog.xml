@@ -16,12 +16,37 @@
         android:layout_marginLeft="@dimen/dialog_margin"
         android:layout_marginStart="@dimen/dialog_margin"
         android:text="@string/dialog_label_checkbox"/>
-    <Button
-        android:id="@+id/dialog_button_ok"
-        android:layout_width="@dimen/dialog_button_width"
-        android:layout_height="@dimen/dialog_button_height"
-        android:layout_margin="@dimen/dialo_button_margin"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:text="@string/dialog_button_text"
-        android:textColor="@android:color/holo_blue_dark"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dialog_button_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dialog_button_margin"
+            android:layout_marginBottom="@dimen/dialog_button_margin"
+            android:layout_marginLeft="@dimen/dialog_button_margin"
+            android:layout_marginStart="@dimen/dialog_button_margin"
+            android:text="@string/dialog_button_cancel"
+            android:textSize="14sp"
+            android:textColor="@android:color/holo_blue_dark"/>
+
+        <Button
+            android:id="@+id/dialog_button_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dialog_button_margin"
+            android:layout_marginBottom="@dimen/dialog_button_margin"
+            android:layout_marginLeft="@dimen/dialog_button_margin_between"
+            android:layout_marginStart="@dimen/dialog_button_margin_between"
+            android:layout_marginRight="@dimen/dialog_button_margin"
+            android:layout_marginEnd="@dimen/dialog_button_margin"
+            android:text="@string/dialog_button_ok"
+            android:textSize="14sp"
+            android:textColor="@android:color/holo_blue_dark"/>
+
+    </LinearLayout>
 </LinearLayout>

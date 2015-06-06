@@ -8,6 +8,7 @@
     <string name="title_activity_steps">StepsActivity</string>
     <string name="title_activity_user_info">UserInfoActivity</string>
     <string name="title_activity_amtt">Choose user</string>
+    <string name="title_activity_settings">Settings</string>
     <string name="title_activity_help_dialog">How make screenshot?</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
@@ -16,7 +17,7 @@
     <string name="error_message_auth">Check your credentials</string>
     <string name="error_message_auth_forbidden">You are not allowed to login now</string>
     <string name="error_title_request">Request error</string>
-    <string name="error_message_no_internet">You are offline</string>
+    <string name="error_message_no_internet">Session timeout - you are offline</string>
     <string name="error_button_try">Try again</string>
     <string name="error_button_settings">Open settings</string>
     <string name="error_message_unknown">Unknown error</string>
@@ -69,7 +70,7 @@
     <string name="screenshot_image_description">image view for screenshot</string>
 
     <string name="notification_title">AMTT</string>
-    <string name="notification_text">Button-assistant is running.</string>
+    <string name="notification_text">Tap to go to the settings</string>
     <string name="enter_prefix">Please, enter</string>
     <string name="enter_username">" username"</string>
     <string name="enter_password">" password"</string>
@@ -93,7 +94,8 @@
     <string name="helper_password">Enter password</string>
     <string name="dialog_description">To make screenshot please use next combination button for your device - </string>
     <string name="dialog_label_checkbox">Don\'t show again</string>
-    <string name="dialog_button_text">OK</string>
+    <string name="dialog_button_ok">OK</string>
+    <string name="dialog_button_cancel">Cancel</string>
     <string name="label_close_app">Close Amtt</string>
     <string name="label_show_steps">Show recorded steps</string>
     <string name="nexus_help_message">\nNexus - volume down+power</string>
@@ -115,4 +117,10 @@
     <string name="label_cannot_at">" nor email and symbol @"</string>
     <string name="enter_correct_url">" url"</string>
     <string name="label_no_whitespaces">" cannot contain whitespaces"</string>
+    <string name="key_dialog_hide">dialog_hide</string>
+    <string name="key_topbutton_show">topbutton_show</string>
+    <string name="title_preff_topbutton_show">Show</string>
+    <string name="title_preff_dialog_hide">Hide dialog</string>
+    <string name="preff_category_topbutton">Top button</string>
+    <string name="preff_category_help_dialog">Help dialog</string>
 </resources>

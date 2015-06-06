@@ -72,10 +72,10 @@
             android:label="@string/title_activity_help_dialog"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
-
-        <service
-            android:name=".ticket.AttachmentService"
-            android:exported="false" />
+        <activity
+            android:name=".app.SettingActivity"
+            android:launchMode="singleInstance"
+            android:label="@string/title_activity_settings" />
 
         <activity
             android:name=".app.AskExitActivity"
@@ -84,6 +84,18 @@
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
 
+        <service
+            android:name=".ticket.AttachmentService"
+            android:exported="false" />
+
+        <receiver android:name=".broadcastreceiver.GlobalBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="SHOW"/>
+                <action android:name="LOG_FILE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

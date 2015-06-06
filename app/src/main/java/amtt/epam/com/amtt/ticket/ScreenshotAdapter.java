@@ -1,6 +1,9 @@
 package amtt.epam.com.amtt.ticket;
 
+import amtt.epam.com.amtt.app.CreateIssueActivity;
+import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReceiver;
 import amtt.epam.com.amtt.loader.InternalStorageImageLoader;
+import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.util.Logger;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.R;
@@ -21,7 +25,7 @@ import amtt.epam.com.amtt.R;
 public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.ViewHolder>{
 
     private final String TAG = this.getClass().getSimpleName();
-    private List<Attachment> screenshots;
+    private ArrayList<Attachment> screenshots;
     private int rowLayout;
     private static final InternalStorageImageLoader sImageLoader;
     public static final int IMAGE_VIEW_WIDTH = 360;
@@ -32,7 +36,7 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
         sImageLoader = new InternalStorageImageLoader(10, IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT);
     }
 
-        public ScreenshotAdapter(List<Attachment> screenshots, int rowLayout, ViewHolder.ClickListener clickListener) {
+        public ScreenshotAdapter(ArrayList<Attachment> screenshots, int rowLayout, ViewHolder.ClickListener clickListener) {
         this.screenshots = screenshots;
         this.rowLayout = rowLayout;
         this.clickListener = clickListener;
@@ -50,7 +54,12 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
         Attachment screenshot = screenshots.get(i);
         Logger.d(TAG, screenshot.name);
         viewHolder.screenshotName.setText(screenshot.name);
-        sImageLoader.load(viewHolder.screenshotImage, screenshot.filePath);
+        if (screenshot.filePath.contains(".png")) {
+            sImageLoader.load(viewHolder.screenshotImage, screenshot.filePath);
+        }else if (screenshot.filePath.contains(".txt")){
+            viewHolder.screenshotImage.setImageDrawable(ContextHolder.getContext().getResources().getDrawable(R.drawable.text_file_preview));
+        }
+
         viewHolder.screenshotClose.setEnabled(true);
     }
 
@@ -66,6 +75,7 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
 
     public void removeItem(int position) {
         screenshots.remove(position);
+        CreateIssueActivity.mListScreenshot.remove(position);
         notifyItemRemoved(position);
         Logger.d(TAG, String.valueOf(position));
     }

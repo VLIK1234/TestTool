@@ -8,6 +8,7 @@ import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.bo.*;
+import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReceiver;
 import amtt.epam.com.amtt.processing.*;
 
 import java.util.ArrayList;

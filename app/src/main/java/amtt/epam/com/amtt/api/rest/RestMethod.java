@@ -1,5 +1,8 @@
 package amtt.epam.com.amtt.api.rest;
 
+import android.util.Log;
+
+import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.util.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -18,6 +21,10 @@ import java.util.Map;
 
 import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.processing.Processor;
+
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
@@ -96,7 +103,13 @@ public class RestMethod<ResultType> {
     private HttpEntity mPostEntity;
 
     static {
-        mHttpClient = new DefaultHttpClient();
+        HttpParams httpParameters = new BasicHttpParams();
+        int timeoutConnection = 8000;
+        HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+        int timeoutSocket = 10000;
+        HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+
+        mHttpClient = new DefaultHttpClient(httpParameters);
     }
 
     public RestMethod() {
@@ -112,20 +125,20 @@ public class RestMethod<ResultType> {
         HttpResponse httpResponse;
         try {
             httpResponse = mHttpClient.execute(httpGet);
-        } catch (IllegalStateException e) {
-            Logger.e(TAG, e.getMessage());
-            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IllegalArgumentException e) {
-            Logger.e(TAG, e.getMessage());
+            Logger.e(TAG, e.toString());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (UnknownHostException e) {
-            Logger.e(TAG, e.getMessage());
+            Logger.e(TAG, e.toString());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (ClientProtocolException e) {
-            Logger.e(TAG, e.getMessage());
+            Logger.e(TAG, e.toString());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IOException e) {
-            Logger.e(TAG, e.getMessage());
+            Logger.e(TAG, e.toString());
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        } catch (IllegalStateException e) {
+            Logger.e(TAG, e.toString());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }
         return httpResponse;

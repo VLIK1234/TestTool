@@ -11,7 +11,9 @@ import java.util.List;
 public class ScreenshotManager {
 
     private static ScreenshotManager mInstance;
-    private List<Attachment> screenshotList = new ArrayList<>();
+    private ArrayList<Attachment> screenshotList = new ArrayList<>();
+
+    private ScreenshotManager(){}
 
     public static ScreenshotManager getInstance() {
         if (mInstance == null) {
@@ -20,7 +22,7 @@ public class ScreenshotManager {
         return mInstance;
     }
 
-    public List<Attachment> getScreenshotList(ArrayList<String> listScreenshot) {
+    public ArrayList<Attachment> getScreenshotList(ArrayList<String> listScreenshot) {
         screenshotList.clear();
         if (listScreenshot != null) {
             for (int i = 0; i < listScreenshot.size(); i++) {

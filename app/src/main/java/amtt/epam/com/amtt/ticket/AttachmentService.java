@@ -69,7 +69,7 @@ public class AttachmentService extends Service {
     }
 
     public static void start(Context context, ArrayList<String> attachmentList) {
-        AttachmentService.attachmentList = attachmentList;
+        AttachmentService.attachmentList = (ArrayList<String>) attachmentList.clone();
         context.startService(new Intent(context, AttachmentService.class).setAction(ACTION_START));
     }
 
@@ -83,7 +83,6 @@ public class AttachmentService extends Service {
                     AttachNotificationHelper.updateNotification(getBaseContext(),
                             AttachNotificationHelper.getFinalBuilder(getBaseContext(), issueKey, fileFullName.size()), notificationId);
                     AmttFileObserver.clearImageArray();
-                    StepUtil.clearAllStep();
                     stopSelf();
                 }
             });

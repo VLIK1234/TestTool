@@ -87,7 +87,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        TopButtonService.sendActionShowButton();
+        TopButtonService.sendActionChangeVisibilityButton();
     }
 
     @Override

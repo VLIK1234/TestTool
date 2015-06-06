@@ -23,7 +23,7 @@ public class Logger {
     private static final String BODY = "Body : ";
     private static final String STATUS_CODE = "StatusCode : ";
     private static final String REASON_PHRASE = "ReasonPhrase : ";
-    private static final Boolean IS_SHOW_LOGS = true;
+    private static boolean IS_SHOW_LOGS = true;
 
     public Logger() {
     }
@@ -110,5 +110,11 @@ public class Logger {
         Logger.i(TAG, STATUS_CODE + response.getStatusLine().getStatusCode());
         Logger.i(TAG, REASON_PHRASE + response.getStatusLine().getReasonPhrase());
         Logger.i(TAG, BODY + content);
+    }
+    public static void loggerOn(){
+        IS_SHOW_LOGS = true;
+    }
+    public static void loggerOff(){
+        IS_SHOW_LOGS = false;
     }
 }

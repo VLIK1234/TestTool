@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
+import android.view.WindowManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,68 +34,68 @@ public class ActivityMetaUtil {
 
     static {
         sConfigChanges = new HashMap<>();
-        sConfigChanges.put(4096, ActivityInfoConstants.CONFIG_FONT_SCALE);
-        sConfigChanges.put(1, ActivityInfoConstants.CONFIG_MCC);
-        sConfigChanges.put(2, ActivityInfoConstants.CONFIG_MNC);
-        sConfigChanges.put(4, ActivityInfoConstants.CONFIG_LOCALE);
-        sConfigChanges.put(8, ActivityInfoConstants.CONFIG_TOUCHSCREEN);
-        sConfigChanges.put(16, ActivityInfoConstants.CONFIG_KEYBOARD);
-        sConfigChanges.put(64, ActivityInfoConstants.CONFIG_NAVIGATION);
-        sConfigChanges.put(128, ActivityInfoConstants.CONFIG_ORIENTATION);
-        sConfigChanges.put(256, ActivityInfoConstants.CONFIG_SCREEN_LAYOUT);
-        sConfigChanges.put(8192, ActivityInfoConstants.CONFIG_LAYOUT_DIRECTION);
+        sConfigChanges.put(ActivityInfo.CONFIG_FONT_SCALE, ActivityInfoConstants.CONFIG_FONT_SCALE);
+        sConfigChanges.put(ActivityInfo.CONFIG_MCC, ActivityInfoConstants.CONFIG_MCC);
+        sConfigChanges.put(ActivityInfo.CONFIG_MNC, ActivityInfoConstants.CONFIG_MNC);
+        sConfigChanges.put(ActivityInfo.CONFIG_LOCALE, ActivityInfoConstants.CONFIG_LOCALE);
+        sConfigChanges.put(ActivityInfo.CONFIG_TOUCHSCREEN, ActivityInfoConstants.CONFIG_TOUCHSCREEN);
+        sConfigChanges.put(ActivityInfo.CONFIG_KEYBOARD, ActivityInfoConstants.CONFIG_KEYBOARD);
+        sConfigChanges.put(ActivityInfo.CONFIG_NAVIGATION, ActivityInfoConstants.CONFIG_NAVIGATION);
+        sConfigChanges.put(ActivityInfo.CONFIG_ORIENTATION, ActivityInfoConstants.CONFIG_ORIENTATION);
+        sConfigChanges.put(ActivityInfo.CONFIG_SCREEN_LAYOUT, ActivityInfoConstants.CONFIG_SCREEN_LAYOUT);
+        sConfigChanges.put(ActivityInfo.CONFIG_LAYOUT_DIRECTION, ActivityInfoConstants.CONFIG_LAYOUT_DIRECTION);
 
         sFlags = new HashMap<>();
-        sFlags.put(1, ActivityInfoConstants.FLAG_MULTIPROCESS);
-        sFlags.put(2, ActivityInfoConstants.FLAG_FINISH_ON_TASK_LAUNCH);
-        sFlags.put(4, ActivityInfoConstants.FLAG_CLEAR_TASK_ON_LAUNCH);
-        sFlags.put(8, ActivityInfoConstants.FLAG_ALWAYS_RETAIN_TASK_STATE);
-        sFlags.put(16, ActivityInfoConstants.FLAG_STATE_NOT_NEEDED);
-        sFlags.put(32, ActivityInfoConstants.FLAG_EXCLUDE_FROM_RECENTS);
-        sFlags.put(64, ActivityInfoConstants.FLAG_ALLOW_TASK_REPARENTING);
-        sFlags.put(64, ActivityInfoConstants.FLAG_ALLOW_TASK_REPARENTING);
-        sFlags.put(128, ActivityInfoConstants.FLAG_NO_HISTORY);
-        sFlags.put(256, ActivityInfoConstants.FLAG_FINISH_ON_CLOSE_SYSTEM_DIALOGS);
-        sFlags.put(512, ActivityInfoConstants.FLAG_HARDWARE_ACCELERATED);
-        sFlags.put(1073741824, ActivityInfoConstants.FLAG_SINGLE_USER);
+        sFlags.put(ActivityInfo.FLAG_MULTIPROCESS, ActivityInfoConstants.FLAG_MULTIPROCESS);
+        sFlags.put(ActivityInfo.FLAG_FINISH_ON_TASK_LAUNCH, ActivityInfoConstants.FLAG_FINISH_ON_TASK_LAUNCH);
+        sFlags.put(ActivityInfo.FLAG_CLEAR_TASK_ON_LAUNCH, ActivityInfoConstants.FLAG_CLEAR_TASK_ON_LAUNCH);
+        sFlags.put(ActivityInfo.FLAG_ALWAYS_RETAIN_TASK_STATE, ActivityInfoConstants.FLAG_ALWAYS_RETAIN_TASK_STATE);
+        sFlags.put(ActivityInfo.FLAG_STATE_NOT_NEEDED, ActivityInfoConstants.FLAG_STATE_NOT_NEEDED);
+        sFlags.put(ActivityInfo.FLAG_EXCLUDE_FROM_RECENTS, ActivityInfoConstants.FLAG_EXCLUDE_FROM_RECENTS);
+        sFlags.put(ActivityInfo.FLAG_ALLOW_TASK_REPARENTING, ActivityInfoConstants.FLAG_ALLOW_TASK_REPARENTING);
+        sFlags.put(ActivityInfo.FLAG_ALLOW_TASK_REPARENTING, ActivityInfoConstants.FLAG_ALLOW_TASK_REPARENTING);
+        sFlags.put(ActivityInfo.FLAG_NO_HISTORY, ActivityInfoConstants.FLAG_NO_HISTORY);
+        sFlags.put(ActivityInfo.FLAG_FINISH_ON_CLOSE_SYSTEM_DIALOGS, ActivityInfoConstants.FLAG_FINISH_ON_CLOSE_SYSTEM_DIALOGS);
+        sFlags.put(ActivityInfo.FLAG_HARDWARE_ACCELERATED, ActivityInfoConstants.FLAG_HARDWARE_ACCELERATED);
+        sFlags.put(ActivityInfo.FLAG_SINGLE_USER, ActivityInfoConstants.FLAG_SINGLE_USER);
 
         sLaunchMode = new HashMap<>();
-        sLaunchMode.put(0, ActivityInfoConstants.LAUNCH_MULTIPLE);
-        sLaunchMode.put(1, ActivityInfoConstants.LAUNCH_SINGLE_TOP);
-        sLaunchMode.put(2, ActivityInfoConstants.LAUNCH_SINGLE_TASK);
-        sLaunchMode.put(3, ActivityInfoConstants.LAUNCH_SINGLE_INSTANCE);
+        sLaunchMode.put(ActivityInfo.LAUNCH_MULTIPLE, ActivityInfoConstants.LAUNCH_MULTIPLE);
+        sLaunchMode.put(ActivityInfo.LAUNCH_SINGLE_TOP, ActivityInfoConstants.LAUNCH_SINGLE_TOP);
+        sLaunchMode.put(ActivityInfo.LAUNCH_SINGLE_TASK, ActivityInfoConstants.LAUNCH_SINGLE_TASK);
+        sLaunchMode.put(ActivityInfo.LAUNCH_SINGLE_INSTANCE, ActivityInfoConstants.LAUNCH_SINGLE_INSTANCE);
 
         sPersistableMode = new HashMap<>();
-        sPersistableMode.put(0, ActivityInfoConstants.PERSIST_ROOT_ONLY);
-        sPersistableMode.put(1, ActivityInfoConstants.PERSIST_NEVER);
-        sPersistableMode.put(2, ActivityInfoConstants.PERSIST_ACROSS_REBOOTS);
+        sPersistableMode.put(ActivityInfo.PERSIST_ROOT_ONLY, ActivityInfoConstants.PERSIST_ROOT_ONLY);
+        sPersistableMode.put(ActivityInfo.PERSIST_NEVER, ActivityInfoConstants.PERSIST_NEVER);
+        sPersistableMode.put(ActivityInfo.PERSIST_ACROSS_REBOOTS, ActivityInfoConstants.PERSIST_ACROSS_REBOOTS);
 
         sScreenOrientation = new HashMap<>();
-        sScreenOrientation.put(-1, ActivityInfoConstants.SCREEN_ORIENTATION_UNSPECIFIED);
-        sScreenOrientation.put(0, ActivityInfoConstants.SCREEN_ORIENTATION_LANDSCAPE);
-        sScreenOrientation.put(1, ActivityInfoConstants.SCREEN_ORIENTATION_PORTRAIT);
-        sScreenOrientation.put(2, ActivityInfoConstants.SCREEN_ORIENTATION_USER);
-        sScreenOrientation.put(3, ActivityInfoConstants.SCREEN_ORIENTATION_BEHIND);
-        sScreenOrientation.put(4, ActivityInfoConstants.SCREEN_ORIENTATION_SENSOR);
-        sScreenOrientation.put(5, ActivityInfoConstants.SCREEN_ORIENTATION_NOSENSOR);
-        sScreenOrientation.put(6, ActivityInfoConstants.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-        sScreenOrientation.put(7, ActivityInfoConstants.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-        sScreenOrientation.put(8, ActivityInfoConstants.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-        sScreenOrientation.put(9, ActivityInfoConstants.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
-        sScreenOrientation.put(10, ActivityInfoConstants.SCREEN_ORIENTATION_FULL_SENSOR);
-        sScreenOrientation.put(11, ActivityInfoConstants.SCREEN_ORIENTATION_USER_LANDSCAPE);
-        sScreenOrientation.put(12, ActivityInfoConstants.SCREEN_ORIENTATION_USER_PORTRAIT);
-        sScreenOrientation.put(13, ActivityInfoConstants.SCREEN_ORIENTATION_FULL_USER);
-        sScreenOrientation.put(14, ActivityInfoConstants.SCREEN_ORIENTATION_LOCKED);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED, ActivityInfoConstants.SCREEN_ORIENTATION_UNSPECIFIED);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE, ActivityInfoConstants.SCREEN_ORIENTATION_LANDSCAPE);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, ActivityInfoConstants.SCREEN_ORIENTATION_PORTRAIT);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_USER, ActivityInfoConstants.SCREEN_ORIENTATION_USER);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_BEHIND, ActivityInfoConstants.SCREEN_ORIENTATION_BEHIND);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_SENSOR, ActivityInfoConstants.SCREEN_ORIENTATION_SENSOR);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR, ActivityInfoConstants.SCREEN_ORIENTATION_NOSENSOR);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE, ActivityInfoConstants.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT, ActivityInfoConstants.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE, ActivityInfoConstants.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT, ActivityInfoConstants.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR, ActivityInfoConstants.SCREEN_ORIENTATION_FULL_SENSOR);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE, ActivityInfoConstants.SCREEN_ORIENTATION_USER_LANDSCAPE);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT, ActivityInfoConstants.SCREEN_ORIENTATION_USER_PORTRAIT);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_FULL_USER, ActivityInfoConstants.SCREEN_ORIENTATION_FULL_USER);
+        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_LOCKED, ActivityInfoConstants.SCREEN_ORIENTATION_LOCKED);
 
         sSoftInputMode = new HashMap<>();
-        sSoftInputMode.put(0, ActivityInfoConstants.SOFT_INPUT_STATE_UNSPECIFIED); //conflict with SOFT_INPUT_ADJUST_UNSPECIFIED
-        sSoftInputMode.put(1, ActivityInfoConstants.SOFT_INPUT_STATE_UNCHANGED);
-        sSoftInputMode.put(2, ActivityInfoConstants.SOFT_INPUT_STATE_HIDDEN);
-        sSoftInputMode.put(5, ActivityInfoConstants.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        sSoftInputMode.put(4, ActivityInfoConstants.SOFT_INPUT_STATE_VISIBLE);
-        sSoftInputMode.put(16, ActivityInfoConstants.SOFT_INPUT_ADJUST_RESIZE);
-        sSoftInputMode.put(32, ActivityInfoConstants.SOFT_INPUT_ADJUST_PAN);
+        sSoftInputMode.put(WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED, ActivityInfoConstants.SOFT_INPUT_STATE_UNSPECIFIED); //conflict with SOFT_INPUT_ADJUST_UNSPECIFIED
+        sSoftInputMode.put(WindowManager.LayoutParams.SOFT_INPUT_STATE_UNCHANGED, ActivityInfoConstants.SOFT_INPUT_STATE_UNCHANGED);
+        sSoftInputMode.put(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN, ActivityInfoConstants.SOFT_INPUT_STATE_HIDDEN);
+        sSoftInputMode.put(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE, ActivityInfoConstants.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        sSoftInputMode.put(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE, ActivityInfoConstants.SOFT_INPUT_STATE_VISIBLE);
+        sSoftInputMode.put(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE, ActivityInfoConstants.SOFT_INPUT_ADJUST_RESIZE);
+        sSoftInputMode.put(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN, ActivityInfoConstants.SOFT_INPUT_ADJUST_PAN);
 
         sUiOptions = new HashMap<>();
         sUiOptions.put(0, ActivityInfoConstants.UI_OPTIONS_NONE);
