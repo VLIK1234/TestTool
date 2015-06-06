@@ -17,7 +17,7 @@
     <string name="error_message_auth">Check your credentials</string>
     <string name="error_message_auth_forbidden">You are not allowed to login now</string>
     <string name="error_title_request">Request error</string>
-    <string name="error_message_no_internet">You are offline</string>
+    <string name="error_message_no_internet">Session timeout - you're offline</string>
     <string name="error_button_try">Try again</string>
     <string name="error_button_settings">Open settings</string>
     <string name="error_message_unknown">Unknown error</string>

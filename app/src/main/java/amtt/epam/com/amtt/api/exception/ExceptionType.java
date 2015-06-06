@@ -24,7 +24,7 @@ public enum ExceptionType {
     AUTH(R.string.error_title_auth, R.string.error_message_auth, R.string.error_button_try, Constants.Dialog.EMPTY_FIELD),
     AUTH_FORBIDDEN(R.string.error_title_auth, R.string.error_message_auth_forbidden, Constants.Dialog.EMPTY_FIELD, Constants.Dialog.EMPTY_FIELD),
     NO_INTERNET(R.string.error_title_request, R.string.error_message_no_internet, R.string.error_button_try, R.string.error_button_settings),
-    UNKNOWN(R.string.error_title_request, R.string.error_message_unknown, Constants.Dialog.EMPTY_FIELD, Constants.Dialog.EMPTY_FIELD),
+    UNKNOWN(R.string.error_title_request, R.string.error_message_unknown, R.string.error_button_try, Constants.Dialog.EMPTY_FIELD),
     BAD_GATEWAY(R.string.error_title_request, R.string.error_message_gateway, Constants.Dialog.EMPTY_FIELD, Constants.Dialog.EMPTY_FIELD),
     NOT_FOUND(R.string.error_title_request, R.string.error_message_web_address, Constants.Dialog.EMPTY_FIELD, Constants.Dialog.EMPTY_FIELD);
 
@@ -41,9 +41,9 @@ public enum ExceptionType {
         mExceptionsMap.put(AuthenticationException.class, AUTH);
         mExceptionsMap.put(JsonSyntaxException.class, ExceptionType.AUTH);
         mExceptionsMap.put(IllegalStateException.class, NOT_FOUND);
-        mExceptionsMap.put(IllegalArgumentException.class, NOT_FOUND);
+        mExceptionsMap.put(IllegalArgumentException.class, NO_INTERNET);
         mExceptionsMap.put(UnknownHostException.class, ExceptionType.NOT_FOUND);
-        mExceptionsMap.put(SocketTimeoutException.class, ExceptionType.NO_INTERNET);
+        mExceptionsMap.put(org.apache.http.conn.ConnectTimeoutException.class, ExceptionType.NO_INTERNET);
         mExceptionsMap.put(UnknownError.class, ExceptionType.UNKNOWN);
 
         mStatusCodeMap = new HashMap<>();

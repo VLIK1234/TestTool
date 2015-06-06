@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.api.rest;
 
 import android.util.Log;
 
+import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.util.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -124,20 +125,20 @@ public class RestMethod<ResultType> {
         HttpResponse httpResponse;
         try {
             httpResponse = mHttpClient.execute(httpGet);
-       } catch (IllegalArgumentException e) {
-            Logger.e(TAG, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            Logger.e(TAG, e.toString());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (UnknownHostException e) {
-            Logger.e(TAG, e.getMessage());
+            Logger.e(TAG, e.toString());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (ClientProtocolException e) {
-            Logger.e(TAG, e.getMessage());
+            Logger.e(TAG, e.toString());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IOException e) {
-            Logger.e(TAG, e.getMessage());
+            Logger.e(TAG, e.toString());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IllegalStateException e) {
-            Logger.e(TAG, e.getMessage());
+            Logger.e(TAG, e.toString());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }
         return httpResponse;
