@@ -38,7 +38,7 @@ public class AmttFileObserver extends FileObserver {
         super(path, FileObserver.ALL_EVENTS);
         absolutePath = path;
         imageArray = new ArrayList<>();
-        Logger.loggerOff();
+        Logger.loggerOn();
     }
 
     @Override

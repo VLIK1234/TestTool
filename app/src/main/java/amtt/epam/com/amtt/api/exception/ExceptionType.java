@@ -5,6 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthenticationException;
 
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +42,8 @@ public enum ExceptionType {
         mExceptionsMap.put(JsonSyntaxException.class, ExceptionType.AUTH);
         mExceptionsMap.put(IllegalStateException.class, NOT_FOUND);
         mExceptionsMap.put(IllegalArgumentException.class, NOT_FOUND);
-        mExceptionsMap.put(UnknownHostException.class, ExceptionType.NO_INTERNET);
+        mExceptionsMap.put(UnknownHostException.class, ExceptionType.NOT_FOUND);
+        mExceptionsMap.put(SocketTimeoutException.class, ExceptionType.NO_INTERNET);
         mExceptionsMap.put(UnknownError.class, ExceptionType.UNKNOWN);
 
         mStatusCodeMap = new HashMap<>();
@@ -83,7 +85,11 @@ public enum ExceptionType {
         if (e!=null) {
             if (e.getSuppressedOne() != null) {
                 Class exceptionClass = e.getSuppressedOne().getClass();
-                return mExceptionsMap.get(exceptionClass);
+                if (mExceptionsMap.get(exceptionClass)!=null) {
+                    return mExceptionsMap.get(exceptionClass);
+                }else{
+                    return mExceptionsMap.get(UnknownError.class);
+                }
             } else {
                 return mStatusCodeMap.get(e.getStatusCode());
             }

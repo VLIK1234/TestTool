@@ -20,6 +20,10 @@ import java.util.Map;
 
 import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.processing.Processor;
+
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
@@ -98,7 +102,13 @@ public class RestMethod<ResultType> {
     private HttpEntity mPostEntity;
 
     static {
-        mHttpClient = new DefaultHttpClient();
+        HttpParams httpParameters = new BasicHttpParams();
+        int timeoutConnection = 8000;
+        HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+        int timeoutSocket = 10000;
+        HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+
+        mHttpClient = new DefaultHttpClient(httpParameters);
     }
 
     public RestMethod() {
