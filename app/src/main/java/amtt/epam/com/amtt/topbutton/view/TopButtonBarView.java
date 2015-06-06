@@ -133,10 +133,11 @@ public class TopButtonBarView extends FrameLayout {
         mButtonExpectedResult = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new ITouchAction() {
             @Override
             public void TouchAction() {
-                Intent broadcastIntent = new Intent();
-                broadcastIntent.setAction("LOG");
-                broadcastIntent.addCategory("android.intent.category.DEFAULT");
-                getContext().sendBroadcast(broadcastIntent);
+                Toast.makeText(getContext(),"Vova that there should be?", Toast.LENGTH_SHORT).show();
+//                Intent broadcastIntent = new Intent();
+//                broadcastIntent.setAction("LOG");
+//                broadcastIntent.addCategory("android.intent.category.DEFAULT");
+//                getContext().sendBroadcast(broadcastIntent);
 //                broadcastIntent.setAction("SHOW");
 //                getContext().sendBroadcast(broadcastIntent);
             }
