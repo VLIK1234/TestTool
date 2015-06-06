@@ -1,5 +1,7 @@
 package amtt.epam.com.amtt.api.rest;
 
+import android.util.Log;
+
 import amtt.epam.com.amtt.util.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -112,10 +114,7 @@ public class RestMethod<ResultType> {
         HttpResponse httpResponse;
         try {
             httpResponse = mHttpClient.execute(httpGet);
-        } catch (IllegalStateException e) {
-            Logger.e(TAG, e.getMessage());
-            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
-        } catch (IllegalArgumentException e) {
+       } catch (IllegalArgumentException e) {
             Logger.e(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (UnknownHostException e) {
@@ -125,6 +124,9 @@ public class RestMethod<ResultType> {
             Logger.e(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IOException e) {
+            Logger.e(TAG, e.getMessage());
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        } catch (IllegalStateException e) {
             Logger.e(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }

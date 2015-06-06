@@ -1,11 +1,10 @@
 package amtt.epam.com.amtt.ticket;
 
-import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReciever;
+import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReceiver;
 import amtt.epam.com.amtt.loader.InternalStorageImageLoader;
 import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.util.Logger;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +55,6 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
         if (screenshot.filePath.contains(".png")) {
             sImageLoader.load(viewHolder.screenshotImage, screenshot.filePath);
         }else if (screenshot.filePath.contains(".txt")){
-            ContextHolder.getContext().getResources().getDrawable(R.drawable.text_file_preview);
             viewHolder.screenshotImage.setImageDrawable(ContextHolder.getContext().getResources().getDrawable(R.drawable.text_file_preview));
         }
 
@@ -75,8 +73,9 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
 
     public void removeItem(int position) {
         screenshots.remove(position);
+        //TODO
         if (screenshots.get(position).filePath.contains(".txt")) {
-            GlobalBroadcastReciever.logFilePath = null;
+            GlobalBroadcastReceiver.logFilePath = null;
         }
         notifyItemRemoved(position);
         Logger.d(TAG, String.valueOf(position));

@@ -13,7 +13,7 @@ import amtt.epam.com.amtt.observer.AmttFileObserver;
 /**
  * Created by Ivan_Bakach on 02.06.2015.
  */
-public class GlobalBroadcastReciever extends BroadcastReceiver {
+public class GlobalBroadcastReceiver extends BroadcastReceiver {
 
     public static final String SHOW = "SHOW";
     public static final String LOG_FILE = "LOG_FILE";
@@ -24,23 +24,24 @@ public class GlobalBroadcastReciever extends BroadcastReceiver {
         switch (intent.getAction()) {
             case LOG_FILE:
                 Bundle extras = intent.getExtras();
-                String fielPath="";
+                String filePath;
                 if (extras!=null) {
-                    fielPath = extras.getString("filePath");
-                    logFilePath = fielPath;
+                    filePath = extras.getString("filePath");
+                    logFilePath = filePath;
+                    if (!AmttFileObserver.getImageArray().contains(logFilePath)) {
+                        AmttFileObserver.addToImageArray(logFilePath);
+                    }
                     Toast.makeText(context, logFilePath, Toast.LENGTH_LONG).show();break;
                 }
-
-
         }
     }
 
-    public static void registerBroadcastReciver(Context context, GlobalBroadcastReciever broadcastReceiver){
+    public static void registerBroadcastReceiver(Context context, GlobalBroadcastReceiver broadcastReceiver){
         IntentFilter intentFilter = new IntentFilter();
         LocalBroadcastManager.getInstance(context).registerReceiver(broadcastReceiver, intentFilter);
     }
 
-    public static void unregisterBroadcastReciver(Context context, GlobalBroadcastReciever broadcastReceiver){
+    public static void unregisterBroadcastReceiver(Context context, GlobalBroadcastReceiver broadcastReceiver){
         LocalBroadcastManager.getInstance(context).unregisterReceiver(broadcastReceiver);
     }
 }

@@ -20,7 +20,7 @@ import android.view.WindowManager;
 import java.io.File;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReciever;
+import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReceiver;
 import amtt.epam.com.amtt.app.SettingActivity;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
@@ -53,7 +53,7 @@ public class TopButtonService extends Service{
     private boolean isViewAdd = false;
     private int mXInitPosition;
     private int mYInitPosition;
-    public GlobalBroadcastReciever globalBroadcastReciever;
+    public GlobalBroadcastReceiver globalBroadcastReciever;
 
     public void showScreenInGallery(String pathToScreenshot) {
         Intent intent = new Intent();
@@ -97,8 +97,8 @@ public class TopButtonService extends Service{
         Log.d(TAG, file.getPath());
         mFileObserver = new AmttFileObserver(file.getAbsolutePath());
         mFileObserver.startWatching();
-        globalBroadcastReciever = new GlobalBroadcastReciever();
-        GlobalBroadcastReciever.registerBroadcastReciver(getBaseContext(), globalBroadcastReciever);
+        globalBroadcastReciever = new GlobalBroadcastReceiver();
+        GlobalBroadcastReceiver.registerBroadcastReceiver(getBaseContext(), globalBroadcastReciever);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class TopButtonService extends Service{
                     break;
                 case ACTION_CLOSE:
                     mFileObserver.stopWatching();
-                    GlobalBroadcastReciever.unregisterBroadcastReciver(getBaseContext(), globalBroadcastReciever);
+                    GlobalBroadcastReceiver.unregisterBroadcastReceiver(getBaseContext(), globalBroadcastReciever);
                     closeService();
                     break;
                 case ACTION_CHANGE_VISIBILITY_VIEW:

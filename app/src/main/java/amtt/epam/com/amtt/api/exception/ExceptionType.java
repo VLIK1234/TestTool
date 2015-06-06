@@ -41,7 +41,8 @@ public enum ExceptionType {
         mExceptionsMap.put(JsonSyntaxException.class, ExceptionType.AUTH);
         mExceptionsMap.put(IllegalStateException.class, NOT_FOUND);
         mExceptionsMap.put(IllegalArgumentException.class, NOT_FOUND);
-        mExceptionsMap.put(UnknownHostException.class, ExceptionType.NOT_FOUND);
+        mExceptionsMap.put(UnknownHostException.class, ExceptionType.NO_INTERNET);
+        mExceptionsMap.put(UnknownError.class, ExceptionType.UNKNOWN);
 
         mStatusCodeMap = new HashMap<>();
         mStatusCodeMap.put(HttpStatus.SC_UNAUTHORIZED, ExceptionType.AUTH);
@@ -79,11 +80,15 @@ public enum ExceptionType {
      * Returns constant by exception
      */
     public static ExceptionType valueOf(AmttException e) {
-        if (e.getSuppressedOne() != null) {
-            Class exceptionClass = e.getSuppressedOne().getClass();
-            return mExceptionsMap.get(exceptionClass);
-        } else {
-            return mStatusCodeMap.get(e.getStatusCode());
+        if (e!=null) {
+            if (e.getSuppressedOne() != null) {
+                Class exceptionClass = e.getSuppressedOne().getClass();
+                return mExceptionsMap.get(exceptionClass);
+            } else {
+                return mStatusCodeMap.get(e.getStatusCode());
+            }
+        }else{
+            return mExceptionsMap.get(UnknownError.class);
         }
     }
 

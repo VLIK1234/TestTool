@@ -1,5 +1,7 @@
 package amtt.epam.com.amtt.api;
 
+import android.util.Log;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -111,8 +113,14 @@ public class JiraApi {
         for (int i = 0; i < fullfilename.size(); i++) {
            String file =  fullfilename.get(i);
             File fileToUpload = new File(file);
-            multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("image/jpeg"),
-                fileToUpload.getName());
+            if (file.contains(".png")) {
+                multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("image/jpeg"),
+                        fileToUpload.getName());
+            }else if (file.contains(".txt")) {
+                multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("text/plain"),
+                        fileToUpload.getName());
+            }
+
         }
        postEntity = multipartEntityBuilder.build();
             mMethod = new RestMethod.Builder<Void>()

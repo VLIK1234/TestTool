@@ -86,7 +86,7 @@
             android:name=".ticket.AttachmentService"
             android:exported="false" />
 
-        <receiver android:name=".broadcastreceiver.GlobalBroadcastReciever"
+        <receiver android:name=".broadcastreceiver.GlobalBroadcastReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="SHOW"/>
