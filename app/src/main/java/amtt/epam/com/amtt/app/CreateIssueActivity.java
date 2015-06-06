@@ -356,8 +356,10 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                     ArrayAdapter<String> assignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
                     mAssignableAutocompleteView.setThreshold(1);
                     mAssignableAutocompleteView.setAdapter(assignableUsersAdapter);
-                    if(!mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
-                        mAssignableAutocompleteView.showDropDown();
+                    if (assignableUsersAdapter.getCount()>0) {
+                        if(mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
+                            mAssignableAutocompleteView.showDropDown();
+                        }
                     }
                     mAssignableAutocompleteView.showProgress(false);
                     mAssignableAutocompleteView.setEnabled(true);
