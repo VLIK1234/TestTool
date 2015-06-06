@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import amtt.epam.com.amtt.bo.*;
+import amtt.epam.com.amtt.bo.JCreateIssue;
+import amtt.epam.com.amtt.bo.JCreateIssueResponse;
+import amtt.epam.com.amtt.bo.JPriorityResponse;
+import amtt.epam.com.amtt.bo.JProjectsResponse;
+import amtt.epam.com.amtt.bo.JUserAssignableResponse;
+import amtt.epam.com.amtt.bo.JVersionsResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -255,6 +260,14 @@ public class JiraContent{
 
     public void getRecentIssueKey(final JiraGetContentCallback<String> jiraGetContentCallback) {
         jiraGetContentCallback.resultOfDataLoading(mRecentIssueKey);
+    }
+
+    public void clearData() {
+        mIssueTypesNames = null;
+        mProjectsNames = null;
+        mProjectPrioritiesNames = null;
+        mProjectVersionsNames = null;
+        mLastProject = null;
     }
 
 }

@@ -146,14 +146,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         mLocaleTextView.setText(user.getLocale());
         mJiraUrlTextView.setText(user.getUrl());
         CoreApplication.getImageLoader().displayImage(user.getAvatarUrls().getAvatarUrl(), mUserImageImageView);
-        ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
-        Runnable task = new Runnable() {
-            public void run() {
-                JiraContent.getInstance().getPrioritiesNames(null);
-                JiraContent.getInstance().getProjectsNames(null);
-            }
-        };
-        worker.schedule(task, 1, TimeUnit.SECONDS);
+        JiraContent.getInstance().clearData();
     }
 
     //Callback
