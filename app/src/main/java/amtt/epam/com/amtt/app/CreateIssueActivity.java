@@ -357,7 +357,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                     mAssignableAutocompleteView.setThreshold(1);
                     mAssignableAutocompleteView.setAdapter(assignableUsersAdapter);
                     if (assignableUsersAdapter.getCount()>0) {
-                        if(mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
+                        if(!mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
                             mAssignableAutocompleteView.showDropDown();
                         }
                     }
