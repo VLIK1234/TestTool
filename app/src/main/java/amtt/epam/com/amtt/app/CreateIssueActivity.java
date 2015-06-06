@@ -53,7 +53,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     private String mVersionName;
     private AssigneeHandler mHandler;
     private ScreenshotAdapter mAdapter;
-    private ArrayList<String> mListScreenshot;
+    public static ArrayList<String> mListScreenshot;
     public SpinnerProgress mProjectNamesSpinner;
 
     public static class AssigneeHandler extends Handler {
@@ -325,7 +325,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
         linearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        List<Attachment> screenArray = ScreenshotManager.getInstance().getScreenshotList(mListScreenshot);
+        ArrayList<Attachment> screenArray = ScreenshotManager.getInstance().getScreenshotList(mListScreenshot);
         mAdapter = new ScreenshotAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
         recyclerView.setAdapter(mAdapter);
     }

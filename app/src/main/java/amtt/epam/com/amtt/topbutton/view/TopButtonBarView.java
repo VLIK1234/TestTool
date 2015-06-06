@@ -29,6 +29,7 @@ import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
+import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.StepUtil;
@@ -131,12 +132,13 @@ public class TopButtonBarView extends FrameLayout {
         mButtonExpectedResult = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new ITouchAction() {
             @Override
             public void TouchAction() {
+                AmttFileObserver.addToImageArray("/storage/emulated/0/Pictures/Screenshots/Screenshot_2012-11-03-18-05-22.png");
                 Intent broadcastIntent = new Intent();
-                broadcastIntent.setAction("SHOW");
+                broadcastIntent.setAction("LOG");
                 broadcastIntent.addCategory("android.intent.category.DEFAULT");
                 getContext().sendBroadcast(broadcastIntent);
-                broadcastIntent.setAction("LOG");
-                getContext().sendBroadcast(broadcastIntent);
+//                broadcastIntent.setAction("SHOW");
+//                getContext().sendBroadcast(broadcastIntent);
             }
         });
         mButtonTakeScreenshot = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), R.drawable.background_take_screenshot, new ITouchAction() {
