@@ -30,8 +30,8 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     logFilePath = filePath;
                     if (!AmttFileObserver.getImageArray().contains(logFilePath)) {
                         AmttFileObserver.addToImageArray(logFilePath);
-                    }
-                    Toast.makeText(context, logFilePath, Toast.LENGTH_LONG).show();break;
+                        Toast.makeText(context, "Log file was add to attachment" + logFilePath, Toast.LENGTH_LONG).show();
+                    }break;
                 }
         }
     }
