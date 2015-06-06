@@ -132,7 +132,6 @@ public class TopButtonBarView extends FrameLayout {
         mButtonExpectedResult = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new ITouchAction() {
             @Override
             public void TouchAction() {
-                AmttFileObserver.addToImageArray("/storage/emulated/0/Pictures/Screenshots/Screenshot_2012-11-03-18-05-22.png");
                 Intent broadcastIntent = new Intent();
                 broadcastIntent.setAction("LOG");
                 broadcastIntent.addCategory("android.intent.category.DEFAULT");
