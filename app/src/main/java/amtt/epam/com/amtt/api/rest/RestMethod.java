@@ -125,20 +125,8 @@ public class RestMethod<ResultType> {
         HttpResponse httpResponse;
         try {
             httpResponse = mHttpClient.execute(httpGet);
-        } catch (IllegalArgumentException e) {
-            Logger.e(TAG, e.toString());
-            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
-        } catch (UnknownHostException e) {
-            Logger.e(TAG, e.toString());
-            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
-        } catch (ClientProtocolException e) {
-            Logger.e(TAG, e.toString());
-            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
-        } catch (IOException e) {
-            Logger.e(TAG, e.toString());
-            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
-        } catch (IllegalStateException e) {
-            Logger.e(TAG, e.toString());
+        } catch (IllegalArgumentException | IOException | IllegalStateException e) {
+            Logger.e(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         }
         return httpResponse;
@@ -156,9 +144,6 @@ public class RestMethod<ResultType> {
         HttpResponse httpResponse;
         try {
             httpResponse = mHttpClient.execute(httpPost);
-        } catch (ClientProtocolException e) {
-            Logger.e(TAG, e.getMessage());
-            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
         } catch (IOException e) {
             Logger.e(TAG, e.getMessage());
             throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
