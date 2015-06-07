@@ -14,7 +14,6 @@ import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -36,9 +35,6 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  @author Artsiom_Kaliaha
@@ -60,13 +56,13 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     private TextView mJiraUrlTextView;
     private ImageView mUserImageImageView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private AssigneeHandler mHandler;
+    private UserInfoHandler mHandler;
 
-    public static class AssigneeHandler extends Handler {
+    public static class UserInfoHandler extends Handler {
 
         private final WeakReference<UserInfoActivity> mActivity;
 
-        AssigneeHandler(UserInfoActivity activity) {
+        UserInfoHandler(UserInfoActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -85,7 +81,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         setContentView(R.layout.activity_user_info);
         initViews();
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, UserInfoActivity.this);
-        mHandler = new AssigneeHandler(UserInfoActivity.this);
+        mHandler = new UserInfoHandler(UserInfoActivity.this);
         mSwipeRefreshLayout.setOnRefreshListener(UserInfoActivity.this);
     }
 

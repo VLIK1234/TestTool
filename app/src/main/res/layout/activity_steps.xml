@@ -4,12 +4,17 @@
     android:layout_height="match_parent"
     tools:context="amtt.epam.com.amtt.app.StepsActivity">
 
-    <ListView
-        android:id="@android:id/list"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
-    <include
-        layout="@layout/progress_layout"/>
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
+        <include layout="@layout/progress_layout" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>
