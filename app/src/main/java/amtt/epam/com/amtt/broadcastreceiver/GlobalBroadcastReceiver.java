@@ -38,6 +38,8 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
 
     public static void registerBroadcastReceiver(Context context, GlobalBroadcastReceiver broadcastReceiver){
         IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(LOG_FILE);
+        intentFilter.addCategory("android.intent.category.DEFAULT");
         LocalBroadcastManager.getInstance(context).registerReceiver(broadcastReceiver, intentFilter);
     }
 

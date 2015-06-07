@@ -75,9 +75,16 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
 
     public void removeItem(int position) {
         screenshots.remove(position);
-        CreateIssueActivity.mListScreenshot.remove(position);
         notifyItemRemoved(position);
         Logger.d(TAG, String.valueOf(position));
+    }
+
+    public ArrayList<String> getAttachmentFilePathList(){
+        ArrayList<String> filePathList = new ArrayList<>();
+        for (Attachment attachment:screenshots) {
+            filePathList.add(attachment.filePath);
+        }
+        return filePathList;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

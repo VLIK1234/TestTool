@@ -54,7 +54,6 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     private String mVersionName;
     private AssigneeHandler mHandler;
     private ScreenshotAdapter mAdapter;
-    public static ArrayList<String> mListScreenshot;
     public SpinnerProgress mProjectNamesSpinner;
 
     public static class AssigneeHandler extends Handler {
@@ -79,7 +78,6 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
         TopButtonService.sendActionChangeVisibilityButton();
         setContentView(R.layout.activity_create_issue);
         mHandler = new AssigneeHandler(this);
-        mListScreenshot = (ArrayList<String>) AmttFileObserver.getImageArray().clone();
         initViews();
     }
 
@@ -287,7 +285,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                                 @Override
                                 public void resultOfDataLoading(JCreateIssueResponse result) {
                                     if (result != null) {
-                                        AttachmentService.start(CreateIssueActivity.this, mListScreenshot);
+                                        AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
                                         Toast.makeText(CreateIssueActivity.this, "Ticket success created", Toast.LENGTH_LONG).show();
                                         StepUtil.clearAllStep();
                                         finish();
@@ -341,7 +339,8 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
         linearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        ArrayList<Attachment> screenArray = ScreenshotManager.getInstance().getScreenshotList(mListScreenshot);
+        ArrayList<Attachment> screenArray = ScreenshotManager.getInstance().
+                getScreenshotList((ArrayList<String>) AmttFileObserver.getImageArray().clone());
         mAdapter = new ScreenshotAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
         recyclerView.setAdapter(mAdapter);
     }
