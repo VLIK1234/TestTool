@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
+import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
@@ -37,6 +38,7 @@ public class AmttFileObserver extends FileObserver {
         super(path, FileObserver.ALL_EVENTS);
         absolutePath = path;
         imageArray = new ArrayList<>();
+        Logger.loggerOn();
     }
 
     @Override
@@ -46,7 +48,7 @@ public class AmttFileObserver extends FileObserver {
         }
         //a new file or subdirectory was created under the monitored directory
         if ((FileObserver.CREATE & event) != 0) {
-            Log.d(TAG, absolutePath + "/" + path + " is created\n");
+            Logger.d(TAG, absolutePath + "/" + path + " is created\n");
 
             if (isNewScreenshot(path) && HelpDialogActivity.getIsCanTakeScreenshot()) {
                 imageArray.add(absolutePath + "/" + path);
@@ -57,7 +59,8 @@ public class AmttFileObserver extends FileObserver {
                     public void run() {
                         StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), absolutePath + "/" + createPath);
 //                        TopButtonService.sendActionScreenshot(absolutePath + "/" + createPath);
-                        TopButtonService.sendActionShowButton();
+                        TopButtonService.sendActionChangeVisibilityButton();
+                        HelpDialogActivity.setIsCanTakeScreenshot(false);
                     }
                 };
                 worker.schedule(task, 1, TimeUnit.SECONDS);
@@ -66,45 +69,45 @@ public class AmttFileObserver extends FileObserver {
         }
         //a file or directory was opened
         if ((FileObserver.OPEN & event) != 0) {
-            Log.d(TAG, path + " is opened\n");
+            Logger.d(TAG, path + " is opened\n");
         }
         //data was read from a file
         if ((FileObserver.ACCESS & event) != 0) {
-            Log.d(TAG, absolutePath + "/" + path + " is accessed/read\n");
+            Logger.d(TAG, absolutePath + "/" + path + " is accessed/read\n");
         }
         //data was written to a file
         if ((FileObserver.MODIFY & event) != 0) {
         }
         //someone has a file or directory open read-only, and closed it
         if ((FileObserver.CLOSE_NOWRITE & event) != 0) {
-            Log.d(TAG, path + " is closed\n");
+            Logger.d(TAG, path + " is closed\n");
         }
         //someone has a file or directory open for writing, and closed it
         if ((FileObserver.CLOSE_WRITE & event) != 0) {
-            Log.d(TAG, absolutePath + "/" + path + " is written and closed\n");
+            Logger.d(TAG, absolutePath + "/" + path + " is written and closed\n");
         }
         if ((FileObserver.DELETE & event) != 0) {
-            Log.d(TAG, absolutePath + "/" + path + " is deleted\n");
+            Logger.d(TAG, absolutePath + "/" + path + " is deleted\n");
         }
         //the monitored file or directory was deleted, monitoring effectively stops
         if ((FileObserver.DELETE_SELF & event) != 0) {
-            Log.d(TAG, absolutePath + "/" + " is deleted\n");
+            Logger.d(TAG, absolutePath + "/" + " is deleted\n");
         }
         //a file or subdirectory was moved from the monitored directory
         if ((FileObserver.MOVED_FROM & event) != 0) {
-            Log.d(TAG, absolutePath + "/" + path + " is moved to somewhere " + "\n");
+            Logger.d(TAG, absolutePath + "/" + path + " is moved to somewhere " + "\n");
         }
         //a file or subdirectory was moved to the monitored directory
         if ((FileObserver.MOVED_TO & event) != 0) {
-            Log.d(TAG, "File is moved to " + absolutePath + "/" + path + "\n");
+            Logger.d(TAG, "File is moved to " + absolutePath + "/" + path + "\n");
         }
         //the monitored file or directory was moved; monitoring continues
         if ((FileObserver.MOVE_SELF & event) != 0) {
-            Log.d(TAG, path + " is moved\n");
+            Logger.d(TAG, path + " is moved\n");
         }
         //Metadata (permissions, owner, timestamp) was changed explicitly
         if ((FileObserver.ATTRIB & event) != 0) {
-            Log.d(TAG, absolutePath + "/" + path + " is changed (permissions, owner, timestamp)\n");
+            Logger.d(TAG, absolutePath + "/" + path + " is changed (permissions, owner, timestamp)\n");
         }
     }
 
@@ -128,6 +131,10 @@ public class AmttFileObserver extends FileObserver {
 
     public static ArrayList<String> getImageArray() {
         return imageArray;
+    }
+
+    public static void addToImageArray(String filePath) {
+        imageArray.add(filePath);
     }
 
     public static void clearImageArray() {

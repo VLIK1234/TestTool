@@ -10,6 +10,9 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.ticket.*;
+import amtt.epam.com.amtt.util.InputsUtil;
+import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
 import amtt.epam.com.amtt.view.EditText;
 import amtt.epam.com.amtt.view.SpinnerProgress;
@@ -52,7 +55,6 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     private String mVersionName;
     private AssigneeHandler mHandler;
     private ScreenshotAdapter mAdapter;
-    private ArrayList<String> mListScreenshot;
     public SpinnerProgress mProjectNamesSpinner;
 
     public static class AssigneeHandler extends Handler {
@@ -74,17 +76,16 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TopButtonService.sendActionHideButton();
         setContentView(R.layout.activity_create_issue);
         mHandler = new AssigneeHandler(this);
-        mListScreenshot = (ArrayList<String>) AmttFileObserver.getImageArray().clone();
         initViews();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        TopButtonService.sendActionShowButton();
+    protected void onPause() {
+        super.onPause();
+        Logger.d(TAG, "onPause");
+        TopButtonService.sendActionChangeVisibilityButton();
     }
 
     private void initViews() {
@@ -127,7 +128,9 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                 JiraContent.getInstance().getProjectKeyByName((String) parent.getItemAtPosition(position), new JiraGetContentCallback<String>() {
                     @Override
                     public void resultOfDataLoading(String result) {
-                        reinitRelatedViews(result);
+                        if (result != null) {
+                            reinitRelatedViews(result);
+                        }
                     }
                 });
             }
@@ -264,6 +267,15 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                     mSummaryEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
                     isValid = false;
                     Toast.makeText(CreateIssueActivity.this, getString(R.string.enter_prefix) + getString(R.string.enter_summary), Toast.LENGTH_LONG).show();
+                }else if (InputsUtil.hasWhitespaceMargins(mSummaryEditText.getText().toString())) {
+                    mSummaryEditText.requestFocus();
+                    mSummaryEditText.setError(getString(R.string.label_summary) + getString(R.string.label_cannot_whitespaces));
+                    isValid = false;
+                    Toast.makeText(CreateIssueActivity.this, getString(R.string.label_summary) + getString(R.string.label_cannot_whitespaces), Toast.LENGTH_LONG).show();
+                }
+                if (mIssueTypeName == null) {
+                    isValid = false;
+                    Toast.makeText(CreateIssueActivity.this, getString(R.string.error_message_unknown), Toast.LENGTH_LONG).show();
                 }
                 if (isValid) {
                     showProgress(true);
@@ -274,8 +286,9 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                                 @Override
                                 public void resultOfDataLoading(JCreateIssueResponse result) {
                                     if (result != null) {
-                                        AttachmentService.start(CreateIssueActivity.this, mListScreenshot);
+                                        AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
                                         Toast.makeText(CreateIssueActivity.this, "Ticket success created", Toast.LENGTH_LONG).show();
+                                        StepUtil.clearAllStep();
                                         finish();
                                     } else {
                                         Toast.makeText(CreateIssueActivity.this, "Error", Toast.LENGTH_LONG).show();
@@ -309,9 +322,13 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 2) {
-                    mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
-                    mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
-                    mAssignableUserName = s.toString();
+                    if (InputsUtil.haveWhitespaces(s.toString())) {
+                        Toast.makeText(CreateIssueActivity.this, getString(R.string.label_tester) + getString(R.string.label_no_whitespaces), Toast.LENGTH_LONG).show();
+                    } else {
+                        mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
+                        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
+                        mAssignableUserName = s.toString();
+                    }
                 }
             }
         });
@@ -323,7 +340,8 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
         linearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        List<Attachment> screenArray = ScreenshotManager.getInstance().getScreenshotList(mListScreenshot);
+        ArrayList<Attachment> screenArray = ScreenshotManager.getInstance().
+                getScreenshotList((ArrayList<String>) AmttFileObserver.getImageArray().clone());
         mAdapter = new ScreenshotAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
         recyclerView.setAdapter(mAdapter);
     }
@@ -338,8 +356,10 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                     ArrayAdapter<String> assignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
                     mAssignableAutocompleteView.setThreshold(1);
                     mAssignableAutocompleteView.setAdapter(assignableUsersAdapter);
-                    if(!mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
-                        mAssignableAutocompleteView.showDropDown();
+                    if (assignableUsersAdapter.getCount()>0) {
+                        if(!mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
+                            mAssignableAutocompleteView.showDropDown();
+                        }
                     }
                     mAssignableAutocompleteView.showProgress(false);
                     mAssignableAutocompleteView.setEnabled(true);

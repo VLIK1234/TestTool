@@ -15,6 +15,7 @@ import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
+import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.IOUtils;
@@ -55,13 +56,14 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     private TextView mJiraUrlTextView;
     private ImageView mUserImageImageView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private AssigneeHandler mHandler;
+    private UserInfoHandler mHandler;
+    private Boolean isNeedShowingTopButton = true;
 
-    public static class AssigneeHandler extends Handler {
+    public static class UserInfoHandler extends Handler {
 
         private final WeakReference<UserInfoActivity> mActivity;
 
-        AssigneeHandler(UserInfoActivity activity) {
+        UserInfoHandler(UserInfoActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -79,15 +81,17 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_user_info);
         initViews();
-        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
-        mHandler = new AssigneeHandler(this);
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, UserInfoActivity.this);
+        mHandler = new UserInfoHandler(UserInfoActivity.this);
         mSwipeRefreshLayout.setOnRefreshListener(UserInfoActivity.this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        TopButtonService.sendActionShowButton();
+        if (isNeedShowingTopButton) {
+            TopButtonService.start(getBaseContext());
+        }
     }
 
     @Override
@@ -100,6 +104,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add: {
+                isNeedShowingTopButton = false;
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
                 finish();
@@ -141,6 +146,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         mLocaleTextView.setText(user.getLocale());
         mJiraUrlTextView.setText(user.getUrl());
         CoreApplication.getImageLoader().displayImage(user.getAvatarUrls().getAvatarUrl(), mUserImageImageView);
+        JiraContent.getInstance().clearData();
     }
 
     //Callback
@@ -255,6 +261,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
                     }else{
                         Intent loginIntent = new Intent(UserInfoActivity.this, LoginActivity.class);
                         startActivity(loginIntent);
+                        isNeedShowingTopButton = false;
                         finish();
                     }
                     break;

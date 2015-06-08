@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/title_activity_settings">
+    <PreferenceCategory
+        android:title="@string/preff_category_help_dialog">
+        <CheckBoxPreference
+            android:key="@string/key_dialog_hide"
+            android:summary="@string/dialog_label_checkbox"
+            android:defaultValue="false"
+            android:title="@string/title_preff_dialog_hide" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/preff_category_topbutton">
+        <SwitchPreference
+            android:key="@string/key_topbutton_show"
+            android:defaultValue="true"
+            android:title="@string/title_preff_topbutton_show"/>
+    </PreferenceCategory>
+</PreferenceScreen>

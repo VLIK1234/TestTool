@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import amtt.epam.com.amtt.bo.*;
+import amtt.epam.com.amtt.bo.JCreateIssue;
+import amtt.epam.com.amtt.bo.JCreateIssueResponse;
+import amtt.epam.com.amtt.bo.JPriorityResponse;
+import amtt.epam.com.amtt.bo.JProjectsResponse;
+import amtt.epam.com.amtt.bo.JUserAssignableResponse;
+import amtt.epam.com.amtt.bo.JVersionsResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -52,7 +57,7 @@ public class JiraContent{
     public String getPriorityIdByName(String priorityName) {
         String priorityId = null;
         for (Map.Entry<String, String> entry : mProjectPrioritiesNames.entrySet()) {
-            if (priorityName == entry.getValue()) {
+            if (priorityName.equals(entry.getValue())) {
                 priorityId = entry.getKey();
             }
         }
@@ -73,7 +78,7 @@ public class JiraContent{
 
     public void getProjectKeyByName(String projectName, JiraGetContentCallback<String> jiraGetContentCallback) {
         for (Map.Entry<JProjects, String> entry : mProjectsNames.entrySet()) {
-            if (projectName == entry.getValue()) {
+            if (projectName.equals(entry.getValue())) {
                 mLastProject = entry.getKey();
             }
         }
@@ -112,7 +117,7 @@ public class JiraContent{
     public String getVersionIdByName(String versionName) {
         String versionId = null;
         for (Map.Entry<String, String> entry : mProjectVersionsNames.entrySet()) {
-            if (versionName == entry.getValue()) {
+            if (versionName.equals(entry.getValue())) {
                 versionId = entry.getKey();
             }
         }
@@ -204,8 +209,10 @@ public class JiraContent{
         ContentFromBackend.getInstance().createIssueAsynchronously(issueJson, new ContentLoadingCallback<JCreateIssueResponse>() {
             @Override
             public void resultFromBackend(JCreateIssueResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
+                if(result!=null){
                 mRecentIssueKey = result.getKey();
                 Logger.d(TAG, mRecentIssueKey);
+                }
                 jiraGetContentCallback.resultOfDataLoading(result);
             }
         }, jiraGetContentCallback);
@@ -253,6 +260,14 @@ public class JiraContent{
 
     public void getRecentIssueKey(final JiraGetContentCallback<String> jiraGetContentCallback) {
         jiraGetContentCallback.resultOfDataLoading(mRecentIssueKey);
+    }
+
+    public void clearData() {
+        mIssueTypesNames = null;
+        mProjectsNames = null;
+        mProjectPrioritiesNames = null;
+        mProjectVersionsNames = null;
+        mLastProject = null;
     }
 
 }

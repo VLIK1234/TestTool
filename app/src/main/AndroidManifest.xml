@@ -29,7 +29,8 @@
             android:name="io.fabric.ApiKey"
             android:value="ca8d47b0e2c3c9351a1eec35690b1719ab1aa869" />
         <activity
-            android:name=".app.MainActivity" >
+            android:name=".app.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -55,11 +56,13 @@
         <activity
             android:name=".app.LoginActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".app.UserInfoActivity"
-            android:label="@string/title_activity_user_info" />
+            android:label="@string/title_activity_user_info"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".app.AmttActivity"
             android:label="@string/title_activity_amtt" />
@@ -69,10 +72,10 @@
             android:label="@string/title_activity_help_dialog"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
-
-        <service
-            android:name=".ticket.AttachmentService"
-            android:exported="false" />
+        <activity
+            android:name=".app.SettingActivity"
+            android:launchMode="singleInstance"
+            android:label="@string/title_activity_settings" />
 
         <activity
             android:name=".app.AskExitActivity"
@@ -81,6 +84,19 @@
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
 
+        <service
+            android:name=".ticket.AttachmentService"
+            android:exported="false" />
+
+        <receiver android:name=".broadcastreceiver.GlobalBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="SHOW"/>
+                <action android:name="LOG_FILE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

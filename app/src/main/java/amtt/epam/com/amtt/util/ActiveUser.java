@@ -68,5 +68,12 @@ public class ActiveUser {
     public void setUserName(String userName) {
         this.mUserName = userName;
     }
+
+    public void clearActiveUser(){
+       mUserName = null;
+       mUrl = null;
+       mId = 0;
+
+    }
 }
 

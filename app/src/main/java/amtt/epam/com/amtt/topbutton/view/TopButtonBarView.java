@@ -3,9 +3,11 @@ package amtt.epam.com.amtt.topbutton.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,7 @@ import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
+import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.StepUtil;
@@ -112,6 +115,7 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void TouchAction() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket), Toast.LENGTH_LONG).show();
+                TopButtonService.sendActionChangeVisibilityButton();
                 Intent intentTicket = new Intent(getContext(), CreateIssueActivity.class);
                 intentTicket.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentTicket);
@@ -120,7 +124,8 @@ public class TopButtonBarView extends FrameLayout {
         mButtonOpenUserInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), R.drawable.background_user_info, new ITouchAction() {
             @Override
             public void TouchAction() {
-                TopButtonService.sendActionHideButton();
+                hide();
+                TopButtonService.close(getContext().getApplicationContext());
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
                 userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(userInfoIntent);
@@ -129,7 +134,13 @@ public class TopButtonBarView extends FrameLayout {
         mButtonExpectedResult = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_expected_result), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(),"Vova that there should be?", Toast.LENGTH_SHORT).show();
+//                Intent broadcastIntent = new Intent();
+//                broadcastIntent.setAction("LOG");
+//                broadcastIntent.addCategory("android.intent.category.DEFAULT");
+//                getContext().sendBroadcast(broadcastIntent);
+//                broadcastIntent.setAction("SHOW");
+//                getContext().sendBroadcast(broadcastIntent);
             }
         });
         mButtonTakeScreenshot = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), R.drawable.background_take_screenshot, new ITouchAction() {
@@ -140,12 +151,15 @@ public class TopButtonBarView extends FrameLayout {
                 } catch (PackageManager.NameNotFoundException e) {
                     Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
                 }
-
-                Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
-                intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().getApplicationContext().startActivity(intentHelp);
-                TopButtonService.sendActionHideButton();
-
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                if (!sharedPref.getBoolean(getContext().getString(R.string.key_dialog_hide), false)) {
+                    Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
+                    intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().getApplicationContext().startActivity(intentHelp);
+                }else{
+                    HelpDialogActivity.setIsCanTakeScreenshot(true);
+                }
+                TopButtonService.sendActionChangeVisibilityButton();
             }
         });
         mButtonActivityInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), R.drawable.background_activity_info, new ITouchAction() {
@@ -192,7 +206,8 @@ public class TopButtonBarView extends FrameLayout {
         mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.label_close_app), R.drawable.background_close, new ITouchAction() {
             @Override
             public void TouchAction() {
-                TopButtonService.sendActionHideButton();
+                hide();
+                TopButtonService.sendActionChangeVisibilityButton();
                 Intent intentAsk = new Intent(getContext(), AskExitActivity.class);
                 intentAsk.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentAsk);

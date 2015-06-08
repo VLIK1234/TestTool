@@ -1,5 +1,7 @@
 package amtt.epam.com.amtt.api;
 
+import android.util.Log;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -111,8 +113,14 @@ public class JiraApi {
         for (int i = 0; i < fullfilename.size(); i++) {
            String file =  fullfilename.get(i);
             File fileToUpload = new File(file);
-            multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("image/jpeg"),
-                fileToUpload.getName());
+            if (file.contains(".png")) {
+                multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("image/jpeg"),
+                        fileToUpload.getName());
+            }else if (file.contains(".txt")) {
+                multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("text/plain"),
+                        fileToUpload.getName());
+            }
+
         }
        postEntity = multipartEntityBuilder.build();
             mMethod = new RestMethod.Builder<Void>()
@@ -121,6 +129,25 @@ public class JiraApi {
                     .setHeadersMap(headers)
                     .setPostEntity(postEntity)
                     .create();
+        return mMethod;
+    }
+
+    public RestMethod buildAttachmentTxtCreating(final String issueKey, String fullfilename){
+        Map<String, String> headers = new HashMap<>();
+        headers.put(JiraApiConst.AUTH, mUser.getCredentials());
+        headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
+        HttpEntity postEntity;
+        MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
+        File fileToUpload = new File(fullfilename);
+        multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("text/plain"),
+                fileToUpload.getName());
+        postEntity = multipartEntityBuilder.build();
+        mMethod = new RestMethod.Builder<Void>()
+                .setType(RestMethodType.POST)
+                .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
+                .setHeadersMap(headers)
+                .setPostEntity(postEntity)
+                .create();
         return mMethod;
     }
 
