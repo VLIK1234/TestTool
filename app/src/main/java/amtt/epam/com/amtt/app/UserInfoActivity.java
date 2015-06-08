@@ -108,6 +108,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
             return true;
             case R.id.action_list: {
                 startActivityForResult(new Intent(UserInfoActivity.this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
+                TopButtonService.close(getBaseContext());
             }
             return true;
             case android.R.id.home: {
@@ -264,6 +265,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         } else if (resultCode == RESULT_CANCELED) {
 
         }
+        TopButtonService.start(getBaseContext());
     }
 
 }

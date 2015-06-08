@@ -36,6 +36,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.apache.http.auth.AuthenticationException;
+
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -57,6 +59,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private Button mLoginButton;
     private String mRequestUrl;
     private boolean mIsUserInDatabase;
+    private  RestMethod<JUserInfo> userInfoMethod;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,7 +100,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         String password = mPasswordEditText.getText().toString();
             //get user info and perform auth in one request
             String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameEditText.getText().toString();
-            RestMethod<JUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
+            userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
                     new UserInfoProcessor(),
                     userName,
                     password,
@@ -158,6 +161,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 @Override
                 public void onResult(List<DatabaseEntity> result) {
                     mIsUserInDatabase = result.size() > 0;
+                    ActiveUser.getInstance().clearActiveUser();
                     sendAuthRequest();
                 }
 
@@ -176,6 +180,16 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         activeUser.setCredentials(userName, password, mRequestUrl);
         activeUser.setUserName(userName);
         activeUser.setUrl(mUrlEditText.getText().toString());
+        ScheduledExecutorService worker =
+                Executors.newSingleThreadScheduledExecutor();
+        Runnable task = new Runnable() {
+            public void run() {
+                TopButtonService.start(getBaseContext());
+                JiraContent.getInstance().getPrioritiesNames(null);
+                JiraContent.getInstance().getProjectsNames(null);
+            }
+        };
+        worker.schedule(task, 1, TimeUnit.SECONDS);
     }
 
     //Callbacks
@@ -192,28 +206,15 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
             if (restResponse.getResultObject() != null && !mIsUserInDatabase) {
                 JUserInfo user = restResponse.getResultObject();
                 user.setUrl(mUrlEditText.getText().toString());
-                if (ActiveUser.getInstance().getCredentials() == null) {
-                    setActiveUser();
-                }
-                else {
-                    setActiveUser();
-                    user.setCredentials(ActiveUser.getInstance().getCredentials());
-                }
+                setActiveUser();
+                user.setCredentials(ActiveUser.getInstance().getCredentials());
                 insertUserToDatabase(user);
+                finish();
+            } else if (restResponse.getResultObject() == null) {
+                ExceptionHandler.getInstance().processError(new AmttException(new AuthenticationException(),403, userInfoMethod)).showDialog(LoginActivity.this, LoginActivity.this);
+                mLoginButton.setEnabled(true);
             }
         }
-        ScheduledExecutorService worker =
-                Executors.newSingleThreadScheduledExecutor();
-        Runnable task = new Runnable() {
-            public void run() {
-                setActiveUser();
-                TopButtonService.start(getBaseContext());
-                JiraContent.getInstance().getPrioritiesNames(null);
-                JiraContent.getInstance().getProjectsNames(null);
-            }
-        };
-        worker.schedule(task, 1, TimeUnit.SECONDS);
-        finish();
     }
 
     @Override
