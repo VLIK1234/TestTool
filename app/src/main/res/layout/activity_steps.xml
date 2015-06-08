@@ -14,7 +14,15 @@
             android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
-        <include layout="@layout/progress_layout" />
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/empty_list_view"
+        android:textSize="@dimen/abc_text_size_medium_material"
+        android:visibility="gone" />
+
 </RelativeLayout>

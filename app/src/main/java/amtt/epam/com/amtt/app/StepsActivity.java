@@ -63,7 +63,7 @@ public class StepsActivity extends BaseActivity implements LoaderManager.LoaderC
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        showProgress(true);
+        mSwipeRefreshLayout.setRefreshing(true);
         return new CursorLoader(this, AmttUri.STEP_WITH_META.get(), null, null, null, null);
     }
 
@@ -74,15 +74,15 @@ public class StepsActivity extends BaseActivity implements LoaderManager.LoaderC
                 mAdapter = new StepAdapter(StepsActivity.this, data, 0);
                 mListView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
+                mEmptyText.setVisibility(View.GONE);
             } else {
                 mAdapter.swapCursor(data);
                 mAdapter.notifyDataSetChanged();
+                mEmptyText.setVisibility(View.GONE);
             }
         } else {
             mEmptyText.setVisibility(View.VISIBLE);
         }
-
-        showProgress(false);
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
