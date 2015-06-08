@@ -165,7 +165,7 @@ public class TopButtonBarView extends FrameLayout {
         mButtonActivityInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), R.drawable.background_activity_info, new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_activity_info), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_activity_info_added), Toast.LENGTH_LONG).show();
                 ScheduledExecutorService worker =
                         Executors.newSingleThreadScheduledExecutor();
                 Runnable task = new Runnable() {
