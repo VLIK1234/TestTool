@@ -53,7 +53,6 @@ public class TopButtonService extends Service{
     private boolean isViewAdd = false;
     private int mXInitPosition;
     private int mYInitPosition;
-    public GlobalBroadcastReceiver globalBroadcastReciever;
 
     public void showScreenInGallery(String pathToScreenshot) {
         Intent intent = new Intent();
@@ -97,8 +96,6 @@ public class TopButtonService extends Service{
         Log.d(TAG, file.getPath());
         mFileObserver = new AmttFileObserver(file.getAbsolutePath());
         mFileObserver.startWatching();
-        globalBroadcastReciever = new GlobalBroadcastReceiver();
-        GlobalBroadcastReceiver.registerBroadcastReceiver(getBaseContext(), globalBroadcastReciever);
     }
 
     @Override
@@ -115,7 +112,6 @@ public class TopButtonService extends Service{
                     break;
                 case ACTION_CLOSE:
                     mFileObserver.stopWatching();
-                    GlobalBroadcastReceiver.unregisterBroadcastReceiver(getBaseContext(), globalBroadcastReciever);
                     closeService();
                     break;
                 case ACTION_CHANGE_VISIBILITY_VIEW:
