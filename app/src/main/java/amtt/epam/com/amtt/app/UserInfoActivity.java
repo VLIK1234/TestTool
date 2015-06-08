@@ -57,6 +57,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     private ImageView mUserImageImageView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private UserInfoHandler mHandler;
+    private Boolean isNeedShowingTopButton = true;
 
     public static class UserInfoHandler extends Handler {
 
@@ -88,7 +89,9 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        TopButtonService.sendActionChangeVisibilityButton();
+        if (isNeedShowingTopButton) {
+            TopButtonService.start(getBaseContext());
+        }
     }
 
     @Override
@@ -101,15 +104,14 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add: {
+                isNeedShowingTopButton = false;
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
-                TopButtonService.close(getBaseContext());
                 finish();
             }
             return true;
             case R.id.action_list: {
                 startActivityForResult(new Intent(UserInfoActivity.this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
-                TopButtonService.close(getBaseContext());
             }
             return true;
             case android.R.id.home: {
@@ -259,6 +261,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
                     }else{
                         Intent loginIntent = new Intent(UserInfoActivity.this, LoginActivity.class);
                         startActivity(loginIntent);
+                        isNeedShowingTopButton = false;
                         finish();
                     }
                     break;
@@ -266,7 +269,6 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         } else if (resultCode == RESULT_CANCELED) {
 
         }
-        TopButtonService.start(getBaseContext());
     }
 
 }
