@@ -103,6 +103,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
             case R.id.action_add: {
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
+                TopButtonService.close(getBaseContext());
                 finish();
             }
             return true;

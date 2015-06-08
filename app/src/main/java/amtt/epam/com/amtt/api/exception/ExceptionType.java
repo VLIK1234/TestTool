@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.api.exception;
 import com.google.gson.JsonSyntaxException;
 
 import org.apache.http.HttpStatus;
+import org.apache.http.NoHttpResponseException;
 import org.apache.http.auth.AuthenticationException;
 
 import java.net.SocketTimeoutException;
@@ -42,7 +43,7 @@ public enum ExceptionType {
         mExceptionsMap.put(JsonSyntaxException.class, ExceptionType.AUTH);
         mExceptionsMap.put(IllegalStateException.class, NOT_FOUND);
         mExceptionsMap.put(IllegalArgumentException.class, NO_INTERNET);
-        mExceptionsMap.put(UnknownHostException.class, ExceptionType.NOT_FOUND);
+        mExceptionsMap.put(UnknownHostException.class, ExceptionType.NO_INTERNET);
         mExceptionsMap.put(org.apache.http.conn.ConnectTimeoutException.class, ExceptionType.NO_INTERNET);
         mExceptionsMap.put(UnknownError.class, ExceptionType.UNKNOWN);
 

@@ -201,7 +201,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     @Override
     public void onRequestPerformed(RestResponse<JUserInfo> restResponse) {
         showProgress(false);
-        Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
             if (restResponse.getResultObject() != null && !mIsUserInDatabase) {
                 JUserInfo user = restResponse.getResultObject();
@@ -209,6 +208,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 setActiveUser();
                 user.setCredentials(ActiveUser.getInstance().getCredentials());
                 insertUserToDatabase(user);
+                Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
                 finish();
             } else if (restResponse.getResultObject() == null) {
                 ExceptionHandler.getInstance().processError(new AmttException(new AuthenticationException(),403, userInfoMethod)).showDialog(LoginActivity.this, LoginActivity.this);
