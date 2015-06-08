@@ -11,6 +11,7 @@ import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.ticket.*;
 import amtt.epam.com.amtt.util.InputsUtil;
+import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
 import amtt.epam.com.amtt.view.EditText;
@@ -75,15 +76,15 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TopButtonService.sendActionChangeVisibilityButton();
         setContentView(R.layout.activity_create_issue);
         mHandler = new AssigneeHandler(this);
         initViews();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
+        Logger.d(TAG, "onPause");
         TopButtonService.sendActionChangeVisibilityButton();
     }
 
