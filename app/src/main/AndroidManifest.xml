@@ -104,7 +104,11 @@
 
         <activity
             android:name=".app.ExpectedResultsActivity"
-            android:label="@string/title_activity_expected_results" >
+            android:label="@string/title_activity_expected_results"
+            android:parentActivityName=".app.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".app.MainActivity"/>
         </activity>
     </application>
 

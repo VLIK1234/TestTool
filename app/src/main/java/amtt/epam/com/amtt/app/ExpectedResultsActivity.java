@@ -48,6 +48,7 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expected_results);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
         initViews();
         mHandler = new ExpectedResultsHandler(ExpectedResultsActivity.this);
         mSwipeRefreshLayout.setOnRefreshListener(ExpectedResultsActivity.this);
