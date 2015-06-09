@@ -126,4 +126,6 @@
     <string name="title_activity_expected_results">Expected Results</string>
     <string name="label_name_activity">"Name activity"</string>
     <string name="label_tags">Tags</string>
+
+    <string name="url_prefix">https://</string>
 </resources>
