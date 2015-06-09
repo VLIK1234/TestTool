@@ -27,7 +27,7 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 public class AmttFileObserver extends FileObserver {
     private static final String TAG = "TAG";
     private static final String TIME_SCREENSHOT_PATTERN = "\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2}";
-    private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s[.]png";
+    private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s[.](png|jpg|jpeg)";
     private static final String SCREENSHOT_PATTERN = String.format(SCREENSHOT_FILE_NAME_TEMPLATE, TIME_SCREENSHOT_PATTERN);
     private static final long TIMEOUT_SCREENSHOT_CREATE = 3000L;
     public static final String SCREENSHOT_DATE_FORMAT = "yyyy-MM-dd-HH-mm-ss";

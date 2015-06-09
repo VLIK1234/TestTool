@@ -100,9 +100,11 @@
     <string name="label_show_steps">Show recorded steps</string>
     <string name="nexus_help_message">\nNexus - volume down+power</string>
     <string name="samsung_help_message">\nSamsung - power+home</string>
+    <string name="sony_help_message">\nSony - volume down+power</string>
     <string name="htc_help_message">\nHTC - power+home</string>
+    <string name="huawei_help_message">\HUAWEI - volume down+power</string>
     <string name="xiaomi_help_message">\nXiaomi tablet - power+options \nXiaomi phone - volume down+power</string>
-    <string name="all_help_message">\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nXiaomi phone - volume down+power \nHTC - power+home</string>
+    <string name="all_help_message">\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nSony - volume down+power \nXiaomi phone - volume down+power \nHTC - power+home \HUAWEI - volume down+power</string>
     <string name="label_list_users">List users</string>
     <string name="label_jira_url">JIRA Url</string>
     <string name="notification_attach_title_done">Uploaded %s done</string>

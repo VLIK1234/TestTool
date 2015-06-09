@@ -113,7 +113,7 @@ public class JiraApi {
         for (int i = 0; i < fullfilename.size(); i++) {
            String file =  fullfilename.get(i);
             File fileToUpload = new File(file);
-            if (file.contains(".png")) {
+            if (file.contains(".png")|file.contains(".jpg")|file.contains(".jpeg")) {
                 multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("image/jpeg"),
                         fileToUpload.getName());
             }else if (file.contains(".txt")) {
