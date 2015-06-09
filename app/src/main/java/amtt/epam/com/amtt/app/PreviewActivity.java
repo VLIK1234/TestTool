@@ -28,35 +28,32 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 public class PreviewActivity extends Activity{
 
     public static final String FILE_PATH = "filePath";
+    private ImageView imagePreview;
+    private TextView textPreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
         TopButtonService.sendActionChangeVisibilityButton();
-        ImageView imagePreview = (ImageView) findViewById(R.id.image_preview);
-        TextView textPreview = (TextView) findViewById(R.id.text_preview);
-        float scale = getResources().getDisplayMetrics().density;
-        int dpAsPixels = (int) (8*scale + 0.5f);
+        imagePreview = (ImageView) findViewById(R.id.image_preview);
+        textPreview = (TextView) findViewById(R.id.text_preview);
+
         Bundle extra = getIntent().getExtras();
         if (extra!=null) {
             String filePath = extra.getString(FILE_PATH);
-            Pattern p = Pattern.compile("[-_0-9a-zA-Z]*[.]\\w{0,5}");
-            Matcher m = p.matcher(filePath);
-            if (m.find()) {
-                setTitle(m.group());
-            }
-            if(filePath.contains(".png")||filePath.contains(".jpg")||filePath.contains(".jpeg")){
-                ImageLoader imageLoader = CoreApplication.getImageLoader();
-                imageLoader.displayImage("file:///"+filePath, imagePreview);
-            }else if (filePath.contains(".txt")) {
-                textPreview.setPadding(dpAsPixels,dpAsPixels,dpAsPixels,dpAsPixels);
-                textPreview.setText(readTextFromFile(filePath));
-            }
+            setTitleFromFile(filePath);
+            showPreview(filePath);
         }
     }
 
-    private CharSequence readTextFromFile(String filePath){
+    @Override
+    protected void onPause() {
+        super.onPause();
+        TopButtonService.sendActionChangeVisibilityButton();
+    }
+
+    private CharSequence readLogFromFile(String filePath){
         File file = new File(filePath);
         StringBuilder text = new StringBuilder();
         SpannableStringBuilder builder = new SpannableStringBuilder();
@@ -84,6 +81,30 @@ public class PreviewActivity extends Activity{
             e.printStackTrace();
         }
         return builder;
+    }
+
+    public void showPreview(String filePath){
+        if(filePath.contains(".png")||filePath.contains(".jpg")||filePath.contains(".jpeg")){
+            ImageLoader imageLoader = CoreApplication.getImageLoader();
+            imageLoader.displayImage("file:///"+filePath, imagePreview);
+        }else if (filePath.contains(".txt")) {
+            int sizeDp = 8;
+            textPreview.setPadding(sizeInDp(sizeDp), sizeInDp(sizeDp), sizeInDp(sizeDp), sizeInDp(sizeDp));
+            textPreview.setText(readLogFromFile(filePath));
+        }
+    }
+
+    public void setTitleFromFile(String filePath){
+        Pattern p = Pattern.compile("[-_0-9a-zA-Z]*[.]\\w{0,5}");
+        Matcher m = p.matcher(filePath);
+        if (m.find()) {
+            setTitle(m.group());
+        }
+    }
+
+    public int sizeInDp(int px){
+        float scale = getResources().getDisplayMetrics().density;
+        return (int) (px*scale + 0.5f);
     }
 
     public SpannableStringBuilder append(SpannableStringBuilder spannableString, CharSequence text, Object what, int flags) {

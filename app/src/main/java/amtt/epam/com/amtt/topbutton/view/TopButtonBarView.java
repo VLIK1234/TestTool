@@ -115,7 +115,6 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void TouchAction() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket), Toast.LENGTH_LONG).show();
-                TopButtonService.sendActionChangeVisibilityButton();
                 Intent intentTicket = new Intent(getContext(), CreateIssueActivity.class);
                 intentTicket.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentTicket);

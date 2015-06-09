@@ -84,9 +84,14 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        TopButtonService.sendActionChangeVisibilityButton();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
-        Logger.d(TAG, "onPause");
         TopButtonService.sendActionChangeVisibilityButton();
     }
 
