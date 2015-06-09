@@ -32,9 +32,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.key_dialog_hide))) {
-            SettingsFragment.checkBoxPreference.setSelectable(sharedPreferences.getBoolean(key, false));
         }else if (key.equals(getString(R.string.key_topbutton_show))) {
-            SettingsFragment.switchPreference.setSelectable(sharedPreferences.getBoolean(key, false));
             TopButtonService.sendActionChangeVisibilityButton();
         }
     }
@@ -42,6 +40,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
     @Override
     protected void onPause() {
         super.onPause();
+        sharedPref.unregisterOnSharedPreferenceChangeListener(this);
         finish();
     }
 }
