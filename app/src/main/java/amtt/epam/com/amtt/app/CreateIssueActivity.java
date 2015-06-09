@@ -18,6 +18,7 @@ import amtt.epam.com.amtt.view.EditText;
 import amtt.epam.com.amtt.view.SpinnerProgress;
 import amtt.epam.com.amtt.view.TextView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,6 +29,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -369,8 +371,15 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     }
 
     @Override
-    public void onItemClicked(int position) {
+    public void onItemRemove(int position) {
         mAdapter.removeItem(position);
+    }
+
+    @Override
+    public void onItemShow(int position) {
+        Intent preview = new Intent(CreateIssueActivity.this, PreviewActivity.class);
+        preview.putExtra(PreviewActivity.FILE_PATH, mAdapter.getAttachmentFilePathList().get(position));
+        startActivity(preview);
     }
 
 }
