@@ -58,6 +58,14 @@ public class JiraApi {
         return mMethod;
     }
 
+    public RestMethod buildSignOut() {
+        mMethod = new RestMethod.Builder<String>()
+                .setType(RestMethodType.DELETE)
+                .setUrl(mUser.getUrl() + JiraApiConst.LOGIN_PATH)
+                .create();
+        return mMethod;
+    }
+
     public <ResultType, InputType> RestMethod buildIssueCreating(final String postStringEntity, final Processor<ResultType, InputType> processor) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mUser.getCredentials());

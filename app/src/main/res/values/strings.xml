@@ -15,7 +15,7 @@
 
     <string name="error_title_auth">Authorization error</string>
     <string name="error_message_auth">Check your credentials</string>
-    <string name="error_message_auth_forbidden">You are not allowed to login now</string>
+    <string name="error_message_auth_forbidden">Visit jira.epam.com before using Amtt</string>
     <string name="error_title_request">Request error</string>
     <string name="error_message_no_internet">Session timeout - you are offline</string>
     <string name="error_button_try">Try again</string>

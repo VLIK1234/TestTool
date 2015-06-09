@@ -67,6 +67,14 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         setContentView(R.layout.activity_login);
         initViews();
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
+
+        if (ActiveUser.getInstance().getUrl() != null) {
+            RestMethod<Void> logOut = JiraApi.getInstance().buildSignOut();
+            new JiraTask.Builder<Void>()
+                    .setRestMethod(logOut)
+                    .setCallback(LoginActivity.this)
+                    .createAndExecute();
+        }
     }
 
     @Override

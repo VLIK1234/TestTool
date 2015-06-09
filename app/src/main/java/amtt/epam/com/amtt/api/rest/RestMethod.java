@@ -9,6 +9,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -39,7 +40,8 @@ public class RestMethod<ResultType> {
     public enum RestMethodType {
 
         GET,
-        POST
+        POST,
+        DELETE
 
     }
 
@@ -151,6 +153,20 @@ public class RestMethod<ResultType> {
         return httpResponse;
     }
 
+    private HttpResponse delete() throws AmttException {
+        HttpDelete httpPost = new HttpDelete(mUrl);
+        Logger.d(TAG, mUrl);
+
+        HttpResponse httpResponse;
+        try {
+            httpResponse = mHttpClient.execute(httpPost);
+        } catch (IOException e) {
+            Logger.e(TAG, e.getMessage());
+            throw new AmttException(e, EMPTY_STATUS_CODE, this, null);
+        }
+        return httpResponse;
+    }
+
     public RestResponse<ResultType> execute() throws AmttException {
         HttpResponse httpResponse = null;
 
@@ -160,6 +176,9 @@ public class RestMethod<ResultType> {
                 break;
             case POST:
                 httpResponse = post();
+                break;
+            case DELETE:
+                httpResponse = delete();
                 break;
         }
 
