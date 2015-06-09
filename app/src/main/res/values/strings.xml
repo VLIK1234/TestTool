@@ -123,4 +123,6 @@
     <string name="title_preff_dialog_hide">Hide dialog</string>
     <string name="preff_category_topbutton">Top button</string>
     <string name="preff_category_help_dialog">Help dialog</string>
+
+    <string name="url_prefix">https://</string>
 </resources>

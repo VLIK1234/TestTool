@@ -24,7 +24,6 @@ import amtt.epam.com.amtt.util.Constants.Symbols;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.StepUtil;
-import amtt.epam.com.amtt.view.EditText;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -34,6 +33,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import org.apache.http.auth.AuthenticationException;
@@ -76,15 +76,8 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
 
     private void initViews() {
         mUserNameEditText = (EditText) findViewById(R.id.et_username);
-        mUserNameEditText.clearErrorOnTextChanged(true);
-        mUserNameEditText.clearErrorOnFocus(true);
         mPasswordEditText = (EditText) findViewById(R.id.et_password);
-        mPasswordEditText.clearErrorOnTextChanged(true);
-        mPasswordEditText.clearErrorOnFocus(true);
         mUrlEditText = (EditText) findViewById(R.id.et_jira_url);
-        mUrlEditText.setText("https://");
-        mUrlEditText.clearErrorOnTextChanged(true);
-        mUrlEditText.clearErrorOnFocus(true);
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,7 +137,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         }
 
         //check url
-        if (TextUtils.isEmpty(mUrlEditText.getText().toString()) || "https://".equals(mUrlEditText.getText().toString())) {
+        if (TextUtils.isEmpty(mUrlEditText.getText().toString()) || getString(R.string.url_prefix).equals(mUrlEditText.getText().toString())) {
             isAnyEmptyField = true;
             mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_url));
         } else if (InputsUtil.checkUrl(mUrlEditText.getText().toString())){
@@ -213,6 +206,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
             } else if (restResponse.getResultObject() == null) {
                 ExceptionHandler.getInstance().processError(new AmttException(new AuthenticationException(),403, userInfoMethod)).showDialog(LoginActivity.this, LoginActivity.this);
                 mLoginButton.setEnabled(true);
+            } else {
+                setActiveUser();
+                Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
+                finish();
             }
         }
     }
@@ -259,6 +256,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     public void onLoaderReset(Loader loader) {
 
     }
+
 }
 
 
