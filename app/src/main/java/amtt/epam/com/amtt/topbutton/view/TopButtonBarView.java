@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.AskExitActivity;
 import amtt.epam.com.amtt.app.CreateIssueActivity;
+import amtt.epam.com.amtt.app.ExpectedResultsActivity;
 import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
@@ -114,7 +115,6 @@ public class TopButtonBarView extends FrameLayout {
         mButtonCreateTicket = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), R.drawable.background_create_ticket, new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_create_ticket), Toast.LENGTH_LONG).show();
                 TopButtonService.sendActionChangeVisibilityButton();
                 Intent intentTicket = new Intent(getContext(), CreateIssueActivity.class);
                 intentTicket.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -134,13 +134,10 @@ public class TopButtonBarView extends FrameLayout {
         mButtonExpectedResult = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(),"Vova that there should be?", Toast.LENGTH_SHORT).show();
-//                Intent broadcastIntent = new Intent();
-//                broadcastIntent.setAction("LOG");
-//                broadcastIntent.addCategory("android.intent.category.DEFAULT");
-//                getContext().sendBroadcast(broadcastIntent);
-//                broadcastIntent.setAction("SHOW");
-//                getContext().sendBroadcast(broadcastIntent);
+                TopButtonService.sendActionChangeVisibilityButton();
+                Intent intent = new Intent(getContext(), ExpectedResultsActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intent);
             }
         });
         mButtonTakeScreenshot = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), R.drawable.background_take_screenshot, new ITouchAction() {

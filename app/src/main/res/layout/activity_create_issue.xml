@@ -25,7 +25,7 @@
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:text="@string/label_project"
                 android:textColor="@color/primary_text"
-                android:textSize="@dimen/material_font_size_caption" />
+                android:textSize="@dimen/abc_text_size_caption_material" />
 
             <amtt.epam.com.amtt.view.SpinnerProgress
                 android:id="@+id/spin_projects_name"
@@ -50,7 +50,7 @@
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_issue_type"
                 android:textColor="@color/primary_text"
-                android:textSize="@dimen/material_font_size_caption" />
+                android:textSize="@dimen/abc_text_size_caption_material" />
 
             <amtt.epam.com.amtt.view.SpinnerProgress
                 android:id="@+id/spin_issue_name"
@@ -93,7 +93,7 @@
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_priority"
                 android:textColor="@color/primary_text"
-                android:textSize="@dimen/material_font_size_caption" />
+                android:textSize="@dimen/abc_text_size_caption_material" />
 
             <amtt.epam.com.amtt.view.SpinnerProgress
                 android:id="@+id/spin_priority"
@@ -118,7 +118,7 @@
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_attachment"
                 android:textColor="@color/primary_text"
-                android:textSize="@dimen/material_font_size_caption" />
+                android:textSize="@dimen/abc_text_size_caption_material" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/listScreens"
@@ -147,7 +147,7 @@
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_affects_versions"
                 android:textColor="@color/primary_text"
-                android:textSize="@dimen/material_font_size_caption"
+                android:textSize="@dimen/abc_text_size_caption_material"
                 android:visibility="gone"/>
 
             <amtt.epam.com.amtt.view.SpinnerProgress
@@ -211,7 +211,7 @@
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_tester"
                 android:textColor="@color/primary_text"
-                android:textSize="@dimen/material_font_size_caption" />
+                android:textSize="@dimen/abc_text_size_caption_material" />
 
             <amtt.epam.com.amtt.view.AutocompleteProgressView
                 android:id="@+id/atv_assignable_users"
@@ -240,7 +240,7 @@
                 android:layout_marginTop="@dimen/material_vertical_button_padding_top"
                 android:minWidth="@dimen/material_vertical_button_min_width_size"
                 android:text="@string/label_create"
-                android:textSize="@dimen/material_font_size_button" />
+                android:textSize="@dimen/abc_text_size_button_material" />
         </LinearLayout>
     </ScrollView>
 
