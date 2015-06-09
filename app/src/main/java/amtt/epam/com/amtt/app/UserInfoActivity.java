@@ -34,6 +34,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.lang.ref.WeakReference;
 
 /**
@@ -145,7 +147,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         mTimeZoneTextView.setText(user.getTimeZone());
         mLocaleTextView.setText(user.getLocale());
         mJiraUrlTextView.setText(user.getUrl());
-        CoreApplication.getImageLoader().displayImage(user.getAvatarUrls().getAvatarUrl(), mUserImageImageView);
+        ImageLoader.getInstance().displayImage(user.getAvatarUrls().getAvatarUrl(), mUserImageImageView);
         JiraContent.getInstance().clearData();
     }
 

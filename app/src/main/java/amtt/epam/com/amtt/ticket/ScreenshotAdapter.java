@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
@@ -45,7 +47,7 @@ public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.Vi
         Logger.d(TAG, screenshot.name);
         viewHolder.screenshotName.setText(screenshot.name);
         if (screenshot.filePath.contains(".png")) {
-            CoreApplication.getImageLoader().displayImage("file:///"+screenshot.filePath, viewHolder.screenshotImage);
+            ImageLoader.getInstance().displayImage("file:///" + screenshot.filePath, viewHolder.screenshotImage);
         }else if (screenshot.filePath.contains(".txt")){
             viewHolder.screenshotImage.setImageDrawable(ContextHolder.getContext().getResources().getDrawable(R.drawable.text_file_preview));
         }

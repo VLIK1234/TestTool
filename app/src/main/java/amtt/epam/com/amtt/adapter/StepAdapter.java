@@ -9,6 +9,8 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
@@ -76,6 +78,6 @@ public class StepAdapter extends CursorAdapter {
     }
 
     private void setBitmap(ImageView imageView, String path) {
-        CoreApplication.getImageLoader().displayImage("file:///"+path, imageView);
+        ImageLoader.getInstance().displayImage("file:///" + path, imageView);
     }
 }

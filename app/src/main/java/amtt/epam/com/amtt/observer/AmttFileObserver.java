@@ -1,7 +1,6 @@
 package amtt.epam.com.amtt.observer;
 
 import android.os.FileObserver;
-import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,7 +58,7 @@ public class AmttFileObserver extends FileObserver {
                     public void run() {
                         StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), absolutePath + "/" + createPath);
 //                        TopButtonService.sendActionScreenshot(absolutePath + "/" + createPath);
-                        TopButtonService.sendActionChangeVisibilityButton();
+                        TopButtonService.sendActionChangeVisibilityTopbutton(true);
                         HelpDialogActivity.setIsCanTakeScreenshot(false);
                     }
                 };

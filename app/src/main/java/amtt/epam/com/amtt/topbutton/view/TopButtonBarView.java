@@ -29,7 +29,6 @@ import amtt.epam.com.amtt.app.CreateIssueActivity;
 import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
-import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.StepUtil;
@@ -158,7 +157,7 @@ public class TopButtonBarView extends FrameLayout {
                 }else{
                     HelpDialogActivity.setIsCanTakeScreenshot(true);
                 }
-                TopButtonService.sendActionChangeVisibilityButton();
+                TopButtonService.sendActionChangeVisibilityTopbutton(false);
             }
         });
         mButtonActivityInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), R.drawable.background_activity_info, new ITouchAction() {
@@ -206,7 +205,7 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void TouchAction() {
                 hide();
-                TopButtonService.sendActionChangeVisibilityButton();
+                TopButtonService.sendActionChangeVisibilityTopbutton(false);
                 Intent intentAsk = new Intent(getContext(), AskExitActivity.class);
                 intentAsk.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentAsk);

@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
@@ -35,7 +34,7 @@ public class PreviewActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
-        TopButtonService.sendActionChangeVisibilityButton();
+        TopButtonService.sendActionChangeVisibilityTopbutton(false);
         imagePreview = (ImageView) findViewById(R.id.image_preview);
         textPreview = (TextView) findViewById(R.id.text_preview);
 
@@ -50,12 +49,11 @@ public class PreviewActivity extends Activity{
     @Override
     protected void onPause() {
         super.onPause();
-        TopButtonService.sendActionChangeVisibilityButton();
+        TopButtonService.sendActionChangeVisibilityTopbutton(true);
     }
 
     private CharSequence readLogFromFile(String filePath){
         File file = new File(filePath);
-        StringBuilder text = new StringBuilder();
         SpannableStringBuilder builder = new SpannableStringBuilder();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -72,8 +70,6 @@ public class PreviewActivity extends Activity{
                     builder.append(line);
                     builder.append("\n");
                 }
-                text.append(line);
-                text.append('\n');
             }
             br.close();
         }
@@ -85,7 +81,7 @@ public class PreviewActivity extends Activity{
 
     public void showPreview(String filePath){
         if(filePath.contains(".png")||filePath.contains(".jpg")||filePath.contains(".jpeg")){
-            ImageLoader imageLoader = CoreApplication.getImageLoader();
+            ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.displayImage("file:///"+filePath, imagePreview);
         }else if (filePath.contains(".txt")) {
             int sizeDp = 8;

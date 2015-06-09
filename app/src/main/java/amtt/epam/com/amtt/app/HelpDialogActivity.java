@@ -2,9 +2,13 @@ package amtt.epam.com.amtt.app;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -28,11 +32,14 @@ public class HelpDialogActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
-        setIsCanTakeScreenshot(false);
+        setIsCanTakeScreenshot(true);
 
         TextView textView = (TextView) findViewById(R.id.message_dialog);
-        textView.append(Build.BRAND.toUpperCase()+" "+Build.MODEL.toUpperCase());
-        textView.append(getMessageForCurrentDevice());
+//        textView.append(Build.BRAND.toUpperCase()+" "+Build.MODEL.toUpperCase());
+        SpannableString instruction = new SpannableString(getMessageForCurrentDevice());
+        instruction.setSpan(new StyleSpan(Typeface.BOLD),
+                0, getMessageForCurrentDevice().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.append(instruction);
 
         CheckBox checkShowAgain = (CheckBox) findViewById(R.id.dialog_check_show_again);
         checkShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -47,19 +54,19 @@ public class HelpDialogActivity extends Activity {
             @Override
             public void onClick(View v) {
                 finish();
-                setIsCanTakeScreenshot(true);
             }
         });
         Button buttonCancel = (Button) findViewById(R.id.dialog_button_cancel);
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TopButtonService.sendActionChangeVisibilityButton();
-                finish();
                 setIsCanTakeScreenshot(false);
+                finish();
+                TopButtonService.sendActionChangeVisibilityTopbutton(true);
             }
         });
     }
+
     private String getMessageForCurrentDevice() {
         if (Build.MODEL.toUpperCase().contains(HelpTakeScreen.Constants.NEXUS.toUpperCase())) {
             return HelpTakeScreen.NEXUS.getValue();

@@ -11,7 +11,6 @@ import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.ticket.*;
 import amtt.epam.com.amtt.util.InputsUtil;
-import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
 import amtt.epam.com.amtt.view.EditText;
@@ -29,7 +28,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -40,7 +38,6 @@ import android.widget.Toast;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 @SuppressWarnings("unchecked")
 public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapter.ViewHolder.ClickListener {
@@ -86,13 +83,13 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     @Override
     protected void onResume() {
         super.onResume();
-        TopButtonService.sendActionChangeVisibilityButton();
+        TopButtonService.sendActionChangeVisibilityTopbutton(false);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        TopButtonService.sendActionChangeVisibilityButton();
+        TopButtonService.sendActionChangeVisibilityTopbutton(true);
     }
 
     private void initViews() {
@@ -188,7 +185,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
         JiraContent.getInstance().getVersionsNames(projectKey, new JiraGetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
-                if (result != null&&result.size()>0) {
+                if (result != null && result.size() > 0) {
                     versionsSpinner.setVisibility(View.VISIBLE);
                     affectTextView.setVisibility(View.VISIBLE);
                     dividerAffectVersion.setVisibility(View.VISIBLE);
@@ -199,7 +196,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                     versionsSpinner.setAdapter(versionsAdapter);
                     versionsSpinner.showProgress(false);
                     versionsSpinner.setEnabled(true);
-                }else{
+                } else {
                     versionsSpinner.setVisibility(View.GONE);
                     affectTextView.setVisibility(View.GONE);
                     dividerAffectVersion.setVisibility(View.GONE);
@@ -274,7 +271,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                     mSummaryEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
                     isValid = false;
                     Toast.makeText(CreateIssueActivity.this, getString(R.string.enter_prefix) + getString(R.string.enter_summary), Toast.LENGTH_LONG).show();
-                }else if (InputsUtil.hasWhitespaceMargins(mSummaryEditText.getText().toString())) {
+                } else if (InputsUtil.hasWhitespaceMargins(mSummaryEditText.getText().toString())) {
                     mSummaryEditText.requestFocus();
                     mSummaryEditText.setError(getString(R.string.label_summary) + getString(R.string.label_cannot_whitespaces));
                     isValid = false;
@@ -363,8 +360,8 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                     ArrayAdapter<String> assignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
                     mAssignableAutocompleteView.setThreshold(1);
                     mAssignableAutocompleteView.setAdapter(assignableUsersAdapter);
-                    if (assignableUsersAdapter.getCount()>0) {
-                        if(!mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
+                    if (assignableUsersAdapter.getCount() > 0) {
+                        if (!mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
                             mAssignableAutocompleteView.showDropDown();
                         }
                     }
