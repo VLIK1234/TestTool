@@ -29,6 +29,7 @@ public class AmttActivity extends BaseActivity implements LoaderCallbacks<Cursor
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_amtt);
         mListView = (ListView) findViewById(android.R.id.list);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -54,6 +55,9 @@ public class AmttActivity extends BaseActivity implements LoaderCallbacks<Cursor
         switch (item.getItemId()) {
             case R.id.action_add:
                 setResult(RESULT_OK);
+                finish();
+                return true;
+            case android.R.id.home:
                 finish();
                 return true;
             default:
