@@ -1,11 +1,21 @@
 package amtt.epam.com.amtt.bo.project;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+
 import com.google.gson.annotations.SerializedName;
 
+import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
+import amtt.epam.com.amtt.database.table.PriorityTable;
+
 /**
- * Created by Iryna_Monchanka on 04.05.2015.
+ @author Iryna Monchanka
+ @version on 04.05.2015
  */
-public class JPriority {
+
+public class JPriority extends DatabaseEntity<JPriority> {
 
     @SerializedName("self")
     private String mSelf;
@@ -18,17 +28,35 @@ public class JPriority {
     @SerializedName("name")
     private String mName;
     @SerializedName("id")
-    private String mId;
+    private String mJiraId;
+
+    private String mUrl;
+    private int mId;
 
     public JPriority(){}
 
-    public JPriority(String self, String statusColor, String description, String iconUrl, String name, String id) {
+    public JPriority(Cursor cursor) {
+        if (cursor.getPosition() == -1) {
+            cursor.moveToNext();
+        }
+        mId = cursor.getInt(cursor.getColumnIndex(PriorityTable._ID));
+        mJiraId = cursor.getString(cursor.getColumnIndex(PriorityTable._JIRA_ID));
+        mName = cursor.getString(cursor.getColumnIndex(PriorityTable._NAME));
+        mUrl = cursor.getString(cursor.getColumnIndex(PriorityTable._URL));
+    }
+
+    public JPriority(String self, String statusColor, String description, String iconUrl, String name, String jiraId) {
         this.mSelf = self;
         this.mStatusColor = statusColor;
         this.mDescription = description;
         this.mIconUrl = iconUrl;
         this.mName = name;
-        this.mId = id;
+        this.mJiraId = jiraId;
+    }
+
+    @Override
+    public JPriority parse(Cursor cursor) {
+        return new JPriority(cursor);
     }
 
     public String getSelf() {
@@ -71,11 +99,37 @@ public class JPriority {
         this.mName = name;
     }
 
-    public String getId() {
+    public String getJiraId() {
+        return mJiraId;
+    }
+
+    public void setJiraId(String jiraId) {
+        this.mJiraId = jiraId;
+    }
+
+    public String getUrl() {
+        return mUrl;
+    }
+
+    public void setUrl(String url) {
+        this.mUrl = url;
+    }
+    @Override
+    public int getId() {
         return mId;
     }
 
-    public void setId(String id) {
-        this.mId = id;
+    @Override
+    public Uri getUri() {
+        return AmttUri.PRIORITY.get();
+    }
+
+    @Override
+    public ContentValues getContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(PriorityTable._JIRA_ID, mJiraId);
+        values.put(PriorityTable._NAME, mName);
+        values.put(PriorityTable._URL, mUrl);
+        return values;
     }
 }

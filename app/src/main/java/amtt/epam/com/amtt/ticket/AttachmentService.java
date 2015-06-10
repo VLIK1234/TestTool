@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.util.Logger;
-import amtt.epam.com.amtt.util.StepUtil;
 
 /**
  @author Iryna Monchanka

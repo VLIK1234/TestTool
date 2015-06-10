@@ -1,12 +1,20 @@
 package amtt.epam.com.amtt.bo.issue.createmeta;
 
 /**
- * Created by Iryna_Monchanka on 3/31/2015.
+ @author Iryna Monchanka
+ @version on 3/31/2015
  */
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 
 import com.google.gson.annotations.SerializedName;
 
 import amtt.epam.com.amtt.bo.issue.createmeta.issuetypes.JFields;
+import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
+import amtt.epam.com.amtt.database.table.IssuetypeTable;
 
 /**
  * JiraIssueTypes = JIssueTypes
@@ -21,12 +29,12 @@ import amtt.epam.com.amtt.bo.issue.createmeta.issuetypes.JFields;
  * }
  * }
  */
-public class JIssueTypes {
+public class JIssueTypes extends DatabaseEntity<JIssueTypes>{
 
     @SerializedName("self")
     private String mSelf;
     @SerializedName("id")
-    private String mId;
+    private String mJiraId;
     @SerializedName("description")
     private String mDescription;
     @SerializedName("iconUrl")
@@ -40,12 +48,25 @@ public class JIssueTypes {
     @SerializedName("fields")
     private JFields mFields;
 
+    private int mId;
+    private String mKeyProject;
+
     public JIssueTypes() {
     }
 
-    public JIssueTypes(String self, String id, String description, String iconUrl, String name, Boolean subTask, String expand, JFields fields) {
+    public JIssueTypes(Cursor cursor) {
+        if (cursor.getPosition() == -1) {
+            cursor.moveToNext();
+        }
+        mId = cursor.getInt(cursor.getColumnIndex(IssuetypeTable._ID));
+        mJiraId = cursor.getString(cursor.getColumnIndex(IssuetypeTable._JIRA_ID));
+        mName = cursor.getString(cursor.getColumnIndex(IssuetypeTable._NAME));
+        mKeyProject = cursor.getString(cursor.getColumnIndex(IssuetypeTable._KEY_PROJECT));
+    }
+
+    public JIssueTypes(String self, String jiraId, String description, String iconUrl, String name, Boolean subTask, String expand, JFields fields) {
         this.mSelf = self;
-        this.mId = id;
+        this.mJiraId = jiraId;
         this.mDescription = description;
         this.mIconUrl = iconUrl;
         this.mName = name;
@@ -54,20 +75,9 @@ public class JIssueTypes {
         this.mFields = fields;
     }
 
-    public JIssueTypes(String self, String id, String name, String iconUrl) {
-        this.mSelf = self;
-        this.mId = id;
-        this.mName = name;
-        this.mIconUrl = iconUrl;
-    }
-
-    public JIssueTypes(String mSelf, String mId, String mDescription, String mIconUrl, String mName, Boolean mSubTask) {
-        this.mSelf = mSelf;
-        this.mId = mId;
-        this.mDescription = mDescription;
-        this.mIconUrl = mIconUrl;
-        this.mName = mName;
-        this.mSubTask = mSubTask;
+    @Override
+    public JIssueTypes parse(Cursor cursor) {
+        return new JIssueTypes(cursor);
     }
 
     public String getSelf() {
@@ -78,12 +88,12 @@ public class JIssueTypes {
         this.mSelf = self;
     }
 
-    public String getId() {
-        return mId;
+    public String getJiraId() {
+        return mJiraId;
     }
 
-    public void setId(String id) {
-        this.mId = id;
+    public void setJiraId(String id) {
+        this.mJiraId = id;
     }
 
     public String getDescription() {
@@ -132,5 +142,24 @@ public class JIssueTypes {
 
     public void setFields(JFields fields) {
         this.mFields = fields;
+    }
+
+    @Override
+    public int getId() {
+        return mId;
+    }
+
+    @Override
+    public Uri getUri() {
+        return AmttUri.PRIORITY.get();
+    }
+
+    @Override
+    public ContentValues getContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(IssuetypeTable._JIRA_ID, mJiraId);
+        values.put(IssuetypeTable._NAME, mName);
+        values.put(IssuetypeTable._KEY_PROJECT, mKeyProject);
+        return values;
     }
 }

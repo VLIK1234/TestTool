@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.util;
+package amtt.epam.com.amtt.database.util;
 
 import android.content.ComponentName;
 
@@ -16,6 +16,7 @@ import amtt.epam.com.amtt.database.table.UsersTable;
  @author Artsiom_Kaliaha
  @version on 16.05.2015
  */
+
 public class StepUtil {
 
     public static void saveStep(ComponentName componentName, String mScreenPath){

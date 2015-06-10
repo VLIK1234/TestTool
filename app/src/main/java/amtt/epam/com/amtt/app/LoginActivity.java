@@ -23,7 +23,7 @@ import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants.Symbols;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
-import amtt.epam.com.amtt.util.StepUtil;
+import amtt.epam.com.amtt.database.util.StepUtil;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Loader;

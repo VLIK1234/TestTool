@@ -1,10 +1,12 @@
 package amtt.epam.com.amtt.database.table;
 
-import amtt.epam.com.amtt.util.MultiValueMap;
+import amtt.epam.com.amtt.database.util.MultiValueMap;
 
 /**
- * Created by Artsiom_Kaliaha on 31.03.2015.
+ @author Artsiom_Kaliaha
+ @version on 31.03.2015
  */
+
 public class StepsWithMetaTable extends Table {
 
     public static final String TABLE_NAME = "steps_with_meta";

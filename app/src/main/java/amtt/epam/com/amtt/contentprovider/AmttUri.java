@@ -10,19 +10,28 @@ import java.util.List;
 import java.util.Map;
 
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
+import amtt.epam.com.amtt.database.table.IssuetypeTable;
+import amtt.epam.com.amtt.database.table.PriorityTable;
+import amtt.epam.com.amtt.database.table.ProjectTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
 import amtt.epam.com.amtt.database.table.UsersTable;
 
 /**
- * Created by Artsiom_Kaliaha on 23.03.2015.
+ @author Artsiom_Kaliaha
+ @version on 23.03.2015
  */
+
 public enum AmttUri {
 
     ACTIVITY_META(ActivityInfoTable.TABLE_NAME, 1, 2),
     STEP(StepsTable.TABLE_NAME, 3, 4),
     STEP_WITH_META(StepsWithMetaTable.TABLE_NAME, 5, 6),
-    USER(UsersTable.TABLE_NAME, 7, 8);
+    USER(UsersTable.TABLE_NAME, 7, 8),
+    PRIORITY(PriorityTable.TABLE_NAME, 9, 10),
+    PROJECT(ProjectTable.TABLE_NAME, 11, 12),
+    ISSUETYPE(IssuetypeTable.TABLE_NAME, 13, 14);
+
 
     private static final UriMatcher sUriMatcher;
     private static Map<Integer, String> sContentType;
@@ -46,6 +55,12 @@ public enum AmttUri {
         sUriMatcher.addURI(AmttContentProvider.AUTHORITY, STEP_WITH_META.getTableName() + "/#", AmttUri.STEP_WITH_META.getItemOrdinal());
         sUriMatcher.addURI(AmttContentProvider.AUTHORITY, USER.getTableName(), AmttUri.USER.getOrdinal());
         sUriMatcher.addURI(AmttContentProvider.AUTHORITY, USER.getTableName() + "/#", AmttUri.USER.getItemOrdinal());
+        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, PRIORITY.getTableName(), AmttUri.PRIORITY.getOrdinal());
+        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, PRIORITY.getTableName() + "/#", AmttUri.PRIORITY.getItemOrdinal());
+        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, PROJECT.getTableName(), AmttUri.PROJECT.getOrdinal());
+        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, PROJECT.getTableName() + "/#", AmttUri.PROJECT.getItemOrdinal());
+        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, ISSUETYPE.getTableName(), AmttUri.ISSUETYPE.getOrdinal());
+        sUriMatcher.addURI(AmttContentProvider.AUTHORITY, ISSUETYPE.getTableName() + "/#", AmttUri.ISSUETYPE.getItemOrdinal());
 
         sContentType = new HashMap<>();
         sContentType.put(AmttUri.ACTIVITY_META.getOrdinal(), AmttUri.ACTIVITY_META.getType());
@@ -56,12 +71,21 @@ public enum AmttUri {
         sContentType.put(AmttUri.STEP_WITH_META.getItemOrdinal(), AmttUri.STEP_WITH_META.getItemType());
         sContentType.put(AmttUri.USER.getOrdinal(), AmttUri.USER.getType());
         sContentType.put(AmttUri.USER.getItemOrdinal(), AmttUri.USER.getItemType());
+        sContentType.put(AmttUri.PRIORITY.getOrdinal(), AmttUri.PRIORITY.getType());
+        sContentType.put(AmttUri.PRIORITY.getItemOrdinal(), AmttUri.PRIORITY.getItemType());
+        sContentType.put(AmttUri.PROJECT.getOrdinal(), AmttUri.PROJECT.getType());
+        sContentType.put(AmttUri.PROJECT.getItemOrdinal(), AmttUri.PROJECT.getItemType());
+        sContentType.put(AmttUri.ISSUETYPE.getOrdinal(), AmttUri.ISSUETYPE.getType());
+        sContentType.put(AmttUri.ISSUETYPE.getItemOrdinal(), AmttUri.ISSUETYPE.getItemType());
 
         sProjections = new HashMap<>();
         sProjections.put(AmttUri.ACTIVITY_META, ActivityInfoTable.PROJECTION);
         sProjections.put(AmttUri.STEP, StepsTable.PROJECTION);
         sProjections.put(AmttUri.STEP_WITH_META, StepsWithMetaTable.PROJECTION);
         sProjections.put(AmttUri.USER, UsersTable.PROJECTION);
+        sProjections.put(AmttUri.PRIORITY, PriorityTable.PROJECTION);
+        sProjections.put(AmttUri.PROJECT, ProjectTable.PROJECTION);
+        sProjections.put(AmttUri.ISSUETYPE, IssuetypeTable.PROJECTION);
 
         sValues = Arrays.asList(AmttUri.values());
     }

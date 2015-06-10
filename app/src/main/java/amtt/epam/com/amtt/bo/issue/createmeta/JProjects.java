@@ -1,22 +1,31 @@
 package amtt.epam.com.amtt.bo.issue.createmeta;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.bo.issue.JAvatarUrls;
+import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
+import amtt.epam.com.amtt.database.table.ProjectTable;
 
 /**
- * Created by Iryna_Monchanka on 3/31/2015.
+ @author Iryna Monchanka
+ @version on 3/31/2015
  */
-public class JProjects {
+
+public class JProjects extends DatabaseEntity<JProjects> {
 
     @SerializedName("expand")
     private String mExpand;
     @SerializedName("self")
     private String mSelf;
     @SerializedName("id")
-    private String mId;
+    private String mJiraId;
     @SerializedName("key")
     private String mKey;
     @SerializedName("name")
@@ -26,13 +35,27 @@ public class JProjects {
     @SerializedName("issuetypes")
     private ArrayList<JIssueTypes> mIssueTypes;
 
+    private int mId;
+    private int mIdUser;
+
     public JProjects() {
     }
 
-    public JProjects(String expand, String self, String id, String key, String name, JAvatarUrls avatarUrls, ArrayList<JIssueTypes> issueTypes) {
+    public JProjects(Cursor cursor) {
+        if (cursor.getPosition() == -1) {
+            cursor.moveToNext();
+        }
+        mId = cursor.getInt(cursor.getColumnIndex(ProjectTable._ID));
+        mJiraId = cursor.getString(cursor.getColumnIndex(ProjectTable._JIRA_ID));
+        mKey = cursor.getString(cursor.getColumnIndex(ProjectTable._KEY));
+        mName = cursor.getString(cursor.getColumnIndex(ProjectTable._NAME));
+        mIdUser = cursor.getInt(cursor.getColumnIndex(ProjectTable._ID_USER));
+    }
+
+    public JProjects(String expand, String self, String jiraId, String key, String name, JAvatarUrls avatarUrls, ArrayList<JIssueTypes> issueTypes) {
         this.mExpand = expand;
         this.mSelf = self;
-        this.mId = id;
+        this.mJiraId = jiraId;
         this.mKey = key;
         this.mName = name;
         this.mAvatarUrls = avatarUrls;
@@ -41,12 +64,18 @@ public class JProjects {
 
     public JProjects(String self, String id, String key, String name, JAvatarUrls avatarUrls, ArrayList<JIssueTypes> issueTypes) {
         this.mSelf = self;
-        this.mId = id;
+        this.mJiraId = id;
         this.mKey = key;
         this.mName = name;
         this.mAvatarUrls = avatarUrls;
         this.mIssueTypes = issueTypes;
     }
+
+    @Override
+    public JProjects parse(Cursor cursor) {
+        return new JProjects(cursor);
+    }
+
     public ArrayList<String> getIssueTypesNames() {
         ArrayList<String> issueTypesNames = new ArrayList<>();
         int size = mIssueTypes.size();
@@ -72,12 +101,12 @@ public class JProjects {
         this.mSelf = self;
     }
 
-    public String getId() {
-        return mId;
+    public String getJiraId() {
+        return mJiraId;
     }
 
-    public void setId(String id) {
-        this.mId = id;
+    public void setJiraId(String jiraId) {
+        this.mJiraId = jiraId;
     }
 
     public String getKey() {
@@ -112,6 +141,14 @@ public class JProjects {
         this.mIssueTypes = issueTypes;
     }
 
+    public int getIdUser() {
+        return mIdUser;
+    }
+
+    public void setIdUser(int idUser) {
+        this.mIdUser = idUser;
+    }
+
     public JIssueTypes getIssueTypeByName(String issueName) {
         JIssueTypes issueType = null;
         for (JIssueTypes type : mIssueTypes) {
@@ -120,5 +157,25 @@ public class JProjects {
             }
         }
         return issueType;
+    }
+
+    @Override
+    public int getId() {
+        return mId;
+    }
+
+    @Override
+    public Uri getUri() {
+        return AmttUri.PROJECT.get();
+    }
+
+    @Override
+    public ContentValues getContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(ProjectTable._JIRA_ID, mJiraId);
+        values.put(ProjectTable._KEY, mKey);
+        values.put(ProjectTable._NAME, mName);
+        values.put(ProjectTable._ID_USER, mIdUser);
+        return values;
     }
 }

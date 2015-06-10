@@ -30,10 +30,9 @@ import amtt.epam.com.amtt.app.ExpectedResultsActivity;
 import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
-import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
-import amtt.epam.com.amtt.util.StepUtil;
+import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**

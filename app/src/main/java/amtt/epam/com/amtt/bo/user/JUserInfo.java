@@ -38,6 +38,7 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
     private String mUrl;
     private int mId;
     private String mCredentials;
+    private String mLastProjectKey;
 
     public JUserInfo() {
     }
@@ -59,6 +60,7 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         String avatar48 = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_48));
         mCredentials = cursor.getString(cursor.getColumnIndex(UsersTable._CREDENTIALS));
         mAvatarUrls = new JAvatarUrls(avatar48, avatar24, avatar16, avatar32);
+        mLastProjectKey = cursor.getString(cursor.getColumnIndex(UsersTable._LAST_PROJECT_KEY));
     }
 
     public JUserInfo(String key, String self, String name, JAvatarUrls avatarUrls, String emailAddress, String displayName, String timeZone, String locale) {
@@ -137,6 +139,14 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         this.mCredentials = credentials;
     }
 
+    public String getLastProjectKey() {
+        return mLastProjectKey;
+    }
+
+    public void setLastProjectKey(String lastProjectKey) {
+        this.mLastProjectKey = lastProjectKey;
+    }
+
     @Override
     public int getId() {
         return mId;
@@ -162,6 +172,7 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         values.put(UsersTable._AVATAR_32, getAvatarUrls().getAvatarMediumUrl());
         values.put(UsersTable._AVATAR_48, getAvatarUrls().getAvatarUrl());
         values.put(UsersTable._CREDENTIALS, mCredentials);
+        values.put(UsersTable._LAST_PROJECT_KEY, mLastProjectKey);
         return values;
     }
 

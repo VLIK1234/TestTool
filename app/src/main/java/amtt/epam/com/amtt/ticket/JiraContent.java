@@ -68,7 +68,7 @@ public class JiraContent{
         if (mProjectsNames != null) {
             jiraGetContentCallback.resultOfDataLoading(mProjectsNames);
         } else {
-            getMetaResponse(jiraGetContentCallback);
+            getProjectsResponse(jiraGetContentCallback);
         }
     }
 
@@ -98,7 +98,7 @@ public class JiraContent{
     }
 
     public String getIssueTypeIdByName(String issueName) {
-        return mLastProject.getIssueTypeByName(issueName).getId();
+        return mLastProject.getIssueTypeByName(issueName).getJiraId();
     }
 
     public void getVersionsNames(String projectKey,
@@ -129,11 +129,11 @@ public class JiraContent{
     }
 
     @SuppressWarnings("unchecked")
-    private void getMetaResponse(JiraGetContentCallback<HashMap<JProjects, String>> jiraGetContentCallback) {
-        ContentFromBackend.getInstance().getMetaAsynchronously(new ContentLoadingCallback<JProjectsResponse>() {
+    private void getProjectsResponse(JiraGetContentCallback<HashMap<JProjects, String>> jiraGetContentCallback) {
+        ContentFromBackend.getInstance().getProjectsAsynchronously(new ContentLoadingCallback<JProjectsResponse>() {
             @Override
             public void resultFromBackend(JProjectsResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
-                if (tag == JiraContentConst.META_RESPONSE) {
+                if (tag == JiraContentConst.PROJECTS_RESPONSE) {
                     if (jiraGetContentCallback != null) {
                         if (result != null) {
                             jiraGetContentCallback.resultOfDataLoading(mProjectsNames);
