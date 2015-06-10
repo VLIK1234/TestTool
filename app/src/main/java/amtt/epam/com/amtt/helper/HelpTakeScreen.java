@@ -9,7 +9,9 @@ import amtt.epam.com.amtt.util.ContextHolder;
 public enum HelpTakeScreen {
     NEXUS(Constants.NEXUS, ContextHolder.getContext().getString(R.string.nexus_help_message)),
     SAMSUNG(Constants.SAMSUNG, ContextHolder.getContext().getString(R.string.samsung_help_message)),
+    SONY(Constants.SONY, ContextHolder.getContext().getString(R.string.samsung_help_message)),
     HTC(Constants.HTC, ContextHolder.getContext().getString(R.string.htc_help_message)),
+    HUAWEI(Constants.HUAWEI, ContextHolder.getContext().getString(R.string.htc_help_message)),
     XIAOMI(Constants.XIAOMI, ContextHolder.getContext().getString(R.string.xiaomi_help_message)),
     ALL(Constants.ALL, ContextHolder.getContext().getString(R.string.all_help_message));
 
@@ -45,7 +47,9 @@ public enum HelpTakeScreen {
     public static class Constants {
         public static final String NEXUS = "NEXUS";
         public static final String SAMSUNG = "SAMSUNG";
+        public static final String SONY = "SONY";
         public static final String HTC = "HTC";
+        public static final String HUAWEI = "HUAWEI";
         public static final String XIAOMI = "XIAOMI";
         public static final String ALL = "ALL";
     }
