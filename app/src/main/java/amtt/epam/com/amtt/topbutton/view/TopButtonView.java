@@ -96,7 +96,12 @@ public class TopButtonView extends FrameLayout {
                 mMainImageButton.getViewTreeObserver().removeOnPreDrawListener(this);
                 mMainButtonHeight = mMainImageButton.getHeight();
                 mMainButtonWidth = mMainImageButton.getWidth();
-                mTopButtonBarView = new TopButtonBarView(getContext(), mMainButtonHeight, mMainButtonWidth);
+                mTopButtonBarView = new TopButtonBarView(getContext(), mMainButtonHeight, mMainButtonWidth, new ITouchAction() {
+                    @Override
+                    public void TouchAction() {
+                        playMainButtonRotateAnimation(300, 180, 0);
+                    }
+                });
                 return true;
             }
         });

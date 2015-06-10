@@ -61,12 +61,13 @@ public class TopButtonBarView extends FrameLayout {
     private TopUnitView mButtonCloseApp;
     private int mMainButtonHeight;
     private int mMainButtonWidth;
+    private ITouchAction mITouchAction;
 
     static {
         isRecordStarted = false;
     }
 
-    public TopButtonBarView(Context context, int mainButtonHeight, int mainButtonWidth) {
+    public TopButtonBarView(Context context, int mainButtonHeight, int mainButtonWidth, ITouchAction touchAction) {
         super(context);
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         mMainButtonHeight = mainButtonHeight;
@@ -75,6 +76,7 @@ public class TopButtonBarView extends FrameLayout {
         initButtonsBar();
         initButtonsHandlers();
         setInitialButtons();
+        mITouchAction = touchAction;
     }
 
     private void initLayout() {
@@ -110,6 +112,7 @@ public class TopButtonBarView extends FrameLayout {
                 hide();
                 StepUtil.clearAllStep();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
+                mITouchAction.TouchAction();
             }
         });
         mButtonCreateTicket = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), R.drawable.background_create_ticket, new ITouchAction() {
@@ -118,6 +121,7 @@ public class TopButtonBarView extends FrameLayout {
                 Intent intentTicket = new Intent(getContext(), CreateIssueActivity.class);
                 intentTicket.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentTicket);
+                mITouchAction.TouchAction();
             }
         });
         mButtonOpenUserInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), R.drawable.background_user_info, new ITouchAction() {
@@ -128,6 +132,7 @@ public class TopButtonBarView extends FrameLayout {
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
                 userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(userInfoIntent);
+                mITouchAction.TouchAction();
             }
         });
         mButtonExpectedResult = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new ITouchAction() {
@@ -137,6 +142,7 @@ public class TopButtonBarView extends FrameLayout {
                 Intent intent = new Intent(getContext(), ExpectedResultsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intent);
+                mITouchAction.TouchAction();
             }
         });
         mButtonTakeScreenshot = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), R.drawable.background_take_screenshot, new ITouchAction() {
@@ -155,6 +161,7 @@ public class TopButtonBarView extends FrameLayout {
                     HelpDialogActivity.setIsCanTakeScreenshot(true);
                 }
                 TopButtonService.sendActionChangeVisibilityTopbutton(false);
+                mITouchAction.TouchAction();
             }
         });
         mButtonActivityInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), R.drawable.background_activity_info, new ITouchAction() {
@@ -174,12 +181,14 @@ public class TopButtonBarView extends FrameLayout {
                     }
                 };
                 worker.schedule(task, 1, TimeUnit.SECONDS);
+                mITouchAction.TouchAction();
             }
         });
         mButtonTakeStep = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), R.drawable.background_add_step, new ITouchAction() {
             @Override
             public void TouchAction() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot) + " Vova what will be here?", Toast.LENGTH_LONG).show();
+                mITouchAction.TouchAction();
             }
         });
         mButtonShowSteps = new TopUnitView(getContext(), getContext().getString(R.string.label_show_steps), R.drawable.background_show_step, new ITouchAction() {
@@ -188,6 +197,7 @@ public class TopButtonBarView extends FrameLayout {
                 Intent intent = new Intent(getContext(), StepsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intent);
+                mITouchAction.TouchAction();
             }
         });
         mButtonStopRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), R.drawable.background_stop_record, new ITouchAction() {
@@ -196,6 +206,7 @@ public class TopButtonBarView extends FrameLayout {
                 isRecordStarted = false;
                 hide();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
+                mITouchAction.TouchAction();
             }
         });
         mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.label_close_app), R.drawable.background_close, new ITouchAction() {
@@ -206,6 +217,7 @@ public class TopButtonBarView extends FrameLayout {
                 Intent intentAsk = new Intent(getContext(), AskExitActivity.class);
                 intentAsk.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentAsk);
+                mITouchAction.TouchAction();
             }
         });
     }
