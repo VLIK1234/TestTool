@@ -47,7 +47,9 @@ public class JiraTask<ResultType> extends AsyncTask<Object, Void, RestResponse<R
 
     @Override
     protected void onPreExecute() {
-        mCallback.onRequestStarted();
+        if (mCallback != null) {
+            mCallback.onRequestStarted();
+        }
     }
 
     @Override
@@ -65,10 +67,12 @@ public class JiraTask<ResultType> extends AsyncTask<Object, Void, RestResponse<R
 
     @Override
     protected void onPostExecute(RestResponse<ResultType> restResponse) {
-        if (restResponse != null) {
-            mCallback.onRequestPerformed(restResponse);
-        } else {
-            mCallback.onRequestError(mException);
+        if (mCallback != null) {
+            if (restResponse != null) {
+                mCallback.onRequestPerformed(restResponse);
+            } else {
+                mCallback.onRequestError(mException);
+            }
         }
     }
 

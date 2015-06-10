@@ -47,8 +47,10 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_REFRESH = 100;
+
     private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
     private static final int LOGIN_ACTIVITY_REQUEST_CODE = 2;
+
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 2;
     private TextView mNameTextView;
     private TextView mEmailAddressTextView;
@@ -111,10 +113,11 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
             }
             return true;
             case R.id.action_list: {
-                startActivityForResult(new Intent(UserInfoActivity.this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
+                startActivityForResult(new Intent(this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
             }
             return true;
             case android.R.id.home: {
+                TopButtonService.start(this);
                 finish();
             }
             return true;
@@ -265,9 +268,15 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
                     break;
             }
         } else if (resultCode == RESULT_CANCELED) {
+            switch (requestCode) {
+                case LOGIN_ACTIVITY_REQUEST_CODE:
+                    Bundle args = new Bundle();
+                    args.putLong(AmttActivity.KEY_USER_ID, ActiveUser.getInstance().getId());
+                    getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
+                    break;
+            }
             getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
         }
-        TopButtonService.close(this);
     }
 
 }

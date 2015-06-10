@@ -1,5 +1,25 @@
 package amtt.epam.com.amtt.app;
 
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.content.res.Configuration;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import org.apache.http.auth.AuthenticationException;
+
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
@@ -24,34 +44,17 @@ import amtt.epam.com.amtt.util.Constants.Symbols;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.StepUtil;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.content.res.Configuration;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import org.apache.http.auth.AuthenticationException;
-
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
- @author Artsiom_Kaliaha
- @version on 07.05.2015
+ * @author Artsiom_Kaliaha
+ * @version on 07.05.2015
  */
 
 @SuppressWarnings("unchecked")
 public class LoginActivity extends BaseActivity implements JiraCallback<JUserInfo>, LoaderCallbacks<Cursor> {
 
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
+    public static final String KEY_USER_ID = "key_user_id";
 
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
@@ -59,7 +62,8 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private Button mLoginButton;
     private String mRequestUrl;
     private boolean mIsUserInDatabase;
-    private  RestMethod<JUserInfo> userInfoMethod;
+    private boolean isNeedShowingTopButton;
+    private RestMethod<JUserInfo> userInfoMethod;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,12 +72,23 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         initViews();
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
-        if (ActiveUser.getInstance().getUrl() != null) {
+        if (isNewUserAdditionFromUserInfo()) {
             RestMethod<Void> logOut = JiraApi.getInstance().buildSignOut();
             new JiraTask.Builder<Void>()
                     .setRestMethod(logOut)
-                    .setCallback(LoginActivity.this)
                     .createAndExecute();
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -84,8 +99,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
 
     private void initViews() {
         mUserNameEditText = (EditText) findViewById(R.id.et_username);
+        mUserNameEditText.setText("artsiom_kaliaha");
         mPasswordEditText = (EditText) findViewById(R.id.et_password);
         mUrlEditText = (EditText) findViewById(R.id.et_jira_url);
+        mUrlEditText.setText("https://amtt05.atlassian.net");
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,17 +116,17 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         mRequestUrl = mUrlEditText.getText().toString();
         String userName = mUserNameEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
-            //get user info and perform auth in one request
-            String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameEditText.getText().toString();
-            userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
-                    new UserInfoProcessor(),
-                    userName,
-                    password,
-                    mRequestUrl);
-            new JiraTask.Builder<JUserInfo>()
-                    .setRestMethod(userInfoMethod)
-                    .setCallback(LoginActivity.this)
-                    .createAndExecute();
+        //get user info and perform auth in one request
+        String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameEditText.getText().toString();
+        userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
+                new UserInfoProcessor(),
+                userName,
+                password,
+                mRequestUrl);
+        new JiraTask.Builder<JUserInfo>()
+                .setRestMethod(userInfoMethod)
+                .setCallback(LoginActivity.this)
+                .createAndExecute();
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
@@ -148,10 +165,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         if (TextUtils.isEmpty(mUrlEditText.getText().toString()) || getString(R.string.url_prefix).equals(mUrlEditText.getText().toString())) {
             isAnyEmptyField = true;
             mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_url));
-        } else if (InputsUtil.checkUrl(mUrlEditText.getText().toString())){
+        } else if (InputsUtil.checkUrl(mUrlEditText.getText().toString())) {
             isAnyEmptyField = true;
             mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_correct_url));
-        } else if(getString(R.string.epam_url).equals(mUrlEditText.getText().toString())){
+        } else if (getString(R.string.epam_url).equals(mUrlEditText.getText().toString())) {
             isAnyEmptyField = true;
             mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_postfix_jira));
         }
@@ -185,12 +202,19 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
             public void run() {
-                TopButtonService.start(getBaseContext());
+                if (isNeedShowingTopButton) {
+                    TopButtonService.start(getBaseContext());
+                }
                 JiraContent.getInstance().getPrioritiesNames(null);
                 JiraContent.getInstance().getProjectsNames(null);
             }
         };
         worker.schedule(task, 1, TimeUnit.SECONDS);
+    }
+
+    private boolean isNewUserAdditionFromUserInfo() {
+        isNeedShowingTopButton = ActiveUser.getInstance().getUrl() == null;
+        return ActiveUser.getInstance().getUrl() != null;
     }
 
     //Callbacks
@@ -211,9 +235,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 insertUserToDatabase(user);
                 Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
                 finish();
-            } else if (restResponse.getResultObject() == null) {
-                ExceptionHandler.getInstance().processError(new AmttException(new AuthenticationException(),403, userInfoMethod)).showDialog(LoginActivity.this, LoginActivity.this);
-                mLoginButton.setEnabled(true);
             } else {
                 setActiveUser();
                 Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();

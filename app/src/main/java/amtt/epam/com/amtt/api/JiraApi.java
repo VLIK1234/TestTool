@@ -1,7 +1,5 @@
 package amtt.epam.com.amtt.api;
 
-import android.util.Log;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -15,15 +13,13 @@ import java.util.Map;
 
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestMethod.RestMethodType;
-import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.processing.AuthResponseProcessor;
 import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.util.ActiveUser;
 
 /**
- @author Artsiom_Kaliaha
- @version on 24.03.2015
+ * @author Artsiom_Kaliaha
+ * @version on 24.03.2015
  */
 
 @SuppressWarnings("unchecked")
@@ -94,7 +90,7 @@ public class JiraApi {
         String credentials;
         if (userName != null && password != null) {
             //this code is used when new user is added and we need to get all the info about a user and authorize him/her in one request
-            credentials = mUser.makeTempCredentials(userName,password);
+            credentials = mUser.makeTempCredentials(userName, password);
         } else {
             credentials = mUser.getCredentials();
             url = mUser.getUrl();
@@ -112,35 +108,35 @@ public class JiraApi {
         return mMethod;
     }
 
-    public RestMethod buildAttachmentCreating(final String issueKey, ArrayList<String> fullfilename){
+    public RestMethod buildAttachmentCreating(final String issueKey, ArrayList<String> fullfilename) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
         HttpEntity postEntity;
         MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
         for (int i = 0; i < fullfilename.size(); i++) {
-           String file =  fullfilename.get(i);
+            String file = fullfilename.get(i);
             File fileToUpload = new File(file);
             if (file.contains(".png")) {
                 multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("image/jpeg"),
                         fileToUpload.getName());
-            }else if (file.contains(".txt")) {
+            } else if (file.contains(".txt")) {
                 multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("text/plain"),
                         fileToUpload.getName());
             }
 
         }
-       postEntity = multipartEntityBuilder.build();
-            mMethod = new RestMethod.Builder<Void>()
-                    .setType(RestMethodType.POST)
-                    .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
-                    .setHeadersMap(headers)
-                    .setPostEntity(postEntity)
-                    .create();
+        postEntity = multipartEntityBuilder.build();
+        mMethod = new RestMethod.Builder<Void>()
+                .setType(RestMethodType.POST)
+                .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
+                .setHeadersMap(headers)
+                .setPostEntity(postEntity)
+                .create();
         return mMethod;
     }
 
-    public RestMethod buildAttachmentTxtCreating(final String issueKey, String fullfilename){
+    public RestMethod buildAttachmentTxtCreating(final String issueKey, String fullfilename) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
@@ -157,12 +153,6 @@ public class JiraApi {
                 .setPostEntity(postEntity)
                 .create();
         return mMethod;
-    }
-
-    public RestResponse execute() throws Exception {
-        RestResponse<Void> restResponse = mMethod.execute();
-        restResponse.setOperationResult(JiraOperationResult.REQUEST_PERFORMED);
-        return restResponse;
     }
 
 }
