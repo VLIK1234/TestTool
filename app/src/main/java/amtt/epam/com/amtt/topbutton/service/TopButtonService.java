@@ -22,6 +22,7 @@ import java.io.File;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.SettingActivity;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
+import amtt.epam.com.amtt.topbutton.view.TopButtonBarView;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
 /**
@@ -38,11 +39,11 @@ public class TopButtonService extends Service{
     public static final String ACTION_CHANGE_NOTIFICATION_BUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_NOTIFICATION_BUTTON";
     public static final String ACTION_SHOW_SCREEN = "amtt.epam.com.amtt.topbutton.service.SHOW_SCREEN";
     public static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.START";
+    public static final String VISIBILITY_TOP_BUTTON = "amtt.epam.com.amtt.topbutton.service.VISIBILITY_TOP_BUTTON";
     public static final String PATH_TO_SCREEENSHOT_KEY = "PATH_TO_SCREENSHOT";
     //don't use REQUEST_CODE = 0 - it's broke mActionNotificationCompat in notification for some device
     public static final int REQUEST_CODE = 1;
     public static final int NOTIFICATION_ID = 7;
-    public static final String VISIBILITY_TOP_BUTTON = "VISIBILITY_TOP_BUTTON";
     //bellow field for cap code and will be delete after do work realization
     private static Context mContext;
     private AmttFileObserver mFileObserver;
@@ -165,8 +166,9 @@ public class TopButtonService extends Service{
     private void closeService() {
         if (mTopButtonView != null && isViewAdd) {
             isViewAdd = false;
-            mWindowManager.removeView(mTopButtonView);
-            mWindowManager.removeView(mTopButtonView.getButtonsBar());
+            mTopButtonView.getButtonsBar().setIsRecordStarted(false);
+            mWindowManager.removeViewImmediate(mTopButtonView);
+            mWindowManager.removeViewImmediate(mTopButtonView.getButtonsBar());
             mTopButtonView = null;
         }
         stopSelf();

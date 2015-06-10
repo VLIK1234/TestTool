@@ -35,7 +35,6 @@ public class PreviewActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
-        TopButtonService.sendActionChangeVisibilityTopbutton(false);
         imagePreview = (ImageView) findViewById(R.id.image_preview);
         textPreview = (TextView) findViewById(R.id.text_preview);
 
@@ -48,9 +47,9 @@ public class PreviewActivity extends Activity{
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        TopButtonService.sendActionChangeVisibilityTopbutton(true);
+    protected void onResume() {
+        super.onResume();
+        TopButtonService.sendActionChangeVisibilityTopbutton(false);
     }
 
     private CharSequence readLogFromFile(String filePath){

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.helper.HelpTakeScreen;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.PreferenceUtils;
 
 /**
  @author Ivan_Bakach
@@ -26,7 +27,7 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 public class HelpDialogActivity extends Activity {
 
-    private static boolean isCanTakeScreenshot;
+    public static final String IS_CAN_TAKE_SCREENSHOT = "IS_CAN_TAKE_SCREENSHOT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +46,7 @@ public class HelpDialogActivity extends Activity {
         checkShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-                sharedPref.edit().putBoolean(getString(R.string.key_dialog_hide), isChecked).apply();
+                PreferenceUtils.getPref().edit().putBoolean(getString(R.string.key_dialog_hide), isChecked).apply();
             }
         });
         Button buttonOk = (Button) findViewById(R.id.dialog_button_ok);
@@ -84,9 +84,9 @@ public class HelpDialogActivity extends Activity {
         }
     }
     public static boolean getIsCanTakeScreenshot(){
-        return isCanTakeScreenshot;
+        return PreferenceUtils.getBoolean(IS_CAN_TAKE_SCREENSHOT);
     }
     public static void setIsCanTakeScreenshot(boolean value){
-        isCanTakeScreenshot = value;
+        PreferenceUtils.putBoolean(IS_CAN_TAKE_SCREENSHOT, value);
     }
 }

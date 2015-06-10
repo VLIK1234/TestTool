@@ -17,6 +17,7 @@ public class CoreApplication extends Application {
         ContextHolder.setContext(getApplicationContext());
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
                 .build();
-        ImageLoader.getInstance().init(config);
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.init(config);
     }
 }

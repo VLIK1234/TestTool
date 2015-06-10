@@ -62,7 +62,7 @@ public class AmttFileObserver extends FileObserver {
                         HelpDialogActivity.setIsCanTakeScreenshot(false);
                     }
                 };
-                worker.schedule(task, 1, TimeUnit.SECONDS);
+                worker.schedule(task, 500, TimeUnit.MILLISECONDS);
 
             }
         }

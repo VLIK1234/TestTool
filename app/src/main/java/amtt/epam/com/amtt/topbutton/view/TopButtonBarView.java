@@ -31,6 +31,7 @@ import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
+import amtt.epam.com.amtt.util.PreferenceUtils;
 import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.util.UIUtil;
 
@@ -149,8 +150,7 @@ public class TopButtonBarView extends FrameLayout {
                 } catch (PackageManager.NameNotFoundException e) {
                     Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
                 }
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-                if (!sharedPref.getBoolean(getContext().getString(R.string.key_dialog_hide), false)) {
+                if (!PreferenceUtils.getPref().getBoolean(getContext().getString(R.string.key_dialog_hide), false)) {
                     Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
                     intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().getApplicationContext().startActivity(intentHelp);
@@ -295,6 +295,10 @@ public class TopButtonBarView extends FrameLayout {
             }
         });
         mButtonsBar.startAnimation(translateUp);
+    }
+
+    public void setIsRecordStarted(boolean isRecordStarted){
+        TopButtonBarView.isRecordStarted = isRecordStarted;
     }
 
     public void move(int x, int y) {
