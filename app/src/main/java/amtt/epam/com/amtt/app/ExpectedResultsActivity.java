@@ -58,7 +58,7 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
     @Override
     protected void onPause() {
         super.onPause();
-        TopButtonService.sendActionChangeVisibilityButton();
+        TopButtonService.sendActionChangeVisibilityTopbutton(true);
     }
 
     private void initViews() {
