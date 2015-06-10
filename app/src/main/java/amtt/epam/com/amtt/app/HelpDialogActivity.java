@@ -46,7 +46,7 @@ public class HelpDialogActivity extends Activity {
         checkShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                PreferenceUtils.getPref().edit().putBoolean(getString(R.string.key_dialog_hide), isChecked).apply();
+                PreferenceUtils.putBoolean(getString(R.string.key_dialog_hide), isChecked).apply();
             }
         });
         Button buttonOk = (Button) findViewById(R.id.dialog_button_ok);

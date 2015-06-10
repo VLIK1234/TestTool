@@ -147,7 +147,7 @@ public class TopButtonBarView extends FrameLayout {
                 } catch (PackageManager.NameNotFoundException e) {
                     Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
                 }
-                if (!PreferenceUtils.getPref().getBoolean(getContext().getString(R.string.key_dialog_hide), false)) {
+                if (!PreferenceUtils.getBoolean(getContext().getString(R.string.key_dialog_hide))) {
                     Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
                     intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().getApplicationContext().startActivity(intentHelp);
