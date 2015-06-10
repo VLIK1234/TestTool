@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +12,15 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.List;
+
 import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.bo.database.ActivityMeta;
+import amtt.epam.com.amtt.bo.database.Step;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
+import amtt.epam.com.amtt.database.object.DbObjectManger;
+import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
@@ -24,8 +32,16 @@ import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
 
 public class StepAdapter extends CursorAdapter {
 
+    public interface ClickListner{
+        void onItemRemove(int position);
+        void onItemShow(int position);
+    }
+
+    private ClickListner clickListner;
+
     private static class ViewHolder {
         ImageView mImageView;
+        ImageView mClose;
         TextView mActivityInfo;
         TextView mStep;
     }
@@ -40,14 +56,42 @@ public class StepAdapter extends CursorAdapter {
 
         ViewHolder vh = new ViewHolder();
         vh.mImageView = (ImageView) view.findViewById(R.id.screenshot_image);
-        vh.mImageView.setAdjustViewBounds(true);
-        vh.mImageView.setMaxWidth(180);
-        vh.mImageView.setMaxHeight(320);
+        vh.mImageView.setMaxHeight(context.getResources().getDisplayMetrics().heightPixels/2);
+        vh.mImageView.setMaxHeight(context.getResources().getDisplayMetrics().widthPixels/2);
+        vh.mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        vh.mClose = (ImageView) view.findViewById(R.id.iv_close);
+        vh.mClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                DbObjectManger.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
+//                    @Override
+//                    public void onResult(List<DatabaseEntity> result) {
+//                        Log.d("TAG", ((Step)result.get(0)).getActivity()+" name");
+//                    }
+//
+//                    @Override
+//                    public void onError(Exception e) {
+//
+//                    }
+//                });
+            }
+        });
         vh.mActivityInfo = (TextView) view.findViewById(R.id.activity_info_text);
         vh.mStep = (TextView) view.findViewById(R.id.step_text);
         view.setTag(vh);
 
         return view;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        Log.d("TAG", position+" position" + "class");
+        return super.getView(position, convertView, parent);
     }
 
     @Override
