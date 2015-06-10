@@ -33,6 +33,7 @@ import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.util.PreferenceUtils;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
@@ -114,7 +115,6 @@ public class TopButtonBarView extends FrameLayout {
         mButtonCreateTicket = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), R.drawable.background_create_ticket, new ITouchAction() {
             @Override
             public void TouchAction() {
-                TopButtonService.sendActionChangeVisibilityButton();
                 Intent intentTicket = new Intent(getContext(), CreateIssueActivity.class);
                 intentTicket.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentTicket);
@@ -133,7 +133,7 @@ public class TopButtonBarView extends FrameLayout {
         mButtonExpectedResult = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new ITouchAction() {
             @Override
             public void TouchAction() {
-                TopButtonService.sendActionChangeVisibilityButton();
+                TopButtonService.sendActionChangeVisibilityTopbutton(false);
                 Intent intent = new Intent(getContext(), ExpectedResultsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intent);
@@ -147,15 +147,14 @@ public class TopButtonBarView extends FrameLayout {
                 } catch (PackageManager.NameNotFoundException e) {
                     Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
                 }
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-                if (!sharedPref.getBoolean(getContext().getString(R.string.key_dialog_hide), false)) {
+                if (!PreferenceUtils.getBoolean(getContext().getString(R.string.key_dialog_hide))) {
                     Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
                     intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().getApplicationContext().startActivity(intentHelp);
                 }else{
                     HelpDialogActivity.setIsCanTakeScreenshot(true);
                 }
-                TopButtonService.sendActionChangeVisibilityButton();
+                TopButtonService.sendActionChangeVisibilityTopbutton(false);
             }
         });
         mButtonActivityInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), R.drawable.background_activity_info, new ITouchAction() {
@@ -203,7 +202,7 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void TouchAction() {
                 hide();
-                TopButtonService.sendActionChangeVisibilityButton();
+                TopButtonService.sendActionChangeVisibilityTopbutton(false);
                 Intent intentAsk = new Intent(getContext(), AskExitActivity.class);
                 intentAsk.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentAsk);
@@ -293,6 +292,10 @@ public class TopButtonBarView extends FrameLayout {
             }
         });
         mButtonsBar.startAnimation(translateUp);
+    }
+
+    public void setIsRecordStarted(boolean isRecordStarted){
+        TopButtonBarView.isRecordStarted = isRecordStarted;
     }
 
     public void move(int x, int y) {

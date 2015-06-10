@@ -55,7 +55,13 @@
         <activity
             android:name=".app.StepsActivity"
             android:label="@string/title_activity_steps"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:noHistory="true"
+            android:parentActivityName=".app.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".app.MainActivity"/>
+        </activity>
         <activity
             android:name=".app.LoginActivity"
             android:configChanges="orientation|screenSize"
@@ -84,6 +90,13 @@
             android:excludeFromRecents="true"
             android:label="@string/dialog_are_you_sure"
             android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+        <activity
+            android:name=".app.PreviewActivity"
+            android:launchMode="standard"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
+            android:label="@string/title_activity_preview"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
 
         <service

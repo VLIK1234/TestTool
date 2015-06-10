@@ -18,6 +18,14 @@ public class PreferenceUtils {
         getPref().edit().putString(key, value).apply();
     }
 
+    public static boolean getBoolean(String key) {
+        return getPref().getBoolean(key, false);
+    }
+
+    public static void putBoolean(String key, boolean value) {
+        getPref().edit().putBoolean(key, value).apply();
+    }
+
     public static SharedPreferences getPref() {
         if (mSharedPreferences == null) {
             mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(ContextHolder.getContext());
