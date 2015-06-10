@@ -10,6 +10,7 @@
     <string name="title_activity_amtt">Choose user</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_help_dialog">How make screenshot?</string>
+    <string name="title_activity_preview">Preview</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
 
@@ -58,10 +59,10 @@
     <string name="label_show">Show</string>
     <string name="label_soft_input_mode">"Soft input mode: "</string>
     <string name="label_step">"Step "</string>
-    <string name="label_summary">Summary</string>
+    <string name="label_summary">Title</string>
     <string name="label_target_app_name">"Target app name: "</string>
     <string name="label_task_affinity">"Task affinity: "</string>
-    <string name="label_tester">Tester</string>
+    <string name="label_tester">Assignee</string>
     <string name="label_time_zone">Time zone</string>
     <string name="label_ui_options">"Ui options: "</string>
     <string name="label_url">URL</string>
@@ -75,7 +76,7 @@
     <string name="enter_username">" username"</string>
     <string name="enter_password">" password"</string>
     <string name="enter_url">" url"</string>
-    <string name="enter_summary">" summary"</string>
+    <string name="enter_summary">" title"</string>
     <string name="enter_postfix_jira">" postfix '/jira'"</string>
     <string name="auth_passed">Authorization passed</string>
 
@@ -123,6 +124,9 @@
     <string name="title_preff_dialog_hide">Hide dialog</string>
     <string name="preff_category_topbutton">Top button</string>
     <string name="preff_category_help_dialog">Help dialog</string>
+    <string name="title_activity_expected_results">Expected Results</string>
+    <string name="label_name_activity">"Name activity"</string>
+    <string name="label_tags">Tags</string>
 
     <string name="url_prefix">https://</string>
 </resources>

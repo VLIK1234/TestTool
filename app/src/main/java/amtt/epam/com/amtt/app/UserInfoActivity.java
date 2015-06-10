@@ -1,21 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
-import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ImageView;
-
-import java.lang.ref.WeakReference;
-
-import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
@@ -36,10 +20,26 @@ import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.view.TextView;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ImageView;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.lang.ref.WeakReference;
 
 /**
- * @author Artsiom_Kaliaha
- * @version on 07.05.2015
+ @author Artsiom_Kaliaha
+ @version on 07.05.2015
  */
 
 @SuppressWarnings("unchecked")
@@ -148,7 +148,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         mTimeZoneTextView.setText(user.getTimeZone());
         mLocaleTextView.setText(user.getLocale());
         mJiraUrlTextView.setText(user.getUrl());
-        CoreApplication.getImageLoader().displayImage(user.getAvatarUrls().getAvatarUrl(), mUserImageImageView);
+        ImageLoader.getInstance().displayImage(user.getAvatarUrls().getAvatarUrl(), mUserImageImageView);
         JiraContent.getInstance().clearData();
     }
 
@@ -162,7 +162,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
                     AmttUri.USER.get(),
                     null,
                     UsersTable._ID + "=?",
-                    new String[]{String.valueOf(ActiveUser.getInstance().getId())},
+                    new String[]{ String.valueOf(ActiveUser.getInstance().getId()) },
                     null);
         } else if (id == SINGLE_USER_CURSOR_LOADER_ID) {
             loader = new CursorLoader(UserInfoActivity.this,
@@ -261,9 +261,11 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
                         long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
                         args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
                         getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
-                    } else {
-                        startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
+                    }else{
+                        Intent loginIntent = new Intent(UserInfoActivity.this, LoginActivity.class);
+                        startActivity(loginIntent);
                         isNeedShowingTopButton = false;
+                        finish();
                     }
                     break;
             }
@@ -275,7 +277,6 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
                     getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
                     break;
             }
-            getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
         }
     }
 

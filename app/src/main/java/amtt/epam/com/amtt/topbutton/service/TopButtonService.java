@@ -20,9 +20,9 @@ import android.view.WindowManager;
 import java.io.File;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReceiver;
 import amtt.epam.com.amtt.app.SettingActivity;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
+import amtt.epam.com.amtt.topbutton.view.TopButtonBarView;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
 /**
@@ -35,9 +35,11 @@ public class TopButtonService extends Service{
     private static final String SCREENSHOTS_DIR_NAME = "Screenshots";
     private static final String TAG = "Log";
     public static final String ACTION_CLOSE = "amtt.epam.com.amtt.topbutton.service.CLOSE";
-    public static final String ACTION_CHANGE_VISIBILITY_VIEW = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_VISIBILITY_VIEW";
+    public static final String ACTION_CHANGE_VISIBILITY_TOPBUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_VISIBILITY_TOPBUTTON";
+    public static final String ACTION_CHANGE_NOTIFICATION_BUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_NOTIFICATION_BUTTON";
     public static final String ACTION_SHOW_SCREEN = "amtt.epam.com.amtt.topbutton.service.SHOW_SCREEN";
     public static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.START";
+    public static final String VISIBILITY_TOP_BUTTON = "amtt.epam.com.amtt.topbutton.service.VISIBILITY_TOP_BUTTON";
     public static final String PATH_TO_SCREEENSHOT_KEY = "PATH_TO_SCREENSHOT";
     //don't use REQUEST_CODE = 0 - it's broke mActionNotificationCompat in notification for some device
     public static final int REQUEST_CODE = 1;
@@ -63,8 +65,15 @@ public class TopButtonService extends Service{
         startActivity(intent);
     }
 
-    public static void sendActionChangeVisibilityButton() {
-        Intent intentHideView = new Intent(mContext, TopButtonService.class).setAction(TopButtonService.ACTION_CHANGE_VISIBILITY_VIEW);
+    private static void sendActionChangeNotificationButton() {
+        Intent intentHideView = new Intent(mContext, TopButtonService.class).setAction(TopButtonService.ACTION_CHANGE_NOTIFICATION_BUTTON);
+        intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mContext.getApplicationContext().startService(intentHideView);
+    }
+
+    public static void sendActionChangeVisibilityTopbutton(boolean visible) {
+        Intent intentHideView = new Intent(mContext, TopButtonService.class).setAction(TopButtonService.ACTION_CHANGE_VISIBILITY_TOPBUTTON);
+        intentHideView.putExtra(VISIBILITY_TOP_BUTTON, visible);
         intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.getApplicationContext().startService(intentHideView);
     }
@@ -114,11 +123,17 @@ public class TopButtonService extends Service{
                     mFileObserver.stopWatching();
                     closeService();
                     break;
-                case ACTION_CHANGE_VISIBILITY_VIEW:
+                case ACTION_CHANGE_NOTIFICATION_BUTTON:
                     changeStateNotificationAction();
                     break;
+                case ACTION_CHANGE_VISIBILITY_TOPBUTTON:
+                    Bundle extraBoolean = intent.getExtras();
+                    if (extraBoolean!=null) {
+                        setTopbuttonVisible(extraBoolean.getBoolean(VISIBILITY_TOP_BUTTON));
+                    }
+                    break;
                 case ACTION_SHOW_SCREEN:
-                    sendActionChangeVisibilityButton();
+                    sendActionChangeNotificationButton();
                     Bundle extra = intent.getExtras();
                     if (extra != null) {
                         showScreenInGallery(extra.getString(PATH_TO_SCREEENSHOT_KEY));
@@ -151,8 +166,9 @@ public class TopButtonService extends Service{
     private void closeService() {
         if (mTopButtonView != null && isViewAdd) {
             isViewAdd = false;
-            mWindowManager.removeView(mTopButtonView);
-            mWindowManager.removeView(mTopButtonView.getButtonsBar());
+            mTopButtonView.getButtonsBar().setIsRecordStarted(false);
+            mWindowManager.removeViewImmediate(mTopButtonView);
+            mWindowManager.removeViewImmediate(mTopButtonView.getButtonsBar());
             mTopButtonView = null;
         }
         stopSelf();
@@ -170,7 +186,7 @@ public class TopButtonService extends Service{
         mActionNotificationCompat = new NotificationCompat.Action(
                 R.drawable.ic_stat_action_visibility_off,
                 getString(R.string.label_hide),
-                PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CHANGE_VISIBILITY_VIEW), PendingIntent.FLAG_UPDATE_CURRENT));
+                PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CHANGE_NOTIFICATION_BUTTON), PendingIntent.FLAG_UPDATE_CURRENT));
 
         NotificationCompat.Action closeService = new NotificationCompat.Action(
                 R.drawable.ic_close_service,
@@ -182,7 +198,7 @@ public class TopButtonService extends Service{
         startForeground(NOTIFICATION_ID, mBuilderNotificationCompat.build());
     }
 
-    public final void changeStateNotificationAction() {
+    private void changeStateNotificationAction() {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (mTopButtonView.getVisibility() == View.VISIBLE) {
             mTopButtonView.setVisibility(View.GONE);
@@ -198,7 +214,15 @@ public class TopButtonService extends Service{
         }
     }
 
-    public static boolean isTopButtonViewVisible(){
-        return mTopButtonView.isShown();
+    private void setTopbuttonVisible(boolean visible) {
+        if (visible) {
+            if (mTopButtonView.getVisibility() == View.GONE) {
+                changeStateNotificationAction();
+            }
+        }else {
+            if (mTopButtonView.getVisibility() == View.VISIBLE) {
+                changeStateNotificationAction();
+            }
+        }
     }
 }

@@ -49,6 +49,7 @@ public class StepsActivity extends BaseActivity implements LoaderManager.LoaderC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
         initViews();
         mHandler = new StepsHandler(StepsActivity.this);
         mSwipeRefreshLayout.setOnRefreshListener(StepsActivity.this);

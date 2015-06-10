@@ -101,6 +101,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         mUserNameEditText = (EditText) findViewById(R.id.et_username);
         mUserNameEditText.setText("artsiom_kaliaha");
         mPasswordEditText = (EditText) findViewById(R.id.et_password);
+        mPasswordEditText.setText("Kolago1701778");
         mUrlEditText = (EditText) findViewById(R.id.et_jira_url);
         mUrlEditText.setText("https://amtt05.atlassian.net");
         mLoginButton = (Button) findViewById(R.id.btn_login);
@@ -134,6 +135,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
             @Override
             public void onResult(Integer result) {
                 ActiveUser.getInstance().setId(result);
+                finish();
             }
 
             @Override
@@ -234,7 +236,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 user.setCredentials(ActiveUser.getInstance().getCredentials());
                 insertUserToDatabase(user);
                 Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
-                finish();
             } else {
                 setActiveUser();
                 Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
