@@ -9,11 +9,13 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
-import amtt.epam.com.amtt.loader.InternalStorageImageLoader;
 
 /**
  @author Artsiom_Kaliaha
@@ -26,14 +28,6 @@ public class StepAdapter extends CursorAdapter {
         ImageView mImageView;
         TextView mActivityInfo;
         TextView mStep;
-    }
-
-    private static final InternalStorageImageLoader sImageLoader;
-    public static final int IMAGE_VIEW_WIDTH = 360;
-    public static final int IMAGE_VIEW_HEIGHT = 640;
-
-    static {
-        sImageLoader = new InternalStorageImageLoader(10, IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT);
     }
 
     public StepAdapter(Context context, Cursor c, int flags) {
@@ -84,7 +78,6 @@ public class StepAdapter extends CursorAdapter {
     }
 
     private void setBitmap(ImageView imageView, String path) {
-        sImageLoader.load(imageView, path);
+        ImageLoader.getInstance().displayImage("file:///" + path, imageView);
     }
-
 }

@@ -22,6 +22,5 @@ public class SettingsFragment extends PreferenceFragment {
         addPreferencesFromResource(R.xml.setting);
         checkBoxPreference = (CheckBoxPreference) findPreference(getActivity().getBaseContext().getString(R.string.key_dialog_hide));
         switchPreference = (SwitchPreference) findPreference(getActivity().getBaseContext().getString(R.string.key_topbutton_show));
-        switchPreference.setChecked(TopButtonService.isTopButtonViewVisible());
     }
 }

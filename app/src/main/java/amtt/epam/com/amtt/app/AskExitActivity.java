@@ -25,7 +25,7 @@ public class AskExitActivity  extends Activity {
         buttonReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TopButtonService.sendActionChangeVisibilityButton();
+                TopButtonService.sendActionChangeVisibilityTopbutton(true);
                 finish();
             }
         });

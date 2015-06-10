@@ -11,20 +11,13 @@ import amtt.epam.com.amtt.util.ContextHolder;
  */
 public class CoreApplication extends Application {
 
-    private static ImageLoader sImageLoader;
-
     @Override
     public void onCreate() {
         super.onCreate();
         ContextHolder.setContext(getApplicationContext());
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
                 .build();
-        sImageLoader = ImageLoader.getInstance();
-        sImageLoader.init(config);
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.init(config);
     }
-
-    public static ImageLoader getImageLoader() {
-        return sImageLoader;
-    }
-
 }
