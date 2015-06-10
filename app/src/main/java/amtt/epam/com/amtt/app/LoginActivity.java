@@ -20,6 +20,7 @@ import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Constants.Symbols;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
@@ -30,6 +31,7 @@ import android.content.Loader;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -53,6 +55,13 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
 
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
 
+    private TextInputLayout mUsernameInputLayout;
+    private boolean isUsernameInputErrorTookPlace = false;
+    private TextInputLayout mUrlInputLayout;
+    private boolean isUrlErrorTookPlace = false;
+    private TextInputLayout mPasswordInputLayout;
+    private boolean isPasswordErrorTookPlace = false;
+
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
     private EditText mUrlEditText;
@@ -75,9 +84,46 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private void initViews() {
+        mUsernameInputLayout = (TextInputLayout)findViewById(R.id.username_input_layout);
+        mUsernameInputLayout.setErrorEnabled(true);
+        mUrlInputLayout = (TextInputLayout)findViewById(R.id.url_input_layout);
+        mUrlInputLayout.setErrorEnabled(true);
+        mPasswordInputLayout = (TextInputLayout)findViewById(R.id.password_input_layout);
+        mPasswordInputLayout.setErrorEnabled(true);
+
         mUserNameEditText = (EditText) findViewById(R.id.et_username);
+        mUserNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (isUsernameInputErrorTookPlace && !hasFocus && TextUtils.isEmpty(mUserNameEditText.getText())) {
+                    mUsernameInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username));
+                } else if (isUsernameInputErrorTookPlace) {
+                    mUsernameInputLayout.setError(Symbols.EMPTY);
+                }
+            }
+        });
         mPasswordEditText = (EditText) findViewById(R.id.et_password);
+        mPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (isPasswordErrorTookPlace && !hasFocus && TextUtils.isEmpty(mPasswordEditText.getText())) {
+                    mPasswordInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_password));
+                } else if (isPasswordErrorTookPlace) {
+                    mPasswordInputLayout.setError(Symbols.EMPTY);
+                }
+            }
+        });
         mUrlEditText = (EditText) findViewById(R.id.et_jira_url);
+        mUrlEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (isUrlErrorTookPlace && !hasFocus && mUrlEditText.getText().length() <= getString(R.string.url_prefix).length()) {
+                    mUrlInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_url));
+                } else if (isUrlErrorTookPlace) {
+                    mUrlInputLayout.setError(Symbols.EMPTY);
+                }
+            }
+        });
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,31 +167,38 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         boolean isAnyEmptyField = false;
         //check username
         if (TextUtils.isEmpty(mUserNameEditText.getText().toString())) {
-            mUserNameEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username));
+            isUsernameInputErrorTookPlace = true;
             isAnyEmptyField = true;
+            mUsernameInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username));
         } else if (InputsUtil.haveWhitespaces(mUserNameEditText.getText().toString())) {
-            mUserNameEditText.setError(getString(R.string.label_user_name) + getString(R.string.label_no_whitespaces));
+            isUsernameInputErrorTookPlace = true;
             isAnyEmptyField = true;
+            mUsernameInputLayout.setError(getString(R.string.label_user_name) + getString(R.string.label_no_whitespaces));
         } else if (InputsUtil.hasAtSymbol(mUserNameEditText.getText().toString())) {
-            mUserNameEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username) + getString(R.string.label_cannot_at));
+            isUsernameInputErrorTookPlace = true;
             isAnyEmptyField = true;
+            mUsernameInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username) + getString(R.string.label_cannot_at));
         }
 
         if (TextUtils.isEmpty(mPasswordEditText.getText().toString())) {
+            isPasswordErrorTookPlace = true;
             isAnyEmptyField = true;
-            mPasswordEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_password));
+            mPasswordInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_password));
         }
 
         //check url
         if (TextUtils.isEmpty(mUrlEditText.getText().toString()) || getString(R.string.url_prefix).equals(mUrlEditText.getText().toString())) {
+            isUrlErrorTookPlace = true;
             isAnyEmptyField = true;
-            mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_url));
+            mUrlInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_url));
         } else if (InputsUtil.checkUrl(mUrlEditText.getText().toString())){
+            isUrlErrorTookPlace = true;
             isAnyEmptyField = true;
-            mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_correct_url));
+            mUrlInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_correct_url));
         } else if(getString(R.string.epam_url).equals(mUrlEditText.getText().toString())){
+            isUrlErrorTookPlace = true;
             isAnyEmptyField = true;
-            mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_postfix_jira));
+            mUrlInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_postfix_jira));
         }
         if (!isAnyEmptyField) {
             showProgress(true);
