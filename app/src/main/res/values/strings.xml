@@ -126,4 +126,5 @@
     <string name="preff_category_topbutton">Top button</string>
     <string name="preff_category_help_dialog">Help dialog</string>
     <string name="transiton_preview_image">transition preview image</string>
+    <string name="url_prefix">https://</string>
 </resources>
