@@ -21,7 +21,7 @@
         android:gravity="center"
         android:paddingBottom="16dp"
         android:textColor="@color/primary_light"
-        android:textSize="@dimen/material_font_size_body_1" />
+        android:textSize="@dimen/abc_text_size_body_1_material" />
 
     <ImageView
         android:id="@+id/iv_close"

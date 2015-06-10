@@ -9,7 +9,6 @@
     <string name="title_activity_user_info">UserInfoActivity</string>
     <string name="title_activity_amtt">Choose user</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="title_activity_preview">Preview</string>
     <string name="title_activity_help_dialog">How make screenshot?</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
@@ -59,10 +58,10 @@
     <string name="label_show">Show</string>
     <string name="label_soft_input_mode">"Soft input mode: "</string>
     <string name="label_step">"Step "</string>
-    <string name="label_summary">Summary</string>
+    <string name="label_summary">Title</string>
     <string name="label_target_app_name">"Target app name: "</string>
     <string name="label_task_affinity">"Task affinity: "</string>
-    <string name="label_tester">Tester</string>
+    <string name="label_tester">Assignee</string>
     <string name="label_time_zone">Time zone</string>
     <string name="label_ui_options">"Ui options: "</string>
     <string name="label_url">URL</string>
@@ -76,7 +75,7 @@
     <string name="enter_username">" username"</string>
     <string name="enter_password">" password"</string>
     <string name="enter_url">" url"</string>
-    <string name="enter_summary">" summary"</string>
+    <string name="enter_summary">" title"</string>
     <string name="enter_postfix_jira">" postfix '/jira'"</string>
     <string name="auth_passed">Authorization passed</string>
 
@@ -85,8 +84,7 @@
     <string name="label_open_amtt">Open Amtt</string>
     <string name="label_expected_result">Expected result</string>
     <string name="label_screenshot">Screenshot</string>
-    <string name="label_activity_info">Add info about Activity</string>
-    <string name="label_activity_info_added">Info added</string>
+    <string name="label_activity_info">Info added</string>
     <string name="label_step_view">Step</string>
     <string name="label_cancel_record">Cancel record</string>
     <string name="label_button_main">Main button</string>
@@ -100,11 +98,11 @@
     <string name="dialog_button_cancel">Cancel</string>
     <string name="label_close_app">Close Amtt</string>
     <string name="label_show_steps">Show recorded steps</string>
-    <string name="nexus_help_message">\n\nNexus - volume down+power</string>
-    <string name="samsung_help_message">\n\nSamsung - power+home</string>
-    <string name="htc_help_message">\n\nHTC - power+home</string>
-    <string name="xiaomi_help_message">\n\nXiaomi tablet - power+options \nXiaomi phone - volume down+power</string>
-    <string name="all_help_message">\n\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nXiaomi phone - volume down+power \nHTC - power+home</string>
+    <string name="nexus_help_message">\nNexus - volume down+power</string>
+    <string name="samsung_help_message">\nSamsung - power+home</string>
+    <string name="htc_help_message">\nHTC - power+home</string>
+    <string name="xiaomi_help_message">\nXiaomi tablet - power+options \nXiaomi phone - volume down+power</string>
+    <string name="all_help_message">\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nXiaomi phone - volume down+power \nHTC - power+home</string>
     <string name="label_list_users">List users</string>
     <string name="label_jira_url">JIRA Url</string>
     <string name="notification_attach_title_done">Uploaded %s done</string>
@@ -125,6 +123,9 @@
     <string name="title_preff_dialog_hide">Hide dialog</string>
     <string name="preff_category_topbutton">Top button</string>
     <string name="preff_category_help_dialog">Help dialog</string>
-    <string name="transiton_preview_image">transition preview image</string>
+    <string name="title_activity_expected_results">Expected Results</string>
+    <string name="label_name_activity">"Name activity"</string>
+    <string name="label_tags">Tags</string>
+
     <string name="url_prefix">https://</string>
 </resources>

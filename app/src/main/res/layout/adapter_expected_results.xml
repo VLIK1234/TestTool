@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/abc_action_bar_icon_vertical_padding_material">
+
+    <TextView
+        android:id="@+id/tv_name_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="@dimen/abc_dialog_list_padding_vertical_material"
+        android:text="@string/label_name_activity"
+        android:textSize="@dimen/abc_text_size_headline_material" />
+
+    <TextView
+        android:id="@+id/tv_description_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_name_activity"
+        android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
+        android:paddingRight="138dp"
+        android:text="@string/label_description" />
+
+    <ImageView
+        android:id="@+id/iv_screenshot"
+        android:layout_width="112dp"
+        android:layout_height="112dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
+        android:contentDescription="@string/screenshot_image_description"
+        android:scaleType="centerCrop" />
+
+</RelativeLayout>

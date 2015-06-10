@@ -13,7 +13,7 @@
         android:paddingBottom="24dp"
         android:text="@string/dialog_exit"
         android:textColor="@color/secondary_text"
-        android:textSize="@dimen/material_font_size_subhead"/>
+        android:textSize="@dimen/abc_text_size_subhead_material"/>
 
     <Button
         android:id="@+id/btn_close_amtt"
@@ -27,7 +27,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/label_close_app"
         android:textColor="@android:color/holo_blue_dark"
-        android:textSize="@dimen/material_font_size_button"/>
+        android:textSize="@dimen/abc_text_size_button_material"/>
 
     <Button
         android:id="@+id/btn_return"
@@ -41,6 +41,6 @@
         android:layout_toLeftOf="@+id/btn_close_amtt"
         android:text="@string/label_return"
         android:textColor="@android:color/holo_blue_dark"
-        android:textSize="@dimen/material_font_size_button"/>
+        android:textSize="@dimen/abc_text_size_button_material"/>
 
 </RelativeLayout>

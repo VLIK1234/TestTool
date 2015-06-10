@@ -58,7 +58,7 @@
         android:layout_marginTop="@dimen/material_vertical_button_padding_top"
         android:minWidth="@dimen/material_vertical_button_min_width_size"
         android:text="@string/label_login"
-        android:textSize="@dimen/material_font_size_button"
+        android:textSize="@dimen/abc_text_size_button_material"
         android:layout_below="@id/password_input_layout"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
