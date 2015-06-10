@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.FileUtil;
 
 /**
  * Created by Ivan_Bakach on 09.06.2015.
@@ -41,7 +42,7 @@ public class PreviewActivity extends Activity{
         Bundle extra = getIntent().getExtras();
         if (extra!=null) {
             String filePath = extra.getString(FILE_PATH);
-            setTitleFromFile(filePath);
+            setTitle(FileUtil.getFileName(filePath));
             showPreview(filePath);
         }
     }
@@ -87,14 +88,6 @@ public class PreviewActivity extends Activity{
             int sizeDp = 8;
             textPreview.setPadding(sizeInDp(sizeDp), sizeInDp(sizeDp), sizeInDp(sizeDp), sizeInDp(sizeDp));
             textPreview.setText(readLogFromFile(filePath));
-        }
-    }
-
-    public void setTitleFromFile(String filePath){
-        Pattern p = Pattern.compile("[-_0-9a-zA-Z]*[.]\\w{0,5}");
-        Matcher m = p.matcher(filePath);
-        if (m.find()) {
-            setTitle(m.group());
         }
     }
 
