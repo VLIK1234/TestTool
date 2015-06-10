@@ -9,6 +9,8 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.database.table.UsersTable;
@@ -44,7 +46,7 @@ public class UserAdapter extends CursorAdapter {
         String userName = cursor.getString(cursor.getColumnIndex(UsersTable._USER_NAME));
         String avatar = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_48));
         vh.mUserName.setText(userName);
-        CoreApplication.getImageLoader().displayImage(avatar,vh.mUserImage);
+        ImageLoader.getInstance().displayImage(avatar, vh.mUserImage);
     }
 
 }

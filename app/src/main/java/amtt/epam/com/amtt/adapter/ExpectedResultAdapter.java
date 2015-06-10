@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.CoreApplication;
@@ -47,7 +49,7 @@ public class ExpectedResultAdapter extends ArrayAdapter<ExpectedResultAdapter.Ex
         ImageView screenshot = (ImageView) convertView.findViewById(R.id.iv_screenshot);
         activityName.setText(expectedResult.mActivityName);
         descriptionResult.setText(expectedResult.mDescriptionResult);
-        CoreApplication.getImageLoader().displayImage(expectedResult.mScreenshotPath, screenshot);
+        ImageLoader.getInstance().displayImage(expectedResult.mScreenshotPath, screenshot);
         return convertView;
     }
 
