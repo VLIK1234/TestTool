@@ -36,7 +36,7 @@ public class JProjects extends DatabaseEntity<JProjects> {
     private ArrayList<JIssueTypes> mIssueTypes;
 
     private int mId;
-    private int mIdUser;
+    private String mIdUser;
 
     public JProjects() {
     }
@@ -49,7 +49,7 @@ public class JProjects extends DatabaseEntity<JProjects> {
         mJiraId = cursor.getString(cursor.getColumnIndex(ProjectTable._JIRA_ID));
         mKey = cursor.getString(cursor.getColumnIndex(ProjectTable._KEY));
         mName = cursor.getString(cursor.getColumnIndex(ProjectTable._NAME));
-        mIdUser = cursor.getInt(cursor.getColumnIndex(ProjectTable._ID_USER));
+        mIdUser = cursor.getString(cursor.getColumnIndex(ProjectTable._ID_USER));
     }
 
     public JProjects(String expand, String self, String jiraId, String key, String name, JAvatarUrls avatarUrls, ArrayList<JIssueTypes> issueTypes) {
@@ -141,11 +141,11 @@ public class JProjects extends DatabaseEntity<JProjects> {
         this.mIssueTypes = issueTypes;
     }
 
-    public int getIdUser() {
+    public String getIdUser() {
         return mIdUser;
     }
 
-    public void setIdUser(int idUser) {
+    public void setIdUser(String idUser) {
         this.mIdUser = idUser;
     }
 

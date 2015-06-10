@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.ticket;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import amtt.epam.com.amtt.bo.JCreateIssue;
@@ -10,7 +11,11 @@ import amtt.epam.com.amtt.bo.JPriorityResponse;
 import amtt.epam.com.amtt.bo.JProjectsResponse;
 import amtt.epam.com.amtt.bo.JUserAssignableResponse;
 import amtt.epam.com.amtt.bo.JVersionsResponse;
+import amtt.epam.com.amtt.bo.issue.createmeta.JIssueTypes;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
+import amtt.epam.com.amtt.bo.project.JPriority;
+import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -42,11 +47,28 @@ public class JiraContent{
         return JiraContentHolder.INSTANCE;
     }
 
-    public void getPrioritiesNames(JiraGetContentCallback<HashMap<String, String>> jiraGetContentCallback) {
+    public void getPrioritiesNames(final JiraGetContentCallback<HashMap<String, String>> jiraGetContentCallback) {
         if (mProjectPrioritiesNames != null) {
             jiraGetContentCallback.resultOfDataLoading(mProjectPrioritiesNames);
         } else {
-            getPriorities(jiraGetContentCallback);
+            ContentFromDatabase.getPriorities(ActiveUser.getInstance().getUrl(), new IResult<List<JPriority>>() {
+                @Override
+                public void onResult(List<JPriority> result) {
+                    if (result.isEmpty()) {
+                        getPriorities(jiraGetContentCallback);
+                    } else {
+                        JPriorityResponse pro = new JPriorityResponse();
+                        pro.setPriorities(new ArrayList<>(result));
+                        mProjectPrioritiesNames = pro.getPriorityNames();
+                        jiraGetContentCallback.resultOfDataLoading(mProjectPrioritiesNames);
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    getPriorities(jiraGetContentCallback);
+                }
+            });
         }
     }
 
@@ -64,11 +86,28 @@ public class JiraContent{
         return priorityId;
     }
 
-    public void getProjectsNames(JiraGetContentCallback<HashMap<JProjects, String>> jiraGetContentCallback) {
+    public void getProjectsNames(final JiraGetContentCallback<HashMap<JProjects, String>> jiraGetContentCallback) {
         if (mProjectsNames != null) {
             jiraGetContentCallback.resultOfDataLoading(mProjectsNames);
         } else {
-            getProjectsResponse(jiraGetContentCallback);
+            ContentFromDatabase.getProjects(ActiveUser.getInstance().getId(), new IResult<List<JProjects>>() {
+                @Override
+                public void onResult(List<JProjects> result) {
+                    if (result.isEmpty()) {
+                        getProjectsResponse(jiraGetContentCallback);
+                    } else {
+                        JProjectsResponse pro = new JProjectsResponse();
+                        pro.setProjects(new ArrayList<>(result));
+                        mProjectsNames = pro.getProjectsNames();
+                        jiraGetContentCallback.resultOfDataLoading(mProjectsNames);
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    getProjectsResponse(jiraGetContentCallback);
+                }
+            });
         }
     }
 
@@ -80,20 +119,59 @@ public class JiraContent{
         for (Map.Entry<JProjects, String> entry : mProjectsNames.entrySet()) {
             if (projectName.equals(entry.getValue())) {
                 mLastProject = entry.getKey();
+                ActiveUser.getInstance().setLastProjectKey(mLastProject.getKey());
             }
         }
-        String mProjectKey = mLastProject.getKey();
         mIssueTypesNames = null;
         mProjectVersionsNames = null;
-        jiraGetContentCallback.resultOfDataLoading(mProjectKey);
+        jiraGetContentCallback.resultOfDataLoading(ActiveUser.getInstance().getLastProjectKey());
     }
 
-    public void getIssueTypesNames(JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
+    public void getProjectNameByKey(String projectKey, final JiraGetContentCallback<String> jiraGetContentCallback) {
+        ContentFromDatabase.getLastProject(projectKey, new IResult<List<JProjects>>() {
+            @Override
+            public void onResult(List<JProjects> result) {
+                if (result.isEmpty()) {
+                    jiraGetContentCallback.resultOfDataLoading(null);
+                } else {
+                    mLastProject = result.get(1);
+                    jiraGetContentCallback.resultOfDataLoading(mLastProject.getName());
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                jiraGetContentCallback.resultOfDataLoading(null);
+            }
+        });
+    }
+
+    public void getIssueTypesNames(final JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
         if (mIssueTypesNames != null) {
             jiraGetContentCallback.resultOfDataLoading(mIssueTypesNames);
         } else {
             mIssueTypesNames = mLastProject.getIssueTypesNames();
-            jiraGetContentCallback.resultOfDataLoading(mIssueTypesNames);
+            if (mIssueTypesNames != null) {
+                jiraGetContentCallback.resultOfDataLoading(mIssueTypesNames);
+            } else {
+                ContentFromDatabase.getIssueTypes(ActiveUser.getInstance().getLastProjectKey(), new IResult<List<JIssueTypes>>() {
+                    @Override
+                    public void onResult(List<JIssueTypes> result) {
+                        if (result.isEmpty()) {
+                            jiraGetContentCallback.resultOfDataLoading(null);
+                        } else {
+                            mLastProject.setIssueTypes(new ArrayList<>(result));
+                            mIssueTypesNames = mLastProject.getIssueTypesNames();
+                            jiraGetContentCallback.resultOfDataLoading(mIssueTypesNames);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        jiraGetContentCallback.resultOfDataLoading(null);
+                    }
+                });
+            }
         }
     }
 
@@ -164,7 +242,7 @@ public class JiraContent{
     @SuppressWarnings("unchecked")
     public void getUsersAssignable(String userName,
                                    final JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
-        ContentFromBackend.getInstance().getUsersAssignableAsynchronously(mLastProject.getKey(), userName, new ContentLoadingCallback<JUserAssignableResponse>() {
+        ContentFromBackend.getInstance().getUsersAssignableAsynchronously(ActiveUser.getInstance().getLastProjectKey(), userName, new ContentLoadingCallback<JUserAssignableResponse>() {
             @Override
             public void resultFromBackend(JUserAssignableResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
                 if (result != null) {
@@ -200,7 +278,7 @@ public class JiraContent{
                             String description, String environment, String userAssigneName,
                             final JiraGetContentCallback<JCreateIssueResponse> jiraGetContentCallback) {
         String mProjectKey, issueTypeId, priorityId, versionId;
-        mProjectKey = mLastProject.getKey();
+        mProjectKey = ActiveUser.getInstance().getLastProjectKey();
         priorityId = getPriorityIdByName(priorityName);
         issueTypeId = getIssueTypeIdByName(issueTypeName);
         versionId = getVersionIdByName(versionName);

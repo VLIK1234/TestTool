@@ -35,8 +35,6 @@ public class ProjectTable extends Table {
             add(_JIRA_ID);
             add(_KEY);
             add(_NAME);
-        }});
-        sColumnsMap.put(BaseColumns.TYPE_INTEGER, new ArrayList<String>() {{
             add(_ID_USER);
         }});
         sColumnsMap.put(BaseColumns.TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
