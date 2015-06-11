@@ -51,9 +51,8 @@ public class TopButtonBarView extends FrameLayout {
     private TopUnitView mButtonCreateTicket;
     private TopUnitView mButtonOpenUserInfo;
     private TopUnitView mButtonExpectedResult;
-    private TopUnitView mButtonTakeScreenshot;
-    private TopUnitView mButtonActivityInfo;
-    private TopUnitView mButtonTakeStep;
+    private TopUnitView mButtonStepWithScreen;
+    private TopUnitView mButtonStepWithoutScreen;
     private TopUnitView mButtonStopRecord;
     private TopUnitView mButtonShowSteps;
     private TopUnitView mButtonCloseApp;
@@ -143,7 +142,7 @@ public class TopButtonBarView extends FrameLayout {
                 mOnTouchListener.onTouch();
             }
         });
-        mButtonTakeScreenshot = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), R.drawable.background_take_screenshot, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
+        mButtonStepWithScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_with_screen), R.drawable.background_step_with_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
                 try {
@@ -162,10 +161,10 @@ public class TopButtonBarView extends FrameLayout {
                 mOnTouchListener.onTouch();
             }
         });
-        mButtonActivityInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), R.drawable.background_activity_info, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
+        mButtonStepWithoutScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_without_screen), R.drawable.background_step_without_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_activity_info), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_step_without_screen), Toast.LENGTH_LONG).show();
                 ScheduledExecutorService worker =
                         Executors.newSingleThreadScheduledExecutor();
                 Runnable task = new Runnable() {
@@ -179,13 +178,6 @@ public class TopButtonBarView extends FrameLayout {
                     }
                 };
                 worker.schedule(task, 1, TimeUnit.SECONDS);
-                mOnTouchListener.onTouch();
-            }
-        });
-        mButtonTakeStep = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), R.drawable.background_add_step, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
-            @Override
-            public void onTouch() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot) + " Vova what will be here?", Toast.LENGTH_LONG).show();
                 mOnTouchListener.onTouch();
             }
         });
@@ -231,9 +223,8 @@ public class TopButtonBarView extends FrameLayout {
 
     private void setRecordButtons() {
         mButtonsBar.removeAllViews();
-        mButtonsBar.addView(mButtonTakeScreenshot);
-        mButtonsBar.addView(mButtonActivityInfo);
-        mButtonsBar.addView(mButtonTakeStep);
+        mButtonsBar.addView(mButtonStepWithScreen);
+        mButtonsBar.addView(mButtonStepWithoutScreen);
         mButtonsBar.addView(mButtonExpectedResult);
         mButtonsBar.addView(mButtonShowSteps);
         mButtonsBar.addView(mButtonCreateTicket);

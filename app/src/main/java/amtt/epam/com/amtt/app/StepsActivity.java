@@ -2,12 +2,14 @@ package amtt.epam.com.amtt.app;
 
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import java.lang.ref.WeakReference;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.StepAdapter;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 public class StepsActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
@@ -48,12 +51,30 @@ public class StepsActivity extends BaseActivity implements LoaderManager.LoaderC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps);
+        TopButtonService.close(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         initViews();
         mHandler = new StepsHandler(StepsActivity.this);
         mSwipeRefreshLayout.setOnRefreshListener(StepsActivity.this);
         getLoaderManager().initLoader(CURSOR_LOADER, null, this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        TopButtonService.start(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void initViews() {
