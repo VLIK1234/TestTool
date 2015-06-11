@@ -3,11 +3,9 @@ package amtt.epam.com.amtt.topbutton.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
-import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,13 +59,13 @@ public class TopButtonBarView extends FrameLayout {
     private TopUnitView mButtonCloseApp;
     private int mMainButtonHeight;
     private int mMainButtonWidth;
-    private ITouchAction mITouchAction;
+    private amtt.epam.com.amtt.topbutton.view.OnTouchListener mOnTouchListener;
 
     static {
         isRecordStarted = false;
     }
 
-    public TopButtonBarView(Context context, int mainButtonHeight, int mainButtonWidth, ITouchAction touchAction) {
+    public TopButtonBarView(Context context, int mainButtonHeight, int mainButtonWidth, amtt.epam.com.amtt.topbutton.view.OnTouchListener onTouchListener) {
         super(context);
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         mMainButtonHeight = mainButtonHeight;
@@ -76,7 +74,7 @@ public class TopButtonBarView extends FrameLayout {
         initButtonsBar();
         initButtonsHandlers();
         setInitialButtons();
-        mITouchAction = touchAction;
+        mOnTouchListener = onTouchListener;
     }
 
     private void initLayout() {
@@ -105,49 +103,49 @@ public class TopButtonBarView extends FrameLayout {
 
     @SuppressWarnings("unchecked")
     private void initButtonsHandlers() {
-        mButtonStartRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), R.drawable.background_start_record, new ITouchAction() {
+        mButtonStartRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), R.drawable.background_start_record, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
-            public void TouchAction() {
+            public void onTouch() {
                 isRecordStarted = true;
                 hide();
                 StepUtil.clearAllStep();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
-                mITouchAction.TouchAction();
+                mOnTouchListener.onTouch();
             }
         });
-        mButtonCreateTicket = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), R.drawable.background_create_ticket, new ITouchAction() {
+        mButtonCreateTicket = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), R.drawable.background_create_ticket, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
-            public void TouchAction() {
+            public void onTouch() {
                 Intent intentTicket = new Intent(getContext(), CreateIssueActivity.class);
                 intentTicket.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentTicket);
-                mITouchAction.TouchAction();
+                mOnTouchListener.onTouch();
             }
         });
-        mButtonOpenUserInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), R.drawable.background_user_info, new ITouchAction() {
+        mButtonOpenUserInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), R.drawable.background_user_info, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
-            public void TouchAction() {
+            public void onTouch() {
                 hide();
                 TopButtonService.close(getContext().getApplicationContext());
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
                 userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(userInfoIntent);
-                mITouchAction.TouchAction();
+                mOnTouchListener.onTouch();
             }
         });
-        mButtonExpectedResult = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new ITouchAction() {
+        mButtonExpectedResult = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
-            public void TouchAction() {
+            public void onTouch() {
                 TopButtonService.sendActionChangeVisibilityTopbutton(false);
                 Intent intent = new Intent(getContext(), ExpectedResultsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intent);
-                mITouchAction.TouchAction();
+                mOnTouchListener.onTouch();
             }
         });
-        mButtonTakeScreenshot = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), R.drawable.background_take_screenshot, new ITouchAction() {
+        mButtonTakeScreenshot = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), R.drawable.background_take_screenshot, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
-            public void TouchAction() {
+            public void onTouch() {
                 try {
                     StepUtil.saveActivityMeta(ActivityMetaUtil.createMeta());
                 } catch (PackageManager.NameNotFoundException e) {
@@ -161,12 +159,12 @@ public class TopButtonBarView extends FrameLayout {
                     HelpDialogActivity.setIsCanTakeScreenshot(true);
                 }
                 TopButtonService.sendActionChangeVisibilityTopbutton(false);
-                mITouchAction.TouchAction();
+                mOnTouchListener.onTouch();
             }
         });
-        mButtonActivityInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), R.drawable.background_activity_info, new ITouchAction() {
+        mButtonActivityInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), R.drawable.background_activity_info, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
-            public void TouchAction() {
+            public void onTouch() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_activity_info), Toast.LENGTH_LONG).show();
                 ScheduledExecutorService worker =
                         Executors.newSingleThreadScheduledExecutor();
@@ -181,43 +179,43 @@ public class TopButtonBarView extends FrameLayout {
                     }
                 };
                 worker.schedule(task, 1, TimeUnit.SECONDS);
-                mITouchAction.TouchAction();
+                mOnTouchListener.onTouch();
             }
         });
-        mButtonTakeStep = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), R.drawable.background_add_step, new ITouchAction() {
+        mButtonTakeStep = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), R.drawable.background_add_step, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
-            public void TouchAction() {
+            public void onTouch() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot) + " Vova what will be here?", Toast.LENGTH_LONG).show();
-                mITouchAction.TouchAction();
+                mOnTouchListener.onTouch();
             }
         });
-        mButtonShowSteps = new TopUnitView(getContext(), getContext().getString(R.string.label_show_steps), R.drawable.background_show_step, new ITouchAction() {
+        mButtonShowSteps = new TopUnitView(getContext(), getContext().getString(R.string.label_show_steps), R.drawable.background_show_step, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
-            public void TouchAction() {
+            public void onTouch() {
                 Intent intent = new Intent(getContext(), StepsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intent);
-                mITouchAction.TouchAction();
+                mOnTouchListener.onTouch();
             }
         });
-        mButtonStopRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), R.drawable.background_stop_record, new ITouchAction() {
+        mButtonStopRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), R.drawable.background_stop_record, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
-            public void TouchAction() {
+            public void onTouch() {
                 isRecordStarted = false;
                 hide();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
-                mITouchAction.TouchAction();
+                mOnTouchListener.onTouch();
             }
         });
-        mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.label_close_app), R.drawable.background_close, new ITouchAction() {
+        mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.label_close_app), R.drawable.background_close, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
-            public void TouchAction() {
+            public void onTouch() {
                 hide();
                 TopButtonService.sendActionChangeVisibilityTopbutton(false);
                 Intent intentAsk = new Intent(getContext(), AskExitActivity.class);
                 intentAsk.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentAsk);
-                mITouchAction.TouchAction();
+                mOnTouchListener.onTouch();
             }
         });
     }
