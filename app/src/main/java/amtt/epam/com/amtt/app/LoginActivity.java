@@ -10,6 +10,7 @@ import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
+import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
@@ -18,12 +19,15 @@ import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.ticket.JiraContent;
+import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants.Symbols;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.util.Logger;
+
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -38,6 +42,7 @@ import android.widget.Toast;
 
 import org.apache.http.auth.AuthenticationException;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -52,7 +57,7 @@ import java.util.concurrent.TimeUnit;
 public class LoginActivity extends BaseActivity implements JiraCallback<JUserInfo>, LoaderCallbacks<Cursor> {
 
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
-
+    private final String TAG = this.getClass().getSimpleName();
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
     private EditText mUrlEditText;
@@ -178,8 +183,22 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         Runnable task = new Runnable() {
             public void run() {
                 TopButtonService.start(getBaseContext());
-               // JiraContent.getInstance().getPrioritiesNames(null);
-               // JiraContent.getInstance().getProjectsNames(null);
+                JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
+                    @Override
+                    public void resultOfDataLoading(HashMap<String, String> result) {
+                        if (result != null) {
+                            Logger.d(TAG, "Loading priority finish");
+                        }
+                    }
+                });
+                JiraContent.getInstance().getProjectsNames(new JiraGetContentCallback<HashMap<JProjects, String>>() {
+                    @Override
+                    public void resultOfDataLoading(HashMap<JProjects, String> result) {
+                        if (result != null) {
+                            Logger.d(TAG, "Loading projects finish");
+                        }
+                    }
+                });
             }
         };
         worker.schedule(task, 1, TimeUnit.SECONDS);
