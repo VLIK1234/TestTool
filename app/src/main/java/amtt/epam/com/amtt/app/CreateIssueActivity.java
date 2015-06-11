@@ -271,7 +271,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                     mSummaryEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
                     isValid = false;
                     Toast.makeText(CreateIssueActivity.this, getString(R.string.enter_prefix) + getString(R.string.enter_summary), Toast.LENGTH_LONG).show();
-                } else if (InputsUtil.hasWhitespaceMargins(mSummaryEditText.getText().toString())) {
+                } else if (InputsUtil.hasWhitespaceMargins(mSummaryEditText)) {
                     mSummaryEditText.requestFocus();
                     mSummaryEditText.setError(getString(R.string.label_summary) + getString(R.string.label_cannot_whitespaces));
                     isValid = false;
@@ -326,7 +326,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 2) {
-                    if (InputsUtil.haveWhitespaces(s.toString())) {
+                    if (InputsUtil.hasWhitespaces(mAssignableAutocompleteView)) {
                         Toast.makeText(CreateIssueActivity.this, getString(R.string.label_tester) + getString(R.string.label_no_whitespaces), Toast.LENGTH_LONG).show();
                     } else {
                         mHandler.removeMessages(MESSAGE_TEXT_CHANGED);

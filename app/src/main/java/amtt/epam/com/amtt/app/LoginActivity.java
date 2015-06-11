@@ -20,7 +20,6 @@ import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
-import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Constants.Symbols;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
@@ -38,6 +37,8 @@ import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.android.internal.util.Predicate;
 
 import org.apache.http.auth.AuthenticationException;
 
@@ -62,6 +63,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private boolean isUrlErrorTookPlace = false;
     private TextInputLayout mPasswordInputLayout;
     private boolean isPasswordErrorTookPlace = false;
+    private boolean isAnyEmptyField = false;
 
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
@@ -71,11 +73,19 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private boolean mIsUserInDatabase;
     private  RestMethod<JUserInfo> userInfoMethod;
 
+    private Predicate<EditText> mPredicateIsEmpty;
+    private Predicate<EditText> mPredicateHasWhitespaces;
+    private Predicate<EditText> mPredicateHasAtSymbol;
+    private Predicate<EditText> mPredicateIsCorrectUrl;
+    private Predicate<EditText> mPredicateIsEpamUrl;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initViews();
+        initPredicates();
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
     }
 
@@ -111,6 +121,39 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 checkFields();
             }
         });
+    }
+
+    private void initPredicates() {
+        mPredicateIsEmpty = new Predicate<EditText>() {
+            @Override
+            public boolean apply(EditText editText) {
+                return TextUtils.isEmpty(editText.getText().toString());
+            }
+        };
+        mPredicateHasWhitespaces = new Predicate<EditText>() {
+            @Override
+            public boolean apply(EditText editText) {
+                return InputsUtil.hasWhitespaces(editText);
+            }
+        };
+        mPredicateHasAtSymbol = new Predicate<EditText>() {
+            @Override
+            public boolean apply(EditText editText) {
+                return InputsUtil.hasAtSymbol(editText);
+            }
+        };
+        mPredicateIsCorrectUrl = new Predicate<EditText>() {
+            @Override
+            public boolean apply(EditText editText) {
+                return InputsUtil.checkUrl(editText);
+            }
+        };
+        mPredicateIsEpamUrl = new Predicate<EditText>() {
+            @Override
+            public boolean apply(EditText editText) {
+                return getString(R.string.epam_url).equals(editText.getText().toString());
+            }
+        };
     }
 
     private void sendAuthRequest() {
@@ -173,43 +216,50 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         }
     }
 
-    private void checkFields() {
-        boolean isAnyEmptyField = false;
-        //check username
-        if (TextUtils.isEmpty(mUserNameEditText.getText().toString())) {
-            isUsernameInputErrorTookPlace = true;
+    private void setErrorText(boolean isTruePrediction, TextInputLayout inputLayout, String errorText) {
+        if (isTruePrediction) {
+            if (inputLayout.equals(mUsernameInputLayout)) {
+                isUsernameInputErrorTookPlace = true;
+            } else if (inputLayout.equals(mPasswordInputLayout)) {
+                isPasswordErrorTookPlace = true;
+            } else {
+                isUrlErrorTookPlace = true;
+            }
+            inputLayout.setError(errorText);
             isAnyEmptyField = true;
-            mUsernameInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username));
-        } else if (InputsUtil.haveWhitespaces(mUserNameEditText.getText().toString())) {
-            isUsernameInputErrorTookPlace = true;
-            isAnyEmptyField = true;
-            mUsernameInputLayout.setError(getString(R.string.label_user_name) + getString(R.string.label_no_whitespaces));
-        } else if (InputsUtil.hasAtSymbol(mUserNameEditText.getText().toString())) {
-            isUsernameInputErrorTookPlace = true;
-            isAnyEmptyField = true;
-            mUsernameInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username) + getString(R.string.label_cannot_at));
         }
+    }
 
-        if (TextUtils.isEmpty(mPasswordEditText.getText().toString())) {
-            isPasswordErrorTookPlace = true;
-            isAnyEmptyField = true;
-            mPasswordInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_password));
-        }
+    private void checkFields() {
+        isAnyEmptyField = false;
+
+        //check username
+        setErrorText(mPredicateIsEmpty.apply(mUserNameEditText),
+                mUsernameInputLayout,
+                getString(R.string.enter_prefix) + getString(R.string.enter_username));
+        setErrorText(mPredicateHasWhitespaces.apply(mUserNameEditText),
+                mUsernameInputLayout,
+                getString(R.string.label_user_name) + getString(R.string.label_no_whitespaces));
+        setErrorText(mPredicateHasAtSymbol.apply(mUserNameEditText),
+                mUsernameInputLayout,
+                getString(R.string.enter_prefix) + getString(R.string.enter_username) + getString(R.string.label_cannot_at));
+
+        //check password
+        setErrorText(mPredicateIsEmpty.apply(mPasswordEditText),
+                mPasswordInputLayout,
+                getString(R.string.enter_prefix) + getString(R.string.enter_password));
 
         //check url
-        if (TextUtils.isEmpty(mUrlEditText.getText().toString()) || getString(R.string.url_prefix).equals(mUrlEditText.getText().toString())) {
-            isUrlErrorTookPlace = true;
-            isAnyEmptyField = true;
-            mUrlInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_url));
-        } else if (InputsUtil.checkUrl(mUrlEditText.getText().toString())){
-            isUrlErrorTookPlace = true;
-            isAnyEmptyField = true;
-            mUrlInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_correct_url));
-        } else if(getString(R.string.epam_url).equals(mUrlEditText.getText().toString())){
-            isUrlErrorTookPlace = true;
-            isAnyEmptyField = true;
-            mUrlInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_postfix_jira));
-        }
+        setErrorText(mPredicateIsEmpty.apply(mUrlEditText),
+                mUrlInputLayout,
+                getString(R.string.enter_prefix) + getString(R.string.enter_url));
+        setErrorText(mPredicateIsCorrectUrl.apply(mUrlEditText),
+                mUrlInputLayout,
+                getString(R.string.enter_prefix) + getString(R.string.enter_correct_url));
+        setErrorText(mPredicateIsEpamUrl.apply(mUrlEditText),
+                mUrlInputLayout,
+                getString(R.string.enter_prefix) + getString(R.string.enter_postfix_jira));
+
         if (!isAnyEmptyField) {
             showProgress(true);
             mLoginButton.setEnabled(false);
