@@ -90,7 +90,9 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         ActiveUser.getInstance().setCredentials(userInfo.getCredentials());
         ActiveUser.getInstance().setId(userInfo.getId());
         ActiveUser.getInstance().setUserName(userInfo.getName());
+        ActiveUser.getInstance().setLastProjectKey(userInfo.getLastProjectKey());
         Logger.e(TAG, "ID " + userInfo.getId());
+        Logger.e(TAG, "LastProjectKey " + userInfo.getLastProjectKey());
         ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
             public void run() {

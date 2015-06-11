@@ -14,7 +14,9 @@ import amtt.epam.com.amtt.bo.JVersionsResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JIssueTypes;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.project.JPriority;
+import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -323,19 +325,44 @@ public class JiraContent{
     public void createIssue(String issueTypeName, String priorityName, String versionName, String summary,
                             String description, String environment, String userAssigneName,
                             final JiraGetContentCallback<JCreateIssueResponse> jiraGetContentCallback) {
-        String mProjectKey, issueTypeId, priorityId, versionId;
+        final String mProjectKey, issueTypeId, priorityId, versionId;
         mProjectKey = ActiveUser.getInstance().getLastProjectKey();
         priorityId = getPriorityIdByName(priorityName);
         issueTypeId = getIssueTypeIdByName(issueTypeName);
         versionId = getVersionIdByName(versionName);
         String issueJson = new JCreateIssue(mProjectKey, issueTypeId, description, summary, priorityId, versionId,
                 environment, userAssigneName).getResultJson();
+        StepUtil.checkUser(ActiveUser.getInstance().getUserName(), new IResult<List<JUserInfo>>() {
+            @Override
+            public void onResult(List<JUserInfo> result) {
+                if (result.size() != 0) {
+                    JUserInfo user = result.get(1);
+                    user.setLastProjectKey(mProjectKey);
+                    ContentFromDatabase.setLastProject(user, new IResult<Integer>() {
+                        @Override
+                        public void onResult(Integer res) {
+                            ActiveUser.getInstance().setLastProjectKey(mProjectKey);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
         ContentFromBackend.getInstance().createIssueAsynchronously(issueJson, new ContentLoadingCallback<JCreateIssueResponse>() {
             @Override
             public void resultFromBackend(JCreateIssueResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
-                if(result!=null){
-                mRecentIssueKey = result.getKey();
-                Logger.d(TAG, mRecentIssueKey);
+                if (result != null) {
+                    mRecentIssueKey = result.getKey();
+                    Logger.d(TAG, mRecentIssueKey);
                 }
                 jiraGetContentCallback.resultOfDataLoading(result);
             }

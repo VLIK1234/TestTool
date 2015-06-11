@@ -77,10 +77,15 @@ public class JProjects extends DatabaseEntity<JProjects> {
     }
 
     public ArrayList<String> getIssueTypesNames() {
-        ArrayList<String> issueTypesNames = new ArrayList<>();
-        int size = mIssueTypes.size();
-        for (int i = 0; i < size; i++) {
-            issueTypesNames.add(mIssueTypes.get(i).getName());
+        ArrayList<String> issueTypesNames;
+        if (mIssueTypes==null) {
+            issueTypesNames = null;
+        } else {
+            issueTypesNames = new ArrayList<>();
+            int size = mIssueTypes.size();
+            for (int i = 0; i < size; i++) {
+                issueTypesNames.add(mIssueTypes.get(i).getName());
+            }
         }
         return issueTypesNames;
     }

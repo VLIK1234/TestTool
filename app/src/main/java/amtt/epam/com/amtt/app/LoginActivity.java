@@ -110,7 +110,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
-        DbObjectManger.INSTANCE.addOrUpdateAsync(user, new IResult<Integer>() {
+        DbObjectManger.INSTANCE.addAsync(user, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
                 ActiveUser.getInstance().setId(result);
@@ -155,9 +155,9 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         if (!isAnyEmptyField) {
             showProgress(true);
             mLoginButton.setEnabled(false);
-            StepUtil.checkUser(mUserNameEditText.getText().toString(), new IResult<List<DatabaseEntity>>() {
+            StepUtil.checkUser(mUserNameEditText.getText().toString(), new IResult<List<JUserInfo>>() {
                 @Override
-                public void onResult(List<DatabaseEntity> result) {
+                public void onResult(List<JUserInfo> result) {
                     mIsUserInDatabase = result.size() > 0;
                     ActiveUser.getInstance().clearActiveUser();
                     sendAuthRequest();

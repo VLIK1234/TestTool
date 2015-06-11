@@ -11,8 +11,10 @@ import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
- * Created by Artsiom_Kaliaha on 15.05.2015.
+ @author Artsiom_Kaliaha
+ @version on 15.05.2015
  */
+
 public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
 
     INSTANCE;
@@ -27,12 +29,12 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
 
 
     @Override
-    public Integer addOrUpdate(DatabaseEntity object) {
+    public Integer add(DatabaseEntity object) {
         Uri insertedItemUri = ContextHolder.getContext().getContentResolver().insert(object.getUri(), object.getContentValues());
         return Integer.valueOf(insertedItemUri.getLastPathSegment());
     }
 
-    public int addOrUpdate(List<DatabaseEntity> objects) {
+    public int add(List<DatabaseEntity> objects) {
         ContentValues[] contentValues = new ContentValues[objects.size()];
         for(int i = 0; i < objects.size(); i++) {
             contentValues[i] = objects.get(i).getContentValues();
@@ -41,27 +43,45 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
                 contentValues);
     }
 
-    public synchronized void addOrUpdateAsync(final DatabaseEntity object, final IResult<Integer> result) {
+    public synchronized void addAsync(final DatabaseEntity object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 if (result!=null) {
-                    result.onResult(addOrUpdate(object));
+                    result.onResult(add(object));
                 }else{
-                    addOrUpdate(object);
+                    add(object);
                 }
             }
         }).start();
     }
 
-    public synchronized void addOrUpdateAsync(final List<DatabaseEntity> object, final IResult<Integer> result) {
+    public synchronized void addAsync(final List<DatabaseEntity> object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 if (result != null) {
-                    result.onResult(addOrUpdate(object));
+                    result.onResult(add(object));
                 }else{
-                    addOrUpdate(object);
+                    add(object);
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    public Integer update(DatabaseEntity object, String selection, String[] selectionArgs) {
+        return ContextHolder.getContext().getContentResolver().update(object.getUri(), object.getContentValues(), selection, selectionArgs);
+    }
+
+    public synchronized void updateAsync(final DatabaseEntity object, final String selection, final String[] selectionArgs, final IResult<Integer> result) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (result != null) {
+                    result.onResult(update(object, selection, selectionArgs));
+                } else {
+                    update(object, selection, selectionArgs);
                 }
             }
         }).start();

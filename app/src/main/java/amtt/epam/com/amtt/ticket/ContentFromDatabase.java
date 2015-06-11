@@ -7,11 +7,14 @@ import amtt.epam.com.amtt.bo.JProjectsResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JIssueTypes;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.project.JPriority;
+import amtt.epam.com.amtt.bo.user.JUserInfo;
+import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.IssuetypeTable;
 import amtt.epam.com.amtt.database.table.PriorityTable;
 import amtt.epam.com.amtt.database.table.ProjectTable;
+import amtt.epam.com.amtt.util.ActiveUser;
 
 /**
  * @author Iryna Monchanka
@@ -38,16 +41,20 @@ public class ContentFromDatabase {
 
     public static void setPriorities(JPriorityResponse priorities, IResult<Integer> result){
         List list = priorities.getPriorities();
-        DbObjectManger.INSTANCE.addOrUpdateAsync(list, result);
+        DbObjectManger.INSTANCE.addAsync(list, result);
     }
 
     public static void setProjects(JProjectsResponse projects, IResult<Integer> result){
         List list = projects.getProjects();
-        DbObjectManger.INSTANCE.addOrUpdateAsync(list, result);
+        DbObjectManger.INSTANCE.addAsync(list, result);
     }
 
     public static void setIssueTypes(JProjects project, IResult<Integer> result){
         List list = project.getIssueTypes();
-        DbObjectManger.INSTANCE.addOrUpdateAsync(list, result);
+        DbObjectManger.INSTANCE.addAsync(list, result);
+    }
+
+    public static void setLastProject(JUserInfo user, IResult<Integer> result) {
+        DbObjectManger.INSTANCE.updateAsync(user, BaseColumns._ID + "=" + ActiveUser.getInstance().getId(), null, result);
     }
 }
