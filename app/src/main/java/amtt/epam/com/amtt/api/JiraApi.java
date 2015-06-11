@@ -1,5 +1,7 @@
 package amtt.epam.com.amtt.api;
 
+import android.content.Context;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -54,15 +56,15 @@ public class JiraApi {
         return mMethod;
     }
 
-    public RestMethod buildSignOut() {
+    public void signOut(JiraCallback jiraCallback) {
         mMethod = new RestMethod.Builder<String>()
                 .setType(RestMethodType.DELETE)
                 .setUrl(mUser.getUrl() + JiraApiConst.LOGIN_PATH)
                 .create();
-        return mMethod;
+        execute(mMethod, jiraCallback);
     }
 
-    public <ResultType, InputType> RestMethod buildIssueCreating(final String postStringEntity, final Processor<ResultType, InputType> processor) {
+    public <ResultType, InputType> void createIssue(JiraCallback jiraCallback, final String postStringEntity, final Processor<ResultType, InputType> processor) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
@@ -79,14 +81,15 @@ public class JiraApi {
                 .setPostEntity(postEntity)
                 .setProcessor(processor)
                 .create();
-        return mMethod;
+        execute(mMethod, jiraCallback);
     }
 
-    public <ResultType, InputType> RestMethod buildDataSearch(final String requestSuffix,
-                                                              final Processor<ResultType, InputType> processor,
-                                                              final String userName,
-                                                              final String password,
-                                                              String url) {
+    public <ResultType, InputType> void searchData(JiraCallback jiraCallback,
+                                                   final String requestSuffix,
+                                                   final Processor<ResultType, InputType> processor,
+                                                   final String userName,
+                                                   final String password,
+                                                   String url) {
         String credentials;
         if (userName != null && password != null) {
             //this code is used when new user is added and we need to get all the info about a user and authorize him/her in one request
@@ -105,17 +108,17 @@ public class JiraApi {
                 .setHeadersMap(headers)
                 .setProcessor(processor)
                 .create();
-        return mMethod;
+        execute(mMethod, jiraCallback);
     }
 
-    public RestMethod buildAttachmentCreating(final String issueKey, ArrayList<String> fullfilename) {
+    public void createAttachment(JiraCallback jiraCallback, final String issueKey, ArrayList<String> fullFileName) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
         HttpEntity postEntity;
         MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
-        for (int i = 0; i < fullfilename.size(); i++) {
-            String file = fullfilename.get(i);
+        for (int i = 0; i < fullFileName.size(); i++) {
+            String file = fullFileName.get(i);
             File fileToUpload = new File(file);
             if (file.contains(".png")) {
                 multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("image/jpeg"),
@@ -133,7 +136,7 @@ public class JiraApi {
                 .setHeadersMap(headers)
                 .setPostEntity(postEntity)
                 .create();
-        return mMethod;
+        execute(mMethod, jiraCallback);
     }
 
     public RestMethod buildAttachmentTxtCreating(final String issueKey, String fullfilename) {
@@ -153,6 +156,13 @@ public class JiraApi {
                 .setPostEntity(postEntity)
                 .create();
         return mMethod;
+    }
+
+    private void execute(RestMethod restMethod, JiraCallback jiraCallback) {
+        new JiraTask.Builder()
+                .setRestMethod(restMethod)
+                .setCallback(jiraCallback)
+                .createAndExecute();
     }
 
 }

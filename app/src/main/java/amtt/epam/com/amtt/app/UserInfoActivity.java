@@ -1,25 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.api.JiraApi;
-import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.api.JiraCallback;
-import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.exception.AmttException;
-import amtt.epam.com.amtt.api.exception.ExceptionHandler;
-import amtt.epam.com.amtt.api.rest.RestMethod;
-import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.api.result.JiraOperationResult;
-import amtt.epam.com.amtt.bo.user.JUserInfo;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.processing.UserInfoProcessor;
-import amtt.epam.com.amtt.ticket.JiraContent;
-import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.util.ActiveUser;
-import amtt.epam.com.amtt.util.IOUtils;
-import amtt.epam.com.amtt.util.Logger;
-import amtt.epam.com.amtt.view.TextView;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -37,9 +17,28 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.lang.ref.WeakReference;
 
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.api.JiraApi;
+import amtt.epam.com.amtt.api.JiraApiConst;
+import amtt.epam.com.amtt.api.JiraCallback;
+import amtt.epam.com.amtt.api.exception.AmttException;
+import amtt.epam.com.amtt.api.exception.ExceptionHandler;
+import amtt.epam.com.amtt.api.rest.RestResponse;
+import amtt.epam.com.amtt.api.result.JiraOperationResult;
+import amtt.epam.com.amtt.bo.user.JUserInfo;
+import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.processing.UserInfoProcessor;
+import amtt.epam.com.amtt.ticket.JiraContent;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.view.TextView;
+
 /**
- @author Artsiom_Kaliaha
- @version on 07.05.2015
+ * @author Artsiom_Kaliaha
+ * @version on 07.05.2015
  */
 
 @SuppressWarnings("unchecked")
@@ -162,7 +161,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
                     AmttUri.USER.get(),
                     null,
                     UsersTable._ID + "=?",
-                    new String[]{ String.valueOf(ActiveUser.getInstance().getId()) },
+                    new String[]{String.valueOf(ActiveUser.getInstance().getId())},
                     null);
         } else if (id == SINGLE_USER_CURSOR_LOADER_ID) {
             loader = new CursorLoader(UserInfoActivity.this,
@@ -233,15 +232,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
 
     private void refreshUserInfo() {
         String requestSuffix = JiraApiConst.USER_INFO_PATH + ActiveUser.getInstance().getUserName();
-        RestMethod<JUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
-                new UserInfoProcessor(),
-                null,
-                null,
-                null);
-        new JiraTask.Builder<JUserInfo>()
-                .setRestMethod(userInfoMethod)
-                .setCallback(UserInfoActivity.this)
-                .createAndExecute();
+        JiraApi.getInstance().searchData(this, requestSuffix, new UserInfoProcessor(), null, null, null);
     }
 
     @Override
@@ -261,11 +252,9 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
                         long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
                         args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
                         getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
-                    }else{
-                        Intent loginIntent = new Intent(UserInfoActivity.this, LoginActivity.class);
-                        startActivity(loginIntent);
+                    } else {
+                        startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
                         isNeedShowingTopButton = false;
-                        finish();
                     }
                     break;
             }

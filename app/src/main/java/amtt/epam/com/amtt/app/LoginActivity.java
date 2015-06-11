@@ -13,8 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.apache.http.auth.AuthenticationException;
-
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -24,7 +22,6 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
-import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.rest.RestMethod;
@@ -73,10 +70,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
         if (isNewUserAdditionFromUserInfo()) {
-            RestMethod<Void> logOut = JiraApi.getInstance().buildSignOut();
-            new JiraTask.Builder<Void>()
-                    .setRestMethod(logOut)
-                    .createAndExecute();
+            JiraApi.getInstance().signOut(null);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
@@ -99,8 +93,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
 
     private void initViews() {
         mUserNameEditText = (EditText) findViewById(R.id.et_username);
+        mUserNameEditText.setText("artsiom_kaliaha");
         mPasswordEditText = (EditText) findViewById(R.id.et_password);
         mUrlEditText = (EditText) findViewById(R.id.et_jira_url);
+        mUrlEditText.setText("https://amtt05.atlassian.net");
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,15 +112,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         String password = mPasswordEditText.getText().toString();
         //get user info and perform auth in one request
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameEditText.getText().toString();
-        userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
-                new UserInfoProcessor(),
-                userName,
-                password,
-                mRequestUrl);
-        new JiraTask.Builder<JUserInfo>()
-                .setRestMethod(userInfoMethod)
-                .setCallback(LoginActivity.this)
-                .createAndExecute();
+        JiraApi.getInstance().searchData(this, requestSuffix, new UserInfoProcessor(), userName, password, mRequestUrl);
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
