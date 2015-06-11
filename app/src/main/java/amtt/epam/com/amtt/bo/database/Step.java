@@ -25,6 +25,7 @@ public class Step extends DatabaseEntity<Step> {
     private static int mStepNumber = 0;
     private String mActivity;
     private String mScreenPath;
+    private ComponentName mActivityComponentName;
 
     public Step() {
         mScreenPath = "";
@@ -32,12 +33,7 @@ public class Step extends DatabaseEntity<Step> {
 
     public Step(ComponentName componentName, String mScreenPath) {
         mActivity = componentName.getClassName();
-        this.mScreenPath = mScreenPath;
-        mStepNumber++;
-    }
-
-    public Step(String componentName, String mScreenPath) {
-        mActivity = componentName;
+        mActivityComponentName = componentName;
         this.mScreenPath = mScreenPath;
         mStepNumber++;
     }
@@ -79,6 +75,11 @@ public class Step extends DatabaseEntity<Step> {
 
     public String getScreenPath() {
         return mScreenPath;
+    }
+
+
+    public ComponentName getActivtyComponentName() {
+        return mActivityComponentName;
     }
 
     public static void restartStepNumber(){
