@@ -41,7 +41,7 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
                 contentValues);
     }
 
-    public void addOrUpdateAsync(final DatabaseEntity object, final IResult<Integer> result) {
+    public synchronized void addOrUpdateAsync(final DatabaseEntity object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -54,7 +54,7 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
         }).start();
     }
 
-    public void addOrUpdateAsync(final List<DatabaseEntity> object, final IResult<Integer> result) {
+    public synchronized void addOrUpdateAsync(final List<DatabaseEntity> object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {

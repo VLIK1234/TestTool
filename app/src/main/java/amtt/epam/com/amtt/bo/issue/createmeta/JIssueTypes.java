@@ -159,7 +159,7 @@ public class JIssueTypes extends DatabaseEntity<JIssueTypes>{
 
     @Override
     public Uri getUri() {
-        return AmttUri.PRIORITY.get();
+        return AmttUri.ISSUETYPE.get();
     }
 
     @Override

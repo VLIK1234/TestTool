@@ -178,8 +178,8 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         Runnable task = new Runnable() {
             public void run() {
                 TopButtonService.start(getBaseContext());
-                JiraContent.getInstance().getPrioritiesNames(null);
-                JiraContent.getInstance().getProjectsNames(null);
+               // JiraContent.getInstance().getPrioritiesNames(null);
+               // JiraContent.getInstance().getProjectsNames(null);
             }
         };
         worker.schedule(task, 1, TimeUnit.SECONDS);
