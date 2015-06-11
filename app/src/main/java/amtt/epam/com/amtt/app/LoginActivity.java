@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -91,39 +92,18 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         mPasswordInputLayout = (TextInputLayout)findViewById(R.id.password_input_layout);
         mPasswordInputLayout.setErrorEnabled(true);
 
+        OnFocusChangeListener focusChangeListener = new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                checkForErrorOccurrence(v, hasFocus);
+            }
+        };
         mUserNameEditText = (EditText) findViewById(R.id.et_username);
-        mUserNameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (isUsernameInputErrorTookPlace && !hasFocus && TextUtils.isEmpty(mUserNameEditText.getText())) {
-                    mUsernameInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username));
-                } else if (isUsernameInputErrorTookPlace) {
-                    mUsernameInputLayout.setError(Symbols.EMPTY);
-                }
-            }
-        });
+        mUserNameEditText.setOnFocusChangeListener(focusChangeListener);
         mPasswordEditText = (EditText) findViewById(R.id.et_password);
-        mPasswordEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (isPasswordErrorTookPlace && !hasFocus && TextUtils.isEmpty(mPasswordEditText.getText())) {
-                    mPasswordInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_password));
-                } else if (isPasswordErrorTookPlace) {
-                    mPasswordInputLayout.setError(Symbols.EMPTY);
-                }
-            }
-        });
+        mPasswordEditText.setOnFocusChangeListener(focusChangeListener);
         mUrlEditText = (EditText) findViewById(R.id.et_jira_url);
-        mUrlEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (isUrlErrorTookPlace && !hasFocus && mUrlEditText.getText().length() <= getString(R.string.url_prefix).length()) {
-                    mUrlInputLayout.setError(getString(R.string.enter_prefix) + getString(R.string.enter_url));
-                } else if (isUrlErrorTookPlace) {
-                    mUrlInputLayout.setError(Symbols.EMPTY);
-                }
-            }
-        });
+        mUrlEditText.setOnFocusChangeListener(focusChangeListener);
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,6 +141,36 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
             public void onError(Exception e) {
             }
         });
+    }
+
+    private void checkForErrorOccurrence(View v, boolean hasFocus) {
+        boolean isInputErrorTookPlace;
+        boolean isEmpty;
+        TextInputLayout inputLayout;
+        String errorText;
+
+        if (v.equals(mUserNameEditText)) {
+            isInputErrorTookPlace = isUsernameInputErrorTookPlace;
+            isEmpty = TextUtils.isEmpty(mUserNameEditText.getText());
+            inputLayout = mUsernameInputLayout;
+            errorText = getString(R.string.enter_prefix) + getString(R.string.enter_username);
+        } else if (v.equals(mPasswordEditText)) {
+            isInputErrorTookPlace = isPasswordErrorTookPlace;
+            isEmpty = TextUtils.isEmpty(mPasswordEditText.getText());
+            inputLayout = mPasswordInputLayout;
+            errorText = getString(R.string.enter_prefix) + getString(R.string.enter_password);
+        } else {
+            isInputErrorTookPlace = isUrlErrorTookPlace;
+            isEmpty = mUrlEditText.getText().length() <= getString(R.string.url_prefix).length();
+            inputLayout = mUrlInputLayout;
+            errorText = getString(R.string.enter_prefix) + getString(R.string.enter_url);
+        }
+
+        if (isInputErrorTookPlace && !hasFocus && isEmpty) {
+            inputLayout.setError(errorText);
+        } else if (isInputErrorTookPlace) {
+            inputLayout.setError(Symbols.EMPTY);
+        }
     }
 
     private void checkFields() {
