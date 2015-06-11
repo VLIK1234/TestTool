@@ -38,6 +38,8 @@ public class JiraContent{
     private String mLogs;
     private String mScreenshots;
     private String mRecentIssueKey;
+    private JPriorityResponse mPriorityResponse;
+
 
     private static class JiraContentHolder {
         public static final JiraContent INSTANCE = new JiraContent();
@@ -57,9 +59,9 @@ public class JiraContent{
                     if (result.isEmpty()) {
                         getPriorities(jiraGetContentCallback);
                     } else {
-                        JPriorityResponse pro = new JPriorityResponse();
-                        pro.setPriorities(new ArrayList<>(result));
-                        mProjectPrioritiesNames = pro.getPriorityNames();
+                        mPriorityResponse = new JPriorityResponse();
+                        mPriorityResponse.setPriorities(new ArrayList<>(result));
+                        mProjectPrioritiesNames = mPriorityResponse.getPriorityNames();
                         jiraGetContentCallback.resultOfDataLoading(mProjectPrioritiesNames);
                     }
                 }
@@ -90,7 +92,7 @@ public class JiraContent{
         if (mProjectsNames != null) {
             jiraGetContentCallback.resultOfDataLoading(mProjectsNames);
         } else {
-            ContentFromDatabase.getProjects(ActiveUser.getInstance().getId(), new IResult<List<JProjects>>() {
+            ContentFromDatabase.getProjects(String.valueOf(ActiveUser.getInstance().getId()), new IResult<List<JProjects>>() {
                 @Override
                 public void onResult(List<JProjects> result) {
                     if (result.isEmpty()) {
@@ -214,6 +216,35 @@ public class JiraContent{
                 if (tag == JiraContentConst.PROJECTS_RESPONSE) {
                     if (jiraGetContentCallback != null) {
                         if (result != null) {
+                            for (int i = 0; i < result.getProjects().size(); i++) {
+                                result.getProjects().get(i).setIdUser(String.valueOf(ActiveUser.getInstance().getId()));
+                                for (int j = 0; j < result.getProjects().get(i).getIssueTypes().size(); j++) {
+                                    result.getProjects().get(i).getIssueTypes().get(j).setKeyProject(result.getProjects().get(i).getKey());
+                                }
+                                final int finalI = i;
+                                ContentFromDatabase.setIssueTypes(result.getProjects().get(i), new IResult<Integer>() {
+                                    @Override
+                                    public void onResult(Integer result) {
+                                        Logger.i(TAG, "Project " + finalI + ", IssueTypes " + String.valueOf(result));
+                                    }
+
+                                    @Override
+                                    public void onError(Exception e) {
+                                        Logger.e(TAG, "Project " + finalI + ", IssueTypes " + e.getMessage(), e);
+                                    }
+                                });
+                            }
+                            ContentFromDatabase.setProjects(result, new IResult<Integer>() {
+                                @Override
+                                public void onResult(Integer result) {
+                                    Logger.i(TAG, "Projects " + String.valueOf(result));
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Logger.e(TAG, "Projects " + e.getMessage(), e);
+                                }
+                            });
                             jiraGetContentCallback.resultOfDataLoading(mProjectsNames);
                         } else {
                             jiraGetContentCallback.resultOfDataLoading(null);
@@ -262,7 +293,22 @@ public class JiraContent{
                 if (tag == JiraContentConst.PRIORITIES_RESPONSE) {
                     if (jiraGetContentCallback != null) {
                         if (result != null) {
-                            JiraContent.getInstance().setPrioritiesNames(result.getPriorityNames());
+                            mPriorityResponse = result;
+                            JiraContent.getInstance().setPrioritiesNames(mPriorityResponse.getPriorityNames());
+                            for (int i = 0; i <mPriorityResponse.getPriorities().size(); i++) {
+                                mPriorityResponse.getPriorities().get(i).setUrl(ActiveUser.getInstance().getUrl());
+                            }
+                            ContentFromDatabase.setPriorities(mPriorityResponse, new IResult<Integer>() {
+                                @Override
+                                public void onResult(Integer result) {
+                                    Logger.i(TAG, "Priority " + String.valueOf(result));
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Logger.e(TAG, "Priority " + e.getMessage(), e);
+                                }
+                            });
                             jiraGetContentCallback.resultOfDataLoading(mProjectPrioritiesNames);
                         } else {
                             jiraGetContentCallback.resultOfDataLoading(null);
@@ -346,6 +392,10 @@ public class JiraContent{
         mProjectPrioritiesNames = null;
         mProjectVersionsNames = null;
         mLastProject = null;
+    }
+
+    public void getPrioritiesList(final JiraGetContentCallback<JPriorityResponse> jiraGetContentCallback) {
+        jiraGetContentCallback.resultOfDataLoading(mPriorityResponse);
     }
 
 }

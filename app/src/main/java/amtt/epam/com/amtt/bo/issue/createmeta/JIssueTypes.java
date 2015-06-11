@@ -144,6 +144,14 @@ public class JIssueTypes extends DatabaseEntity<JIssueTypes>{
         this.mFields = fields;
     }
 
+    public String getKeyProject() {
+        return mKeyProject;
+    }
+
+    public void setKeyProject(String keyProject) {
+        this.mKeyProject = keyProject;
+    }
+
     @Override
     public int getId() {
         return mId;
