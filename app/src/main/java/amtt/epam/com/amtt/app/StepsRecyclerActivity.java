@@ -34,7 +34,7 @@ import amtt.epam.com.amtt.util.UIUtil;
 public class StepsRecyclerActivity extends AppCompatActivity implements StepRecyclerAdapter.ViewHolder.ClickListener{
 
     private TextView emptyList;
-    public StepRecyclerAdapter adapter;
+    private StepRecyclerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,9 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
         emptyList = (TextView) findViewById(android.R.id.empty);
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_step);
         recyclerView.setLayoutManager(getLayoutManger());
-        recyclerView.setAdapter(new StepRecyclerAdapter(new ArrayList<Step>(), StepsRecyclerActivity.this));
+        ArrayList<Step> listStep = new ArrayList<>();
+        StepRecyclerAdapter recyclerAdapter = new StepRecyclerAdapter(listStep, StepsRecyclerActivity.this);
+        recyclerView.setAdapter(recyclerAdapter);
         DbObjectManger.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
             @Override
             public void onResult(List<DatabaseEntity> result) {
@@ -79,7 +81,7 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
         if (UIUtil.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
             return new LinearLayoutManager(getBaseContext());
         }else{
-            return new GridLayoutManager(getBaseContext(), 2);
+            return new GridLayoutManager(getBaseContext(), 3);
         }
     }
 

@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,6 @@ import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
@@ -43,9 +43,13 @@ public class StepRecyclerAdapter extends RecyclerView.Adapter<StepRecyclerAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Step step = listStep.get(position);
-        holder.step.setText(ContextHolder.getContext().getString(R.string.label_step) + (position+1));
-        holder.activityInfo.setText(ContextHolder.getContext().getString(R.string.label_activity) + step.getActivity());
-        ImageLoader.getInstance().displayImage("file:///"+step.getScreenPath(),holder.screenshotView);
+        holder.step.setText(ContextHolder.getContext().getString(R.string.label_step) + (position + 1));
+        holder.activityInfo.setText(ContextHolder.getContext().getString(R.string.label_activity) + step.getActivity() + "\n");
+        if (!TextUtils.isEmpty(step.getScreenPath())) {
+            ImageLoader.getInstance().displayImage("file:///"+step.getScreenPath(), holder.screenshotView);
+        }else{
+            holder.screenshotView.setImageDrawable(null);
+        }
     }
 
     @Override
@@ -75,7 +79,7 @@ public class StepRecyclerAdapter extends RecyclerView.Adapter<StepRecyclerAdapte
             this.listener = listener;
             screenshotView = (ImageView)itemView.findViewById(R.id.screenshot_image);
             DisplayMetrics metrics = ContextHolder.getContext().getResources().getDisplayMetrics();
-            screenshotView.setMaxWidth(metrics.widthPixels / 3);
+            screenshotView.setMaxWidth(metrics.widthPixels/3);
             screenshotView.setMaxHeight(metrics.heightPixels/3);
             screenshotView.setOnClickListener(this);
             removeButton = (ImageView)itemView.findViewById(R.id.iv_close);
