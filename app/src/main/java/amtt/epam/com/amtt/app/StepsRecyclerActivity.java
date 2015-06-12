@@ -3,19 +3,14 @@ package amtt.epam.com.amtt.app;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.Adapter;
 import android.widget.TextView;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,16 +21,17 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.util.IEmpltyView;
+import amtt.epam.com.amtt.util.IAdapterInit;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
  * Created by Ivan_Bakach on 10.06.2015.
  */
-public class StepsRecyclerActivity extends AppCompatActivity implements StepRecyclerAdapter.ViewHolder.ClickListener, IEmpltyView{
+public class StepsRecyclerActivity extends AppCompatActivity implements StepRecyclerAdapter.ViewHolder.ClickListener, IAdapterInit {
 
     private TextView emptyList;
     private StepRecyclerAdapter adapter;
+    public RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,17 +40,16 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         emptyList = (TextView) findViewById(android.R.id.empty);
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_step);
+        recyclerView = (RecyclerView) findViewById(R.id.list_step);
         recyclerView.setLayoutManager(getLayoutManger());
         ArrayList<Step> listStep = new ArrayList<>();
         StepRecyclerAdapter recyclerAdapter = new StepRecyclerAdapter(listStep, StepsRecyclerActivity.this);
         recyclerView.setAdapter(recyclerAdapter);
+
         DbObjectManger.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
             @Override
             public void onResult(List<DatabaseEntity> result) {
-                adapter = new StepRecyclerAdapter((ArrayList) result, StepsRecyclerActivity.this);
-                recyclerView.setAdapter(adapter);
-                onShowEmpty(result.size());
+                init(result);
             }
 
             @Override
@@ -97,8 +92,10 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
     }
 
     @Override
-    public void onShowEmpty(int sizeList) {
-        if (sizeList==0) {
+    public void init(List<DatabaseEntity> result) {
+        adapter = new StepRecyclerAdapter((ArrayList) result, StepsRecyclerActivity.this);
+        recyclerView.setAdapter(adapter);
+        if (result.size()==0) {
             emptyList.setVisibility(View.VISIBLE);
         }
     }

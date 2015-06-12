@@ -2,6 +2,8 @@ package amtt.epam.com.amtt.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -48,9 +50,10 @@ public class StepRecyclerAdapter extends RecyclerView.Adapter<StepRecyclerAdapte
         Step step = listStep.get(position);
         holder.step.setText(ContextHolder.getContext().getString(R.string.label_step) + (position + 1));
         Context context = ContextHolder.getContext();
-        String info = context.getString(R.string.label_activity) + step.getActivity() + "\n" +
-                context.getString(R.string.label_screen_orientation) + step.getOreintation() + "\n" +
-                context.getString(R.string.label_package_name) + step.getPackageName() + "\n";
+        SpannableStringBuilder info = new SpannableStringBuilder();
+        info.append(Html.fromHtml("<b>" + context.getString(R.string.label_activity) + "</b>" + "<small>" + step.getActivity() + "</small>" + "<br />" +
+                "<b>" + context.getString(R.string.label_screen_orientation) + "</b>" + "<small>" + step.getOreintation() + "</small>" + "<br />" +
+                "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>" + "<br />"));
         holder.activityInfo.setText(info);
         if (!TextUtils.isEmpty(step.getScreenPath())) {
             ImageLoader.getInstance().displayImage("file:///"+step.getScreenPath(), holder.screenshotView);
@@ -65,7 +68,7 @@ public class StepRecyclerAdapter extends RecyclerView.Adapter<StepRecyclerAdapte
     }
 
     public void removeItem(int position){
-        DbObjectManger.INSTANCE.remove(listStep.get(position));
+        DbObjectManger.INSTANCE.remove(listStep.get(position-1));
         listStep.remove(position);
         notifyItemRemoved(position);
         notifyDataSetChanged();
