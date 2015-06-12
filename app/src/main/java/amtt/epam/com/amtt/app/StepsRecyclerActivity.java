@@ -65,8 +65,8 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         TopButtonService.sendActionChangeVisibilityTopbutton(true);
     }
 
@@ -95,6 +95,7 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
         adapter = new StepRecyclerAdapter((ArrayList) result, StepsRecyclerActivity.this);
         recyclerView.setAdapter(adapter);
         if (result.size()==0) {
+            recyclerView.setVisibility(View.GONE);
             emptyList.setVisibility(View.VISIBLE);
         }
     }

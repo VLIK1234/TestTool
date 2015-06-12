@@ -94,8 +94,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         TopButtonService.sendActionChangeVisibilityTopbutton(true);
     }
 
