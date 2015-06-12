@@ -4,16 +4,12 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 
 import java.util.Map;
 import java.util.Set;
 
-import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.api.http.HttpTask.HttpCallback;
 
 /**
  * Created by Artsiom_Kaliaha on 11.06.2015.
@@ -21,49 +17,35 @@ import amtt.epam.com.amtt.util.Logger;
 @SuppressWarnings("unchecked")
 public class HttpClient {
 
-    public static enum OperationResult {
-
-        SUCCESS,
-        FAILURE
-
-    }
-
     private final String TAG = getClass().getSimpleName();
+
+    private static final HttpClient INSTANCE;
     public static final int EMPTY_STATUS_CODE = -1;
 
-    private HttpCallback mCallback;
-    private static final org.apache.http.client.HttpClient sHttpClient;
-
     static {
-        HttpParams httpParameters = new BasicHttpParams();
-        int timeoutConnection = 8000;
-        HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
-        int timeoutSocket = 10000;
-        HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-        sHttpClient = new DefaultHttpClient(httpParameters);
+        INSTANCE = new HttpClient();
     }
 
-    public HttpClient(HttpCallback callback) {
-        mCallback = callback;
+    private HttpClient() {
     }
 
-    private void get(HttpRequestParams httpRequestParams) throws AmttException {
+    public void get(HttpRequestParams httpRequestParams, HttpCallback callback) {
         HttpGet httpGet = new HttpGet(httpRequestParams.getUrl());
-        execute(httpGet, httpRequestParams);
+        execute(httpGet, httpRequestParams, callback);
     }
 
-    private void post(HttpRequestParams httpRequestParams) throws AmttException {
+    public void post(HttpRequestParams httpRequestParams, HttpCallback callback) {
         HttpPost httpPost = new HttpPost(httpRequestParams.getUrl());
         httpPost.setEntity(httpRequestParams.getPostEntity());
-        execute(httpPost, httpRequestParams);
+        execute(httpPost, httpRequestParams, callback);
     }
 
-    private void delete(HttpRequestParams httpRequestParams) throws AmttException {
-        HttpDelete httpPost = new HttpDelete(httpRequestParams.getUrl());
-        execute(httpPost, httpRequestParams);
+    public void delete(HttpRequestParams httpRequestParams, HttpCallback callback) {
+        HttpDelete httpDelete = new HttpDelete(httpRequestParams.getUrl());
+        execute(httpDelete, httpRequestParams, callback);
     }
 
-    private void execute(HttpRequestBase httpRequestBase, HttpRequestParams httpRequestParams) {
+    private void execute(HttpRequestBase httpRequestBase, HttpRequestParams httpRequestParams, HttpCallback callback) {
         Logger.d(TAG, httpRequestParams.getUrl());
         for (Map.Entry<String, String> keyValuePair : (Set<Map.Entry<String, String>>) httpRequestParams.getHeaders().entrySet()) {
             httpRequestBase.setHeader(keyValuePair.getKey(), keyValuePair.getValue());
@@ -71,12 +53,13 @@ public class HttpClient {
         new HttpTask.Builder()
                 .setHttpRequest(httpRequestBase)
                 .setProcessor(httpRequestParams.getProcessor())
-                .setCallback(mCallback)
+                .setPostExecutionHandler(httpRequestParams.getPostExecutionHandler())
+                .setCallback(callback)
                 .createAndExecute();
     }
 
-    public static org.apache.http.client.HttpClient getApacheHttpClient() {
-        return sHttpClient;
+    public static HttpClient getClient() {
+        return INSTANCE;
     }
 
 }

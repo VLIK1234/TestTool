@@ -1,31 +1,21 @@
 package amtt.epam.com.amtt.api.http;
 
-import amtt.epam.com.amtt.api.result.JiraOperationResult;
-
 /**
- * Class providing access to REST method responses
  * Created by Artsiom_Kaliaha on 15.04.2015.
+ * Result of HttpRequest
  */
 public class HttpResult<ResultType> {
 
-    private JiraOperationResult mResult;
-    private ResultType mObject;
+    private final String mRequestType;
+    private final ResultType mObject;
 
-    public HttpResult() {
-    }
-
-    public void setOperationResult(JiraOperationResult result) {
-        if (mResult == null) {
-            mResult = result;
-        }
-    }
-
-    public void setResultObject(ResultType object) {
+    public HttpResult(String requestType,ResultType object ) {
+        mRequestType = requestType;
         mObject = object;
     }
 
-    public JiraOperationResult getOpeartionResult() {
-        return mResult;
+    public String getRequestType() {
+        return mRequestType;
     }
 
     public ResultType getResultObject() {

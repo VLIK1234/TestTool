@@ -92,7 +92,7 @@ public class JiraApi {
                                                    String url) {
         String credentials;
         if (userName != null && password != null) {
-            //this code is used when new user is added and we need to get all the info about a user and authorize him/her in one request
+            //this code is used when new user is added and we need to getClient all the info about a user and authorize him/her in one request
             credentials = mUser.makeTempCredentials(userName, password);
         } else {
             credentials = mUser.getCredentials();

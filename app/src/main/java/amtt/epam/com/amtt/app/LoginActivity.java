@@ -110,7 +110,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         mRequestUrl = mUrlEditText.getText().toString();
         String userName = mUserNameEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
-        //get user info and perform auth in one request
+        //getClient user info and perform auth in one request
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameEditText.getText().toString();
         JiraApi.getInstance().searchData(this, requestSuffix, new UserInfoProcessor(), userName, password, mRequestUrl);
     }
