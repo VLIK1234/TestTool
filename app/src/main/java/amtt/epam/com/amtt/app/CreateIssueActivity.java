@@ -1,15 +1,19 @@
 package amtt.epam.com.amtt.app;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.ticket.ScreenshotAdapter;
+import amtt.epam.com.amtt.bo.database.Step;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
+import amtt.epam.com.amtt.database.object.DbObjectManger;
+import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.ticket.AttachmentAdapter;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
-import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.ticket.*;
+import amtt.epam.com.amtt.util.IAdapterInit;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
@@ -26,7 +30,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -40,9 +43,10 @@ import android.widget.Toast;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapter.ViewHolder.ClickListener {
+public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, IAdapterInit {
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_TEXT_CHANGED = 100;
@@ -55,8 +59,9 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     private String mPriorityName;
     private String mVersionName;
     private AssigneeHandler mHandler;
-    private ScreenshotAdapter mAdapter;
+    private AttachmentAdapter mAdapter;
     public SpinnerProgress mProjectNamesSpinner;
+    private RecyclerView recyclerView;
 
     public static class AssigneeHandler extends Handler {
 
@@ -354,14 +359,32 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
     }
 
     private void initAttachmentsView() {
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.listScreens);
+        recyclerView = (RecyclerView) findViewById(R.id.listScreens);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CreateIssueActivity.this);
         linearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        ArrayList<Attachment> screenArray = ScreenshotManager.getInstance().
-                getScreenshotList((ArrayList<String>) AmttFileObserver.getImageArray().clone());
-        mAdapter = new ScreenshotAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
+        DbObjectManger.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
+            @Override
+            public void onResult(List<DatabaseEntity> result) {
+                initAdapter(result);
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
+    }
+
+
+    @Override
+    public void initAdapter(List<DatabaseEntity> result) {
+        ArrayList<Attachment> screenArray = AttachmentManager.getInstance().
+                getAttachmentList(result);
+        mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
         recyclerView.setAdapter(mAdapter);
     }
 

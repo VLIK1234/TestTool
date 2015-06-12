@@ -8,7 +8,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
         DbObjectManger.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
             @Override
             public void onResult(List<DatabaseEntity> result) {
-                init(result);
+                initAdapter(result);
             }
 
             @Override
@@ -92,7 +91,7 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
     }
 
     @Override
-    public void init(List<DatabaseEntity> result) {
+    public void initAdapter(List<DatabaseEntity> result) {
         adapter = new StepRecyclerAdapter((ArrayList) result, StepsRecyclerActivity.this);
         recyclerView.setAdapter(adapter);
         if (result.size()==0) {

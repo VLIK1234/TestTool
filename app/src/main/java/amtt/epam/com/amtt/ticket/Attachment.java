@@ -10,4 +10,9 @@ public class Attachment {
     public String name;
     public String filePath;
 
+    public Attachment(String name, String filePath){
+        this.name = name;
+        this.filePath = filePath;
+    }
+
 }

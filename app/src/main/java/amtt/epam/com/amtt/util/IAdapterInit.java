@@ -8,5 +8,5 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
  * Created by Ivan_Bakach on 12.06.2015.
  */
 public interface IAdapterInit {
-    void init(List<DatabaseEntity> result);
+    void initAdapter(List<DatabaseEntity> result);
 }

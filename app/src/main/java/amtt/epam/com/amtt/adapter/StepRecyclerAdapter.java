@@ -68,7 +68,7 @@ public class StepRecyclerAdapter extends RecyclerView.Adapter<StepRecyclerAdapte
     }
 
     public void removeItem(int position){
-        DbObjectManger.INSTANCE.remove(listStep.get(position-1));
+        DbObjectManger.INSTANCE.remove(listStep.get(position));
         listStep.remove(position);
         notifyItemRemoved(position);
         notifyDataSetChanged();
