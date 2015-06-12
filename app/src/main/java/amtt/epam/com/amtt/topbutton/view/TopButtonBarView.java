@@ -53,9 +53,8 @@ public class TopButtonBarView extends FrameLayout {
     private TopUnitView mButtonCreateTicket;
     private TopUnitView mButtonOpenUserInfo;
     private TopUnitView mButtonExpectedResult;
-    private TopUnitView mButtonTakeScreenshot;
-    private TopUnitView mButtonActivityInfo;
-    private TopUnitView mButtonTakeStep;
+    private TopUnitView mButtonStepWithScreen;
+    private TopUnitView mButtonStepWithoutScreen;
     private TopUnitView mButtonStopRecord;
     private TopUnitView mButtonShowSteps;
     private TopUnitView mButtonCloseApp;
@@ -139,7 +138,7 @@ public class TopButtonBarView extends FrameLayout {
                 getContext().getApplicationContext().startActivity(intent);
             }
         });
-        mButtonTakeScreenshot = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), R.drawable.background_take_screenshot, new ITouchAction() {
+        mButtonStepWithScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_with_screen), R.drawable.background_step_with_screen, new ITouchAction() {
             @Override
             public void TouchAction() {
                 try {
@@ -157,10 +156,10 @@ public class TopButtonBarView extends FrameLayout {
                 TopButtonService.sendActionChangeVisibilityTopbutton(false);
             }
         });
-        mButtonActivityInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_activity_info), R.drawable.background_activity_info, new ITouchAction() {
+        mButtonStepWithoutScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_without_screen), R.drawable.background_step_without_screen, new ITouchAction() {
             @Override
             public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_activity_info), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_step_without_screen), Toast.LENGTH_LONG).show();
                 ScheduledExecutorService worker =
                         Executors.newSingleThreadScheduledExecutor();
                 Runnable task = new Runnable() {
@@ -174,12 +173,6 @@ public class TopButtonBarView extends FrameLayout {
                     }
                 };
                 worker.schedule(task, 1, TimeUnit.SECONDS);
-            }
-        });
-        mButtonTakeStep = new TopUnitView(getContext(), getContext().getString(R.string.label_step_view), R.drawable.background_add_step, new ITouchAction() {
-            @Override
-            public void TouchAction() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_screenshot) + " Vova what will be here?", Toast.LENGTH_LONG).show();
             }
         });
         mButtonShowSteps = new TopUnitView(getContext(), getContext().getString(R.string.label_show_steps), R.drawable.background_show_step, new ITouchAction() {
@@ -221,9 +214,8 @@ public class TopButtonBarView extends FrameLayout {
 
     private void setRecordButtons() {
         mButtonsBar.removeAllViews();
-        mButtonsBar.addView(mButtonTakeScreenshot);
-        mButtonsBar.addView(mButtonActivityInfo);
-        mButtonsBar.addView(mButtonTakeStep);
+        mButtonsBar.addView(mButtonStepWithScreen);
+        mButtonsBar.addView(mButtonStepWithoutScreen);
         mButtonsBar.addView(mButtonExpectedResult);
         mButtonsBar.addView(mButtonShowSteps);
         mButtonsBar.addView(mButtonCreateTicket);

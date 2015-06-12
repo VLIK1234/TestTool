@@ -1,5 +1,25 @@
 package amtt.epam.com.amtt.app;
 
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.content.res.Configuration;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import org.apache.http.auth.AuthenticationException;
+
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
@@ -13,7 +33,6 @@ import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
@@ -28,29 +47,11 @@ import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.util.Logger;
 
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.content.res.Configuration;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import org.apache.http.auth.AuthenticationException;
-
 import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
- @author Artsiom_Kaliaha
- @version on 07.05.2015
+ * @author Artsiom_Kaliaha
+ * @version on 07.05.2015
  */
 
 @SuppressWarnings("unchecked")
@@ -64,13 +65,15 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private Button mLoginButton;
     private String mRequestUrl;
     private boolean mIsUserInDatabase;
-    private  RestMethod<JUserInfo> userInfoMethod;
+    private RestMethod<JUserInfo> userInfoMethod;
+    private InputMethodManager mInputMethodManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initViews();
+        mInputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
     }
 
@@ -96,17 +99,17 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         mRequestUrl = mUrlEditText.getText().toString();
         String userName = mUserNameEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
-            //get user info and perform auth in one request
-            String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameEditText.getText().toString();
-            userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
-                    new UserInfoProcessor(),
-                    userName,
-                    password,
-                    mRequestUrl);
-            new JiraTask.Builder<JUserInfo>()
-                    .setRestMethod(userInfoMethod)
-                    .setCallback(LoginActivity.this)
-                    .createAndExecute();
+        //get user info and perform auth in one request
+        String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameEditText.getText().toString();
+        userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
+                new UserInfoProcessor(),
+                userName,
+                password,
+                mRequestUrl);
+        new JiraTask.Builder<JUserInfo>()
+                .setRestMethod(userInfoMethod)
+                .setCallback(LoginActivity.this)
+                .createAndExecute();
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
@@ -145,10 +148,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         if (TextUtils.isEmpty(mUrlEditText.getText().toString()) || getString(R.string.url_prefix).equals(mUrlEditText.getText().toString())) {
             isAnyEmptyField = true;
             mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_url));
-        } else if (InputsUtil.checkUrl(mUrlEditText.getText().toString())){
+        } else if (InputsUtil.checkUrl(mUrlEditText.getText().toString())) {
             isAnyEmptyField = true;
             mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_correct_url));
-        } else if(getString(R.string.epam_url).equals(mUrlEditText.getText().toString())){
+        } else if (getString(R.string.epam_url).equals(mUrlEditText.getText().toString())) {
             isAnyEmptyField = true;
             mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_postfix_jira));
         }
@@ -221,13 +224,15 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 user.setCredentials(ActiveUser.getInstance().getCredentials());
                 insertUserToDatabase(user);
                 Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
+                mInputMethodManager.hideSoftInputFromInputMethod(mUserNameEditText.getWindowToken(), 0);
                 finish();
             } else if (restResponse.getResultObject() == null) {
-                ExceptionHandler.getInstance().processError(new AmttException(new AuthenticationException(),403, userInfoMethod)).showDialog(LoginActivity.this, LoginActivity.this);
+                ExceptionHandler.getInstance().processError(new AmttException(new AuthenticationException(), 403, userInfoMethod)).showDialog(LoginActivity.this, LoginActivity.this);
                 mLoginButton.setEnabled(true);
             } else {
                 setActiveUser();
                 Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
+                mInputMethodManager.hideSoftInputFromInputMethod(mUserNameEditText.getWindowToken(), 0);
                 finish();
             }
         }
