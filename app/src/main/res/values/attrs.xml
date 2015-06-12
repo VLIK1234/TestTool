@@ -128,6 +128,15 @@
         <attr name="rd_delayClick" format="boolean"/>
     </declare-styleable>
 
-
+    <declare-styleable name="TextInput">
+        <attr name="hint" format="string"/>
+        <attr name="inputType" format="enum">
+            <enum name="text" value="0x00000001"/>
+            <enum name="url" value="0x00000011"/>
+            <enum name="password" value="0x00000081"/>
+        </attr>
+        <attr name="defaultErrorText" format="string"/>
+        <attr name="text" format="string"/>
+    </declare-styleable>
 
 </resources>
