@@ -85,8 +85,8 @@
     <string name="label_create_ticket">Create Ticket</string>
     <string name="label_open_amtt">Open Amtt</string>
     <string name="label_expected_result">Expected result</string>
-    <string name="label_screenshot">Screenshot</string>
-    <string name="label_activity_info">Info added</string>
+    <string name="label_step_with_screen">Step with screen</string>
+    <string name="label_step_without_screen">Step without screen</string>
     <string name="label_step_view">Step</string>
     <string name="label_cancel_record">Cancel record</string>
     <string name="label_button_main">Main button</string>
