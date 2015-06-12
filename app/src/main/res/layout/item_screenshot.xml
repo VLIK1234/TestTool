@@ -32,5 +32,5 @@
         android:layout_margin="12dp"
         android:background="?android:selectableItemBackground"
         android:gravity="center"
-        android:src="@android:drawable/ic_delete" />
+        android:src="@drawable/ic_delete" />
 </RelativeLayout>

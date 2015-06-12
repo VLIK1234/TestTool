@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.database.Step;
+import amtt.epam.com.amtt.database.object.DbObjectManger;
+import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
@@ -44,7 +47,11 @@ public class StepRecyclerAdapter extends RecyclerView.Adapter<StepRecyclerAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         Step step = listStep.get(position);
         holder.step.setText(ContextHolder.getContext().getString(R.string.label_step) + (position + 1));
-        holder.activityInfo.setText(ContextHolder.getContext().getString(R.string.label_activity) + step.getActivity() + "\n");
+        Context context = ContextHolder.getContext();
+        String info = context.getString(R.string.label_activity) + step.getActivity() + "\n" +
+                context.getString(R.string.label_screen_orientation) + step.getOreintation() + "\n" +
+                context.getString(R.string.label_package_name) + step.getPackageName() + "\n";
+        holder.activityInfo.setText(info);
         if (!TextUtils.isEmpty(step.getScreenPath())) {
             ImageLoader.getInstance().displayImage("file:///"+step.getScreenPath(), holder.screenshotView);
         }else{
@@ -58,6 +65,7 @@ public class StepRecyclerAdapter extends RecyclerView.Adapter<StepRecyclerAdapte
     }
 
     public void removeItem(int position){
+        DbObjectManger.INSTANCE.remove(listStep.get(position));
         listStep.remove(position);
         notifyItemRemoved(position);
         notifyDataSetChanged();

@@ -26,12 +26,13 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.IEmpltyView;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
  * Created by Ivan_Bakach on 10.06.2015.
  */
-public class StepsRecyclerActivity extends AppCompatActivity implements StepRecyclerAdapter.ViewHolder.ClickListener{
+public class StepsRecyclerActivity extends AppCompatActivity implements StepRecyclerAdapter.ViewHolder.ClickListener, IEmpltyView{
 
     private TextView emptyList;
     private StepRecyclerAdapter adapter;
@@ -51,11 +52,9 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
         DbObjectManger.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
             @Override
             public void onResult(List<DatabaseEntity> result) {
-                if (result.size()==0) {
-                    emptyList.setVisibility(View.VISIBLE);
-                }
                 adapter = new StepRecyclerAdapter((ArrayList) result, StepsRecyclerActivity.this);
                 recyclerView.setAdapter(adapter);
+                onShowEmpty(result.size());
             }
 
             @Override
@@ -95,5 +94,12 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
         Intent preview = new Intent(StepsRecyclerActivity.this, PreviewActivity.class);
         preview.putExtra(PreviewActivity.FILE_PATH, adapter.getScreenPath(position));
         startActivity(preview);
+    }
+
+    @Override
+    public void onShowEmpty(int sizeList) {
+        if (sizeList==0) {
+            emptyList.setVisibility(View.VISIBLE);
+        }
     }
 }

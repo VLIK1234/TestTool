@@ -143,11 +143,6 @@ public class TopButtonBarView extends FrameLayout {
         mButtonTakeScreenshot = new TopUnitView(getContext(), getContext().getString(R.string.label_screenshot), R.drawable.background_take_screenshot, new ITouchAction() {
             @Override
             public void TouchAction() {
-                try {
-                    StepUtil.saveActivityMeta(ActivityMetaUtil.createMeta());
-                } catch (PackageManager.NameNotFoundException e) {
-                    Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
-                }
                 if (!PreferenceUtils.getBoolean(getContext().getString(R.string.key_dialog_hide))) {
                     Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
                     intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -166,11 +161,6 @@ public class TopButtonBarView extends FrameLayout {
                         Executors.newSingleThreadScheduledExecutor();
                 Runnable task = new Runnable() {
                     public void run() {
-                        try {
-                            StepUtil.saveActivityMeta(ActivityMetaUtil.createMeta());
-                        } catch (PackageManager.NameNotFoundException e) {
-                            Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
-                        }
                         StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), null);
                     }
                 };

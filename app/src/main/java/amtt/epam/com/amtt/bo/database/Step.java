@@ -14,8 +14,10 @@ import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.StepsTable;
+import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.util.UIUtil;
 
 /**
  * Created by Artsiom_Kaliaha on 12.05.2015.
@@ -25,16 +27,18 @@ public class Step extends DatabaseEntity<Step> {
     private static int mStepNumber = 0;
     private String mActivity;
     private String mScreenPath;
-    private ComponentName mActivityComponentName;
+    private String mPackageName;
+    private String mOrientation;
 
     public Step() {
         mScreenPath = "";
     }
 
     public Step(ComponentName componentName, String mScreenPath) {
-        mActivity = componentName.getClassName();
-        mActivityComponentName = componentName;
         this.mScreenPath = mScreenPath;
+        mActivity = componentName.getClassName();
+        mPackageName = componentName.getPackageName();
+        mOrientation = ActivityMetaUtil.getScreenOrientation(UIUtil.getOrientation());
         mStepNumber++;
     }
 
@@ -43,6 +47,8 @@ public class Step extends DatabaseEntity<Step> {
         mStepNumber = cursor.getInt(cursor.getColumnIndex(StepsTable._ID));
         mScreenPath = cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH));
         mActivity =  cursor.getString(cursor.getColumnIndex(StepsTable._ASSOCIATED_ACTIVITY));
+        mPackageName = cursor.getString(cursor.getColumnIndex(StepsTable._PACKAGE_NAME));
+        mOrientation =  cursor.getString(cursor.getColumnIndex(StepsTable._ORIENTATION));
     }
 
     @Override
@@ -66,6 +72,8 @@ public class Step extends DatabaseEntity<Step> {
         values.put(StepsTable._ID, mStepNumber);
         values.put(StepsTable._SCREEN_PATH, mScreenPath);
         values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity);
+        values.put(StepsTable._PACKAGE_NAME, mPackageName);
+        values.put(StepsTable._ORIENTATION, mOrientation);
         return values;
     }
 
@@ -77,9 +85,11 @@ public class Step extends DatabaseEntity<Step> {
         return mScreenPath;
     }
 
-
-    public ComponentName getActivtyComponentName() {
-        return mActivityComponentName;
+    public String getPackageName() {
+        return mPackageName;
+    }
+    public String getOreintation() {
+        return mOrientation;
     }
 
     public static void restartStepNumber(){

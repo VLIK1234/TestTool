@@ -26,6 +26,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -97,6 +99,7 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
         initSummaryEditText();
         initEnvironmentEditText();
         initDescriptionEditText();
+        initListStepButton();
         initPrioritiesSpinner();
         initCreateIssueButton();
         initAttachmentsView();
@@ -245,12 +248,24 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
 
     private void initDescriptionEditText() {
         mDescriptionEditText = (EditText) findViewById(R.id.et_description);
-        JiraContent.getInstance().getDescription(new JiraGetContentCallback<String>() {
+        JiraContent.getInstance().getDescription(new JiraGetContentCallback<Spanned>() {
             @Override
-            public void resultOfDataLoading(String result) {
+            public void resultOfDataLoading(Spanned result) {
                 if (result != null) {
                     mDescriptionEditText.setText(result);
                 }
+            }
+        });
+    }
+
+    private void initListStepButton() {
+        Button btnListStep = (Button) findViewById(R.id.btn_list_step);
+        btnListStep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), StepsRecyclerActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
             }
         });
     }

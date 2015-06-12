@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.view.WindowManager;
 
@@ -71,22 +72,9 @@ public class ActivityMetaUtil {
         sPersistableMode.put(ActivityInfo.PERSIST_ACROSS_REBOOTS, ActivityInfoConstants.PERSIST_ACROSS_REBOOTS);
 
         sScreenOrientation = new HashMap<>();
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED, ActivityInfoConstants.SCREEN_ORIENTATION_UNSPECIFIED);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE, ActivityInfoConstants.SCREEN_ORIENTATION_LANDSCAPE);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, ActivityInfoConstants.SCREEN_ORIENTATION_PORTRAIT);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_USER, ActivityInfoConstants.SCREEN_ORIENTATION_USER);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_BEHIND, ActivityInfoConstants.SCREEN_ORIENTATION_BEHIND);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_SENSOR, ActivityInfoConstants.SCREEN_ORIENTATION_SENSOR);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR, ActivityInfoConstants.SCREEN_ORIENTATION_NOSENSOR);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE, ActivityInfoConstants.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT, ActivityInfoConstants.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE, ActivityInfoConstants.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT, ActivityInfoConstants.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR, ActivityInfoConstants.SCREEN_ORIENTATION_FULL_SENSOR);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE, ActivityInfoConstants.SCREEN_ORIENTATION_USER_LANDSCAPE);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT, ActivityInfoConstants.SCREEN_ORIENTATION_USER_PORTRAIT);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_FULL_USER, ActivityInfoConstants.SCREEN_ORIENTATION_FULL_USER);
-        sScreenOrientation.put(ActivityInfo.SCREEN_ORIENTATION_LOCKED, ActivityInfoConstants.SCREEN_ORIENTATION_LOCKED);
+        sScreenOrientation.put(Configuration.ORIENTATION_UNDEFINED, ActivityInfoConstants.ORIENTATION_UNDEFINED);
+        sScreenOrientation.put(Configuration.ORIENTATION_LANDSCAPE, ActivityInfoConstants.ORIENTATION_LANDSCAPE);
+        sScreenOrientation.put(Configuration.ORIENTATION_PORTRAIT, ActivityInfoConstants.ORIENTATION_PORTRAIT);
 
         sSoftInputMode = new HashMap<>();
         sSoftInputMode.put(WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED, ActivityInfoConstants.SOFT_INPUT_STATE_UNSPECIFIED); //conflict with SOFT_INPUT_ADJUST_UNSPECIFIED
@@ -178,6 +166,10 @@ public class ActivityMetaUtil {
 
     private static String getScreenOrientation() {
         return sScreenOrientation.get(sActivityInfo.screenOrientation) == null ? ActivityInfoConstants.NOT_AVAILABLE : sScreenOrientation.get(sActivityInfo.screenOrientation);
+    }
+
+    public static String getScreenOrientation(int orientation) {
+        return sScreenOrientation.get(orientation) == null ? ActivityInfoConstants.NOT_AVAILABLE : sScreenOrientation.get(orientation);
     }
 
     private static String getSoftInputMode() {

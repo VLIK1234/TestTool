@@ -93,7 +93,6 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
             public void run() {
                 JiraContent.getInstance().getPrioritiesNames(null);
                 JiraContent.getInstance().getProjectsNames(null);
-                JiraContent.getInstance().setEnvironment(SystemInfoHelper.getDeviceOsInfo());
             }
         };
         worker.schedule(task, 1, TimeUnit.SECONDS);
