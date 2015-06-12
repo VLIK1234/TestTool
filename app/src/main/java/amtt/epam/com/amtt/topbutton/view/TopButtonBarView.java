@@ -122,7 +122,6 @@ public class TopButtonBarView extends FrameLayout {
         mButtonOpenUserInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), R.drawable.background_user_info, new ITouchAction() {
             @Override
             public void TouchAction() {
-                hide();
                 TopButtonService.close(getContext().getApplicationContext());
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
                 userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
