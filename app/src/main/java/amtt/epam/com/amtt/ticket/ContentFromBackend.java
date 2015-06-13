@@ -8,7 +8,6 @@ import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.bo.*;
-import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReceiver;
 import amtt.epam.com.amtt.processing.*;
 
 import java.util.ArrayList;
@@ -29,8 +28,8 @@ public class ContentFromBackend {
     }
 
     @SuppressWarnings("unchecked")
-    public void getMetaAsynchronously(final ContentLoadingCallback<JProjectsResponse> contentLoadingCallback,
-                                      final JiraGetContentCallback jiraGetContentCallback) {
+    public void getProjectsAsynchronously(final ContentLoadingCallback<JProjectsResponse> contentLoadingCallback,
+                                          final JiraGetContentCallback jiraGetContentCallback) {
         RestMethod<JProjectsResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH,
             new ProjectsProcessor(),
             null,
@@ -46,12 +45,12 @@ public class ContentFromBackend {
                 @Override
                 public void onRequestPerformed(RestResponse restResponse) {
                     contentLoadingCallback.resultFromBackend((JProjectsResponse) restResponse.getResultObject(),
-                            JiraContentConst.META_RESPONSE, jiraGetContentCallback);
+                            JiraContentConst.PROJECTS_RESPONSE, jiraGetContentCallback);
                 }
 
                 @Override
                 public void onRequestError(AmttException e) {
-                    contentLoadingCallback.resultFromBackend(null, JiraContentConst.META_RESPONSE, jiraGetContentCallback);
+                    contentLoadingCallback.resultFromBackend(null, JiraContentConst.PROJECTS_RESPONSE, jiraGetContentCallback);
                 }
             })
             .createAndExecute();

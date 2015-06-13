@@ -32,8 +32,8 @@ import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
+import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.util.PreferenceUtils;
-import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
@@ -122,7 +122,6 @@ public class TopButtonBarView extends FrameLayout {
         mButtonOpenUserInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), R.drawable.background_user_info, new ITouchAction() {
             @Override
             public void TouchAction() {
-                hide();
                 TopButtonService.close(getContext().getApplicationContext());
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
                 userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
