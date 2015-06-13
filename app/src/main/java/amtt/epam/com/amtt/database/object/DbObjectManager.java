@@ -15,7 +15,7 @@ import amtt.epam.com.amtt.util.ContextHolder;
  @version on 15.05.2015
  */
 
-public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
+public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
 
     INSTANCE;
 
@@ -36,34 +36,32 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
 
     public int add(List<DatabaseEntity> objects) {
         ContentValues[] contentValues = new ContentValues[objects.size()];
-        for(int i = 0; i < objects.size(); i++) {
+        for (int i = 0; i < objects.size(); i++) {
             contentValues[i] = objects.get(i).getContentValues();
         }
         return ContextHolder.getContext().getContentResolver().bulkInsert(objects.get(0).getUri(),
                 contentValues);
     }
 
-    public synchronized void addAsync(final DatabaseEntity object, final IResult<Integer> result) {
+    public synchronized void add(final DatabaseEntity object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (result!=null) {
-                    result.onResult(add(object));
-                }else{
-                    add(object);
+                int outcome = add(object);
+                if (result != null) {
+                    result.onResult(outcome);
                 }
             }
         }).start();
     }
 
-    public synchronized void addAsync(final List<DatabaseEntity> object, final IResult<Integer> result) {
+    public synchronized void add(final List<DatabaseEntity> object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                int outcome = add(object);
                 if (result != null) {
-                    result.onResult(add(object));
-                }else{
-                    add(object);
+                    result.onResult(outcome);
                 }
             }
         }).start();
@@ -74,14 +72,13 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
         return ContextHolder.getContext().getContentResolver().update(object.getUri(), object.getContentValues(), selection, selectionArgs);
     }
 
-    public synchronized void updateAsync(final DatabaseEntity object, final String selection, final String[] selectionArgs, final IResult<Integer> result) {
+    public synchronized void update(final DatabaseEntity object, final String selection, final String[] selectionArgs, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
+               int outcome = update(object, selection, selectionArgs);
                 if (result != null) {
-                    result.onResult(update(object, selection, selectionArgs));
-                } else {
-                    update(object, selection, selectionArgs);
+                    result.onResult(outcome);
                 }
             }
         }).start();
@@ -120,7 +117,7 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
             public void run() {
                 String selectionString = "";
                 if (mSelectionArgs != null && mSelection != null) {
-                    if (mSelection.length!=mSelectionArgs.length) {
+                    if (mSelection.length != mSelectionArgs.length) {
                         throw new IllegalStateException("Count Selection and SelectionArgs must be equals!");
                     }
                     if (mSelectionArgs.length == 1) {

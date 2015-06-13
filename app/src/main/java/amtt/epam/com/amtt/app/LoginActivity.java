@@ -33,7 +33,7 @@ import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.object.DbObjectManger;
+import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
@@ -113,7 +113,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
-        DbObjectManger.INSTANCE.addAsync(user, new IResult<Integer>() {
+        DbObjectManager.INSTANCE.add(user, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
                 ActiveUser.getInstance().setId(result);
