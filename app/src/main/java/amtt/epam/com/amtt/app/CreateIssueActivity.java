@@ -1,23 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.ticket.ScreenshotAdapter;
-import amtt.epam.com.amtt.bo.JCreateIssueResponse;
-import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
-import amtt.epam.com.amtt.ticket.JiraContent;
-import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
-import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.helper.SystemInfoHelper;
-import amtt.epam.com.amtt.observer.AmttFileObserver;
-import amtt.epam.com.amtt.ticket.*;
-import amtt.epam.com.amtt.util.ActiveUser;
-import amtt.epam.com.amtt.util.InputsUtil;
-import amtt.epam.com.amtt.database.util.StepUtil;
-import amtt.epam.com.amtt.view.AutocompleteProgressView;
-import amtt.epam.com.amtt.view.EditText;
-import amtt.epam.com.amtt.view.SpinnerProgress;
-import amtt.epam.com.amtt.view.TextView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,11 +22,32 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.bo.JCreateIssueResponse;
+import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
+import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.helper.SystemInfoHelper;
+import amtt.epam.com.amtt.observer.AmttFileObserver;
+import amtt.epam.com.amtt.ticket.Attachment;
+import amtt.epam.com.amtt.ticket.AttachmentService;
+import amtt.epam.com.amtt.ticket.JiraContent;
+import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
+import amtt.epam.com.amtt.ticket.ScreenshotAdapter;
+import amtt.epam.com.amtt.ticket.ScreenshotManager;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.InputsUtil;
+import amtt.epam.com.amtt.view.AutocompleteProgressView;
+import amtt.epam.com.amtt.view.EditText;
+import amtt.epam.com.amtt.view.SpinnerProgress;
+import amtt.epam.com.amtt.view.TextView;
+
 @SuppressWarnings("unchecked")
 public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapter.ViewHolder.ClickListener {
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_TEXT_CHANGED = 100;
+    private static final String DEFAULT_PRIORITY_ID = "3";
     private AutocompleteProgressView mAssignableAutocompleteView;
     private EditText mDescriptionEditText;
     private EditText mEnvironmentEditText;
@@ -175,7 +178,10 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
                             ArrayAdapter<String> mPrioritiesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, priorityNames);
                             mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                             prioritiesSpinner.setAdapter(mPrioritiesAdapter);
-                            prioritiesSpinner.setSelection(2);
+                            String defaultPriority = JiraContent.getInstance().getPriorityNameById(DEFAULT_PRIORITY_ID);
+                            if (defaultPriority != null) {
+                                prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
+                            }
                             prioritiesSpinner.showProgress(false);
                             prioritiesSpinner.setEnabled(true);
                         }
