@@ -90,6 +90,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     @Override
     protected void onResume() {
         super.onResume();
+        initDescriptionEditText();
         TopButtonService.sendActionChangeVisibilityTopbutton(false);
     }
 
@@ -103,7 +104,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initProjectNamesSpinner();
         initSummaryEditText();
         initEnvironmentEditText();
-        initDescriptionEditText();
         initListStepButton();
         initPrioritiesSpinner();
         initCreateIssueButton();

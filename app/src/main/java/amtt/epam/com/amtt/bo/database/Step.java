@@ -24,7 +24,7 @@ import amtt.epam.com.amtt.util.UIUtil;
  */
 public class Step extends DatabaseEntity<Step> {
 
-    private static int mStepNumber = 0;
+    private int mStepNumber;
     private String mActivity;
     private String mScreenPath;
     private String mPackageName;
@@ -39,7 +39,6 @@ public class Step extends DatabaseEntity<Step> {
         mActivity = componentName.getClassName();
         mPackageName = componentName.getPackageName();
         mOrientation = ActivityMetaUtil.getScreenOrientation(UIUtil.getOrientation());
-        mStepNumber++;
     }
 
     public Step(Cursor cursor) {
@@ -69,7 +68,6 @@ public class Step extends DatabaseEntity<Step> {
     @Override
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
-        values.put(StepsTable._ID, mStepNumber);
         values.put(StepsTable._SCREEN_PATH, mScreenPath);
         values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity);
         values.put(StepsTable._PACKAGE_NAME, mPackageName);
@@ -91,9 +89,4 @@ public class Step extends DatabaseEntity<Step> {
     public String getOreintation() {
         return mOrientation;
     }
-
-    public static void restartStepNumber(){
-        mStepNumber = 0;
-    }
-
 }
