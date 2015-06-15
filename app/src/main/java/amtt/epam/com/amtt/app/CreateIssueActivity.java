@@ -400,10 +400,12 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ArrayList<Attachment> screenArray = AttachmentManager.getInstance().
+                        if (result!=null) {
+                            ArrayList<Attachment> screenArray = AttachmentManager.getInstance().
                                 getAttachmentList(result);
-                        mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
-                        recyclerView.setAdapter(mAdapter);
+                            mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
+                            recyclerView.setAdapter(mAdapter);
+                        }
                     }
                 });
             }

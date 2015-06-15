@@ -38,13 +38,16 @@ public class AttachmentManager {
     }
 
     public ArrayList<Attachment> getAttachmentList(List<DatabaseEntity> result) {
-        attachmentArrayList.clear();
-        ArrayList<Step> listStep = (ArrayList) result;
-        for (Step step:listStep) {
-            if (step.getScreenPath()!=null) {
-                attachmentArrayList.add(new Attachment(FileUtil.getFileName(step.getScreenPath()), step.getScreenPath()));
+        if (result!=null) {
+            attachmentArrayList.clear();
+            ArrayList<Step> listStep = (ArrayList) result;
+            for (Step step:listStep) {
+                if (step.getScreenPath()!=null) {
+                    attachmentArrayList.add(new Attachment(FileUtil.getFileName(step.getScreenPath()), step.getScreenPath()));
+                }
             }
         }
+
         return attachmentArrayList;
     }
 }

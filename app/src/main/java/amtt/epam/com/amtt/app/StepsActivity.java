@@ -53,11 +53,13 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        adapter = new StepsAdapter((ArrayList) result, StepsActivity.this);
-                        recyclerView.setAdapter(adapter);
-                        if (result.size() == 0) {
-                            recyclerView.setVisibility(View.GONE);
-                            emptyList.setVisibility(View.VISIBLE);
+                        if (result!=null) {
+                            adapter = new StepsAdapter((ArrayList) result, StepsActivity.this);
+                            recyclerView.setAdapter(adapter);
+                            if (result.size() == 0) {
+                                recyclerView.setVisibility(View.GONE);
+                                emptyList.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
                 });
