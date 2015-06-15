@@ -20,13 +20,12 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.util.IAdapterInit;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
  * Created by Ivan_Bakach on 10.06.2015.
  */
-public class StepsRecyclerActivity extends AppCompatActivity implements StepRecyclerAdapter.ViewHolder.ClickListener, IAdapterInit {
+public class StepsRecyclerActivity extends AppCompatActivity implements StepRecyclerAdapter.ViewHolder.ClickListener{
 
     private TextView emptyList;
     private StepRecyclerAdapter adapter;
@@ -36,8 +35,10 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps_recycler);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        if (getSupportActionBar()!=null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+        }
         emptyList = (TextView) findViewById(android.R.id.empty);
         recyclerView = (RecyclerView) findViewById(R.id.list_step);
         recyclerView.setLayoutManager(getLayoutManger());
@@ -47,8 +48,18 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
 
         DbObjectManger.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
             @Override
-            public void onResult(List<DatabaseEntity> result) {
-                initAdapter(result);
+            public void onResult(final List<DatabaseEntity> result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter = new StepRecyclerAdapter((ArrayList) result, StepsRecyclerActivity.this);
+                        recyclerView.setAdapter(adapter);
+                        if (result.size() == 0) {
+                            recyclerView.setVisibility(View.GONE);
+                            emptyList.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
             }
 
             @Override
@@ -88,15 +99,5 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
         Intent preview = new Intent(StepsRecyclerActivity.this, PreviewActivity.class);
         preview.putExtra(PreviewActivity.FILE_PATH, adapter.getScreenPath(position));
         startActivity(preview);
-    }
-
-    @Override
-    public void initAdapter(List<DatabaseEntity> result) {
-        adapter = new StepRecyclerAdapter((ArrayList) result, StepsRecyclerActivity.this);
-        recyclerView.setAdapter(adapter);
-        if (result.size()==0) {
-            recyclerView.setVisibility(View.GONE);
-            emptyList.setVisibility(View.VISIBLE);
-        }
     }
 }

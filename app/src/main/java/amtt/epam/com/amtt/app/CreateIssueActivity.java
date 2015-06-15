@@ -13,7 +13,6 @@ import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.ticket.*;
-import amtt.epam.com.amtt.util.IAdapterInit;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.StepUtil;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
@@ -46,7 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, IAdapterInit {
+public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener{
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_TEXT_CHANGED = 100;
@@ -90,6 +89,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     @Override
     protected void onResume() {
         super.onResume();
+        initAttachmentsView();
         initDescriptionEditText();
         TopButtonService.sendActionChangeVisibilityTopbutton(false);
     }
@@ -107,7 +107,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initListStepButton();
         initPrioritiesSpinner();
         initCreateIssueButton();
-        initAttachmentsView();
     }
 
     private void reinitRelatedViews(String projectKey) {
@@ -255,9 +254,14 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         mDescriptionEditText = (EditText) findViewById(R.id.et_description);
         JiraContent.getInstance().getDescription(new JiraGetContentCallback<Spanned>() {
             @Override
-            public void resultOfDataLoading(Spanned result) {
+            public void resultOfDataLoading(final Spanned result) {
                 if (result != null) {
-                    mDescriptionEditText.setText(result);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDescriptionEditText.setText(result);
+                        }
+                    });
                 }
             }
         });
@@ -366,9 +370,16 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         DbObjectManger.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
             @Override
-            public void onResult(List<DatabaseEntity> result) {
-                initAdapter(result);
-
+            public void onResult(final List<DatabaseEntity> result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ArrayList<Attachment> screenArray = AttachmentManager.getInstance().
+                                getAttachmentList(result);
+                        mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
+                        recyclerView.setAdapter(mAdapter);
+                    }
+                });
             }
 
             @Override
@@ -377,15 +388,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             }
         });
 
-    }
-
-
-    @Override
-    public void initAdapter(List<DatabaseEntity> result) {
-        ArrayList<Attachment> screenArray = AttachmentManager.getInstance().
-                getAttachmentList(result);
-        mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
-        recyclerView.setAdapter(mAdapter);
     }
 
     private void setAssignableNames(String s) {
