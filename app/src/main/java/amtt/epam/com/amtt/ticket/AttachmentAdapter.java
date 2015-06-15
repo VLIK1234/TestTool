@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.ticket;
 
-import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.util.Logger;
 import android.support.v7.widget.RecyclerView;

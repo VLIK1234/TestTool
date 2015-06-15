@@ -12,15 +12,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.List;
-
-import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.bo.database.ActivityMeta;
-import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.database.object.DbObjectManger;
-import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.StepsWithMetaTable;

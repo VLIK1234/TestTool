@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.database.object.DbObjectManger;
+import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.util.ContextHolder;
 
@@ -68,7 +68,7 @@ public class StepRecyclerAdapter extends RecyclerView.Adapter<StepRecyclerAdapte
     }
 
     public void removeItem(int position){
-        DbObjectManger.INSTANCE.remove(listStep.get(position));
+        DbObjectManager.INSTANCE.remove(listStep.get(position));
         listStep.remove(position);
         notifyItemRemoved(position);
         notifyDataSetChanged();

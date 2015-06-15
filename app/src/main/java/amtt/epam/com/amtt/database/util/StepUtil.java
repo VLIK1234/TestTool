@@ -14,9 +14,11 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.database.ActivityMeta;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
  @author Artsiom_Kaliaha

@@ -17,7 +17,7 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.StepRecyclerAdapter;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.database.object.DbObjectManger;
+import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.UIUtil;
@@ -46,7 +46,7 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
         StepRecyclerAdapter recyclerAdapter = new StepRecyclerAdapter(listStep, StepsRecyclerActivity.this);
         recyclerView.setAdapter(recyclerAdapter);
 
-        DbObjectManger.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
+        DbObjectManager.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
             @Override
             public void onResult(final List<DatabaseEntity> result) {
                 runOnUiThread(new Runnable() {

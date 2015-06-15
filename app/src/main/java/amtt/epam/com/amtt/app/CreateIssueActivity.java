@@ -3,7 +3,7 @@ package amtt.epam.com.amtt.app;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.database.object.DbObjectManger;
+import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.ticket.AttachmentAdapter;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
@@ -392,7 +392,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         linearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        DbObjectManger.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
+        DbObjectManager.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
             @Override
             public void onResult(final List<DatabaseEntity> result) {
                 runOnUiThread(new Runnable() {
