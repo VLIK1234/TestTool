@@ -1,6 +1,4 @@
-package amtt.epam.com.amtt.api.http;
-
-import org.apache.http.client.methods.HttpRequestBase;
+package amtt.epam.com.amtt.http;
 
 /**
  * Created by Artsiom_Kaliaha on 11.06.2015.
@@ -10,13 +8,13 @@ public class HttpException extends org.apache.http.HttpException {
 
     private final Exception mSuppressedException;
     private final int mResultCode;
-    private final HttpRequestBase mHttpRequest;
+    private final Request mRequest;
     private final String mEntityString;
 
-    public HttpException(Exception suppressedException, int resultCode, HttpRequestBase httpRequest, String entityString) {
+    public HttpException(Exception suppressedException, int resultCode, Request request, String entityString) {
         mSuppressedException = suppressedException;
         mResultCode = resultCode;
-        mHttpRequest = httpRequest;
+        mRequest = request;
         mEntityString = entityString;
     }
 
@@ -24,12 +22,12 @@ public class HttpException extends org.apache.http.HttpException {
         return mSuppressedException;
     }
 
-    public int getResultCode() {
+    public int getStatusCode() {
         return mResultCode;
     }
 
-    public HttpRequestBase getHttpRequest() {
-        return mHttpRequest;
+    public Request getRequest() {
+        return mRequest;
     }
 
     public String getEntityString() {

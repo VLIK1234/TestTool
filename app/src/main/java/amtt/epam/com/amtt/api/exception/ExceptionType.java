@@ -3,16 +3,15 @@ package amtt.epam.com.amtt.api.exception;
 import com.google.gson.JsonSyntaxException;
 
 import org.apache.http.HttpStatus;
-import org.apache.http.NoHttpResponseException;
 import org.apache.http.auth.AuthenticationException;
 
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.rest.RestMethod;
+import amtt.epam.com.amtt.http.HttpException;
 import amtt.epam.com.amtt.util.Constants;
 
 /**
@@ -82,19 +81,27 @@ public enum ExceptionType {
     /**
      * Returns constant by exception
      */
-    public static ExceptionType valueOf(AmttException e) {
-        if (e!=null) {
-            if (e.getSuppressedOne() != null) {
-                Class exceptionClass = e.getSuppressedOne().getClass();
-                if (mExceptionsMap.get(exceptionClass)!=null) {
-                    return mExceptionsMap.get(exceptionClass);
-                }else{
-                    return mExceptionsMap.get(UnknownError.class);
+    public static ExceptionType valueOf(Exception e) {
+        if (e != null) {
+            if (e instanceof HttpException) {
+                if (e.getSuppressed() != null) {
+                    Class exceptionClass = e.getSuppressed().getClass();
+                    if (mExceptionsMap.get(exceptionClass) != null) {
+                        return mExceptionsMap.get(exceptionClass);
+                    } else {
+                        return mExceptionsMap.get(UnknownError.class);
+                    }
+                } else {
+                    return mStatusCodeMap.get(((HttpException)e).getStatusCode());
                 }
             } else {
-                return mStatusCodeMap.get(e.getStatusCode());
+                if (mExceptionsMap.get(e.getClass()) != null) {
+                    return mExceptionsMap.get(e.getClass());
+                } else {
+                    return mExceptionsMap.get(UnknownError.class);
+                }
             }
-        }else{
+        } else {
             return mExceptionsMap.get(UnknownError.class);
         }
     }

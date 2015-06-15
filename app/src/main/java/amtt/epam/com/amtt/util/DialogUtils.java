@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.api.JiraCallback;
-import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.rest.RestMethod;
+import amtt.epam.com.amtt.http.Request;
+import amtt.epam.com.amtt.os.Task;
+import amtt.epam.com.amtt.os.Task.AsyncTaskCallback;
 
 /**
  * Created by Artsiom_Kaliaha on 29.04.2015.
@@ -17,7 +17,7 @@ public class DialogUtils {
     /**
      * Builds dialogs for ExceptionHandler class
      */
-    public static class Builder {
+    public static class Builder <ResultType> {
 
         private AlertDialog.Builder mBuilder;
 
@@ -36,13 +36,13 @@ public class DialogUtils {
         }
 
         @SuppressWarnings("unchecked")
-        public Builder setPositiveButton(int textId, final RestMethod restMethod, final JiraCallback callback) {
+        public Builder setPositiveButton(int textId, final Request request, final AsyncTaskCallback callback) {
             if (textId != Constants.Dialog.EMPTY_FIELD) {
                 DialogInterface.OnClickListener positiveListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new JiraTask.Builder<>()
-                                .setRestMethod(restMethod)
+                        new Task.Builder<>()
+                                .setExecutable(request)
                                 .setCallback(callback)
                                 .createAndExecute();
                     }

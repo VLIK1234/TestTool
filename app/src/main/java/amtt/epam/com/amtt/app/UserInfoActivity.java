@@ -28,6 +28,7 @@ import amtt.epam.com.amtt.api.result.JiraOperationResult;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.os.Task.AsyncTaskCallback;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -42,7 +43,7 @@ import amtt.epam.com.amtt.view.TextView;
  */
 
 @SuppressWarnings("unchecked")
-public class UserInfoActivity extends BaseActivity implements JiraCallback<JUserInfo>, LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
+public class UserInfoActivity extends BaseActivity implements AsyncTaskCallback<RestResponse<JUserInfo>>, LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_REFRESH = 100;
@@ -125,6 +126,40 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         }
     }
 
+    @Override
+    public void onRefresh() {
+        mHandler.removeMessages(MESSAGE_REFRESH);
+        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_REFRESH), 750);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case AMTT_ACTIVITY_REQUEST_CODE:
+                    if (data != null) {
+                        Bundle args = new Bundle();
+                        long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
+                        args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
+                        getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
+                    } else {
+                        startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
+                        isNeedShowingTopButton = false;
+                    }
+                    break;
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            switch (requestCode) {
+                case LOGIN_ACTIVITY_REQUEST_CODE:
+                    Bundle args = new Bundle();
+                    args.putLong(AmttActivity.KEY_USER_ID, ActiveUser.getInstance().getId());
+                    getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
+                    break;
+            }
+        }
+    }
+
     public void initViews() {
         mNameTextView = (TextView) findViewById(R.id.tv_user_name);
         mEmailAddressTextView = (TextView) findViewById(R.id.tv_email);
@@ -149,6 +184,11 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         mJiraUrlTextView.setText(user.getUrl());
         ImageLoader.getInstance().displayImage(user.getAvatarUrls().getAvatarUrl(), mUserImageImageView);
         JiraContent.getInstance().clearData();
+    }
+
+    private void refreshUserInfo() {
+        String requestSuffix = JiraApiConst.USER_INFO_PATH + ActiveUser.getInstance().getUserName();
+        JiraApi.get().searchData(requestSuffix, new UserInfoProcessor(), null, null, null, this);
     }
 
     //Callback
@@ -210,11 +250,12 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
 
     //Jira
     @Override
-    public void onRequestStarted() {
+    public void onTaskStart() {
+
     }
 
     @Override
-    public void onRequestPerformed(RestResponse<JUserInfo> restResponse) {
+    public void onTaskExecuted(RestResponse<JUserInfo> restResponse) {
         if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
             JUserInfo user = restResponse.getResultObject();
             user.setUrl(ActiveUser.getInstance().getUrl());
@@ -224,49 +265,9 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     }
 
     @Override
-    public void onRequestError(AmttException e) {
+    public void onTaskError(Exception e) {
         ExceptionHandler.getInstance().processError(e).showDialog(this, UserInfoActivity.this);
         mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-
-    private void refreshUserInfo() {
-        String requestSuffix = JiraApiConst.USER_INFO_PATH + ActiveUser.getInstance().getUserName();
-        JiraApi.getInstance().searchData(this, requestSuffix, new UserInfoProcessor(), null, null, null);
-    }
-
-    @Override
-    public void onRefresh() {
-        mHandler.removeMessages(MESSAGE_REFRESH);
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_REFRESH), 750);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case AMTT_ACTIVITY_REQUEST_CODE:
-                    if (data != null) {
-                        Bundle args = new Bundle();
-                        long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
-                        args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
-                        getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
-                    } else {
-                        startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
-                        isNeedShowingTopButton = false;
-                    }
-                    break;
-            }
-        } else if (resultCode == RESULT_CANCELED) {
-            switch (requestCode) {
-                case LOGIN_ACTIVITY_REQUEST_CODE:
-                    Bundle args = new Bundle();
-                    args.putLong(AmttActivity.KEY_USER_ID, ActiveUser.getInstance().getId());
-                    getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
-                    break;
-            }
-        }
     }
 
 }

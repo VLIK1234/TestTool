@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.apache.http.client.methods.HttpGet;
+
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -21,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.api.rest.RestMethod;
@@ -33,6 +34,9 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.http.HttpException;
+import amtt.epam.com.amtt.http.HttpResult;
+import amtt.epam.com.amtt.os.Task.AsyncTaskCallback;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -48,7 +52,7 @@ import amtt.epam.com.amtt.util.StepUtil;
  */
 
 @SuppressWarnings("unchecked")
-public class LoginActivity extends BaseActivity implements JiraCallback<JUserInfo>, LoaderCallbacks<Cursor> {
+public class LoginActivity extends BaseActivity implements AsyncTaskCallback<HttpResult<JUserInfo>>, LoaderCallbacks<Cursor> {
 
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
     public static final String KEY_USER_ID = "key_user_id";
@@ -70,7 +74,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
         if (isNewUserAdditionFromUserInfo()) {
-            JiraApi.getInstance().signOut(null);
+            JiraApi.get().signOut(null);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
@@ -112,7 +116,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         String password = mPasswordEditText.getText().toString();
         //getClient user info and perform auth in one request
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameEditText.getText().toString();
-        JiraApi.getInstance().searchData(this, requestSuffix, new UserInfoProcessor(), userName, password, mRequestUrl);
+        JiraApi.get().searchData(requestSuffix, new UserInfoProcessor(), userName, password, mRequestUrl, this);
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
@@ -207,15 +211,16 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     //Callbacks
     //Jira
     @Override
-    public void onRequestStarted() {
+    public void onTaskStart() {
+
     }
 
     @Override
-    public void onRequestPerformed(RestResponse<JUserInfo> restResponse) {
+    public void onTaskExecuted(HttpResult<JUserInfo> httpResult) {
         showProgress(false);
-        if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
-            if (restResponse.getResultObject() != null && !mIsUserInDatabase) {
-                JUserInfo user = restResponse.getResultObject();
+        if (httpResult.getRequestType().equals(HttpGet.METHOD_NAME)) {
+            if (httpResult.getResultObject() != null && !mIsUserInDatabase) {
+                JUserInfo user = httpResult.getResultObject();
                 user.setUrl(mUrlEditText.getText().toString());
                 setActiveUser();
                 user.setCredentials(ActiveUser.getInstance().getCredentials());
@@ -230,7 +235,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     @Override
-    public void onRequestError(AmttException e) {
+    public void onTaskError(Exception e) {
         ExceptionHandler.getInstance().processError(e).showDialog(LoginActivity.this, LoginActivity.this);
         showProgress(false);
         mLoginButton.setEnabled(true);

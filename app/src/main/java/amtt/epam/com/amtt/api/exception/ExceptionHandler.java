@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import amtt.epam.com.amtt.api.JiraCallback;
+import amtt.epam.com.amtt.http.HttpException;
 import amtt.epam.com.amtt.loader.BlockingStack;
+import amtt.epam.com.amtt.os.Task.AsyncTaskCallback;
 import amtt.epam.com.amtt.util.DialogUtils;
 
 /**
@@ -23,9 +25,9 @@ public class ExceptionHandler {
 
     }
 
-    private static Map<ExceptionType, BlockingStack<AmttException>> mReceivedExceptionsMap;
+    private static Map<ExceptionType, BlockingStack<Exception>> mReceivedExceptionsMap;
 
-    private AmttException mLastProcessedException;
+    private Exception mLastProcessedException;
     private ExceptionType mLastType;
     private boolean isDialogShown;
 
@@ -43,20 +45,20 @@ public class ExceptionHandler {
     /**
      * Identifies exception type, adds to the failed requests stack, set the last processed exception and it's type
      */
-    public ExceptionHandler processError(final AmttException amttException) {
-        mLastProcessedException = amttException;
-        mLastType = ExceptionType.valueOf(amttException);
+    public ExceptionHandler processError(final Exception exception) {
+        mLastProcessedException = exception;
+        mLastType = ExceptionType.valueOf(exception);
         isDialogShown = mReceivedExceptionsMap.get(mLastType) != null;
 
         try {
-            BlockingStack<AmttException> exceptionStack;
+            BlockingStack<Exception> exceptionStack;
             if (mReceivedExceptionsMap.get(mLastType) == null) {
                 exceptionStack = new BlockingStack<>();
                 mReceivedExceptionsMap.put(mLastType, exceptionStack);
             } else {
                 exceptionStack = mReceivedExceptionsMap.get(mLastType);
             }
-            exceptionStack.put(amttException);
+            exceptionStack.put(exception);
         } catch (InterruptedException e) {
             //ignored
         }
@@ -66,12 +68,12 @@ public class ExceptionHandler {
     /**
      * Constructs dialogs
      */
-    public void showDialog(final Context context, JiraCallback jiraCallback) {
+    public void showDialog(final Context context, AsyncTaskCallback callback) {
         if (!isDialogShown) {
             new DialogUtils.Builder(context)
                     .setTitle(mLastType.getTitle())
                     .setMessage(mLastType.getMessage())
-                    .setPositiveButton(mLastType.getPositiveText(), mLastProcessedException.getRestMethod(), jiraCallback)
+                    .setPositiveButton(mLastType.getPositiveText(), ((HttpException)mLastProcessedException).getRequest(), callback)
                     .setNeutralButton(mLastType.getNeutralText(), getNeutralListener(context))
                     .setNegativeButton()
                     .createAndShow();
