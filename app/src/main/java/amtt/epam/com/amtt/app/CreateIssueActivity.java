@@ -296,7 +296,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         btnListStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), StepsRecyclerActivity.class);
+                Intent intent = new Intent(getBaseContext(), StepsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }

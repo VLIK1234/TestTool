@@ -56,16 +56,6 @@
             android:name=".app.StepsActivity"
             android:label="@string/title_activity_steps"
             android:launchMode="singleTask"
-            android:noHistory="true"
-            android:parentActivityName=".app.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".app.MainActivity"/>
-        </activity>
-        <activity
-            android:name=".app.StepsRecyclerActivity"
-            android:label="@string/title_activity_steps"
-            android:launchMode="singleTask"
             android:noHistory="false"
             android:parentActivityName=".app.MainActivity">
             <meta-data

@@ -19,18 +19,18 @@ import java.util.ArrayList;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
-import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
  * Created by Ivan_Bakach on 10.06.2015.
  */
-public class StepRecyclerAdapter extends RecyclerView.Adapter<StepRecyclerAdapter.ViewHolder> {
+public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> {
 
     private ArrayList<Step> listStep = new ArrayList<>();
     private ViewHolder.ClickListener clickListener;
+    private final static int IMAGE_SIZE_RATIO = 3;
 
-    public StepRecyclerAdapter(ArrayList<Step> listStep, ViewHolder.ClickListener clickListener){
+    public StepsAdapter(ArrayList<Step> listStep, ViewHolder.ClickListener clickListener){
         this.listStep = listStep;
         this.clickListener = clickListener;
 //        this.listStep.add(new Step(getClass().getName(),"/storage/sdcard0/Pictures/Screenshots/Screenshot_2015-06-10-16-50-22.png"));
@@ -39,9 +39,9 @@ public class StepRecyclerAdapter extends RecyclerView.Adapter<StepRecyclerAdapte
     }
 
     @Override
-    public StepRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public StepsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         parent.setHorizontalScrollBarEnabled(true);
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_step_recycler, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_step, parent, false);
         return new ViewHolder(v, clickListener);
     }
 
@@ -90,8 +90,8 @@ public class StepRecyclerAdapter extends RecyclerView.Adapter<StepRecyclerAdapte
             this.listener = listener;
             screenshotView = (ImageView)itemView.findViewById(R.id.screenshot_image);
             DisplayMetrics metrics = ContextHolder.getContext().getResources().getDisplayMetrics();
-            screenshotView.setMaxWidth(metrics.widthPixels/3);
-            screenshotView.setMaxHeight(metrics.heightPixels/3);
+            screenshotView.setMaxWidth(metrics.widthPixels/ IMAGE_SIZE_RATIO);
+            screenshotView.setMaxHeight(metrics.heightPixels/ IMAGE_SIZE_RATIO);
             screenshotView.setOnClickListener(this);
             removeButton = (ImageView)itemView.findViewById(R.id.iv_close);
             removeButton.setOnClickListener(this);

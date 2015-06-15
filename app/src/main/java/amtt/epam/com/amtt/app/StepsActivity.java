@@ -1,125 +1,108 @@
 package amtt.epam.com.amtt.app;
 
-import android.app.LoaderManager;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
-import android.database.Cursor;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.MenuItem;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.adapter.StepAdapter;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.adapter.StepsAdapter;
+import amtt.epam.com.amtt.bo.database.Step;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
+import amtt.epam.com.amtt.database.object.DbObjectManager;
+import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.UIUtil;
 
-public class StepsActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
+/**
+ * Created by Ivan_Bakach on 10.06.2015.
+ */
+public class StepsActivity extends AppCompatActivity implements StepsAdapter.ViewHolder.ClickListener{
 
-    private static final int CURSOR_LOADER = 0;
-    private static final int MESSAGE_REFRESH = 100;
-    private ListView mListView;
-    private StepAdapter mAdapter;
-    private TextView mEmptyText;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private StepsHandler mHandler;
-
-    public static class StepsHandler extends Handler {
-
-        private final WeakReference<StepsActivity> mActivity;
-
-        StepsHandler(StepsActivity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            StepsActivity service = mActivity.get();
-            service.refreshSteps();
-        }
-    }
+    public static final int SPAN_COUNT = 3;
+    private TextView emptyList;
+    private StepsAdapter adapter;
+    public RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps);
-        TopButtonService.close(this);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        initViews();
-        mHandler = new StepsHandler(StepsActivity.this);
-        mSwipeRefreshLayout.setOnRefreshListener(StepsActivity.this);
-        getLoaderManager().initLoader(CURSOR_LOADER, null, this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        TopButtonService.start(this);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (getSupportActionBar()!=null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
         }
-    }
+        emptyList = (TextView) findViewById(android.R.id.empty);
+        recyclerView = (RecyclerView) findViewById(R.id.list_step);
+        recyclerView.setLayoutManager(getLayoutManger());
+        ArrayList<Step> listStep = new ArrayList<>();
+        StepsAdapter recyclerAdapter = new StepsAdapter(listStep, StepsActivity.this);
+        recyclerView.setAdapter(recyclerAdapter);
 
-    private void initViews() {
-        mListView = (ListView) findViewById(android.R.id.list);
-        mEmptyText = (TextView) findViewById(android.R.id.empty);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        mSwipeRefreshLayout.setRefreshing(true);
-        return new CursorLoader(this, AmttUri.STEP_WITH_META.get(), null, null, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data.getCount() != 0) {
-            if (mAdapter == null) {
-                mAdapter = new StepAdapter(StepsActivity.this, data, 0);
-                mListView.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
-                mEmptyText.setVisibility(View.GONE);
-            } else {
-                mAdapter.swapCursor(data);
-                mAdapter.notifyDataSetChanged();
-                mEmptyText.setVisibility(View.GONE);
+        DbObjectManager.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
+            @Override
+            public void onResult(final List<DatabaseEntity> result) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter = new StepsAdapter((ArrayList) result, StepsActivity.this);
+                        recyclerView.setAdapter(adapter);
+                        if (result.size() == 0) {
+                            recyclerView.setVisibility(View.GONE);
+                            emptyList.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
             }
-        } else {
-            mEmptyText.setVisibility(View.VISIBLE);
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TopButtonService.sendActionChangeVisibilityTopbutton(false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        TopButtonService.sendActionChangeVisibilityTopbutton(true);
+    }
+
+    public RecyclerView.LayoutManager getLayoutManger(){
+        if (UIUtil.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
+            return new LinearLayoutManager(getBaseContext());
+        }else{
+            return new GridLayoutManager(getBaseContext(), SPAN_COUNT);
         }
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onItemRemove(int position) {
+        adapter.removeItem(position);
+        if (adapter.getItemCount() == 0) {
+            recyclerView.setVisibility(View.GONE);
+            emptyList.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
-    public void onRefresh() {
-        mHandler.removeMessages(MESSAGE_REFRESH);
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_REFRESH), 750);
+    public void onItemShow(int position) {
+        Intent preview = new Intent(StepsActivity.this, PreviewActivity.class);
+        preview.putExtra(PreviewActivity.FILE_PATH, adapter.getScreenPath(position));
+        startActivity(preview);
     }
-
-    private void refreshSteps() {
-        getLoaderManager().restartLoader(CURSOR_LOADER, null, this);
-    }
-
 }
