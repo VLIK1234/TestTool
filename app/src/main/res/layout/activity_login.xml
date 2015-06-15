@@ -6,50 +6,55 @@
     tools:context="amtt.epam.com.amtt.fragment.LoginFragment"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/username_input_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/et_username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/label_user_name"
-            android:inputType="text"/>
-
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/url_input_layout"
+    <amtt.epam.com.amtt.view.EditText
+        android:id="@+id/et_username"
+        style="@style/Material.Widget.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/username_input_layout">
+        android:layout_marginTop="@dimen/material_vertical_size_divider"
+        android:hint="@string/label_user_name"
+        android:inputType="text"
+        android:paddingBottom="@dimen/material_vertical_size_divider"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:textColor="@color/primary_text"
+        app:et_dividerErrorColor="@color/et_divider_error"
+        app:et_labelTextColor="@drawable/color_label"
+        app:et_supportMode="error"
+        app:et_supportTextErrorColor="@color/et_divider_error" />
 
-        <EditText
-            android:id="@+id/et_jira_url"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/label_url"
-            android:inputType="textUri"
-            android:text="@string/url_prefix"/>
-
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/password_input_layout"
+    <amtt.epam.com.amtt.view.EditText
+        android:id="@+id/et_jira_url"
+        style="@style/Material.Widget.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/url_input_layout">
+        android:layout_marginTop="@dimen/material_vertical_size_divider"
+        android:hint="@string/label_url"
+        android:inputType="textUri"
+        android:paddingBottom="@dimen/material_vertical_size_divider"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:textColor="@color/primary_text"
+        android:layout_below="@+id/et_username"
+        app:et_dividerErrorColor="@color/et_divider_error"
+        app:et_labelTextColor="@drawable/color_label"
+        app:et_supportMode="error"
+        app:et_supportTextErrorColor="@color/et_divider_error" />
 
-        <EditText
-            android:id="@+id/et_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/label_password"
-            android:inputType="textPassword"/>
-
-    </android.support.design.widget.TextInputLayout>
+    <amtt.epam.com.amtt.view.EditText
+        android:id="@+id/et_password"
+        style="@style/Material.Widget.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/material_vertical_size_divider"
+        android:hint="@string/label_password"
+        android:inputType="textPassword"
+        android:paddingBottom="@dimen/material_vertical_size_divider"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+        android:textColor="@color/primary_text"
+        android:layout_below="@+id/et_jira_url"
+        app:et_dividerErrorColor="@color/et_divider_error"
+        app:et_labelTextColor="@drawable/color_label"
+        app:et_supportMode="error"
+        app:et_supportTextErrorColor="@color/et_divider_error" />
 
       <Button
         android:id="@+id/btn_login"
@@ -59,7 +64,7 @@
         android:minWidth="@dimen/material_vertical_button_min_width_size"
         android:text="@string/label_login"
         android:textSize="@dimen/abc_text_size_button_material"
-        android:layout_below="@id/password_input_layout"
+        android:layout_below="@id/et_password"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
 
