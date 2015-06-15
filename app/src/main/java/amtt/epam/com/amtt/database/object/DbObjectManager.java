@@ -11,9 +11,11 @@ import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
- * Created by Artsiom_Kaliaha on 15.05.2015.
+ @author Artsiom_Kaliaha
+ @version on 15.05.2015
  */
-public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
+
+public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
 
     INSTANCE;
 
@@ -27,41 +29,56 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
 
 
     @Override
-    public Integer addOrUpdate(DatabaseEntity object) {
+    public Integer add(DatabaseEntity object) {
         Uri insertedItemUri = ContextHolder.getContext().getContentResolver().insert(object.getUri(), object.getContentValues());
         return Integer.valueOf(insertedItemUri.getLastPathSegment());
     }
 
-    public int addOrUpdate(List<DatabaseEntity> objects) {
+    public int add(List<DatabaseEntity> objects) {
         ContentValues[] contentValues = new ContentValues[objects.size()];
-        for(int i = 0; i < objects.size(); i++) {
+        for (int i = 0; i < objects.size(); i++) {
             contentValues[i] = objects.get(i).getContentValues();
         }
         return ContextHolder.getContext().getContentResolver().bulkInsert(objects.get(0).getUri(),
                 contentValues);
     }
 
-    public void addOrUpdateAsync(final DatabaseEntity object, final IResult<Integer> result) {
+    public synchronized void add(final DatabaseEntity object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (result!=null) {
-                    result.onResult(addOrUpdate(object));
-                }else{
-                    addOrUpdate(object);
+                int outcome = add(object);
+                if (result != null) {
+                    result.onResult(outcome);
                 }
             }
         }).start();
     }
 
-    public void addOrUpdateAsync(final List<DatabaseEntity> object, final IResult<Integer> result) {
+    public synchronized void add(final List<DatabaseEntity> object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                int outcome = add(object);
                 if (result != null) {
-                    result.onResult(addOrUpdate(object));
-                }else{
-                    addOrUpdate(object);
+                    result.onResult(outcome);
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    public Integer update(DatabaseEntity object, String selection, String[] selectionArgs) {
+        return ContextHolder.getContext().getContentResolver().update(object.getUri(), object.getContentValues(), selection, selectionArgs);
+    }
+
+    public synchronized void update(final DatabaseEntity object, final String selection, final String[] selectionArgs, final IResult<Integer> result) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+               int outcome = update(object, selection, selectionArgs);
+                if (result != null) {
+                    result.onResult(outcome);
                 }
             }
         }).start();
@@ -100,7 +117,7 @@ public enum DbObjectManger implements IDbObjectManger<DatabaseEntity> {
             public void run() {
                 String selectionString = "";
                 if (mSelectionArgs != null && mSelection != null) {
-                    if (mSelection.length!=mSelectionArgs.length) {
+                    if (mSelection.length != mSelectionArgs.length) {
                         throw new IllegalStateException("Count Selection and SelectionArgs must be equals!");
                     }
                     if (mSelectionArgs.length == 1) {

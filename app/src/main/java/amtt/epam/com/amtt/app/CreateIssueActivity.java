@@ -10,8 +10,9 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.ticket.*;
+import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.InputsUtil;
-import amtt.epam.com.amtt.util.StepUtil;
+import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
 import amtt.epam.com.amtt.view.EditText;
 import amtt.epam.com.amtt.view.SpinnerProgress;
@@ -114,15 +115,29 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
         mProjectNamesSpinner.showProgress(true);
         JiraContent.getInstance().getProjectsNames(new JiraGetContentCallback<HashMap<JProjects, String>>() {
             @Override
-            public void resultOfDataLoading(HashMap<JProjects, String> result) {
+            public void resultOfDataLoading(final HashMap<JProjects, String> result) {
                 if (result != null) {
-                    ArrayList<String> projectNames = new ArrayList<>();
-                    projectNames.addAll(result.values());
-                    ArrayAdapter<String> projectsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, projectNames);
-                    projectsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                    mProjectNamesSpinner.setAdapter(projectsAdapter);
-                    mProjectNamesSpinner.showProgress(false);
-                    mProjectNamesSpinner.setEnabled(true);
+                    CreateIssueActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            ArrayList<String> projectNames = new ArrayList<>();
+                            projectNames.addAll(result.values());
+                            final ArrayAdapter<String> projectsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, projectNames);
+                            projectsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                            mProjectNamesSpinner.setAdapter(projectsAdapter);
+                            if (ActiveUser.getInstance().getLastProjectKey() != null) {
+                                JiraContent.getInstance().getProjectNameByKey(ActiveUser.getInstance().getLastProjectKey(), new JiraGetContentCallback<String>() {
+                                    @Override
+                                    public void resultOfDataLoading(String result) {
+                                        if (result != null) {
+                                            mProjectNamesSpinner.setSelection(projectsAdapter.getPosition(result));
+                                        }
+                                    }
+                                });
+                            }
+                            mProjectNamesSpinner.showProgress(false);
+                            mProjectNamesSpinner.setEnabled(true);
+                        }
+                    });
                 }
             }
         });
@@ -151,16 +166,20 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
         prioritiesSpinner.showProgress(true);
         JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
             @Override
-            public void resultOfDataLoading(HashMap<String, String> result) {
+            public void resultOfDataLoading(final HashMap<String, String> result) {
                 if (result != null) {
-                    ArrayList<String> priorityNames = new ArrayList<>();
-                    priorityNames.addAll(result.values());
-                    ArrayAdapter<String> mPrioritiesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, priorityNames);
-                    mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                    prioritiesSpinner.setAdapter(mPrioritiesAdapter);
-                    prioritiesSpinner.setSelection(2);
-                    prioritiesSpinner.showProgress(false);
-                    prioritiesSpinner.setEnabled(true);
+                    CreateIssueActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            ArrayList<String> priorityNames = new ArrayList<>();
+                            priorityNames.addAll(result.values());
+                            ArrayAdapter<String> mPrioritiesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, priorityNames);
+                            mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                            prioritiesSpinner.setAdapter(mPrioritiesAdapter);
+                            prioritiesSpinner.setSelection(2);
+                            prioritiesSpinner.showProgress(false);
+                            prioritiesSpinner.setEnabled(true);
+                        }
+                    });
                 }
             }
         });
@@ -221,16 +240,21 @@ public class CreateIssueActivity extends BaseActivity implements ScreenshotAdapt
         issueTypesSpinner.showProgress(true);
         JiraContent.getInstance().getIssueTypesNames(new JiraGetContentCallback<ArrayList<String>>() {
             @Override
-            public void resultOfDataLoading(ArrayList<String> result) {
-                if (result != null) {
-                    ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
-                    issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                    issueTypesSpinner.setAdapter(issueTypesAdapter);
-                    issueTypesSpinner.showProgress(false);
-                    issueTypesSpinner.setEnabled(true);
-                }
+            public void resultOfDataLoading(final ArrayList<String> result) {
+                if(result!=null)
+                {
+                CreateIssueActivity.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
+                        issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                        issueTypesSpinner.setAdapter(issueTypesAdapter);
+                        issueTypesSpinner.showProgress(false);
+                        issueTypesSpinner.setEnabled(true);
+                    }
+                });
             }
-        });
+        }
+    });
         issueTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

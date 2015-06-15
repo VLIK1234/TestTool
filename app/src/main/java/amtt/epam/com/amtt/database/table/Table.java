@@ -5,11 +5,13 @@ import java.util.Map;
 import java.util.Set;
 
 import amtt.epam.com.amtt.database.constant.BaseColumns;
-import amtt.epam.com.amtt.util.MultiValueMap;
+import amtt.epam.com.amtt.database.util.MultiValueMap;
 
 /**
- * Created by Artsiom_Kaliaha on 20.03.2015.
+ @author Artsiom_Kaliaha
+ @version on 20.03.2015
  */
+
 public abstract class Table implements android.provider.BaseColumns {
 
     public abstract MultiValueMap<String, String> getColumnsMap();
