@@ -251,7 +251,7 @@ public class JiraContent{
     @SuppressWarnings("unchecked")
     public void getUsersAssignable(String userName,
                                    final JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
-        ContentFromBackend.getInstance().getUsersAssignableAsynchronously(ActiveUser.getInstance().getLastProjectKey(), userName, new ContentLoadingCallback<JUserAssignableResponse>() {
+        ContentFromBackend.getInstance().getUsersAssignableAsynchronously(mLastProject.getKey(), userName, new ContentLoadingCallback<JUserAssignableResponse>() {
             @Override
             public void resultFromBackend(JUserAssignableResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
                 if (result != null) {

@@ -207,7 +207,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void initVersionsSpinner(String projectKey) {
         final SpinnerProgress versionsSpinner = (SpinnerProgress) findViewById(R.id.spin_affects_versions);
         final TextView affectTextView = (TextView)findViewById(R.id.tv_affects_versions);
-        final ImageView dividerAffectVersion = (ImageView) findViewById(R.id.affect_divider);
         versionsSpinner.setEnabled(false);
         versionsSpinner.showProgress(true);
         JiraContent.getInstance().getVersionsNames(projectKey, new JiraGetContentCallback<HashMap<String, String>>() {
@@ -216,7 +215,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 if (result != null && result.size() > 0) {
                     versionsSpinner.setVisibility(View.VISIBLE);
                     affectTextView.setVisibility(View.VISIBLE);
-                    dividerAffectVersion.setVisibility(View.VISIBLE);
                     ArrayList<String> versionNames = new ArrayList<>();
                     versionNames.addAll(result.values());
                     ArrayAdapter<String> versionsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, versionNames);
@@ -227,7 +225,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 } else {
                     versionsSpinner.setVisibility(View.GONE);
                     affectTextView.setVisibility(View.GONE);
-                    dividerAffectVersion.setVisibility(View.GONE);
                 }
             }
         });

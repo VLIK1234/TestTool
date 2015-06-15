@@ -33,13 +33,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="true"/>
-
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/material_colored_divider_size"
-                android:background="@color/iv_divider_color"
-                android:contentDescription="@string/label_divider"
-                android:paddingBottom="@dimen/material_vertical_size_divider" />
             <!-- *******PROJECTS END***************************************************-->
 
             <!-- *******ISSUE TYPES BEGIN**********************************************-->
@@ -60,11 +53,6 @@
                 android:hint="@string/label_issue_type"
                 android:paddingBottom="@dimen/spinner_padding_bottom" />
 
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/material_colored_divider_size"
-                android:background="@color/iv_divider_color"
-                android:paddingBottom="@dimen/material_vertical_size_divider" />
             <!-- *******ISSUE TYPES END**********************************************-->
 
             <!-- *******SUMMARY BEGIN*************************************************-->
@@ -103,11 +91,6 @@
                 android:hint="@string/label_priority"
                 android:paddingBottom="@dimen/spinner_padding_bottom" />
 
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/material_colored_divider_size"
-                android:background="@color/iv_divider_color"
-                android:paddingTop="@dimen/material_vertical_size_divider" />
             <!-- *******PRIORITY END*************************************************-->
 
             <!-- *******ATTACHMENT BEGIN****************************************-->
@@ -159,13 +142,6 @@
                 android:paddingBottom="@dimen/spinner_padding_bottom"
                 android:visibility="gone" />
 
-            <ImageView
-                android:id="@+id/affect_divider"
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/material_colored_divider_size"
-                android:background="@color/iv_divider_color"
-                android:paddingTop="@dimen/material_vertical_size_divider"
-                android:visibility="gone" />
             <!-- *******AFFECTS VERSIONS END****************************************-->
 
             <!-- *******ENVIRONMENT BEGIN****************************************-->
