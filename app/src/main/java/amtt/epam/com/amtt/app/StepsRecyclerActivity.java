@@ -92,6 +92,10 @@ public class StepsRecyclerActivity extends AppCompatActivity implements StepRecy
     @Override
     public void onItemRemove(int position) {
         adapter.removeItem(position);
+        if (adapter.getItemCount() == 0) {
+            recyclerView.setVisibility(View.GONE);
+            emptyList.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
