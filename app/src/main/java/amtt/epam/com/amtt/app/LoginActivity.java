@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import org.apache.http.auth.AuthenticationException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,6 +43,7 @@ import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.ConnectionUtil;
 import amtt.epam.com.amtt.util.Constants.Symbols;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
@@ -106,10 +109,16 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 userName,
                 password,
                 mRequestUrl);
-        new JiraTask.Builder<JUserInfo>()
-                .setRestMethod(userInfoMethod)
-                .setCallback(LoginActivity.this)
-                .createAndExecute();
+        if (ConnectionUtil.isOnline(LoginActivity.this)) {
+            new JiraTask.Builder<JUserInfo>()
+                    .setRestMethod(userInfoMethod)
+                    .setCallback(LoginActivity.this)
+                    .createAndExecute();
+        } else {
+            ExceptionHandler.getInstance().processError(new AmttException(new IllegalArgumentException(), 600, userInfoMethod)).showDialog(LoginActivity.this, LoginActivity.this);
+            mLoginButton.setEnabled(true);
+            showProgress(false);
+        }
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
@@ -163,7 +172,11 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 public void onResult(List<JUserInfo> result) {
                     mIsUserInDatabase = result.size() > 0;
                     ActiveUser.getInstance().clearActiveUser();
-                    sendAuthRequest();
+                    LoginActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            sendAuthRequest();
+                        }
+                    });
                 }
 
                 @Override
