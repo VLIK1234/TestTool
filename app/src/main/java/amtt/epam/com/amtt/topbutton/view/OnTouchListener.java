@@ -5,6 +5,6 @@ package amtt.epam.com.amtt.topbutton.view;
  @version on 13.05.2015
  */
 
-public interface ITouchAction {
-    void TouchAction();
+public interface OnTouchListener {
+    void onTouch();
 }
