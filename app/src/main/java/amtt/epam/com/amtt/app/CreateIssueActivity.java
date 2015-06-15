@@ -375,7 +375,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 2) {
+                if (s.length() > 2&&before<=count) {
                     if (InputsUtil.haveWhitespaces(s.toString())) {
                         Toast.makeText(CreateIssueActivity.this, getString(R.string.label_tester) + getString(R.string.label_no_whitespaces), Toast.LENGTH_LONG).show();
                     } else {
