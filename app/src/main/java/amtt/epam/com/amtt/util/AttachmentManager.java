@@ -38,8 +38,8 @@ public class AttachmentManager {
     }
 
     public ArrayList<Attachment> getAttachmentList(List<DatabaseEntity> result) {
+        attachmentArrayList.clear();
         if (result!=null) {
-            attachmentArrayList.clear();
             ArrayList<Step> listStep = (ArrayList) result;
             for (Step step:listStep) {
                 if (step.getScreenPath()!=null) {
