@@ -1,11 +1,11 @@
-package amtt.epam.com.amtt.ticket;
+package amtt.epam.com.amtt.util;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.bo.database.Step;
+import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.util.FileUtil;
 
 /**
 @author Iryna Monchanka

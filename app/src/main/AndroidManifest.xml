@@ -100,7 +100,7 @@
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
 
         <service
-            android:name=".ticket.AttachmentService"
+            android:name=".service.AttachmentService"
             android:exported="false" />
 
         <receiver

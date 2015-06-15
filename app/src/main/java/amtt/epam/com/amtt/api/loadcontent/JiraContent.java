@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.ticket;
+package amtt.epam.com.amtt.api.loadcontent;
 
 import android.text.Spanned;
 
@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import amtt.epam.com.amtt.api.ContentLoadingCallback;
+import amtt.epam.com.amtt.api.JiraContentConst;
+import amtt.epam.com.amtt.api.JiraGetContentCallback;
 import amtt.epam.com.amtt.bo.JCreateIssue;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
 import amtt.epam.com.amtt.bo.JPriorityResponse;

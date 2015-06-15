@@ -1,5 +1,6 @@
-package amtt.epam.com.amtt.ticket;
+package amtt.epam.com.amtt.adapter;
 
+import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.util.Logger;
 import android.support.v7.widget.RecyclerView;

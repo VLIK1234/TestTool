@@ -33,9 +33,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
     public StepsAdapter(ArrayList<Step> listStep, ViewHolder.ClickListener clickListener){
         this.listStep = listStep;
         this.clickListener = clickListener;
-//        this.listStep.add(new Step(getClass().getName(),"/storage/sdcard0/Pictures/Screenshots/Screenshot_2015-06-10-16-50-22.png"));
-//        this.listStep.add(new Step(getClass().getName(),"/storage/sdcard0/Pictures/Screenshots/Screenshot_2015-06-10-16-50-22.png"));
-//        this.listStep.add(new Step(getClass().getName(),"/storage/sdcard0/Pictures/Screenshots/Screenshot_2015-06-10-16-50-22.png"));
     }
 
     @Override

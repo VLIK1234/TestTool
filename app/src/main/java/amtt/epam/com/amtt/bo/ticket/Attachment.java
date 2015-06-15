@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.ticket;
+package amtt.epam.com.amtt.bo.ticket;
 
 /**
  @author Iryna Monchanka
