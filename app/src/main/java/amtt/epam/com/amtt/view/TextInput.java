@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,37 +58,31 @@ public class TextInput extends FrameLayout {
     private void initContent(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.TextInput, defStyleAttr, defStyleRes);
 
+        this.setFocusableInTouchMode(true);
+        this.setFocusable(true);
+
         mEditText = new EditText(context, attrs);
+        mEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (isErrorTookPlace && !hasFocus && isEditTextEmpty()) {
+                    mTextInputLayout.setError(mDefaultErrorText);
+                } else if (isErrorTookPlace) {
+                    mTextInputLayout.setError(Constants.Symbols.EMPTY);
+                }
+            }
+        });
+
         try {
-//            String initialText = typedArray.getString(android.R.attr.text);
-//            mInitialTextLength = initialText.length();
             mDefaultErrorText = getContext().getString(R.string.enter_prefix) + typedArray.getString(R.styleable.TextInput_defaultErrorText);
-//            mEditText.setText(initialText);
         } finally {
             typedArray.recycle();
         }
-        this.setFocusableInTouchMode(true);
-        mEditText.setFocusableInTouchMode(true);
-//        mEditText.setOnFocusChangeListener(new OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (isErrorTookPlace && !hasFocus && isEditTextEmpty()) {
-//                    mTextInputLayout.setError(mDefaultErrorText);
-//                } else if (isErrorTookPlace) {
-//                    mTextInputLayout.setError(Constants.Symbols.EMPTY);
-//                }
-//            }
-//        });
+
         mTextInputLayout = new TextInputLayout(context);
         mTextInputLayout.addView(mEditText, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mTextInputLayout.setErrorEnabled(true);
         addView(mTextInputLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        TextInput.this.setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                mEditText.requestFocus();
-            }
-        });
     }
 
     public void setValidationMap(Map<Predicate<EditText>,CharSequence> validationMap) {
@@ -121,4 +116,9 @@ public class TextInput extends FrameLayout {
         }
     }
 
+    @Override
+    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+        mEditText.requestFocus();
+    }
 }
