@@ -16,6 +16,7 @@ public class ActiveUser {
     private String mUserName;
     private String mUrl;
     private int mId;
+    private String mLastProjectKey;
 
     private ActiveUser() {
     }
@@ -69,11 +70,19 @@ public class ActiveUser {
         this.mUserName = userName;
     }
 
-    public void clearActiveUser(){
-       mUserName = null;
-       mUrl = null;
-       mId = 0;
+    public String getLastProjectKey() {
+        return mLastProjectKey;
+    }
 
+    public void setLastProjectKey(String lastProjectKey) {
+        mLastProjectKey = lastProjectKey;
+    }
+
+    public void clearActiveUser() {
+        mUserName = null;
+        mUrl = null;
+        mId = 0;
+        mLastProjectKey = null;
     }
 }
 

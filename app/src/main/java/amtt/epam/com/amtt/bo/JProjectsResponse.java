@@ -8,8 +8,10 @@ import java.util.HashMap;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 
 /**
- * Created by Iryna_Monchanka on 3/31/2015.
+ @author Iryna Monchanka
+ @version on 3/31/2015
  */
+
 public class JProjectsResponse {
 
     @SerializedName("expand")

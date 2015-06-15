@@ -6,7 +6,7 @@ package amtt.epam.com.amtt.ticket;
  */
 
 public enum JiraContentConst {
-    META_RESPONSE,
+    PROJECTS_RESPONSE,
     VERSIONS_RESPONSE,
     CREATE_ISSUE_RESPONSE,
     USERS_ASSIGNABLE_RESPONSE,

@@ -9,7 +9,8 @@ import amtt.epam.com.amtt.bo.user.JUser;
 import amtt.epam.com.amtt.processing.GsonSerializeProcessor;
 
 /**
- * Created by Iryna_Monchanka on 3/26/2015.
+ @author Iryna Monchanka
+ @version on 3/26/2015
  */
 
 public class JCreateIssue {

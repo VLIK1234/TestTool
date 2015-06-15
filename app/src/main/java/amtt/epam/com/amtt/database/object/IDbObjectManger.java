@@ -7,7 +7,9 @@ import java.util.List;
  */
 public interface IDbObjectManger<ObjectType> {
 
-    Integer addOrUpdate(ObjectType object);
+    Integer add(ObjectType object);
+
+    Integer update(ObjectType object, String selection, String[] selectionArgs);
 
     void remove(ObjectType object);
 

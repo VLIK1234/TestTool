@@ -6,8 +6,10 @@ import java.util.HashMap;
 import amtt.epam.com.amtt.bo.project.JPriority;
 
 /**
- * Created by Iryna_Monchanka on 04.05.2015.
+ @author Iryna Monchanka
+ @version on 04.05.2015
  */
+
 public class JPriorityResponse {
 
     private ArrayList<JPriority> mPriorities;
@@ -31,7 +33,7 @@ public class JPriorityResponse {
         if (mPriorities != null) {
             mPriorityNames = new HashMap<>();
             for (int i = 0; i < mPriorities.size(); i++) {
-                mPriorityNames.put(mPriorities.get(i).getId(), mPriorities.get(i).getName());
+                mPriorityNames.put(mPriorities.get(i).getJiraId(), mPriorities.get(i).getName());
             }
             return mPriorityNames;
         } else {

@@ -3,11 +3,13 @@ package amtt.epam.com.amtt.database.table;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.database.constant.BaseColumns;
-import amtt.epam.com.amtt.util.MultiValueMap;
+import amtt.epam.com.amtt.database.util.MultiValueMap;
 
 /**
- * Created by Artsiom_Kaliaha on 29.04.2015.
+ @author Artsiom_Kaliaha
+ @version on 29.04.2015
  */
+
 public class UsersTable extends Table {
 
     public static final String TABLE_NAME = "users";
@@ -24,6 +26,7 @@ public class UsersTable extends Table {
     public static final String _AVATAR_24 = "_avatar_24";
     public static final String _AVATAR_32= "_avatar_32";
     public static final String _AVATAR_48 = "_avatar_48";
+    public static final String _LAST_PROJECT_KEY = "_last_project_key";
 
     private static MultiValueMap<String, String> sColumnsMap;
 
@@ -40,7 +43,8 @@ public class UsersTable extends Table {
             _AVATAR_24,
             _AVATAR_32,
             _AVATAR_48,
-            _CREDENTIALS
+            _CREDENTIALS,
+            _LAST_PROJECT_KEY
     };
 
     static {
@@ -58,6 +62,7 @@ public class UsersTable extends Table {
             add(_AVATAR_32);
             add(_AVATAR_48);
             add(_CREDENTIALS);
+            add(_LAST_PROJECT_KEY);
         }});
         sColumnsMap.put(BaseColumns.TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);
