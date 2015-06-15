@@ -23,6 +23,7 @@ public class UserAdapter extends CursorAdapter {
     private static class ViewHolder {
         ImageView mUserImage;
         TextView mUserName;
+        TextView mUrl;
     }
 
     public UserAdapter(Context context, Cursor c, int flags) {
@@ -36,6 +37,7 @@ public class UserAdapter extends CursorAdapter {
         ViewHolder vh = new ViewHolder();
         vh.mUserImage = (ImageView)layout.findViewById(R.id.tv_avatar);
         vh.mUserName = (TextView)layout.findViewById(R.id.tv_user_name);
+        vh.mUrl = (TextView) layout.findViewById(R.id.tv_user_url);
         layout.setTag(vh);
         return layout;
     }
@@ -44,8 +46,10 @@ public class UserAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder vh = (ViewHolder)view.getTag();
         String userName = cursor.getString(cursor.getColumnIndex(UsersTable._USER_NAME));
+        String url = cursor.getString(cursor.getColumnIndex(UsersTable._URL));
         String avatar = cursor.getString(cursor.getColumnIndex(UsersTable._AVATAR_48));
         vh.mUserName.setText(userName);
+        vh.mUrl.setText(url);
         ImageLoader.getInstance().displayImage(avatar, vh.mUserImage);
     }
 

@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.topbutton.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.view.Gravity;
@@ -145,11 +144,6 @@ public class TopButtonBarView extends FrameLayout {
         mButtonStepWithScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_with_screen), R.drawable.background_step_with_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                try {
-                    StepUtil.saveActivityMeta(ActivityMetaUtil.createMeta());
-                } catch (PackageManager.NameNotFoundException e) {
-                    Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
-                }
                 if (!PreferenceUtils.getBoolean(getContext().getString(R.string.key_dialog_hide))) {
                     Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
                     intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -164,16 +158,11 @@ public class TopButtonBarView extends FrameLayout {
         mButtonStepWithoutScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_without_screen), R.drawable.background_step_without_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_step_without_screen), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_added_step_without_screen), Toast.LENGTH_LONG).show();
                 ScheduledExecutorService worker =
                         Executors.newSingleThreadScheduledExecutor();
                 Runnable task = new Runnable() {
                     public void run() {
-                        try {
-                            StepUtil.saveActivityMeta(ActivityMetaUtil.createMeta());
-                        } catch (PackageManager.NameNotFoundException e) {
-                            Toast.makeText(getContext(), R.string.activity_info_unavailable, Toast.LENGTH_SHORT).show();
-                        }
                         StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), null);
                     }
                 };

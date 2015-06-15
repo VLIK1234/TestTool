@@ -89,7 +89,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ContextHolder.getContext().getContentResolver().delete(object.getUri(), BaseColumns._ID + "?", new String[]{String.valueOf(object.getId())});
+                ContextHolder.getContext().getContentResolver().delete(object.getUri(), BaseColumns._ID + "=?", new String[]{String.valueOf(object.getId())});
             }
         }).start();
     }

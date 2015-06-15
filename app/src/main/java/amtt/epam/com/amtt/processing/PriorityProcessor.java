@@ -2,7 +2,6 @@ package amtt.epam.com.amtt.processing;
 
 import amtt.epam.com.amtt.bo.JPriorityResponse;
 import amtt.epam.com.amtt.bo.project.JPriority;
-import amtt.epam.com.amtt.ticket.JiraContent;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
