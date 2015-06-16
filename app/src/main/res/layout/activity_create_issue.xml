@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".app.CreateIssueActivity"
     android:layout_width="match_parent"
@@ -9,7 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_horizontal_margin">
+        android:paddingBottom="@dimen/activity_horizontal_margin"
+        android:paddingRight="12dp"
+        android:paddingLeft="12dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,15 +50,19 @@
             <!-- *******ISSUE TYPES END**********************************************-->
 
             <!-- *******SUMMARY BEGIN*************************************************-->
-            <amtt.epam.com.amtt.view.EditText
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/til_summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <EditText
                 android:id="@+id/et_summary"
                 style="@style/Material.Widget.EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:hint="@string/label_summary"
-                android:inputType="textMultiLine"
-                android:paddingBottom="@dimen/material_vertical_size_divider"/>
+                android:inputType="textMultiLine"/>
+            </android.support.design.widget.TextInputLayout>
             <!-- *******SUMMARY END*************************************************-->
 
             <!-- *******PRIORITY BEGIN*************************************************-->
@@ -115,32 +120,40 @@
             <!-- *******AFFECTS VERSIONS END****************************************-->
 
             <!-- *******ENVIRONMENT BEGIN****************************************-->
-            <amtt.epam.com.amtt.view.EditText
-                android:id="@+id/et_environment"
-                style="@style/Material.Widget.EditText"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/til_environment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/material_vertical_size_divider"
-                android:hint="@string/label_environment"
-                android:inputType="textMultiLine"/>
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/et_environment"
+                    style="@style/Material.Widget.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/label_environment"
+                    android:inputType="textMultiLine" />
+            </android.support.design.widget.TextInputLayout>
             <!-- *******ENVIRONMENT END****************************************-->
 
             <!-- *******DESCRIPTION BEGIN****************************************-->
-            <amtt.epam.com.amtt.view.EditText
-                android:id="@+id/et_description"
-                style="@style/Material.Widget.EditText"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/til_description"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/material_vertical_size_divider"
-                android:hint="@string/label_description"
-                android:inputType="textMultiLine"/>
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_description"
+                    style="@style/Material.Widget.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/label_description"
+                    android:inputType="textMultiLine" />
+            </android.support.design.widget.TextInputLayout>
 
             <Button
                 android:id="@+id/btn_list_step"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_list_step"
-                android:layout_marginRight="12dp"
                 android:layout_gravity="end"/>
             <!-- *******DESCRIPTION END****************************************-->
 
@@ -167,7 +180,6 @@
                 android:layout_height="@dimen/material_vertical_button_height_size"
                 android:layout_gravity="end"
                 android:layout_marginTop="@dimen/material_vertical_button_padding_top"
-                android:layout_marginRight="12dp"
                 android:minWidth="@dimen/material_vertical_button_min_width_size"
                 android:text="@string/label_create"
                 android:textSize="@dimen/abc_text_size_button_material" />

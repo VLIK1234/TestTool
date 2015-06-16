@@ -19,7 +19,6 @@ import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
-import amtt.epam.com.amtt.view.EditText;
 import amtt.epam.com.amtt.view.SpinnerProgress;
 import amtt.epam.com.amtt.view.TextView;
 
@@ -39,6 +38,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -46,9 +46,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import amtt.epam.com.amtt.api.exception.AmttException;
-import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 
 @SuppressWarnings("unchecked")
 public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener{
@@ -361,8 +358,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     private void initSummaryEditText() {
         mSummaryEditText = (EditText) findViewById(R.id.et_summary);
-        mSummaryEditText.clearErrorOnTextChanged(true);
-        mSummaryEditText.clearErrorOnFocus(true);
     }
 
     private void initAssigneeAutocompleteView() {
