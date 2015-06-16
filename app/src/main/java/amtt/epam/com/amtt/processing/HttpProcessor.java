@@ -35,9 +35,10 @@ public class HttpProcessor<ResultType> implements Processor<HttpResult<ResultTyp
     @Override
     public HttpResult<ResultType> process(HttpResponse httpResponse) throws Exception {
         int statusCode = httpResponse.getStatusLine().getStatusCode();
+        String requestMethodName = mRequest.getHttpRequestBase().getMethod();
 
-        if (mRequest.getHttpRequestBase().getMethod().equals(HttpGet.METHOD_NAME) && statusCode != HttpStatus.SC_OK ||
-                mRequest.getHttpRequestBase().getMethod().equals(HttpPost.METHOD_NAME) && statusCode != HttpStatus.SC_CREATED) {
+        if (requestMethodName.equals(HttpGet.METHOD_NAME) && statusCode != HttpStatus.SC_OK ||
+                requestMethodName.equals(HttpPost.METHOD_NAME) && statusCode != HttpStatus.SC_CREATED) {
             throw new HttpException(null, statusCode, mRequest, null);
         }
 
@@ -53,7 +54,7 @@ public class HttpProcessor<ResultType> implements Processor<HttpResult<ResultTyp
             throw prepareException(e, statusCode, entity);
         }
 
-        return new HttpResult<>(mRequest.getHttpRequestBase().getMethod(), result);
+        return new HttpResult<>(requestMethodName, result);
     }
 
     private HttpException prepareException(Exception e, int statusCode, HttpEntity entity) {

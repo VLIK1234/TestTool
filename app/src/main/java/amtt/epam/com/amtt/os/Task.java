@@ -21,7 +21,7 @@ public class Task<TaskResult, ProcessorSource> extends AsyncTask<Void, Void, Tas
 
     }
 
-    public static interface AsyncTaskCallback<ProcessingResult> {
+    public interface AsyncTaskCallback<ProcessingResult> {
 
         void onTaskStart();
 
@@ -79,7 +79,9 @@ public class Task<TaskResult, ProcessorSource> extends AsyncTask<Void, Void, Tas
         TaskResult processingTaskResult = null;
         try {
             ProcessorSource source = mExecutable.execute();
-            processingTaskResult = mProcessor.process(source);
+            if (mProcessor != null) {
+                processingTaskResult = mProcessor.process(source);
+            }
         } catch (Exception e) {
             mException = e;
         }
@@ -88,13 +90,14 @@ public class Task<TaskResult, ProcessorSource> extends AsyncTask<Void, Void, Tas
 
     @Override
     protected void onPostExecute(TaskResult processingTaskResult) {
-        if (mAsyncTaskCallback != null) {
-            if (processingTaskResult != null) {
-                mAsyncTaskCallback.onTaskExecuted(processingTaskResult);
-            } else {
-                mAsyncTaskCallback.onTaskError(mException);
-            }
+        if (mAsyncTaskCallback == null) {
+            return;
         }
+        if (mException != null) {
+            mAsyncTaskCallback.onTaskError(mException);
+            return;
+        }
+        mAsyncTaskCallback.onTaskExecuted(processingTaskResult);
     }
 
 }

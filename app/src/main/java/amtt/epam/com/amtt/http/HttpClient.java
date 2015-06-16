@@ -4,6 +4,7 @@ import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 
 import java.util.Map;
 import java.util.Set;
@@ -51,13 +52,15 @@ public class HttpClient {
 
     private void execute(Request.Builder requestBuilder, AsyncTaskCallback asyncTaskCallback) {
         Logger.d(TAG, requestBuilder.getUrl());
-        if (requestBuilder.getHeaders() != null) {
-            for (Map.Entry<String, String> keyValuePair : (Set<Map.Entry<String, String>>) requestBuilder.getHeaders().entrySet()) {
-                requestBuilder.getHttpRequestBase().setHeader(keyValuePair.getKey(), keyValuePair.getValue());
+        Map headers = requestBuilder.getHeaders();
+        if (headers != null) {
+            HttpRequestBase requestBase = requestBuilder.getHttpRequestBase();
+            for (Map.Entry<String, String> keyValuePair : (Set<Map.Entry<String, String>>) headers.entrySet()) {
+                requestBase.setHeader(keyValuePair.getKey(), keyValuePair.getValue());
             }
         }
         Request request = requestBuilder.create();
-        new Task.Builder<HttpResult,HttpRequest>()
+        new Task.Builder<HttpResult, HttpRequest>()
                 .setExecutable(request)
                 .setProcessor(new HttpProcessor(request))
                 .setCallback(asyncTaskCallback)
