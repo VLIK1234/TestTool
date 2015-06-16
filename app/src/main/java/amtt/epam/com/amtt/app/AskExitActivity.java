@@ -1,9 +1,9 @@
 package amtt.epam.com.amtt.app;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+import android.support.v7.app.AlertDialog;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -19,26 +19,29 @@ public class AskExitActivity  extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ask_exit);
-
-        Button buttonReturn = (Button) findViewById(R.id.btn_return);
-        buttonReturn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TopButtonService.sendActionChangeVisibilityTopbutton(true);
-                finish();
-            }
-        });
-
-        Button buttonClose = (Button) findViewById(R.id.btn_close_amtt);
-        buttonClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TopButtonService.close(getBaseContext());
-                finish();
-            }
-        });
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog);
+        builder.setTitle(R.string.dialog_exit)
+                .setNegativeButton(getResources().getString(R.string.label_return), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        TopButtonService.sendActionChangeVisibilityTopbutton(true);
+                        finish();
+                    }
+                })
+                .setPositiveButton(getResources().getString(R.string.label_close_app), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        TopButtonService.close(getBaseContext());
+                        finish();
+                    }
+                })
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        finish();
+                    }
+                })
+                .show();
     }
 
 }

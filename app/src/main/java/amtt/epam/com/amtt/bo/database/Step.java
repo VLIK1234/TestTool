@@ -79,7 +79,7 @@ public class Step extends DatabaseEntity<Step> {
         return mActivity;
     }
 
-    public String getScreenPath() {
+    public String getFilePath() {
         return mScreenPath;
     }
 

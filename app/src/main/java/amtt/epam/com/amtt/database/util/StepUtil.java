@@ -19,6 +19,7 @@ import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.util.ContextHolder;
+import amtt.epam.com.amtt.util.FileUtil;
 
 /**
  @author Artsiom_Kaliaha
@@ -53,15 +54,22 @@ public class StepUtil {
         DbObjectManager.INSTANCE.query(new JUserInfo(), null, new String[]{UsersTable._USER_NAME}, new String[]{userName}, result);
     }
 
+     public static Spanned getStepInfo(Step step){
+         Context context = ContextHolder.getContext();
+         return Html.fromHtml(
+                 "<b>" + context.getString(R.string.label_activity) + "</b>" + "<small>" + step.getActivity() + "</small>" + "<br />" +
+                 "<b>" + context.getString(R.string.label_screen_orientation) + "</b>" + "<small>" + step.getOreintation() + "</small>" + "<br />" +
+                 "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>" + "<br />" + "<br />");
+     }
+
     public static Spanned getStepInfo(List<DatabaseEntity> listStep){
         ArrayList<Step> list = (ArrayList)listStep;
         SpannableStringBuilder builder = new SpannableStringBuilder();
         Context context = ContextHolder.getContext();
         for (int i = 0; i < listStep.size(); i++) {
-            builder.append(Html.fromHtml("<h5>" + context.getString(R.string.label_step) + String.valueOf(i + 1) + "</h5>" +
-                    "<b>" + context.getString(R.string.label_activity) + "</b>" + "<small>" + list.get(i).getActivity() + "</small>" + "<br />" +
-                    "<b>" + context.getString(R.string.label_screen_orientation) + "</b>" + "<small>" + list.get(i).getOreintation() + "</small>" + "<br />" +
-                    "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + list.get(i).getPackageName() + "</small>" + "<br />" + "<br />"));
+            builder.append(Html.fromHtml("<h5>" + context.getString(R.string.label_step) + String.valueOf(i + 1) + "</h5>"));
+            builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(list.get(i).getFilePath()) + "</small>" + "<br />"));
+            builder.append(getStepInfo(list.get(i)));
         }
         return builder;
     }
