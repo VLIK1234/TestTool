@@ -17,7 +17,6 @@ import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
-import amtt.epam.com.amtt.util.ConnectionUtil;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.view.TextView;
@@ -237,15 +236,10 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
                 null,
                 null,
                 null);
-        if (ConnectionUtil.isOnline(UserInfoActivity.this)) {
             new JiraTask.Builder<JUserInfo>()
                     .setRestMethod(userInfoMethod)
                     .setCallback(UserInfoActivity.this)
                     .createAndExecute();
-        } else {
-            ExceptionHandler.getInstance().processError(new AmttException(new IllegalArgumentException(), 600, userInfoMethod)).showDialog(UserInfoActivity.this, UserInfoActivity.this);
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
     }
 
     @Override
