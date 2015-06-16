@@ -45,7 +45,7 @@ public class HelpDialogActivity extends Activity {
             }
         });
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Dialog);
         builder.setTitle(R.string.title_activity_help_dialog)
                 .setMessage(stringBuilder)
                 .setView(view)

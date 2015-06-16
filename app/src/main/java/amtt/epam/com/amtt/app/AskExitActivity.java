@@ -19,7 +19,7 @@ public class AskExitActivity  extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Dialog);
         builder.setTitle(R.string.dialog_exit)
                 .setNegativeButton(getResources().getString(R.string.label_return), new DialogInterface.OnClickListener() {
                     @Override

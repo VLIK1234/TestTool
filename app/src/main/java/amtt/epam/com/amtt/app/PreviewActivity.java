@@ -55,7 +55,7 @@ public class PreviewActivity extends Activity{
             title = FileUtil.getFileName(filePath);
             showPreview(filePath);
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Dialog);
         builder.setTitle(title)
                 .setView(view)
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {

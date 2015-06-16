@@ -57,4 +57,7 @@
         <item name="android:baselineAlignBottom">true</item>
     </style>
 
+    <style name="Dialog" parent="Theme.AppCompat.Light.Dialog">
+</style>
+
 </resources>
