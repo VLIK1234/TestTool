@@ -6,7 +6,7 @@
 
     <Spinner
         android:id="@+id/spinner"
-        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+        style="@style/Base.Widget.AppCompat.Spinner.Underlined.Custom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

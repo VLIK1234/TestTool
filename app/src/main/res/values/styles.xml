@@ -58,5 +58,7 @@
         <item name="android:textSize">@dimen/abc_text_size_subhead_material</item>
         <item name="android:baselineAlignBottom">true</item>
     </style>
-
+    <style name="Base.Widget.AppCompat.Spinner.Underlined.Custom">
+        <item name="android:background">@drawable/spinner_background_material</item>
+    </style>
 </resources>
