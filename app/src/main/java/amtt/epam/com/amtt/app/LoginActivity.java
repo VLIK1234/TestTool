@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import org.apache.http.auth.AuthenticationException;
@@ -46,6 +45,7 @@ import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.view.EditText;
 
 import java.util.HashMap;
 
@@ -65,7 +65,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private Button mLoginButton;
     private String mRequestUrl;
     private boolean mIsUserInDatabase;
-    private RestMethod<JUserInfo> userInfoMethod;
+    private RestMethod<JUserInfo> mUserInfoMethod;
     private InputMethodManager mInputMethodManager;
 
     @Override
@@ -83,9 +83,15 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private void initViews() {
-        mUserNameEditText = (EditText) findViewById(R.id.et_username);
-        mPasswordEditText = (EditText) findViewById(R.id.et_password);
-        mUrlEditText = (EditText) findViewById(R.id.et_jira_url);
+        mUserNameEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_username);
+        mUserNameEditText.clearErrorOnFocus(true);
+        mUserNameEditText.clearErrorOnTextChanged(true);
+        mPasswordEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_password);
+        mPasswordEditText.clearErrorOnFocus(true);
+        mPasswordEditText.clearErrorOnTextChanged(true);
+        mUrlEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_jira_url);
+        mUrlEditText.clearErrorOnFocus(true);
+        mUrlEditText.clearErrorOnTextChanged(true);
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,15 +107,15 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         String password = mPasswordEditText.getText().toString();
         //get user info and perform auth in one request
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameEditText.getText().toString();
-        userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
+        mUserInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
                 new UserInfoProcessor(),
                 userName,
                 password,
                 mRequestUrl);
-        new JiraTask.Builder<JUserInfo>()
-                .setRestMethod(userInfoMethod)
-                .setCallback(LoginActivity.this)
-                .createAndExecute();
+            new JiraTask.Builder<JUserInfo>()
+                    .setRestMethod(mUserInfoMethod)
+                    .setCallback(LoginActivity.this)
+                    .createAndExecute();
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
@@ -163,7 +169,11 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 public void onResult(List<JUserInfo> result) {
                     mIsUserInDatabase = result.size() > 0;
                     ActiveUser.getInstance().clearActiveUser();
-                    sendAuthRequest();
+                    LoginActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            sendAuthRequest();
+                        }
+                    });
                 }
 
                 @Override
@@ -227,7 +237,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 mInputMethodManager.hideSoftInputFromInputMethod(mUserNameEditText.getWindowToken(), 0);
                 finish();
             } else if (restResponse.getResultObject() == null) {
-                ExceptionHandler.getInstance().processError(new AmttException(new AuthenticationException(), 403, userInfoMethod)).showDialog(LoginActivity.this, LoginActivity.this);
+                ExceptionHandler.getInstance().processError(new AmttException(new AuthenticationException(), 403, mUserInfoMethod)).showDialog(LoginActivity.this, LoginActivity.this);
                 mLoginButton.setEnabled(true);
             } else {
                 setActiveUser();

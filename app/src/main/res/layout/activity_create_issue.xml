@@ -24,8 +24,8 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:text="@string/label_project"
-                android:textColor="@color/primary_text"
-                android:textSize="@dimen/abc_text_size_caption_material" />
+                android:textColor="@color/secondary_text"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <amtt.epam.com.amtt.view.SpinnerProgress
                 android:id="@+id/spin_projects_name"
@@ -49,8 +49,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_issue_type"
-                android:textColor="@color/primary_text"
-                android:textSize="@dimen/abc_text_size_caption_material" />
+                android:textColor="@color/secondary_text"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <amtt.epam.com.amtt.view.SpinnerProgress
                 android:id="@+id/spin_issue_name"
@@ -77,7 +77,7 @@
                 android:hint="@string/label_summary"
                 android:inputType="textMultiLine"
                 android:paddingBottom="@dimen/material_vertical_size_divider"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 android:textColor="@color/primary_text"
                 app:et_dividerErrorColor="@color/et_divider_error"
                 app:et_labelTextColor="@drawable/color_label"
@@ -92,8 +92,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_priority"
-                android:textColor="@color/primary_text"
-                android:textSize="@dimen/abc_text_size_caption_material" />
+                android:textColor="@color/secondary_text"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
 
             <amtt.epam.com.amtt.view.SpinnerProgress
                 android:id="@+id/spin_priority"
@@ -117,8 +117,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_attachment"
-                android:textColor="@color/primary_text"
-                android:textSize="@dimen/abc_text_size_caption_material" />
+                android:textColor="@color/secondary_text"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/listScreens"
@@ -163,7 +163,7 @@
                 android:id="@+id/affect_divider"
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/material_colored_divider_size"
-                android:background="@color/iv_divider_color"
+                android:background="@color/secondary_text"
                 android:paddingTop="@dimen/material_vertical_size_divider"
                 android:visibility="gone" />
             <!-- *******AFFECTS VERSIONS END****************************************-->
@@ -177,7 +177,7 @@
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:hint="@string/label_environment"
                 android:inputType="textMultiLine"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 android:textColor="@color/primary_text"
                 app:et_dividerErrorColor="@color/et_divider_error"
                 app:et_labelTextColor="@drawable/color_label"
@@ -194,7 +194,7 @@
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:hint="@string/label_description"
                 android:inputType="textMultiLine"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 android:textColor="@color/primary_text"
                 app:et_dividerErrorColor="@color/et_divider_error"
                 app:et_inputId="@+id/description_error"
@@ -217,8 +217,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_tester"
-                android:textColor="@color/primary_text"
-                android:textSize="@dimen/abc_text_size_caption_material" />
+                android:textColor="@color/secondary_text"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
 
             <amtt.epam.com.amtt.view.AutocompleteProgressView
                 android:id="@+id/atv_assignable_users"
@@ -235,7 +235,7 @@
                 android:paddingLeft="0dp"
                 android:paddingRight="0dp"
                 android:inputType="textAutoComplete"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 android:textColor="@color/primary_text" />
             <!-- *******TESTER END****************************************-->
 

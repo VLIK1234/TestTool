@@ -47,11 +47,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import amtt.epam.com.amtt.api.exception.AmttException;
+import amtt.epam.com.amtt.api.exception.ExceptionHandler;
+
 @SuppressWarnings("unchecked")
 public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener{
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_TEXT_CHANGED = 100;
+    private static final String DEFAULT_PRIORITY_ID = "3";
     private AutocompleteProgressView mAssignableAutocompleteView;
     private EditText mDescriptionEditText;
     private EditText mEnvironmentEditText;
@@ -184,7 +188,10 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             ArrayAdapter<String> mPrioritiesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, priorityNames);
                             mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                             prioritiesSpinner.setAdapter(mPrioritiesAdapter);
-                            prioritiesSpinner.setSelection(2);
+                            String defaultPriority = JiraContent.getInstance().getPriorityNameById(DEFAULT_PRIORITY_ID);
+                            if (defaultPriority != null) {
+                                prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
+                            }
                             prioritiesSpinner.showProgress(false);
                             prioritiesSpinner.setEnabled(true);
                         }

@@ -21,7 +21,8 @@
         android:layout_below="@id/tv_name_activity"
         android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
         android:paddingRight="138dp"
-        android:text="@string/label_description" />
+        android:text="@string/label_description"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
 
     <ImageView
         android:id="@+id/iv_screenshot"
