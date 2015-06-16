@@ -17,7 +17,7 @@ public class DialogUtils {
     /**
      * Builds dialogs for ExceptionHandler class
      */
-    public static class Builder <ResultType> {
+    public static class Builder {
 
         private AlertDialog.Builder mBuilder;
 

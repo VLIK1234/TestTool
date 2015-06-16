@@ -8,7 +8,6 @@ import org.apache.http.client.methods.HttpPost;
 import java.util.Map;
 import java.util.Set;
 
-import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.os.Task;
 import amtt.epam.com.amtt.os.Task.AsyncTaskCallback;
 import amtt.epam.com.amtt.processing.HttpProcessor;
@@ -58,7 +57,7 @@ public class HttpClient {
             }
         }
         Request request = requestBuilder.create();
-        new Task.Builder<RestResponse,HttpRequest>()
+        new Task.Builder<HttpResult,HttpRequest>()
                 .setExecutable(request)
                 .setProcessor(new HttpProcessor(request))
                 .setCallback(asyncTaskCallback)

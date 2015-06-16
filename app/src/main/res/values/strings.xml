@@ -14,6 +14,7 @@
 
     <string name="empty_list_view">There is no saved steps =(</string>
 
+    <string name="error">Error</string>
     <string name="error_title_auth">Authorization error</string>
     <string name="error_message_auth">Check your credentials</string>
     <string name="error_message_auth_forbidden">Visit jira.epam.com before using Amtt</string>
@@ -22,7 +23,7 @@
     <string name="error_button_try">Try again</string>
     <string name="error_button_settings">Open settings</string>
     <string name="error_message_unknown">Unknown error</string>
-    <string name="error_message_gateway">Gateway error</string>
+    <string name="error_message_gateway">Server error</string>
     <string name="error_message_web_address">Wrong web-address</string>
     <string name="error_button_close">Close</string>
 
@@ -129,4 +130,6 @@
     <string name="label_tags">Tags</string>
 
     <string name="url_prefix">https://</string>
+    <string name="ticket_created">Ticket has been successfully created</string>
+
 </resources>

@@ -15,19 +15,18 @@ import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.apache.http.client.methods.HttpGet;
+
 import java.lang.ref.WeakReference;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.api.JiraCallback;
-import amtt.epam.com.amtt.api.exception.AmttException;
-import amtt.epam.com.amtt.api.exception.ExceptionHandler;
-import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.api.result.JiraOperationResult;
+import amtt.epam.com.amtt.exception.ExceptionHandler;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.http.HttpResult;
 import amtt.epam.com.amtt.os.Task.AsyncTaskCallback;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.ticket.JiraContent;
@@ -43,7 +42,7 @@ import amtt.epam.com.amtt.view.TextView;
  */
 
 @SuppressWarnings("unchecked")
-public class UserInfoActivity extends BaseActivity implements AsyncTaskCallback<RestResponse<JUserInfo>>, LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
+public class UserInfoActivity extends BaseActivity implements AsyncTaskCallback<HttpResult<JUserInfo>>, LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_REFRESH = 100;
@@ -255,9 +254,9 @@ public class UserInfoActivity extends BaseActivity implements AsyncTaskCallback<
     }
 
     @Override
-    public void onTaskExecuted(RestResponse<JUserInfo> restResponse) {
-        if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
-            JUserInfo user = restResponse.getResultObject();
+    public void onTaskExecuted(HttpResult<JUserInfo> httpResult) {
+        if (httpResult.getRequestType().equals(HttpGet.METHOD_NAME)) {
+            JUserInfo user = httpResult.getResultObject();
             user.setUrl(ActiveUser.getInstance().getUrl());
             setActiveUser(user);
             mSwipeRefreshLayout.setRefreshing(false);

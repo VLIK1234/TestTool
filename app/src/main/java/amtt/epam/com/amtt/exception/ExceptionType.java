@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.api.exception;
+package amtt.epam.com.amtt.exception;
 
 import com.google.gson.JsonSyntaxException;
 
@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.api.rest.RestMethod;
+import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.http.HttpException;
 import amtt.epam.com.amtt.util.Constants;
 
@@ -52,7 +52,7 @@ public enum ExceptionType {
         mStatusCodeMap.put(HttpStatus.SC_BAD_GATEWAY, ExceptionType.BAD_GATEWAY);
         mStatusCodeMap.put(HttpStatus.SC_NOT_FOUND, ExceptionType.NOT_FOUND);
         mStatusCodeMap.put(HttpStatus.SC_INTERNAL_SERVER_ERROR, ExceptionType.UNKNOWN);
-        mStatusCodeMap.put(RestMethod.EMPTY_STATUS_CODE, ExceptionType.UNKNOWN);
+        mStatusCodeMap.put(HttpClient.EMPTY_STATUS_CODE, ExceptionType.UNKNOWN);
     }
 
     private ExceptionType(int titleId, int messageId, int positiveTextId, int neutralTextId) {
@@ -84,15 +84,15 @@ public enum ExceptionType {
     public static ExceptionType valueOf(Exception e) {
         if (e != null) {
             if (e instanceof HttpException) {
-                if (e.getSuppressed() != null) {
+                if (((HttpException) e).getStatusCode() != HttpClient.EMPTY_STATUS_CODE) {
+                    return mStatusCodeMap.get(((HttpException)e).getStatusCode());
+                } else {
                     Class exceptionClass = e.getSuppressed().getClass();
                     if (mExceptionsMap.get(exceptionClass) != null) {
                         return mExceptionsMap.get(exceptionClass);
                     } else {
                         return mExceptionsMap.get(UnknownError.class);
                     }
-                } else {
-                    return mStatusCodeMap.get(((HttpException)e).getStatusCode());
                 }
             } else {
                 if (mExceptionsMap.get(e.getClass()) != null) {

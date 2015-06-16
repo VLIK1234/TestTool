@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.api.exception;
+package amtt.epam.com.amtt.exception;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,7 +7,6 @@ import android.content.Intent;
 import java.util.HashMap;
 import java.util.Map;
 
-import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.http.HttpException;
 import amtt.epam.com.amtt.loader.BlockingStack;
 import amtt.epam.com.amtt.os.Task.AsyncTaskCallback;
@@ -70,13 +69,17 @@ public class ExceptionHandler {
      */
     public void showDialog(final Context context, AsyncTaskCallback callback) {
         if (!isDialogShown) {
-            new DialogUtils.Builder(context)
+            DialogUtils.Builder dialog = new DialogUtils.Builder(context)
                     .setTitle(mLastType.getTitle())
                     .setMessage(mLastType.getMessage())
-                    .setPositiveButton(mLastType.getPositiveText(), ((HttpException)mLastProcessedException).getRequest(), callback)
                     .setNeutralButton(mLastType.getNeutralText(), getNeutralListener(context))
-                    .setNegativeButton()
-                    .createAndShow();
+                    .setNegativeButton();
+
+            if (mLastProcessedException instanceof HttpException) {
+                dialog.setPositiveButton(mLastType.getPositiveText(), ((HttpException) mLastProcessedException).getRequest(), callback);
+            }
+
+            dialog.createAndShow();
             mReceivedExceptionsMap.remove(mLastType);
         }
     }

@@ -23,18 +23,13 @@ import java.util.concurrent.TimeUnit;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.api.exception.AmttException;
-import amtt.epam.com.amtt.api.exception.ExceptionHandler;
-import amtt.epam.com.amtt.api.rest.RestMethod;
-import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.api.result.JiraOperationResult;
+import amtt.epam.com.amtt.exception.ExceptionHandler;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.http.HttpException;
 import amtt.epam.com.amtt.http.HttpResult;
 import amtt.epam.com.amtt.os.Task.AsyncTaskCallback;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
@@ -64,7 +59,6 @@ public class LoginActivity extends BaseActivity implements AsyncTaskCallback<Htt
     private String mRequestUrl;
     private boolean mIsUserInDatabase;
     private boolean isNeedShowingTopButton;
-    private RestMethod<JUserInfo> userInfoMethod;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
