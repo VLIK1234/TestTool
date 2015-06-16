@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
+import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.util.ContextHolder;
+import amtt.epam.com.amtt.util.FileUtil;
 
 /**
  * Created by Ivan_Bakach on 10.06.2015.
@@ -48,12 +50,10 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
         holder.step.setText(ContextHolder.getContext().getString(R.string.label_step) + (position + 1));
         Context context = ContextHolder.getContext();
         SpannableStringBuilder info = new SpannableStringBuilder();
-        info.append(Html.fromHtml("<b>" + context.getString(R.string.label_activity) + "</b>" + "<small>" + step.getActivity() + "</small>" + "<br />" +
-                "<b>" + context.getString(R.string.label_screen_orientation) + "</b>" + "<small>" + step.getOreintation() + "</small>" + "<br />" +
-                "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>" + "<br />"));
+        info.append(StepUtil.getStepInfo(step));
         holder.activityInfo.setText(info);
-        if (!TextUtils.isEmpty(step.getScreenPath())) {
-            ImageLoader.getInstance().displayImage("file:///"+step.getScreenPath(), holder.screenshotView);
+        if (!TextUtils.isEmpty(step.getFilePath())) {
+            ImageLoader.getInstance().displayImage("file:///"+step.getFilePath(), holder.screenshotView);
         }else{
             holder.screenshotView.setImageDrawable(null);
         }
@@ -72,7 +72,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
     }
 
     public String getScreenPath(int position){
-        return listStep.get(position).getScreenPath();
+        return listStep.get(position).getFilePath();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
