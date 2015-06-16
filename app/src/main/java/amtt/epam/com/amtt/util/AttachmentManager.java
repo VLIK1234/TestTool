@@ -42,8 +42,8 @@ public class AttachmentManager {
         if (result!=null) {
             ArrayList<Step> listStep = (ArrayList) result;
             for (Step step:listStep) {
-                if (step.getScreenPath()!=null) {
-                    attachmentArrayList.add(new Attachment(FileUtil.getFileName(step.getScreenPath()), step.getScreenPath()));
+                if (step.getFilePath()!=null) {
+                    attachmentArrayList.add(new Attachment(FileUtil.getFileName(step.getFilePath()), step.getFilePath()));
                 }
             }
         }

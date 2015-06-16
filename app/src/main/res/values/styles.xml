@@ -63,12 +63,18 @@
         <item name="android:baselineAlignBottom">true</item>
     </style>
 
-    <style name="Material.Widget.TextView">
+    <style name="Material.Widget.TextViewLabel">
         <item name="android:layout_marginLeft">16dp</item>
         <item name="android:layout_marginRight">16dp</item>
         <item name="android:textColor">@color/secondary_text</item>
-        <item name="android:textSize">@dimen/abc_text_size_caption_material</item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Small</item>
+    </style>
+
+    <style name="Material.Widget.TextViewBody">
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
     </style>
 
     <style name="Base.Widget.AppCompat.Spinner.Underlined.Custom">
@@ -92,4 +98,7 @@
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
         <item name="android:textColor">@color/primary_text</item>
     </style>
+    <style name="Dialog" parent="Theme.AppCompat.Light.Dialog">
+</style>
+
 </resources>

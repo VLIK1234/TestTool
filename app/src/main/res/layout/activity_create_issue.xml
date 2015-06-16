@@ -18,7 +18,7 @@
             <!-- *******PROJECTS BEGIN***************************************************-->
             <amtt.epam.com.amtt.view.TextView
                 android:id="@+id/tv_project_name"
-                style="@style/Material.Widget.TextView"
+                style="@style/Material.Widget.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_project" />
@@ -33,7 +33,7 @@
             <!-- *******ISSUE TYPES BEGIN**********************************************-->
             <amtt.epam.com.amtt.view.TextView
                 android:id="@+id/tv_project_issue_name"
-                style="@style/Material.Widget.TextView"
+                style="@style/Material.Widget.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
@@ -63,7 +63,7 @@
             <!-- *******PRIORITY BEGIN*************************************************-->
             <amtt.epam.com.amtt.view.TextView
                 android:id="@+id/tv_priority"
-                style="@style/Material.Widget.TextView"
+                style="@style/Material.Widget.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
@@ -81,7 +81,7 @@
             <!-- *******ATTACHMENT BEGIN****************************************-->
             <amtt.epam.com.amtt.view.TextView
                 android:id="@+id/tv_attachment"
-                style="@style/Material.Widget.TextView"
+                style="@style/Material.Widget.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
@@ -97,7 +97,7 @@
             <!-- *******AFFECTS VERSIONS BEGIN****************************************-->
             <amtt.epam.com.amtt.view.TextView
                 android:id="@+id/tv_affects_versions"
-                style="@style/Material.Widget.TextView"
+                style="@style/Material.Widget.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
@@ -147,7 +147,7 @@
             <!-- *******TESTER BEGIN****************************************-->
             <amtt.epam.com.amtt.view.TextView
                 android:id="@+id/tv_tester"
-                style="@style/Material.Widget.TextView"
+                style="@style/Material.Widget.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
