@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import amtt.epam.com.amtt.bo.JVersionsResponse;
 import amtt.epam.com.amtt.bo.project.JIssueVersion;
-import amtt.epam.com.amtt.ticket.JiraContent;
+import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 
 /**
  * Created by Irina Monchenko on 05.05.2015.

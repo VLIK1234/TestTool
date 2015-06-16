@@ -1,20 +1,28 @@
-package amtt.epam.com.amtt.ticket;
+package amtt.epam.com.amtt.api.loadcontent;
+
+import android.text.Spanned;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import amtt.epam.com.amtt.api.ContentLoadingCallback;
+import amtt.epam.com.amtt.api.JiraContentConst;
+import amtt.epam.com.amtt.api.JiraGetContentCallback;
 import amtt.epam.com.amtt.bo.JCreateIssue;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
 import amtt.epam.com.amtt.bo.JPriorityResponse;
 import amtt.epam.com.amtt.bo.JProjectsResponse;
 import amtt.epam.com.amtt.bo.JUserAssignableResponse;
 import amtt.epam.com.amtt.bo.JVersionsResponse;
+import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.bo.issue.createmeta.JIssueTypes;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.project.JPriority;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
+import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.util.ActiveUser;
@@ -342,9 +350,19 @@ public class JiraContent{
         }, jiraGetContentCallback);
     }
 
-    public void getDescription(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        String description = mActivityInfo + "\n" + mSteps;
-        jiraGetContentCallback.resultOfDataLoading(description);
+    public void getDescription(final JiraGetContentCallback<Spanned> jiraGetContentCallback) {
+        DbObjectManager.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
+            @Override
+            public void onResult(List<DatabaseEntity> result) {
+                Spanned description = StepUtil.getStepInfo(result);
+                jiraGetContentCallback.resultOfDataLoading(description);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 
     public void getEnvironment(final JiraGetContentCallback<String> jiraGetContentCallback) {

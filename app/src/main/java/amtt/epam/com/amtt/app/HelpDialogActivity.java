@@ -74,8 +74,12 @@ public class HelpDialogActivity extends Activity {
             switch (Build.BRAND.toUpperCase()){
                 case HelpTakeScreen.Constants.SAMSUNG:
                     return HelpTakeScreen.SAMSUNG.getValue();
+                case HelpTakeScreen.Constants.SONY:
+                    return HelpTakeScreen.SONY.getValue();
                 case HelpTakeScreen.Constants.HTC:
                     return HelpTakeScreen.HTC.getValue();
+                case HelpTakeScreen.Constants.HUAWEI:
+                    return HelpTakeScreen.HUAWEI.getValue();
                 case HelpTakeScreen.Constants.XIAOMI:
                     return HelpTakeScreen.XIAOMI.getValue();
                 default:

@@ -5,9 +5,8 @@ import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.helper.SystemInfoHelper;
-import amtt.epam.com.amtt.ticket.JiraContent;
-import amtt.epam.com.amtt.ticket.JiraGetContentCallback;
+import amtt.epam.com.amtt.api.loadcontent.JiraContent;
+import amtt.epam.com.amtt.api.JiraGetContentCallback;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.IOUtils;
@@ -112,7 +111,6 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         }
                     }
                 });
-                JiraContent.getInstance().setEnvironment(SystemInfoHelper.getDeviceOsInfo());
             }
         };
         worker.schedule(task, 1, TimeUnit.SECONDS);

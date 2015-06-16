@@ -1,6 +1,6 @@
-package amtt.epam.com.amtt.ticket;
+package amtt.epam.com.amtt.adapter;
 
-import amtt.epam.com.amtt.CoreApplication;
+import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.util.Logger;
 import android.support.v7.widget.RecyclerView;
@@ -21,14 +21,14 @@ import amtt.epam.com.amtt.R;
 @version on 27.05.2015
  */
 
-public class ScreenshotAdapter extends RecyclerView.Adapter<ScreenshotAdapter.ViewHolder>{
+public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ViewHolder>{
 
     private final String TAG = this.getClass().getSimpleName();
     private ArrayList<Attachment> screenshots;
     private int rowLayout;
     private ViewHolder.ClickListener clickListener;
 
-        public ScreenshotAdapter(ArrayList<Attachment> screenshots, int rowLayout, ViewHolder.ClickListener clickListener) {
+        public AttachmentAdapter(ArrayList<Attachment> screenshots, int rowLayout, ViewHolder.ClickListener clickListener) {
         this.screenshots = screenshots;
         this.rowLayout = rowLayout;
         this.clickListener = clickListener;

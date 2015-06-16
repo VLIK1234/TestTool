@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.app;
 
-import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
@@ -15,7 +14,7 @@ import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
-import amtt.epam.com.amtt.ticket.JiraContent;
+import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.ConnectionUtil;

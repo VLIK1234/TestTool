@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.ticket;
+package amtt.epam.com.amtt.api.loadcontent;
 
 import java.util.List;
 

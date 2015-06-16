@@ -201,6 +201,13 @@
                 app:et_labelTextColor="@drawable/color_label"
                 app:et_supportMode="error"
                 app:et_supportTextErrorColor="@color/et_divider_error" />
+
+            <Button
+                android:id="@+id/btn_list_step"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_list_step"
+                android:layout_gravity="end"/>
             <!-- *******DESCRIPTION END****************************************-->
 
             <!-- *******TESTER BEGIN****************************************-->
