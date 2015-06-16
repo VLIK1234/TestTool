@@ -65,7 +65,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private Button mLoginButton;
     private String mRequestUrl;
     private boolean mIsUserInDatabase;
-    private RestMethod<JUserInfo> userInfoMethod;
+    private RestMethod<JUserInfo> mUserInfoMethod;
     private InputMethodManager mInputMethodManager;
 
     @Override
@@ -107,13 +107,13 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         String password = mPasswordEditText.getText().toString();
         //get user info and perform auth in one request
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameEditText.getText().toString();
-        userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
+        mUserInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
                 new UserInfoProcessor(),
                 userName,
                 password,
                 mRequestUrl);
             new JiraTask.Builder<JUserInfo>()
-                    .setRestMethod(userInfoMethod)
+                    .setRestMethod(mUserInfoMethod)
                     .setCallback(LoginActivity.this)
                     .createAndExecute();
     }
@@ -237,7 +237,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 mInputMethodManager.hideSoftInputFromInputMethod(mUserNameEditText.getWindowToken(), 0);
                 finish();
             } else if (restResponse.getResultObject() == null) {
-                ExceptionHandler.getInstance().processError(new AmttException(new AuthenticationException(), 403, userInfoMethod)).showDialog(LoginActivity.this, LoginActivity.this);
+                ExceptionHandler.getInstance().processError(new AmttException(new AuthenticationException(), 403, mUserInfoMethod)).showDialog(LoginActivity.this, LoginActivity.this);
                 mLoginButton.setEnabled(true);
             } else {
                 setActiveUser();
