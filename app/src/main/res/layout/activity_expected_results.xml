@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
         android:text="@string/label_tags"
-        android:textSize="@dimen/abc_text_size_caption_material" />
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
 
     <TextView
         android:id="@+id/tv_tags"
@@ -22,7 +22,7 @@
         android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
         android:paddingTop="@dimen/abc_dialog_list_padding_vertical_material"
         android:text="Lincar, TitleCard, Now"
-        android:textSize="@dimen/abc_text_size_body_1_material" />
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
@@ -35,5 +35,6 @@
             android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
     </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

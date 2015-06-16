@@ -76,6 +76,16 @@ public class JiraContent{
         return priorityId;
     }
 
+    public String getPriorityNameById(String priorityId) {
+        String priorityName = null;
+        for (Map.Entry<String, String> entry : mProjectPrioritiesNames.entrySet()) {
+            if (priorityId.equals(entry.getKey())) {
+                priorityName = entry.getValue();
+            }
+        }
+        return priorityName;
+    }
+
     public void getProjectsNames(final JiraGetContentCallback<HashMap<JProjects, String>> jiraGetContentCallback) {
         if (mProjectsNames != null) {
             jiraGetContentCallback.resultOfDataLoading(mProjectsNames);

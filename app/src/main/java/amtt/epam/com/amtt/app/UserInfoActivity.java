@@ -236,10 +236,10 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
                 null,
                 null,
                 null);
-        new JiraTask.Builder<JUserInfo>()
-                .setRestMethod(userInfoMethod)
-                .setCallback(UserInfoActivity.this)
-                .createAndExecute();
+            new JiraTask.Builder<JUserInfo>()
+                    .setRestMethod(userInfoMethod)
+                    .setCallback(UserInfoActivity.this)
+                    .createAndExecute();
     }
 
     @Override
