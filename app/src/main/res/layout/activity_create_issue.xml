@@ -7,7 +7,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_horizontal_margin">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,7 +21,6 @@
                 style="@style/Material.Widget.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/activity_vertical_margin"
                 android:text="@string/label_project" />
 
             <amtt.epam.com.amtt.view.SpinnerProgress
@@ -91,16 +92,6 @@
                 style="@style/Material.Widget.RecyclerView"
                 android:layout_width="wrap_content"
                 tools:context=".app.CreateIssueActivity" />
-
-            <ImageButton
-                android:id="@+id/btn_addAttachments"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/material_vertical_button_height_size"
-                android:visibility="gone"
-                android:layout_gravity="end"
-                android:layout_marginTop="16dp"
-                android:minWidth="@dimen/material_vertical_button_min_width_size"
-                android:src="@android:drawable/ic_menu_add" />
             <!-- *******ATTACHMENT END*************************************************-->
 
             <!-- *******AFFECTS VERSIONS BEGIN****************************************-->
@@ -149,6 +140,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_list_step"
+                android:layout_marginRight="12dp"
                 android:layout_gravity="end"/>
             <!-- *******DESCRIPTION END****************************************-->
 
@@ -175,6 +167,7 @@
                 android:layout_height="@dimen/material_vertical_button_height_size"
                 android:layout_gravity="end"
                 android:layout_marginTop="@dimen/material_vertical_button_padding_top"
+                android:layout_marginRight="12dp"
                 android:minWidth="@dimen/material_vertical_button_min_width_size"
                 android:text="@string/label_create"
                 android:textSize="@dimen/abc_text_size_button_material" />

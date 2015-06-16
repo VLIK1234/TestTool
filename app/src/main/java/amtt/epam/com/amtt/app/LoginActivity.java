@@ -92,6 +92,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         mUrlEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_jira_url);
         mUrlEditText.clearErrorOnFocus(true);
         mUrlEditText.clearErrorOnTextChanged(true);
+        mUrlEditText.setText("https://");
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
