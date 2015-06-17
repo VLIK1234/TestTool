@@ -11,14 +11,16 @@
         style="@style/Material.Widget.TextViewLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="12dp"
         android:text="@string/label_tags"/>
 
     <TextView
         android:id="@+id/tv_tags"
-        style="@style/Material.Widget.TextViewBody"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_label_tags"
+        android:textSize="@dimen/abc_text_size_medium_material"
+        android:paddingLeft="16dp"
         android:paddingTop="@dimen/abc_dialog_list_padding_vertical_material"
         android:text="Lincar, TitleCard, Now"/>
 
