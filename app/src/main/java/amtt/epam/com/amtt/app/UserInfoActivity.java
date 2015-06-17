@@ -59,6 +59,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private UserInfoHandler mHandler;
     private Boolean isNeedShowingTopButton = true;
+    private Boolean isNewUser = false;
 
     public static class UserInfoHandler extends Handler {
 
@@ -105,6 +106,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add: {
+                TopButtonService.close(getBaseContext());
                 isNeedShowingTopButton = false;
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
@@ -258,17 +260,17 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
                         Bundle args = new Bundle();
                         long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
                         args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
+                        isNewUser = true;
                         getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
                     }else{
                         Intent loginIntent = new Intent(UserInfoActivity.this, LoginActivity.class);
                         startActivity(loginIntent);
+                        TopButtonService.close(getBaseContext());
                         isNeedShowingTopButton = false;
                         finish();
                     }
                     break;
             }
-        } else if (resultCode == RESULT_CANCELED) {
-
         }
     }
 

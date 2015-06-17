@@ -21,6 +21,7 @@ import java.io.File;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.SettingActivity;
+import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonBarView;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
@@ -165,6 +166,7 @@ public class TopButtonService extends Service{
 
     private void closeService() {
         if (mTopButtonView != null && isViewAdd) {
+            StepUtil.clearAllStep();
             isViewAdd = false;
             mTopButtonView.getButtonsBar().setIsRecordStarted(false);
             mWindowManager.removeViewImmediate(mTopButtonView);
