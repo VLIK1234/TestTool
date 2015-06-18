@@ -27,6 +27,7 @@
     <string name="error_message_web_address">Wrong web-address</string>
     <string name="error_button_close">Close</string>
 
+    <string name="label_file_name">"File name: "</string>
     <string name="label_activity">"Activity: "</string>
     <string name="label_affects_versions">Affects Version/s</string>
     <string name="label_attachment">Attachment</string>
@@ -85,8 +86,9 @@
     <string name="label_create_ticket">Create Ticket</string>
     <string name="label_open_amtt">Open Amtt</string>
     <string name="label_expected_result">Expected result</string>
-    <string name="label_screenshot">Screenshot</string>
-    <string name="label_activity_info">Info added</string>
+    <string name="label_step_with_screen">Step with screen</string>
+    <string name="label_step_without_screen">Step without screen</string>
+    <string name="label_added_step_without_screen">Added step without screen</string>
     <string name="label_step_view">Step</string>
     <string name="label_cancel_record">Cancel record</string>
     <string name="label_button_main">Main button</string>
@@ -102,9 +104,11 @@
     <string name="label_show_steps">Show recorded steps</string>
     <string name="nexus_help_message">\nNexus - volume down+power</string>
     <string name="samsung_help_message">\nSamsung - power+home</string>
+    <string name="sony_help_message">\nSony - volume down+power</string>
     <string name="htc_help_message">\nHTC - power+home</string>
+    <string name="huawei_help_message">\HUAWEI - volume down+power</string>
     <string name="xiaomi_help_message">\nXiaomi tablet - power+options \nXiaomi phone - volume down+power</string>
-    <string name="all_help_message">\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nXiaomi phone - volume down+power \nHTC - power+home</string>
+    <string name="all_help_message">\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nSony - volume down+power \nXiaomi phone - volume down+power \nHTC - power+home \HUAWEI - volume down+power</string>
     <string name="label_list_users">List users</string>
     <string name="label_jira_url">JIRA Url</string>
     <string name="notification_attach_title_done">Uploaded %s done</string>
@@ -131,5 +135,8 @@
 
     <string name="url_prefix">https://</string>
     <string name="ticket_created">Ticket has been successfully created</string>
+    <string name="label_list_step">Show list step</string>
+    <string name="activity_info_text_size">16sp</string>
+    <string name="content_description_screenshot">Screenshot</string>
 
 </resources>

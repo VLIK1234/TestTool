@@ -7,6 +7,9 @@ import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
@@ -26,27 +29,14 @@ public class SystemInfoHelper {
     public static final String API_SDK = "API SDK=";
     public static final String DPI = "dpi";
 
-    public static String TEMPLATE = "\n%s: %s";
-
-    public static String getAppInfo(){
-        String appInfo = "";
-
-        try {
-            final PackageInfo packageInfo =  ContextHolder.getContext().getPackageManager().getPackageInfo(ContextHolder.getContext().getPackageName(), 0);
-            appInfo += String.format(TEMPLATE, "Version app", packageInfo.versionName);
-            appInfo += String.format(TEMPLATE, "Name", ContextHolder.getContext().getResources().getString(packageInfo.applicationInfo.labelRes));
-        } catch (final PackageManager.NameNotFoundException e) {
-            e.getMessage();
-        }
-        return appInfo;
-    }
-
-    public static String getDeviceOsInfo(){
-        return "---Device info---"
-                + String.format(TEMPLATE, "OS", getSystemVersionName())
-                + String.format(TEMPLATE, "Device", Build.BRAND.toUpperCase() +" "+ Build.MODEL.toUpperCase())
-                + String.format(TEMPLATE, "Display", getInfoSizeDisplay())
-                + String.format(TEMPLATE, "Root", RootUtil.isDeviceRooted());
+    public static Spanned getDeviceOsInfo(){
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(Html.fromHtml("<h5>" + "Device info: " + "</h5>" +
+                "<b>" + "OS: " + "</b>" +"<small>"+ getSystemVersionName()+"</small>" + "<br />" +
+                "<b>" + "Device: " + "</b>" +"<small>"+ Build.BRAND.toUpperCase() +" "+ Build.MODEL.toUpperCase()+"</small>" + "<br />" +
+                "<b>" + "Display: " + "</b>" +"<small>"+ getInfoSizeDisplay()+"</small>" + "<br />" +
+                "<b>" + "Root: " + "</b>" +"<small>"+ RootUtil.isDeviceRooted()+"</small>"));
+        return builder;
 
     }
 

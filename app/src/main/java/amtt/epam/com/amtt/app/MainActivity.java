@@ -1,11 +1,12 @@
 package amtt.epam.com.amtt.app;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.helper.SystemInfoHelper;
-import amtt.epam.com.amtt.ticket.JiraContent;
+import amtt.epam.com.amtt.api.loadcontent.JiraContent;
+import amtt.epam.com.amtt.api.JiraGetContentCallback;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.IOUtils;
@@ -21,6 +22,7 @@ import android.preference.PreferenceManager;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -87,13 +89,28 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         ActiveUser.getInstance().setCredentials(userInfo.getCredentials());
         ActiveUser.getInstance().setId(userInfo.getId());
         ActiveUser.getInstance().setUserName(userInfo.getName());
+        ActiveUser.getInstance().setLastProjectKey(userInfo.getLastProjectKey());
         Logger.e(TAG, "ID " + userInfo.getId());
+        Logger.e(TAG, "LastProjectKey " + userInfo.getLastProjectKey());
         ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
             public void run() {
-                JiraContent.getInstance().getPrioritiesNames(null);
-                JiraContent.getInstance().getProjectsNames(null);
-                JiraContent.getInstance().setEnvironment(SystemInfoHelper.getDeviceOsInfo());
+                JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
+                    @Override
+                    public void resultOfDataLoading(HashMap<String, String> result) {
+                        if (result != null) {
+                            Logger.d(TAG, "Loading priority finish");
+                        }
+                    }
+                });
+                JiraContent.getInstance().getProjectsNames(new JiraGetContentCallback<HashMap<JProjects, String>>() {
+                    @Override
+                    public void resultOfDataLoading(HashMap<JProjects, String> result) {
+                        if (result != null) {
+                            Logger.d(TAG, "Loading projects finish");
+                        }
+                    }
+                });
             }
         };
         worker.schedule(task, 1, TimeUnit.SECONDS);

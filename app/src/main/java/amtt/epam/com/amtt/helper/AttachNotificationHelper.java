@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.ticket;
+package amtt.epam.com.amtt.helper;
 
 import android.app.NotificationManager;
 import android.content.Context;

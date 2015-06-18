@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.ticket;
+package amtt.epam.com.amtt.api.loadcontent;
 
 import java.util.ArrayList;
 
@@ -10,12 +10,14 @@ import amtt.epam.com.amtt.bo.JProjectsResponse;
 import amtt.epam.com.amtt.bo.JUserAssignableResponse;
 import amtt.epam.com.amtt.bo.JVersionsResponse;
 import amtt.epam.com.amtt.common.Callback;
-import amtt.epam.com.amtt.http.HttpResult;
 import amtt.epam.com.amtt.processing.PostCreateIssueProcessor;
 import amtt.epam.com.amtt.processing.PriorityProcessor;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.processing.UsersAssignableProcessor;
 import amtt.epam.com.amtt.processing.VersionsProcessor;
+import amtt.epam.com.amtt.api.ContentLoadingCallback;
+import amtt.epam.com.amtt.api.JiraContentConst;
+import amtt.epam.com.amtt.api.JiraGetContentCallback;
 
 /**
  * @author Iryna Monchanka
@@ -32,15 +34,14 @@ public class ContentFromBackend {
         return ContentFromBackendHolder.INSTANCE;
     }
 
-
-    public void getMetaAsynchronously(final ContentLoadingCallback<JProjectsResponse> contentLoadingCallback,
+    public void getProjectsAsynchronously(final ContentLoadingCallback<JProjectsResponse> contentLoadingCallback,
                                       final JiraGetContentCallback jiraGetContentCallback) {
         JiraApi.get().searchData(JiraApiConst.USER_PROJECTS_PATH,
                 ProjectsProcessor.NAME,
                 null,
                 null,
                 null,
-                getCallback(JiraContentConst.META_RESPONSE, null, null, contentLoadingCallback, jiraGetContentCallback));
+                getCallback(JiraContentConst.PROJECTS_RESPONSE, null, null, contentLoadingCallback, jiraGetContentCallback));
     }
 
     public void getVersionsAsynchronously(String projectsKey,

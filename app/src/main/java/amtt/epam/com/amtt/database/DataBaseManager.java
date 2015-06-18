@@ -12,16 +12,21 @@ import java.util.List;
 import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.database.constant.SqlQueryConstants;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
+import amtt.epam.com.amtt.database.table.IssuetypeTable;
+import amtt.epam.com.amtt.database.table.PriorityTable;
+import amtt.epam.com.amtt.database.table.ProjectTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.Table;
 import amtt.epam.com.amtt.database.table.UsersTable;
 
 /**
- * Created by Artsiom_Kaliaha on 18.03.2015.
+ @author Artsiom_Kaliaha
+ @version on 18.03.2015
  */
+
 public class DataBaseManager extends SQLiteOpenHelper {
 
-    private static final Integer DATA_BASE_VERSION = 4;
+    private static final Integer DATA_BASE_VERSION = 7;
     private static final String DATA_BASE_NAME = "amtt.db";
     private static final List<Class> sTables;
 
@@ -30,6 +35,9 @@ public class DataBaseManager extends SQLiteOpenHelper {
         sTables.add(ActivityInfoTable.class);
         sTables.add(StepsTable.class);
         sTables.add(UsersTable.class);
+        sTables.add(PriorityTable.class);
+        sTables.add(ProjectTable.class);
+        sTables.add(IssuetypeTable.class);
     }
 
     public DataBaseManager(Context context) {

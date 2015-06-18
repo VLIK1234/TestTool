@@ -1,19 +1,16 @@
 package amtt.epam.com.amtt.app;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
-import android.graphics.Typeface;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.StyleSpan;
+import android.support.v7.app.AlertDialog;
+import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.helper.HelpTakeScreen;
@@ -32,39 +29,47 @@ public class HelpDialogActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dialog);
         setIsCanTakeScreenshot(true);
+        LayoutInflater factory = LayoutInflater.from(getBaseContext());
+        final View view = factory.inflate(R.layout.activity_dialog, null);
 
-        TextView textView = (TextView) findViewById(R.id.message_dialog);
-//        textView.append(Build.BRAND.toUpperCase()+" "+Build.MODEL.toUpperCase());
-        SpannableString instruction = new SpannableString(getMessageForCurrentDevice());
-        instruction.setSpan(new StyleSpan(Typeface.BOLD),
-                0, getMessageForCurrentDevice().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.append(instruction);
+        SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
+        stringBuilder.append(getString(R.string.dialog_description))
+                .append(Html.fromHtml(" <br /><b>" + getMessageForCurrentDevice() + "</b><br />"));
 
-        CheckBox checkShowAgain = (CheckBox) findViewById(R.id.dialog_check_show_again);
+        CheckBox checkShowAgain = (CheckBox) view.findViewById(R.id.dialog_check_show_again);
         checkShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 PreferenceUtils.putBoolean(getString(R.string.key_dialog_hide), isChecked);
             }
         });
-        Button buttonOk = (Button) findViewById(R.id.dialog_button_ok);
-        buttonOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        Button buttonCancel = (Button) findViewById(R.id.dialog_button_cancel);
-        buttonCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setIsCanTakeScreenshot(false);
-                finish();
-                TopButtonService.sendActionChangeVisibilityTopbutton(true);
-            }
-        });
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Dialog);
+        builder.setTitle(R.string.title_activity_help_dialog)
+                .setMessage(stringBuilder)
+                .setView(view)
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        setIsCanTakeScreenshot(false);
+                        finish();
+                        TopButtonService.sendActionChangeVisibilityTopbutton(true);
+                    }
+                })
+                .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        finish();
+                    }
+                })
+                .show();
     }
 
     private String getMessageForCurrentDevice() {
@@ -74,8 +79,12 @@ public class HelpDialogActivity extends Activity {
             switch (Build.BRAND.toUpperCase()){
                 case HelpTakeScreen.Constants.SAMSUNG:
                     return HelpTakeScreen.SAMSUNG.getValue();
+                case HelpTakeScreen.Constants.SONY:
+                    return HelpTakeScreen.SONY.getValue();
                 case HelpTakeScreen.Constants.HTC:
                     return HelpTakeScreen.HTC.getValue();
+                case HelpTakeScreen.Constants.HUAWEI:
+                    return HelpTakeScreen.HUAWEI.getValue();
                 case HelpTakeScreen.Constants.XIAOMI:
                     return HelpTakeScreen.XIAOMI.getValue();
                 default:

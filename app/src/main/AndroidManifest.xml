@@ -56,7 +56,7 @@
             android:name=".app.StepsActivity"
             android:label="@string/title_activity_steps"
             android:launchMode="singleTask"
-            android:noHistory="true"
+            android:noHistory="false"
             android:parentActivityName=".app.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -100,7 +100,7 @@
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
 
         <service
-            android:name=".ticket.AttachmentService"
+            android:name=".service.AttachmentService"
             android:exported="false" />
 
         <receiver

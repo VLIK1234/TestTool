@@ -25,11 +25,11 @@ import amtt.epam.com.amtt.util.UIUtil;
 @SuppressLint("ViewConstructor")
 public class TopUnitView extends LinearLayout {
 
-    private ITouchAction mTouchAction;
+    private amtt.epam.com.amtt.topbutton.view.OnTouchListener mTouchAction;
     private int mBackgroundIconId;
     private CardView mCardView;
 
-    public TopUnitView(Context context, String title, int backgroundIconId, ITouchAction touchAction) {
+    public TopUnitView(Context context, String title, int backgroundIconId, amtt.epam.com.amtt.topbutton.view.OnTouchListener touchAction) {
         super(context);
         this.mTouchAction = touchAction;
         mBackgroundIconId = backgroundIconId;
@@ -110,7 +110,7 @@ public class TopUnitView extends LinearLayout {
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mTouchAction.TouchAction();
+                mTouchAction.onTouch();
                 break;
         }
         return super.onTouchEvent(event);

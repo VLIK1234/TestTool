@@ -2,7 +2,7 @@ package amtt.epam.com.amtt.processing;
 
 import amtt.epam.com.amtt.bo.JUserAssignableResponse;
 import amtt.epam.com.amtt.bo.user.JUser;
-import amtt.epam.com.amtt.ticket.JiraContent;
+import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

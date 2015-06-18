@@ -9,12 +9,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import org.apache.http.client.methods.HttpGet;
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -23,23 +22,25 @@ import java.util.concurrent.TimeUnit;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.exception.ExceptionHandler;
+import amtt.epam.com.amtt.api.JiraGetContentCallback;
+import amtt.epam.com.amtt.api.loadcontent.JiraContent;
+import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
+import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.database.object.DbObjectManger;
+import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.http.HttpResult;
-import amtt.epam.com.amtt.common.Callback;
+import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.exception.ExceptionHandler;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
-import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants.Symbols;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
-import amtt.epam.com.amtt.util.StepUtil;
+import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.view.EditText;
 
 /**
  * @author Artsiom_Kaliaha
@@ -52,6 +53,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
     public static final String KEY_USER_ID = "key_user_id";
 
+    private final String TAG = this.getClass().getSimpleName();
     private EditText mUserNameEditText;
     private EditText mPasswordEditText;
     private EditText mUrlEditText;
@@ -59,12 +61,15 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     private String mRequestUrl;
     private boolean mIsUserInDatabase;
     private boolean isNeedShowingTopButton;
+    private InputMethodManager mInputMethodManager;
 
     @Override
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initViews();
+        mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
         if (isNewUserAdditionFromUserInfo()) {
@@ -90,11 +95,15 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     }
 
     private void initViews() {
-        mUserNameEditText = (EditText) findViewById(R.id.et_username);
-        mUserNameEditText.setText("artsiom_kaliaha");
-        mPasswordEditText = (EditText) findViewById(R.id.et_password);
-        mUrlEditText = (EditText) findViewById(R.id.et_jira_url);
-        mUrlEditText.setText("https://amtt05.atlassian.net");
+        mUserNameEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_username);
+        mUserNameEditText.clearErrorOnFocus(true);
+        mUserNameEditText.clearErrorOnTextChanged(true);
+        mPasswordEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_password);
+        mPasswordEditText.clearErrorOnFocus(true);
+        mPasswordEditText.clearErrorOnTextChanged(true);
+        mUrlEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_jira_url);
+        mUrlEditText.clearErrorOnFocus(true);
+        mUrlEditText.clearErrorOnTextChanged(true);
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,7 +123,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
-        DbObjectManger.INSTANCE.addOrUpdateAsync(user, new IResult<Integer>() {
+        DbObjectManager.INSTANCE.add(user, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
                 ActiveUser.getInstance().setId(result);
@@ -160,12 +169,16 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         if (!isAnyEmptyField) {
             showProgress(true);
             mLoginButton.setEnabled(false);
-            StepUtil.checkUser(mUserNameEditText.getText().toString(), new IResult<List<DatabaseEntity>>() {
+            StepUtil.checkUser(mUserNameEditText.getText().toString(), new IResult<List<JUserInfo>>() {
                 @Override
-                public void onResult(List<DatabaseEntity> result) {
+                public void onResult(List<JUserInfo> result) {
                     mIsUserInDatabase = result.size() > 0;
                     ActiveUser.getInstance().clearActiveUser();
-                    sendAuthRequest();
+                    LoginActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            sendAuthRequest();
+                        }
+                    });
                 }
 
                 @Override
@@ -187,11 +200,23 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
                 Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
             public void run() {
-                if (isNeedShowingTopButton) {
-                    TopButtonService.start(getBaseContext());
-                }
-                JiraContent.getInstance().getPrioritiesNames(null);
-                JiraContent.getInstance().getProjectsNames(null);
+                TopButtonService.start(getBaseContext());
+                JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
+                    @Override
+                    public void resultOfDataLoading(HashMap<String, String> result) {
+                        if (result != null) {
+                            Logger.d(TAG, "Loading priority finish");
+                        }
+                    }
+                });
+                JiraContent.getInstance().getProjectsNames(new JiraGetContentCallback<HashMap<JProjects, String>>() {
+                    @Override
+                    public void resultOfDataLoading(HashMap<JProjects, String> result) {
+                        if (result != null) {
+                            Logger.d(TAG, "Loading projects finish");
+                        }
+                    }
+                });
             }
         };
         worker.schedule(task, 1, TimeUnit.SECONDS);

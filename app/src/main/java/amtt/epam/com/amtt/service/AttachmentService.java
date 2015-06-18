@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.ticket;
+package amtt.epam.com.amtt.service;
 
 import android.app.Service;
 import android.content.Context;
@@ -9,8 +9,10 @@ import android.os.IBinder;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.observer.AmttFileObserver;
+import amtt.epam.com.amtt.helper.AttachNotificationHelper;
+import amtt.epam.com.amtt.api.loadcontent.JiraContent;
+import amtt.epam.com.amtt.api.JiraGetContentCallback;
 import amtt.epam.com.amtt.util.Logger;
-import amtt.epam.com.amtt.util.StepUtil;
 
 /**
  @author Iryna Monchanka
