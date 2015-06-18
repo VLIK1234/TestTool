@@ -14,6 +14,8 @@ import amtt.epam.com.amtt.bo.user.JUserInfo;
  */
 public class UserInfoProcessor implements Processor<JUserInfo, HttpEntity> {
 
+    public static final String NAME = "UserInfoProcessor";
+
     @Override
     public JUserInfo process(HttpEntity httpEntity) {
         String _response = null;

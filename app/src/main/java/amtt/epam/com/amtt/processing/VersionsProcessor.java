@@ -19,6 +19,8 @@ import amtt.epam.com.amtt.ticket.JiraContent;
  */
 public class VersionsProcessor implements Processor<JVersionsResponse, HttpEntity> {
 
+    public static final String NAME = "VersionsProcessor";
+
     @Override
     public JVersionsResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);

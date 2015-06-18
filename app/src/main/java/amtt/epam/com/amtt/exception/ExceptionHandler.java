@@ -9,7 +9,7 @@ import java.util.Map;
 
 import amtt.epam.com.amtt.http.HttpException;
 import amtt.epam.com.amtt.loader.BlockingStack;
-import amtt.epam.com.amtt.CoreApplication.Callback;
+import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.util.DialogUtils;
 
 /**

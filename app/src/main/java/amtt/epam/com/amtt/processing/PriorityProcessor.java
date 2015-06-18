@@ -18,6 +18,8 @@ import java.util.ArrayList;
  */
 public class PriorityProcessor  implements Processor<JPriorityResponse, HttpEntity> {
 
+    public static final String NAME = "PriorityProcessor";
+
     @Override
     public JPriorityResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);

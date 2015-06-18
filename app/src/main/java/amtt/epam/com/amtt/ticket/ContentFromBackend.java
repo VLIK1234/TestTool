@@ -9,13 +9,13 @@ import amtt.epam.com.amtt.bo.JPriorityResponse;
 import amtt.epam.com.amtt.bo.JProjectsResponse;
 import amtt.epam.com.amtt.bo.JUserAssignableResponse;
 import amtt.epam.com.amtt.bo.JVersionsResponse;
+import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.http.HttpResult;
 import amtt.epam.com.amtt.processing.PostCreateIssueProcessor;
 import amtt.epam.com.amtt.processing.PriorityProcessor;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.processing.UsersAssignableProcessor;
 import amtt.epam.com.amtt.processing.VersionsProcessor;
-import amtt.epam.com.amtt.CoreApplication.Callback;
 
 /**
  * @author Iryna Monchanka
@@ -36,7 +36,7 @@ public class ContentFromBackend {
     public void getMetaAsynchronously(final ContentLoadingCallback<JProjectsResponse> contentLoadingCallback,
                                       final JiraGetContentCallback jiraGetContentCallback) {
         JiraApi.get().searchData(JiraApiConst.USER_PROJECTS_PATH,
-                new ProjectsProcessor(),
+                ProjectsProcessor.NAME,
                 null,
                 null,
                 null,
@@ -48,7 +48,7 @@ public class ContentFromBackend {
                                           final JiraGetContentCallback jiraGetContentCallback) {
         String path = JiraApiConst.PROJECT_VERSIONS_PATH + projectsKey + JiraApiConst.PROJECT_VERSIONS_PATH_V;
         JiraApi.get().searchData(path,
-                new VersionsProcessor(),
+                VersionsProcessor.NAME,
                 null,
                 null,
                 null,
@@ -61,7 +61,7 @@ public class ContentFromBackend {
                                                  final JiraGetContentCallback jiraGetContentCallback) {
         String path = JiraApiConst.USERS_ASSIGNABLE_PATH + projectKey + JiraApiConst.USERS_ASSIGNABLE_PATH_UN + userName + JiraApiConst.USERS_ASSIGNABLE_PATH_MR;
         JiraApi.get().searchData(path,
-                new UsersAssignableProcessor(),
+                UsersAssignableProcessor.NAME,
                 null,
                 null,
                 null,
@@ -72,7 +72,7 @@ public class ContentFromBackend {
                                           final JiraGetContentCallback jiraGetContentCallback) {
         String path = JiraApiConst.PROJECT_PRIORITY_PATH;
         JiraApi.get().searchData(path,
-                new PriorityProcessor(),
+                PriorityProcessor.NAME,
                 null,
                 null,
                 null,
@@ -86,7 +86,7 @@ public class ContentFromBackend {
                                           final ContentLoadingCallback<JCreateIssueResponse> contentLoadingCallback,
                                           final JiraGetContentCallback jiraGetContentCallback) {
         JiraApi.get().createIssue(issueJson,
-                new PostCreateIssueProcessor(),
+                PostCreateIssueProcessor.NAME,
                 getCallback(JiraContentConst.CREATE_ISSUE_RESPONSE, null, null, contentLoadingCallback, jiraGetContentCallback));
     }
 
@@ -99,19 +99,23 @@ public class ContentFromBackend {
                 getCallback(JiraContentConst.SEND_ATTACHMENT, true, false, contentLoadingCallback, jiraGetContentCallback));
     }
 
-    private <Result> Callback getCallback(final JiraContentConst requestType, final Result successResult, final Result errorResult, final ContentLoadingCallback<Result> contentLoadingCallback, final JiraGetContentCallback jiraGetContentCallback) {
-        return new Callback<HttpResult>() {
+    private <Result> Callback getCallback(final JiraContentConst requestType,
+                                          final Result successResult,
+                                          final Result errorResult,
+                                          final ContentLoadingCallback<Result> contentLoadingCallback,
+                                          final JiraGetContentCallback jiraGetContentCallback) {
+        return new Callback<Result>() {
             @Override
             public void onLoadStart() {
 
             }
 
             @Override
-            public void onLoadExecuted(HttpResult httpResult) {
+            public void onLoadExecuted(Result result) {
                 if (successResult != null) {
                     contentLoadingCallback.resultFromBackend(successResult, requestType, jiraGetContentCallback);
                 } else {
-                    contentLoadingCallback.resultFromBackend((Result) httpResult.getResultObject(), requestType, jiraGetContentCallback);
+                    contentLoadingCallback.resultFromBackend(result, requestType, jiraGetContentCallback);
                 }
             }
 

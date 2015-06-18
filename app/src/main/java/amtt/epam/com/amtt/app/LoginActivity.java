@@ -31,7 +31,7 @@ import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.http.HttpResult;
-import amtt.epam.com.amtt.CoreApplication.Callback;
+import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -47,7 +47,7 @@ import amtt.epam.com.amtt.util.StepUtil;
  */
 
 @SuppressWarnings("unchecked")
-public class LoginActivity extends BaseActivity implements Callback<HttpResult<JUserInfo>>, LoaderCallbacks<Cursor> {
+public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, LoaderCallbacks<Cursor> {
 
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
     public static final String KEY_USER_ID = "key_user_id";
@@ -68,7 +68,7 @@ public class LoginActivity extends BaseActivity implements Callback<HttpResult<J
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
         if (isNewUserAdditionFromUserInfo()) {
-            JiraApi.get().signOut(null);
+            JiraApi.get().signOut();
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
@@ -110,7 +110,7 @@ public class LoginActivity extends BaseActivity implements Callback<HttpResult<J
         String password = mPasswordEditText.getText().toString();
         //getClient user info and perform auth in one request
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameEditText.getText().toString();
-        JiraApi.get().searchData(requestSuffix, new UserInfoProcessor(), userName, password, mRequestUrl, this);
+        JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, userName, password, mRequestUrl, this);
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
@@ -204,29 +204,24 @@ public class LoginActivity extends BaseActivity implements Callback<HttpResult<J
 
     //Callbacks
     //Jira
-
-
     @Override
     public void onLoadStart() {
 
     }
 
     @Override
-    public void onLoadExecuted(HttpResult<JUserInfo> httpResult) {
+    public void onLoadExecuted(JUserInfo user) {
         showProgress(false);
-        if (httpResult.getRequestType().equals(HttpGet.METHOD_NAME)) {
-            if (httpResult.getResultObject() != null && !mIsUserInDatabase) {
-                JUserInfo user = httpResult.getResultObject();
-                user.setUrl(mUrlEditText.getText().toString());
-                setActiveUser();
-                user.setCredentials(ActiveUser.getInstance().getCredentials());
-                insertUserToDatabase(user);
-                Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
-            } else {
-                setActiveUser();
-                Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
-                finish();
-            }
+        if (user != null && !mIsUserInDatabase) {
+            user.setUrl(mUrlEditText.getText().toString());
+            setActiveUser();
+            user.setCredentials(ActiveUser.getInstance().getCredentials());
+            insertUserToDatabase(user);
+            Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
+        } else {
+            setActiveUser();
+            Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 

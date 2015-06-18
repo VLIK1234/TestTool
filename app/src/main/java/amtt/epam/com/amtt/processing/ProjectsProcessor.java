@@ -13,6 +13,8 @@ import amtt.epam.com.amtt.ticket.JiraContent;
  */
 public class ProjectsProcessor implements Processor<JProjectsResponse, HttpEntity> {
 
+    public static final String NAME = "ProjectsProcessor";
+
     @Override
     public JProjectsResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);

@@ -4,15 +4,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
-import org.apache.http.HttpResponse;
-
-import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.common.Callback;
+import amtt.epam.com.amtt.common.DataRequestBuilder;
 import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.http.HttpResult;
 import amtt.epam.com.amtt.http.Request;
-import amtt.epam.com.amtt.os.Task;
-import amtt.epam.com.amtt.CoreApplication.Callback;
 
 /**
  * Created by Artsiom_Kaliaha on 29.04.2015.
@@ -46,8 +43,8 @@ public class DialogUtils {
                 DialogInterface.OnClickListener positiveListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new CoreApplication.DataLoadingBuilder<HttpResult, Request, HttpResponse>()
-                                .setDataSource(HttpClient.SOURCE_NAME)
+                        new DataRequestBuilder<HttpResult, Request>()
+                                .setDataSource(HttpClient.NAME)
                                 .setDataSourceParam(request)
                                 .setCallback(callback)
                                 .load();

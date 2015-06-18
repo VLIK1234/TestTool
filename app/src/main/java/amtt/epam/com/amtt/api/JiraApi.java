@@ -1,19 +1,17 @@
 package amtt.epam.com.amtt.api;
 
-import org.apache.http.HttpResponse;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import amtt.epam.com.amtt.CoreApplication;
-import amtt.epam.com.amtt.CoreApplication.Callback;
+import amtt.epam.com.amtt.common.Callback;
+import amtt.epam.com.amtt.common.CoreApplication;
+import amtt.epam.com.amtt.common.DataRequestBuilder;
 import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.http.HttpException;
 import amtt.epam.com.amtt.http.HttpResult;
 import amtt.epam.com.amtt.http.Request;
-import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.util.ActiveUser;
 
 /**
@@ -32,13 +30,15 @@ public class JiraApi {
     private JiraApi() {
     }
 
-    public void signOut(Callback callback) {
-        Request.Builder requestBuilder = new Request.Builder().setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.LOGIN_PATH);
+    public void signOut() {
+        Request.Builder requestBuilder = new Request.Builder()
+                .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.LOGIN_PATH)
+                .setProcessorName(CoreApplication.NO_PROCESSOR);
         HttpClient.getClient().delete(requestBuilder);
-        execute(requestBuilder, callback);
+        execute(requestBuilder, null);
     }
 
-    public <ResultType, InputType> void createIssue(final String postEntityString, final Processor<ResultType, InputType> processor, Callback callback) {
+    public void createIssue(String postEntityString, String processorName, Callback callback) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, ActiveUser.getInstance().getCredentials());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
@@ -49,7 +49,7 @@ public class JiraApi {
                     .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH)
                     .setHeaders(headers)
                     .setPostEntity(postEntityString)
-                    .setProcessor(processor);
+                    .setProcessorName(processorName);
             HttpClient.getClient().post(requestBuilder);
         } catch (UnsupportedEncodingException e) {
             callback.onLoadError(new HttpException(e, HttpClient.EMPTY_STATUS_CODE, null, postEntityString));
@@ -58,12 +58,7 @@ public class JiraApi {
         execute(requestBuilder, callback);
     }
 
-    public <ResultType, InputType> void searchData(final String requestSuffix,
-                                                   final Processor<ResultType, InputType> processor,
-                                                   final String userName,
-                                                   final String password,
-                                                   String url,
-                                                   Callback callback) {
+    public void searchData(String requestSuffix, String processorName, String userName, String password, String url, Callback callback) {
         String credentials;
         if (userName != null && password != null) {
             //this code is used when new user is added and we need to getClient all the info about a user and authorize him/her in one request
@@ -78,12 +73,12 @@ public class JiraApi {
         Request.Builder requestBuilder = new Request.Builder()
                 .setUrl(url + requestSuffix)
                 .setHeaders(headers)
-                .setProcessor(processor);
+                .setProcessorName(processorName);
         HttpClient.getClient().get(requestBuilder);
         execute(requestBuilder, callback);
     }
 
-    public void createAttachment(final String issueKey, ArrayList<String> filesPaths, Callback callback) {
+    public void createAttachment(String issueKey, ArrayList<String> filesPaths, Callback callback) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, ActiveUser.getInstance().getCredentials());
         headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
@@ -101,10 +96,10 @@ public class JiraApi {
     }
 
     private void execute(Request.Builder requestBuilder, Callback callback) {
-        new CoreApplication.DataLoadingBuilder<HttpResult, Request, HttpResponse>()
-                .setDataSource(HttpClient.SOURCE_NAME)
+        new DataRequestBuilder<HttpResult, Request>()
+                .setDataSource(HttpClient.NAME)
                 .setDataSourceParam(requestBuilder.create())
-                .setProcessor(requestBuilder.getProcessor())
+                .setProcessor(requestBuilder.getProcessorName())
                 .setCallback(callback)
                 .load();
     }

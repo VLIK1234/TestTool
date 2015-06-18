@@ -15,19 +15,16 @@ import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.apache.http.client.methods.HttpGet;
-
 import java.lang.ref.WeakReference;
 
-import amtt.epam.com.amtt.CoreApplication.Callback;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
+import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.exception.ExceptionHandler;
-import amtt.epam.com.amtt.http.HttpResult;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -42,7 +39,7 @@ import amtt.epam.com.amtt.view.TextView;
  */
 
 @SuppressWarnings("unchecked")
-public class UserInfoActivity extends BaseActivity implements Callback<HttpResult<JUserInfo>>, LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
+public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo>, LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_REFRESH = 100;
@@ -187,10 +184,29 @@ public class UserInfoActivity extends BaseActivity implements Callback<HttpResul
 
     private void refreshUserInfo() {
         String requestSuffix = JiraApiConst.USER_INFO_PATH + ActiveUser.getInstance().getUserName();
-        JiraApi.get().searchData(requestSuffix, new UserInfoProcessor(), null, null, null, this);
+        JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, null, null, null, this);
     }
 
     //Callback
+    //Jira
+    @Override
+    public void onLoadStart() {
+
+    }
+
+    @Override
+    public void onLoadExecuted(JUserInfo user) {
+        user.setUrl(ActiveUser.getInstance().getUrl());
+        setActiveUser(user);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onLoadError(Exception e) {
+        ExceptionHandler.getInstance().processError(e).showDialog(this, UserInfoActivity.this);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
     //Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -245,30 +261,6 @@ public class UserInfoActivity extends BaseActivity implements Callback<HttpResul
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
-    }
-
-    //Jira
-
-
-    @Override
-    public void onLoadStart() {
-
-    }
-
-    @Override
-    public void onLoadExecuted(HttpResult<JUserInfo> httpResult) {
-        if (httpResult.getRequestType().equals(HttpGet.METHOD_NAME)) {
-            JUserInfo user = httpResult.getResultObject();
-            user.setUrl(ActiveUser.getInstance().getUrl());
-            setActiveUser(user);
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
-    @Override
-    public void onLoadError(Exception e) {
-        ExceptionHandler.getInstance().processError(e).showDialog(this, UserInfoActivity.this);
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
 }

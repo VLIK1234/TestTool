@@ -27,7 +27,7 @@ import amtt.epam.com.amtt.util.Logger;
 public class HttpClient implements IDataSource<HttpEntity, Request> {
 
     private final String TAG = getClass().getSimpleName();
-    public static final String SOURCE_NAME = "HttpClient";
+    public static final String NAME = "HttpClient";
 
     private static final HttpClient INSTANCE;
     public static final int EMPTY_STATUS_CODE = -1;

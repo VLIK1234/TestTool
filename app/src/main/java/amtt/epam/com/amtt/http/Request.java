@@ -17,13 +17,13 @@ import amtt.epam.com.amtt.processing.Processor;
  * Created by Artsiom_Kaliaha on 11.06.2015.
  * Present parameters which are passed to the HttpClient
  */
-public class Request<ResultType> {
+public class Request {
 
-    public static class Builder<ResultType> {
+    public static class Builder {
 
         private Map<String, String> mHeaders;
         private String mUrl;
-        private Processor<ResultType, HttpEntity> mProcessor;
+        private String mProcessorName;
         private HttpEntity mPostEntity;
         private HttpRequestBase mHttpRequestBase;
 
@@ -45,13 +45,13 @@ public class Request<ResultType> {
             return mUrl;
         }
 
-        public Builder setProcessor(Processor<ResultType, HttpEntity> processor) {
-            mProcessor = processor;
+        public Builder setProcessorName(String processorName) {
+            mProcessorName = processorName;
             return this;
         }
 
-        public Processor getProcessor() {
-            return mProcessor;
+        public String getProcessorName() {
+            return mProcessorName;
         }
 
         public Builder setPostEntity(String postEntityString) throws UnsupportedEncodingException {
@@ -88,19 +88,19 @@ public class Request<ResultType> {
         }
 
         public Request create() {
-            Request<ResultType> requestParams = new Request<>();
-            requestParams.mProcessor = this.mProcessor;
+            Request requestParams = new Request();
+            requestParams.mProcessorName = this.mProcessorName;
             requestParams.mHttpRequestBase = this.mHttpRequestBase;
             return requestParams;
         }
 
     }
 
-    private Processor<ResultType, HttpEntity> mProcessor;
+    private String mProcessorName;
     private HttpRequestBase mHttpRequestBase;
 
-    public Processor<ResultType, HttpEntity> getProcessor() {
-        return mProcessor;
+    public String getProcessorName() {
+        return mProcessorName;
     }
 
     public HttpRequestBase getHttpRequestBase() {

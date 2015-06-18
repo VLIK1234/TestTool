@@ -12,7 +12,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
-import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 
 /**

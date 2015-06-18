@@ -18,6 +18,8 @@ import java.util.ArrayList;
  */
 public class UsersAssignableProcessor implements Processor<JUserAssignableResponse, HttpEntity> {
 
+    public static final String NAME = "UsersAssignableProcessor";
+
     @Override
     public JUserAssignableResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);

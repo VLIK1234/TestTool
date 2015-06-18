@@ -12,6 +12,8 @@ import org.apache.http.util.EntityUtils;
 
 public class PostCreateIssueProcessor implements Processor<JCreateIssueResponse, HttpEntity> {
 
+    public static final String NAME = "PostCreateIssueProcessor";
+
     @Override
     public JCreateIssueResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);

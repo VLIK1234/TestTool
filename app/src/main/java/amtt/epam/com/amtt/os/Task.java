@@ -4,14 +4,14 @@ import android.os.AsyncTask;
 
 import amtt.epam.com.amtt.datasource.IDataSource;
 import amtt.epam.com.amtt.processing.Processor;
-import amtt.epam.com.amtt.CoreApplication.Callback;
+import amtt.epam.com.amtt.common.Callback;
 
 /**
  * Created by Artsiom_Kaliaha on 15.06.2015.
  * Generalized AsyncTask
- * param
- * param ProcessorSource Type that will be passed to a processor after AsyncTask execution
  * param TaskResult      Type that will be returned from a processor and consequently from AsyncTask
+ * param DataSourceParam Type that will be passed to a source as parameter
+ * param ProcessorSource Type that will be passed to a processor after AsyncTask execution
  */
 public class Task<TaskResult, DataSourceParam, ProcessorSource> extends AsyncTask<Void, Void, TaskResult> {
 
