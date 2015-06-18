@@ -43,7 +43,7 @@ public class TopButtonService extends Service{
     public static final String VISIBILITY_TOP_BUTTON = "amtt.epam.com.amtt.topbutton.service.VISIBILITY_TOP_BUTTON";
     public static final String PATH_TO_SCREEENSHOT_KEY = "PATH_TO_SCREENSHOT";
     //don't use REQUEST_CODE = 0 - it's broke mActionNotificationCompat in notification for some device
-    public static final int REQUEST_CODE = 123786796;
+    public static final int REQUEST_CODE = 1;
     public static final int NOTIFICATION_ID = 7;
     //bellow field for cap code and will be delete after do work realization
     private static Context mContext;
@@ -182,18 +182,18 @@ public class TopButtonService extends Service{
                 .setContentTitle(getString(R.string.notification_title))
                 .setOngoing(true)
                 .setContentText(getString(R.string.notification_text))
-                .setContentIntent(PendingIntent.getActivity(getBaseContext(), NOTIFICATION_ID, new Intent(getBaseContext(), SettingActivity.class),PendingIntent.FLAG_UPDATE_CURRENT));
+                .setContentIntent(PendingIntent.getActivity(getBaseContext(), NOTIFICATION_ID, new Intent(getBaseContext(), SettingActivity.class),PendingIntent.FLAG_CANCEL_CURRENT));
 
 
         mActionNotificationCompat = new NotificationCompat.Action(
                 R.drawable.ic_stat_action_visibility_off,
                 getString(R.string.label_hide),
-                PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CHANGE_NOTIFICATION_BUTTON), PendingIntent.FLAG_UPDATE_CURRENT));
+                PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CHANGE_NOTIFICATION_BUTTON), PendingIntent.FLAG_CANCEL_CURRENT));
 
         NotificationCompat.Action closeService = new NotificationCompat.Action(
                 R.drawable.ic_close_service,
                 getString(R.string.label_close),
-                PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE), PendingIntent.FLAG_UPDATE_CURRENT));
+                PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE), PendingIntent.FLAG_CANCEL_CURRENT));
 
         mBuilderNotificationCompat.addAction(mActionNotificationCompat);
         mBuilderNotificationCompat.addAction(closeService);
