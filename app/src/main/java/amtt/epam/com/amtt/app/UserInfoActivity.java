@@ -92,7 +92,11 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     protected void onDestroy() {
         super.onDestroy();
         if (isNeedShowingTopButton) {
-            TopButtonService.start(getBaseContext());
+            if (isNewUser) {
+                TopButtonService.start(getBaseContext());
+            } else {
+                TopButtonService.sendActionChangeVisibilityTopbutton(true);
+            }
         }
     }
 
@@ -261,6 +265,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
                         long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
                         args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
                         isNewUser = true;
+                        TopButtonService.close(getBaseContext());
                         getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
                     }else{
                         Intent loginIntent = new Intent(UserInfoActivity.this, LoginActivity.class);

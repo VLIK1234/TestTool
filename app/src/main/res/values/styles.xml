@@ -49,8 +49,11 @@
     <style name="Base.Widget.AppCompat.Spinner.Underlined.Custom">
         <item name="android:paddingRight">4dp</item>
         <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
         <item name="android:spinnerItemStyle">@style/Material.Widget.SpinnerItem</item>
+        <item name="android:duplicateParentState">true</item>
     </style>
 
     <style name="Material.Widget.RecyclerView">

@@ -21,6 +21,7 @@ import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
 import amtt.epam.com.amtt.view.SpinnerProgress;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,6 +35,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -64,6 +66,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private AttachmentAdapter mAdapter;
     public SpinnerProgress mProjectNamesSpinner;
     private RecyclerView recyclerView;
+    private InputMethodManager mInputManager;
 
     public static class AssigneeHandler extends Handler {
 
@@ -110,6 +113,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initListStepButton();
         initPrioritiesSpinner();
         initCreateIssueButton();
+        mInputManager = (InputMethodManager) CreateIssueActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     private void reinitRelatedViews(String projectKey) {
@@ -259,6 +263,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         issueTypesSpinner.setAdapter(issueTypesAdapter);
                         issueTypesSpinner.showProgress(false);
                         issueTypesSpinner.setEnabled(true);
+                        hideKeyboard();
                     }
                 });
             }
@@ -319,6 +324,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 if (TextUtils.isEmpty(mSummaryEditText.getText().toString())) {
                     mSummaryEditText.requestFocus();
                     mSummaryEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
+                    showKeyboard(mSummaryEditText);
                     isValid = false;
                     Toast.makeText(CreateIssueActivity.this, getString(R.string.enter_prefix) + getString(R.string.enter_summary), Toast.LENGTH_LONG).show();
                 } else if (InputsUtil.hasWhitespaceMargins(mSummaryEditText.getText().toString())) {
@@ -448,6 +454,20 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         Intent preview = new Intent(CreateIssueActivity.this, PreviewActivity.class);
         preview.putExtra(PreviewActivity.FILE_PATH, mAdapter.getAttachmentFilePathList().get(position));
         startActivity(preview);
+    }
+
+    private void hideKeyboard() {
+        View view = CreateIssueActivity.this.getCurrentFocus();
+        if (view != null) {
+            mInputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    private void showKeyboard(View view){
+        if (view != null) {
+            mInputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+        }
+
     }
 
 }

@@ -7,6 +7,9 @@
         android:id="@+id/autocomplete_text_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:duplicateParentState="true"
         android:inputType="textAutoComplete"/>
 
     <ProgressBar

@@ -37,15 +37,13 @@
                 style="@style/Material.Widget.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_issue_type"/>
 
             <amtt.epam.com.amtt.view.SpinnerProgress
                 android:id="@+id/spin_issue_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/label_issue_type"
-                android:paddingBottom="@dimen/spinner_padding_bottom" />
+                android:hint="@string/label_issue_type"/>
 
             <!-- *******ISSUE TYPES END**********************************************-->
 
@@ -70,15 +68,13 @@
                 style="@style/Material.Widget.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_priority"/>
 
             <amtt.epam.com.amtt.view.SpinnerProgress
                 android:id="@+id/spin_priority"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/label_priority"
-                android:paddingBottom="@dimen/spinner_padding_bottom" />
+                android:hint="@string/label_priority"/>
 
             <!-- *******PRIORITY END*************************************************-->
 
@@ -88,14 +84,13 @@
                 style="@style/Material.Widget.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_attachment"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/listScreens"
                 style="@style/Material.Widget.RecyclerView"
                 android:layout_width="wrap_content"
-                android:layout_marginTop="@dimen/material_vertical_size_divider"
+                android:layout_marginTop="12dp"
                 tools:context=".app.CreateIssueActivity" />
             <!-- *******ATTACHMENT END*************************************************-->
 
