@@ -49,7 +49,7 @@ public class ActiveUser {
     public void setCredentials(String userName, String password, String url) {
         setUserName(userName);
         setUrl(url);
-        setCredentials(JiraApiConst.BASIC_AUTH + Base64.encodeToString((mUserName + Constants.Symbols.COLON + password).getBytes(), Base64.NO_WRAP));
+        setCredentials(JiraApiConst.BASIC_AUTH + Base64.encodeToString((getUserName() + Constants.Symbols.COLON + password).getBytes(), Base64.NO_WRAP));
     }
 
     public void setCredentials(String credentials) {
