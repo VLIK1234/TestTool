@@ -4,10 +4,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
+import org.apache.http.HttpResponse;
+
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.http.HttpClient;
+import amtt.epam.com.amtt.http.HttpResult;
 import amtt.epam.com.amtt.http.Request;
 import amtt.epam.com.amtt.os.Task;
-import amtt.epam.com.amtt.os.Task.AsyncTaskCallback;
+import amtt.epam.com.amtt.CoreApplication.Callback;
 
 /**
  * Created by Artsiom_Kaliaha on 29.04.2015.
@@ -36,15 +41,16 @@ public class DialogUtils {
         }
 
         @SuppressWarnings("unchecked")
-        public Builder setPositiveButton(int textId, final Request request, final AsyncTaskCallback callback) {
+        public Builder setPositiveButton(int textId, final Request request, final Callback callback) {
             if (textId != Constants.Dialog.EMPTY_FIELD) {
                 DialogInterface.OnClickListener positiveListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new Task.Builder<>()
-                                .setExecutable(request)
+                        new CoreApplication.DataLoadingBuilder<HttpResult, Request, HttpResponse>()
+                                .setDataSource(HttpClient.SOURCE_NAME)
+                                .setDataSourceParam(request)
                                 .setCallback(callback)
-                                .createAndExecute();
+                                .load();
                     }
                 };
                 mBuilder.setPositiveButton(textId, positiveListener);

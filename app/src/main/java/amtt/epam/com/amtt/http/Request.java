@@ -50,6 +50,10 @@ public class Request<ResultType> {
             return this;
         }
 
+        public Processor getProcessor() {
+            return mProcessor;
+        }
+
         public Builder setPostEntity(String postEntityString) throws UnsupportedEncodingException {
             mPostEntity = new StringEntity(postEntityString);
             return this;

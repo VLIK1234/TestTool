@@ -1,7 +1,5 @@
 package amtt.epam.com.amtt.ticket;
 
-import org.apache.http.HttpRequest;
-
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.api.JiraApi;
@@ -12,12 +10,12 @@ import amtt.epam.com.amtt.bo.JProjectsResponse;
 import amtt.epam.com.amtt.bo.JUserAssignableResponse;
 import amtt.epam.com.amtt.bo.JVersionsResponse;
 import amtt.epam.com.amtt.http.HttpResult;
-import amtt.epam.com.amtt.os.Task.AsyncTaskCallback;
 import amtt.epam.com.amtt.processing.PostCreateIssueProcessor;
 import amtt.epam.com.amtt.processing.PriorityProcessor;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
 import amtt.epam.com.amtt.processing.UsersAssignableProcessor;
 import amtt.epam.com.amtt.processing.VersionsProcessor;
+import amtt.epam.com.amtt.CoreApplication.Callback;
 
 /**
  * @author Iryna Monchanka
@@ -101,15 +99,15 @@ public class ContentFromBackend {
                 getCallback(JiraContentConst.SEND_ATTACHMENT, true, false, contentLoadingCallback, jiraGetContentCallback));
     }
 
-    private <Result> AsyncTaskCallback getCallback(final JiraContentConst requestType, final Result successResult, final Result errorResult, final ContentLoadingCallback<Result> contentLoadingCallback, final JiraGetContentCallback jiraGetContentCallback) {
-        return new AsyncTaskCallback<HttpResult>() {
+    private <Result> Callback getCallback(final JiraContentConst requestType, final Result successResult, final Result errorResult, final ContentLoadingCallback<Result> contentLoadingCallback, final JiraGetContentCallback jiraGetContentCallback) {
+        return new Callback<HttpResult>() {
             @Override
-            public void onTaskStart() {
+            public void onLoadStart() {
 
             }
 
             @Override
-            public void onTaskExecuted(HttpResult httpResult) {
+            public void onLoadExecuted(HttpResult httpResult) {
                 if (successResult != null) {
                     contentLoadingCallback.resultFromBackend(successResult, requestType, jiraGetContentCallback);
                 } else {
@@ -118,7 +116,7 @@ public class ContentFromBackend {
             }
 
             @Override
-            public void onTaskError(Exception e) {
+            public void onLoadError(Exception e) {
                 contentLoadingCallback.resultFromBackend(errorResult, requestType, jiraGetContentCallback);
             }
         };

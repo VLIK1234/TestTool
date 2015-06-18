@@ -19,15 +19,15 @@ import org.apache.http.client.methods.HttpGet;
 
 import java.lang.ref.WeakReference;
 
+import amtt.epam.com.amtt.CoreApplication.Callback;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.exception.ExceptionHandler;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.exception.ExceptionHandler;
 import amtt.epam.com.amtt.http.HttpResult;
-import amtt.epam.com.amtt.os.Task.AsyncTaskCallback;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -42,7 +42,7 @@ import amtt.epam.com.amtt.view.TextView;
  */
 
 @SuppressWarnings("unchecked")
-public class UserInfoActivity extends BaseActivity implements AsyncTaskCallback<HttpResult<JUserInfo>>, LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
+public class UserInfoActivity extends BaseActivity implements Callback<HttpResult<JUserInfo>>, LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_REFRESH = 100;
@@ -248,13 +248,15 @@ public class UserInfoActivity extends BaseActivity implements AsyncTaskCallback<
     }
 
     //Jira
+
+
     @Override
-    public void onTaskStart() {
+    public void onLoadStart() {
 
     }
 
     @Override
-    public void onTaskExecuted(HttpResult<JUserInfo> httpResult) {
+    public void onLoadExecuted(HttpResult<JUserInfo> httpResult) {
         if (httpResult.getRequestType().equals(HttpGet.METHOD_NAME)) {
             JUserInfo user = httpResult.getResultObject();
             user.setUrl(ActiveUser.getInstance().getUrl());
@@ -264,7 +266,7 @@ public class UserInfoActivity extends BaseActivity implements AsyncTaskCallback<
     }
 
     @Override
-    public void onTaskError(Exception e) {
+    public void onLoadError(Exception e) {
         ExceptionHandler.getInstance().processError(e).showDialog(this, UserInfoActivity.this);
         mSwipeRefreshLayout.setRefreshing(false);
     }

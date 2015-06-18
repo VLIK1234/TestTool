@@ -104,6 +104,7 @@ public class JiraApi {
         new CoreApplication.DataLoadingBuilder<HttpResult, Request, HttpResponse>()
                 .setDataSource(HttpClient.SOURCE_NAME)
                 .setDataSourceParam(requestBuilder.create())
+                .setProcessor(requestBuilder.getProcessor())
                 .setCallback(callback)
                 .load();
     }

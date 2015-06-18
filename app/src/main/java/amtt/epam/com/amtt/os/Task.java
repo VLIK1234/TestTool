@@ -45,7 +45,7 @@ public class Task<TaskResult, DataSourceParam, ProcessorSource> extends AsyncTas
         public void createAndExecute() {
             Task<TaskResult, DataSourceParam, ProcessorSource> task = new Task<>();
             task.mDataSource = this.mDataSource;
-            task.mDataSourceDataSourceDataSourceParam = this.mDataSourceDataSourceParam;
+            task.mDataSourceParam = this.mDataSourceDataSourceParam;
             task.mProcessor = this.mProcessor;
             task.mCallback = this.mCallback;
             task.execute();
@@ -55,7 +55,7 @@ public class Task<TaskResult, DataSourceParam, ProcessorSource> extends AsyncTas
 
     private Callback<TaskResult> mCallback;
     private IDataSource<ProcessorSource, DataSourceParam> mDataSource;
-    private DataSourceParam mDataSourceDataSourceDataSourceParam;
+    private DataSourceParam mDataSourceParam;
     private Processor<TaskResult, ProcessorSource> mProcessor;
     private Exception mException;
 
@@ -70,7 +70,7 @@ public class Task<TaskResult, DataSourceParam, ProcessorSource> extends AsyncTas
     protected TaskResult doInBackground(Void... params) {
         TaskResult processingTaskResult = null;
         try {
-            ProcessorSource source = mDataSource.getData(mDataSourceDataSourceDataSourceParam);
+            ProcessorSource source = mDataSource.getData(mDataSourceParam);
             if (mProcessor != null) {
                 processingTaskResult = mProcessor.process(source);
             }

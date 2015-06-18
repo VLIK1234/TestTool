@@ -9,7 +9,7 @@ import java.util.Map;
 
 import amtt.epam.com.amtt.http.HttpException;
 import amtt.epam.com.amtt.loader.BlockingStack;
-import amtt.epam.com.amtt.os.Task.AsyncTaskCallback;
+import amtt.epam.com.amtt.CoreApplication.Callback;
 import amtt.epam.com.amtt.util.DialogUtils;
 
 /**
@@ -67,7 +67,7 @@ public class ExceptionHandler {
     /**
      * Constructs dialogs
      */
-    public void showDialog(final Context context, AsyncTaskCallback callback) {
+    public void showDialog(final Context context, Callback callback) {
         if (!isDialogShown) {
             DialogUtils.Builder dialog = new DialogUtils.Builder(context)
                     .setTitle(mLastType.getTitle())

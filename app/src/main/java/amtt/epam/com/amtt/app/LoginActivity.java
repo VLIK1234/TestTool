@@ -31,7 +31,7 @@ import amtt.epam.com.amtt.database.object.DbObjectManger;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.http.HttpResult;
-import amtt.epam.com.amtt.os.Task.AsyncTaskCallback;
+import amtt.epam.com.amtt.CoreApplication.Callback;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -47,7 +47,7 @@ import amtt.epam.com.amtt.util.StepUtil;
  */
 
 @SuppressWarnings("unchecked")
-public class LoginActivity extends BaseActivity implements AsyncTaskCallback<HttpResult<JUserInfo>>, LoaderCallbacks<Cursor> {
+public class LoginActivity extends BaseActivity implements Callback<HttpResult<JUserInfo>>, LoaderCallbacks<Cursor> {
 
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
     public static final String KEY_USER_ID = "key_user_id";
@@ -204,13 +204,15 @@ public class LoginActivity extends BaseActivity implements AsyncTaskCallback<Htt
 
     //Callbacks
     //Jira
+
+
     @Override
-    public void onTaskStart() {
+    public void onLoadStart() {
 
     }
 
     @Override
-    public void onTaskExecuted(HttpResult<JUserInfo> httpResult) {
+    public void onLoadExecuted(HttpResult<JUserInfo> httpResult) {
         showProgress(false);
         if (httpResult.getRequestType().equals(HttpGet.METHOD_NAME)) {
             if (httpResult.getResultObject() != null && !mIsUserInDatabase) {
@@ -229,7 +231,7 @@ public class LoginActivity extends BaseActivity implements AsyncTaskCallback<Htt
     }
 
     @Override
-    public void onTaskError(Exception e) {
+    public void onLoadError(Exception e) {
         ExceptionHandler.getInstance().processError(e).showDialog(LoginActivity.this, LoginActivity.this);
         showProgress(false);
         mLoginButton.setEnabled(true);

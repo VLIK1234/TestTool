@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.http;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpDelete;
@@ -23,7 +24,7 @@ import amtt.epam.com.amtt.util.Logger;
  * HttpClient that prepares Requests to be executed
  */
 @SuppressWarnings("unchecked")
-public class HttpClient implements IDataSource<HttpResponse, Request> {
+public class HttpClient implements IDataSource<HttpEntity, Request> {
 
     private final String TAG = getClass().getSimpleName();
     public static final String SOURCE_NAME = "HttpClient";
@@ -80,7 +81,7 @@ public class HttpClient implements IDataSource<HttpResponse, Request> {
     }
 
     @Override
-    public HttpResponse getData(Request request) throws Exception {
+    public HttpEntity getData(Request request) throws Exception {
         HttpResponse httpResponse = sHttpClient.execute(request.getHttpRequestBase());
 
         int statusCode = httpResponse.getStatusLine().getStatusCode();
@@ -91,7 +92,7 @@ public class HttpClient implements IDataSource<HttpResponse, Request> {
             throw new HttpException(null, statusCode, request, null);
         }
 
-        return httpResponse;
+        return httpResponse.getEntity();
     }
 
 }
