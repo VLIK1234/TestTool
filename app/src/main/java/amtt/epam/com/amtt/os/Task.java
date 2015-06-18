@@ -2,48 +2,38 @@ package amtt.epam.com.amtt.os;
 
 import android.os.AsyncTask;
 
+import amtt.epam.com.amtt.datasource.IDataSource;
 import amtt.epam.com.amtt.processing.Processor;
+import amtt.epam.com.amtt.CoreApplication.Callback;
 
 /**
  * Created by Artsiom_Kaliaha on 15.06.2015.
  * Generalized AsyncTask
+ * param
  * param ProcessorSource Type that will be passed to a processor after AsyncTask execution
  * param TaskResult      Type that will be returned from a processor and consequently from AsyncTask
  */
-public class Task<TaskResult, ProcessorSource> extends AsyncTask<Void, Void, TaskResult> {
+public class Task<TaskResult, DataSourceParam, ProcessorSource> extends AsyncTask<Void, Void, TaskResult> {
 
-    /**
-     * Defines method in class that can be executed by Task
-     */
-    public interface IExecutable<ExecutionResult> {
+    public static class Builder<TaskResult, DataSourceParam, ProcessorSource> {
 
-        ExecutionResult execute() throws Exception;
-
-    }
-
-    public interface AsyncTaskCallback<ProcessingResult> {
-
-        void onTaskStart();
-
-        void onTaskExecuted(ProcessingResult result);
-
-        void onTaskError(Exception e);
-
-    }
-
-    public static class Builder<TaskResult, ProcessorSource> {
-
-        private AsyncTaskCallback<TaskResult> mAsyncTaskCallback;
-        private IExecutable<ProcessorSource> mExecutable;
+        private Callback<TaskResult> mCallback;
+        private IDataSource<ProcessorSource, DataSourceParam> mDataSource;
+        private DataSourceParam mDataSourceDataSourceParam;
         private Processor<TaskResult, ProcessorSource> mProcessor;
 
-        public Builder setCallback(AsyncTaskCallback<TaskResult> asyncTaskCallback) {
-            mAsyncTaskCallback = asyncTaskCallback;
+        public Builder setCallback(Callback<TaskResult> asyncTaskCallback) {
+            mCallback = asyncTaskCallback;
             return this;
         }
 
-        public Builder setExecutable(IExecutable<ProcessorSource> executable) {
-            mExecutable = executable;
+        public Builder setDataSource(IDataSource<ProcessorSource, DataSourceParam> dataSource) {
+            mDataSource = dataSource;
+            return this;
+        }
+
+        public Builder setDataSourceParam(DataSourceParam dataSourceDataSourceParam) {
+            mDataSourceDataSourceParam = dataSourceDataSourceParam;
             return this;
         }
 
@@ -53,24 +43,26 @@ public class Task<TaskResult, ProcessorSource> extends AsyncTask<Void, Void, Tas
         }
 
         public void createAndExecute() {
-            Task<TaskResult, ProcessorSource> task = new Task<>();
-            task.mAsyncTaskCallback = this.mAsyncTaskCallback;
-            task.mExecutable = this.mExecutable;
+            Task<TaskResult, DataSourceParam, ProcessorSource> task = new Task<>();
+            task.mDataSource = this.mDataSource;
+            task.mDataSourceDataSourceDataSourceParam = this.mDataSourceDataSourceParam;
             task.mProcessor = this.mProcessor;
+            task.mCallback = this.mCallback;
             task.execute();
         }
 
     }
 
-    private AsyncTaskCallback<TaskResult> mAsyncTaskCallback;
-    private IExecutable<ProcessorSource> mExecutable;
+    private Callback<TaskResult> mCallback;
+    private IDataSource<ProcessorSource, DataSourceParam> mDataSource;
+    private DataSourceParam mDataSourceDataSourceDataSourceParam;
     private Processor<TaskResult, ProcessorSource> mProcessor;
     private Exception mException;
 
     @Override
     protected void onPreExecute() {
-        if (mAsyncTaskCallback != null) {
-            mAsyncTaskCallback.onTaskStart();
+        if (mCallback != null) {
+            mCallback.onLoadStart();
         }
     }
 
@@ -78,7 +70,7 @@ public class Task<TaskResult, ProcessorSource> extends AsyncTask<Void, Void, Tas
     protected TaskResult doInBackground(Void... params) {
         TaskResult processingTaskResult = null;
         try {
-            ProcessorSource source = mExecutable.execute();
+            ProcessorSource source = mDataSource.getData(mDataSourceDataSourceDataSourceParam);
             if (mProcessor != null) {
                 processingTaskResult = mProcessor.process(source);
             }
@@ -90,14 +82,14 @@ public class Task<TaskResult, ProcessorSource> extends AsyncTask<Void, Void, Tas
 
     @Override
     protected void onPostExecute(TaskResult processingTaskResult) {
-        if (mAsyncTaskCallback == null) {
+        if (mCallback == null) {
             return;
         }
         if (mException != null) {
-            mAsyncTaskCallback.onTaskError(mException);
+            mCallback.onLoadError(mException);
             return;
         }
-        mAsyncTaskCallback.onTaskExecuted(processingTaskResult);
+        mCallback.onLoadExecuted(processingTaskResult);
     }
 
 }

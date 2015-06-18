@@ -1,29 +1,23 @@
 package amtt.epam.com.amtt.http;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import amtt.epam.com.amtt.os.Task.IExecutable;
 import amtt.epam.com.amtt.processing.Processor;
 
 /**
  * Created by Artsiom_Kaliaha on 11.06.2015.
  * Present parameters which are passed to the HttpClient
  */
-public class Request<ResultType> implements IExecutable<HttpResponse> {
+public class Request<ResultType> {
 
     public static class Builder<ResultType> {
 
@@ -101,28 +95,12 @@ public class Request<ResultType> implements IExecutable<HttpResponse> {
     private Processor<ResultType, HttpEntity> mProcessor;
     private HttpRequestBase mHttpRequestBase;
 
-    private static final org.apache.http.client.HttpClient sHttpClient;
-
-    static {
-        HttpParams httpParameters = new BasicHttpParams();
-        int timeoutConnection = 8000;
-        HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
-        int timeoutSocket = 10000;
-        HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-        sHttpClient = new DefaultHttpClient(httpParameters);
-    }
-
     public Processor<ResultType, HttpEntity> getProcessor() {
         return mProcessor;
     }
 
     public HttpRequestBase getHttpRequestBase() {
         return mHttpRequestBase;
-    }
-
-    @Override
-    public HttpResponse execute() throws Exception {
-        return sHttpClient.execute(mHttpRequestBase);
     }
 
 }

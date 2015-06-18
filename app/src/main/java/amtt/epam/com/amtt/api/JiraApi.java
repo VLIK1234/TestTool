@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.api;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 
 import java.io.UnsupportedEncodingException;
@@ -8,10 +7,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import amtt.epam.com.amtt.CoreApplication;
+import amtt.epam.com.amtt.CoreApplication.Callback;
 import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.http.HttpException;
+import amtt.epam.com.amtt.http.HttpResult;
 import amtt.epam.com.amtt.http.Request;
-import amtt.epam.com.amtt.os.Task.AsyncTaskCallback;
 import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.util.ActiveUser;
 
@@ -31,27 +32,30 @@ public class JiraApi {
     private JiraApi() {
     }
 
-    public void signOut(AsyncTaskCallback callback) {
-        HttpClient.getClient().delete(new Request.Builder()
-                        .setUrl(ActiveUser.getInstance()
-                                .getUrl() + JiraApiConst.LOGIN_PATH),
-                callback);
+    public void signOut(Callback callback) {
+        Request.Builder requestBuilder = new Request.Builder().setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.LOGIN_PATH);
+        HttpClient.getClient().delete(requestBuilder);
+        execute(requestBuilder, callback);
     }
 
-    public <ResultType, InputType> void createIssue(final String postEntityString, final Processor<ResultType, InputType> processor, AsyncTaskCallback callback) {
+    public <ResultType, InputType> void createIssue(final String postEntityString, final Processor<ResultType, InputType> processor, Callback callback) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, ActiveUser.getInstance().getCredentials());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
+
+        Request.Builder requestBuilder;
         try {
-            HttpClient.getClient().post(new Request.Builder()
-                            .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH)
-                            .setHeaders(headers)
-                            .setPostEntity(postEntityString)
-                            .setProcessor(processor),
-                    callback);
+            requestBuilder = new Request.Builder()
+                    .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH)
+                    .setHeaders(headers)
+                    .setPostEntity(postEntityString)
+                    .setProcessor(processor);
+            HttpClient.getClient().post(requestBuilder);
         } catch (UnsupportedEncodingException e) {
-            callback.onTaskError(new HttpException(e, HttpClient.EMPTY_STATUS_CODE, null, postEntityString));
+            callback.onLoadError(new HttpException(e, HttpClient.EMPTY_STATUS_CODE, null, postEntityString));
+            return;
         }
+        execute(requestBuilder, callback);
     }
 
     public <ResultType, InputType> void searchData(final String requestSuffix,
@@ -59,7 +63,7 @@ public class JiraApi {
                                                    final String userName,
                                                    final String password,
                                                    String url,
-                                                   AsyncTaskCallback callback) {
+                                                   Callback callback) {
         String credentials;
         if (userName != null && password != null) {
             //this code is used when new user is added and we need to getClient all the info about a user and authorize him/her in one request
@@ -68,30 +72,40 @@ public class JiraApi {
             credentials = ActiveUser.getInstance().getCredentials();
             url = ActiveUser.getInstance().getUrl();
         }
-
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, credentials);
 
-        HttpClient.getClient().get(new Request.Builder()
-                        .setUrl(url + requestSuffix)
-                        .setHeaders(headers)
-                        .setProcessor(processor),
-                callback);
+        Request.Builder requestBuilder = new Request.Builder()
+                .setUrl(url + requestSuffix)
+                .setHeaders(headers)
+                .setProcessor(processor);
+        HttpClient.getClient().get(requestBuilder);
+        execute(requestBuilder, callback);
     }
 
-    public void createAttachment(final String issueKey, ArrayList<String> filesPaths, AsyncTaskCallback callback) {
+    public void createAttachment(final String issueKey, ArrayList<String> filesPaths, Callback callback) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, ActiveUser.getInstance().getCredentials());
         headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
-        HttpClient.getClient().post(new Request.Builder()
-                        .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
-                        .setHeaders(headers)
-                        .setPostEntity(filesPaths),
-                callback);
+
+        Request.Builder requestBuilder = new Request.Builder()
+                .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
+                .setHeaders(headers)
+                .setPostEntity(filesPaths);
+        HttpClient.getClient().post(requestBuilder);
+        execute(requestBuilder, callback);
     }
 
     public static JiraApi get() {
         return INSTANCE;
+    }
+
+    private void execute(Request.Builder requestBuilder, Callback callback) {
+        new CoreApplication.DataLoadingBuilder<HttpResult, Request, HttpResponse>()
+                .setDataSource(HttpClient.SOURCE_NAME)
+                .setDataSourceParam(requestBuilder.create())
+                .setCallback(callback)
+                .load();
     }
 
 }
