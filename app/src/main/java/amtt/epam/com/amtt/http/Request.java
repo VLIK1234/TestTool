@@ -64,7 +64,9 @@ public class Request {
             for (int i = 0; i < filesPaths.size(); i++) {
                 String file = filesPaths.get(i);
                 File fileToUpload = new File(file);
-                if (file.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
+                if (file.contains(MimeType.IMAGE_PNG.getFileExtension())) {
+                    multipartEntityBuilder.addBinaryBody(MediaType.FILE_TYPE, fileToUpload, ContentType.create(MimeType.IMAGE_PNG.getType()), fileToUpload.getName());
+                } else if (file.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
                     multipartEntityBuilder.addBinaryBody(MediaType.FILE_TYPE, fileToUpload, ContentType.create(MimeType.IMAGE_JPEG.getType()), fileToUpload.getName());
                 } else if (file.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
                     multipartEntityBuilder.addBinaryBody(MediaType.FILE_TYPE, fileToUpload, ContentType.create(MimeType.TEXT_PLAIN.getType()), fileToUpload.getName());

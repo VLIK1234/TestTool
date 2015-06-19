@@ -86,6 +86,7 @@ public class JiraApi {
         Request.Builder requestBuilder = new Request.Builder()
                 .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
                 .setHeaders(headers)
+                .setProcessorName(CoreApplication.NO_PROCESSOR)
                 .setPostEntity(filesPaths);
         HttpClient.getClient().post(requestBuilder);
         execute(requestBuilder, callback);

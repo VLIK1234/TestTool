@@ -22,7 +22,6 @@ import java.io.File;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.app.SettingActivity;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
-import amtt.epam.com.amtt.topbutton.view.TopButtonBarView;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 
 /**
@@ -129,7 +128,7 @@ public class TopButtonService extends Service{
                 case ACTION_CHANGE_VISIBILITY_TOPBUTTON:
                     Bundle extraBoolean = intent.getExtras();
                     if (extraBoolean!=null) {
-                        setTopbuttonVisible(extraBoolean.getBoolean(VISIBILITY_TOP_BUTTON));
+                        setTopButtonVisible(extraBoolean.getBoolean(VISIBILITY_TOP_BUTTON));
                     }
                     break;
                 case ACTION_SHOW_SCREEN:
@@ -214,7 +213,7 @@ public class TopButtonService extends Service{
         }
     }
 
-    private void setTopbuttonVisible(boolean visible) {
+    private void setTopButtonVisible(boolean visible) {
         if (visible) {
             if (mTopButtonView.getVisibility() == View.GONE) {
                 changeStateNotificationAction();

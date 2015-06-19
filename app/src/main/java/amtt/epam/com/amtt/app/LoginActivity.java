@@ -96,12 +96,14 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
 
     private void initViews() {
         mUserNameEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_username);
+        mUserNameEditText.setText("artsiom_kaliaha");
         mUserNameEditText.clearErrorOnFocus(true);
         mUserNameEditText.clearErrorOnTextChanged(true);
         mPasswordEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_password);
         mPasswordEditText.clearErrorOnFocus(true);
         mPasswordEditText.clearErrorOnTextChanged(true);
         mUrlEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_jira_url);
+        mUrlEditText.setText("https://amtt06.atlassian.net");
         mUrlEditText.clearErrorOnFocus(true);
         mUrlEditText.clearErrorOnTextChanged(true);
         mLoginButton = (Button) findViewById(R.id.btn_login);

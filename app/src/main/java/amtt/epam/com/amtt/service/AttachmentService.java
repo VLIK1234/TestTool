@@ -8,15 +8,15 @@ import android.os.IBinder;
 
 import java.util.ArrayList;
 
-import amtt.epam.com.amtt.observer.AmttFileObserver;
-import amtt.epam.com.amtt.helper.AttachNotificationHelper;
-import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.api.JiraGetContentCallback;
+import amtt.epam.com.amtt.api.loadcontent.JiraContent;
+import amtt.epam.com.amtt.helper.AttachNotificationHelper;
+import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
- @author Iryna Monchanka
- @version on 27.05.2015
+ * @author Iryna Monchanka
+ * @version on 27.05.2015
  */
 
 public class AttachmentService extends Service {
@@ -76,7 +76,7 @@ public class AttachmentService extends Service {
     }
 
     public void attachFile(final String issueKey, final ArrayList<String> fileFullName) {
-        if (fileFullName.size()>0){
+        if (fileFullName.size() > 0) {
             final int notificationId = AttachNotificationHelper.showNotification(getBaseContext(),
                     AttachNotificationHelper.getInitBuilder(getBaseContext(), issueKey, fileFullName.size()));
             JiraContent.getInstance().sendAttachment(issueKey, fileFullName, new JiraGetContentCallback<Boolean>() {

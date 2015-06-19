@@ -25,7 +25,6 @@ import amtt.epam.com.amtt.util.FileUtil;
  @author Artsiom_Kaliaha
  @version on 16.05.2015
  */
-
 public class StepUtil {
 
     public static void saveStep(ComponentName componentName, String mScreenPath){
@@ -62,13 +61,16 @@ public class StepUtil {
                  "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>" + "<br />" + "<br />");
      }
 
+    @SuppressWarnings("unchecked")
     public static Spanned getStepInfo(List<DatabaseEntity> listStep){
         ArrayList<Step> list = (ArrayList)listStep;
         SpannableStringBuilder builder = new SpannableStringBuilder();
         Context context = ContextHolder.getContext();
         for (int i = 0; i < listStep.size(); i++) {
             builder.append(Html.fromHtml("<h5>" + context.getString(R.string.label_step) + String.valueOf(i + 1) + "</h5>"));
-            builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(list.get(i).getFilePath()) + "</small>" + "<br />"));
+            if (list.get(i).getFilePath() != null) {
+                builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(list.get(i).getFilePath()) + "</small>" + "<br />"));
+            }
             builder.append(getStepInfo(list.get(i)));
         }
         return builder;

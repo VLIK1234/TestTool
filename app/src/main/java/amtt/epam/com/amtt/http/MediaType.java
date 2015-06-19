@@ -6,6 +6,9 @@ package amtt.epam.com.amtt.http;
  */
 public final class MediaType {
 
+    /*
+    * Default required field
+    * */
     public static final String FILE_TYPE = "file";
 
     public static final String IMAGE_TYPE = "image";
