@@ -139,4 +139,7 @@
     <string name="activity_info_text_size">16sp</string>
     <string name="content_description_screenshot">Screenshot</string>
 
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
 </resources>

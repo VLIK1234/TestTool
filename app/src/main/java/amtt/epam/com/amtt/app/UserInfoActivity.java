@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.app;
 
+
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -31,13 +33,11 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.Logger;
-import amtt.epam.com.amtt.view.TextView;
 
 /**
  * @author Artsiom_Kaliaha
  * @version on 07.05.2015
  */
-
 @SuppressWarnings("unchecked")
 public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo>, LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
@@ -58,6 +58,7 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private UserInfoHandler mHandler;
     private Boolean isNeedShowingTopButton = true;
+    private Boolean isNewUser = false;
 
     public static class UserInfoHandler extends Handler {
 
@@ -90,7 +91,11 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     protected void onDestroy() {
         super.onDestroy();
         if (isNeedShowingTopButton) {
-            TopButtonService.start(getBaseContext());
+            if (isNewUser) {
+                TopButtonService.start(getBaseContext());
+            } else {
+                TopButtonService.sendActionChangeVisibilityTopbutton(true);
+            }
         }
     }
 
@@ -104,6 +109,7 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add: {
+                TopButtonService.close(getBaseContext());
                 isNeedShowingTopButton = false;
                 startActivityForResult(new Intent(this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
             }

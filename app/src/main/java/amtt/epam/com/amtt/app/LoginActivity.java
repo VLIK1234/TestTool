@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -40,7 +41,6 @@ import amtt.epam.com.amtt.util.Constants.Symbols;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Logger;
-import amtt.epam.com.amtt.view.EditText;
 
 /**
  * @author Artsiom_Kaliaha
@@ -95,17 +95,10 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     }
 
     private void initViews() {
-        mUserNameEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_username);
-        mUserNameEditText.setText("artsiom_kaliaha");
-        mUserNameEditText.clearErrorOnFocus(true);
-        mUserNameEditText.clearErrorOnTextChanged(true);
-        mPasswordEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_password);
-        mPasswordEditText.clearErrorOnFocus(true);
-        mPasswordEditText.clearErrorOnTextChanged(true);
-        mUrlEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_jira_url);
-        mUrlEditText.setText("https://amtt06.atlassian.net");
-        mUrlEditText.clearErrorOnFocus(true);
-        mUrlEditText.clearErrorOnTextChanged(true);
+        mUserNameEditText = (EditText) findViewById(R.id.et_username);
+        mPasswordEditText = (EditText) findViewById(R.id.et_password);
+        mUrlEditText = (EditText) findViewById(R.id.et_jira_url);
+        mUrlEditText.setText("https://");
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
