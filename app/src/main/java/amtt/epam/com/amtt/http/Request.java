@@ -11,29 +11,31 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import amtt.epam.com.amtt.processing.Processor;
-
 /**
  * Created by Artsiom_Kaliaha on 11.06.2015.
  * Present parameters which are passed to the HttpClient
  */
 public class Request {
 
+    public enum Type {
+
+        GET,
+        POST,
+        DELETE
+
+    }
+
     public static class Builder {
 
         private Map<String, String> mHeaders;
         private String mUrl;
         private String mProcessorName;
-        private HttpEntity mPostEntity;
-        private HttpRequestBase mHttpRequestBase;
+        private HttpEntity mEntity;
+        private Type mType;
 
         public Builder setHeaders(Map<String, String> headers) {
             mHeaders = headers;
             return this;
-        }
-
-        public Map<String, String> getHeaders() {
-            return mHeaders;
         }
 
         public Builder setUrl(String url) {
@@ -50,16 +52,12 @@ public class Request {
             return this;
         }
 
-        public String getProcessorName() {
-            return mProcessorName;
-        }
-
-        public Builder setPostEntity(String postEntityString) throws UnsupportedEncodingException {
-            mPostEntity = new StringEntity(postEntityString);
+        public Builder setEntity(HttpEntity entity) {
+            mEntity = entity;
             return this;
         }
 
-        public Builder setPostEntity(ArrayList<String> filesPaths) {
+        public Builder setEntity(ArrayList<String> filesPaths) {
             MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
             for (int i = 0; i < filesPaths.size(); i++) {
                 String file = filesPaths.get(i);
@@ -72,41 +70,64 @@ public class Request {
                     multipartEntityBuilder.addBinaryBody(MediaType.FILE_TYPE, fileToUpload, ContentType.create(MimeType.TEXT_PLAIN.getType()), fileToUpload.getName());
                 }
             }
-            mPostEntity = multipartEntityBuilder.build();
+            mEntity = multipartEntityBuilder.build();
             return this;
         }
 
-        public HttpEntity getPostEntity() {
-            return mPostEntity;
-        }
-
-        public Builder setHttpRequestBase(HttpRequestBase httpRequestBase) {
-            mHttpRequestBase = httpRequestBase;
+        public Builder setType(Type type) {
+            mType = type;
             return this;
         }
 
-        public HttpRequestBase getHttpRequestBase() {
-            return mHttpRequestBase;
+        public Type getType() {
+            return mType;
         }
 
         public Request create() {
             Request requestParams = new Request();
+            requestParams.mHeaders = this.mHeaders;
+            requestParams.mUrl = this.mUrl;
             requestParams.mProcessorName = this.mProcessorName;
-            requestParams.mHttpRequestBase = this.mHttpRequestBase;
+            requestParams.mEntity = this.mEntity;
+            requestParams.mType = this.mType;
             return requestParams;
         }
 
     }
 
+    private Map<String, String> mHeaders;
+    private String mUrl;
     private String mProcessorName;
+    private HttpEntity mEntity;
     private HttpRequestBase mHttpRequestBase;
+    private Type mType;
+
+    public Map<String, String> getHeaders() {
+        return mHeaders;
+    }
 
     public String getProcessorName() {
         return mProcessorName;
     }
 
+    public HttpEntity getEntity() {
+        return mEntity;
+    }
+
     public HttpRequestBase getHttpRequestBase() {
         return mHttpRequestBase;
+    }
+
+    public void setHttpRequestBase(HttpRequestBase request) {
+        mHttpRequestBase = request;
+    }
+
+    public Type getType() {
+        return mType;
+    }
+
+    public String getUrl() {
+        return mUrl;
     }
 
 }

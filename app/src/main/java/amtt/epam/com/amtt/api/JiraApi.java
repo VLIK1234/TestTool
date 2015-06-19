@@ -1,17 +1,22 @@
 package amtt.epam.com.amtt.api;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.StringEntity;
+
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.common.CoreApplication;
-import amtt.epam.com.amtt.common.DataRequestBuilder;
+import amtt.epam.com.amtt.common.DataRequest;
 import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.http.HttpException;
 import amtt.epam.com.amtt.http.HttpResult;
 import amtt.epam.com.amtt.http.Request;
+import amtt.epam.com.amtt.http.Request.Type;
 import amtt.epam.com.amtt.util.ActiveUser;
 
 /**
@@ -32,9 +37,9 @@ public class JiraApi {
 
     public void signOut() {
         Request.Builder requestBuilder = new Request.Builder()
+                .setType(Type.DELETE)
                 .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.LOGIN_PATH)
                 .setProcessorName(CoreApplication.NO_PROCESSOR);
-        HttpClient.getClient().delete(requestBuilder);
         execute(requestBuilder, null);
     }
 
@@ -43,18 +48,22 @@ public class JiraApi {
         headers.put(JiraApiConst.AUTH, ActiveUser.getInstance().getCredentials());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
 
-        Request.Builder requestBuilder;
+        HttpEntity entity;
         try {
-            requestBuilder = new Request.Builder()
-                    .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH)
-                    .setHeaders(headers)
-                    .setPostEntity(postEntityString)
-                    .setProcessorName(processorName);
-            HttpClient.getClient().post(requestBuilder);
+            entity = new StringEntity(postEntityString);
         } catch (UnsupportedEncodingException e) {
-            callback.onLoadError(new HttpException(e, HttpClient.EMPTY_STATUS_CODE, null, postEntityString));
+            if (callback != null) {
+                callback.onLoadError(new HttpException(e, HttpClient.EMPTY_STATUS_CODE, null, postEntityString));
+            }
             return;
         }
+
+        Request.Builder requestBuilder = new Request.Builder()
+                .setType(Type.POST)
+                .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH)
+                .setHeaders(headers)
+                .setEntity(entity)
+                .setProcessorName(processorName);
         execute(requestBuilder, callback);
     }
 
@@ -71,10 +80,10 @@ public class JiraApi {
         headers.put(JiraApiConst.AUTH, credentials);
 
         Request.Builder requestBuilder = new Request.Builder()
+                .setType(Type.GET)
                 .setUrl(url + requestSuffix)
                 .setHeaders(headers)
                 .setProcessorName(processorName);
-        HttpClient.getClient().get(requestBuilder);
         execute(requestBuilder, callback);
     }
 
@@ -84,11 +93,11 @@ public class JiraApi {
         headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
 
         Request.Builder requestBuilder = new Request.Builder()
+                .setType(Type.POST)
                 .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
                 .setHeaders(headers)
                 .setProcessorName(CoreApplication.NO_PROCESSOR)
-                .setPostEntity(filesPaths);
-        HttpClient.getClient().post(requestBuilder);
+                .setEntity(filesPaths);
         execute(requestBuilder, callback);
     }
 
@@ -97,12 +106,15 @@ public class JiraApi {
     }
 
     private void execute(Request.Builder requestBuilder, Callback callback) {
-        new DataRequestBuilder<HttpResult, Request>()
+        Request request = requestBuilder.create();
+
+        DataRequest dataRequest = new DataRequest.Builder<HttpResult, Request>()
                 .setDataSource(HttpClient.NAME)
-                .setDataSourceParam(requestBuilder.create())
-                .setProcessor(requestBuilder.getProcessorName())
+                .setDataSourceParam(request)
+                .setProcessor(request.getProcessorName())
                 .setCallback(callback)
-                .load();
+                .create();
+        AmttApplication.executeRequest(dataRequest);
     }
 
 }

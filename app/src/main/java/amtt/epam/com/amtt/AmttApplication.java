@@ -1,5 +1,8 @@
 package amtt.epam.com.amtt;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 import amtt.epam.com.amtt.common.CoreApplication;
 import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.processing.PostCreateIssueProcessor;
@@ -16,8 +19,15 @@ import amtt.epam.com.amtt.processing.VersionsProcessor;
 public class AmttApplication extends CoreApplication {
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+        ImageLoader.getInstance().init(config);
+    }
+
+    @Override
     public void performRegistration() {
-        registerDataSource(HttpClient.NAME, HttpClient.getClient());
+        registerDataSource(HttpClient.NAME, new HttpClient());
 
         registerProcessor(UserInfoProcessor.NAME, new UserInfoProcessor());
         registerProcessor(VersionsProcessor.NAME, new VersionsProcessor());

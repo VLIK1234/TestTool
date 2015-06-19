@@ -4,9 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
+import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.common.Callback;
-import amtt.epam.com.amtt.common.DataRequestBuilder;
+import amtt.epam.com.amtt.common.DataRequest;
 import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.http.HttpResult;
 import amtt.epam.com.amtt.http.Request;
@@ -43,11 +44,12 @@ public class DialogUtils {
                 DialogInterface.OnClickListener positiveListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new DataRequestBuilder<HttpResult, Request>()
+                        DataRequest dataRequest = new DataRequest.Builder<HttpResult, Request>()
                                 .setDataSource(HttpClient.NAME)
                                 .setDataSourceParam(request)
                                 .setCallback(callback)
-                                .load();
+                                .create();
+                        AmttApplication.executeRequest(dataRequest);
                     }
                 };
                 mBuilder.setPositiveButton(textId, positiveListener);

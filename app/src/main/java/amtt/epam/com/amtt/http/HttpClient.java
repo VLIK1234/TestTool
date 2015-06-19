@@ -14,7 +14,6 @@ import org.apache.http.params.HttpParams;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import amtt.epam.com.amtt.datasource.IDataSource;
 import amtt.epam.com.amtt.util.Logger;
@@ -29,66 +28,63 @@ public class HttpClient implements IDataSource<HttpEntity, Request> {
     private final String TAG = getClass().getSimpleName();
     public static final String NAME = "HttpClient";
 
-    private static final HttpClient INSTANCE;
     public static final int EMPTY_STATUS_CODE = -1;
 
-    private static final org.apache.http.client.HttpClient sHttpClient;
+    private final DefaultHttpClient mHttpClient;
 
-    static {
-        INSTANCE = new HttpClient();
-
+    public HttpClient() {
         HttpParams httpParameters = new BasicHttpParams();
         int timeoutConnection = 8000;
         int timeoutSocket = 10000;
         HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
         HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-        sHttpClient = new DefaultHttpClient(httpParameters);
+        mHttpClient = new DefaultHttpClient(httpParameters);
     }
 
-    private HttpClient() {
+    public void get(Request request) {
+        request.setHttpRequestBase(new HttpGet(request.getUrl()));
     }
 
-    public void get(Request.Builder requestBuilder) {
-        requestBuilder.setHttpRequestBase(new HttpGet(requestBuilder.getUrl()));
-        setHeaders(requestBuilder);
+    public void post(Request request) {
+        HttpPost httpPost = new HttpPost(request.getUrl());
+        httpPost.setEntity(request.getEntity());
+        request.setHttpRequestBase(httpPost);
     }
 
-    public void post(Request.Builder requestBuilder) {
-        HttpPost httpPost = new HttpPost(requestBuilder.getUrl());
-        httpPost.setEntity(requestBuilder.getPostEntity());
-        requestBuilder.setHttpRequestBase(httpPost);
-        setHeaders(requestBuilder);
+    public void delete(Request request) {
+        request.setHttpRequestBase(new HttpDelete(request.getUrl()));
     }
 
-    public void delete(Request.Builder requestBuilder) {
-        requestBuilder.setHttpRequestBase(new HttpDelete(requestBuilder.getUrl()));
-        setHeaders(requestBuilder);
-    }
-
-    private void setHeaders(Request.Builder requestBuilder) {
-        Logger.d(TAG, requestBuilder.getUrl());
-        Map headers = requestBuilder.getHeaders();
+    private void setHeaders(Request request) {
+        Logger.d(TAG, request.getUrl());
+        Map headers = request.getHeaders();
         if (headers != null) {
-            HttpRequestBase requestBase = requestBuilder.getHttpRequestBase();
+            HttpRequestBase requestBase = request.getHttpRequestBase();
             for (Map.Entry<String, String> keyValuePair : (Set<Map.Entry<String, String>>) headers.entrySet()) {
                 requestBase.setHeader(keyValuePair.getKey(), keyValuePair.getValue());
             }
         }
     }
 
-    public static HttpClient getClient() {
-        return INSTANCE;
-    }
-
     @Override
     public HttpEntity getData(Request request) throws Exception {
-        HttpResponse httpResponse = sHttpClient.execute(request.getHttpRequestBase());
+        switch (request.getType()) {
+            case GET:
+                get(request);
+                break;
+            case POST:
+                post(request);
+                break;
+            case DELETE:
+                delete(request);
+                break;
+        }
+        setHeaders(request);
 
+        HttpResponse httpResponse = mHttpClient.execute(request.getHttpRequestBase());
         int statusCode = httpResponse.getStatusLine().getStatusCode();
-        String requestMethodName = request.getHttpRequestBase().getMethod();
 
-        if (requestMethodName.equals(HttpGet.METHOD_NAME) && statusCode != HttpStatus.SC_OK ||
-                requestMethodName.equals(HttpPost.METHOD_NAME) && statusCode != HttpStatus.SC_CREATED) {
+        if (statusCode < HttpStatus.SC_OK || statusCode >= HttpStatus.SC_MULTIPLE_CHOICES) {
             throw new HttpException(null, statusCode, request, null);
         }
 

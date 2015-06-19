@@ -1,9 +1,7 @@
 package amtt.epam.com.amtt.common;
 
 import android.app.Application;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import android.content.Context;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +9,6 @@ import java.util.Map;
 import amtt.epam.com.amtt.datasource.IDataSource;
 import amtt.epam.com.amtt.os.Task;
 import amtt.epam.com.amtt.processing.Processor;
-import amtt.epam.com.amtt.util.ContextHolder;
 
 /**
  * Created by Artsiom_Kaliaha on 18.06.2015.
@@ -23,6 +20,8 @@ public abstract class CoreApplication extends Application {
     private static final Map<String, IDataSource> sDataSources;
     private static final Map<String, Processor> sProcessors;
 
+    private static Context sContext;
+
     static {
         sDataSources = new HashMap<>();
         sProcessors = new HashMap<>();
@@ -31,9 +30,7 @@ public abstract class CoreApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        ContextHolder.setContext(getApplicationContext());
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
-        ImageLoader.getInstance().init(config);
+        sContext = getApplicationContext();
         performRegistration();
     }
 
@@ -53,23 +50,26 @@ public abstract class CoreApplication extends Application {
         sProcessors.remove(sourceName);
     }
 
-    public static <TaskResult, Param, ProcessorSource> void load(final String dataSourceName,
-                                                                 final Param dataSourceParam,
-                                                                 final String processorName,
-                                                                 final Callback<TaskResult> callback) {
+    public static <TaskResult, Param, ProcessorSource> void executeRequest(DataRequest<TaskResult, Param> request) {
+        String dataSourceName = request.getDataSource();
+        String processorName = request.getProcessor();
         if (sDataSources.get(dataSourceName) == null) {
             throw new IllegalArgumentException("Unknown / unregistered data source " + dataSourceName);
         }
         if (sProcessors.get(processorName) == null && !processorName.equals(NO_PROCESSOR)) {
-            throw new IllegalArgumentException("Unknown / unregistered processor " + processorName);
+            throw new IllegalArgumentException("Unknown / unregistered processorName " + processorName);
         }
 
         new Task.Builder<TaskResult, Param, ProcessorSource>()
                 .setDataSource(sDataSources.get(dataSourceName))
-                .setDataSourceParam(dataSourceParam)
+                .setDataSourceParam(request.getDataSourceParam())
                 .setProcessor(sProcessors.get(processorName))
-                .setCallback(callback)
+                .setCallback(request.getCallback())
                 .createAndExecute();
+    }
+
+    public static Context getContext() {
+        return sContext;
     }
 
     public abstract void performRegistration();
