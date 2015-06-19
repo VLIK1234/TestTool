@@ -11,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text"
-        android:hint="@string/label_user_name"
-        app:defaultErrorText="@string/enter_username" />
+        android:hint="@string/label_user_name"/>
 
     <amtt.epam.com.amtt.view.TextInput
         android:id="@+id/url_input"
@@ -21,8 +20,7 @@
         android:layout_below="@+id/username_input"
         android:hint="@string/label_url"
         android:inputType="textUri"
-        android:text="@string/url_prefix"
-        app:defaultErrorText="@string/enter_url"/>
+        android:text="@string/url_prefix"/>
 
     <amtt.epam.com.amtt.view.TextInput
         android:id="@+id/password_input"
@@ -30,8 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/url_input"
         android:hint="@string/label_password"
-        android:inputType="textPassword"
-        app:defaultErrorText="@string/enter_password"/>
+        android:inputType="textPassword"/>
 
     <Button
         android:id="@+id/btn_login"

@@ -6,10 +6,8 @@ import android.content.Loader;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -93,15 +91,25 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private void initViews() {
-        Map<Predicate<EditText>,CharSequence> validationMap = new HashMap<>();
-        validationMap.put(mPredicateIsEmpty, getString(R.string.enter_prefix) + getString(R.string.enter_username));
-        validationMap.put(mPredicateHasWhitespaces, getString(R.string.label_user_name) + getString(R.string.label_no_whitespaces));
-        validationMap.put(mPredicateHasAtSymbol, getString(R.string.enter_prefix) + getString(R.string.enter_username) + getString(R.string.label_cannot_at));
+        Map<Predicate<EditText>, CharSequence> userNameValidationMap = new HashMap<>();
+        userNameValidationMap.put(mPredicateIsEmpty, getString(R.string.enter_prefix) + getString(R.string.enter_username));
+        userNameValidationMap.put(mPredicateHasWhitespaces, getString(R.string.label_user_name) + getString(R.string.label_no_whitespaces));
+        userNameValidationMap.put(mPredicateHasAtSymbol, getString(R.string.enter_prefix) + getString(R.string.enter_username) + getString(R.string.label_cannot_at));
+
+        Map<Predicate<EditText>, CharSequence> passwordValidationMap = new HashMap<>();
+        passwordValidationMap.put(mPredicateIsEmpty, getString(R.string.enter_prefix) + getString(R.string.enter_password));
+
+        Map<Predicate<EditText>, CharSequence> urlValidationMap = new HashMap<>();
+        urlValidationMap.put(mPredicateIsEmpty, getString(R.string.enter_prefix) + getString(R.string.enter_url));
+        urlValidationMap.put(mPredicateIsCorrectUrl, getString(R.string.enter_prefix) + getString(R.string.enter_correct_url));
+        urlValidationMap.put(mPredicateIsEpamUrl, getString(R.string.enter_prefix) + getString(R.string.enter_postfix_jira));
 
         mUserNameTextInput = (TextInput) findViewById(R.id.username_input);
-        mUserNameTextInput.setValidationMap(validationMap);
+        mUserNameTextInput.setValidationMap(userNameValidationMap);
         mPasswordTextInput = (TextInput) findViewById(R.id.password_input);
+        mPasswordTextInput.setValidationMap(passwordValidationMap);
         mUrlTextInput = (TextInput) findViewById(R.id.url_input);
+        mUrlTextInput.setValidationMap(urlValidationMap);
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,77 +182,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         });
     }
 
-//    private void checkForErrorOccurrence(View v, boolean hasFocus) {
-//        boolean isInputErrorTookPlace;
-//        boolean isEmpty;
-//        TextInputLayout inputLayout;
-//        String errorText;
-//
-//        if (v.equals(mUserNameEditText)) {
-//            isInputErrorTookPlace = isUsernameInputErrorTookPlace;
-//            isEmpty = TextUtils.isEmpty(mUserNameEditText.getText());
-//            inputLayout = mUsernameInputLayout;
-//            errorText = getString(R.string.enter_prefix) + getString(R.string.enter_username);
-//        } else if (v.equals(mPasswordEditText)) {
-//            isInputErrorTookPlace = isPasswordErrorTookPlace;
-//            isEmpty = TextUtils.isEmpty(mPasswordEditText.getText());
-//            inputLayout = mPasswordInputLayout;
-//            errorText = getString(R.string.enter_prefix) + getString(R.string.enter_password);
-//        } else {
-//            isInputErrorTookPlace = isUrlErrorTookPlace;
-//            isEmpty = mUrlEditText.getText().length() <= getString(R.string.url_prefix).length();
-//            inputLayout = mUrlInputLayout;
-//            errorText = getString(R.string.enter_prefix) + getString(R.string.enter_url);
-//        }
-//
-//        if (isInputErrorTookPlace && !hasFocus && isEmpty) {
-//            inputLayout.setError(errorText);
-//        } else if (isInputErrorTookPlace) {
-//            inputLayout.setError(Symbols.EMPTY);
-//        }
-//    }
-//
-//    private void setErrorText(boolean isTruePrediction, TextInputLayout inputLayout, String errorText) {
-//        if (isTruePrediction) {
-//            if (inputLayout.equals(mUsernameInputLayout)) {
-//                isUsernameInputErrorTookPlace = true;
-//            } else if (inputLayout.equals(mPasswordInputLayout)) {
-//                isPasswordErrorTookPlace = true;
-//            } else {
-//                isUrlErrorTookPlace = true;
-//            }
-//            inputLayout.setError(errorText);
-//            isAnyEmptyField = true;
-//        }
-//    }
-
     private void checkFields() {
-        isAnyEmptyField = false;
-
-        //check username
-        mUserNameTextInput.validate();
-//        setErrorText(mPredicateHasWhitespaces.apply(mUserNameEditText),
-//                mUsernameInputLayout,
-//                getString(R.string.label_user_name) + getString(R.string.label_no_whitespaces));
-//        setErrorText(mPredicateHasAtSymbol.apply(mUserNameEditText),
-//                mUsernameInputLayout,
-//                getString(R.string.enter_prefix) + getString(R.string.enter_username) + getString(R.string.label_cannot_at));
-//
-//        //check password
-//        setErrorText(mPredicateIsEmpty.apply(mPasswordEditText),
-//                mPasswordInputLayout,
-//                getString(R.string.enter_prefix) + getString(R.string.enter_password));
-//
-//        //check url
-//        setErrorText(mPredicateIsEmpty.apply(mUrlEditText),
-//                mUrlInputLayout,
-//                getString(R.string.enter_prefix) + getString(R.string.enter_url));
-//        setErrorText(mPredicateIsCorrectUrl.apply(mUrlEditText),
-//                mUrlInputLayout,
-//                getString(R.string.enter_prefix) + getString(R.string.enter_correct_url));
-//        setErrorText(mPredicateIsEpamUrl.apply(mUrlEditText),
-//                mUrlInputLayout,
-//                getString(R.string.enter_prefix) + getString(R.string.enter_postfix_jira));
+        isAnyEmptyField = !mUserNameTextInput.validate();
+        isAnyEmptyField = !mPasswordTextInput.validate();
+        isAnyEmptyField = !mUrlTextInput.validate();
 
         if (!isAnyEmptyField) {
             showProgress(true);
