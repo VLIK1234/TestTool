@@ -19,7 +19,6 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.Logger;
-import amtt.epam.com.amtt.view.TextView;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -32,6 +31,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -59,6 +59,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private UserInfoHandler mHandler;
     private Boolean isNeedShowingTopButton = true;
+    private Boolean isNewUser = false;
 
     public static class UserInfoHandler extends Handler {
 
@@ -91,7 +92,11 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     protected void onDestroy() {
         super.onDestroy();
         if (isNeedShowingTopButton) {
-            TopButtonService.start(getBaseContext());
+            if (isNewUser) {
+                TopButtonService.start(getBaseContext());
+            } else {
+                TopButtonService.sendActionChangeVisibilityTopbutton(true);
+            }
         }
     }
 
@@ -105,6 +110,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add: {
+                TopButtonService.close(getBaseContext());
                 isNeedShowingTopButton = false;
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
@@ -258,17 +264,18 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
                         Bundle args = new Bundle();
                         long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
                         args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
+                        isNewUser = true;
+                        TopButtonService.close(getBaseContext());
                         getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
                     }else{
                         Intent loginIntent = new Intent(UserInfoActivity.this, LoginActivity.class);
                         startActivity(loginIntent);
+                        TopButtonService.close(getBaseContext());
                         isNeedShowingTopButton = false;
                         finish();
                     }
                     break;
             }
-        } else if (resultCode == RESULT_CANCELED) {
-
         }
     }
 

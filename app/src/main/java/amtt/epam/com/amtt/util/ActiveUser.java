@@ -17,6 +17,7 @@ public class ActiveUser {
     private String mUrl;
     private int mId;
     private String mLastProjectKey;
+    private String mCredentialsString;
 
     private ActiveUser() {
     }
@@ -25,19 +26,16 @@ public class ActiveUser {
         return INSTANCE;
     }
 
-    public String getCredentials() {
-        return PreferenceUtils.getString(SharedPreference.CREDENTIALS);
-    }
-
     public String makeTempCredentials(final String userName, final String password) {
         return JiraApiConst.BASIC_AUTH + Base64.encodeToString((userName + Constants.Symbols.COLON + password).getBytes(), Base64.NO_WRAP);
     }
 
     public String getUserName() {
-        if (mUserName == null) {
-            mUserName = PreferenceUtils.getString(Constants.SharedPreference.USER_NAME);
-        }
         return mUserName;
+    }
+
+    public void setUserName(String userName) {
+        this.mUserName = userName;
     }
 
     public String getUrl() {
@@ -45,17 +43,21 @@ public class ActiveUser {
     }
 
     public void setUrl(String url) {
-        mUrl = url;
+        this.mUrl = url;
     }
 
     public void setCredentials(String userName, String password, String url) {
-        mUserName = userName;
-        mUrl = url;
-        String credentialsString = JiraApiConst.BASIC_AUTH + Base64.encodeToString((mUserName + Constants.Symbols.COLON + password).getBytes(), Base64.NO_WRAP);
-        PreferenceUtils.putString(Constants.SharedPreference.CREDENTIALS, credentialsString);
+        setUserName(userName);
+        setUrl(url);
+        setCredentials(JiraApiConst.BASIC_AUTH + Base64.encodeToString((getUserName() + Constants.Symbols.COLON + password).getBytes(), Base64.NO_WRAP));
     }
+
     public void setCredentials(String credentials) {
-       PreferenceUtils.putString(Constants.SharedPreference.CREDENTIALS, credentials);
+       this.mCredentialsString = credentials;
+    }
+
+    public String getCredentials() {
+        return mCredentialsString;
     }
 
     public int getId() {
@@ -63,11 +65,7 @@ public class ActiveUser {
     }
 
     public void setId(int id) {
-        mId = id;
-    }
-
-    public void setUserName(String userName) {
-        this.mUserName = userName;
+        this.mId = id;
     }
 
     public String getLastProjectKey() {
@@ -75,14 +73,15 @@ public class ActiveUser {
     }
 
     public void setLastProjectKey(String lastProjectKey) {
-        mLastProjectKey = lastProjectKey;
+        this.mLastProjectKey = lastProjectKey;
     }
 
     public void clearActiveUser() {
-        mUserName = null;
-        mUrl = null;
-        mId = 0;
-        mLastProjectKey = null;
+        setUserName(null);
+        setUrl(null);
+        setId(0);
+        setLastProjectKey(null);
+        setCredentials(null);
     }
 }
 

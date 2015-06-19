@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import org.apache.http.auth.AuthenticationException;
@@ -45,7 +46,6 @@ import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.util.Logger;
-import amtt.epam.com.amtt.view.EditText;
 
 import java.util.HashMap;
 
@@ -83,15 +83,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private void initViews() {
-        mUserNameEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_username);
-        mUserNameEditText.clearErrorOnFocus(true);
-        mUserNameEditText.clearErrorOnTextChanged(true);
-        mPasswordEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_password);
-        mPasswordEditText.clearErrorOnFocus(true);
-        mPasswordEditText.clearErrorOnTextChanged(true);
-        mUrlEditText = (amtt.epam.com.amtt.view.EditText) findViewById(R.id.et_jira_url);
-        mUrlEditText.clearErrorOnFocus(true);
-        mUrlEditText.clearErrorOnTextChanged(true);
+        mUserNameEditText = (EditText) findViewById(R.id.et_username);
+        mPasswordEditText = (EditText) findViewById(R.id.et_password);
+        mUrlEditText = (EditText) findViewById(R.id.et_jira_url);
+        mUrlEditText.setText("https://");
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override

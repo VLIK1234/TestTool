@@ -15,35 +15,12 @@
 
     <style name="Material.Widget"></style>
 
-    <style name="Material.Widget.Spinner">
-        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
-    </style>
-
-    <style name="Material.Widget.EditText">
-        <item name="et_labelEnable">true</item>
-        <item name="et_labelPadding">0dp</item>
-        <item name="et_labelTextAppearance">@style/Base.TextAppearance.AppCompat.Small</item>
-        <item name="et_labelTextColor">@color/abc_secondary_text_material_dark</item>
-        <item name="et_labelEllipsize">end</item>
-        <item name="et_labelInAnim">@anim/abc_fade_in</item>
-        <item name="et_labelOutAnim">@anim/abc_fade_out</item>
-        <item name="et_dividerErrorColor">?attr/colorAccent</item>
-        <item name="et_dividerAnimDuration">@android:integer/config_shortAnimTime</item>
-        <item name="et_dividerHeight">1dp</item>
-        <item name="et_dividerPadding">0dp</item>
-        <item name="et_dividerCompoundPadding">true</item>
-        <item name="et_supportTextAppearance">@style/Base.TextAppearance.AppCompat.Small</item>
-        <item name="et_supportTextColor">@color/secondary_text</item>
-        <item name="et_supportTextErrorColor">?attr/colorAccent</item>
-        <item name="et_supportEllipsize">end</item>
-        <item name="et_autoCompleteMode">none</item>
-        <item name="et_supportMode">4</item>
-        <item name="android:textCursorDrawable">@null</item>
-    </style>
-
     <style name="Material.Widget.AutocompleteProgressView">
         <item name="android:dropDownItemStyle">@style/Material.Widget.DropDownItem</item>
-        <item name="android:spinnerStyle">@style/Material.Widget.Spinner</item>
+        <item name="android:spinnerStyle">@style/Base.Widget.AppCompat.Spinner.Underlined.Custom</item>
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
+        <item name="android:inputType">textAutoComplete</item>
+        <item name="android:textColor">@color/primary_text</item>
     </style>
 
     <style name="Material.Widget.DropDownItem">
@@ -57,6 +34,40 @@
         <item name="android:baselineAlignBottom">true</item>
     </style>
 
+    <style name="Material.Widget.TextViewLabel">
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="Material.Widget.TextViewSecondary">
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Small</item>
+    </style>
+
+    <style name="Base.Widget.AppCompat.Spinner.Underlined.Custom">
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
+        <item name="android:spinnerItemStyle">@style/Material.Widget.SpinnerItem</item>
+        <item name="android:duplicateParentState">true</item>
+    </style>
+
+    <style name="Material.Widget.RecyclerView">
+        <item name="android:layout_marginLeft">4dp</item>
+        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_height">140dp</item>
+        <item name="android:background">@drawable/dotted_border</item>
+        <item name="android:scrollbars">horizontal</item>
+    </style>
+
+    <style name="Material.Widget.SpinnerItem">
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
+        <item name="android:textColor">@color/primary_text</item>
+    </style>
     <style name="Dialog" parent="Theme.AppCompat.Light.Dialog">
 </style>
 

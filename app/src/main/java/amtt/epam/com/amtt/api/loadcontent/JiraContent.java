@@ -42,11 +42,6 @@ public class JiraContent{
     private HashMap<String, String> mProjectPrioritiesNames;
     private HashMap<String, String> mProjectVersionsNames;
     private JProjects mLastProject;
-    private String mActivityInfo = "***activity info***";
-    private String mSteps = "***steps***";
-    private String mEnvironment;
-    private String mLogs;
-    private String mScreenshots;
     private String mRecentIssueKey;
     private JPriorityResponse mPriorityResponse;
 
@@ -111,6 +106,34 @@ public class JiraContent{
         }
         mIssueTypesNames = null;
         mProjectVersionsNames = null;
+        final String mProjectKey = mLastProject.getKey();
+        if (mProjectKey != null) {
+            StepUtil.checkUser(ActiveUser.getInstance().getUserName(), new IResult<List<JUserInfo>>() {
+                @Override
+                public void onResult(List<JUserInfo> result) {
+                    if (result.size() != 0) {
+                        JUserInfo user = result.get(0);
+                        user.setLastProjectKey(mProjectKey);
+                        ContentFromDatabase.setLastProject(user, new IResult<Integer>() {
+                            @Override
+                            public void onResult(Integer res) {
+                                ActiveUser.getInstance().setLastProjectKey(mProjectKey);
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                }
+            });
+        }
         jiraGetContentCallback.resultOfDataLoading(mLastProject.getKey());
     }
 
@@ -295,12 +318,11 @@ public class JiraContent{
         mProjectKey = mLastProject.getKey();
         priorityId = getPriorityIdByName(priorityName);
         issueTypeId = getIssueTypeIdByName(issueTypeName);
-        if(versionName!=null){
+        if (versionName != null) {
             versionId = getVersionIdByName(versionName);
         }
         String issueJson = new JCreateIssue(mProjectKey, issueTypeId, description, summary, priorityId, versionId,
                 environment, userAssigneName).getResultJson();
-        Logger.d(TAG, issueJson);
         ContentFromBackend.getInstance().createIssueAsynchronously(issueJson, new ContentLoadingCallback<JCreateIssueResponse>() {
             @Override
             public void resultFromBackend(JCreateIssueResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
@@ -308,32 +330,6 @@ public class JiraContent{
                     mRecentIssueKey = result.getKey();
                     Logger.d(TAG, mRecentIssueKey);
                 }
-                StepUtil.checkUser(ActiveUser.getInstance().getUserName(), new IResult<List<JUserInfo>>() {
-                    @Override
-                    public void onResult(List<JUserInfo> result) {
-                        if (result.size() != 0) {
-                            JUserInfo user = result.get(0);
-                            user.setLastProjectKey(mProjectKey);
-                            ContentFromDatabase.setLastProject(user, new IResult<Integer>() {
-                                @Override
-                                public void onResult(Integer res) {
-                                    ActiveUser.getInstance().setLastProjectKey(mProjectKey);
-                                }
-
-                                @Override
-                                public void onError(Exception e) {
-
-                                }
-                            });
-                        }
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-
-                    }
-                });
-
                 jiraGetContentCallback.resultOfDataLoading(result);
             }
         }, jiraGetContentCallback);
@@ -363,30 +359,6 @@ public class JiraContent{
 
             }
         });
-    }
-
-    public void getEnvironment(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        jiraGetContentCallback.resultOfDataLoading(mEnvironment);
-    }
-
-    public void setEnvironment(String environment) {
-        this.mEnvironment = environment;
-    }
-
-    public void getActivityInfo(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        jiraGetContentCallback.resultOfDataLoading(mActivityInfo);
-    }
-
-    public void getSteps(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        jiraGetContentCallback.resultOfDataLoading(mSteps);
-    }
-
-    public void getLogs(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        jiraGetContentCallback.resultOfDataLoading(mLogs);
-    }
-
-    public void getScreenshots(final JiraGetContentCallback<String> jiraGetContentCallback) {
-        jiraGetContentCallback.resultOfDataLoading(mScreenshots);
     }
 
     public void getRecentIssueKey(final JiraGetContentCallback<String> jiraGetContentCallback) {
