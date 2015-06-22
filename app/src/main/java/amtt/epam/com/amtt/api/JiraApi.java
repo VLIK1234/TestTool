@@ -23,7 +23,6 @@ import amtt.epam.com.amtt.util.ActiveUser;
  * Created by Artsiom_Kaliaha on 12.06.2015.
  * Updated api implementation
  */
-@SuppressWarnings("unchecked")
 public class JiraApi {
 
     private static final JiraApi INSTANCE;

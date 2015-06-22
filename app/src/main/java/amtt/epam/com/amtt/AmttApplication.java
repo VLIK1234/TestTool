@@ -15,7 +15,6 @@ import amtt.epam.com.amtt.processing.VersionsProcessor;
 /**
  * Created by Ivan_Bakach on 19.03.2015.
  */
-@SuppressWarnings("unchecked")
 public class AmttApplication extends CoreApplication {
 
     @Override
