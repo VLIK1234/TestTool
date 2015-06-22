@@ -2,7 +2,7 @@ package amtt.epam.com.amtt.os;
 
 import android.os.AsyncTask;
 
-import amtt.epam.com.amtt.datasource.IDataSource;
+import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.common.Callback;
 
@@ -18,7 +18,7 @@ public class Task<TaskResult, DataSourceParam, ProcessorSource> extends AsyncTas
     public static class Builder<TaskResult, DataSourceParam, ProcessorSource> {
 
         private Callback<TaskResult> mCallback;
-        private IDataSource<ProcessorSource, DataSourceParam> mDataSource;
+        private DataSource<ProcessorSource, DataSourceParam> mDataSource;
         private DataSourceParam mDataSourceDataSourceParam;
         private Processor<TaskResult, ProcessorSource> mProcessor;
 
@@ -27,7 +27,7 @@ public class Task<TaskResult, DataSourceParam, ProcessorSource> extends AsyncTas
             return this;
         }
 
-        public Builder setDataSource(IDataSource<ProcessorSource, DataSourceParam> dataSource) {
+        public Builder setDataSource(DataSource<ProcessorSource, DataSourceParam> dataSource) {
             mDataSource = dataSource;
             return this;
         }
@@ -54,7 +54,7 @@ public class Task<TaskResult, DataSourceParam, ProcessorSource> extends AsyncTas
     }
 
     private Callback<TaskResult> mCallback;
-    private IDataSource<ProcessorSource, DataSourceParam> mDataSource;
+    private DataSource<ProcessorSource, DataSourceParam> mDataSource;
     private DataSourceParam mDataSourceParam;
     private Processor<TaskResult, ProcessorSource> mProcessor;
     private Exception mException;

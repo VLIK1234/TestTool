@@ -15,7 +15,7 @@ import org.apache.http.params.HttpParams;
 import java.util.Map;
 import java.util.Set;
 
-import amtt.epam.com.amtt.datasource.IDataSource;
+import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -23,7 +23,7 @@ import amtt.epam.com.amtt.util.Logger;
  * HttpClient that prepares Requests to be executed
  */
 @SuppressWarnings("unchecked")
-public class HttpClient implements IDataSource<HttpEntity, Request> {
+public class HttpClient implements DataSource<HttpEntity, Request> {
 
     private final String TAG = getClass().getSimpleName();
     public static final String NAME = "HttpClient";

@@ -6,7 +6,7 @@ import android.content.Context;
 import java.util.HashMap;
 import java.util.Map;
 
-import amtt.epam.com.amtt.datasource.IDataSource;
+import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.os.Task;
 import amtt.epam.com.amtt.processing.Processor;
 
@@ -17,7 +17,7 @@ import amtt.epam.com.amtt.processing.Processor;
 public abstract class CoreApplication extends Application {
 
     public static final String NO_PROCESSOR = "NO_PROCESSOR";
-    private static final Map<String, IDataSource> sDataSources;
+    private static final Map<String, DataSource> sDataSources;
     private static final Map<String, Processor> sProcessors;
 
     private static Context sContext;
@@ -34,7 +34,7 @@ public abstract class CoreApplication extends Application {
         performRegistration();
     }
 
-    public void registerDataSource(String sourceName, IDataSource dataSource) {
+    public void registerDataSource(String sourceName, DataSource dataSource) {
         sDataSources.put(sourceName, dataSource);
     }
 
