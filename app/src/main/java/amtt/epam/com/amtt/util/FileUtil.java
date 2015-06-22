@@ -13,7 +13,7 @@ public class FileUtil {
         if (filePath==null) {
             return "not attached";
         }
-        int slash = filePath.lastIndexOf(File.pathSeparatorChar);
+        int slash = filePath.lastIndexOf(File.separatorChar);
         return filePath.substring(slash);
     }
 }
