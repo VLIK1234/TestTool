@@ -118,8 +118,8 @@
     <string name="dialog_are_you_sure">Are you sure?</string>
     <string name="dialog_exit">Do you want to close AMTT application?</string>
     <string name="label_return">Return</string>
-    <string name="label_cannot_whitespaces">" cannot begin and end to whitespace"</string>
-    <string name="label_cannot_at">" nor email and symbol @"</string>
+    <string name="label_no_whitespace_margins">" cannot begin and end to whitespace"</string>
+    <string name="label_no_email">" nor email and symbol @"</string>
     <string name="enter_correct_url">" correct url"</string>
     <string name="label_no_whitespaces">" cannot contain whitespaces"</string>
     <string name="key_dialog_hide">dialog_hide</string>

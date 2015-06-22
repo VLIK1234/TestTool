@@ -135,7 +135,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 boolean hasWhitespaceMargins = InputsUtil.hasWhitespaceMargins(editText);
                 if (hasWhitespaceMargins) {
                     editText.requestFocus();
-                    Toast.makeText(CreateIssueActivity.this, getString(R.string.label_summary) + getString(R.string.label_cannot_whitespaces), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CreateIssueActivity.this, getString(R.string.label_summary) + getString(R.string.label_no_whitespace_margins), Toast.LENGTH_LONG).show();
                 }
                 return hasWhitespaceMargins;
             }
@@ -388,7 +388,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void initSummaryEditText() {
         Map<Predicate<EditText>, CharSequence> summaryValidationMap = new HashMap<>();
         summaryValidationMap.put(mPredicateIsEmpty, getString(R.string.enter_prefix) + getString(R.string.enter_summary));
-        summaryValidationMap.put(mPredicateHasWhitespaceMargins, getString(R.string.label_summary) + getString(R.string.label_cannot_whitespaces));
+        summaryValidationMap.put(mPredicateHasWhitespaceMargins, getString(R.string.label_summary) + getString(R.string.label_no_whitespace_margins));
 
         mSummaryTextInput = (TextInput) findViewById(R.id.summary_input);
         mSummaryTextInput.setValidationMap(summaryValidationMap);

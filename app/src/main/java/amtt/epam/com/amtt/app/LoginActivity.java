@@ -101,7 +101,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         Map<Predicate<EditText>, CharSequence> userNameValidationMap = new HashMap<>();
         userNameValidationMap.put(mPredicateIsEmpty, getString(R.string.enter_prefix) + getString(R.string.enter_username));
         userNameValidationMap.put(mPredicateHasWhitespaces, getString(R.string.label_user_name) + getString(R.string.label_no_whitespaces));
-        userNameValidationMap.put(mPredicateHasAtSymbol, getString(R.string.enter_prefix) + getString(R.string.enter_username) + getString(R.string.label_cannot_at));
+        userNameValidationMap.put(mPredicateHasAtSymbol, getString(R.string.enter_prefix) + getString(R.string.enter_username) + getString(R.string.label_no_email));
 
         Map<Predicate<EditText>, CharSequence> passwordValidationMap = new HashMap<>();
         passwordValidationMap.put(mPredicateIsEmpty, getString(R.string.enter_prefix) + getString(R.string.enter_password));
@@ -142,7 +142,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         mPredicateHasAtSymbol = new Predicate<EditText>() {
             @Override
             public boolean apply(EditText editText) {
-                return InputsUtil.hasAtSymbol(editText);
+                return InputsUtil.isEmail(editText);
             }
         };
         mPredicateIsCorrectUrl = new Predicate<EditText>() {
