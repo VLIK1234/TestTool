@@ -13,13 +13,16 @@ public class FileUtil {
 
     public static String getFileName(@Nullable String filePath) {
         if (filePath == null) {
-            return "not attached";
+            return "";
         }
-        int slash = filePath.lastIndexOf(File.separatorChar);
-        if (slash + 1 < filePath.length() - 1) {
-            return filePath.substring(slash + 1);
+        int slashIndex = filePath.lastIndexOf(File.separatorChar);
+        if (slashIndex == -1) {
+            return "";
+        }
+        if (slashIndex + 1 < filePath.length()) {
+            return filePath.substring(slashIndex + 1);
         } else {
-            return filePath.substring(slash);
+            return "";
         }
     }
 }
