@@ -9,8 +9,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/activity_horizontal_margin"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
+        android:paddingLeft="4dp"
+        android:paddingStart="4dp"
         android:scrollbarStyle="outsideInset">
         <LinearLayout
             android:layout_width="match_parent"
@@ -137,7 +137,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_list_step"
-                android:layout_gravity="end"/>
+                android:layout_gravity="end"
+                style="@style/Material.Widget.CreateIssueButton"/>
             <!-- *******DESCRIPTION END****************************************-->
 
             <!-- *******TESTER BEGIN****************************************-->
@@ -165,7 +166,8 @@
                 android:layout_marginTop="@dimen/material_vertical_button_padding_top"
                 android:minWidth="@dimen/material_vertical_button_min_width_size"
                 android:text="@string/label_create"
-                android:textSize="@dimen/abc_text_size_button_material" />
+                android:textSize="@dimen/abc_text_size_button_material"
+                style="@style/Material.Widget.CreateIssueButton"/>
         </LinearLayout>
     </ScrollView>
 
