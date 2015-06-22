@@ -14,6 +14,6 @@ public class FileUtil {
             return "not attached";
         }
         int slash = filePath.lastIndexOf(File.separatorChar);
-        return filePath.substring(slash);
+        return slash+1 <= filePath.length()-1 ? filePath.substring(slash+1) : filePath.substring(slash);
     }
 }
