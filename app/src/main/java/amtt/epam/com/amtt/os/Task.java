@@ -11,7 +11,7 @@ import amtt.epam.com.amtt.common.Callback;
  * Generalized AsyncTask
  * param TaskResult      Type that will be returned from a processor and consequently from AsyncTask
  * param DataSourceParam Type that will be passed to a source as parameter
- * param ProcessorSource Type that will be passed to a processor after AsyncTask execution
+ * param ProcessorSource Type that will be passed to a processor, data returned by DataSource
  */
 public class Task<TaskResult, DataSourceParam, ProcessorSource> extends AsyncTask<Void, Void, TaskResult> {
 
