@@ -5,15 +5,21 @@ import android.support.annotation.Nullable;
 import java.io.File;
 
 /**
- * Created by Ivan_Bakach on 10.06.2015.
+ @author Ivan_Bakach
+ @version on 10.06.2015
  */
+
 public class FileUtil {
 
     public static String getFileName(@Nullable String filePath) {
-        if (filePath==null) {
+        if (filePath == null) {
             return "not attached";
         }
         int slash = filePath.lastIndexOf(File.separatorChar);
-        return slash+1 <= filePath.length()-1 ? filePath.substring(slash+1) : filePath.substring(slash);
+        if (slash + 1 <= filePath.length() - 1) {
+            return filePath.substring(slash + 1);
+        } else {
+            return filePath.substring(slash);
+        }
     }
 }
