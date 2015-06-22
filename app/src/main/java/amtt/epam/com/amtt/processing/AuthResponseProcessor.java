@@ -4,9 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.auth.AuthenticationException;
 import org.apache.http.protocol.HTTP;
 
 import java.io.IOException;
@@ -19,8 +16,10 @@ import amtt.epam.com.amtt.bo.auth.AuthResponseDeserializer;
 import amtt.epam.com.amtt.util.IOUtils;
 
 /**
- * Created by Artsiom_Kaliaha on 10.04.2015.
+ @author Artsiom_Kaliaha
+ @version on 10.04.2015
  */
+
 public class AuthResponseProcessor implements Processor<String, HttpEntity> {
 
     @Override

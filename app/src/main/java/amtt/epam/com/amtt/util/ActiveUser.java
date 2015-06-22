@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.util;
 import android.util.Base64;
 
 import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.util.Constants.SharedPreference;
 
 /**
  @author Iryna Monchanka

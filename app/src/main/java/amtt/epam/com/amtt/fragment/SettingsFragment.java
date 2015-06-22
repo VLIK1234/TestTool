@@ -6,11 +6,12 @@ import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
- * Created by Ivan_Bakach on 05.06.2015.
+ @author Ivan_Bakach
+ @version on 05.06.2015
  */
+
 public class SettingsFragment extends PreferenceFragment {
 
     public static CheckBoxPreference checkBoxPreference;

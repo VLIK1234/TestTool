@@ -150,8 +150,6 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                     }
                     break;
             }
-        } else if (resultCode == RESULT_CANCELED) {
-
         }
     }
 }

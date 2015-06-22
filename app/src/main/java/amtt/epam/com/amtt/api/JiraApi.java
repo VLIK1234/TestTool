@@ -1,7 +1,5 @@
 package amtt.epam.com.amtt.api;
 
-import android.util.Log;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;

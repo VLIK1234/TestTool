@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.database.util;
 import android.content.ComponentName;
 import android.content.Context;
 import android.text.Html;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 

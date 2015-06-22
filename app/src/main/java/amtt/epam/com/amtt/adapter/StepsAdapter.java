@@ -1,8 +1,6 @@
 package amtt.epam.com.amtt.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -21,11 +19,12 @@ import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.util.ContextHolder;
-import amtt.epam.com.amtt.util.FileUtil;
 
 /**
- * Created by Ivan_Bakach on 10.06.2015.
+ @author Ivan_Bakach
+ @version on 10.06.2015
  */
+
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> {
 
     private ArrayList<Step> listStep = new ArrayList<>();
@@ -48,13 +47,12 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         Step step = listStep.get(position);
         holder.step.setText(ContextHolder.getContext().getString(R.string.label_step) + (position + 1));
-        Context context = ContextHolder.getContext();
         SpannableStringBuilder info = new SpannableStringBuilder();
         info.append(StepUtil.getStepInfo(step));
         holder.activityInfo.setText(info);
         if (!TextUtils.isEmpty(step.getFilePath())) {
-            ImageLoader.getInstance().displayImage("file:///"+step.getFilePath(), holder.screenshotView);
-        }else{
+            ImageLoader.getInstance().displayImage("file:///" + step.getFilePath(), holder.screenshotView);
+        } else {
             holder.screenshotView.setImageDrawable(null);
         }
     }

@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/tv_label_tags"
-        style="@style/Material.Widget.TextViewLabel"
+        style="@style/Material.TextViewLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="12dp"

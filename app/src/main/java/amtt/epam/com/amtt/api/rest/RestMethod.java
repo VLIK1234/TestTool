@@ -1,22 +1,15 @@
 package amtt.epam.com.amtt.api.rest;
 
-import android.util.Log;
-
-import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.util.Logger;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.UnknownHostException;
 import java.util.Map;
 
 import amtt.epam.com.amtt.api.exception.AmttException;

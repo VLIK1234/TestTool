@@ -11,13 +11,14 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.database.table.UsersTable;
 
 /**
- * Created by Artsiom_Kaliaha on 04.05.2015.
+ @author Artsiom_Kaliaha
+ @version on 04.05.2015
  */
+
 public class UserAdapter extends CursorAdapter {
 
     private static class ViewHolder {

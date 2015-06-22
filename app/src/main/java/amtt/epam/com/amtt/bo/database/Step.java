@@ -2,26 +2,20 @@ package amtt.epam.com.amtt.bo.database;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
-import amtt.epam.com.amtt.util.ContextHolder;
-import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
- * Created by Artsiom_Kaliaha on 12.05.2015.
+ @author Artsiom_Kaliaha
+ @version on 12.05.2015
  */
+
 public class Step extends DatabaseEntity<Step> {
 
     private int mStepNumber;

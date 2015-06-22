@@ -11,19 +11,15 @@
         <item name="android:divider">@color/divider</item>
     </style>
 
-    <style name="Material.Drawable"></style>
-
-    <style name="Material.Widget"></style>
-
-    <style name="Material.Widget.AutocompleteProgressView">
-        <item name="android:dropDownItemStyle">@style/Material.Widget.DropDownItem</item>
+    <style name="Material.AutocompleteProgressView">
+        <item name="android:dropDownItemStyle">@style/Material.DropDownItem</item>
         <item name="android:spinnerStyle">@style/Base.Widget.AppCompat.Spinner.Underlined.Custom</item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
         <item name="android:inputType">textAutoComplete</item>
         <item name="android:textColor">@color/primary_text</item>
     </style>
 
-    <style name="Material.Widget.DropDownItem">
+    <style name="Material.DropDownItem">
         <item name="android:height">@dimen/material_menu_item_vertical_height</item>
         <item name="android:layout_height">@dimen/material_menu_item_vertical_height</item>
         <item name="android:paddingLeft">@dimen/material_menu_item_vertical_width</item>
@@ -34,14 +30,14 @@
         <item name="android:baselineAlignBottom">true</item>
     </style>
 
-    <style name="Material.Widget.TextViewLabel">
+    <style name="Material.TextViewLabel">
         <item name="android:layout_marginLeft">4dp</item>
         <item name="android:layout_marginRight">4dp</item>
         <item name="android:textColor">@color/secondary_text</item>
         <item name="android:textSize">11sp</item>
     </style>
 
-    <style name="Material.Widget.TextViewSecondary">
+    <style name="Material.TextViewSecondary">
         <item name="android:textColor">@color/secondary_text</item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Small</item>
     </style>
@@ -52,11 +48,11 @@
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingBottom">12dp</item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
-        <item name="android:spinnerItemStyle">@style/Material.Widget.SpinnerItem</item>
+        <item name="android:spinnerItemStyle">@style/Material.SpinnerItem</item>
         <item name="android:duplicateParentState">true</item>
     </style>
 
-    <style name="Material.Widget.RecyclerView">
+    <style name="Material.RecyclerView">
         <item name="android:layout_marginLeft">4dp</item>
         <item name="android:layout_marginRight">4dp</item>
         <item name="android:layout_height">140dp</item>
@@ -64,7 +60,7 @@
         <item name="android:scrollbars">horizontal</item>
     </style>
 
-    <style name="Material.Widget.SpinnerItem">
+    <style name="Material.SpinnerItem">
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
         <item name="android:textColor">@color/primary_text</item>
     </style>

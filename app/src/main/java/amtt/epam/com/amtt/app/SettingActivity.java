@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.app;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.fragment.SettingsFragment;
@@ -11,8 +10,10 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 
 /**
- * Created by Ivan_Bakach on 05.06.2015.
+ @author Ivan_Bakach
+ @version on 05.06.2015
  */
+
 public class SettingActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

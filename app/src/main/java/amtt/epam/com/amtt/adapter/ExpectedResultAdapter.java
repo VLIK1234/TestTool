@@ -12,13 +12,13 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
-import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 
 /**
  * @author Iryna Monchanka
  * @version on 6/9/2015
  */
+
 public class ExpectedResultAdapter extends ArrayAdapter<ExpectedResultAdapter.ExpectedResult> {
 
     public static class ExpectedResult {

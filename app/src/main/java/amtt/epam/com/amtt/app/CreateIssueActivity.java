@@ -19,7 +19,6 @@ import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
-import amtt.epam.com.amtt.view.SpinnerProgress;
 
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +39,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,7 +64,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private String mVersionName;
     private AssigneeHandler mHandler;
     private AttachmentAdapter mAdapter;
-    public SpinnerProgress mProjectNamesSpinner;
+    public Spinner mProjectNamesSpinner;
     private RecyclerView recyclerView;
     private InputMethodManager mInputManager;
 
@@ -123,9 +123,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void initProjectNamesSpinner() {
-        mProjectNamesSpinner = (SpinnerProgress) findViewById(R.id.spin_projects_name);
+        mProjectNamesSpinner = (Spinner) findViewById(R.id.spin_projects_name);
         mProjectNamesSpinner.setEnabled(false);
-        mProjectNamesSpinner.showProgress(true);
         JiraContent.getInstance().getProjectsNames(new JiraGetContentCallback<HashMap<JProjects, String>>() {
             @Override
             public void resultOfDataLoading(final HashMap<JProjects, String> result) {
@@ -147,7 +146,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                                     }
                                 });
                             }
-                            mProjectNamesSpinner.showProgress(false);
                             mProjectNamesSpinner.setEnabled(true);
                         }
                     });
@@ -174,9 +172,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void initPrioritiesSpinner() {
-        final SpinnerProgress prioritiesSpinner = (SpinnerProgress) findViewById(R.id.spin_priority);
+        final Spinner prioritiesSpinner = (Spinner) findViewById(R.id.spin_priority);
         prioritiesSpinner.setEnabled(false);
-        prioritiesSpinner.showProgress(true);
         JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(final HashMap<String, String> result) {
@@ -192,7 +189,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             if (defaultPriority != null) {
                                 prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
                             }
-                            prioritiesSpinner.showProgress(false);
                             prioritiesSpinner.setEnabled(true);
                         }
                     });
@@ -212,10 +208,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void initVersionsSpinner(String projectKey) {
-        final SpinnerProgress versionsSpinner = (SpinnerProgress) findViewById(R.id.spin_affects_versions);
+        final Spinner versionsSpinner = (Spinner) findViewById(R.id.spin_affects_versions);
         final TextView affectTextView = (TextView)findViewById(R.id.tv_affects_versions);
         versionsSpinner.setEnabled(false);
-        versionsSpinner.showProgress(true);
         JiraContent.getInstance().getVersionsNames(projectKey, new JiraGetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
@@ -227,7 +222,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     ArrayAdapter<String> versionsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, versionNames);
                     versionsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                     versionsSpinner.setAdapter(versionsAdapter);
-                    versionsSpinner.showProgress(false);
                     versionsSpinner.setEnabled(true);
                 } else {
                     versionsSpinner.setVisibility(View.GONE);
@@ -248,9 +242,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void initIssueTypesSpinner() {
-        final SpinnerProgress issueTypesSpinner = (SpinnerProgress) findViewById(R.id.spin_issue_name);
+        final Spinner issueTypesSpinner = (Spinner) findViewById(R.id.spin_issue_name);
         issueTypesSpinner.setEnabled(false);
-        issueTypesSpinner.showProgress(true);
         JiraContent.getInstance().getIssueTypesNames(new JiraGetContentCallback<ArrayList<String>>() {
             @Override
             public void resultOfDataLoading(final ArrayList<String> result) {
@@ -261,7 +254,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
                         issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                         issueTypesSpinner.setAdapter(issueTypesAdapter);
-                        issueTypesSpinner.showProgress(false);
                         issueTypesSpinner.setEnabled(true);
                         hideKeyboard();
                     }

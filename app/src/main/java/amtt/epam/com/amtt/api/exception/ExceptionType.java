@@ -3,10 +3,8 @@ package amtt.epam.com.amtt.api.exception;
 import com.google.gson.JsonSyntaxException;
 
 import org.apache.http.HttpStatus;
-import org.apache.http.NoHttpResponseException;
 import org.apache.http.auth.AuthenticationException;
 
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +54,7 @@ public enum ExceptionType {
         mStatusCodeMap.put(RestMethod.EMPTY_STATUS_CODE, ExceptionType.UNKNOWN);
     }
 
-    private ExceptionType(int titleId, int messageId, int positiveTextId, int neutralTextId) {
+    ExceptionType(int titleId, int messageId, int positiveTextId, int neutralTextId) {
         mTitle = titleId;
         mMessage = messageId;
         mPositiveText = positiveTextId;
