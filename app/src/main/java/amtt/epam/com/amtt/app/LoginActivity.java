@@ -59,8 +59,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
 
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
 
-    private boolean isAnyEmptyField = false;
-
     private TextInput mUserNameTextInput;
     private TextInput mPasswordTextInput;
     private TextInput mUrlTextInput;

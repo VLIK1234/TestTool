@@ -1,11 +1,11 @@
 package amtt.epam.com.amtt.view;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
-import android.graphics.PorterDuff;
+import android.os.Build;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
@@ -15,8 +15,8 @@ import com.android.internal.util.Predicate;
 
 import java.util.Map;
 
-import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.util.ThemeUtil;
 
 /**
  * Created by Artsiom_Kaliaha on 12.06.2015.
@@ -25,6 +25,7 @@ public class TextInput extends TextInputLayout {
 
     private EditText mText;
     private CharSequence mLastErrorText;
+    private boolean isErrorShown;
     private Map<Predicate<EditText>, CharSequence> mValidationMap;
 
     public TextInput(Context context) {
@@ -44,15 +45,27 @@ public class TextInput extends TextInputLayout {
         setHint(hint);
         setErrorEnabled(true);
 
+        int[][] states = new int[][]{
+                new int[]{-android.R.attr.state_focused},
+                new int[]{android.R.attr.state_focused, android.R.attr.state_enabled},
+        };
+        int[] colors = new int[]{
+                ThemeUtil.colorControlNormal(context, 0xFF000000),
+                ThemeUtil.colorControlActivated(context, 0xFF000000),
+        };
+        ColorStateList mDividerColors = new ColorStateList(states, colors);
+
         mText = new EditText(context, attrs);
         mText.setHint(null);
         mText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if (count == 1 && after == 0) {
+                if (s.length() == 1 && after == 0) {
                     setError(mLastErrorText);
+                    isErrorShown = true;
                 } else {
                     setError(Constants.Symbols.EMPTY);
+                    isErrorShown = false;
                 }
             }
 
@@ -66,6 +79,15 @@ public class TextInput extends TextInputLayout {
 
             }
         });
+
+        Divider mDivider = new Divider(2, mText.getTotalPaddingLeft(), mText.getTotalPaddingRight(), mDividerColors, 0);
+        mDivider.setInEditMode(isInEditMode());
+        mDivider.setAnimEnable(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            mText.setBackground(mDivider);
+        } else {
+            mText.setBackgroundDrawable(mDivider);
+        }
         addView(mText, new ViewGroup.LayoutParams(context, attrs));
     }
 
@@ -79,8 +101,9 @@ public class TextInput extends TextInputLayout {
     public boolean validate() {
         for (Map.Entry<Predicate<EditText>, CharSequence> pair : mValidationMap.entrySet()) {
             if (pair.getKey().apply(mText)) {
-                if (mLastErrorText != pair.getValue()) {
+                if (!isErrorShown) {
                     setError(mLastErrorText = pair.getValue());
+                    isErrorShown = true;
                 }
                 return false;
             }
