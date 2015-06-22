@@ -183,27 +183,24 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private void checkFields() {
-        isAnyEmptyField = !mUserNameTextInput.validate();
-        isAnyEmptyField = !mPasswordTextInput.validate();
-        isAnyEmptyField = !mUrlTextInput.validate();
-
-        if (!isAnyEmptyField) {
-            showProgress(true);
-            mLoginButton.setEnabled(false);
-            StepUtil.checkUser(mUserNameTextInput.getText().toString(), new IResult<List<DatabaseEntity>>() {
-                @Override
-                public void onResult(List<DatabaseEntity> result) {
-                    mIsUserInDatabase = result.size() > 0;
-                    ActiveUser.getInstance().clearActiveUser();
-                    sendAuthRequest();
-                }
-
-                @Override
-                public void onError(Exception e) {
-
-                }
-            });
+        if (!mUserNameTextInput.validate() | !mPasswordTextInput.validate() | !mUrlTextInput.validate()) {
+            return;
         }
+        showProgress(true);
+        mLoginButton.setEnabled(false);
+        StepUtil.checkUser(mUserNameTextInput.getText().toString(), new IResult<List<DatabaseEntity>>() {
+            @Override
+            public void onResult(List<DatabaseEntity> result) {
+                mIsUserInDatabase = result.size() > 0;
+                ActiveUser.getInstance().clearActiveUser();
+                sendAuthRequest();
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 
     private void setActiveUser() {
