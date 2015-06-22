@@ -8,13 +8,11 @@ package amtt.epam.com.amtt.excel;
 public class Smoke {
 
     private Double mId;
-    private String mSummary;
+    private String mPriority;
+    private String mTestCaseName;
+    private String mTestCaseDescription;
     private String mTestSteps;
     private String mExpectedResult;
-    private String mAndroid;
-    private String mNotes;
-    private String mIOS;
-    private String mTestNotes;
 
     public Double getId() {
         return mId;
@@ -24,12 +22,12 @@ public class Smoke {
         this.mId = id;
     }
 
-    public String getSummary() {
-        return mSummary;
+    public String getTestCaseName() {
+        return mTestCaseName;
     }
 
-    public void setSummary(String summary) {
-        this.mSummary = summary;
+    public void setTestCaseName(String testCaseName) {
+        this.mTestCaseName = testCaseName;
     }
 
     public String getTestSteps() {
@@ -48,35 +46,19 @@ public class Smoke {
         this.mExpectedResult = expectedResult;
     }
 
-    public String getAndroid() {
-        return mAndroid;
+    public String getTestCaseDescription() {
+        return mTestCaseDescription;
     }
 
-    public void setAndroid(String android) {
-        this.mAndroid = android;
+    public void setTestCaseDescription(String testCaseDescription) {
+        this.mTestCaseDescription = testCaseDescription;
     }
 
-    public String getNotes() {
-        return mNotes;
+    public String getPriority() {
+        return mPriority;
     }
 
-    public void setNotes(String notes) {
-        this.mNotes = notes;
-    }
-
-    public String getIOS() {
-        return mIOS;
-    }
-
-    public void setIOS(String iOS) {
-        this.mIOS = iOS;
-    }
-
-    public String getTestNotes() {
-        return mTestNotes;
-    }
-
-    public void setTestNotes(String testNotes) {
-        this.mTestNotes = testNotes;
+    public void setPriority(String priority) {
+        this.mPriority = priority;
     }
 }

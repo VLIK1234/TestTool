@@ -22,44 +22,49 @@ public class ReadExcel {
 
     private final String TAG = this.getClass().getSimpleName();
     private ArrayList<Smoke> smokes;
+    private int mIdCell;
+    private int mTestCaseNameCell;
+    private int mTestCaseDescriptionCell;
+    private int mTestStepsCell;
+    private int mExpectedResultsCell;
 
-    private void parseExcel(InputStream fis) {
+    public void parseExcel(InputStream inputStream) {
 
-        smokes = new ArrayList<Smoke>();
+        smokes = new ArrayList<>();
 
         try {
-            HSSFWorkbook myWorkBook = new HSSFWorkbook(fis);
-            HSSFSheet mySheet = myWorkBook.getSheetAt(0);
-            Iterator<Row> rowIter = mySheet.rowIterator();
+            HSSFWorkbook hssfWorkbook = new HSSFWorkbook(inputStream);
+            HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(3);
+            Iterator<Row> rowIterator = hssfSheet.rowIterator();
 
-            while (rowIter.hasNext()) {
-                HSSFRow myRow = (HSSFRow) rowIter.next();
+            while (rowIterator.hasNext()) {
+                HSSFRow hssfRow = (HSSFRow) rowIterator.next();
 
-                if (myRow.getRowNum() < 2) {
+                if (hssfRow.getRowNum() < 2) {
                     continue;
                 }
 
                 Smoke smoke = new Smoke();
-                Iterator<Cell> cellIter = myRow.cellIterator();
+                Iterator<Cell> cellIterator = hssfRow.cellIterator();
 
-                while (cellIter.hasNext()) {
-                    HSSFCell myCell = (HSSFCell) cellIter.next();
-                    String cellValue = "";
+                while (cellIterator.hasNext()) {
+                    HSSFCell hssfCell = (HSSFCell) cellIterator.next();
+                    String cellValue;
 
-                    if (myCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
-                        cellValue = myCell.getStringCellValue();
+                    if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+                        cellValue = hssfCell.getStringCellValue();
                     } else {
-                        cellValue = String.valueOf(myCell.getNumericCellValue());
+                        cellValue = String.valueOf(hssfCell.getNumericCellValue());
                     }
 
                     Logger.v(TAG, cellValue);
 
-                    switch (myCell.getColumnIndex()) {
+                    switch (hssfCell.getColumnIndex()) {
                         case 0:
                             smoke.setId(Double.valueOf(cellValue));
                             break;
                         case 1:
-                            smoke.setSummary(cellValue);
+                            //smoke.setSummary(cellValue);
                             break;
                         case 2:
                             smoke.setTestSteps(cellValue);
@@ -68,16 +73,16 @@ public class ReadExcel {
                             smoke.setExpectedResult(cellValue);
                             break;
                         case 4:
-                            smoke.setAndroid(cellValue);
+                            //smoke.setAndroid(cellValue);
                             break;
                         case 5:
-                            smoke.setNotes(cellValue);
+                            //smoke.setNotes(cellValue);
                             break;
                         case 6:
-                            smoke.setIOS(cellValue);
+                            //smoke.setIOS(cellValue);
                             break;
                         case 7:
-                            smoke.setTestNotes(cellValue);
+                            //smoke.setTestNotes(cellValue);
                             break;
                         default:
                             break;
