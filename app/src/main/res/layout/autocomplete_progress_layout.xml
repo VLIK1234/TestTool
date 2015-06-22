@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Material.Widget.Spinner"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <AutoCompleteTextView
         android:id="@+id/autocomplete_text_view"
-        style="@style/Material.Widget.AutocompleteProgressView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:inputType="textAutoComplete"
-        android:textSize="@dimen/abc_text_size_subhead_material"
-        android:textColor="@color/primary_text" />
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:duplicateParentState="true"
+        android:inputType="textAutoComplete"/>
 
     <ProgressBar
         android:id="@+id/progress"

@@ -17,8 +17,10 @@ import amtt.epam.com.amtt.adapter.UserAdapter;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 
 /**
- * Created by Artsiom_Kaliaha on 18.05.2015.
+ @author Artsiom_Kaliaha
+ @version on 18.05.2015
  */
+
 public class AmttActivity extends BaseActivity implements LoaderCallbacks<Cursor> {
 
     public static final String KEY_USER_ID = "key_user_id";

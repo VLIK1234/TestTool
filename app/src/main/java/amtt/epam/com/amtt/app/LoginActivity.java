@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -27,27 +28,30 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraCallback;
+import amtt.epam.com.amtt.api.JiraGetContentCallback;
 import amtt.epam.com.amtt.api.JiraTask;
 import amtt.epam.com.amtt.api.exception.AmttException;
 import amtt.epam.com.amtt.api.exception.ExceptionHandler;
+import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.api.rest.RestMethod;
 import amtt.epam.com.amtt.api.rest.RestResponse;
 import amtt.epam.com.amtt.api.result.JiraOperationResult;
+import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.database.object.DbObjectManger;
+import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
-import amtt.epam.com.amtt.ticket.JiraContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants.Symbols;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
-import amtt.epam.com.amtt.util.StepUtil;
+import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.view.TextInput;
+
 
 /**
  * @author Artsiom_Kaliaha
@@ -62,10 +66,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private TextInput mUserNameTextInput;
     private TextInput mPasswordTextInput;
     private TextInput mUrlTextInput;
-    private Button mLoginButton;
-    private String mRequestUrl;
-    private boolean mIsUserInDatabase;
-    private RestMethod<JUserInfo> userInfoMethod;
 
     private Predicate<EditText> mPredicateIsEmpty;
     private Predicate<EditText> mPredicateHasWhitespaces;
@@ -74,12 +74,21 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private Predicate<EditText> mPredicateIsEpamUrl;
 
 
+    private final String TAG = this.getClass().getSimpleName();
+    private Button mLoginButton;
+    private String mRequestUrl;
+    private boolean mIsUserInDatabase;
+    private RestMethod<JUserInfo> mUserInfoMethod;
+    private InputMethodManager mInputMethodManager;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initPredicates();
         initViews();
+        mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
     }
 
@@ -156,19 +165,19 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         String password = mPasswordTextInput.getText().toString();
         //get user info and perform auth in one request
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameTextInput.getText().toString();
-        userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
+        mUserInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
                 new UserInfoProcessor(),
                 userName,
                 password,
                 mRequestUrl);
         new JiraTask.Builder<JUserInfo>()
-                .setRestMethod(userInfoMethod)
+                .setRestMethod(mUserInfoMethod)
                 .setCallback(LoginActivity.this)
                 .createAndExecute();
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
-        DbObjectManger.INSTANCE.addOrUpdateAsync(user, new IResult<Integer>() {
+        DbObjectManager.INSTANCE.add(user, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
                 ActiveUser.getInstance().setId(result);
@@ -186,9 +195,9 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         }
         showProgress(true);
         mLoginButton.setEnabled(false);
-        StepUtil.checkUser(mUserNameTextInput.getText().toString(), new IResult<List<DatabaseEntity>>() {
+        StepUtil.checkUser(mUserNameTextInput.getText().toString(), new IResult<List<JUserInfo>>() {
             @Override
-            public void onResult(List<DatabaseEntity> result) {
+            public void onResult(List<JUserInfo> result) {
                 mIsUserInDatabase = result.size() > 0;
                 ActiveUser.getInstance().clearActiveUser();
                 sendAuthRequest();
@@ -213,8 +222,22 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         Runnable task = new Runnable() {
             public void run() {
                 TopButtonService.start(getBaseContext());
-                JiraContent.getInstance().getPrioritiesNames(null);
-                JiraContent.getInstance().getProjectsNames(null);
+                JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
+                    @Override
+                    public void resultOfDataLoading(HashMap<String, String> result) {
+                        if (result != null) {
+                            Logger.d(TAG, "Loading priority finish");
+                        }
+                    }
+                });
+                JiraContent.getInstance().getProjectsNames(new JiraGetContentCallback<HashMap<JProjects, String>>() {
+                    @Override
+                    public void resultOfDataLoading(HashMap<JProjects, String> result) {
+                        if (result != null) {
+                            Logger.d(TAG, "Loading projects finish");
+                        }
+                    }
+                });
             }
         };
         worker.schedule(task, 1, TimeUnit.SECONDS);
@@ -237,13 +260,15 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 user.setCredentials(ActiveUser.getInstance().getCredentials());
                 insertUserToDatabase(user);
                 Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
+                mInputMethodManager.hideSoftInputFromInputMethod(mUserNameTextInput.getWindowToken(), 0);
                 finish();
             } else if (restResponse.getResultObject() == null) {
-                ExceptionHandler.getInstance().processError(new AmttException(new AuthenticationException(), 403, userInfoMethod)).showDialog(LoginActivity.this, LoginActivity.this);
+                ExceptionHandler.getInstance().processError(new AmttException(new AuthenticationException(), 403, mUserInfoMethod)).showDialog(LoginActivity.this, LoginActivity.this);
                 mLoginButton.setEnabled(true);
             } else {
                 setActiveUser();
                 Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
+                mInputMethodManager.hideSoftInputFromInputMethod(mUserNameTextInput.getWindowToken(), 0);
                 finish();
             }
         }

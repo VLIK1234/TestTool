@@ -96,7 +96,12 @@ public class TopButtonView extends FrameLayout {
                 mMainImageButton.getViewTreeObserver().removeOnPreDrawListener(this);
                 mMainButtonHeight = mMainImageButton.getHeight();
                 mMainButtonWidth = mMainImageButton.getWidth();
-                mTopButtonBarView = new TopButtonBarView(getContext(), mMainButtonHeight, mMainButtonWidth);
+                mTopButtonBarView = new TopButtonBarView(getContext(), mMainButtonHeight, mMainButtonWidth, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
+                    @Override
+                    public void onTouch() {
+                        playMainButtonRotateAnimation(300, 180, 0);
+                    }
+                });
                 return true;
             }
         });

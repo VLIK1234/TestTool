@@ -1,4 +1,7 @@
-package amtt.epam.com.amtt.ticket;
+package amtt.epam.com.amtt.api;
+
+import amtt.epam.com.amtt.api.JiraContentConst;
+import amtt.epam.com.amtt.api.JiraGetContentCallback;
 
 /**
  @author Iryna Monchanka

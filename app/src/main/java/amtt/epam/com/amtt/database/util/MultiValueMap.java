@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.util;
+package amtt.epam.com.amtt.database.util;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by Artsiom_Kaliaha on 19.03.2015.
+ @author Artsiom_Kaliaha
+ @version on 19.03.2015
  */
+
 public class MultiValueMap<K, V> {
 
     private Map<K, List<V>> mMap = new LinkedHashMap<>();

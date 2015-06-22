@@ -99,13 +99,15 @@ public class TextInput extends TextInputLayout {
     * Returns false if validation is not passed, otherwise returns true
     * */
     public boolean validate() {
-        for (Map.Entry<Predicate<EditText>, CharSequence> pair : mValidationMap.entrySet()) {
-            if (pair.getKey().apply(mText)) {
-                if (!isErrorShown) {
-                    setError(mLastErrorText = pair.getValue());
-                    isErrorShown = true;
+        if (mValidationMap != null) {
+            for (Map.Entry<Predicate<EditText>, CharSequence> pair : mValidationMap.entrySet()) {
+                if (pair.getKey().apply(mText)) {
+                    if (!isErrorShown) {
+                        setError(mLastErrorText = pair.getValue());
+                        isErrorShown = true;
+                    }
+                    return false;
                 }
-                return false;
             }
         }
         return true;

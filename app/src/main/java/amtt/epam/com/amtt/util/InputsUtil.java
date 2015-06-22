@@ -30,7 +30,7 @@ public class InputsUtil {
         return !mMatcher.matches();
     }
 
-    public static Boolean hasWhitespaceMargins(amtt.epam.com.amtt.view.EditText editText) {
+    public static Boolean hasWhitespaceMargins(EditText editText) {
         //check To Whitespace After And Before
         String string = editText.getText().toString();
         mPattern = Pattern.compile(mNoWhitespaceAfterAndBefore);

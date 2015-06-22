@@ -1,17 +1,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="amtt.epam.com.amtt.app.LoginActivity"
-    android:padding="@dimen/activity_horizontal_margin">
+    android:paddingBottom="@dimen/activity_horizontal_margin"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:paddingTop="@dimen/activity_horizontal_margin"
+    tools:context="amtt.epam.com.amtt.app.LoginActivity">
 
     <amtt.epam.com.amtt.view.TextInput
         android:id="@+id/username_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text"
-        android:hint="@string/label_user_name"/>
+        android:hint="@string/label_user_name"
+        android:inputType="text" />
 
     <amtt.epam.com.amtt.view.TextInput
         android:id="@+id/url_input"
@@ -20,7 +22,7 @@
         android:layout_below="@+id/username_input"
         android:hint="@string/label_url"
         android:inputType="textUri"
-        android:text="@string/url_prefix"/>
+        android:text="@string/url_prefix" />
 
     <amtt.epam.com.amtt.view.TextInput
         android:id="@+id/password_input"
@@ -28,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/url_input"
         android:hint="@string/label_password"
-        android:inputType="textPassword"/>
+        android:inputType="textPassword" />
 
     <Button
         android:id="@+id/btn_login"
