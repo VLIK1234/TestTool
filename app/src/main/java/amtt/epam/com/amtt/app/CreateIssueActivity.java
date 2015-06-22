@@ -1,8 +1,6 @@
 package amtt.epam.com.amtt.app;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.api.exception.AmttException;
-import amtt.epam.com.amtt.api.exception.ExceptionHandler;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
@@ -18,7 +16,6 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
-import amtt.epam.com.amtt.util.ConnectionUtil;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
@@ -339,10 +336,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 if (mIssueTypeName == null) {
                     isValid = false;
                     Toast.makeText(CreateIssueActivity.this, getString(R.string.error_message_unknown), Toast.LENGTH_LONG).show();
-                }
-                if(!ConnectionUtil.isOnline(CreateIssueActivity.this)){
-                    ExceptionHandler.getInstance().processError(new AmttException(new IllegalArgumentException(), 600, null)).showDialog(CreateIssueActivity.this, null);
-                    isValid = ConnectionUtil.isOnline(CreateIssueActivity.this);
                 }
                 if (isValid) {
                     showProgress(true);

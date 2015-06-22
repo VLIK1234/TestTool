@@ -41,7 +41,6 @@ import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.api.JiraGetContentCallback;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
-import amtt.epam.com.amtt.util.ConnectionUtil;
 import amtt.epam.com.amtt.util.Constants.Symbols;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
@@ -108,16 +107,10 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 userName,
                 password,
                 mRequestUrl);
-        if (ConnectionUtil.isOnline(LoginActivity.this)) {
             new JiraTask.Builder<JUserInfo>()
                     .setRestMethod(mUserInfoMethod)
                     .setCallback(LoginActivity.this)
                     .createAndExecute();
-        } else {
-            ExceptionHandler.getInstance().processError(new AmttException(new IllegalArgumentException(), 600, mUserInfoMethod)).showDialog(LoginActivity.this, LoginActivity.this);
-            mLoginButton.setEnabled(true);
-            showProgress(false);
-        }
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
