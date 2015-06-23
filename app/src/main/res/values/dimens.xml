@@ -37,4 +37,5 @@
     <dimen name="dialog_button_margin">8dp</dimen>
     <dimen name="dialog_button_margin_between">4dp</dimen>
     <dimen name="dialog_margin">24dp</dimen>
+    <dimen name="icon_size_step_delete">24dp</dimen>
 </resources>

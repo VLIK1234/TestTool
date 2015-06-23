@@ -23,8 +23,8 @@ android {
         applicationId "amtt.epam.com.amtt"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 11
-        versionName "0.1.6 DEV"
+        versionCode 12
+        versionName "0.1.6"
     }
 
     packagingOptions {
@@ -63,6 +63,7 @@ dependencies {
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     compile 'com.android.support:recyclerview-v7:22.1.1'
     compile 'com.android.support:design:22.2.0'
+    compile 'com.android.support:support-annotations:22.2.0'
 }
 
 
