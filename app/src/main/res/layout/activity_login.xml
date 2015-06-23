@@ -39,7 +39,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/password_input"
-        android:layout_marginTop="@dimen/material_vertical_button_padding_top"
         android:minWidth="@dimen/material_vertical_button_min_width_size"
         android:text="@string/label_login"
         android:textSize="@dimen/abc_text_size_button_material" />
