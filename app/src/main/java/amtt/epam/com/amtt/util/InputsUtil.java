@@ -2,12 +2,7 @@ package amtt.epam.com.amtt.util;
 
 import android.text.TextUtils;
 import android.util.Patterns;
-import android.widget.EditText;
 
-import com.android.internal.util.Predicate;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,120 +23,140 @@ public class InputsUtil {
     private static final String mHaveWhitespaces = ".*(\\s)+.*";
     private static final String mHasAtSymbol = ".*@.*";
 
-    private static final Predicate<EditText> sPredicateIsEmpty;
-    private static final Predicate<EditText> sPredicateHasWhitespaces;
-    private static final Predicate<EditText> sPredicateHasWhitespaceMargins;
-    private static final Predicate<EditText> sPredicateNoEmail;
-    private static final Predicate<EditText> sPredicateIsCorrectUrl;
-    private static final Predicate<EditText> sPredicateIsEpamUrl;
+    private static final Validator sEmptyValidator;
+    private static final Validator sWhitespacesValidator;
+    private static final Validator sEndStartWhitespacesValidator;
+    private static final Validator sNoEmailValidator;
+    private static final Validator sCorrectUrlValidator;
+    private static final Validator sEpamUrlValidator;
 
-    private static final Map<Predicate<EditText>, String> sErrorMessagesMap;
-    
     static {
-        sPredicateIsEmpty = new Predicate<EditText>() {
+        sEmptyValidator = new Validator() {
             @Override
-            public boolean apply(EditText editText) {
-                return TextUtils.isEmpty(editText.getText().toString());
+            public String getMessage(CharSequence viewHint) {
+                return ContextHolder.getContext().getString(R.string.enter_prefix, viewHint.toString().toLowerCase());
+            }
+
+            @Override
+            public boolean validate(TextEditable editable) {
+                return TextUtils.isEmpty(editable.getText().toString());
             }
         };
-        sPredicateHasWhitespaces = new Predicate<EditText>() {
+        sWhitespacesValidator = new Validator() {
             @Override
-            public boolean apply(EditText editText) {
-                return InputsUtil.hasWhitespaces(editText);
+            public String getMessage(CharSequence viewHint) {
+                return viewHint.toString() + ContextHolder.getContext().getString(R.string.label_no_whitespaces);
+            }
+
+            @Override
+            public boolean validate(TextEditable editable) {
+                return hasWhitespaces(editable);
             }
         };
-        sPredicateHasWhitespaceMargins = new Predicate<EditText>() {
+        sEndStartWhitespacesValidator = new Validator() {
             @Override
-            public boolean apply(EditText editText) {
-                return InputsUtil.hasWhitespaceMargins(editText);
+            public String getMessage(CharSequence viewHint) {
+                return viewHint.toString() + ContextHolder.getContext().getString(R.string.label_no_whitespace_margins);
+            }
+
+            @Override
+            public boolean validate(TextEditable editable) {
+                return hasEndStartWhitespaces(editable);
             }
         };
-        sPredicateNoEmail = new Predicate<EditText>() {
+        sNoEmailValidator = new Validator() {
             @Override
-            public boolean apply(EditText editText) {
-                return InputsUtil.isEmail(editText);
+            public String getMessage(CharSequence viewHint) {
+                return ContextHolder.getContext().getString(R.string.enter_prefix, ContextHolder.getContext().getString(R.string.label_no_email));
+            }
+
+            @Override
+            public boolean validate(TextEditable editable) {
+                return isEmail(editable);
             }
         };
-        sPredicateIsCorrectUrl = new Predicate<EditText>() {
+        sCorrectUrlValidator = new Validator() {
             @Override
-            public boolean apply(EditText editText) {
-                return InputsUtil.checkUrl(editText);
+            public String getMessage(CharSequence viewHint) {
+                return ContextHolder.getContext().getString(R.string.enter_prefix, viewHint.toString().toLowerCase()) + ContextHolder.getContext().getString(R.string.label_no_email);
+            }
+
+            @Override
+            public boolean validate(TextEditable editable) {
+                return checkUrl(editable);
             }
         };
-        sPredicateIsEpamUrl = new Predicate<EditText>() {
+        sEpamUrlValidator = new Validator() {
             @Override
-            public boolean apply(EditText editText) {
-                return ContextHolder.getContext().getString(R.string.epam_url).equals(editText.getText().toString());
+            public String getMessage(CharSequence viewHint) {
+                return ContextHolder.getContext().getString(R.string.enter_prefix, ContextHolder.getContext().getString(R.string.enter_postfix_jira));
+            }
+
+            @Override
+            public boolean validate(TextEditable editable) {
+                return ContextHolder.getContext().getString(R.string.epam_url).equals(editable.getText().toString());
             }
         };
-
-        sErrorMessagesMap = new HashMap<>();
-        sErrorMessagesMap.put(sPredicateIsEmpty, ContextHolder.getContext().getString(R.string.enter_prefix) + " ");
-        sErrorMessagesMap.put(sPredicateIsEpamUrl, ContextHolder.getContext().getString(R.string.enter_prefix) + ContextHolder.getContext().getString(R.string.enter_postfix_jira));
-        sErrorMessagesMap.put(sPredicateIsCorrectUrl, ContextHolder.getContext().getString(R.string.enter_prefix) + ContextHolder.getContext().getString(R.string.enter_correct_url));
-        sErrorMessagesMap.put(sPredicateHasWhitespaces, ContextHolder.getContext().getString(R.string.label_no_whitespaces));
-        sErrorMessagesMap.put(sPredicateHasWhitespaceMargins, ContextHolder.getContext().getString(R.string.label_no_whitespace_margins));
-        sErrorMessagesMap.put(sPredicateNoEmail, ContextHolder.getContext().getString(R.string.label_no_email));
     }
 
-    public static Predicate<EditText> getPredicateHasWhitespaces() {
-        return sPredicateHasWhitespaces;
+    public static Validator getEmptyValidator() {
+        return sEmptyValidator;
     }
 
-    public static Predicate<EditText> getPredicateHasWhitespaceMargins() {
-        return sPredicateHasWhitespaceMargins;
+    public static Validator getWhitespacesValidator() {
+        return sWhitespacesValidator;
     }
 
-    public static Predicate<EditText> getPredicateIsEmail() {
-        return sPredicateNoEmail;
+    public static Validator getEndStartWhitespacesValidator() {
+        return sEndStartWhitespacesValidator;
     }
 
-    public static Predicate<EditText> getPredicateIsCorrectUrl() {
-        return sPredicateIsCorrectUrl;
+    public static Validator getNoEmailValidator() {
+        return sNoEmailValidator;
     }
 
-    public static Predicate<EditText> getPredicateIsEpamUrl() {
-        return sPredicateIsEpamUrl;
+    public static Validator getCorrectUrlValidator() {
+        return sCorrectUrlValidator;
     }
 
-    private static String getErrorMessage(Predicate<EditText> predicate) {
-        return sErrorMessagesMap.get(predicate);
+    public static Validator getEpamUrlValidator() {
+        return sEpamUrlValidator;
     }
 
-    public static Boolean checkUrl(EditText editText) {
-        String url = editText.getText().toString();
+    private static Boolean checkUrl(TextEditable editable) {
+        String url = editable.getText().toString();
         mPattern = Patterns.WEB_URL;
         mMatcher = mPattern.matcher(url.toLowerCase());
         Logger.d(TAG, mMatcher.matches() ? url + ": passed." : url + ": not passed.");
         return !mMatcher.matches();
     }
 
-    public static Boolean hasWhitespaceMargins(EditText editText) {
+    private static Boolean hasEndStartWhitespaces(TextEditable editable) {
         //check To Whitespace After And Before
-        String string = editText.getText().toString();
+        String string = editable.getText().toString();
         mPattern = Pattern.compile(mNoWhitespaceAfterAndBefore);
         mMatcher = mPattern.matcher(string.toLowerCase());
         Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": not passed.");
         return !mMatcher.matches();
     }
 
-    public static Boolean isEmail(EditText editText) {
-        String string = editText.getText().toString();
+    private static Boolean isEmail(TextEditable editable) {
+        String string = editable.getText().toString();
         mPattern = Pattern.compile(mHasAtSymbol);
         mMatcher = mPattern.matcher(string.toLowerCase());
         Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": not passed.");
         return mMatcher.matches();
     }
 
-    public static Boolean hasWhitespaces(EditText editText) {
-        String string = editText.getText().toString();
+    private static Boolean hasWhitespaces(TextEditable textEditable) {
+        String string = textEditable.getText().toString();
         mPattern = Pattern.compile(mHaveWhitespaces);
         mMatcher = mPattern.matcher(string.toLowerCase());
         Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": not passed.");
         return mMatcher.matches();
     }
 
-    public static Boolean hasWhitespaces(AutocompleteProgressView autocompleteProgressView) {
+    private static Boolean hasWhitespaces(AutocompleteProgressView autocompleteProgressView) {
         String string = autocompleteProgressView.getText().toString();
         mPattern = Pattern.compile(mHaveWhitespaces);
         mMatcher = mPattern.matcher(string.toLowerCase());

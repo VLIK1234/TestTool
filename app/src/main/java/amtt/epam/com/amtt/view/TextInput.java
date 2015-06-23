@@ -11,22 +11,24 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.android.internal.util.Predicate;
-
-import java.util.Map;
+import java.util.List;
 
 import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.util.TextEditable;
 import amtt.epam.com.amtt.util.ThemeUtil;
+import amtt.epam.com.amtt.util.Validatable;
+import amtt.epam.com.amtt.util.Validator;
 
 /**
  * Created by Artsiom_Kaliaha on 12.06.2015.
  */
-public class TextInput extends TextInputLayout {
+public class TextInput extends TextInputLayout implements TextEditable, Validatable {
 
     private EditText mText;
     private CharSequence mLastErrorText;
+    private CharSequence mHint;
     private boolean isErrorShown;
-    private Map<Predicate<EditText>, CharSequence> mValidationMap;
+    private List<Validator> mValidators;
 
     public TextInput(Context context) {
         this(context, null);
@@ -39,10 +41,10 @@ public class TextInput extends TextInputLayout {
 
     private void initContent(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, android.support.design.R.styleable.TextInputLayout, 0, android.support.design.R.style.Widget_Design_TextInputLayout);
-        CharSequence hint = a.getText(android.support.design.R.styleable.TextInputLayout_android_hint);
+        mHint = a.getText(android.support.design.R.styleable.TextInputLayout_android_hint);
         a.recycle();
 
-        setHint(hint);
+        setHint(mHint);
         setErrorEnabled(true);
 
         int[][] states = new int[][]{
@@ -91,19 +93,22 @@ public class TextInput extends TextInputLayout {
         addView(mText, new ViewGroup.LayoutParams(context, attrs));
     }
 
-    public void setValidationMap(Map<Predicate<EditText>, CharSequence> validationMap) {
-        mValidationMap = validationMap;
+    public void setText(CharSequence text) {
+        mText.setText(text);
     }
 
-    /*
-    * Returns false if validation is not passed, otherwise returns true
-    * */
+    @Override
+    public void setValidators(List<Validator> validators) {
+        mValidators = validators;
+    }
+
+    @Override
     public boolean validate() {
-        if (mValidationMap != null) {
-            for (Map.Entry<Predicate<EditText>, CharSequence> pair : mValidationMap.entrySet()) {
-                if (pair.getKey().apply(mText)) {
+        if (mValidators != null) {
+            for (Validator validator : mValidators) {
+                if (validator.validate(this)) {
                     if (!isErrorShown) {
-                        setError(mLastErrorText = pair.getValue());
+                        setError(mLastErrorText = validator.getMessage(mHint));
                         isErrorShown = true;
                     }
                     return false;
@@ -113,12 +118,8 @@ public class TextInput extends TextInputLayout {
         return true;
     }
 
+    @Override
     public Editable getText() {
         return mText.getText();
     }
-
-    public void setText(CharSequence text) {
-        mText.setText(text);
-    }
-
 }

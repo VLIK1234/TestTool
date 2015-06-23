@@ -17,6 +17,7 @@ import com.android.internal.util.Predicate;
 
 import org.apache.http.auth.AuthenticationException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,7 @@ import amtt.epam.com.amtt.util.Constants.Symbols;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.util.Validator;
 import amtt.epam.com.amtt.view.TextInput;
 
 
@@ -67,13 +69,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     private TextInput mPasswordTextInput;
     private TextInput mUrlTextInput;
 
-    private Predicate<EditText> mPredicateIsEmpty;
-    private Predicate<EditText> mPredicateHasWhitespaces;
-    private Predicate<EditText> mPredicateHasAtSymbol;
-    private Predicate<EditText> mPredicateIsCorrectUrl;
-    private Predicate<EditText> mPredicateIsEpamUrl;
-
-
     private final String TAG = this.getClass().getSimpleName();
     private Button mLoginButton;
     private String mRequestUrl;
@@ -86,7 +81,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        initPredicates();
         initViews();
         mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
@@ -98,25 +92,22 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
     }
 
     private void initViews() {
-        Map<Predicate<EditText>, CharSequence> userNameValidationMap = new HashMap<>();
-        userNameValidationMap.put(mPredicateIsEmpty, getString(R.string.enter_prefix) + getString(R.string.enter_username));
-        userNameValidationMap.put(mPredicateHasWhitespaces, getString(R.string.label_user_name) + getString(R.string.label_no_whitespaces));
-        userNameValidationMap.put(mPredicateHasAtSymbol, getString(R.string.enter_prefix) + getString(R.string.enter_username) + getString(R.string.label_no_email));
-
-        Map<Predicate<EditText>, CharSequence> passwordValidationMap = new HashMap<>();
-        passwordValidationMap.put(mPredicateIsEmpty, getString(R.string.enter_prefix) + getString(R.string.enter_password));
-
-        Map<Predicate<EditText>, CharSequence> urlValidationMap = new HashMap<>();
-        urlValidationMap.put(mPredicateIsEmpty, getString(R.string.enter_prefix) + getString(R.string.enter_url));
-        urlValidationMap.put(mPredicateIsCorrectUrl, getString(R.string.enter_prefix) + getString(R.string.enter_correct_url));
-        urlValidationMap.put(mPredicateIsEpamUrl, getString(R.string.enter_prefix) + getString(R.string.enter_postfix_jira));
-
         mUserNameTextInput = (TextInput) findViewById(R.id.username_input);
-        mUserNameTextInput.setValidationMap(userNameValidationMap);
+        mUserNameTextInput.setValidators(new ArrayList<Validator>() {{
+            add(InputsUtil.getEmptyValidator());
+            add(InputsUtil.getWhitespacesValidator());
+            add(InputsUtil.getNoEmailValidator());
+        }});
         mPasswordTextInput = (TextInput) findViewById(R.id.password_input);
-        mPasswordTextInput.setValidationMap(passwordValidationMap);
+        mPasswordTextInput.setValidators(new ArrayList<Validator>(){{
+            add(InputsUtil.getEmptyValidator());
+        }});
         mUrlTextInput = (TextInput) findViewById(R.id.url_input);
-        mUrlTextInput.setValidationMap(urlValidationMap);
+        mUrlTextInput.setValidators(new ArrayList<Validator>(){{
+            add(InputsUtil.getEmptyValidator());
+            add(InputsUtil.getCorrectUrlValidator());
+            add(InputsUtil.getEpamUrlValidator());
+        }});
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,39 +115,6 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
                 checkFields();
             }
         });
-    }
-
-    private void initPredicates() {
-        mPredicateIsEmpty = new Predicate<EditText>() {
-            @Override
-            public boolean apply(EditText editText) {
-                return TextUtils.isEmpty(editText.getText().toString());
-            }
-        };
-        mPredicateHasWhitespaces = new Predicate<EditText>() {
-            @Override
-            public boolean apply(EditText editText) {
-                return InputsUtil.hasWhitespaces(editText);
-            }
-        };
-        mPredicateHasAtSymbol = new Predicate<EditText>() {
-            @Override
-            public boolean apply(EditText editText) {
-                return InputsUtil.isEmail(editText);
-            }
-        };
-        mPredicateIsCorrectUrl = new Predicate<EditText>() {
-            @Override
-            public boolean apply(EditText editText) {
-                return InputsUtil.checkUrl(editText);
-            }
-        };
-        mPredicateIsEpamUrl = new Predicate<EditText>() {
-            @Override
-            public boolean apply(EditText editText) {
-                return getBaseContext().getString(R.string.epam_url).equals(editText.getText().toString());
-            }
-        };
     }
 
     private void sendAuthRequest() {

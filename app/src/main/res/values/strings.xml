@@ -73,7 +73,7 @@
 
     <string name="notification_title">AMTT</string>
     <string name="notification_text">Tap to go to the settings</string>
-    <string name="enter_prefix">Please, enter</string>
+    <string name="enter_prefix">Please, enter %s</string>
     <string name="enter_username">" username"</string>
     <string name="enter_password">" password"</string>
     <string name="enter_url">" url"</string>

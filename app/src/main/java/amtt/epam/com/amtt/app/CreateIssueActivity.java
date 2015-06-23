@@ -11,24 +11,19 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.android.internal.util.Predicate;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.AttachmentAdapter;
@@ -48,6 +43,7 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.InputsUtil;
+import amtt.epam.com.amtt.util.Validator;
 import amtt.epam.com.amtt.view.AutocompleteProgressView;
 import amtt.epam.com.amtt.view.SpinnerProgress;
 import amtt.epam.com.amtt.view.TextInput;
@@ -74,9 +70,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private RecyclerView recyclerView;
     private InputMethodManager mInputManager;
 
-    private Predicate<EditText> mPredicateIsEmpty;
-    private Predicate<EditText> mPredicateHasWhitespaceMargins;
-
     public static class AssigneeHandler extends Handler {
 
         private final WeakReference<CreateIssueActivity> mActivity;
@@ -98,7 +91,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
         mHandler = new AssigneeHandler(this);
-        initPredicates();
         initViews();
     }
 
@@ -114,32 +106,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     protected void onPause() {
         super.onPause();
         TopButtonService.sendActionChangeVisibilityTopbutton(true);
-    }
-
-    private void initPredicates() {
-        mPredicateIsEmpty = new Predicate<EditText>() {
-            @Override
-            public boolean apply(EditText editText) {
-                boolean isEmpty = TextUtils.isEmpty(editText.getText().toString());
-                if (isEmpty) {
-                    editText.requestFocus();
-                    showKeyboard(mSummaryTextInput);
-                    Toast.makeText(CreateIssueActivity.this, getString(R.string.enter_prefix) + getString(R.string.enter_summary), Toast.LENGTH_LONG).show();
-                }
-                return isEmpty;
-            }
-        };
-        mPredicateHasWhitespaceMargins = new Predicate<EditText>() {
-            @Override
-            public boolean apply(EditText editText) {
-                boolean hasWhitespaceMargins = InputsUtil.hasWhitespaceMargins(editText);
-                if (hasWhitespaceMargins) {
-                    editText.requestFocus();
-                    Toast.makeText(CreateIssueActivity.this, getString(R.string.label_summary) + getString(R.string.label_no_whitespace_margins), Toast.LENGTH_LONG).show();
-                }
-                return hasWhitespaceMargins;
-            }
-        };
     }
 
     private void initViews() {
@@ -355,7 +321,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         createIssueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mSummaryTextInput.validate()) {
+                if (!mSummaryTextInput.validate() | !mAssignableAutocompleteView.validate()) {
                     return;
                 }
                 if (mIssueTypeName == null) {
@@ -386,16 +352,20 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void initSummaryEditText() {
-        Map<Predicate<EditText>, CharSequence> summaryValidationMap = new HashMap<>();
-        summaryValidationMap.put(mPredicateIsEmpty, getString(R.string.enter_prefix) + getString(R.string.enter_summary));
-        summaryValidationMap.put(mPredicateHasWhitespaceMargins, getString(R.string.label_summary) + getString(R.string.label_no_whitespace_margins));
-
         mSummaryTextInput = (TextInput) findViewById(R.id.summary_input);
-        mSummaryTextInput.setValidationMap(summaryValidationMap);
+        mSummaryTextInput.setValidators(new ArrayList<Validator>() {{
+            add(InputsUtil.getEmptyValidator());
+            add(InputsUtil.getEndStartWhitespacesValidator());
+        }});
     }
 
     private void initAssigneeAutocompleteView() {
         mAssignableAutocompleteView = (AutocompleteProgressView) findViewById(R.id.atv_assignable_users);
+        mAssignableAutocompleteView.setValidators(new ArrayList<Validator>(){{
+            add(InputsUtil.getEmptyValidator());
+            add(InputsUtil.getWhitespacesValidator());
+            add(InputsUtil.getEndStartWhitespacesValidator());
+        }});
         mAssignableAutocompleteView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -409,7 +379,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 2) {
-                    if (InputsUtil.hasWhitespaces(mAssignableAutocompleteView)) {
+                    if (InputsUtil.getWhitespacesValidator().validate(mAssignableAutocompleteView)) {
                         Toast.makeText(CreateIssueActivity.this, getString(R.string.label_tester) + getString(R.string.label_no_whitespaces), Toast.LENGTH_LONG).show();
                     } else {
                         mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
