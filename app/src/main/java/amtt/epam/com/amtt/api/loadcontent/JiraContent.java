@@ -10,6 +10,7 @@ import java.util.Map;
 import amtt.epam.com.amtt.api.ContentLoadingCallback;
 import amtt.epam.com.amtt.api.JiraContentConst;
 import amtt.epam.com.amtt.api.JiraGetContentCallback;
+import amtt.epam.com.amtt.bo.JComponentsResponse;
 import amtt.epam.com.amtt.bo.JCreateIssue;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
 import amtt.epam.com.amtt.bo.JPriorityResponse;
@@ -44,6 +45,7 @@ public class JiraContent{
     private JProjects mLastProject;
     private String mRecentIssueKey;
     private JPriorityResponse mPriorityResponse;
+    private HashMap<String, String> mProjectComponentsNames;
 
 
     private static class JiraContentHolder {
@@ -190,6 +192,29 @@ public class JiraContent{
         return versionId;
     }
 
+    public void getComponentsNames(String projectKey,
+                                 JiraGetContentCallback<HashMap<String, String>> jiraGetContentCallback) {
+        if (mProjectComponentsNames != null) {
+            jiraGetContentCallback.resultOfDataLoading(mProjectComponentsNames);
+        } else {
+            getComponentsResponse(projectKey, jiraGetContentCallback);
+        }
+    }
+
+    public void setComponentsNames(HashMap<String, String> versionsNames) {
+        this.mProjectComponentsNames = versionsNames;
+    }
+
+    public String getComponentIdByName(String versionName) {
+        String versionId = null;
+        for (Map.Entry<String, String> entry : mProjectComponentsNames.entrySet()) {
+            if (versionName.equals(entry.getValue())) {
+                versionId = entry.getKey();
+            }
+        }
+        return versionId;
+    }
+
     public void setUsersAssignableNames(ArrayList<String> usersAssignableNames){
         this.mUsersAssignableNames = usersAssignableNames;
     }
@@ -251,6 +276,21 @@ public class JiraContent{
             public void resultFromBackend(JVersionsResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
                 if (result != null) {
                     jiraGetContentCallback.resultOfDataLoading(mProjectVersionsNames);
+                } else {
+                    jiraGetContentCallback.resultOfDataLoading(null);
+                }
+            }
+        }, jiraGetContentCallback);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void getComponentsResponse(String projectsKey,
+                                     JiraGetContentCallback<HashMap<String, String>> jiraGetContentCallback) {
+        ContentFromBackend.getInstance().getComponentsAsynchronously(projectsKey, new ContentLoadingCallback<JComponentsResponse>() {
+            @Override
+            public void resultFromBackend(JComponentsResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
+                if (result != null) {
+                    jiraGetContentCallback.resultOfDataLoading(mProjectComponentsNames);
                 } else {
                     jiraGetContentCallback.resultOfDataLoading(null);
                 }

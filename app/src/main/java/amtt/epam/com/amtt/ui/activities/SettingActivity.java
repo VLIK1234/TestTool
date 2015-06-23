@@ -1,11 +1,11 @@
-package amtt.epam.com.amtt.app;
+package amtt.epam.com.amtt.ui.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.fragment.SettingsFragment;
+import amtt.epam.com.amtt.ui.fragments.SettingsFragment;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 

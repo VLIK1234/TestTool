@@ -6,8 +6,10 @@ import java.util.HashMap;
 import amtt.epam.com.amtt.bo.project.JIssueVersion;
 
 /**
- * Created by Iryna_Monchanka on 04.05.2015.
+ @author Iryna Monchanka
+ @version on 04.05.2015
  */
+
 public class JVersionsResponse {
 
     private ArrayList<JIssueVersion> mVersions;

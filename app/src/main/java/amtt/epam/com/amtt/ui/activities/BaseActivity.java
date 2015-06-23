@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.app;
+package amtt.epam.com.amtt.ui.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;

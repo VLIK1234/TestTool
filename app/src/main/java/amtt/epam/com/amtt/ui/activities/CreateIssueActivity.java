@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.app;
+package amtt.epam.com.amtt.ui.activities;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.database.Step;
@@ -18,9 +18,8 @@ import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.database.util.StepUtil;
-import amtt.epam.com.amtt.view.AutocompleteProgressView;
+import amtt.epam.com.amtt.ui.views.AutocompleteProgressView;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -113,7 +112,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initListStepButton();
         initPrioritiesSpinner();
         initCreateIssueButton();
-        mInputManager = (InputMethodManager) CreateIssueActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mInputManager = (InputMethodManager) CreateIssueActivity.this.getSystemService(INPUT_METHOD_SERVICE);
     }
 
     private void reinitRelatedViews(String projectKey) {

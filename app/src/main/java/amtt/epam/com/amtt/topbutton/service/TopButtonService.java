@@ -20,7 +20,7 @@ import android.view.WindowManager;
 import java.io.File;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.app.SettingActivity;
+import amtt.epam.com.amtt.ui.activities.SettingActivity;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;

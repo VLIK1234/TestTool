@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.fragment;
+package amtt.epam.com.amtt.ui.fragments;
 
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;

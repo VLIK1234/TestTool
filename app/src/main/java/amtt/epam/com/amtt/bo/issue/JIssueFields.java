@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.bo.issue;
 
+import amtt.epam.com.amtt.bo.project.JComponent;
 import amtt.epam.com.amtt.bo.project.JIssueVersion;
 import amtt.epam.com.amtt.bo.user.JUser;
 import com.google.gson.annotations.SerializedName;
@@ -7,8 +8,10 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 /**
- * Created by Irina Monchenko on 26.03.2015.
+ @author Iryna Monchanka
+ @version on 26.03.2015
  */
+
 public class JIssueFields {
 
     @SerializedName("project")
@@ -40,7 +43,7 @@ public class JIssueFields {
     @SerializedName("fixVersions")
     private ArrayList<JIssueVersion> mJiraIssueFixVersions = new ArrayList<>();
     @SerializedName("components")
-    private ArrayList<JIssueComponent> mJIssueComponents;
+    private ArrayList<JComponent> mJComponents;
 
   /*  private String timespent;
  private String[] fixVersions;
@@ -51,41 +54,13 @@ public class JIssueFields {
    private String lastViewed;
     private JiraIssueWatches watches;
     private String created;
-   private String customfield_10000;
-  private String customfield_10001;
-   private String customfield_10002;
- private String customfield_10003;
-    private String customfield_10004;
-   private String customfield_10007;
-    private String customfield_10008;
-
-    private String customfield_10012;
-    private String customfield_10013;
-   private String customfield_10014;
-   private String customfield_10015;
-   private String customfield_10016;
-    private String customfield_10017;
-   private String customfield_10018;
-   private String customfield_10019;
-   private String customfield_10020;
-    private String customfield_10021;
-    private String customfield_10022;
-    private String customfield_10023;
-    private String customfield_10024;
     private String[] labels;
     private int timeestimate;
     private int aggregatetimeoriginalestimate;
-    private String[] versions;
     private String[] issuelinks;
-    private JiraIssueAssignee assignee;
-    private JiraIssuePriority priority;
     private String updated;
-    private JiraIssueStatusCategory statusCategory;
-    private String[] components;
     private String timeoriginalestimate;
     private String aggregatetimeestimate;
-    private JiraIssueCreator creator;
-    private String environment;
     private String duedate;
     private JiraIssueProgress aggregateprogress;
     private JiraIssueProgress progress;
@@ -105,7 +80,7 @@ public class JIssueFields {
     public JIssueFields(JIssueProject mProject, String mSummary, JIssueTypesIssueType mIssueType, JUser mAssignee,
                         JUser mReporter, JIssuePriority mPriority, ArrayList<String> labels, JIssueTimeTracking jIssueTimeTracking,
                         JIssueSecurity jIssueSecurity, ArrayList<JIssueVersion> jIssueVersions, String mEnvironment, String mDescription,
-                        String mDueDate, ArrayList<JIssueVersion> jiraIssueFixVersions, ArrayList<JIssueComponent> jIssueComponents) {
+                        String mDueDate, ArrayList<JIssueVersion> jiraIssueFixVersions, ArrayList<JComponent> jComponents) {
         this.mProject = mProject;
         this.mSummary = mSummary;
         this.mIssueType = mIssueType;
@@ -120,7 +95,7 @@ public class JIssueFields {
         this.mDescription = mDescription;
         this.mDueDate = mDueDate;
         this.mJiraIssueFixVersions = jiraIssueFixVersions;
-        this.mJIssueComponents = jIssueComponents;
+        this.mJComponents = jComponents;
     }
 
     public JIssueProject getProject() {
@@ -237,12 +212,12 @@ public class JIssueFields {
         this.mJiraIssueFixVersions = jiraIssueFixVersions;
     }
 
-    public ArrayList<JIssueComponent> getJiraIssueComponents() {
-        return mJIssueComponents;
+    public ArrayList<JComponent> getJiraIssueComponents() {
+        return mJComponents;
     }
 
-    public void setJiraIssueComponents(ArrayList<JIssueComponent> jIssueComponents) {
-        this.mJIssueComponents = jIssueComponents;
+    public void setJiraIssueComponents(ArrayList<JComponent> jComponents) {
+        this.mJComponents = jComponents;
     }
 }
 

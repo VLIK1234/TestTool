@@ -164,7 +164,7 @@
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_tester"/>
 
-            <amtt.epam.com.amtt.view.AutocompleteProgressView
+            <amtt.epam.com.amtt.ui.views.AutocompleteProgressView
                 android:id="@+id/atv_assignable_users"
                 style="@style/Material.AutocompleteProgressView"
                 android:layout_width="match_parent"

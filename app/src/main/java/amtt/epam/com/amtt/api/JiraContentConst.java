@@ -8,6 +8,7 @@ package amtt.epam.com.amtt.api;
 public enum JiraContentConst {
     PROJECTS_RESPONSE,
     VERSIONS_RESPONSE,
+    COMPONENTS_RESPONSE,
     CREATE_ISSUE_RESPONSE,
     USERS_ASSIGNABLE_RESPONSE,
     PRIORITIES_RESPONSE,

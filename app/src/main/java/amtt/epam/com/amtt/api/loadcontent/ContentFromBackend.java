@@ -87,6 +87,33 @@ public class ContentFromBackend {
     }
 
     @SuppressWarnings("unchecked")
+    public void getComponentsAsynchronously(String projectsKey,
+                                          final ContentLoadingCallback<JComponentsResponse> contentLoadingCallback,
+                                          final JiraGetContentCallback jiraGetContentCallback) {
+        String path = JiraApiConst.PROJECT_COMPONENTS_PATH + projectsKey + JiraApiConst.PROJECT_COMPONENTS_PATH_C;
+        RestMethod<JComponentsResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new ComponentsProcessor(), null, null, null);
+        new JiraTask.Builder<JComponentsResponse>()
+                .setRestMethod(searchMethod)
+                .setCallback(new JiraCallback() {
+                    @Override
+                    public void onRequestStarted() {
+                    }
+
+                    @Override
+                    public void onRequestPerformed(RestResponse restResponse) {
+                        contentLoadingCallback.resultFromBackend((JComponentsResponse) restResponse.getResultObject(),
+                                JiraContentConst.COMPONENTS_RESPONSE, jiraGetContentCallback);
+                    }
+
+                    @Override
+                    public void onRequestError(AmttException e) {
+                        contentLoadingCallback.resultFromBackend(null, JiraContentConst.COMPONENTS_RESPONSE, jiraGetContentCallback);
+                    }
+                })
+                .createAndExecute();
+    }
+
+    @SuppressWarnings("unchecked")
     public void getUsersAssignableAsynchronously(String projectKey, String userName,
                                                  final ContentLoadingCallback<JUserAssignableResponse> contentLoadingCallback,
                                                  final JiraGetContentCallback jiraGetContentCallback) {

@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.app;
+package amtt.epam.com.amtt.ui.activities;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;

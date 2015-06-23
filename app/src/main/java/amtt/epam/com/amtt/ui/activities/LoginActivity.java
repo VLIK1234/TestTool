@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.app;
+package amtt.epam.com.amtt.ui.activities;
 
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
