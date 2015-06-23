@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+    <resources>
 
     <string name="app_name">amtt</string>
 
@@ -25,28 +25,39 @@
     <string name="error_message_web_address">Wrong web-address</string>
     <string name="error_button_close">Close</string>
 
-    <string name="label_file_name">"File name: "</string>
     <string name="label_activity">"Activity: "</string>
+    <string name="label_added_step_without_screen">Added step without screen</string>
     <string name="label_affects_versions">Affects Version/s</string>
     <string name="label_attachment">Attachment</string>
+    <string name="label_button_main">Main button</string>
+    <string name="label_cancel_record">Cancel record</string>
     <string name="label_close">Close</string>
-   <string name="label_create">Create</string>
+    <string name="label_components">Component/s</string>
+    <string name="label_create">Create</string>
+    <string name="label_create_ticket">Create Ticket</string>
     <string name="label_description">Description</string>
     <string name="label_email">Email</string>
     <string name="label_environment">Environment</string>
+    <string name="label_expected_result">Expected result</string>
+    <string name="label_file_name">"File name: "</string>
     <string name="label_full_name">Full Name</string>
     <string name="label_hide">Hide</string>
     <string name="label_issue_type">Issue Type</string>
+    <string name="label_list_step">Show list step</string>
     <string name="label_locale">Locale</string>
     <string name="label_login">Log In</string>
     <string name="label_new_user">Add new QA</string>
+    <string name="label_open_amtt">Open Amtt</string>
     <string name="label_package_name">"Package name: "</string>
     <string name="label_password">Password</string>
     <string name="label_priority">Priority</string>
     <string name="label_project">Project</string>
     <string name="label_screen_orientation">"Screen orientation: "</string>
     <string name="label_show">Show</string>
+    <string name="label_start_record">Start record</string>
     <string name="label_step">"Step "</string>
+    <string name="label_step_with_screen">Step with screen</string>
+    <string name="label_step_without_screen">Step without screen</string>
     <string name="label_summary">Title</string>
     <string name="label_tester">Assignee</string>
     <string name="label_time_zone">Time zone</string>
@@ -65,18 +76,9 @@
     <string name="enter_postfix_jira">" postfix '/jira'"</string>
     <string name="auth_passed">Authorization passed</string>
 
-    <string name="label_start_record">Start record</string>
-    <string name="label_create_ticket">Create Ticket</string>
-    <string name="label_open_amtt">Open Amtt</string>
-    <string name="label_expected_result">Expected result</string>
-    <string name="label_step_with_screen">Step with screen</string>
-    <string name="label_step_without_screen">Step without screen</string>
-    <string name="label_added_step_without_screen">Added step without screen</string>
-    <string name="label_cancel_record">Cancel record</string>
-    <string name="label_button_main">Main button</string>
     <string name="dialog_description">To make screenshot please use next combination button for your device - </string>
     <string name="dialog_label_checkbox">Don\'t show again</string>
-   <string name="label_close_app">Close Amtt</string>
+    <string name="label_close_app">Close Amtt</string>
     <string name="label_show_steps">Show recorded steps</string>
     <string name="nexus_help_message">\nNexus - volume down+power</string>
     <string name="samsung_help_message">\nSamsung - power+home</string>
@@ -108,6 +110,5 @@
     <string name="label_tags">Tags</string>
 
     <string name="url_prefix">https://</string>
-    <string name="label_list_step">Show list step</string>
     <string name="content_description_screenshot">Screenshot</string>
 </resources>

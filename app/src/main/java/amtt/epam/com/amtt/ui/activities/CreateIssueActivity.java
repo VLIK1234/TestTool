@@ -1,25 +1,5 @@
 package amtt.epam.com.amtt.ui.activities;
 
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.bo.ticket.Attachment;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.database.object.DbObjectManager;
-import amtt.epam.com.amtt.database.object.IResult;
-import amtt.epam.com.amtt.adapter.AttachmentAdapter;
-import amtt.epam.com.amtt.bo.JCreateIssueResponse;
-import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
-import amtt.epam.com.amtt.service.AttachmentService;
-import amtt.epam.com.amtt.api.loadcontent.JiraContent;
-import amtt.epam.com.amtt.api.JiraGetContentCallback;
-import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.helper.SystemInfoHelper;
-import amtt.epam.com.amtt.util.ActiveUser;
-import amtt.epam.com.amtt.util.AttachmentManager;
-import amtt.epam.com.amtt.util.InputsUtil;
-import amtt.epam.com.amtt.database.util.StepUtil;
-import amtt.epam.com.amtt.ui.views.AutocompleteProgressView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,6 +26,26 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.adapter.AttachmentAdapter;
+import amtt.epam.com.amtt.api.JiraGetContentCallback;
+import amtt.epam.com.amtt.api.loadcontent.JiraContent;
+import amtt.epam.com.amtt.bo.JCreateIssueResponse;
+import amtt.epam.com.amtt.bo.database.Step;
+import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
+import amtt.epam.com.amtt.bo.ticket.Attachment;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
+import amtt.epam.com.amtt.database.object.DbObjectManager;
+import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.helper.SystemInfoHelper;
+import amtt.epam.com.amtt.service.AttachmentService;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.ui.views.AutocompleteProgressView;
+import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.AttachmentManager;
+import amtt.epam.com.amtt.util.InputsUtil;
 
 @SuppressWarnings("unchecked")
 public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener{
@@ -118,6 +118,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void reinitRelatedViews(String projectKey) {
         initIssueTypesSpinner();
         initVersionsSpinner(projectKey);
+        initComponentsSpinner(projectKey);
         initAssigneeAutocompleteView();
     }
 
@@ -229,6 +230,40 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             }
         });
         versionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mVersionName = (String) parent.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
+        });
+    }
+
+    private void initComponentsSpinner(String projectKey) {
+        final Spinner componentsSpinner = (Spinner) findViewById(R.id.spin_components);
+        final TextView componentsTextView = (TextView) findViewById(R.id.tv_components);
+        componentsSpinner.setEnabled(false);
+        JiraContent.getInstance().getComponentsNames(projectKey, new JiraGetContentCallback<HashMap<String, String>>() {
+            @Override
+            public void resultOfDataLoading(HashMap<String, String> result) {
+                if (result != null && result.size() > 0) {
+                    componentsSpinner.setVisibility(View.VISIBLE);
+                    componentsTextView.setVisibility(View.VISIBLE);
+                    ArrayList<String> componentsNames = new ArrayList<>();
+                    componentsNames.addAll(result.values());
+                    ArrayAdapter<String> componentsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, componentsNames);
+                    componentsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                    componentsSpinner.setAdapter(componentsAdapter);
+                    componentsSpinner.setEnabled(true);
+                } else {
+                    componentsSpinner.setVisibility(View.GONE);
+                    componentsTextView.setVisibility(View.GONE);
+                }
+            }
+        });
+        componentsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 mVersionName = (String) parent.getItemAtPosition(position);
