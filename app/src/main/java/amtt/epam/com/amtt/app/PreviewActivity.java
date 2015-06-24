@@ -12,6 +12,7 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,6 +45,23 @@ public class PreviewActivity extends Activity{
         LayoutInflater factory = LayoutInflater.from(getBaseContext());
         final View view = factory.inflate(R.layout.activity_preview, null);
         imagePreview = (ImageView) view.findViewById(R.id.image_preview);
+        imagePreview.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        
+                        break;
+                    case MotionEvent.ACTION_UP:
+
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+
+                        break;
+                }
+                return true;
+            }
+        });
         textPreview = (TextView) view.findViewById(R.id.text_preview);
 
         initPreviewImage();
