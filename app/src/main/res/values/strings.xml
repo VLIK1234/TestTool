@@ -22,7 +22,7 @@
     <string name="error_message_no_internet">You are offline</string>
     <string name="error_button_try">Try again</string>
     <string name="error_button_settings">Open settings</string>
-    <string name="error_message_unknown">Unknown error</string>
+    <string name="error_message_host">Unknown error</string>
     <string name="error_message_gateway">Server error</string>
     <string name="error_message_web_address">Wrong web address</string>
     <string name="error_button_close">Close</string>

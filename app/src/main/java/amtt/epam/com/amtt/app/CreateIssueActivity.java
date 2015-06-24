@@ -334,7 +334,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 }
                 if (mIssueTypeName == null) {
                     isValid = false;
-                    Toast.makeText(CreateIssueActivity.this, getString(R.string.error_message_unknown), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CreateIssueActivity.this, getString(R.string.error_message_host), Toast.LENGTH_LONG).show();
                 }
                 if (isValid) {
                     showProgress(true);

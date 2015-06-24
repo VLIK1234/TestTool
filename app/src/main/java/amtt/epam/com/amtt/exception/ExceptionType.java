@@ -4,6 +4,8 @@ import com.google.gson.JsonSyntaxException;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthenticationException;
+import org.apache.http.conn.HttpHostConnectException;
+import org.apache.http.conn.ConnectTimeoutException;
 
 import java.net.ConnectException;
 import java.net.UnknownHostException;
@@ -26,7 +28,7 @@ public enum ExceptionType {
     AUTH(R.string.error_title_auth, R.string.error_message_auth),
     AUTH_FORBIDDEN(R.string.error_title_auth, R.string.error_message_auth_forbidden),
     NO_INTERNET(R.string.error_title_request, R.string.error_message_no_internet),
-    UNKNOWN(R.string.error_title_request, R.string.error_message_unknown),
+    HOST(R.string.error_title_request, R.string.error_message_host),
     BAD_GATEWAY(R.string.error_title_request, R.string.error_message_gateway),
     NOT_FOUND(R.string.error_title_request, R.string.error_message_web_address);
 
@@ -45,15 +47,16 @@ public enum ExceptionType {
         sExceptionsMap.put(IllegalArgumentException.class.getName(), NO_INTERNET);
         sExceptionsMap.put(UnknownHostException.class.getName(), ExceptionType.NOT_FOUND);
         sExceptionsMap.put(ConnectException.class.getName(), ExceptionType.NO_INTERNET);
-        sExceptionsMap.put(org.apache.http.conn.ConnectTimeoutException.class.getName(), NO_INTERNET);
+        sExceptionsMap.put(ConnectTimeoutException.class.getName(), NO_INTERNET);
+        sExceptionsMap.put(HttpHostConnectException.class.getName(), HOST);
 
         sStatusCodeMap = new HashMap<>();
         sStatusCodeMap.put(HttpStatus.SC_UNAUTHORIZED, AUTH);
         sStatusCodeMap.put(HttpStatus.SC_FORBIDDEN, AUTH_FORBIDDEN);
         sStatusCodeMap.put(HttpStatus.SC_BAD_GATEWAY, BAD_GATEWAY);
         sStatusCodeMap.put(HttpStatus.SC_NOT_FOUND, NOT_FOUND);
-        sStatusCodeMap.put(HttpStatus.SC_INTERNAL_SERVER_ERROR, UNKNOWN);
-        sStatusCodeMap.put(HttpClient.EMPTY_STATUS_CODE, UNKNOWN);
+        sStatusCodeMap.put(HttpStatus.SC_INTERNAL_SERVER_ERROR, HOST);
+        sStatusCodeMap.put(HttpClient.EMPTY_STATUS_CODE, HOST);
     }
 
     ExceptionType(int titleId, int messageId) {
