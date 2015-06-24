@@ -27,8 +27,8 @@
 
             <ImageView
                 android:id="@+id/iv_close"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="@dimen/icon_size_step_delete"
+                android:layout_height="@dimen/icon_size_step_delete"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:contentDescription="@string/content_description_screenshot"
