@@ -96,9 +96,10 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
 
     private void initViews() {
         mUserNameEditText = (EditText) findViewById(R.id.et_username);
+        mUserNameEditText.setText("artsiom_kaliaha");
         mPasswordEditText = (EditText) findViewById(R.id.et_password);
         mUrlEditText = (EditText) findViewById(R.id.et_jira_url);
-        mUrlEditText.setText("https://");
+        mUrlEditText.setText("https://amtt06.atlassian.net");
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override

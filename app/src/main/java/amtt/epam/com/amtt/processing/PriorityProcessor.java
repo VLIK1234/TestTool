@@ -17,8 +17,7 @@ import java.util.ArrayList;
  */
 public class PriorityProcessor  implements Processor<JPriorityResponse, HttpEntity> {
 
-    public static final String NAME = "PriorityProcessor";
-
+    public static final String NAME = PriorityProcessor.class.getName();
     @Override
     public JPriorityResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
@@ -34,5 +33,12 @@ public class PriorityProcessor  implements Processor<JPriorityResponse, HttpEnti
         priorityResponse.setPriorities(priorities);
         return priorityResponse;
     }
+
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
 }
 

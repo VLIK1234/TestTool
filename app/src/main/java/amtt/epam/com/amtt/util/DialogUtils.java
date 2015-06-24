@@ -6,10 +6,10 @@ import android.content.DialogInterface;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.common.Builder;
 import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.common.DataRequest;
 import amtt.epam.com.amtt.http.HttpClient;
-import amtt.epam.com.amtt.http.HttpResult;
 import amtt.epam.com.amtt.http.Request;
 
 /**
@@ -20,7 +20,7 @@ public class DialogUtils {
     /**
      * Builds dialogs for ExceptionHandler class
      */
-    public static class Builder {
+    public static class Builder implements amtt.epam.com.amtt.common.Builder<AlertDialog> {
 
         private AlertDialog.Builder mBuilder;
 
@@ -44,12 +44,7 @@ public class DialogUtils {
                 DialogInterface.OnClickListener positiveListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        DataRequest dataRequest = new DataRequest.Builder<HttpResult, Request>()
-                                .setDataSource(HttpClient.NAME)
-                                .setDataSourceParam(request)
-                                .setCallback(callback)
-                                .create();
-                        AmttApplication.executeRequest(dataRequest);
+                        AmttApplication.executeRequest(new DataRequest<>(HttpClient.NAME, request, request.getProcessorName(), callback));
                     }
                 };
                 mBuilder.setPositiveButton(textId, positiveListener);
@@ -75,8 +70,9 @@ public class DialogUtils {
             return this;
         }
 
-        public void createAndShow() {
-            mBuilder.create().show();
+        @Override
+        public AlertDialog build() {
+            return mBuilder.create();
         }
 
     }

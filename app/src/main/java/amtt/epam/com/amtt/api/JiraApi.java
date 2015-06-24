@@ -14,7 +14,6 @@ import amtt.epam.com.amtt.common.CoreApplication;
 import amtt.epam.com.amtt.common.DataRequest;
 import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.http.HttpException;
-import amtt.epam.com.amtt.http.HttpResult;
 import amtt.epam.com.amtt.http.Request;
 import amtt.epam.com.amtt.http.Request.Type;
 import amtt.epam.com.amtt.util.ActiveUser;
@@ -105,15 +104,8 @@ public class JiraApi {
     }
 
     private void execute(Request.Builder requestBuilder, Callback callback) {
-        Request request = requestBuilder.create();
-
-        DataRequest dataRequest = new DataRequest.Builder<HttpResult, Request>()
-                .setDataSource(HttpClient.NAME)
-                .setDataSourceParam(request)
-                .setProcessor(request.getProcessorName())
-                .setCallback(callback)
-                .create();
-        AmttApplication.executeRequest(dataRequest);
+        Request request = requestBuilder.build();
+        AmttApplication.executeRequest(new DataRequest<>(HttpClient.NAME, request, request.getProcessorName(), callback));
     }
 
 }

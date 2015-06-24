@@ -2,51 +2,21 @@ package amtt.epam.com.amtt.common;
 
 /**
  * Created by Artsiom_Kaliaha on 18.06.2015.
+ * Request executed by CoreApplication
  */
-public class DataRequest<Result, Param> {
-
-    public static class Builder<Result, Param> {
-
-        private String mDataSourceName;
-        private Param mDataSourceParam;
-        private String mProcessorName;
-        private Callback<Result> mCallback;
-
-        public Builder setDataSource(String dataSourceName) {
-            mDataSourceName = dataSourceName;
-            return this;
-        }
-
-        public Builder setDataSourceParam(Param loadingParam) {
-            mDataSourceParam = loadingParam;
-            return this;
-        }
-
-        public Builder setProcessor(String processorName) {
-            mProcessorName = processorName;
-            return this;
-        }
-
-        public Builder setCallback(Callback<Result> callback) {
-            mCallback = callback;
-            return this;
-        }
-
-        public DataRequest create() {
-            DataRequest<Result, Param> request = new DataRequest<>();
-            request.mDataSourceName = this.mDataSourceName;
-            request.mDataSourceParam = this.mDataSourceParam;
-            request.mProcessorName = this.mProcessorName;
-            request.mCallback = this.mCallback;
-            return request;
-        }
-
-    }
+public class DataRequest<Param, Result> {
 
     private String mDataSourceName;
     private Param mDataSourceParam;
     private String mProcessorName;
     private Callback<Result> mCallback;
+
+    public DataRequest(String dataSourceName, Param dataSourceParam, String processorName, Callback<Result> callback) {
+        mDataSourceName = dataSourceName;
+        mDataSourceParam = dataSourceParam;
+        mProcessorName = processorName;
+        mCallback = callback;
+    }
 
     public String getDataSource() {
         return mDataSourceName;

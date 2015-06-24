@@ -26,14 +26,14 @@ public class AmttApplication extends CoreApplication {
 
     @Override
     public void performRegistration() {
-        registerDataSource(HttpClient.NAME, new HttpClient());
+        registerPlugin(new HttpClient());
 
-        registerProcessor(UserInfoProcessor.NAME, new UserInfoProcessor());
-        registerProcessor(VersionsProcessor.NAME, new VersionsProcessor());
-        registerProcessor(UsersAssignableProcessor.NAME, new UsersAssignableProcessor());
-        registerProcessor(ProjectsProcessor.NAME, new ProjectsProcessor());
-        registerProcessor(PriorityProcessor.NAME, new PriorityProcessor());
-        registerProcessor(PostCreateIssueProcessor.NAME, new PostCreateIssueProcessor());
+        registerPlugin(new UserInfoProcessor());
+        registerPlugin(new VersionsProcessor());
+        registerPlugin(new UsersAssignableProcessor());
+        registerPlugin(new ProjectsProcessor());
+        registerPlugin(new PriorityProcessor());
+        registerPlugin(new PostCreateIssueProcessor());
     }
 
 }

@@ -3,11 +3,9 @@ package amtt.epam.com.amtt.http;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -25,7 +23,7 @@ public class Request {
 
     }
 
-    public static class Builder {
+    public static class Builder implements amtt.epam.com.amtt.common.Builder<Request> {
 
         private Map<String, String> mHeaders;
         private String mUrl;
@@ -83,7 +81,8 @@ public class Request {
             return mType;
         }
 
-        public Request create() {
+        @Override
+        public Request build() {
             Request requestParams = new Request();
             requestParams.mHeaders = this.mHeaders;
             requestParams.mUrl = this.mUrl;

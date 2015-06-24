@@ -25,8 +25,8 @@ import amtt.epam.com.amtt.util.Logger;
 @SuppressWarnings("unchecked")
 public class HttpClient implements DataSource<HttpEntity, Request> {
 
+    public static final String NAME = HttpClient.class.getName();
     private final String TAG = getClass().getSimpleName();
-    public static final String NAME = "HttpClient";
 
     public static final int EMPTY_STATUS_CODE = -1;
 
@@ -89,6 +89,11 @@ public class HttpClient implements DataSource<HttpEntity, Request> {
         }
 
         return httpResponse.getEntity();
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
 }

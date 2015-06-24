@@ -76,7 +76,7 @@ public class ExceptionHandler {
             dialog.setPositiveButton(mLastType.getPositiveText(), ((HttpException) mLastProcessedException).getRequest(), callback);
         }
 
-        dialog.createAndShow();
+        dialog.build().show();
         mReceivedExceptionsMap.remove(mLastType);
     }
 

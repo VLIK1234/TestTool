@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import amtt.epam.com.amtt.datasource.DataSource;
+import amtt.epam.com.amtt.datasource.Plugin;
 import amtt.epam.com.amtt.os.Task;
 import amtt.epam.com.amtt.processing.Processor;
 
@@ -34,12 +35,15 @@ public abstract class CoreApplication extends Application {
         performRegistration();
     }
 
-    public void registerDataSource(String sourceName, DataSource dataSource) {
-        sDataSources.put(sourceName, dataSource);
-    }
-
-    public void registerProcessor(String sourceName, Processor processor) {
-        sProcessors.put(sourceName, processor);
+    public void registerPlugin(Plugin plugin) {
+        if (plugin.getName() == null) {
+            throw new IllegalArgumentException("Method getName() for " + plugin.getClass().getName() + " isn't overridden");
+        }
+        if (plugin instanceof DataSource) {
+            sDataSources.put(plugin.getName(), (DataSource) plugin);
+        } else {
+            sProcessors.put(plugin.getName(), (Processor) plugin);
+        }
     }
 
     public void unregisterDataSource(String sourceName) {
@@ -50,7 +54,7 @@ public abstract class CoreApplication extends Application {
         sProcessors.remove(sourceName);
     }
 
-    public static <TaskResult, Param, ProcessorSource> void executeRequest(DataRequest<TaskResult, Param> request) {
+    public static <Param, Result> void executeRequest(DataRequest<Result, Param> request) {
         String dataSourceName = request.getDataSource();
         String processorName = request.getProcessor();
         if (sDataSources.get(dataSourceName) == null) {
@@ -60,12 +64,7 @@ public abstract class CoreApplication extends Application {
             throw new IllegalArgumentException("Unknown / unregistered processorName " + processorName);
         }
 
-        new Task.Builder<TaskResult, Param, ProcessorSource>()
-                .setDataSource(sDataSources.get(dataSourceName))
-                .setDataSourceParam(request.getDataSourceParam())
-                .setProcessor(sProcessors.get(processorName))
-                .setCallback(request.getCallback())
-                .createAndExecute();
+        new Task<>(sDataSources.get(dataSourceName), request.getDataSourceParam(), sProcessors.get(processorName), request.getCallback()).execute();
     }
 
     public static Context getContext() {
