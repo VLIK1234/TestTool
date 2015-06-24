@@ -27,7 +27,6 @@ public class Request {
 
         private Map<String, String> mHeaders;
         private String mUrl;
-        private String mProcessorName;
         private HttpEntity mEntity;
         private Type mType;
 
@@ -43,11 +42,6 @@ public class Request {
 
         public String getUrl() {
             return mUrl;
-        }
-
-        public Builder setProcessorName(String processorName) {
-            mProcessorName = processorName;
-            return this;
         }
 
         public Builder setEntity(HttpEntity entity) {
@@ -86,7 +80,6 @@ public class Request {
             Request requestParams = new Request();
             requestParams.mHeaders = this.mHeaders;
             requestParams.mUrl = this.mUrl;
-            requestParams.mProcessorName = this.mProcessorName;
             requestParams.mEntity = this.mEntity;
             requestParams.mType = this.mType;
             return requestParams;
@@ -96,17 +89,12 @@ public class Request {
 
     private Map<String, String> mHeaders;
     private String mUrl;
-    private String mProcessorName;
     private HttpEntity mEntity;
     private HttpRequestBase mHttpRequestBase;
     private Type mType;
 
     public Map<String, String> getHeaders() {
         return mHeaders;
-    }
-
-    public String getProcessorName() {
-        return mProcessorName;
     }
 
     public HttpEntity getEntity() {
