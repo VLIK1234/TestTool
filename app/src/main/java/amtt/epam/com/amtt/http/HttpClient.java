@@ -41,20 +41,6 @@ public class HttpClient implements DataSource<HttpEntity, Request> {
         mHttpClient = new DefaultHttpClient(httpParameters);
     }
 
-    public void get(Request request) {
-        request.setHttpRequestBase(new HttpGet(request.getUrl()));
-    }
-
-    public void post(Request request) {
-        HttpPost httpPost = new HttpPost(request.getUrl());
-        httpPost.setEntity(request.getEntity());
-        request.setHttpRequestBase(httpPost);
-    }
-
-    public void delete(Request request) {
-        request.setHttpRequestBase(new HttpDelete(request.getUrl()));
-    }
-
     private void setHeaders(Request request) {
         Logger.d(TAG, request.getUrl());
         Map headers = request.getHeaders();
@@ -66,19 +52,26 @@ public class HttpClient implements DataSource<HttpEntity, Request> {
         }
     }
 
-    @Override
-    public HttpEntity getData(Request request) throws Exception {
-        switch (request.getType()) {
+    private HttpRequestBase getRequestBase(Request.Type type, String url, HttpEntity entity) {
+        HttpRequestBase httpRequestBase = null;
+        switch (type) {
             case GET:
-                get(request);
+                httpRequestBase = new HttpGet(url);
                 break;
             case POST:
-                post(request);
+                httpRequestBase = new HttpPost(url);
+                ((HttpPost) httpRequestBase).setEntity(entity);
                 break;
             case DELETE:
-                delete(request);
+                httpRequestBase = new HttpDelete(url);
                 break;
         }
+        return httpRequestBase;
+    }
+
+    @Override
+    public HttpEntity getData(Request request) throws Exception {
+        request.setHttpRequestBase(getRequestBase(request.getType(), request.getUrl(), request.getEntity()));
         setHeaders(request);
 
         HttpResponse httpResponse = mHttpClient.execute(request.getHttpRequestBase());

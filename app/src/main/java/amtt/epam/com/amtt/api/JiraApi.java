@@ -36,9 +36,8 @@ public class JiraApi {
     public void signOut() {
         Request.Builder requestBuilder = new Request.Builder()
                 .setType(Type.DELETE)
-                .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.LOGIN_PATH)
-                .setProcessorName(CoreApplication.NO_PROCESSOR);
-        execute(requestBuilder, null);
+                .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.LOGIN_PATH);
+        execute(requestBuilder, CoreApplication.NO_PROCESSOR, null);
     }
 
     public void createIssue(String postEntityString, String processorName, Callback callback) {
@@ -60,9 +59,8 @@ public class JiraApi {
                 .setType(Type.POST)
                 .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH)
                 .setHeaders(headers)
-                .setEntity(entity)
-                .setProcessorName(processorName);
-        execute(requestBuilder, callback);
+                .setEntity(entity);
+        execute(requestBuilder, processorName, callback);
     }
 
     public void searchData(String requestSuffix, String processorName, String userName, String password, String url, Callback callback) {
@@ -80,9 +78,8 @@ public class JiraApi {
         Request.Builder requestBuilder = new Request.Builder()
                 .setType(Type.GET)
                 .setUrl(url + requestSuffix)
-                .setHeaders(headers)
-                .setProcessorName(processorName);
-        execute(requestBuilder, callback);
+                .setHeaders(headers);
+        execute(requestBuilder, processorName, callback);
     }
 
     public void createAttachment(String issueKey, ArrayList<String> filesPaths, Callback callback) {
@@ -94,18 +91,17 @@ public class JiraApi {
                 .setType(Type.POST)
                 .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
                 .setHeaders(headers)
-                .setProcessorName(CoreApplication.NO_PROCESSOR)
                 .setEntity(filesPaths);
-        execute(requestBuilder, callback);
+        execute(requestBuilder, CoreApplication.NO_PROCESSOR, callback);
     }
 
     public static JiraApi get() {
         return INSTANCE;
     }
 
-    private void execute(Request.Builder requestBuilder, Callback callback) {
+    private void execute(Request.Builder requestBuilder, String processorName, Callback callback) {
         Request request = requestBuilder.build();
-        AmttApplication.executeRequest(new DataRequest<>(HttpClient.NAME, request, request.getProcessorName(), callback));
+        AmttApplication.executeRequest(new DataRequest<>(HttpClient.NAME, request, processorName, callback));
     }
 
 }
