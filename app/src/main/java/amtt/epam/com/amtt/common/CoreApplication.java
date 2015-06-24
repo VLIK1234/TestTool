@@ -14,7 +14,6 @@ import amtt.epam.com.amtt.processing.Processor;
 /**
  * Created by Artsiom_Kaliaha on 18.06.2015.
  */
-@SuppressWarnings("unchecked")
 public abstract class CoreApplication extends Application {
 
     public static final String NO_PROCESSOR = "NO_PROCESSOR";
@@ -54,7 +53,7 @@ public abstract class CoreApplication extends Application {
         sProcessors.remove(sourceName);
     }
 
-    public static <Param, Result> void executeRequest(DataRequest<Result, Param> request) {
+    public static <Param> void executeRequest(DataRequest<Param> request) {
         String dataSourceName = request.getDataSource();
         String processorName = request.getProcessor();
         if (sDataSources.get(dataSourceName) == null) {

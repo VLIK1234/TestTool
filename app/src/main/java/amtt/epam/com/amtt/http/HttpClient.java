@@ -22,7 +22,6 @@ import amtt.epam.com.amtt.util.Logger;
  * Created by Artsiom_Kaliaha on 11.06.2015.
  * HttpClient that prepares Requests to be executed
  */
-@SuppressWarnings("unchecked")
 public class HttpClient implements DataSource<HttpEntity, Request> {
 
     public static final String NAME = HttpClient.class.getName();
@@ -60,7 +59,9 @@ public class HttpClient implements DataSource<HttpEntity, Request> {
                 break;
             case POST:
                 httpRequestBase = new HttpPost(url);
-                ((HttpPost) httpRequestBase).setEntity(entity);
+                if(entity != null) {
+                    ((HttpPost) httpRequestBase).setEntity(entity);
+                }
                 break;
             case DELETE:
                 httpRequestBase = new HttpDelete(url);
@@ -71,6 +72,10 @@ public class HttpClient implements DataSource<HttpEntity, Request> {
 
     @Override
     public HttpEntity getData(Request request) throws Exception {
+        if (request == null) {
+            throw new IllegalArgumentException("Illegal request for HttpClient");
+        }
+
         request.setHttpRequestBase(getRequestBase(request.getType(), request.getUrl(), request.getEntity()));
         setHeaders(request);
 
@@ -78,7 +83,7 @@ public class HttpClient implements DataSource<HttpEntity, Request> {
         int statusCode = httpResponse.getStatusLine().getStatusCode();
 
         if (statusCode < HttpStatus.SC_OK || statusCode >= HttpStatus.SC_MULTIPLE_CHOICES) {
-            throw new HttpException(null, statusCode, request, null);
+            throw new HttpException(statusCode);
         }
 
         return httpResponse.getEntity();

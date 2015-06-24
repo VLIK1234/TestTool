@@ -51,7 +51,6 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener{
 
-    private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final String DEFAULT_PRIORITY_ID = "3";
     private AutocompleteProgressView mAssignableAutocompleteView;

@@ -27,10 +27,11 @@ import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.exception.ExceptionHandler;
+import amtt.epam.com.amtt.exception.ExceptionType;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.DialogUtils;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -154,9 +155,7 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
         } else if (resultCode == RESULT_CANCELED) {
             switch (requestCode) {
                 case LOGIN_ACTIVITY_REQUEST_CODE:
-                    Bundle args = new Bundle();
-                    args.putLong(AmttActivity.KEY_USER_ID, ActiveUser.getInstance().getId());
-                    getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
+                    getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, UserInfoActivity.this);
                     break;
             }
         }
@@ -209,7 +208,7 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
 
     @Override
     public void onLoadError(Exception e) {
-        ExceptionHandler.getInstance().processError(e).showDialog(this, UserInfoActivity.this);
+        DialogUtils.createDialog(this, ExceptionType.valueOf(e)).show();
         mSwipeRefreshLayout.setRefreshing(false);
     }
 

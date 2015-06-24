@@ -33,11 +33,12 @@ import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.util.StepUtil;
-import amtt.epam.com.amtt.exception.ExceptionHandler;
+import amtt.epam.com.amtt.exception.ExceptionType;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Constants.Symbols;
+import amtt.epam.com.amtt.util.DialogUtils;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Logger;
@@ -46,8 +47,6 @@ import amtt.epam.com.amtt.util.Logger;
  * @author Artsiom_Kaliaha
  * @version on 07.05.2015
  */
-
-@SuppressWarnings("unchecked")
 public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, LoaderCallbacks<Cursor> {
 
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
@@ -169,7 +168,6 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
                 @Override
                 public void onResult(List<JUserInfo> result) {
                     mIsUserInDatabase = result.size() > 0;
-                    ActiveUser.getInstance().clearActiveUser();
                     LoginActivity.this.runOnUiThread(new Runnable() {
                         public void run() {
                             sendAuthRequest();
@@ -248,7 +246,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
 
     @Override
     public void onLoadError(Exception e) {
-        ExceptionHandler.getInstance().processError(e).showDialog(LoginActivity.this, LoginActivity.this);
+        DialogUtils.createDialog(this, ExceptionType.valueOf(e)).show();
         showProgress(false);
         mLoginButton.setEnabled(true);
     }

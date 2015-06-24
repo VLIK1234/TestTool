@@ -50,7 +50,7 @@ public class JiraApi {
             entity = new StringEntity(postEntityString);
         } catch (UnsupportedEncodingException e) {
             if (callback != null) {
-                callback.onLoadError(new HttpException(e, HttpClient.EMPTY_STATUS_CODE, null, postEntityString));
+                callback.onLoadError(new HttpException(HttpClient.EMPTY_STATUS_CODE));
             }
             return;
         }

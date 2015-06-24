@@ -4,77 +4,25 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
-import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.common.Builder;
-import amtt.epam.com.amtt.common.Callback;
-import amtt.epam.com.amtt.common.DataRequest;
-import amtt.epam.com.amtt.http.HttpClient;
-import amtt.epam.com.amtt.http.Request;
+import amtt.epam.com.amtt.exception.ExceptionType;
 
 /**
  * Created by Artsiom_Kaliaha on 29.04.2015.
  */
 public class DialogUtils {
 
-    /**
-     * Builds dialogs for ExceptionHandler class
-     */
-    public static class Builder implements amtt.epam.com.amtt.common.Builder<AlertDialog> {
 
-        private AlertDialog.Builder mBuilder;
-
-        public Builder(Context context) {
-            mBuilder = new AlertDialog.Builder(context);
-        }
-
-        public Builder setTitle(int titleId) {
-            mBuilder.setTitle(titleId);
-            return this;
-        }
-
-        public Builder setMessage(int messageId) {
-            mBuilder.setMessage(messageId);
-            return this;
-        }
-
-        @SuppressWarnings("unchecked")
-        public Builder setPositiveButton(int textId, final Request request, final Callback callback) {
-            if (textId != Constants.Dialog.EMPTY_FIELD) {
-                DialogInterface.OnClickListener positiveListener = new DialogInterface.OnClickListener() {
+    public static AlertDialog createDialog(Context context, ExceptionType exceptionType) {
+        return new AlertDialog.Builder(context)
+                .setTitle(exceptionType.getTitle())
+                .setMessage(exceptionType.getMessage())
+                .setNegativeButton(R.string.error_button_close, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        AmttApplication.executeRequest(new DataRequest<>(HttpClient.NAME, request, request.getProcessorName(), callback));
+                        dialog.dismiss();
                     }
-                };
-                mBuilder.setPositiveButton(textId, positiveListener);
-            }
-            return this;
-
-        }
-
-        public Builder setNeutralButton(int textId, DialogInterface.OnClickListener listener) {
-            if (textId != Constants.Dialog.EMPTY_FIELD && listener != null) {
-                mBuilder.setNeutralButton(textId, listener);
-            }
-            return this;
-        }
-
-        public Builder setNegativeButton() {
-            mBuilder.setNegativeButton(R.string.error_button_close, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            return this;
-        }
-
-        @Override
-        public AlertDialog build() {
-            return mBuilder.create();
-        }
-
+                }).create();
     }
 
 }
