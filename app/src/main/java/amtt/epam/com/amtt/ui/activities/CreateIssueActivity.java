@@ -41,6 +41,8 @@ import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.service.AttachmentService;
+import amtt.epam.com.amtt.spannable.ComponentPickerAdapter;
+import amtt.epam.com.amtt.spannable.CustomMultiAutoCompleteTextView;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.AutocompleteProgressView;
 import amtt.epam.com.amtt.util.ActiveUser;
@@ -66,6 +68,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     public Spinner mProjectNamesSpinner;
     private RecyclerView recyclerView;
     private InputMethodManager mInputManager;
+    private CustomMultiAutoCompleteTextView mComponents;
 
     public static class AssigneeHandler extends Handler {
 
@@ -244,6 +247,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void initComponentsSpinner(String projectKey) {
         final Spinner componentsSpinner = (Spinner) findViewById(R.id.spin_components);
         final TextView componentsTextView = (TextView) findViewById(R.id.tv_components);
+        mComponents = (CustomMultiAutoCompleteTextView) findViewById(R.id.editText);
         componentsSpinner.setEnabled(false);
         JiraContent.getInstance().getComponentsNames(projectKey, new JiraGetContentCallback<HashMap<String, String>>() {
             @Override
@@ -257,6 +261,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     componentsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                     componentsSpinner.setAdapter(componentsAdapter);
                     componentsSpinner.setEnabled(true);
+                    ComponentPickerAdapter componentPickerAdapter = new ComponentPickerAdapter(CreateIssueActivity.this, R.layout.spinner_layout, componentsNames);
+                    mComponents.setAdapter(componentPickerAdapter);
                 } else {
                     componentsSpinner.setVisibility(View.GONE);
                     componentsTextView.setVisibility(View.GONE);

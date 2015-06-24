@@ -15,115 +15,101 @@ import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
 
-public class ComponentPickerAdapter extends ArrayAdapter<Component> implements
-		Filterable {
+public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filterable {
 
-	private ArrayList<Component> componentList, cloneComponentList;
-	private LayoutInflater layoutInflater;
+    private ArrayList<String> componentList, cloneComponentList;
+    private LayoutInflater layoutInflater;
 
-	@SuppressWarnings("unchecked")
-	public ComponentPickerAdapter(Context context, int textViewResourceId,
-								  ArrayList<Component> componentList) {
-		super(context, textViewResourceId);
-		this.componentList = componentList;
-		this.cloneComponentList = (ArrayList<Component>) this.componentList.clone();
-		layoutInflater = (LayoutInflater) context
-				.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+    @SuppressWarnings("unchecked")
+    public ComponentPickerAdapter(Context context, int textViewResourceId, ArrayList<String> componentList) {
+        super(context, textViewResourceId);
+        this.componentList = componentList;
+        this.cloneComponentList = (ArrayList<String>) this.componentList.clone();
+        layoutInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
-	}
+    }
 
-	@Override
-	public int getCount() {
+    @Override
+    public int getCount() {
+        return componentList.size();
+    }
 
-		return componentList.size();
-	}
+    @Override
+    public String getItem(int position) {
+        return componentList.get(position);
+    }
 
-	@Override
-	public Component getItem(int position) {
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        Holder holder;
+        if (convertView == null) {
+            convertView = layoutInflater.inflate(R.layout.spinner_dropdown_item, null);
+            holder = new Holder();
+            holder.name = (TextView) convertView.findViewById(android.R.id.text1);
+            convertView.setTag(holder);
+        } else {
+            holder = (Holder) convertView.getTag();
+        }
+        String component = getItem(position);
+        holder.name.setText(component);
+        return convertView;
+    }
 
-		return componentList.get(position);
-	}
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint,
+                                          FilterResults results) {
+                if (results.values != null) {
+                    componentList = (ArrayList<String>) results.values;
+                    notifyDataSetChanged();
+                }
 
-		Holder holder;
-		if (convertView == null) {
-			convertView = layoutInflater.inflate(R.layout.component_list_item,
-					null);
-			holder = new Holder();
-			holder.name = (TextView) convertView.findViewById(R.id.name);
-			holder.phone = (TextView) convertView.findViewById(R.id.phone);
-			convertView.setTag(holder);
-		} else {
-			holder = (Holder) convertView.getTag();
-		}
+            }
 
-		Component component = getItem(position);
-		holder.name.setText(component.contactName);
-		holder.phone.setText(component.num);
-		return convertView;
-	}
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String sortValue;
+                if (constraint == null) {
+                    sortValue = "";
+                } else {
+                    sortValue = constraint.toString().toLowerCase();
+                }
+                FilterResults filterResults = new FilterResults();
+                if (!TextUtils.isEmpty(sortValue.trim())) {
+                    ArrayList<String> sortedComponentList = new ArrayList<>();
+                    for (String contact : cloneComponentList) {
+                        if (contact.toLowerCase().contains(sortValue))
+                            sortedComponentList.add(contact);
+                    }
+                    filterResults.values = sortedComponentList;
+                    filterResults.count = sortedComponentList.size();
+                }
+                return filterResults;
+            }
 
-	@Override
-	public Filter getFilter() {
-		Filter contactFilter = new Filter() {
+            @Override
+            public CharSequence convertResultToString(Object resultValue) {
+                // need to save this to saved contact
+                return ((String) resultValue);
+            }
+        };
+    }
 
-			@SuppressWarnings("unchecked")
-			@Override
-			protected void publishResults(CharSequence constraint,
-					FilterResults results) {
-				if (results.values != null) {
-					componentList = (ArrayList<Component>) results.values;
-					notifyDataSetChanged();
-				}
+    @SuppressWarnings("unchecked")
+    public void setComponentList(ArrayList<String> componentList) {
+        // this isn't the efficient method
+        // need to improvise on this
+        this.componentList = componentList;
+        this.cloneComponentList = (ArrayList<String>) this.componentList.clone();
+        notifyDataSetChanged();
+    }
 
-			}
-
-			@Override
-			protected FilterResults performFiltering(CharSequence constraint) {
-
-				String sortValue = constraint == null ? "" : constraint
-						.toString().toLowerCase();
-				FilterResults filterResults = new FilterResults();
-				if (!TextUtils.isEmpty(sortValue.trim())) {
-					ArrayList<Component> sortedComponentList = new ArrayList<Component>();
-					for (Component contact : cloneComponentList) {
-						if (contact.contactName.toLowerCase().contains(
-								sortValue)
-								|| contact.num.toLowerCase()
-										.contains(sortValue))
-							sortedComponentList.add(contact);
-					}
-
-					filterResults.values = sortedComponentList;
-					filterResults.count = sortedComponentList.size();
-
-				}
-				return filterResults;
-			}
-
-			@Override
-			public CharSequence convertResultToString(Object resultValue) {
-			// need to save this to saved contact
-				return ((Component) resultValue).contactName;
-			}
-		};
-
-		return contactFilter;
-	}
-
-	@SuppressWarnings("unchecked")
-	public void setComponentList(ArrayList<Component> componentList) {
-		// this isn't the efficient method
-		// need to improvise on this
-		this.componentList = componentList;
-		this.cloneComponentList = (ArrayList<Component>) this.componentList.clone();
-		notifyDataSetChanged();
-	}
-
-	public static class Holder {
-		public TextView phone, name;
-	}
+    public static class Holder {
+        public TextView name;
+    }
 
 }

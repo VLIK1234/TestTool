@@ -97,7 +97,12 @@
                 android:hint="@string/label_components"/>
 
             <!-- *******COMPONENTS END*************************************************-->
-
+            <amtt.epam.com.amtt.spannable.CustomMultiAutoCompleteTextView
+                android:id="@+id/editText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="0dp"
+                android:textColor="@android:color/black" />
             <!-- *******ATTACHMENT BEGIN****************************************-->
             <TextView
                 android:id="@+id/tv_attachment"
