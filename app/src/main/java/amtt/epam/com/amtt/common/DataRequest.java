@@ -4,14 +4,14 @@ package amtt.epam.com.amtt.common;
  * Created by Artsiom_Kaliaha on 18.06.2015.
  * Request executed by CoreApplication
  */
-public class DataRequest<Param, Result> {
+public class DataRequest<Param> {
 
     private String mDataSourceName;
     private Param mDataSourceParam;
     private String mProcessorName;
-    private Callback<Result> mCallback;
+    private Callback mCallback;
 
-    public DataRequest(String dataSourceName, Param dataSourceParam, String processorName, Callback<Result> callback) {
+    public DataRequest(String dataSourceName, Param dataSourceParam, String processorName, Callback callback) {
         mDataSourceName = dataSourceName;
         mDataSourceParam = dataSourceParam;
         mProcessorName = processorName;
