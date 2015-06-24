@@ -134,7 +134,7 @@ public class ContentFromBackend {
 
             @Override
             public void onLoadExecuted(Result result) {
-                contentLoadingCallback.resultFromBackend(null, requestType, jiraGetContentCallback);
+                contentLoadingCallback.resultFromBackend(result, requestType, jiraGetContentCallback);
             }
 
             @Override
