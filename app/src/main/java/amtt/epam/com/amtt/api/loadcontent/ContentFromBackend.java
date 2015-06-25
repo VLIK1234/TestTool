@@ -1,25 +1,31 @@
 package amtt.epam.com.amtt.api.loadcontent;
 
+import java.util.ArrayList;
+
 import amtt.epam.com.amtt.api.ContentLoadingCallback;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.api.JiraCallback;
 import amtt.epam.com.amtt.api.JiraContentConst;
 import amtt.epam.com.amtt.api.JiraGetContentCallback;
-import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.exception.AmttException;
-import amtt.epam.com.amtt.api.rest.RestMethod;
-import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.bo.*;
-import amtt.epam.com.amtt.processing.*;
-
-import java.util.ArrayList;
+import amtt.epam.com.amtt.bo.JComponentsResponse;
+import amtt.epam.com.amtt.bo.JCreateIssueResponse;
+import amtt.epam.com.amtt.bo.JPriorityResponse;
+import amtt.epam.com.amtt.bo.JProjectsResponse;
+import amtt.epam.com.amtt.bo.JUserAssignableResponse;
+import amtt.epam.com.amtt.bo.JVersionsResponse;
+import amtt.epam.com.amtt.common.Callback;
+import amtt.epam.com.amtt.processing.ComponentsProcessor;
+import amtt.epam.com.amtt.processing.PostCreateIssueProcessor;
+import amtt.epam.com.amtt.processing.PriorityProcessor;
+import amtt.epam.com.amtt.processing.ProjectsProcessor;
+import amtt.epam.com.amtt.processing.UsersAssignableProcessor;
+import amtt.epam.com.amtt.processing.VersionsProcessor;
 
 /**
- @author Iryna Monchanka
- @version on 15.05.2015
+ * @author Iryna Monchanka
+ * @version on 15.05.2015
  */
-
+@SuppressWarnings("unchecked")
 public class ContentFromBackend {
 
     private static class ContentFromBackendHolder {
@@ -30,60 +36,26 @@ public class ContentFromBackend {
         return ContentFromBackendHolder.INSTANCE;
     }
 
-    @SuppressWarnings("unchecked")
     public void getProjectsAsynchronously(final ContentLoadingCallback<JProjectsResponse> contentLoadingCallback,
                                           final JiraGetContentCallback jiraGetContentCallback) {
-        RestMethod<JProjectsResponse> searchMethod = JiraApi.getInstance().buildDataSearch(JiraApiConst.USER_PROJECTS_PATH,
-            new ProjectsProcessor(),
-            null,
-            null,
-            null);
-        new JiraTask.Builder<JProjectsResponse>()
-            .setRestMethod(searchMethod)
-            .setCallback(new JiraCallback() {
-                @Override
-                public void onRequestStarted() {
-                }
-
-                @Override
-                public void onRequestPerformed(RestResponse restResponse) {
-                    contentLoadingCallback.resultFromBackend((JProjectsResponse) restResponse.getResultObject(),
-                            JiraContentConst.PROJECTS_RESPONSE, jiraGetContentCallback);
-                }
-
-                @Override
-                public void onRequestError(AmttException e) {
-                    contentLoadingCallback.resultFromBackend(null, JiraContentConst.PROJECTS_RESPONSE, jiraGetContentCallback);
-                }
-            })
-            .createAndExecute();
+        JiraApi.get().searchData(JiraApiConst.USER_PROJECTS_PATH,
+                ProjectsProcessor.NAME,
+                null,
+                null,
+                null,
+                getCallback(JiraContentConst.PROJECTS_RESPONSE, contentLoadingCallback, jiraGetContentCallback));
     }
 
-    @SuppressWarnings("unchecked")
     public void getVersionsAsynchronously(String projectsKey,
                                           final ContentLoadingCallback<JVersionsResponse> contentLoadingCallback,
                                           final JiraGetContentCallback jiraGetContentCallback) {
         String path = JiraApiConst.PROJECT_VERSIONS_PATH + projectsKey + JiraApiConst.PROJECT_VERSIONS_PATH_V;
-        RestMethod<JVersionsResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new VersionsProcessor(), null, null, null);
-        new JiraTask.Builder<JVersionsResponse>()
-            .setRestMethod(searchMethod)
-            .setCallback(new JiraCallback() {
-                @Override
-                public void onRequestStarted() {
-                }
-
-                @Override
-                public void onRequestPerformed(RestResponse restResponse) {
-                    contentLoadingCallback.resultFromBackend((JVersionsResponse) restResponse.getResultObject(),
-                            JiraContentConst.VERSIONS_RESPONSE, jiraGetContentCallback);
-                }
-
-                @Override
-                public void onRequestError(AmttException e) {
-                    contentLoadingCallback.resultFromBackend(null, JiraContentConst.VERSIONS_RESPONSE, jiraGetContentCallback);
-                }
-            })
-            .createAndExecute();
+        JiraApi.get().searchData(path,
+                VersionsProcessor.NAME,
+                null,
+                null,
+                null,
+                getCallback(JiraContentConst.VERSIONS_RESPONSE, contentLoadingCallback, jiraGetContentCallback));
     }
 
     @SuppressWarnings("unchecked")
@@ -91,129 +63,101 @@ public class ContentFromBackend {
                                           final ContentLoadingCallback<JComponentsResponse> contentLoadingCallback,
                                           final JiraGetContentCallback jiraGetContentCallback) {
         String path = JiraApiConst.PROJECT_COMPONENTS_PATH + projectsKey + JiraApiConst.PROJECT_COMPONENTS_PATH_C;
-        RestMethod<JComponentsResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new ComponentsProcessor(), null, null, null);
-        new JiraTask.Builder<JComponentsResponse>()
-                .setRestMethod(searchMethod)
-                .setCallback(new JiraCallback() {
-                    @Override
-                    public void onRequestStarted() {
-                    }
-
-                    @Override
-                    public void onRequestPerformed(RestResponse restResponse) {
-                        contentLoadingCallback.resultFromBackend((JComponentsResponse) restResponse.getResultObject(),
-                                JiraContentConst.COMPONENTS_RESPONSE, jiraGetContentCallback);
-                    }
-
-                    @Override
-                    public void onRequestError(AmttException e) {
-                        contentLoadingCallback.resultFromBackend(null, JiraContentConst.COMPONENTS_RESPONSE, jiraGetContentCallback);
-                    }
-                })
-                .createAndExecute();
+        JiraApi.get().searchData(path,
+                ComponentsProcessor.NAME,
+                null,
+                null,
+                null,
+                getCallback(JiraContentConst.COMPONENTS_RESPONSE, contentLoadingCallback, jiraGetContentCallback));
     }
 
     @SuppressWarnings("unchecked")
-    public void getUsersAssignableAsynchronously(String projectKey, String userName,
+    public void getUsersAssignableAsynchronously(String projectKey,
+                                                 String userName,
                                                  final ContentLoadingCallback<JUserAssignableResponse> contentLoadingCallback,
                                                  final JiraGetContentCallback jiraGetContentCallback) {
         String path = JiraApiConst.USERS_ASSIGNABLE_PATH + projectKey + JiraApiConst.USERS_ASSIGNABLE_PATH_UN + userName + JiraApiConst.USERS_ASSIGNABLE_PATH_MR;
-        RestMethod<JUserAssignableResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new UsersAssignableProcessor(), null, null, null);
-        new JiraTask.Builder<JUserAssignableResponse>()
-            .setRestMethod(searchMethod)
-            .setCallback(new JiraCallback() {
-                @Override
-                public void onRequestStarted() {
-                }
-
-                @Override
-                public void onRequestPerformed(RestResponse restResponse) {
-                    contentLoadingCallback.resultFromBackend((JUserAssignableResponse) restResponse.getResultObject(),
-                            JiraContentConst.USERS_ASSIGNABLE_RESPONSE, jiraGetContentCallback);
-                }
-
-                @Override
-                public void onRequestError(AmttException e) {
-                    contentLoadingCallback.resultFromBackend(null, JiraContentConst.USERS_ASSIGNABLE_RESPONSE, jiraGetContentCallback);
-                }
-            })
-            .createAndExecute();
+        JiraApi.get().searchData(path,
+                UsersAssignableProcessor.NAME,
+                null,
+                null,
+                null,
+                getCallback(JiraContentConst.USERS_ASSIGNABLE_RESPONSE, contentLoadingCallback, jiraGetContentCallback));
     }
 
-    @SuppressWarnings("unchecked")
     public void getPriorityAsynchronously(final ContentLoadingCallback<JPriorityResponse> contentLoadingCallback,
                                           final JiraGetContentCallback jiraGetContentCallback) {
         String path = JiraApiConst.PROJECT_PRIORITY_PATH;
-        RestMethod<JPriorityResponse> searchMethod = JiraApi.getInstance().buildDataSearch(path, new PriorityProcessor(), null, null, null);
-        new JiraTask.Builder<JPriorityResponse>()
-            .setRestMethod(searchMethod)
-            .setCallback(new JiraCallback() {
-                @Override
-                public void onRequestStarted() {
-                }
+        JiraApi.get().searchData(path,
+                PriorityProcessor.NAME,
+                null,
+                null,
+                null,
+                getCallback(JiraContentConst.PRIORITIES_RESPONSE, contentLoadingCallback, jiraGetContentCallback));
 
-                @Override
-                public void onRequestPerformed(RestResponse restResponse) {
-                    contentLoadingCallback.resultFromBackend((JPriorityResponse) restResponse.getResultObject(),
-                            JiraContentConst.PRIORITIES_RESPONSE, jiraGetContentCallback);
-                }
 
-                @Override
-                public void onRequestError(AmttException e) {
-                    contentLoadingCallback.resultFromBackend(null, JiraContentConst.PRIORITIES_RESPONSE, jiraGetContentCallback);
-                }
-
-            })
-            .createAndExecute();
     }
 
 
-    @SuppressWarnings("unchecked")
-    public void createIssueAsynchronously(String issueJson, final ContentLoadingCallback<JCreateIssueResponse> contentLoadingCallback,
+    public void createIssueAsynchronously(String issueJson,
+                                          final ContentLoadingCallback<JCreateIssueResponse> contentLoadingCallback,
                                           final JiraGetContentCallback jiraGetContentCallback) {
-        RestMethod<JCreateIssueResponse> createIssue = JiraApi.getInstance().buildIssueCreating(issueJson, new PostCreateIssueProcessor());
-        new JiraTask.Builder<JCreateIssueResponse>()
-            .setRestMethod(createIssue)
-            .setCallback(new JiraCallback() {
-                @Override
-                public void onRequestStarted() {
-                }
-
-                @Override
-                public void onRequestPerformed(RestResponse restResponse) {
-                    contentLoadingCallback.resultFromBackend((JCreateIssueResponse) restResponse.getResultObject(), JiraContentConst.CREATE_ISSUE_RESPONSE, jiraGetContentCallback);
-                }
-
-                @Override
-                public void onRequestError(AmttException e) {
-                    contentLoadingCallback.resultFromBackend(null, JiraContentConst.CREATE_ISSUE_RESPONSE, jiraGetContentCallback);
-                }
-            })
-            .createAndExecute();
+        JiraApi.get().createIssue(issueJson,
+                PostCreateIssueProcessor.NAME,
+                getCallback(JiraContentConst.CREATE_ISSUE_RESPONSE, contentLoadingCallback, jiraGetContentCallback));
     }
 
-    @SuppressWarnings("unchecked")
-    public void sendAttachmentAsynchronously(String issueKey, ArrayList<String> fullFileName, final ContentLoadingCallback<Boolean> contentLoadingCallback,
-                                             final JiraGetContentCallback<Boolean> jiraGetContentCallback) {
-        RestMethod<JProjectsResponse> sendAttachment = JiraApi.getInstance().buildAttachmentCreating(issueKey, fullFileName);
-        new JiraTask.Builder<JProjectsResponse>()
-                .setRestMethod(sendAttachment)
-                .setCallback(new JiraCallback() {
-                    @Override
-                    public void onRequestStarted() {
-                    }
+    public void sendAttachmentAsynchronously(String issueKey,
+                                             ArrayList<String> fullFileName,
+                                             final ContentLoadingCallback<Boolean> contentLoadingCallback,
+                                             final JiraGetContentCallback jiraGetContentCallback) {
+        JiraApi.get().createAttachment(issueKey,
+                fullFileName,
+                getCallback(JiraContentConst.SEND_ATTACHMENT, true, false, contentLoadingCallback, jiraGetContentCallback));
+    }
 
-                    @Override
-                    public void onRequestPerformed(RestResponse restResponse) {
-                        contentLoadingCallback.resultFromBackend(true, JiraContentConst.SEND_ATTACHMENT, jiraGetContentCallback);
-                    }
+    private <Result> Callback getCallback(final JiraContentConst requestType,
+                                          final Result successResult,
+                                          final Result errorResult,
+                                          final ContentLoadingCallback<Result> contentLoadingCallback,
+                                          final JiraGetContentCallback jiraGetContentCallback) {
+        return new Callback<Result>() {
+            @Override
+            public void onLoadStart() {
 
-                    @Override
-                    public void onRequestError(AmttException e) {
-                        contentLoadingCallback.resultFromBackend(false, JiraContentConst.SEND_ATTACHMENT, jiraGetContentCallback);
-                    }
-                })
-                .createAndExecute();
+            }
+
+            @Override
+            public void onLoadExecuted(Result result) {
+                contentLoadingCallback.resultFromBackend(successResult, requestType, jiraGetContentCallback);
+            }
+
+            @Override
+            public void onLoadError(Exception e) {
+                contentLoadingCallback.resultFromBackend(errorResult, requestType, jiraGetContentCallback);
+            }
+        };
+    }
+
+    private <Result> Callback getCallback(final JiraContentConst requestType,
+                                          final ContentLoadingCallback<Result> contentLoadingCallback,
+                                          final JiraGetContentCallback jiraGetContentCallback) {
+        return new Callback<Result>() {
+            @Override
+            public void onLoadStart() {
+
+            }
+
+            @Override
+            public void onLoadExecuted(Result result) {
+                contentLoadingCallback.resultFromBackend(result, requestType, jiraGetContentCallback);
+            }
+
+            @Override
+            public void onLoadError(Exception e) {
+                contentLoadingCallback.resultFromBackend(null, requestType, jiraGetContentCallback);
+            }
+        };
     }
 
 }

@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -18,7 +19,7 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.util.StepUtil;
-import amtt.epam.com.amtt.util.ContextHolder;
+import amtt.epam.com.amtt.AmttApplication;
 
 /**
  @author Ivan_Bakach
@@ -46,8 +47,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Step step = listStep.get(position);
-        holder.step.setText(ContextHolder.getContext().getString(R.string.label_step) + (position + 1));
-        SpannableStringBuilder info = new SpannableStringBuilder();
+        holder.step.setText(AmttApplication.getContext().getString(R.string.label_step) + (position + 1));SpannableStringBuilder info = new SpannableStringBuilder();
         info.append(StepUtil.getStepInfo(step));
         holder.activityInfo.setText(info);
         if (!TextUtils.isEmpty(step.getFilePath())) {
@@ -84,7 +84,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
             super(itemView);
             this.listener = listener;
             screenshotView = (ImageView)itemView.findViewById(R.id.screenshot_image);
-            DisplayMetrics metrics = ContextHolder.getContext().getResources().getDisplayMetrics();
+            DisplayMetrics metrics = AmttApplication.getContext().getResources().getDisplayMetrics();
             screenshotView.setMaxWidth(metrics.widthPixels/ IMAGE_SIZE_RATIO);
             screenshotView.setMaxHeight(metrics.heightPixels/ IMAGE_SIZE_RATIO);
             screenshotView.setOnClickListener(this);

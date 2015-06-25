@@ -11,7 +11,5 @@
 
     <color name="black">#000000</color>
 
-    <color name="et_divider_disable">#FFC1C1C1</color>
-
     <color name="photo_tint">#88101010</color>
 </resources>

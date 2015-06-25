@@ -21,6 +21,7 @@ import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 
 public class VersionsProcessor implements Processor<JVersionsResponse, HttpEntity> {
 
+    public static final String NAME = VersionsProcessor.class.getName();
     @Override
     public JVersionsResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
@@ -36,4 +37,10 @@ public class VersionsProcessor implements Processor<JVersionsResponse, HttpEntit
         JiraContent.getInstance().setVersionsNames(projectExtVersionsResponse.getVersionsNames());
         return projectExtVersionsResponse;
     }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
 }

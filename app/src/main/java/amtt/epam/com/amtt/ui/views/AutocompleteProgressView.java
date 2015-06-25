@@ -63,7 +63,4 @@ public class AutocompleteProgressView extends RelativeLayout {
         return mACTextView.getText();
     }
 
-    public void setOnItemClickListener(AdapterView.OnItemClickListener l) {
-        mACTextView.setOnItemClickListener(l);
-    }
 }

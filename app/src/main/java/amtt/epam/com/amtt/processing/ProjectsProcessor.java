@@ -13,6 +13,7 @@ import amtt.epam.com.amtt.api.loadcontent.JiraContent;
  */
 public class ProjectsProcessor implements Processor<JProjectsResponse, HttpEntity> {
 
+    public static final String NAME = ProjectsProcessor.class.getName();
     @Override
     public JProjectsResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
@@ -20,4 +21,11 @@ public class ProjectsProcessor implements Processor<JProjectsResponse, HttpEntit
         JiraContent.getInstance().setProjectsNames(result.getProjectsNames());
         return result;
     }
+
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
 }

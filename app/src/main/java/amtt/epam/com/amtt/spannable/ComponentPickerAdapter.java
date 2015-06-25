@@ -76,7 +76,7 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
                 String sortValue = constraint == null ? "" : constraint.toString().toLowerCase();
                 FilterResults filterResults = new FilterResults();
                 if (!TextUtils.isEmpty(sortValue.trim())) {
-                    ArrayList<String> sortedComponentList = new ArrayList<String>();
+                    ArrayList<String> sortedComponentList = new ArrayList<>();
                     for (String contact : cloneComponentList) {
                         if (contact.toLowerCase().contains(sortValue))
                             sortedComponentList.add(contact);

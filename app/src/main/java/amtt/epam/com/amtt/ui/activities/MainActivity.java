@@ -67,8 +67,8 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                             showAmttActivity();
                         } else if (data.getCount() == 1) {
                             setActiveUser(data);
-                        }
-                        else { Logger.d(TAG, String.valueOf(data.getCount()));
+                        } else {
+                            Logger.d(TAG, String.valueOf(data.getCount()));
                             showLoginActivity();}
                     } else {
                         showLoginActivity();
@@ -153,6 +153,8 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                     }
                     break;
             }
+        } else if (resultCode == RESULT_CANCELED) {
+            finish();
         }
     }
 }

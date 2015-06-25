@@ -190,8 +190,10 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
 
     public void setListLastComponentsIds(ArrayList<String> listLastComponentsIds) {
         if (listLastComponentsIds != null) {
-            for (int i = 0; i < mListLastComponentsIds.size(); i++){
-                setLastComponent(mListLastComponentsIds.get(i));
+            if (!listLastComponentsIds.isEmpty()) {
+                for (int i = 0; i < listLastComponentsIds.size(); i++) {
+                    setLastComponent(mListLastComponentsIds.get(i));
+                }
             }
         }
     }

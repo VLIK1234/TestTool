@@ -1,160 +1,107 @@
 package amtt.epam.com.amtt.api;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import amtt.epam.com.amtt.api.rest.RestMethod;
-import amtt.epam.com.amtt.api.rest.RestMethod.RestMethodType;
-import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.api.result.JiraOperationResult;
-import amtt.epam.com.amtt.processing.AuthResponseProcessor;
-import amtt.epam.com.amtt.processing.Processor;
+import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.common.Callback;
+import amtt.epam.com.amtt.common.CoreApplication;
+import amtt.epam.com.amtt.common.DataRequest;
+import amtt.epam.com.amtt.http.HttpClient;
+import amtt.epam.com.amtt.http.HttpException;
+import amtt.epam.com.amtt.http.Request;
+import amtt.epam.com.amtt.http.Request.Type;
 import amtt.epam.com.amtt.util.ActiveUser;
 
 /**
- @author Artsiom_Kaliaha
- @version on 24.03.2015
+ * Created by Artsiom_Kaliaha on 12.06.2015.
+ * Updated api implementation
  */
-
-@SuppressWarnings("unchecked")
 public class JiraApi {
 
-    private static class JiraApiSingletonHolder {
+    private static final JiraApi INSTANCE;
 
-        public static final JiraApi INSTANCE = new JiraApi();
-
+    static {
+        INSTANCE = new JiraApi();
     }
-
-    public static JiraApi getInstance() {
-        return JiraApiSingletonHolder.INSTANCE;
-    }
-
-    private final ActiveUser mUser;
-    private RestMethod mMethod;
 
     private JiraApi() {
-        mUser = ActiveUser.getInstance();
     }
 
-    public RestMethod buildAuth(final String userName, final String password, final String url) {
-        Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, mUser.makeTempCredentials(userName, password));
-        mMethod = new RestMethod.Builder<String>()
-                .setType(RestMethodType.GET)
-                .setUrl(url + JiraApiConst.LOGIN_PATH)
-                .setHeadersMap(headers)
-                .setProcessor(new AuthResponseProcessor())
-                .create();
-        return mMethod;
+    public void signOut() {
+        Request.Builder requestBuilder = new Request.Builder()
+                .setType(Type.DELETE)
+                .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.LOGIN_PATH);
+        execute(requestBuilder, CoreApplication.NO_PROCESSOR, null);
     }
 
-    public <ResultType, InputType> RestMethod buildIssueCreating(final String postStringEntity, final Processor<ResultType, InputType> processor) {
+    public void createIssue(String postEntityString, String processorName, Callback callback) {
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, mUser.getCredentials());
+        headers.put(JiraApiConst.AUTH, ActiveUser.getInstance().getCredentials());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
-        HttpEntity postEntity = null;
+
+        HttpEntity entity;
         try {
-            postEntity = new StringEntity(postStringEntity);
+            entity = new StringEntity(postEntityString);
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            if (callback != null) {
+                callback.onLoadError(new HttpException(HttpClient.EMPTY_STATUS_CODE));
+            }
+            return;
         }
-        mMethod = new RestMethod.Builder<Void>()
-                .setType(RestMethodType.POST)
-                .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH)
-                .setHeadersMap(headers)
-                .setPostEntity(postEntity)
-                .setProcessor(processor)
-                .create();
-        return mMethod;
+
+        Request.Builder requestBuilder = new Request.Builder()
+                .setType(Type.POST)
+                .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH)
+                .setHeaders(headers)
+                .setEntity(entity);
+        execute(requestBuilder, processorName, callback);
     }
 
-    public <ResultType, InputType> RestMethod buildDataSearch(final String requestSuffix,
-                                                              final Processor<ResultType, InputType> processor,
-                                                              final String userName,
-                                                              final String password,
-                                                              String url) {
+    public void searchData(String requestSuffix, String processorName, String userName, String password, String url, Callback callback) {
         String credentials;
         if (userName != null && password != null) {
-            //this code is used when new user is added and we need to get all the info about a user and authorize him/her in one request
-            credentials = mUser.makeTempCredentials(userName,password);
+            //this code is used when new user is added and we need to getClient all the info about a user and authorize him/her in one request
+            credentials = ActiveUser.getInstance().makeTempCredentials(userName, password);
         } else {
-            credentials = mUser.getCredentials();
-            url = mUser.getUrl();
+            credentials = ActiveUser.getInstance().getCredentials();
+            url = ActiveUser.getInstance().getUrl();
         }
-
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, credentials);
 
-        mMethod = new RestMethod.Builder()
-                .setType(RestMethodType.GET)
+        Request.Builder requestBuilder = new Request.Builder()
+                .setType(Type.GET)
                 .setUrl(url + requestSuffix)
-                .setHeadersMap(headers)
-                .setProcessor(processor)
-                .create();
-        return mMethod;
+                .setHeaders(headers);
+        execute(requestBuilder, processorName, callback);
     }
 
-    public RestMethod buildAttachmentCreating(final String issueKey, ArrayList<String> fullfilename){
+    public void createAttachment(String issueKey, ArrayList<String> filesPaths, Callback callback) {
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, mUser.getCredentials());
+        headers.put(JiraApiConst.AUTH, ActiveUser.getInstance().getCredentials());
         headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
-        HttpEntity postEntity;
-        MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
-        for (int i = 0; i < fullfilename.size(); i++) {
-           String file =  fullfilename.get(i);
-            File fileToUpload = new File(file);
-            if (file.contains(".png")|file.contains(".jpg")|file.contains(".jpeg")) {
-                multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("image/jpeg"),
-                        fileToUpload.getName());
-            }else if (file.contains(".txt")) {
-                multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("text/plain"),
-                        fileToUpload.getName());
-            }
 
-        }
-       postEntity = multipartEntityBuilder.build();
-            mMethod = new RestMethod.Builder<Void>()
-                    .setType(RestMethodType.POST)
-                    .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
-                    .setHeadersMap(headers)
-                    .setPostEntity(postEntity)
-                    .create();
-        return mMethod;
+        Request.Builder requestBuilder = new Request.Builder()
+                .setType(Type.POST)
+                .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
+                .setHeaders(headers)
+                .setEntity(filesPaths);
+        execute(requestBuilder, CoreApplication.NO_PROCESSOR, callback);
     }
 
-    public RestMethod buildAttachmentTxtCreating(final String issueKey, String fullfilename){
-        Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, mUser.getCredentials());
-        headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
-        HttpEntity postEntity;
-        MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
-        File fileToUpload = new File(fullfilename);
-        multipartEntityBuilder.addBinaryBody("file", fileToUpload, ContentType.create("text/plain"),
-                fileToUpload.getName());
-        postEntity = multipartEntityBuilder.build();
-        mMethod = new RestMethod.Builder<Void>()
-                .setType(RestMethodType.POST)
-                .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
-                .setHeadersMap(headers)
-                .setPostEntity(postEntity)
-                .create();
-        return mMethod;
+    public static JiraApi get() {
+        return INSTANCE;
     }
 
-    public RestResponse execute() throws Exception {
-        RestResponse<Void> restResponse = mMethod.execute();
-        restResponse.setOperationResult(JiraOperationResult.REQUEST_PERFORMED);
-        return restResponse;
+    private void execute(Request.Builder requestBuilder, String processorName, Callback callback) {
+        Request request = requestBuilder.build();
+        AmttApplication.executeRequest(new DataRequest<>(HttpClient.NAME, request, processorName, callback));
     }
 
 }
-
-

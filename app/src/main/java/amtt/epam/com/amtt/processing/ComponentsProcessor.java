@@ -20,6 +20,7 @@ import amtt.epam.com.amtt.bo.project.JComponent;
  */
 public class ComponentsProcessor implements Processor<JComponentsResponse, HttpEntity> {
 
+    public static final String NAME = ComponentsProcessor.class.getName();
     @Override
     public JComponentsResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
@@ -34,5 +35,10 @@ public class ComponentsProcessor implements Processor<JComponentsResponse, HttpE
         componentsResponse.setComponents(jComponents);
         JiraContent.getInstance().setComponentsNames(componentsResponse.getComponentsNames());
         return componentsResponse;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 }

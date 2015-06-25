@@ -7,12 +7,6 @@ package amtt.epam.com.amtt.util;
 
 public final class Constants {
 
-    public final class Dialog {
-
-        public static final int EMPTY_FIELD = 0;
-
-    }
-
     public final class Symbols {
 
         public static final String NEW_LINE = "\n";
