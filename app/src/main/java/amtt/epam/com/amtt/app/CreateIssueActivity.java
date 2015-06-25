@@ -53,7 +53,6 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener{
 
-    private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final String DEFAULT_PRIORITY_ID = "3";
     private AutocompleteProgressView mAssignableAutocompleteView;
@@ -337,7 +336,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 }
                 if (mIssueTypeName == null) {
                     isValid = false;
-                    Toast.makeText(CreateIssueActivity.this, getString(R.string.error_message_unknown), Toast.LENGTH_LONG).show();
+                    Toast.makeText(CreateIssueActivity.this, getString(R.string.error_message_host), Toast.LENGTH_LONG).show();
                 }
                 if (isValid) {
                     showProgress(true);
@@ -349,11 +348,11 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                                 public void resultOfDataLoading(JCreateIssueResponse result) {
                                     if (result != null) {
                                         AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
-                                        Toast.makeText(CreateIssueActivity.this, "Ticket success created", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(CreateIssueActivity.this, R.string.ticket_created, Toast.LENGTH_LONG).show();
                                         StepUtil.clearAllStep();
                                         finish();
                                     } else {
-                                        Toast.makeText(CreateIssueActivity.this, "Error", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(CreateIssueActivity.this, R.string.error, Toast.LENGTH_LONG).show();
                                     }
                                     showProgress(false);
                                 }

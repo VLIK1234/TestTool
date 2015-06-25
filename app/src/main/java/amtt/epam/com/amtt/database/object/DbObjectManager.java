@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.database.constant.BaseColumns;
-import amtt.epam.com.amtt.util.ContextHolder;
+import amtt.epam.com.amtt.AmttApplication;
 
 /**
  @author Artsiom_Kaliaha
@@ -30,7 +30,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
 
     @Override
     public Integer add(DatabaseEntity object) {
-        Uri insertedItemUri = ContextHolder.getContext().getContentResolver().insert(object.getUri(), object.getContentValues());
+        Uri insertedItemUri = AmttApplication.getContext().getContentResolver().insert(object.getUri(), object.getContentValues());
         return Integer.valueOf(insertedItemUri.getLastPathSegment());
     }
 
@@ -39,7 +39,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         for (int i = 0; i < objects.size(); i++) {
             contentValues[i] = objects.get(i).getContentValues();
         }
-        return ContextHolder.getContext().getContentResolver().bulkInsert(objects.get(0).getUri(),
+        return AmttApplication.getContext().getContentResolver().bulkInsert(objects.get(0).getUri(),
                 contentValues);
     }
 
@@ -69,7 +69,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
 
     @Override
     public Integer update(DatabaseEntity object, String selection, String[] selectionArgs) {
-        return ContextHolder.getContext().getContentResolver().update(object.getUri(), object.getContentValues(), selection, selectionArgs);
+        return AmttApplication.getContext().getContentResolver().update(object.getUri(), object.getContentValues(), selection, selectionArgs);
     }
 
     public synchronized void update(final DatabaseEntity object, final String selection, final String[] selectionArgs, final IResult<Integer> result) {
@@ -89,7 +89,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ContextHolder.getContext().getContentResolver().delete(object.getUri(), BaseColumns._ID + "=?", new String[]{String.valueOf(object.getId())});
+                AmttApplication.getContext().getContentResolver().delete(object.getUri(), BaseColumns._ID + "=?", new String[]{String.valueOf(object.getId())});
             }
         }).start();
     }
@@ -99,7 +99,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                ContextHolder.getContext().getContentResolver().delete(objectPrototype.getUri(), null, null);
+                AmttApplication.getContext().getContentResolver().delete(objectPrototype.getUri(), null, null);
             }
         }).start();
     }
@@ -133,7 +133,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
                     }
                 }
 
-                Cursor cursor = ContextHolder.getContext().getContentResolver()
+                Cursor cursor = AmttApplication.getContext().getContentResolver()
                         .query(entity.getUri(), projection, selectionString, mSelectionArgs, null);
                 List<T> listObject = new ArrayList<>();
 

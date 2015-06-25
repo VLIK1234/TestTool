@@ -14,16 +14,17 @@
 
     <string name="empty_list_view">There is no saved steps =(</string>
 
+    <string name="error">Error</string>
     <string name="error_title_auth">Authorization error</string>
     <string name="error_message_auth">Check your credentials</string>
-    <string name="error_message_auth_forbidden">You are not allowed to login now</string>
+    <string name="error_message_auth_forbidden">Visit jira.epam.com before using Amtt</string>
     <string name="error_title_request">Request error</string>
-    <string name="error_message_no_internet">Session timeout - you are offline</string>
+    <string name="error_message_no_internet">You are offline</string>
     <string name="error_button_try">Try again</string>
     <string name="error_button_settings">Open settings</string>
-    <string name="error_message_unknown">Unknown error</string>
-    <string name="error_message_gateway">Gateway error</string>
-    <string name="error_message_web_address">Wrong web-address</string>
+    <string name="error_message_host">Unknown error</string>
+    <string name="error_message_gateway">Server error</string>
+    <string name="error_message_web_address">Wrong web address</string>
     <string name="error_button_close">Close</string>
 
     <string name="label_file_name">"File name: "</string>
@@ -133,11 +134,14 @@
     <string name="label_tags">Tags</string>
 
     <string name="url_prefix">https://</string>
+    <string name="ticket_created">Ticket has been successfully created</string>
     <string name="label_list_step">Show list step</string>
     <string name="activity_info_text_size">16sp</string>
     <string name="content_description_screenshot">Screenshot</string>
     <string name="label_clear_environment">Clear environment</string>
     <string name="message_clear_environment">You will lose all the device specifications</string>
+
+    <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
 </resources>
