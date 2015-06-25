@@ -95,7 +95,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
             if (isNewUser) {
                 TopButtonService.start(getBaseContext());
             } else {
-                TopButtonService.sendActionChangeVisibilityTopbutton(true);
+                TopButtonService.sendActionChangeTopButtonVisibility(true);
             }
         }
     }

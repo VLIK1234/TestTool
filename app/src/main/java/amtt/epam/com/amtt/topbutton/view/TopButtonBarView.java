@@ -27,15 +27,16 @@ import amtt.epam.com.amtt.app.ExpectedResultsActivity;
 import amtt.epam.com.amtt.app.HelpDialogActivity;
 import amtt.epam.com.amtt.app.StepsActivity;
 import amtt.epam.com.amtt.app.UserInfoActivity;
+import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
-import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
- @author Artsiom_Kaliaha
- @version on 27.05.2015
+ * @author Artsiom_Kaliaha
+ * @version on 27.05.2015
  */
 
 @SuppressLint("ViewConstructor")
@@ -52,12 +53,13 @@ public class TopButtonBarView extends FrameLayout {
     private TopUnitView mButtonExpectedResult;
     private TopUnitView mButtonStepWithScreen;
     private TopUnitView mButtonStepWithoutScreen;
+    private TopUnitView mButtonStepWithoutActivityInfo;
     private TopUnitView mButtonStopRecord;
     private TopUnitView mButtonShowSteps;
     private TopUnitView mButtonCloseApp;
     private int mMainButtonHeight;
     private int mMainButtonWidth;
-    private amtt.epam.com.amtt.topbutton.view.OnTouchListener mOnTouchListener;
+    private amtt.epam.com.amtt.topbutton.view.OnTouchListener mTopButtonListener;
 
     static {
         isRecordStarted = false;
@@ -72,7 +74,7 @@ public class TopButtonBarView extends FrameLayout {
         initButtonsBar();
         initButtonsHandlers();
         setInitialButtons();
-        mOnTouchListener = onTouchListener;
+        mTopButtonListener = onTouchListener;
     }
 
     private void initLayout() {
@@ -99,7 +101,6 @@ public class TopButtonBarView extends FrameLayout {
         });
     }
 
-    @SuppressWarnings("unchecked")
     private void initButtonsHandlers() {
         mButtonStartRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), R.drawable.background_start_record, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
@@ -108,7 +109,7 @@ public class TopButtonBarView extends FrameLayout {
                 hide();
                 StepUtil.clearAllStep();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
-                mOnTouchListener.onTouch();
+                mTopButtonListener.onTouch();
             }
         });
         mButtonCreateTicket = new TopUnitView(getContext(), getContext().getString(R.string.label_create_ticket), R.drawable.background_create_ticket, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
@@ -117,27 +118,27 @@ public class TopButtonBarView extends FrameLayout {
                 Intent intentTicket = new Intent(getContext(), CreateIssueActivity.class);
                 intentTicket.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentTicket);
-                mOnTouchListener.onTouch();
+                mTopButtonListener.onTouch();
             }
         });
         mButtonOpenUserInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), R.drawable.background_user_info, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                TopButtonService.sendActionChangeVisibilityTopbutton(false);
+                TopButtonService.sendActionChangeTopButtonVisibility(false);
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
                 userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(userInfoIntent);
-                mOnTouchListener.onTouch();
+                mTopButtonListener.onTouch();
             }
         });
         mButtonExpectedResult = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                TopButtonService.sendActionChangeVisibilityTopbutton(false);
+                TopButtonService.sendActionChangeTopButtonVisibility(false);
                 Intent intent = new Intent(getContext(), ExpectedResultsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intent);
-                mOnTouchListener.onTouch();
+                mTopButtonListener.onTouch();
             }
         });
         mButtonStepWithScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_with_screen), R.drawable.background_step_with_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
@@ -147,11 +148,11 @@ public class TopButtonBarView extends FrameLayout {
                     Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
                     intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().getApplicationContext().startActivity(intentHelp);
-                }else{
+                } else {
                     HelpDialogActivity.setIsCanTakeScreenshot(true);
                 }
-                TopButtonService.sendActionChangeVisibilityTopbutton(false);
-                mOnTouchListener.onTouch();
+                TopButtonService.sendActionChangeTopButtonVisibility(false);
+                mTopButtonListener.onTouch();
             }
         });
         mButtonStepWithoutScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_without_screen), R.drawable.background_step_without_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
@@ -166,16 +167,32 @@ public class TopButtonBarView extends FrameLayout {
                     }
                 };
                 worker.schedule(task, 1, TimeUnit.SECONDS);
-                mOnTouchListener.onTouch();
+                mTopButtonListener.onTouch();
             }
         });
+        mButtonStepWithoutActivityInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_added_step_without_activity_info), R.drawable.background_step_without_activity, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
+            @Override
+            public void onTouch() {
+                if (!PreferenceUtils.getBoolean(getContext().getString(R.string.key_dialog_hide))) {
+                    Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
+                    intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().getApplicationContext().startActivity(intentHelp);
+                } else {
+                    HelpDialogActivity.setIsCanTakeScreenshot(true);
+                }
+                TopButtonService.sendActionChangeTopButtonVisibility(false);
+                AmttFileObserver.setStepWithoutActivityInfo(true);
+                mTopButtonListener.onTouch();
+            }
+        });
+
         mButtonShowSteps = new TopUnitView(getContext(), getContext().getString(R.string.label_show_steps), R.drawable.background_show_step, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
                 Intent intent = new Intent(getContext(), StepsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intent);
-                mOnTouchListener.onTouch();
+                mTopButtonListener.onTouch();
             }
         });
         mButtonStopRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), R.drawable.background_stop_record, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
@@ -185,17 +202,17 @@ public class TopButtonBarView extends FrameLayout {
                 hide();
                 StepUtil.clearAllStep();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
-                mOnTouchListener.onTouch();
+                mTopButtonListener.onTouch();
             }
         });
         mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.label_close_app), R.drawable.background_close, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                TopButtonService.sendActionChangeVisibilityTopbutton(false);
+                TopButtonService.sendActionChangeTopButtonVisibility(false);
                 Intent intentAsk = new Intent(getContext(), AskExitActivity.class);
                 intentAsk.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentAsk);
-                mOnTouchListener.onTouch();
+                mTopButtonListener.onTouch();
             }
         });
     }
@@ -211,6 +228,7 @@ public class TopButtonBarView extends FrameLayout {
 
     private void setRecordButtons() {
         mButtonsBar.removeAllViews();
+        mButtonsBar.addView(mButtonStepWithoutActivityInfo);
         mButtonsBar.addView(mButtonStepWithScreen);
         mButtonsBar.addView(mButtonStepWithoutScreen);
         mButtonsBar.addView(mButtonExpectedResult);
@@ -283,7 +301,7 @@ public class TopButtonBarView extends FrameLayout {
         mButtonsBar.startAnimation(translateUp);
     }
 
-    public void setIsRecordStarted(boolean isRecordStarted){
+    public void setIsRecordStarted(boolean isRecordStarted) {
         TopButtonBarView.isRecordStarted = isRecordStarted;
     }
 

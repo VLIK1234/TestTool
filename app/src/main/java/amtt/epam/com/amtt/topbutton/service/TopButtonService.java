@@ -72,7 +72,7 @@ public class TopButtonService extends Service{
         mContext.getApplicationContext().startService(intentHideView);
     }
 
-    public static void sendActionChangeVisibilityTopbutton(boolean visible) {
+    public static void sendActionChangeTopButtonVisibility(boolean visible) {
         Intent intentHideView = new Intent(mContext, TopButtonService.class).setAction(TopButtonService.ACTION_CHANGE_VISIBILITY_TOPBUTTON);
         intentHideView.putExtra(VISIBILITY_TOP_BUTTON, visible);
         intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

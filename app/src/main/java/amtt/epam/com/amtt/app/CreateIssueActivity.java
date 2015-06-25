@@ -97,13 +97,13 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         super.onResume();
         initAttachmentsView();
         initDescriptionEditText();
-        TopButtonService.sendActionChangeVisibilityTopbutton(false);
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        TopButtonService.sendActionChangeVisibilityTopbutton(true);
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     private void initViews() {
@@ -379,7 +379,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 2&&before<=count) {
+                if (s.length() > 2 && before <= count) {
                     if (InputsUtil.haveWhitespaces(s.toString())) {
                         Toast.makeText(CreateIssueActivity.this, getString(R.string.label_tester) + getString(R.string.label_no_whitespaces), Toast.LENGTH_LONG).show();
                     } else {
@@ -404,9 +404,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (result!=null) {
+                        if (result != null) {
                             ArrayList<Attachment> screenArray = AttachmentManager.getInstance().
-                                getAttachmentList(result);
+                                    getAttachmentList(result);
                             mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
                             recyclerView.setAdapter(mAdapter);
                         }

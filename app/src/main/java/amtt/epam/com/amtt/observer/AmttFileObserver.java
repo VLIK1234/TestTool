@@ -24,6 +24,7 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
  */
 
 public class AmttFileObserver extends FileObserver {
+
     private static final String TAG = "TAG";
     private static final String TIME_SCREENSHOT_PATTERN = "\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2}";
     private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s[.](png|jpg|jpeg)";
@@ -32,6 +33,7 @@ public class AmttFileObserver extends FileObserver {
     public static final String SCREENSHOT_DATE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
     private String absolutePath;
     private static ArrayList<String> imageArray;
+    private static boolean isStepWithoutActivityInfo = false;
 
     public AmttFileObserver(String path) {
         super(path, FileObserver.ALL_EVENTS);
@@ -51,17 +53,29 @@ public class AmttFileObserver extends FileObserver {
 
             if (isNewScreenshot(path) && HelpDialogActivity.getIsCanTakeScreenshot()) {
                 imageArray.add(absolutePath + "/" + path);
-                ScheduledExecutorService worker =
-                        Executors.newSingleThreadScheduledExecutor();
+                ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
                 final String createPath = path;
-                Runnable task = new Runnable() {
-                    public void run() {
-                        StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), absolutePath + "/" + createPath);
+
+                Runnable task;
+                if (isStepWithoutActivityInfo) {
+                    isStepWithoutActivityInfo = false;
+                    task = new Runnable() {
+                        public void run() {
+                            StepUtil.savePureScreenshot(absolutePath + "/" + createPath);
+                            TopButtonService.sendActionChangeTopButtonVisibility(true);
+                            HelpDialogActivity.setIsCanTakeScreenshot(false);
+                        }
+                    };
+                } else {
+                    task = new Runnable() {
+                        public void run() {
+                            StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), absolutePath + "/" + createPath);
 //                        TopButtonService.sendActionScreenshot(absolutePath + "/" + createPath);
-                        TopButtonService.sendActionChangeVisibilityTopbutton(true);
-                        HelpDialogActivity.setIsCanTakeScreenshot(false);
-                    }
-                };
+                            TopButtonService.sendActionChangeTopButtonVisibility(true);
+                            HelpDialogActivity.setIsCanTakeScreenshot(false);
+                        }
+                    };
+                }
                 worker.schedule(task, 500, TimeUnit.MILLISECONDS);
 
             }
@@ -139,4 +153,9 @@ public class AmttFileObserver extends FileObserver {
     public static void clearImageArray() {
         imageArray.clear();
     }
+
+    public static void setStepWithoutActivityInfo(boolean stepWithoutActivityInfo) {
+        isStepWithoutActivityInfo = stepWithoutActivityInfo;
+    }
+
 }

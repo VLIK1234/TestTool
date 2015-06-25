@@ -24,7 +24,7 @@ public class AskExitActivity  extends Activity {
                 .setNegativeButton(getResources().getString(R.string.label_return), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        TopButtonService.sendActionChangeVisibilityTopbutton(true);
+                        TopButtonService.sendActionChangeTopButtonVisibility(true);
                         finish();
                     }
                 })

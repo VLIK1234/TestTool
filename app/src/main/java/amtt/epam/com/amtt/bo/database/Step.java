@@ -2,21 +2,13 @@ package amtt.epam.com.amtt.bo.database;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
-import amtt.epam.com.amtt.app.LoginActivity;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
-import amtt.epam.com.amtt.util.ContextHolder;
-import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
@@ -34,11 +26,13 @@ public class Step extends DatabaseEntity<Step> {
         mScreenPath = "";
     }
 
-    public Step(ComponentName componentName, String mScreenPath) {
-        this.mScreenPath = mScreenPath;
-        mActivity = componentName.getClassName();
-        mPackageName = componentName.getPackageName();
+    public Step(ComponentName componentName, String screenPath) {
+        mScreenPath = screenPath;
         mOrientation = ActivityMetaUtil.getScreenOrientation(UIUtil.getOrientation());
+        if (componentName != null) {
+            mActivity = componentName.getClassName();
+            mPackageName = componentName.getPackageName();
+        }
     }
 
     public Step(Cursor cursor) {
@@ -69,9 +63,11 @@ public class Step extends DatabaseEntity<Step> {
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         values.put(StepsTable._SCREEN_PATH, mScreenPath);
-        values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity);
-        values.put(StepsTable._PACKAGE_NAME, mPackageName);
         values.put(StepsTable._ORIENTATION, mOrientation);
+        if (!isStepWithoutActivityInfo()) {
+            values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity);
+            values.put(StepsTable._PACKAGE_NAME, mPackageName);
+        }
         return values;
     }
 
@@ -86,7 +82,17 @@ public class Step extends DatabaseEntity<Step> {
     public String getPackageName() {
         return mPackageName;
     }
-    public String getOreintation() {
+
+    public String getOrientation() {
         return mOrientation;
     }
+
+    public boolean isStepWithoutActivityInfo() {
+        return mActivity == null;
+    }
+
+    public boolean isStepWithActivityInfo() {
+        return mScreenPath == null;
+    }
+
 }

@@ -75,13 +75,13 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
     @Override
     protected void onResume() {
         super.onResume();
-        TopButtonService.sendActionChangeVisibilityTopbutton(false);
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        TopButtonService.sendActionChangeVisibilityTopbutton(true);
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     public RecyclerView.LayoutManager getLayoutManger(){
