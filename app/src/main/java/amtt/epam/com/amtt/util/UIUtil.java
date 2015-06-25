@@ -31,4 +31,9 @@ public final class UIUtil {
         return ContextHolder.getContext().getResources().getConfiguration().orientation;
     }
 
+    public static int getInDp(int px) {
+        float scale = ContextHolder.getContext().getResources().getDisplayMetrics().density;
+        return (int) (px * scale + 0.5f);
+    }
+
 }
