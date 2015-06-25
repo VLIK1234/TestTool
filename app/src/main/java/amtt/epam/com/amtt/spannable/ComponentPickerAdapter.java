@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.spannable;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
@@ -39,6 +40,7 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
         return componentList.get(position);
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Holder holder;
@@ -57,7 +59,8 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
 
     @Override
     public Filter getFilter() {
-        Filter contactFilter = new Filter() {
+
+        return new Filter() {
 
             @SuppressWarnings("unchecked")
             @Override
@@ -86,18 +89,13 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
 
             @Override
             public CharSequence convertResultToString(Object resultValue) {
-                // need to save this to saved contact
                 return (String) resultValue;
             }
         };
-
-        return contactFilter;
     }
 
     @SuppressWarnings("unchecked")
     public void setComponentList(ArrayList<String> componentList) {
-        // this isn't the efficient method
-        // need to improvise on this
         this.componentList = componentList;
         this.cloneComponentList = (ArrayList<String>) this.componentList.clone();
         notifyDataSetChanged();

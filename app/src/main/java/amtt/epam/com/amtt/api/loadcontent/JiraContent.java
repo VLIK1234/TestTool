@@ -47,7 +47,6 @@ public class JiraContent{
     private JPriorityResponse mPriorityResponse;
     private HashMap<String, String> mProjectComponentsNames;
 
-
     private static class JiraContentHolder {
         public static final JiraContent INSTANCE = new JiraContent();
     }
@@ -108,35 +107,9 @@ public class JiraContent{
         }
         mIssueTypesNames = null;
         mProjectVersionsNames = null;
-        final String mProjectKey = mLastProject.getKey();
-        if (mProjectKey != null) {
-            StepUtil.checkUser(ActiveUser.getInstance().getUserName(), new IResult<List<JUserInfo>>() {
-                @Override
-                public void onResult(List<JUserInfo> result) {
-                    if (result.size() != 0) {
-                        JUserInfo user = result.get(0);
-                        user.setLastProjectKey(mProjectKey);
-                        ContentFromDatabase.setLastProject(user, new IResult<Integer>() {
-                            @Override
-                            public void onResult(Integer res) {
-                                ActiveUser.getInstance().setLastProjectKey(mProjectKey);
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void onError(Exception e) {
-
-                }
-            });
-        }
-        jiraGetContentCallback.resultOfDataLoading(mLastProject.getKey());
+        String mProjectKey = mLastProject.getKey();
+        ActiveUser.getInstance().setLastProjectKey(mProjectKey);
+        jiraGetContentCallback.resultOfDataLoading(mProjectKey);
     }
 
     public void getProjectNameByKey(String projectKey, final JiraGetContentCallback<String> jiraGetContentCallback) {
@@ -411,6 +384,37 @@ public class JiraContent{
         mProjectPrioritiesNames = null;
         mProjectVersionsNames = null;
         mLastProject = null;
+    }
+
+    public void setDefaultConfig(final String lastProjectKey, final String lastAssignee, final ArrayList<String> lastComponentsIds) {
+        if (lastProjectKey != null) {
+            StepUtil.checkUser(ActiveUser.getInstance().getUserName(), new IResult<List<JUserInfo>>() {
+                @Override
+                public void onResult(List<JUserInfo> result) {
+                    if (result.size() != 0) {
+                        JUserInfo user = result.get(0);
+                        user.setLastProjectKey(lastProjectKey);
+                        user.setLastAssigneeName(lastAssignee);
+                        user.setListLastComponentsIds(lastComponentsIds);
+                        ContentFromDatabase.updateUser(user, new IResult<Integer>() {
+                            @Override
+                            public void onResult(Integer res) {
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                }
+            });
+        }
     }
 
     private void getIssueTypesSynchronously(final JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {

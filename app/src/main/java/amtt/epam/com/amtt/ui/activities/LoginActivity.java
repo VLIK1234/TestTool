@@ -183,6 +183,7 @@ public class LoginActivity extends BaseActivity implements JiraCallback<JUserInf
         final ActiveUser activeUser = ActiveUser.getInstance();
         final String userName = mUserNameEditText.getText().toString();
         final String password = mPasswordEditText.getText().toString();
+        ActiveUser.getInstance().clearActiveUser();
         activeUser.setCredentials(userName, password, mRequestUrl);
         activeUser.setUserName(userName);
         activeUser.setUrl(mUrlEditText.getText().toString());

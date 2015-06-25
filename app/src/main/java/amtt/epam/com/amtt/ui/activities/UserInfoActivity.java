@@ -142,6 +142,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     }
 
     public void setActiveUser(JUserInfo user) {
+        ActiveUser.getInstance().clearActiveUser();
         ActiveUser.getInstance().setUrl(user.getUrl());
         ActiveUser.getInstance().setCredentials(user.getCredentials());
         ActiveUser.getInstance().setId(user.getId());

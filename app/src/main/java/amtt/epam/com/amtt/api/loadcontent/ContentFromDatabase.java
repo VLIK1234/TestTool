@@ -54,7 +54,8 @@ public class ContentFromDatabase {
         DbObjectManager.INSTANCE.add(list, result);
     }
 
-    public static void setLastProject(JUserInfo user, IResult<Integer> result) {
+    public static void updateUser(JUserInfo user, IResult<Integer> result) {
         DbObjectManager.INSTANCE.update(user, BaseColumns._ID + "=" + ActiveUser.getInstance().getId(), null, result);
     }
+
 }

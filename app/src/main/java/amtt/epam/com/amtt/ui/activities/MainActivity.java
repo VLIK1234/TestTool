@@ -84,12 +84,15 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     }
 
     private void setActiveUser(Cursor data) {
+        ActiveUser.getInstance().clearActiveUser();
         JUserInfo userInfo = new JUserInfo(data);
         ActiveUser.getInstance().setUrl(userInfo.getUrl());
         ActiveUser.getInstance().setCredentials(userInfo.getCredentials());
         ActiveUser.getInstance().setId(userInfo.getId());
         ActiveUser.getInstance().setUserName(userInfo.getName());
         ActiveUser.getInstance().setLastProjectKey(userInfo.getLastProjectKey());
+        ActiveUser.getInstance().setLastAssigneeName(userInfo.getLastAssigneeName());
+        ActiveUser.getInstance().setLastComponentsIds(userInfo.getListLastComponentsIds());
         Logger.e(TAG, "ID " + userInfo.getId());
         Logger.e(TAG, "LastProjectKey " + userInfo.getLastProjectKey());
         ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();

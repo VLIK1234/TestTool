@@ -26,6 +26,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.AttachmentAdapter;
@@ -105,7 +106,24 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     @Override
     protected void onPause() {
         super.onPause();
+        HashMap<Integer, String> components = mComponents.getSelectedItems();
+        if(components!=null){
+            if(!components.isEmpty()){
+                ArrayList<String> componentsList = new ArrayList<>();
+                for (Map.Entry<Integer, String> entry :components.entrySet()) {
+                    componentsList.add(JiraContent.getInstance().getComponentIdByName(entry.getValue()));
+                }
+                ActiveUser.getInstance().setLastComponentsIds(componentsList);
+            }
+        }
         TopButtonService.sendActionChangeVisibilityTopbutton(true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        JiraContent.getInstance().setDefaultConfig(ActiveUser.getInstance().getLastProjectKey(),
+                ActiveUser.getInstance().getLastAssignee(), ActiveUser.getInstance().getLastComponentsIds());
     }
 
     private void initViews() {
@@ -148,6 +166,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                                         }
                                     }
                                 });
+                            }else{
+                                mProjectNamesSpinner.setSelection(1);
                             }
                             mProjectNamesSpinner.setEnabled(true);
                         }
@@ -245,38 +265,24 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void initComponentsSpinner(String projectKey) {
-        final Spinner componentsSpinner = (Spinner) findViewById(R.id.spin_components);
         final TextView componentsTextView = (TextView) findViewById(R.id.tv_components);
         mComponents = (CustomMultiAutoCompleteTextView) findViewById(R.id.editText);
-        componentsSpinner.setEnabled(false);
         JiraContent.getInstance().getComponentsNames(projectKey, new JiraGetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
                 if (result != null && result.size() > 0) {
-                    componentsSpinner.setVisibility(View.VISIBLE);
                     componentsTextView.setVisibility(View.VISIBLE);
+                    mComponents.setVisibility(View.VISIBLE);
                     ArrayList<String> componentsNames = new ArrayList<>();
                     componentsNames.addAll(result.values());
                     ArrayAdapter<String> componentsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, componentsNames);
                     componentsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                    componentsSpinner.setAdapter(componentsAdapter);
-                    componentsSpinner.setEnabled(true);
                     ComponentPickerAdapter componentPickerAdapter = new ComponentPickerAdapter(CreateIssueActivity.this, R.layout.spinner_layout, componentsNames);
                     mComponents.setAdapter(componentPickerAdapter);
                 } else {
-                    componentsSpinner.setVisibility(View.GONE);
                     componentsTextView.setVisibility(View.GONE);
+                    mComponents.setVisibility(View.GONE);
                 }
-            }
-        });
-        componentsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mVersionName = (String) parent.getItemAtPosition(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
             }
         });
     }
@@ -411,7 +417,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 2&&before<=count) {
+                if (s.length() > 2 && before <= count) {
                     if (InputsUtil.haveWhitespaces(s.toString())) {
                         Toast.makeText(CreateIssueActivity.this, getString(R.string.label_tester) + getString(R.string.label_no_whitespaces), Toast.LENGTH_LONG).show();
                     } else {
@@ -467,6 +473,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     if (assignableUsersAdapter.getCount() > 0) {
                         if (!mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
                             mAssignableAutocompleteView.showDropDown();
+                        }else{
+                            ActiveUser.getInstance().setLastAssigneeName(mAssignableAutocompleteView.getText().toString());
                         }
                     }
                     mAssignableAutocompleteView.showProgress(false);
@@ -499,7 +507,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         if (view != null) {
             mInputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
         }
-
     }
 
 }
