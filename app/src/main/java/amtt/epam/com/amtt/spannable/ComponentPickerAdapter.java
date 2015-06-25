@@ -17,7 +17,8 @@ import amtt.epam.com.amtt.R;
 
 public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filterable {
 
-    private ArrayList<String> componentList, cloneComponentList;
+    private ArrayList<String> componentList;
+    private ArrayList<String> cloneComponentList;
     private LayoutInflater layoutInflater;
 
     @SuppressWarnings("unchecked")
@@ -26,7 +27,6 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
         this.componentList = componentList;
         this.cloneComponentList = (ArrayList<String>) this.componentList.clone();
         layoutInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-
     }
 
     @Override
@@ -57,30 +57,23 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
 
     @Override
     public Filter getFilter() {
-        return new Filter() {
+        Filter contactFilter = new Filter() {
 
             @SuppressWarnings("unchecked")
             @Override
-            protected void publishResults(CharSequence constraint,
-                                          FilterResults results) {
+            protected void publishResults(CharSequence constraint, FilterResults results) {
                 if (results.values != null) {
                     componentList = (ArrayList<String>) results.values;
                     notifyDataSetChanged();
                 }
-
             }
 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                String sortValue;
-                if (constraint == null) {
-                    sortValue = "";
-                } else {
-                    sortValue = constraint.toString().toLowerCase();
-                }
+                String sortValue = constraint == null ? "" : constraint.toString().toLowerCase();
                 FilterResults filterResults = new FilterResults();
                 if (!TextUtils.isEmpty(sortValue.trim())) {
-                    ArrayList<String> sortedComponentList = new ArrayList<>();
+                    ArrayList<String> sortedComponentList = new ArrayList<String>();
                     for (String contact : cloneComponentList) {
                         if (contact.toLowerCase().contains(sortValue))
                             sortedComponentList.add(contact);
@@ -94,9 +87,11 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
             @Override
             public CharSequence convertResultToString(Object resultValue) {
                 // need to save this to saved contact
-                return ((String) resultValue);
+                return (String) resultValue;
             }
         };
+
+        return contactFilter;
     }
 
     @SuppressWarnings("unchecked")
@@ -106,6 +101,10 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
         this.componentList = componentList;
         this.cloneComponentList = (ArrayList<String>) this.componentList.clone();
         notifyDataSetChanged();
+    }
+
+    public ArrayList<String> getComponentList() {
+        return this.componentList;
     }
 
     public static class Holder {
