@@ -49,7 +49,7 @@ public class HelpDialogActivity extends Activity {
         builder.setTitle(R.string.title_activity_help_dialog)
                 .setMessage(stringBuilder)
                 .setView(view)
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         setIsCanTakeScreenshot(false);
@@ -57,7 +57,7 @@ public class HelpDialogActivity extends Activity {
                         TopButtonService.sendActionChangeTopButtonVisibility(true);
                     }
                 })
-                .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();

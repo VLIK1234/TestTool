@@ -1,7 +1,7 @@
 package amtt.epam.com.amtt.adapter;
 
+import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
-import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.util.Logger;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -49,7 +49,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         if (screenshot.filePath.contains(".png")) {
             ImageLoader.getInstance().displayImage("file:///" + screenshot.filePath, viewHolder.screenshotImage);
         }else if (screenshot.filePath.contains(".txt")){
-            viewHolder.screenshotImage.setImageDrawable(ContextHolder.getContext().getResources().getDrawable(R.drawable.text_file_preview));
+            viewHolder.screenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
         }
 
         viewHolder.screenshotClose.setEnabled(true);
