@@ -22,10 +22,12 @@ import amtt.epam.com.amtt.view.AutocompleteProgressView;
 import amtt.epam.com.amtt.view.SpinnerProgress;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
@@ -113,6 +115,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initListStepButton();
         initPrioritiesSpinner();
         initCreateIssueButton();
+        initClearEnvironmentButton();
         mInputManager = (InputMethodManager) CreateIssueActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
@@ -254,21 +257,20 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         JiraContent.getInstance().getIssueTypesNames(new JiraGetContentCallback<ArrayList<String>>() {
             @Override
             public void resultOfDataLoading(final ArrayList<String> result) {
-                if(result!=null)
-                {
-                CreateIssueActivity.this.runOnUiThread(new Runnable() {
-                    public void run() {
-                        ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
-                        issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                        issueTypesSpinner.setAdapter(issueTypesAdapter);
-                        issueTypesSpinner.showProgress(false);
-                        issueTypesSpinner.setEnabled(true);
-                        hideKeyboard();
-                    }
-                });
+                if (result != null) {
+                    CreateIssueActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
+                            issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                            issueTypesSpinner.setAdapter(issueTypesAdapter);
+                            issueTypesSpinner.showProgress(false);
+                            issueTypesSpinner.setEnabled(true);
+                            hideKeyboard();
+                        }
+                    });
+                }
             }
-        }
-    });
+        });
         issueTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -404,9 +406,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (result!=null) {
+                        if (result != null) {
                             ArrayList<Attachment> screenArray = AttachmentManager.getInstance().
-                                getAttachmentList(result);
+                                    getAttachmentList(result);
                             mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
                             recyclerView.setAdapter(mAdapter);
                         }
@@ -420,6 +422,32 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             }
         });
 
+    }
+
+    private void initClearEnvironmentButton() {
+        Button clearEnvironmentButton = (Button)findViewById(R.id.btn_clear_environment);
+        clearEnvironmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(CreateIssueActivity.this)
+                        .setTitle(R.string.label_clear_environment)
+                        .setMessage(R.string.message_clear_environment)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mEnvironmentEditText.setText("");
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+            }
+        });
     }
 
     private void setAssignableNames(String s) {
