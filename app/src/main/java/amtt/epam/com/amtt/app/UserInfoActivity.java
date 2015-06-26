@@ -1,24 +1,6 @@
 package amtt.epam.com.amtt.app;
 
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.api.JiraApi;
-import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.api.JiraCallback;
-import amtt.epam.com.amtt.api.JiraTask;
-import amtt.epam.com.amtt.api.exception.AmttException;
-import amtt.epam.com.amtt.api.exception.ExceptionHandler;
-import amtt.epam.com.amtt.api.rest.RestMethod;
-import amtt.epam.com.amtt.api.rest.RestResponse;
-import amtt.epam.com.amtt.api.result.JiraOperationResult;
-import amtt.epam.com.amtt.bo.user.JUserInfo;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.processing.UserInfoProcessor;
-import amtt.epam.com.amtt.api.loadcontent.JiraContent;
-import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.util.ActiveUser;
-import amtt.epam.com.amtt.util.IOUtils;
-import amtt.epam.com.amtt.util.Logger;
+
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -37,17 +19,35 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.lang.ref.WeakReference;
 
-/**
- @author Artsiom_Kaliaha
- @version on 07.05.2015
- */
+import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.api.JiraApi;
+import amtt.epam.com.amtt.api.JiraApiConst;
+import amtt.epam.com.amtt.api.loadcontent.JiraContent;
+import amtt.epam.com.amtt.bo.user.JUserInfo;
+import amtt.epam.com.amtt.common.Callback;
+import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.exception.ExceptionType;
+import amtt.epam.com.amtt.processing.UserInfoProcessor;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.DialogUtils;
+import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.util.Logger;
 
+/**
+ * @author Artsiom_Kaliaha
+ * @version on 07.05.2015
+ */
 @SuppressWarnings("unchecked")
-public class UserInfoActivity extends BaseActivity implements JiraCallback<JUserInfo>, LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
+public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo>, LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_REFRESH = 100;
+
     private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
+    private static final int LOGIN_ACTIVITY_REQUEST_CODE = 2;
+
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 2;
     private TextView mNameTextView;
     private TextView mEmailAddressTextView;
@@ -112,21 +112,52 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
             case R.id.action_add: {
                 TopButtonService.close(getBaseContext());
                 isNeedShowingTopButton = false;
-                Intent intent = new Intent(this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                startActivityForResult(new Intent(this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
             }
             return true;
             case R.id.action_list: {
-                startActivityForResult(new Intent(UserInfoActivity.this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
+                startActivityForResult(new Intent(this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
             }
             return true;
             case android.R.id.home: {
+                TopButtonService.start(this);
                 finish();
             }
             return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onRefresh() {
+        mHandler.removeMessages(MESSAGE_REFRESH);
+        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_REFRESH), 750);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case AMTT_ACTIVITY_REQUEST_CODE:
+                    if (data != null) {
+                        Bundle args = new Bundle();
+                        long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
+                        args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
+                        getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
+                    } else {
+                        startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
+                        isNeedShowingTopButton = false;
+                    }
+                    break;
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+            switch (requestCode) {
+                case LOGIN_ACTIVITY_REQUEST_CODE:
+                    getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, UserInfoActivity.this);
+                    break;
+            }
         }
     }
 
@@ -156,7 +187,31 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
         JiraContent.getInstance().clearData();
     }
 
+    private void refreshUserInfo() {
+        String requestSuffix = JiraApiConst.USER_INFO_PATH + ActiveUser.getInstance().getUserName();
+        JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, null, null, null, this);
+    }
+
     //Callback
+    //Jira
+    @Override
+    public void onLoadStart() {
+
+    }
+
+    @Override
+    public void onLoadExecuted(JUserInfo user) {
+        user.setUrl(ActiveUser.getInstance().getUrl());
+        setActiveUser(user);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onLoadError(Exception e) {
+        DialogUtils.createDialog(this, ExceptionType.valueOf(e)).show();
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
     //Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -166,7 +221,7 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
                     AmttUri.USER.get(),
                     null,
                     UsersTable._ID + "=?",
-                    new String[]{ String.valueOf(ActiveUser.getInstance().getId()) },
+                    new String[]{String.valueOf(ActiveUser.getInstance().getId())},
                     null);
         } else if (id == SINGLE_USER_CURSOR_LOADER_ID) {
             loader = new CursorLoader(UserInfoActivity.this,
@@ -211,72 +266,6 @@ public class UserInfoActivity extends BaseActivity implements JiraCallback<JUser
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
-    }
-
-    //Jira
-    @Override
-    public void onRequestStarted() {
-    }
-
-    @Override
-    public void onRequestPerformed(RestResponse<JUserInfo> restResponse) {
-        if (restResponse.getOpeartionResult() == JiraOperationResult.REQUEST_PERFORMED) {
-            JUserInfo user = restResponse.getResultObject();
-            user.setUrl(ActiveUser.getInstance().getUrl());
-            setActiveUser(user);
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
-    @Override
-    public void onRequestError(AmttException e) {
-        ExceptionHandler.getInstance().processError(e).showDialog(this, UserInfoActivity.this);
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-
-    private void refreshUserInfo() {
-        String requestSuffix = JiraApiConst.USER_INFO_PATH + ActiveUser.getInstance().getUserName();
-        RestMethod<JUserInfo> userInfoMethod = JiraApi.getInstance().buildDataSearch(requestSuffix,
-                new UserInfoProcessor(),
-                null,
-                null,
-                null);
-            new JiraTask.Builder<JUserInfo>()
-                    .setRestMethod(userInfoMethod)
-                    .setCallback(UserInfoActivity.this)
-                    .createAndExecute();
-    }
-
-    @Override
-    public void onRefresh() {
-        mHandler.removeMessages(MESSAGE_REFRESH);
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_REFRESH), 750);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case AMTT_ACTIVITY_REQUEST_CODE:
-                    if (data != null) {
-                        Bundle args = new Bundle();
-                        long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
-                        args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
-                        isNewUser = true;
-                        TopButtonService.close(getBaseContext());
-                        getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
-                    }else{
-                        Intent loginIntent = new Intent(UserInfoActivity.this, LoginActivity.class);
-                        startActivity(loginIntent);
-                        TopButtonService.close(getBaseContext());
-                        isNeedShowingTopButton = false;
-                        finish();
-                    }
-                    break;
-            }
-        }
     }
 
 }

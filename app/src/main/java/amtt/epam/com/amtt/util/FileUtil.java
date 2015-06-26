@@ -1,19 +1,27 @@
 package amtt.epam.com.amtt.util;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import android.support.annotation.Nullable;
+
+import java.io.File;
 
 /**
- * Created by Ivan_Bakach on 10.06.2015.
+ @author Ivan_Bakach
+ @version on 10.06.2015
  */
+
 public class FileUtil {
 
-    public static String getFileName(String filePath){
-        Pattern p = Pattern.compile("[-_0-9a-zA-Z]*[.]\\w{0,5}");
-        Matcher m = p.matcher(filePath);
-        if (m.find()) {
-            return m.group();
-        }else{
+    public static String getFileName(@Nullable String filePath) {
+        if (filePath == null) {
+            return "";
+        }
+        int slashIndex = filePath.lastIndexOf(File.separatorChar);
+        if (slashIndex == -1) {
+            return "";
+        }
+        if (slashIndex + 1 < filePath.length()) {
+            return filePath.substring(slashIndex + 1);
+        } else {
             return "";
         }
     }
