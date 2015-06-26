@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.spannable;
+package amtt.epam.com.amtt.ui.views;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

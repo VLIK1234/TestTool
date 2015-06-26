@@ -1,5 +1,7 @@
 package amtt.epam.com.amtt.bo;
 
+import java.util.ArrayList;
+
 import amtt.epam.com.amtt.bo.issue.JIssueFields;
 import amtt.epam.com.amtt.bo.issue.JIssuePriority;
 import amtt.epam.com.amtt.bo.issue.JIssueProject;
@@ -7,6 +9,7 @@ import amtt.epam.com.amtt.bo.issue.JIssueTypesIssueType;
 import amtt.epam.com.amtt.bo.project.JIssueVersion;
 import amtt.epam.com.amtt.bo.user.JUser;
 import amtt.epam.com.amtt.processing.GsonSerializeProcessor;
+import amtt.epam.com.amtt.util.Logger;
 
 /**
  @author Iryna Monchanka
@@ -26,7 +29,7 @@ public class JCreateIssue {
     private GsonSerializeProcessor<JCreatingIssueRequest> mGsonSerializeProcessor = new GsonSerializeProcessor<>();
 
     public JCreateIssue(String keyProject, String issueTypeId, String summary, String description,
-                        String priorityId, String versionsId, String environment, String userAssigneName) {
+                        String priorityId, String versionsId, String environment, String userAssigneName, ArrayList<String> componentIds) {
         mProject.setKey(keyProject);
         mIssueType.setId(issueTypeId);
         mPriority.setId(priorityId);
@@ -42,6 +45,7 @@ public class JCreateIssue {
         mFields.setSummary(summary);
         mFields.setDescription(description);
         mFields.setEnvironment(environment);
+        mFields.setJiraIssueComponentsIds(componentIds);
         mBData.setFields(mFields);
         getResultJson();
     }
@@ -50,6 +54,7 @@ public class JCreateIssue {
         String jsonString = null;
         try {
             jsonString = mGsonSerializeProcessor.process(mBData);
+            Logger.e(TAG, jsonString);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.spannable;
+package amtt.epam.com.amtt.ui.views;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -72,18 +72,22 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
 		this.addTextChangedListener(textWatcher);
 		this.setThreshold(0);
 		this.setTokenizer(new CustomCommaTokenizer());
-		this.setOnItemClickListener(new OnItemClickListener() {
+        onClickItem(new OnItemClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				String component = (String) parent.getItemAtPosition(position);
-				selectedContact.put(position, component);
-				updateQuickContactList();
-			}
-		});
-	}
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String component = (String) parent.getItemAtPosition(position);
+                selectedContact.put(position, component);
+                updateQuickContactList();
+            }
+        });
+    }
 
-	@Override
+    private void onClickItem(OnItemClickListener l) {
+        this.setOnItemClickListener(l);
+    }
+
+    @Override
 	protected void replaceText(CharSequence text) {
 		checkValidation = false;
 		super.replaceText(text);
@@ -278,7 +282,7 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
 		@SuppressLint("InflateParams")
         TextView textView = (TextView) layoutInflater.inflate(R.layout.textview, null);
 		textView.setText(message);
-		textView.setTextSize((int) spToPixels(context, 18));
+		textView.setTextSize((int) spToPixels(context, 16));
 		textView.setHeight((int) dipToPixels(context, 48));
         return (BitmapDrawable) extractBitmapFromTextView(textView);
 	}
@@ -378,4 +382,14 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
         return selectedContact;
     }
 
+    public void setSelectedItems(ArrayList<String> items){
+        if (items != null) {
+            if (items.size() != 0) {
+                for (int i = 0; i < items.size(); i++) {
+                    selectedContact.put(i, items.get(i));
+                    updateQuickContactList();
+                }
+            }
+        }
+    }
 }

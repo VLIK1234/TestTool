@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
 
@@ -63,4 +64,7 @@ public class AutocompleteProgressView extends RelativeLayout {
         return mACTextView.getText();
     }
 
+    public void setText(CharSequence text) {
+        mACTextView.setText(text, TextView.BufferType.NORMAL);
+    }
 }

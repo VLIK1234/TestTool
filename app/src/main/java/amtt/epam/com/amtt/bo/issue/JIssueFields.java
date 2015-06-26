@@ -1,11 +1,12 @@
 package amtt.epam.com.amtt.bo.issue;
 
-import amtt.epam.com.amtt.bo.project.JComponent;
-import amtt.epam.com.amtt.bo.project.JIssueVersion;
-import amtt.epam.com.amtt.bo.user.JUser;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+
+import amtt.epam.com.amtt.bo.project.JComponent;
+import amtt.epam.com.amtt.bo.project.JIssueVersion;
+import amtt.epam.com.amtt.bo.user.JUser;
 
 /**
  @author Iryna Monchanka
@@ -43,7 +44,7 @@ public class JIssueFields {
     @SerializedName("fixVersions")
     private ArrayList<JIssueVersion> mJiraIssueFixVersions = new ArrayList<>();
     @SerializedName("components")
-    private ArrayList<JComponent> mJComponents;
+    private ArrayList<JComponent> mJComponents = new ArrayList<>();
 
   /*  private String timespent;
  private String[] fixVersions;
@@ -219,6 +220,21 @@ public class JIssueFields {
     public void setJiraIssueComponents(ArrayList<JComponent> jComponents) {
         this.mJComponents = jComponents;
     }
+
+    public void setJiraIssueComponentsItem(JComponent component) {
+        this.mJComponents.add(component);
+    }
+
+    public void setJiraIssueComponentsIds(ArrayList<String> componentsIds) {
+        if(componentsIds!=null){
+            if(componentsIds.size()!=0){
+                for(int i=0; i<componentsIds.size();i++){
+                    setJiraIssueComponentsItem(new JComponent(componentsIds.get(i)));
+                }
+            }
+        }
+    }
+
 }
 
 

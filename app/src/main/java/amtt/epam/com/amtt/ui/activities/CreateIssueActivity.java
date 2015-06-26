@@ -42,10 +42,10 @@ import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.service.AttachmentService;
-import amtt.epam.com.amtt.spannable.ComponentPickerAdapter;
-import amtt.epam.com.amtt.spannable.CustomMultiAutoCompleteTextView;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.AutocompleteProgressView;
+import amtt.epam.com.amtt.ui.views.ComponentPickerAdapter;
+import amtt.epam.com.amtt.ui.views.CustomMultiAutoCompleteTextView;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.InputsUtil;
@@ -105,11 +105,11 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     @Override
     protected void onPause() {
         super.onPause();
-        if(mComponents.getSelectedItems()!=null){
-        HashMap<Integer, String> components = mComponents.getSelectedItems();
-            if(!components.isEmpty()){
+        if (mComponents.getSelectedItems() != null) {
+            HashMap<Integer, String> components = mComponents.getSelectedItems();
+            if (!components.isEmpty()) {
                 ArrayList<String> componentsList = new ArrayList<>();
-                for (Map.Entry<Integer, String> entry :components.entrySet()) {
+                for (Map.Entry<Integer, String> entry : components.entrySet()) {
                     componentsList.add(JiraContent.getInstance().getComponentIdByName(entry.getValue()));
                 }
                 ActiveUser.getInstance().setLastComponentsIds(componentsList);
@@ -166,7 +166,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                                     }
                                 });
                             }else{
-                                mProjectNamesSpinner.setSelection(1);
+                                mProjectNamesSpinner.setSelection(0);
                             }
                             mProjectNamesSpinner.setEnabled(true);
                         }
@@ -278,6 +278,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     componentsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                     ComponentPickerAdapter componentPickerAdapter = new ComponentPickerAdapter(CreateIssueActivity.this, R.layout.spinner_layout, componentsNames);
                     mComponents.setAdapter(componentPickerAdapter);
+                    if (ActiveUser.getInstance().getLastComponentsIds() != null) {
+                        mComponents.setSelectedItems(ActiveUser.getInstance().getLastComponentsIds());
+                    }
                 } else {
                     componentsTextView.setVisibility(View.GONE);
                     mComponents.setVisibility(View.GONE);
@@ -376,10 +379,20 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 }
                 if (isValid) {
                     showProgress(true);
+                    if (mComponents.getSelectedItems() != null) {
+                        HashMap<Integer, String> components = mComponents.getSelectedItems();
+                        if (!components.isEmpty()) {
+                            ArrayList<String> componentsList = new ArrayList<>();
+                            for (Map.Entry<Integer, String> entry : components.entrySet()) {
+                                componentsList.add(JiraContent.getInstance().getComponentIdByName(entry.getValue()));
+                            }
+                            ActiveUser.getInstance().setLastComponentsIds(componentsList);
+                        }
+                    }
                     JiraContent.getInstance().createIssue(mIssueTypeName,
                             mPriorityName, mVersionName, mSummaryEditText.getText().toString(),
                             mDescriptionEditText.getText().toString(), mEnvironmentEditText.getText().toString(),
-                            mAssignableUserName, new JiraGetContentCallback<JCreateIssueResponse>() {
+                            mAssignableUserName,  ActiveUser.getInstance().getLastComponentsIds(), new JiraGetContentCallback<JCreateIssueResponse>() {
                                 @Override
                                 public void resultOfDataLoading(JCreateIssueResponse result) {
                                     if (result != null) {
@@ -404,6 +417,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     private void initAssigneeAutocompleteView() {
         mAssignableAutocompleteView = (AutocompleteProgressView) findViewById(R.id.atv_assignable_users);
+        if (ActiveUser.getInstance().getLastAssignee() != null) {
+            mAssignableAutocompleteView.setText(ActiveUser.getInstance().getLastAssignee());
+        }
         mAssignableAutocompleteView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -441,7 +457,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (result!=null) {
+                        if (result != null) {
                             ArrayList<Attachment> screenArray = AttachmentManager.getInstance().
                                 getAttachmentList(result);
                             mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);

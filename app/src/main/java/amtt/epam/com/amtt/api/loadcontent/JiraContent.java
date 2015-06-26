@@ -107,6 +107,7 @@ public class JiraContent{
         }
         mIssueTypesNames = null;
         mProjectVersionsNames = null;
+        mProjectComponentsNames = null;
         String mProjectKey = mLastProject.getKey();
         ActiveUser.getInstance().setLastProjectKey(mProjectKey);
         jiraGetContentCallback.resultOfDataLoading(mProjectKey);
@@ -322,7 +323,7 @@ public class JiraContent{
 
     @SuppressWarnings("unchecked")
     public void createIssue(String issueTypeName, String priorityName, String versionName, String summary,
-                            String description, String environment, String userAssigneName,
+                            String description, String environment, String userAssigneName, ArrayList<String> componentsIds,
                             final JiraGetContentCallback<JCreateIssueResponse> jiraGetContentCallback) {
         final String mProjectKey;
         final String issueTypeId;
@@ -335,7 +336,7 @@ public class JiraContent{
             versionId = getVersionIdByName(versionName);
         }
         String issueJson = new JCreateIssue(mProjectKey, issueTypeId, description, summary, priorityId, versionId,
-                environment, userAssigneName).getResultJson();
+                environment, userAssigneName, componentsIds).getResultJson();
         ContentFromBackend.getInstance().createIssueAsynchronously(issueJson, new ContentLoadingCallback<JCreateIssueResponse>() {
             @Override
             public void resultFromBackend(JCreateIssueResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {

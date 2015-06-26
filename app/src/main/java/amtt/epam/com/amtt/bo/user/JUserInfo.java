@@ -168,13 +168,12 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
     }
 
     public void setLastComponent(String lastComponentId){
-        if(mListLastComponentsIds.isEmpty()) {
+        if(mListLastComponentsIds==null || mListLastComponentsIds.isEmpty()) {
             setLastComponentsIds(lastComponentId);
         }else{
-            this.mLastComponentsIds = mLastComponentsIds.concat(lastComponentId);
+            mLastComponentsIds = mLastComponentsIds.concat(lastComponentId);
         }
-        this.mListLastComponentsIds.add(lastComponentId);
-        this.mLastComponentsIds = mLastComponentsIds.concat("$&");
+        mLastComponentsIds = mLastComponentsIds.concat("$&");
     }
 
     public void setLastComponentsIds(String lastComponents) {
@@ -192,7 +191,7 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         if (listLastComponentsIds != null) {
             if (!listLastComponentsIds.isEmpty()) {
                 for (int i = 0; i < listLastComponentsIds.size(); i++) {
-                    setLastComponent(mListLastComponentsIds.get(i));
+                    setLastComponent(listLastComponentsIds.get(i));
                 }
             }
         }
