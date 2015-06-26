@@ -60,7 +60,6 @@ public class StepUtil {
                  "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>" + "<br />" + "<br />");
      }
 
-    @SuppressWarnings("unchecked")
     public static Spanned getStepInfo(List<DatabaseEntity> listStep){
         ArrayList<Step> list = (ArrayList)listStep;
         SpannableStringBuilder builder = new SpannableStringBuilder();

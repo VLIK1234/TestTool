@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
@@ -26,7 +27,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.AttachmentAdapter;
@@ -50,7 +50,7 @@ import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.InputsUtil;
 
-@SuppressWarnings("unchecked")
+
 public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener{
 
     private static final int MESSAGE_TEXT_CHANGED = 100;
@@ -106,11 +106,11 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     protected void onPause() {
         super.onPause();
         if (mComponents.getSelectedItems() != null) {
-            HashMap<Integer, String> components = mComponents.getSelectedItems();
-            if (!components.isEmpty()) {
+            SparseArrayCompat<String> components = mComponents.getSelectedItems();
+            if (components.size()!=0) {
                 ArrayList<String> componentsList = new ArrayList<>();
-                for (Map.Entry<Integer, String> entry : components.entrySet()) {
-                    componentsList.add(JiraContent.getInstance().getComponentIdByName(entry.getValue()));
+                for (int i = 0; i< components.size(); i++) {
+                    componentsList.add(JiraContent.getInstance().getComponentIdByName(components.valueAt(i)));
                 }
                 ActiveUser.getInstance().setLastComponentsIds(componentsList);
             }
@@ -380,11 +380,11 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 if (isValid) {
                     showProgress(true);
                     if (mComponents.getSelectedItems() != null) {
-                        HashMap<Integer, String> components = mComponents.getSelectedItems();
-                        if (!components.isEmpty()) {
+                       SparseArrayCompat<String> components = mComponents.getSelectedItems();
+                        if (components.size()!= 0) {
                             ArrayList<String> componentsList = new ArrayList<>();
-                            for (Map.Entry<Integer, String> entry : components.entrySet()) {
-                                componentsList.add(JiraContent.getInstance().getComponentIdByName(entry.getValue()));
+                            for (int i= 0; i<components.size();i++) {
+                                componentsList.add(JiraContent.getInstance().getComponentIdByName(components.valueAt(i)));
                             }
                             ActiveUser.getInstance().setLastComponentsIds(componentsList);
                         }

@@ -99,7 +99,6 @@ public class TopButtonBarView extends FrameLayout {
         });
     }
 
-    @SuppressWarnings("unchecked")
     private void initButtonsHandlers() {
         mButtonStartRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), R.drawable.background_start_record, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override

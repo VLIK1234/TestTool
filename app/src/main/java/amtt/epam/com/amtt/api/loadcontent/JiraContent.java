@@ -193,7 +193,6 @@ public class JiraContent{
         this.mUsersAssignableNames = usersAssignableNames;
     }
 
-    @SuppressWarnings("unchecked")
     private void getProjectsResponse(JiraGetContentCallback<HashMap<JProjects, String>> jiraGetContentCallback) {
         ContentFromBackend.getInstance().getProjectsAsynchronously(new ContentLoadingCallback<JProjectsResponse>() {
             @Override
@@ -242,7 +241,6 @@ public class JiraContent{
         }, jiraGetContentCallback);
     }
 
-    @SuppressWarnings("unchecked")
     private void getVersionsResponse(String projectsKey,
                                      JiraGetContentCallback<HashMap<String, String>> jiraGetContentCallback) {
         ContentFromBackend.getInstance().getVersionsAsynchronously(projectsKey, new ContentLoadingCallback<JVersionsResponse>() {
@@ -257,7 +255,6 @@ public class JiraContent{
         }, jiraGetContentCallback);
     }
 
-    @SuppressWarnings("unchecked")
     private void getComponentsResponse(String projectsKey,
                                      JiraGetContentCallback<HashMap<String, String>> jiraGetContentCallback) {
         ContentFromBackend.getInstance().getComponentsAsynchronously(projectsKey, new ContentLoadingCallback<JComponentsResponse>() {
@@ -272,7 +269,6 @@ public class JiraContent{
         }, jiraGetContentCallback);
     }
 
-    @SuppressWarnings("unchecked")
     public void getUsersAssignable(String userName,
                                    final JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
         ContentFromBackend.getInstance().getUsersAssignableAsynchronously(mLastProject.getKey(), userName, new ContentLoadingCallback<JUserAssignableResponse>() {
@@ -287,7 +283,6 @@ public class JiraContent{
         }, jiraGetContentCallback);
     }
 
-    @SuppressWarnings("unchecked")
     private void getPriorities(final JiraGetContentCallback<HashMap<String, String>> jiraGetContentCallback) {
         ContentFromBackend.getInstance().getPriorityAsynchronously(new ContentLoadingCallback<JPriorityResponse>() {
             @Override
@@ -321,7 +316,6 @@ public class JiraContent{
         }, jiraGetContentCallback);
     }
 
-    @SuppressWarnings("unchecked")
     public void createIssue(String issueTypeName, String priorityName, String versionName, String summary,
                             String description, String environment, String userAssigneName, ArrayList<String> componentsIds,
                             final JiraGetContentCallback<JCreateIssueResponse> jiraGetContentCallback) {

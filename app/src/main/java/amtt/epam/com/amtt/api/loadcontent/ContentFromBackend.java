@@ -25,7 +25,7 @@ import amtt.epam.com.amtt.processing.VersionsProcessor;
  * @author Iryna Monchanka
  * @version on 15.05.2015
  */
-@SuppressWarnings("unchecked")
+
 public class ContentFromBackend {
 
     private static class ContentFromBackendHolder {
@@ -58,7 +58,6 @@ public class ContentFromBackend {
                 getCallback(JiraContentConst.VERSIONS_RESPONSE, contentLoadingCallback, jiraGetContentCallback));
     }
 
-    @SuppressWarnings("unchecked")
     public void getComponentsAsynchronously(String projectsKey,
                                           final ContentLoadingCallback<JComponentsResponse> contentLoadingCallback,
                                           final JiraGetContentCallback jiraGetContentCallback) {
@@ -71,7 +70,6 @@ public class ContentFromBackend {
                 getCallback(JiraContentConst.COMPONENTS_RESPONSE, contentLoadingCallback, jiraGetContentCallback));
     }
 
-    @SuppressWarnings("unchecked")
     public void getUsersAssignableAsynchronously(String projectKey,
                                                  String userName,
                                                  final ContentLoadingCallback<JUserAssignableResponse> contentLoadingCallback,

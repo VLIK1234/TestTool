@@ -16,10 +16,6 @@ public class JPriorityResponse {
 
     public JPriorityResponse(){}
 
-    public JPriorityResponse(ArrayList<JPriority> priorities) {
-        this.mPriorities = priorities;
-    }
-
     public ArrayList<JPriority> getPriorities() {
         return mPriorities;
     }

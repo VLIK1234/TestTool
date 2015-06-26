@@ -22,7 +22,6 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
     private ArrayList<String> cloneComponentList;
     private LayoutInflater layoutInflater;
 
-    @SuppressWarnings("unchecked")
     public ComponentPickerAdapter(Context context, int textViewResourceId, ArrayList<String> componentList) {
         super(context, textViewResourceId);
         this.componentList = componentList;
@@ -62,7 +61,6 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
 
         return new Filter() {
 
-            @SuppressWarnings("unchecked")
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if (results.values != null) {
@@ -94,7 +92,6 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
         };
     }
 
-    @SuppressWarnings("unchecked")
     public void setComponentList(ArrayList<String> componentList) {
         this.componentList = componentList;
         this.cloneComponentList = (ArrayList<String>) this.componentList.clone();

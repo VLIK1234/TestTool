@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.util.SparseArrayCompat;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -36,20 +37,21 @@ import java.util.Map;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.util.UIUtil;
 
 public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
 
     private final String TAG = this.getClass().getSimpleName();
-	private Context context;
-	private LayoutInflater layoutInflater;
+	private Context mContext;
+	private LayoutInflater mLayoutInflater;
 	public boolean isContactAddedFromDb = false;
 	public boolean isTextAdditionInProgress = false;
 	public boolean checkValidation = true;
 	public boolean isTextDeletedFromTouch = false;
 	private int beforeChangeIndex = 0;
     private int stringLength = 0;
-	private String changeString = "";
-    public static HashMap<Integer, String> selectedContact = new HashMap<>();
+	private String mChangeString = "";
+    public static SparseArrayCompat<String> mSelectedItem = new SparseArrayCompat<>();
 
     public CustomMultiAutoCompleteTextView(Context context) {
 		super(context);
@@ -67,8 +69,8 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
 	}
 
 	public void init(Context context) {
-		this.context = context;
-		layoutInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+		this.mContext = context;
+		mLayoutInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 		this.addTextChangedListener(textWatcher);
 		this.setThreshold(0);
 		this.setTokenizer(new CustomCommaTokenizer());
@@ -77,7 +79,7 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String component = (String) parent.getItemAtPosition(position);
-                selectedContact.put(position, component);
+                mSelectedItem.put(position, component);
                 updateQuickContactList();
             }
         });
@@ -117,17 +119,17 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
 		@Override
 		public void beforeTextChanged(CharSequence text, int start, int count, int after) {
 			beforeChangeIndex = CustomMultiAutoCompleteTextView.this.getSelectionStart();
-			changeString = text.toString();
+			mChangeString = text.toString();
 		}
 
 		@Override
 		public void afterTextChanged(Editable text) {
             int afterChangeIndex = CustomMultiAutoCompleteTextView.this.getSelectionEnd();
-			if (!isTextDeletedFromTouch && text.toString().length() < changeString.length()
+			if (!isTextDeletedFromTouch && text.toString().length() < mChangeString.length()
                     && !isTextAdditionInProgress) {
 				String deletedString = "";
 				try {
-					deletedString = changeString.substring(afterChangeIndex, beforeChangeIndex);
+					deletedString = mChangeString.substring(afterChangeIndex, beforeChangeIndex);
 				} catch (Exception e) {
                     Logger.e(TAG, e.getMessage(), e);
 				}
@@ -255,7 +257,7 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
 		deleteFromHashMap(deletedSubString);
 		boolean hasCommaAtLast = true;
 		try {
-			spannableStringBuilder.subSequence(Math.min(i, j + 1), Math.max(i, j + 1)).toString();
+			spannableStringBuilder.subSequence(Math.min(i, j + 1), Math.max(i, j + 1));
 		} catch (Exception e) {
 			hasCommaAtLast = false;
 		}
@@ -280,21 +282,11 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
 
 	private BitmapDrawable getBitmapFromText(String message) {
 		@SuppressLint("InflateParams")
-        TextView textView = (TextView) layoutInflater.inflate(R.layout.textview, null);
+        TextView textView = (TextView) mLayoutInflater.inflate(R.layout.textview, null);
 		textView.setText(message);
-		textView.setTextSize((int) spToPixels(context, 16));
-		textView.setHeight((int) dipToPixels(context, 48));
+		textView.setTextSize((int) UIUtil.spToPixels(mContext, 16));
+		textView.setHeight((int) UIUtil.dipToPixels(mContext, 48));
         return (BitmapDrawable) extractBitmapFromTextView(textView);
-	}
-
-	public static float dipToPixels(Context context, float dipValue) {
-		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
-	}
-
-	public static float spToPixels(Context context, float spValue) {
-		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-		return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, metrics);
 	}
 
 	public void resetFlags() {
@@ -304,11 +296,10 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
 	}
 
 	private void deleteFromHashMap(String subString) {
-		@SuppressWarnings("unchecked")
-		HashMap<String, String> selectedContactClone = (HashMap<String, String>) selectedContact.clone();
-		for (Map.Entry<String, String> mapEntry : selectedContactClone.entrySet()) {
-			if (subString.equals(mapEntry.getValue())) {
-				selectedContact.remove(mapEntry.getKey());
+		SparseArrayCompat<String> selectedContactClone = mSelectedItem.clone();
+		for (int i = 0; i<selectedContactClone.size(); i++){
+			if (subString.equals(selectedContactClone.get(i))) {
+				mSelectedItem.remove(selectedContactClone.keyAt(i));
 			}
 		}
 		updateQuickContactList();
@@ -347,7 +338,7 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
         try {
             for (int i = 0; i < sorted.size(); i++) {
                 String component = sorted.get(i);
-                if (!selectedContact.containsValue(component))
+                if (mSelectedItem.indexOfValue(component) >= 0)
                     components.add(component);
             }
             Collections.sort(components, new Comparator<String>() {
@@ -378,15 +369,15 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
         return new BitmapDrawable(viewBmp);
     }
 
-    public HashMap<Integer, String> getSelectedItems(){
-        return selectedContact;
+    public SparseArrayCompat<String> getSelectedItems(){
+        return mSelectedItem;
     }
 
     public void setSelectedItems(ArrayList<String> items){
         if (items != null) {
             if (items.size() != 0) {
                 for (int i = 0; i < items.size(); i++) {
-                    selectedContact.put(i, items.get(i));
+                    mSelectedItem.put(i, items.get(i));
                     updateQuickContactList();
                 }
             }

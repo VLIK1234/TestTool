@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -47,7 +46,8 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Step step = listStep.get(position);
-        holder.step.setText(AmttApplication.getContext().getString(R.string.label_step) + (position + 1));SpannableStringBuilder info = new SpannableStringBuilder();
+        holder.step.setText(AmttApplication.getContext().getString(R.string.label_step) + (position + 1));
+        SpannableStringBuilder info = new SpannableStringBuilder();
         info.append(StepUtil.getStepInfo(step));
         holder.activityInfo.setText(info);
         if (!TextUtils.isEmpty(step.getFilePath())) {

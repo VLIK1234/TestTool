@@ -35,10 +35,6 @@ public class ContentFromDatabase {
         DbObjectManager.INSTANCE.query(new JPriority(), null, new String[]{PriorityTable._URL}, new String[]{url}, result);
     }
 
-    public static void getLastProject(String lastProjectKey, IResult<List<JProjects>> result) {
-        DbObjectManager.INSTANCE.query(new JProjects(), null, new String[]{ProjectTable._KEY}, new String[]{lastProjectKey}, result);
-    }
-
     public static void setPriorities(JPriorityResponse priorities, IResult<Integer> result){
         List list = priorities.getPriorities();
         DbObjectManager.INSTANCE.add(list, result);
