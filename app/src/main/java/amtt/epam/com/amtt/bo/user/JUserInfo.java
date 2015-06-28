@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import amtt.epam.com.amtt.bo.issue.JAvatarUrls;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
@@ -44,7 +45,7 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
     private String mLastProjectKey;
     private String mLastAssigneeName;
     private String mLastComponentsIds;
-    private ArrayList<String> mListLastComponentsIds;
+    private List<String> mListLastComponentsIds;
 
     public JUserInfo() {
     }
@@ -180,7 +181,7 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         this.mLastComponentsIds = lastComponents;
     }
 
-    public ArrayList<String> getListLastComponentsIds() {
+    public List<String> getListLastComponentsIds() {
         if (mListLastComponentsIds == null && mLastComponentsIds != null) {
             mListLastComponentsIds = new ArrayList<>(Arrays.asList(mLastComponentsIds.split("$&")));
         }

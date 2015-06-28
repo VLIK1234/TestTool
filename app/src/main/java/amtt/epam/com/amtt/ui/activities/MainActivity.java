@@ -22,6 +22,7 @@ import android.preference.PreferenceManager;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -92,7 +93,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         ActiveUser.getInstance().setUserName(userInfo.getName());
         ActiveUser.getInstance().setLastProjectKey(userInfo.getLastProjectKey());
         ActiveUser.getInstance().setLastAssigneeName(userInfo.getLastAssigneeName());
-        ActiveUser.getInstance().setLastComponentsIds(userInfo.getListLastComponentsIds());
+        ActiveUser.getInstance().setLastComponentsIds((ArrayList<String>) userInfo.getListLastComponentsIds());
         Logger.e(TAG, "ID " + userInfo.getId());
         Logger.e(TAG, "LastProjectKey " + userInfo.getLastProjectKey());
         ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
