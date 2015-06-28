@@ -6,11 +6,14 @@ import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.ExpectedResultAdapter;
+import amtt.epam.com.amtt.excel.ReadExcel;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
@@ -73,6 +76,12 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
     public void onRefresh() {
         mHandler.removeMessages(MESSAGE_REFRESH);
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_REFRESH), 750);
+        try {
+            InputStream excel = getAssets().open("Unified_TCs.xlsx");
+            ReadExcel.parseExcel(excel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void refreshSteps() {

@@ -20,16 +20,16 @@ import amtt.epam.com.amtt.util.Logger;
 
 public class ReadExcel {
 
-    private final String TAG = this.getClass().getSimpleName();
-    private ArrayList<TestCase> testCases;
+    private static final String TAG = ReadExcel.class.getSimpleName();
+    private static ArrayList<TestCase> testCases;
     private static int mIdCell;
-    private int mPriorityCell;
-    private int mTestCaseNameCell;
-    private int mTestCaseDescriptionCell;
-    private int mTestStepsCell;
-    private int mExpectedResultsCell;
+    private static int mPriorityCell;
+    private static int mTestCaseNameCell;
+    private static int mTestCaseDescriptionCell;
+    private static int mTestStepsCell;
+    private static int mExpectedResultsCell;
 
-    public void parseExcel(InputStream inputStream) {
+    public static void parseExcel(InputStream inputStream) {
 
         testCases = new ArrayList<>();
 
@@ -37,12 +37,9 @@ public class ReadExcel {
             HSSFWorkbook hssfWorkbook = new HSSFWorkbook(inputStream);
             HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(3);
             Iterator<Row> rowIterator = hssfSheet.rowIterator();
-
             while (rowIterator.hasNext()) {
                 HSSFRow hssfRow = (HSSFRow) rowIterator.next();
-                TestCase testCase = new TestCase();
                 Iterator<Cell> cellIterator = hssfRow.cellIterator();
-
                 if (hssfRow.getRowNum() == 1) {
                     while (cellIterator.hasNext()) {
                         HSSFCell hssfCell = (HSSFCell) cellIterator.next();
@@ -50,66 +47,87 @@ public class ReadExcel {
                     }
                 } else {
                     while (cellIterator.hasNext()) {
-                        HSSFCell hssfCell = (HSSFCell) cellIterator.next();
-                        String cellValue;
-                        if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
-                            cellValue = hssfCell.getStringCellValue();
-                        } else {
-                            cellValue = String.valueOf(hssfCell.getNumericCellValue());
-                        }
-                        Logger.v(TAG, cellValue);
-                        int i = hssfCell.getColumnIndex();
-                        if (i == mIdCell) {
-                            testCase.setId(cellValue);
-
-                        } else if (i == mPriorityCell) {
-                            testCase.setPriority(cellValue);
-
-                        } else if (i == mTestCaseNameCell) {
-                            testCase.setTestCaseName(cellValue);
-
-                        } else if (i == mTestCaseDescriptionCell) {
-                            testCase.setTestCaseDescription(cellValue);
-
-                        } else if (i == mTestStepsCell) {
-                            testCase.setTestSteps(cellValue);
-
-                        } else if (i == mExpectedResultsCell) {
-                            testCase.setExpectedResult(cellValue);
-
-                        } else {
-                            //new row
+                        if (getTestCaseValue(cellIterator) != null) {
+                            testCases.add(getTestCaseValue(cellIterator));
                         }
                     }
-                    testCases.add(testCase);
                 }
+                inputStream.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void setCellsIndexes(HSSFCell hssfCell) {
-        String s = hssfCell.getStringCellValue();
-        if (s.equals("ID")) {
-            mIdCell = hssfCell.getColumnIndex();
-
-        } else if (s.equals("Priority")) {
-            mPriorityCell = hssfCell.getColumnIndex();
-
-        } else if (s.equals("Test Case Name")) {
-            mTestCaseNameCell = hssfCell.getColumnIndex();
-
-        } else if (s.equals("Test Case Description")) {
-            mTestCaseDescriptionCell = hssfCell.getColumnIndex();
-
-        } else if (s.equals("Test Steps")) {
-            mTestStepsCell = hssfCell.getColumnIndex();
-
-        } else if (s.equals("Expected Result")) {
-            mExpectedResultsCell = hssfCell.getColumnIndex();
-
+    private static TestCase getTestCaseValue(Iterator<Cell> cellIterator) {
+        TestCase testCase = new TestCase();
+        HSSFCell hssfCell = (HSSFCell) cellIterator.next();
+        String cellValue;
+        if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+            cellValue = hssfCell.getStringCellValue();
         } else {
+            cellValue = String.valueOf(hssfCell.getNumericCellValue());
+        }
+        Logger.v(TAG, cellValue);
+        int i = hssfCell.getColumnIndex();
+        if (i == mIdCell) {
+            Logger.d(TAG, "id = " + cellValue);
+            testCase.setId(cellValue);
+        } else if (i == mPriorityCell) {
+            Logger.d(TAG, "priotity = " + cellValue);
+            testCase.setPriority(cellValue);
+        } else if (i == mTestCaseNameCell) {
+            if (cellValue != null) {
+                Logger.d(TAG, "TCName = " + cellValue);
+                testCase.setTestCaseName(cellValue);
+            } else {
+                return null;
+            }
+        } else if (i == mTestCaseDescriptionCell) {
+            Logger.d(TAG, "TCDescription = " +  cellValue);
+            testCase.setTestCaseDescription(cellValue);
+
+        } else if (i == mTestStepsCell) {
+            Logger.d(TAG, "TSteps = " +  cellValue);
+            testCase.setTestSteps(cellValue);
+
+        } else if (i == mExpectedResultsCell) {
+            Logger.d(TAG, "ExpectedResults = " + cellValue);
+            testCase.setExpectedResult(cellValue);
+
+        }
+        return testCase;
+    }
+
+    private static void setCellsIndexes(HSSFCell hssfCell) {
+        String s = hssfCell.getStringCellValue();
+        switch (s) {
+            case "ID":
+                mIdCell = hssfCell.getColumnIndex();
+
+                break;
+            case "Priority":
+                mPriorityCell = hssfCell.getColumnIndex();
+
+                break;
+            case "Test Case Name":
+                mTestCaseNameCell = hssfCell.getColumnIndex();
+
+                break;
+            case "Test Case Description":
+                mTestCaseDescriptionCell = hssfCell.getColumnIndex();
+
+                break;
+            case "Test Steps":
+                mTestStepsCell = hssfCell.getColumnIndex();
+
+                break;
+            case "Expected Result":
+                mExpectedResultsCell = hssfCell.getColumnIndex();
+
+                break;
+            default:
+                break;
         }
     }
 }
