@@ -63,7 +63,7 @@ dependencies {
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     compile 'com.android.support:recyclerview-v7:22.1.1'
     compile 'com.android.support:design:22.2.0'
-    compile 'org.apache.poi:poi:3.12'
+    compile 'org.apache.poi:poi-ooxml:3.5-FINAL'
     compile 'com.android.support:support-annotations:22.2.0'
 }
 

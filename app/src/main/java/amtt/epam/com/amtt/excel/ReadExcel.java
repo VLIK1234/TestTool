@@ -6,6 +6,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class ReadExcel {
         testCases = new ArrayList<>();
 
         try {
+            Workbook[] wbs = new Workbook[] { new HSSFWorkbook(), new XSSFWorkbook() };
             HSSFWorkbook hssfWorkbook = new HSSFWorkbook(inputStream);
             HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(3);
             Iterator<Row> rowIterator = hssfSheet.rowIterator();

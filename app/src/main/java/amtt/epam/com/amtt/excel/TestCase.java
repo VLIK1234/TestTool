@@ -7,14 +7,14 @@ package amtt.epam.com.amtt.excel;
 
 public class TestCase {
 
-    private Double mId;
+    private String mId;
     private String mPriority;
     private String mTestCaseName;
     private String mTestCaseDescription;
     private String mTestSteps;
     private String mExpectedResult;
 
-    public Double getId() {
+    public String getId() {
         return mId;
     }
 
