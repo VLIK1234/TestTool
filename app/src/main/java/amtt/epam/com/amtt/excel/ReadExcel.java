@@ -21,8 +21,9 @@ import amtt.epam.com.amtt.util.Logger;
 public class ReadExcel {
 
     private final String TAG = this.getClass().getSimpleName();
-    private ArrayList<Smoke> smokes;
-    private int mIdCell;
+    private ArrayList<TestCase> testCases;
+    private static int mIdCell;
+    private int mPriorityCell;
     private int mTestCaseNameCell;
     private int mTestCaseDescriptionCell;
     private int mTestStepsCell;
@@ -30,7 +31,7 @@ public class ReadExcel {
 
     public void parseExcel(InputStream inputStream) {
 
-        smokes = new ArrayList<>();
+        testCases = new ArrayList<>();
 
         try {
             HSSFWorkbook hssfWorkbook = new HSSFWorkbook(inputStream);
@@ -39,59 +40,76 @@ public class ReadExcel {
 
             while (rowIterator.hasNext()) {
                 HSSFRow hssfRow = (HSSFRow) rowIterator.next();
-
-                if (hssfRow.getRowNum() < 2) {
-                    continue;
-                }
-
-                Smoke smoke = new Smoke();
+                TestCase testCase = new TestCase();
                 Iterator<Cell> cellIterator = hssfRow.cellIterator();
 
-                while (cellIterator.hasNext()) {
-                    HSSFCell hssfCell = (HSSFCell) cellIterator.next();
-                    String cellValue;
-
-                    if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
-                        cellValue = hssfCell.getStringCellValue();
-                    } else {
-                        cellValue = String.valueOf(hssfCell.getNumericCellValue());
+                if (hssfRow.getRowNum() == 1) {
+                    while (cellIterator.hasNext()) {
+                        HSSFCell hssfCell = (HSSFCell) cellIterator.next();
+                        setCellsIndexes(hssfCell);
                     }
+                } else {
+                    while (cellIterator.hasNext()) {
+                        HSSFCell hssfCell = (HSSFCell) cellIterator.next();
+                        String cellValue;
+                        if (hssfCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+                            cellValue = hssfCell.getStringCellValue();
+                        } else {
+                            cellValue = String.valueOf(hssfCell.getNumericCellValue());
+                        }
+                        Logger.v(TAG, cellValue);
+                        int i = hssfCell.getColumnIndex();
+                        if (i == mIdCell) {
+                            testCase.setId(cellValue);
 
-                    Logger.v(TAG, cellValue);
+                        } else if (i == mPriorityCell) {
+                            testCase.setPriority(cellValue);
 
-                    switch (hssfCell.getColumnIndex()) {
-                        case 0:
-                            smoke.setId(Double.valueOf(cellValue));
-                            break;
-                        case 1:
-                            //smoke.setSummary(cellValue);
-                            break;
-                        case 2:
-                            smoke.setTestSteps(cellValue);
-                            break;
-                        case 3:
-                            smoke.setExpectedResult(cellValue);
-                            break;
-                        case 4:
-                            //smoke.setAndroid(cellValue);
-                            break;
-                        case 5:
-                            //smoke.setNotes(cellValue);
-                            break;
-                        case 6:
-                            //smoke.setIOS(cellValue);
-                            break;
-                        case 7:
-                            //smoke.setTestNotes(cellValue);
-                            break;
-                        default:
-                            break;
+                        } else if (i == mTestCaseNameCell) {
+                            testCase.setTestCaseName(cellValue);
+
+                        } else if (i == mTestCaseDescriptionCell) {
+                            testCase.setTestCaseDescription(cellValue);
+
+                        } else if (i == mTestStepsCell) {
+                            testCase.setTestSteps(cellValue);
+
+                        } else if (i == mExpectedResultsCell) {
+                            testCase.setExpectedResult(cellValue);
+
+                        } else {
+                            //new row
+                        }
                     }
+                    testCases.add(testCase);
                 }
-                smokes.add(smoke);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void setCellsIndexes(HSSFCell hssfCell) {
+        String s = hssfCell.getStringCellValue();
+        if (s.equals("ID")) {
+            mIdCell = hssfCell.getColumnIndex();
+
+        } else if (s.equals("Priority")) {
+            mPriorityCell = hssfCell.getColumnIndex();
+
+        } else if (s.equals("Test Case Name")) {
+            mTestCaseNameCell = hssfCell.getColumnIndex();
+
+        } else if (s.equals("Test Case Description")) {
+            mTestCaseDescriptionCell = hssfCell.getColumnIndex();
+
+        } else if (s.equals("Test Steps")) {
+            mTestStepsCell = hssfCell.getColumnIndex();
+
+        } else if (s.equals("Expected Result")) {
+            mExpectedResultsCell = hssfCell.getColumnIndex();
+
+        } else {
         }
     }
 }

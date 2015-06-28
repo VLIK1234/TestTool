@@ -5,7 +5,7 @@ package amtt.epam.com.amtt.excel;
  * @version on 19.06.2015
  */
 
-public class Smoke {
+public class TestCase {
 
     private Double mId;
     private String mPriority;
@@ -18,7 +18,7 @@ public class Smoke {
         return mId;
     }
 
-    public void setId(Double id) {
+    public void setId(String id) {
         this.mId = id;
     }
 
