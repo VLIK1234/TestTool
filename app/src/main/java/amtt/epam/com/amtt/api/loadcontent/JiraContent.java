@@ -181,12 +181,26 @@ public class JiraContent{
 
     public String getComponentIdByName(String versionName) {
         String versionId = null;
-        for (Map.Entry<String, String> entry : mProjectComponentsNames.entrySet()) {
-            if (versionName.equals(entry.getValue())) {
-                versionId = entry.getKey();
+        if(versionName!= null) {
+            for (Map.Entry<String, String> entry : mProjectComponentsNames.entrySet()) {
+                if (versionName.equals(entry.getValue())) {
+                    versionId = entry.getKey();
+                }
             }
         }
         return versionId;
+    }
+
+    public String getComponentNameById(String versionId) {
+        String versionName = null;
+        if (versionId != null) {
+            for (Map.Entry<String, String> entry : mProjectComponentsNames.entrySet()) {
+                if (versionId.equals(entry.getKey())) {
+                    versionName = entry.getValue();
+                }
+            }
+        }
+        return versionName;
     }
 
     public void setUsersAssignableNames(ArrayList<String> usersAssignableNames){

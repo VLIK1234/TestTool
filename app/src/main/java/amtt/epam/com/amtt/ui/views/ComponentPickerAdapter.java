@@ -13,6 +13,7 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import amtt.epam.com.amtt.R;
 
@@ -24,11 +25,11 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
     private ArrayList<String> mAllItems;
 
 
-    public ComponentPickerAdapter(Context context, int textViewResourceId, ArrayList<String> componentList) {
+    public ComponentPickerAdapter(Context context, int textViewResourceId, List<String> componentList) {
         super(context, textViewResourceId);
-        this.componentList = componentList;
+        this.componentList = (ArrayList<String>) componentList;
         this.cloneComponentList = (ArrayList<String>) this.componentList.clone();
-        this.mAllItems = componentList;
+        this.mAllItems = (ArrayList<String>) componentList;
         layoutInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
     }
 

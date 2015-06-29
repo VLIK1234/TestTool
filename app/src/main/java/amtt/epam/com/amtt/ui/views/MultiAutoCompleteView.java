@@ -73,8 +73,8 @@ public class MultiAutoCompleteView extends MultiAutoCompleteTextView {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String component = (String) parent.getItemAtPosition(position);
-                mSelectedItem.add(component);
+                String item = (String) parent.getItemAtPosition(position);
+                mSelectedItem.add(item);
                 updateQuickContactList();
             }
         });
@@ -372,8 +372,12 @@ public class MultiAutoCompleteView extends MultiAutoCompleteTextView {
     public void setSelectedItems(ArrayList<String> items){
         if (items != null) {
             if (items.size() != 0) {
+                String text = "";
                 for (int i = 0; i < items.size(); i++) {
-                    this.setText(items.get(i));
+                    text = items.get(i);
+                    this.setText(text);
+                    mSelectedItem.add(items.get(i));
+                    updateQuickContactList();
                 }
             }
         }

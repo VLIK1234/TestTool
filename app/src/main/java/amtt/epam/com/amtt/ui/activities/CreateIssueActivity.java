@@ -121,7 +121,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             ArrayList<String> components = mComponents.getSelectedItems();
             if (components.size()!= 0) {
                 ArrayList<String> componentsList = new ArrayList<>();
-                for (int i = 0; i< components.size(); i++) {
+                for (int i = 1; i < components.size(); i++) {
                     componentsList.add(JiraContent.getInstance().getComponentIdByName(components.get(i)));
                 }
                 ActiveUser.getInstance().setLastComponentsIds(componentsList);
@@ -299,7 +299,14 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     ComponentPickerAdapter componentPickerAdapter = new ComponentPickerAdapter(CreateIssueActivity.this, R.layout.spinner_layout, componentsNames);
                     mComponents.setAdapter(componentPickerAdapter);
                     if (ActiveUser.getInstance().getLastComponentsIds() != null) {
-                        mComponents.setSelectedItems(ActiveUser.getInstance().getLastComponentsIds());
+                        ArrayList<String> components = ActiveUser.getInstance().getLastComponentsIds();
+                        ArrayList<String> componentsList = new ArrayList<>();
+                        if (components.size()!= 0) {
+                            for (int i = 0; i < components.size(); i++) {
+                                componentsList.add(JiraContent.getInstance().getComponentNameById(components.get(i)));
+                            }
+                        }
+                        mComponents.setSelectedItems(componentsList);
                     }
                     mQueueRequests.remove(JiraContentConst.COMPONENTS_RESPONSE);
                     showProgressIfNeed();
