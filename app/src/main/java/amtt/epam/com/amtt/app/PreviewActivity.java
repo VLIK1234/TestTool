@@ -28,6 +28,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.UIUtil;
@@ -58,7 +59,6 @@ public class PreviewActivity extends Activity {
             final String screenshotPath = extra.getString(FILE_PATH);
             showPreview(screenshotPath);
 
-
             new AlertDialog.Builder(this, R.style.Dialog)
                     .setView(view)
                     .setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -67,33 +67,16 @@ public class PreviewActivity extends Activity {
                             PreviewActivity.this.finish();
                         }
                     })
-                    .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             PreviewActivity.this.finish();
                         }
                     })
-                    .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getString(R.string.save), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Bitmap drawnNotesBitmap = mPaintView.getDrawingCache();
-                            Bitmap screenshotBitmap = BitmapFactory.decodeFile(screenshotPath).copy(Bitmap.Config.ARGB_8888, true);
-
-                            if (screenshotBitmap == null) {
-                                //In case the screenshot has been deleted
-                                screenshotBitmap = Bitmap.createBitmap(mImagePreview.getWidth(), mImagePreview.getHeight(), Bitmap.Config.ARGB_8888);
-                            }
-
-                            Canvas canvas = new Canvas(screenshotBitmap);
-                            canvas.drawBitmap(drawnNotesBitmap, 0, 0, new Paint(Paint.DITHER_FLAG));
-
-                            //TODO use CONSTANTS from dev
-                            Bitmap.CompressFormat compressFormat = IOUtils.getExtension(screenshotPath).equals("png") ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
-                            FileOutputStream outputStream = IOUtils.openFileOutput(screenshotPath);
-                            if (outputStream != null) {
-                                screenshotBitmap.compress(compressFormat, 100, outputStream);
-                            }
-
+                            StepUtil.applyNotesToScreenshot(mPaintView, mImagePreview, screenshotPath);
                             PreviewActivity.this.finish();
                         }
                     })

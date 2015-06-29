@@ -99,7 +99,7 @@
     <string name="dialog_label_checkbox">Don\'t show again</string>
     <string name="dialog_button_ok">OK</string>
     <string name="dialog_button_cancel">Cancel</string>
-    <string name="label_close_app">Close Amtt</string>
+    <string name="close">Close</string>
     <string name="label_show_steps">Show recorded steps</string>
     <string name="nexus_help_message">\nNexus - volume down+power</string>
     <string name="samsung_help_message">\nSamsung - power+home</string>
@@ -137,5 +137,6 @@
     <string name="activity_info_text_size">16sp</string>
     <string name="content_description_screenshot">Screenshot</string>
     <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
 
 </resources>

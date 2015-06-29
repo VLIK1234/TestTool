@@ -12,7 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"/>
+        android:layout_alignParentLeft="true"
+        android:contentDescription="@string/content_description_screenshot"/>
 
     <amtt.epam.com.amtt.view.PaintView
         android:id="@+id/paint_view"

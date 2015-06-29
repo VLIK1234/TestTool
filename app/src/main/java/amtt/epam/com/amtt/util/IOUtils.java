@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.util;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.io.BufferedReader;
@@ -28,11 +27,6 @@ public class IOUtils {
                 }
             }
         }
-    }
-
-    public static String getExtension(String path) {
-        int extensionStartIndex = path.lastIndexOf('.');
-        return path.substring(extensionStartIndex + 1, path.length());
     }
 
     public static FileOutputStream openFileOutput(String path) {

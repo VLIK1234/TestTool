@@ -2,11 +2,17 @@ package amtt.epam.com.amtt.database.util;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.widget.ImageView;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +26,8 @@ import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.util.ContextHolder;
 import amtt.epam.com.amtt.util.FileUtil;
+import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.view.PaintView;
 
 /**
  @author Artsiom_Kaliaha
@@ -33,10 +41,6 @@ public class StepUtil {
         DbObjectManager.INSTANCE.add(step, null);
     }
 
-    public static void saveActivityMeta(ActivityMeta activityMeta){
-        DbObjectManager.INSTANCE.add(activityMeta, null);
-    }
-
     public static void cleanStep() {
         DbObjectManager.INSTANCE.removeAll(new Step());
     }
@@ -48,6 +52,26 @@ public class StepUtil {
     public static void clearAllStep(){
         cleanStep();
         cleanActivityMeta();
+    }
+
+    public static void applyNotesToScreenshot(PaintView paintView, ImageView screenshotImageView, String screenshotPath) {
+        Bitmap drawnNotesBitmap = paintView.getDrawingCache();
+        Bitmap screenshotBitmap = BitmapFactory.decodeFile(screenshotPath).copy(Bitmap.Config.ARGB_8888, true);
+
+        if (screenshotBitmap == null) {
+            //In case the screenshot has been deleted
+            screenshotBitmap = Bitmap.createBitmap(screenshotImageView.getWidth(), screenshotImageView.getHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(screenshotBitmap);
+        canvas.drawBitmap(drawnNotesBitmap, 0, 0, new Paint(Paint.DITHER_FLAG));
+
+        //TODO use CONSTANTS from dev
+        Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals("png") ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
+        FileOutputStream outputStream = IOUtils.openFileOutput(screenshotPath);
+        if (outputStream != null) {
+            screenshotBitmap.compress(compressFormat, 100, outputStream);
+        }
     }
 
     public static void checkUser(String userName, IResult<List<JUserInfo>> result) {

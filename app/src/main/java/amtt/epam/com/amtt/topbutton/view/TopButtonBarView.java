@@ -190,7 +190,7 @@ public class TopButtonBarView extends FrameLayout {
                 mOnTouchListener.onTouch();
             }
         });
-        mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.label_close_app), R.drawable.background_close, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
+        mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.close), R.drawable.background_close, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
                 TopButtonService.sendActionChangeVisibilityTopbutton(false);

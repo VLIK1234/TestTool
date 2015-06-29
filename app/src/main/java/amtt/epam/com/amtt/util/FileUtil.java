@@ -25,4 +25,10 @@ public class FileUtil {
             return "";
         }
     }
+
+    public static String getExtension(String path) {
+        int extensionStartIndex = path.lastIndexOf('.');
+        return path.substring(extensionStartIndex + 1, path.length());
+    }
+
 }
