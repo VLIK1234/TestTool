@@ -17,7 +17,8 @@
 
     <style name="Material.Widget.AutocompleteProgressView">
         <item name="android:dropDownItemStyle">@style/Material.Widget.DropDownItem</item>
-        <item name="android:spinnerStyle">@style/Base.Widget.AppCompat.Spinner.Underlined.Custom</item>
+        <item name="android:spinnerStyle">@style/Base.Widget.AppCompat.Spinner.Underlined.Custom
+        </item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
         <item name="android:inputType">textAutoComplete</item>
         <item name="android:textColor">@color/primary_text</item>
@@ -68,7 +69,13 @@
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
         <item name="android:textColor">@color/primary_text</item>
     </style>
-    <style name="Dialog" parent="Theme.AppCompat.Light.Dialog">
-</style>
+
+    <style name="Dialog" parent="Theme.AppCompat.Light.Dialog"/>
+
+    <style name="PaintButton" parent="Base.Widget.AppCompat.Button">
+        <item name="android:layout_width">@dimen/button_small_size</item>
+        <item name="android:layout_height">@dimen/button_small_size</item>
+        <item name="android:src">@drawable/background_paint_button</item>
+    </style>
 
 </resources>

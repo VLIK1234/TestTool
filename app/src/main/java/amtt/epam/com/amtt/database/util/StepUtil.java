@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.text.Html;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.widget.ImageView;
@@ -24,7 +23,8 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.util.ContextHolder;
+import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.view.PaintView;
@@ -33,7 +33,6 @@ import amtt.epam.com.amtt.view.PaintView;
  @author Artsiom_Kaliaha
  @version on 16.05.2015
  */
-
 public class StepUtil {
 
     public static void saveStep(ComponentName componentName, String mScreenPath){
@@ -59,6 +58,7 @@ public class StepUtil {
         Bitmap screenshotBitmap = BitmapFactory.decodeFile(screenshotPath).copy(Bitmap.Config.ARGB_8888, true);
 
         if (screenshotBitmap == null) {
+            //TODO finish logic
             //In case the screenshot has been deleted
             screenshotBitmap = Bitmap.createBitmap(screenshotImageView.getWidth(), screenshotImageView.getHeight(), Bitmap.Config.ARGB_8888);
         }
@@ -66,8 +66,9 @@ public class StepUtil {
         Canvas canvas = new Canvas(screenshotBitmap);
         canvas.drawBitmap(drawnNotesBitmap, 0, 0, new Paint(Paint.DITHER_FLAG));
 
-        //TODO use CONSTANTS from dev
-        Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals("png") ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
+        Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals(MimeType.IMAGE_PNG.getFileExtension()) ?
+                Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
+
         FileOutputStream outputStream = IOUtils.openFileOutput(screenshotPath);
         if (outputStream != null) {
             screenshotBitmap.compress(compressFormat, 100, outputStream);
@@ -79,20 +80,23 @@ public class StepUtil {
     }
 
      public static Spanned getStepInfo(Step step){
-         Context context = ContextHolder.getContext();
+         Context context = AmttApplication.getContext();
          return Html.fromHtml(
                  "<b>" + context.getString(R.string.label_activity) + "</b>" + "<small>" + step.getActivity() + "</small>" + "<br />" +
                  "<b>" + context.getString(R.string.label_screen_orientation) + "</b>" + "<small>" + step.getOreintation() + "</small>" + "<br />" +
                  "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>" + "<br />" + "<br />");
      }
 
+    @SuppressWarnings("unchecked")
     public static Spanned getStepInfo(List<DatabaseEntity> listStep){
         ArrayList<Step> list = (ArrayList)listStep;
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        Context context = ContextHolder.getContext();
+        Context context = AmttApplication.getContext();
         for (int i = 0; i < listStep.size(); i++) {
             builder.append(Html.fromHtml("<h5>" + context.getString(R.string.label_step) + String.valueOf(i + 1) + "</h5>"));
-            builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(list.get(i).getFilePath()) + "</small>" + "<br />"));
+            if (list.get(i).getFilePath() != null) {
+                builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(list.get(i).getFilePath()) + "</small>" + "<br />"));
+            }
             builder.append(getStepInfo(list.get(i)));
         }
         return builder;

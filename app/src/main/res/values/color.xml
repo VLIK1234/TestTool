@@ -25,4 +25,14 @@
     <color name="iv_divider_color">#FF8D8D8D</color>
 
     <color name="photo_tint">#88101010</color>
+
+    <color name="red_paint">#FF0000</color>
+    <color name="orange_paint">#FF7F00</color>
+    <color name="yellow_paint">#FFFF00</color>
+    <color name="green_paint">#00FF00</color>
+    <color name="blue_paint">#00FFFF</color>
+    <color name="indigo_paint">#0000FF</color>
+    <color name="violet_paint">#4B0082</color>
+    <color name="material_light">#FFEEEEEE</color>
+
 </resources>

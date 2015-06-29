@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:background="@color/red_paint"
+            android:tag="@color/red_paint"
+            style="@style/PaintButton"/>
+
+        <ImageButton
+            android:background="@color/orange_paint"
+            android:tag="@color/orange_paint"
+            style="@style/PaintButton"/>
+
+        <ImageButton
+            android:background="@color/yellow_paint"
+            android:tag="@color/yellow_paint"
+            style="@style/PaintButton"/>
+
+        <ImageButton
+            android:background="@color/green_paint"
+            android:tag="@color/green_paint"
+            style="@style/PaintButton"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:background="@color/blue_paint"
+            android:tag="@color/blue_paint"
+            style="@style/PaintButton"/>
+
+        <ImageButton
+            android:background="@color/indigo_paint"
+            android:tag="@color/indigo_paint"
+            style="@style/PaintButton"/>
+
+        <ImageButton
+            android:background="@color/violet_paint"
+            android:tag="@color/violet_paint"
+            style="@style/PaintButton"/>
+
+    </LinearLayout>
+
+</LinearLayout>

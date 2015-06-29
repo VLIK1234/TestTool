@@ -1,19 +1,19 @@
 package amtt.epam.com.amtt.helper;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.util.ContextHolder;
+import amtt.epam.com.amtt.AmttApplication;
 
 /**
  * Created by Ivan_Bakach on 28.05.2015.
  */
 public enum HelpTakeScreen {
-    NEXUS(Constants.NEXUS, ContextHolder.getContext().getString(R.string.nexus_help_message)),
-    SAMSUNG(Constants.SAMSUNG, ContextHolder.getContext().getString(R.string.samsung_help_message)),
-    SONY(Constants.SONY, ContextHolder.getContext().getString(R.string.samsung_help_message)),
-    HTC(Constants.HTC, ContextHolder.getContext().getString(R.string.htc_help_message)),
-    HUAWEI(Constants.HUAWEI, ContextHolder.getContext().getString(R.string.htc_help_message)),
-    XIAOMI(Constants.XIAOMI, ContextHolder.getContext().getString(R.string.xiaomi_help_message)),
-    ALL(Constants.ALL, ContextHolder.getContext().getString(R.string.all_help_message));
+    NEXUS(Constants.NEXUS, AmttApplication.getContext().getString(R.string.nexus_help_message)),
+    SAMSUNG(Constants.SAMSUNG, AmttApplication.getContext().getString(R.string.samsung_help_message)),
+    SONY(Constants.SONY, AmttApplication.getContext().getString(R.string.samsung_help_message)),
+    HTC(Constants.HTC, AmttApplication.getContext().getString(R.string.htc_help_message)),
+    HUAWEI(Constants.HUAWEI, AmttApplication.getContext().getString(R.string.htc_help_message)),
+    XIAOMI(Constants.XIAOMI, AmttApplication.getContext().getString(R.string.xiaomi_help_message)),
+    ALL(Constants.ALL, AmttApplication.getContext().getString(R.string.all_help_message));
 
     private String key;
     private String value;

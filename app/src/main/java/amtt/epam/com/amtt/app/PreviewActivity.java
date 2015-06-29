@@ -2,18 +2,13 @@ package amtt.epam.com.amtt.app;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
+import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,14 +18,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.UIUtil;
 import amtt.epam.com.amtt.view.PaintView;
 
@@ -49,13 +42,26 @@ public class PreviewActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final View view = LayoutInflater.from(getBaseContext()).inflate(R.layout.activity_preview, null);
-        initImagePreview(view);
-        initTextPreview(view);
-        initPaintView(view);
+        View view;
+
+        final AlertDialog.Builder paletteDialog = new AlertDialog.Builder(PreviewActivity.this, R.style.Dialog)
+                .setMessage("mess")
+                .setTitle("title")
+                .setNegativeButton("close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog1, int which) {
+                        dialog1.dismiss();
+                        finish();
+                    }
+                });
 
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
+            view = LayoutInflater.from(getBaseContext()).inflate(R.layout.activity_preview, null);
+            initImagePreview(view);
+            initTextPreview(view);
+            initPaintView(view);
+
             final String screenshotPath = extra.getString(FILE_PATH);
             showPreview(screenshotPath);
 
@@ -73,13 +79,20 @@ public class PreviewActivity extends Activity {
                             PreviewActivity.this.finish();
                         }
                     })
-                    .setPositiveButton(getString(R.string.save), new DialogInterface.OnClickListener() {
+                    .setPositiveButton("Customize brush", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            StepUtil.applyNotesToScreenshot(mPaintView, mImagePreview, screenshotPath);
-                            PreviewActivity.this.finish();
+                            dialog.dismiss();
+                            startActivity(new Intent(PreviewActivity.this, PreviewActivity.class));
+                            finish();
                         }
                     })
+                    .show();
+        } else {
+            view = LayoutInflater.from(getBaseContext()).inflate(R.layout.activity_preview_palette, null);
+            paletteDialog
+                    .setView(view)
+                    .create()
                     .show();
         }
     }
@@ -91,15 +104,7 @@ public class PreviewActivity extends Activity {
     }
 
     private void initImagePreview(View view) {
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int height = size.y;
-
-        mImagePreview = (ImageView) view.findViewById(R.id.iv_preview);
-        mImagePreview.getLayoutParams().width = (int) (width * SCALE_DIALOG_MARGIN_RATIO);
-        mImagePreview.getLayoutParams().height = (int) (height * SCALE_DIALOG_MARGIN_RATIO);
+        //mImagePreview = (ImageView) view.findViewById(R.id.iv_preview);
     }
 
     private void initTextPreview(View view) {
@@ -119,14 +124,11 @@ public class PreviewActivity extends Activity {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.contains("E/")) {
-                    append(builder, line, new ForegroundColorSpan(Color.RED), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    builder.append("\n");
+                    append(builder, line, new ForegroundColorSpan(Color.RED), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE).append("\n");
                 } else if (line.contains("W/")) {
-                    append(builder, line, new ForegroundColorSpan(Color.BLUE), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    builder.append("\n");
+                    append(builder, line, new ForegroundColorSpan(Color.BLUE), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE).append("\n");
                 } else {
-                    builder.append(line);
-                    builder.append("\n");
+                    builder.append(line).append("\n");
                 }
             }
             br.close();
@@ -137,21 +139,22 @@ public class PreviewActivity extends Activity {
     }
 
     public void showPreview(String filePath) {
-        if (filePath.contains(".png") || filePath.contains(".jpg") || filePath.contains(".jpeg")) {
-            ImageLoader.getInstance().displayImage("file:///" + filePath, mImagePreview);
-        } else if (filePath.contains(".txt")) {
+        if (filePath.contains(MimeType.IMAGE_PNG.getFileExtension()) || filePath.contains(MimeType.IMAGE_JPG.getFileExtension()) || filePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
+            //ImageLoader.getInstance().displayImage("file:///" + filePath, mImagePreview);
+        } else if (filePath.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
             int dpSize = UIUtil.getInDp(8);
             mTextPreview.setPadding(dpSize, dpSize, dpSize, dpSize);
             mTextPreview.setText(readLogFromFile(filePath));
+            mTextPreview.setVisibility(View.VISIBLE);
         }
     }
 
 
-    public SpannableStringBuilder append(SpannableStringBuilder spannableString, CharSequence text, Object what, int flags) {
-        int start = spannableString.length();
-        spannableString.append(text);
-        spannableString.setSpan(what, start, spannableString.length(), flags);
-        return spannableString;
+    public SpannableStringBuilder append(SpannableStringBuilder stringBuilder, CharSequence text, Object what, int flags) {
+        int start = stringBuilder.length();
+        stringBuilder.append(text);
+        stringBuilder.setSpan(what, start, stringBuilder.length(), flags);
+        return stringBuilder;
     }
 
 }

@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.bo.database.ActivityMeta;
 import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 
@@ -115,14 +116,14 @@ public class ActivityMetaUtil {
     }
 
     public static ComponentName getTopActivityComponent() {
-        ActivityManager activityManager = (ActivityManager) ContextHolder.getContext().getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager activityManager = (ActivityManager) AmttApplication.getContext().getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
         ActivityManager.RunningTaskInfo topTaskInfo = tasks.get(0);
         return topTaskInfo.topActivity;
     }
 
     public static ActivityInfo getTopActivityInfo() throws NameNotFoundException {
-        return ContextHolder.getContext()
+        return AmttApplication.getContext()
                     .getPackageManager()
                     .getActivityInfo(getTopActivityComponent(), PackageManager.GET_META_DATA & PackageManager.GET_INTENT_FILTERS);
     }
