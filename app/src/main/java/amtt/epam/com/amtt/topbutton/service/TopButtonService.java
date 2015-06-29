@@ -39,6 +39,7 @@ public class TopButtonService extends Service{
     public static final String ACTION_CHANGE_NOTIFICATION_BUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_NOTIFICATION_BUTTON";
     public static final String ACTION_SHOW_SCREEN = "amtt.epam.com.amtt.topbutton.service.SHOW_SCREEN";
     public static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.START";
+    public static final String ACTION_STOP_RECORD = "amtt.epam.com.amtt.topbutton.service.STOP_RECORD";
     public static final String VISIBILITY_TOP_BUTTON = "amtt.epam.com.amtt.topbutton.service.VISIBILITY_TOP_BUTTON";
     public static final String PATH_TO_SCREEENSHOT_KEY = "PATH_TO_SCREENSHOT";
     //don't use REQUEST_CODE = 0 - it's broke mActionNotificationCompat in notification for some device
@@ -84,6 +85,10 @@ public class TopButtonService extends Service{
 
     public static void close(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE));
+    }
+
+    public static void stopRecord(Context context){
+        context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_STOP_RECORD));
     }
 
     @Override
@@ -138,6 +143,9 @@ public class TopButtonService extends Service{
                     if (extra != null) {
                         showScreenInGallery(extra.getString(PATH_TO_SCREEENSHOT_KEY));
                     }
+                    break;
+                case ACTION_STOP_RECORD:
+                    stopRecord();
                     break;
             }
         } else {
@@ -225,5 +233,10 @@ public class TopButtonService extends Service{
                 changeStateNotificationAction();
             }
         }
+    }
+
+    private void stopRecord(){
+        mTopButtonView.getButtonsBar().setIsRecordStarted(false);
+        StepUtil.clearAllStep();
     }
 }
