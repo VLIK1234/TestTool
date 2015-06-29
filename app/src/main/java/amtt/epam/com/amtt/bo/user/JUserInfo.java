@@ -168,13 +168,17 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         return mLastComponentsIds;
     }
 
-    public void setLastComponent(String lastComponentId){
-        if(mListLastComponentsIds==null || mListLastComponentsIds.isEmpty()) {
-            setLastComponentsIds(lastComponentId);
-        }else{
-            mLastComponentsIds = mLastComponentsIds.concat(lastComponentId);
+    public void setLastComponent(String lastComponentId) {
+        if (lastComponentId != null) {
+            if (mListLastComponentsIds == null || mListLastComponentsIds.isEmpty()) {
+                setLastComponentsIds(lastComponentId);
+            } else {
+                mLastComponentsIds = mLastComponentsIds.concat(lastComponentId);
+            }
+            if (mLastComponentsIds != null) {
+                mLastComponentsIds = mLastComponentsIds.concat("$&");
+            }
         }
-        mLastComponentsIds = mLastComponentsIds.concat("$&");
     }
 
     public void setLastComponentsIds(String lastComponents) {

@@ -373,8 +373,7 @@ public class MultiAutoCompleteView extends MultiAutoCompleteTextView {
         if (items != null) {
             if (items.size() != 0) {
                 for (int i = 0; i < items.size(); i++) {
-                    mSelectedItem.add(items.get(i));
-                    updateQuickContactList();
+                    this.setText(items.get(i));
                 }
             }
         }

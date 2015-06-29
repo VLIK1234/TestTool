@@ -299,7 +299,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     ComponentPickerAdapter componentPickerAdapter = new ComponentPickerAdapter(CreateIssueActivity.this, R.layout.spinner_layout, componentsNames);
                     mComponents.setAdapter(componentPickerAdapter);
                     if (ActiveUser.getInstance().getLastComponentsIds() != null) {
-                        //mComponents.setSelectedItems(ActiveUser.getInstance().getLastComponentsIds());
+                        mComponents.setSelectedItems(ActiveUser.getInstance().getLastComponentsIds());
                     }
                     mQueueRequests.remove(JiraContentConst.COMPONENTS_RESPONSE);
                     showProgressIfNeed();
