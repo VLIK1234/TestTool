@@ -45,7 +45,8 @@
 
         <activity
             android:name=".app.CreateIssueActivity"
-            android:label="@string/title_activity_create_issue" />
+            android:label="@string/title_activity_create_issue"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name=".contentprovider.AmttContentProvider"

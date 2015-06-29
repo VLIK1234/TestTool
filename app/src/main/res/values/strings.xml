@@ -136,4 +136,6 @@
     <string name="label_list_step">Show list step</string>
     <string name="activity_info_text_size">16sp</string>
     <string name="content_description_screenshot">Screenshot</string>
+    <string name="cancel">Cancel</string>
+
 </resources>

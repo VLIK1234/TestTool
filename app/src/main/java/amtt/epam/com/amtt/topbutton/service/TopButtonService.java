@@ -166,7 +166,8 @@ public class TopButtonService extends Service{
 
     private void closeService() {
         if (mTopButtonView != null && isViewAdd) {
-            StepUtil.clearAllStep();
+            //TODO cancel comment
+            //StepUtil.clearAllStep();
             isViewAdd = false;
             mTopButtonView.getButtonsBar().setIsRecordStarted(false);
             mWindowManager.removeViewImmediate(mTopButtonView);
