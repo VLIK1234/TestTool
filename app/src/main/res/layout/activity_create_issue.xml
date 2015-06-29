@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/label_components"/>
 
-            <amtt.epam.com.amtt.ui.views.CustomMultiAutoCompleteTextView
+            <amtt.epam.com.amtt.ui.views.MultiAutoCompleteView
                 android:id="@+id/editText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

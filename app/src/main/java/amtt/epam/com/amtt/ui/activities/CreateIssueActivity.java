@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
@@ -47,7 +46,7 @@ import amtt.epam.com.amtt.service.AttachmentService;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.AutocompleteProgressView;
 import amtt.epam.com.amtt.ui.views.ComponentPickerAdapter;
-import amtt.epam.com.amtt.ui.views.CustomMultiAutoCompleteTextView;
+import amtt.epam.com.amtt.ui.views.MultiAutoCompleteView;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.InputsUtil;
@@ -70,7 +69,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     public Spinner mProjectNamesSpinner;
     private RecyclerView recyclerView;
     private InputMethodManager mInputManager;
-    private CustomMultiAutoCompleteTextView mComponents;
+    private MultiAutoCompleteView mComponents;
     private Queue<JiraContentConst> mQueueRequests = new LinkedList<>();
     private Button mCreateIssueButton;
 
@@ -119,11 +118,11 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     protected void onStop() {
         super.onStop();
         if (mComponents.getSelectedItems() != null) {
-            SparseArrayCompat<String> components = mComponents.getSelectedItems();
+            ArrayList<String> components = mComponents.getSelectedItems();
             if (components.size()!= 0) {
                 ArrayList<String> componentsList = new ArrayList<>();
                 for (int i = 0; i< components.size(); i++) {
-                    componentsList.add(JiraContent.getInstance().getComponentIdByName(components.valueAt(i)));
+                    componentsList.add(JiraContent.getInstance().getComponentIdByName(components.get(i)));
                 }
                 ActiveUser.getInstance().setLastComponentsIds(componentsList);
             }
@@ -285,7 +284,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     private void initComponentsSpinner(String projectKey) {
         final TextView componentsTextView = (TextView) findViewById(R.id.tv_components);
-        mComponents = (CustomMultiAutoCompleteTextView) findViewById(R.id.editText);
+        mComponents = (MultiAutoCompleteView) findViewById(R.id.editText);
         mComponents.setEnabled(false);
         JiraContent.getInstance().getComponentsNames(projectKey, new JiraGetContentCallback<HashMap<String, String>>() {
             @Override
@@ -411,14 +410,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 if (isValid) {
                     showProgress(true);
                     if (mComponents.getSelectedItems() != null) {
-                       SparseArrayCompat<String> components = mComponents.getSelectedItems();
-                        if (components.size()!= 0) {
-                            ArrayList<String> componentsList = new ArrayList<>();
-                            for (int i= 0; i<components.size();i++) {
-                                componentsList.add(JiraContent.getInstance().getComponentIdByName(components.valueAt(i)));
-                            }
-                            ActiveUser.getInstance().setLastComponentsIds(componentsList);
-                        }
+                        ArrayList<String> components = mComponents.getSelectedItems();
+                        ActiveUser.getInstance().setLastComponentsIds(components);
+
                     }
                     JiraContent.getInstance().createIssue(mIssueTypeName,
                             mPriorityName, mVersionName, mSummaryEditText.getText().toString(),

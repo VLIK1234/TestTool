@@ -21,11 +21,14 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
     private ArrayList<String> componentList;
     private ArrayList<String> cloneComponentList;
     private LayoutInflater layoutInflater;
+    private ArrayList<String> mAllItems;
+
 
     public ComponentPickerAdapter(Context context, int textViewResourceId, ArrayList<String> componentList) {
         super(context, textViewResourceId);
         this.componentList = componentList;
         this.cloneComponentList = (ArrayList<String>) this.componentList.clone();
+        this.mAllItems = componentList;
         layoutInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -94,7 +97,7 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
 
     public void setComponentList(ArrayList<String> componentList) {
         this.componentList = componentList;
-        this.cloneComponentList = (ArrayList<String>) this.componentList.clone();
+        this.cloneComponentList = componentList;
         notifyDataSetChanged();
     }
 
@@ -106,4 +109,7 @@ public class ComponentPickerAdapter extends ArrayAdapter<String> implements Filt
         public TextView name;
     }
 
+    public ArrayList<String> getAllItems(){
+       return this.mAllItems;
+    }
 }

@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.util.SparseArrayCompat;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -19,9 +18,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,38 +29,36 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.util.UIUtil;
 
-public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
+public class MultiAutoCompleteView extends MultiAutoCompleteTextView {
 
     private final String TAG = this.getClass().getSimpleName();
 	private Context mContext;
 	private LayoutInflater mLayoutInflater;
-	public boolean isContactAddedFromDb = false;
-	public boolean isTextAdditionInProgress = false;
-	public boolean checkValidation = true;
-	public boolean isTextDeletedFromTouch = false;
-	private int beforeChangeIndex = 0;
-    private int stringLength = 0;
+	public boolean mIsContactAddedFromDb = false;
+	public boolean mIsTextAdditionInProgress = false;
+	public boolean mCheckValidation = true;
+	public boolean mIsTextDeletedFromTouch = false;
+	private int mBeforeChangeIndex = 0;
+    private int mStringLength = 0;
 	private String mChangeString = "";
-    public static SparseArrayCompat<String> mSelectedItem = new SparseArrayCompat<>();
+    public static ArrayList<String> mSelectedItem = new ArrayList<>();
 
-    public CustomMultiAutoCompleteTextView(Context context) {
+    public MultiAutoCompleteView(Context context) {
 		super(context);
 		init(context);
 	}
 
-	public CustomMultiAutoCompleteTextView(Context context, AttributeSet attrs) {
+	public MultiAutoCompleteView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init(context);
 	}
 
-	public CustomMultiAutoCompleteTextView(Context context, AttributeSet attrs, int defStyle) {
+	public MultiAutoCompleteView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init(context);
 	}
@@ -79,7 +74,7 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String component = (String) parent.getItemAtPosition(position);
-                mSelectedItem.put(position, component);
+                mSelectedItem.add(component);
                 updateQuickContactList();
             }
         });
@@ -91,7 +86,7 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
 
     @Override
 	protected void replaceText(CharSequence text) {
-		checkValidation = false;
+		mCheckValidation = false;
 		super.replaceText(text);
 	}
 
@@ -100,36 +95,36 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
 		@Override
 		public void onTextChanged(CharSequence text, int start, int before, int count) {
 			String addedString = text.toString();
-			if (!isTextAdditionInProgress) {
-				if (stringLength < addedString.length()) {
+			if (!mIsTextAdditionInProgress) {
+				if (mStringLength < addedString.length()) {
                     if (!TextUtils.isEmpty(addedString.trim())) {
-						int startIndex = isContactAddedFromDb ? addedString.length() : CustomMultiAutoCompleteTextView.this.getSelectionEnd();
+						int startIndex = mIsContactAddedFromDb ? addedString.length() : MultiAutoCompleteView.this.getSelectionEnd();
 						startIndex = startIndex < 1 ? 1 : startIndex;
 						String charAtStartIndex = Character.toString(addedString.charAt(startIndex - 1));
 						if (charAtStartIndex.equals(",")) {
-							isTextAdditionInProgress = true;
+							mIsTextAdditionInProgress = true;
 							addOrCheckSpannable(text, startIndex);
 						}
 					}
 				}
 			}
-			stringLength = addedString.length();
+			mStringLength = addedString.length();
 		}
 
 		@Override
 		public void beforeTextChanged(CharSequence text, int start, int count, int after) {
-			beforeChangeIndex = CustomMultiAutoCompleteTextView.this.getSelectionStart();
+			mBeforeChangeIndex = MultiAutoCompleteView.this.getSelectionStart();
 			mChangeString = text.toString();
 		}
 
 		@Override
 		public void afterTextChanged(Editable text) {
-            int afterChangeIndex = CustomMultiAutoCompleteTextView.this.getSelectionEnd();
-			if (!isTextDeletedFromTouch && text.toString().length() < mChangeString.length()
-                    && !isTextAdditionInProgress) {
+            int afterChangeIndex = MultiAutoCompleteView.this.getSelectionEnd();
+			if (!mIsTextDeletedFromTouch && text.toString().length() < mChangeString.length()
+                    && !mIsTextAdditionInProgress) {
 				String deletedString = "";
 				try {
-					deletedString = mChangeString.substring(afterChangeIndex, beforeChangeIndex);
+					deletedString = mChangeString.substring(afterChangeIndex, mBeforeChangeIndex);
 				} catch (Exception e) {
                     Logger.e(TAG, e.getMessage(), e);
 				}
@@ -210,7 +205,7 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
                                 && spanEnd - 1 >= 0
                                 && startIndex - 1 >= 0)
 							userInputString = overallString.substring(spanEnd - 1, startIndex - 1);
-                        if (checkValidation) {
+                        if (mCheckValidation) {
                             spannableStringBuilder.replace(spanEnd, startIndex + 1, "");
                         } else {
                             BitmapDrawable bmpDrawable = getBitmapFromText(userInputString);
@@ -239,8 +234,8 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
 
 			@Override
 			public void run() {
-				CustomMultiAutoCompleteTextView.this.setText(spannable);
-				CustomMultiAutoCompleteTextView.this.setSelection(CustomMultiAutoCompleteTextView.this.getText().toString().length());
+				MultiAutoCompleteView.this.setText(spannable);
+				MultiAutoCompleteView.this.setSelection(MultiAutoCompleteView.this.getText().toString().length());
 				resetFlags();
 			}
 		}, 20);
@@ -250,8 +245,8 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
 		int[] startEnd = getSelectionStartAndEnd();
 		int i = startEnd[0];
 		int j = startEnd[1];
-		isTextDeletedFromTouch = true;
-		isTextAdditionInProgress = true;
+		mIsTextDeletedFromTouch = true;
+		mIsTextAdditionInProgress = true;
 		final SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(this.getText());
 		String deletedSubString = spannableStringBuilder.subSequence(Math.min(i, j), Math.max(i, j)).toString();
 		deleteFromHashMap(deletedSubString);
@@ -265,15 +260,15 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
 		new Handler().postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				CustomMultiAutoCompleteTextView.this.setText(spannableStringBuilder);
+				MultiAutoCompleteView.this.setText(spannableStringBuilder);
 				new Handler().postDelayed(new Runnable() {
 
 					@Override
 					public void run() {
-						isTextAdditionInProgress = false;
-						stringLength = CustomMultiAutoCompleteTextView.this.getText().toString().length();
-						isTextDeletedFromTouch = false;
-						CustomMultiAutoCompleteTextView.this.setMovementMethod(LinkMovementMethod.getInstance());
+						mIsTextAdditionInProgress = false;
+						mStringLength = MultiAutoCompleteView.this.getText().toString().length();
+						mIsTextDeletedFromTouch = false;
+						MultiAutoCompleteView.this.setMovementMethod(LinkMovementMethod.getInstance());
 					}
 				}, 50);
 			}
@@ -290,23 +285,23 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
 	}
 
 	public void resetFlags() {
-		isContactAddedFromDb = false;
-		isTextAdditionInProgress = false;
-		checkValidation = true;
+		mIsContactAddedFromDb = false;
+		mIsTextAdditionInProgress = false;
+		mCheckValidation = true;
 	}
 
 	private void deleteFromHashMap(String subString) {
-		SparseArrayCompat<String> selectedContactClone = mSelectedItem.clone();
-		for (int i = 0; i<selectedContactClone.size(); i++){
+		ArrayList<String> selectedContactClone =  this.mSelectedItem;
+		for (int i = 0; i < selectedContactClone.size(); i++){
 			if (subString.equals(selectedContactClone.get(i))) {
-				mSelectedItem.remove(selectedContactClone.keyAt(i));
+				mSelectedItem.remove(selectedContactClone.get(i));
 			}
 		}
 		updateQuickContactList();
 	}
 
 	public void updateQuickContactList() {
-        ArrayList<String> listItems = ((ComponentPickerAdapter) this.getAdapter()).getComponentList();
+        ArrayList<String> listItems = ((ComponentPickerAdapter) this.getAdapter()).getAllItems();
 		ArrayList<String> componentList = getContacts(listItems);
 		((ComponentPickerAdapter) this.getAdapter()).setComponentList(componentList);
 	}
@@ -338,7 +333,7 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
         try {
             for (int i = 0; i < sorted.size(); i++) {
                 String component = sorted.get(i);
-                if (mSelectedItem.indexOfValue(component) >= 0)
+                if (mSelectedItem.indexOf(component) < 0)
                     components.add(component);
             }
             Collections.sort(components, new Comparator<String>() {
@@ -347,6 +342,7 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
                     return object1.compareToIgnoreCase(object2);
                 }
             });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -369,7 +365,7 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
         return new BitmapDrawable(viewBmp);
     }
 
-    public SparseArrayCompat<String> getSelectedItems(){
+    public ArrayList<String> getSelectedItems(){
         return mSelectedItem;
     }
 
@@ -377,10 +373,11 @@ public class CustomMultiAutoCompleteTextView extends MultiAutoCompleteTextView {
         if (items != null) {
             if (items.size() != 0) {
                 for (int i = 0; i < items.size(); i++) {
-                    mSelectedItem.put(i, items.get(i));
+                    mSelectedItem.add(items.get(i));
                     updateQuickContactList();
                 }
             }
         }
     }
+
 }
