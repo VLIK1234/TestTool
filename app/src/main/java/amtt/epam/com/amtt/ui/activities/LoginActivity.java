@@ -102,6 +102,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
             @Override
             public void onClick(View v) {
                 checkFields();
+                hideKeyboard(LoginActivity.this.getWindow());
             }
         });
     }

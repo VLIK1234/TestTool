@@ -13,7 +13,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -68,7 +67,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private AttachmentAdapter mAdapter;
     public Spinner mProjectNamesSpinner;
     private RecyclerView recyclerView;
-    private InputMethodManager mInputManager;
     private MultiAutoCompleteView mComponents;
     private Queue<JiraContentConst> mQueueRequests = new LinkedList<>();
     private Button mCreateIssueButton;
@@ -144,7 +142,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initEnvironmentEditText();
         initListStepButton();
         initPrioritiesSpinner();
-        mInputManager = (InputMethodManager) CreateIssueActivity.this.getSystemService(INPUT_METHOD_SERVICE);
     }
 
     private void reinitRelatedViews(String projectKey) {
@@ -181,7 +178,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                                         }
                                     }
                                 });
-                            }else{
+                            } else {
                                 mProjectNamesSpinner.setSelection(0);
                             }
                             mQueueRequests.remove(JiraContentConst.PROJECTS_RESPONSE);
@@ -305,7 +302,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     if (ActiveUser.getInstance().getLastComponentsIds() != null) {
                         List<String> components = ActiveUser.getInstance().getLastComponentsIds();
                         ArrayList<String> componentsList = new ArrayList<>();
-                        if (components.size()!= 0) {
+                        if (components.size() != 0) {
                             for (int i = 0; i < components.size(); i++) {
                                 componentsList.add(JiraContent.getInstance().getComponentNameById(components.get(i)));
                             }
@@ -341,7 +338,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         mQueueRequests.remove(JiraContentConst.ISSUE_TYPES_RESPONSE);
                         showProgressIfNeed();
                         issueTypesSpinner.setEnabled(true);
-                        hideKeyboard();
+                        hideKeyboard(CreateIssueActivity.this.getWindow());
                     }
                 });
             }
@@ -500,7 +497,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     public void run() {
                         if (result != null) {
                             ArrayList<Attachment> screenArray = AttachmentManager.getInstance().
-                                getAttachmentList(result);
+                                    getAttachmentList(result);
                             mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
                             recyclerView.setAdapter(mAdapter);
                         }
@@ -552,19 +549,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         Intent preview = new Intent(CreateIssueActivity.this, PreviewActivity.class);
         preview.putExtra(PreviewActivity.FILE_PATH, mAdapter.getAttachmentFilePathList().get(position));
         startActivity(preview);
-    }
-
-    private void hideKeyboard() {
-        View view = CreateIssueActivity.this.getCurrentFocus();
-        if (view != null) {
-            mInputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
-
-    private void showKeyboard(View view){
-        if (view != null) {
-            mInputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
-        }
     }
 
     public void showProgressIfNeed() {
