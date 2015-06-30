@@ -1,10 +1,12 @@
 package amtt.epam.com.amtt.app;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
@@ -114,6 +116,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initListStepButton();
         initPrioritiesSpinner();
         initCreateIssueButton();
+        initClearEnvironmentButton();
         mInputManager = (InputMethodManager) CreateIssueActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
@@ -418,6 +421,32 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             }
         });
 
+    }
+
+    private void initClearEnvironmentButton() {
+        Button clearEnvironmentButton = (Button)findViewById(R.id.btn_clear_environment);
+        clearEnvironmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(CreateIssueActivity.this)
+                        .setTitle(R.string.label_clear_environment)
+                        .setMessage(R.string.message_clear_environment)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mEnvironmentEditText.setText("");
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+            }
+        });
     }
 
     private void setAssignableNames(String s) {

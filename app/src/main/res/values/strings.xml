@@ -138,6 +138,8 @@
     <string name="label_list_step">Show list step</string>
     <string name="activity_info_text_size">16sp</string>
     <string name="content_description_screenshot">Screenshot</string>
+    <string name="label_clear_environment">Clear environment</string>
+    <string name="message_clear_environment">You will lose all the device specifications</string>
 
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
