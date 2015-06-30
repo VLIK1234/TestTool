@@ -17,10 +17,8 @@ public final class JiraApiConst {
     private static String API_PATH = "api";
     private static String SLASH = "/";
     public static String REST_API_PATH = SLASH + REST_PATH + SLASH + API_PATH + SLASH + DEFAULT_API_VERSION + SLASH;
-    public static String EPAM_JIRA_SUFFIX = SLASH + "jira";
     private static String QUESTION = "?";
     private static String EQUAL = "=";
-    private static String EXPAND = "expand";
     private static String AND = "&";
 
     //Tags

@@ -6,14 +6,13 @@ import android.content.Loader;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -42,6 +41,8 @@ import amtt.epam.com.amtt.util.DialogUtils;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.util.Validator;
+import amtt.epam.com.amtt.view.TextInput;
 
 /**
  * @author Artsiom_Kaliaha
@@ -50,17 +51,15 @@ import amtt.epam.com.amtt.util.Logger;
 public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, LoaderCallbacks<Cursor> {
 
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
-    public static final String KEY_USER_ID = "key_user_id";
+
+    private TextInput mUserNameTextInput;
+    private TextInput mPasswordTextInput;
+    private TextInput mUrlTextInput;
 
     private final String TAG = this.getClass().getSimpleName();
-    private EditText mUserNameEditText;
-    private EditText mPasswordEditText;
-    private EditText mUrlEditText;
     private Button mLoginButton;
     private String mRequestUrl;
     private boolean mIsUserInDatabase;
-    private boolean isNeedShowingTopButton;
-    private InputMethodManager mInputMethodManager;
 
     @Override
 
@@ -68,7 +67,6 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initViews();
-        mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
         if (isNewUserAdditionFromUserInfo()) {
@@ -94,9 +92,22 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     }
 
     private void initViews() {
-        mUserNameEditText = (EditText) findViewById(R.id.et_username);
-        mPasswordEditText = (EditText) findViewById(R.id.et_password);
-        mUrlEditText = (EditText) findViewById(R.id.et_jira_url);
+        mUserNameTextInput = (TextInput) findViewById(R.id.username_input);
+        mUserNameTextInput.setValidators(new ArrayList<Validator>() {{
+            add(InputsUtil.getEmptyValidator());
+            add(InputsUtil.getWhitespacesValidator());
+            add(InputsUtil.getNoEmailValidator());
+        }});
+        mPasswordTextInput = (TextInput) findViewById(R.id.password_input);
+        mPasswordTextInput.setValidators(new ArrayList<Validator>() {{
+            add(InputsUtil.getEmptyValidator());
+        }});
+        mUrlTextInput = (TextInput) findViewById(R.id.url_input);
+        mUrlTextInput.setValidators(new ArrayList<Validator>() {{
+            add(InputsUtil.getEmptyValidator());
+            add(InputsUtil.getCorrectUrlValidator());
+            add(InputsUtil.getEpamUrlValidator());
+        }});
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,11 +119,11 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     }
 
     private void sendAuthRequest() {
-        mRequestUrl = mUrlEditText.getText().toString();
-        String userName = mUserNameEditText.getText().toString();
-        String password = mPasswordEditText.getText().toString();
+        String userName = mUserNameTextInput.getText().toString();
+        mRequestUrl = mUrlTextInput.getText().toString();
+        String password = mPasswordTextInput.getText().toString();
         //getClient user info and perform auth in one request
-        String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameEditText.getText().toString();
+        String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameTextInput.getText().toString();
         JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, userName, password, mRequestUrl, this);
     }
 
@@ -131,65 +142,34 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     }
 
     private void checkFields() {
-        boolean isAnyEmptyField = false;
-        //check username
-        if (TextUtils.isEmpty(mUserNameEditText.getText().toString())) {
-            mUserNameEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username));
-            isAnyEmptyField = true;
-        } else if (InputsUtil.haveWhitespaces(mUserNameEditText.getText().toString())) {
-            mUserNameEditText.setError(getString(R.string.label_user_name) + getString(R.string.label_no_whitespaces));
-            isAnyEmptyField = true;
-        } else if (InputsUtil.hasAtSymbol(mUserNameEditText.getText().toString())) {
-            mUserNameEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_username) + getString(R.string.label_cannot_at));
-            isAnyEmptyField = true;
+        if (!mUserNameTextInput.validate() | !mPasswordTextInput.validate() | !mUrlTextInput.validate()) {
+            return;
         }
+        showProgress(true);
+        mLoginButton.setEnabled(false);
+        StepUtil.checkUser(mUserNameTextInput.getText().toString(), new IResult<List<JUserInfo>>() {
+            @Override
+            public void onResult(List<JUserInfo> result) {
+                mIsUserInDatabase = result.size() > 0;
+                ActiveUser.getInstance().clearActiveUser();
+                sendAuthRequest();
+            }
 
-        if (TextUtils.isEmpty(mPasswordEditText.getText().toString())) {
-            isAnyEmptyField = true;
-            mPasswordEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_password));
-        }
+            @Override
+            public void onError(Exception e) {
 
-        //check url
-        if (TextUtils.isEmpty(mUrlEditText.getText().toString()) || getString(R.string.url_prefix).equals(mUrlEditText.getText().toString())) {
-            isAnyEmptyField = true;
-            mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_url));
-        } else if (InputsUtil.checkUrl(mUrlEditText.getText().toString())) {
-            isAnyEmptyField = true;
-            mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_correct_url));
-        } else if (getString(R.string.epam_url).equals(mUrlEditText.getText().toString())) {
-            isAnyEmptyField = true;
-            mUrlEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_postfix_jira));
-        }
-        if (!isAnyEmptyField) {
-            showProgress(true);
-            mLoginButton.setEnabled(false);
-            StepUtil.checkUser(mUserNameEditText.getText().toString(), new IResult<List<JUserInfo>>() {
-                @Override
-                public void onResult(List<JUserInfo> result) {
-                    mIsUserInDatabase = result.size() > 0;
-                    LoginActivity.this.runOnUiThread(new Runnable() {
-                        public void run() {
-                            sendAuthRequest();
-                        }
-                    });
-                }
-
-                @Override
-                public void onError(Exception e) {
-
-                }
-            });
-        }
+            }
+        });
     }
 
     private void setActiveUser() {
-        final ActiveUser activeUser = ActiveUser.getInstance();
-        final String userName = mUserNameEditText.getText().toString();
-        final String password = mPasswordEditText.getText().toString();
         ActiveUser.getInstance().clearActiveUser();
+        final ActiveUser activeUser = ActiveUser.getInstance();
+        final String userName = mUserNameTextInput.getText().toString();
+        final String password = mPasswordTextInput.getText().toString();
         activeUser.setCredentials(userName, password, mRequestUrl);
         activeUser.setUserName(userName);
-        activeUser.setUrl(mUrlEditText.getText().toString());
+        activeUser.setUrl(mUrlTextInput.getText().toString());
         ScheduledExecutorService worker =
                 Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
@@ -217,7 +197,6 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     }
 
     private boolean isNewUserAdditionFromUserInfo() {
-        isNeedShowingTopButton = ActiveUser.getInstance().getUrl() == null;
         return ActiveUser.getInstance().getUrl() != null;
     }
 
@@ -232,7 +211,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     public void onLoadExecuted(JUserInfo user) {
         showProgress(false);
         if (user != null && !mIsUserInDatabase) {
-            user.setUrl(mUrlEditText.getText().toString());
+            user.setUrl(mUrlTextInput.getText().toString());
             setActiveUser();
             user.setCredentials(ActiveUser.getInstance().getCredentials());
             insertUserToDatabase(user);
@@ -272,9 +251,9 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
             switch (loader.getId()) {
                 case SINGLE_USER_CURSOR_LOADER_ID:
                     JUserInfo user = new JUserInfo(data);
-                    mUserNameEditText.setText(user.getName());
-                    mUrlEditText.setText(user.getUrl());
-                    mPasswordEditText.setText(Symbols.EMPTY);
+                    mUserNameTextInput.setText(user.getName());
+                    mUrlTextInput.setText(user.getUrl());
+                    mPasswordTextInput.setText(Symbols.EMPTY);
                     break;
             }
         } finally {

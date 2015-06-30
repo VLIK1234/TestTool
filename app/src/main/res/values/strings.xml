@@ -31,8 +31,7 @@
     <string name="label_attachment">Attachment</string>
     <string name="label_button_main">Main button</string>
     <string name="label_cancel_record">Cancel record</string>
-    <string name="label_cannot_at">" nor email and symbol @"</string>
-    <string name="label_cannot_whitespaces">" cannot begin and end to whitespace"</string>
+    <string name="label_clear_environment">Clear environment</string>
     <string name="label_close">Close</string>
     <string name="label_close_app">Close Amtt</string>
     <string name="label_components">Component/s</string>
@@ -43,7 +42,7 @@
     <string name="label_environment">Environment</string>
     <string name="label_expected_result">Expected result</string>
     <string name="label_file_name">"File name: "</string>
-   <string name="label_full_name">Full Name</string>
+    <string name="label_full_name">Full Name</string>
     <string name="label_hide">Hide</string>
     <string name="label_issue_type">Issue Type</string>
     <string name="label_jira_url">JIRA Url</string>
@@ -53,7 +52,9 @@
     <string name="label_login">Log In</string>
     <string name="label_name_activity">"Name activity"</string>
     <string name="label_new_user">Add new QA</string>
+    <string name="label_no_email">" nor email and symbol @"</string>
     <string name="label_no_whitespaces">" cannot contain whitespaces"</string>
+    <string name="label_no_whitespace_margins">" cannot begin and end to whitespace"</string>
     <string name="label_open_amtt">Open Amtt</string>
     <string name="label_package_name">"Package name: "</string>
     <string name="label_password">Password</string>
@@ -83,13 +84,8 @@
     <string name="notification_attach_title_init">Uploading %s</string>
     <string name="notification_attachment_text_init">Uploading %s attached items.</string>
 
-    <string name="enter_prefix">Please, enter</string>
-    <string name="enter_username">" username"</string>
-    <string name="enter_password">" password"</string>
-    <string name="enter_url">" url"</string>
-    <string name="enter_summary">" title"</string>
+    <string name="enter_prefix">Please, enter %s</string>
     <string name="enter_postfix_jira">" postfix '/jira'"</string>
-    <string name="enter_correct_url">" url"</string>
     <string name="auth_passed">Authorization passed</string>
 
     <string name="dialog_description">To make screenshot please use next combination button for your device - </string>
@@ -103,6 +99,7 @@
     <string name="xiaomi_help_message">\nXiaomi tablet - power+options \nXiaomi phone - volume down+power</string>
     <string name="all_help_message">\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nSony - volume down+power \nXiaomi phone - volume down+power \nHTC - power+home \HUAWEI - volume down+power</string>
     <string name="epam_url">https://jira.epam.com</string>
+
     <string name="key_dialog_hide">dialog_hide</string>
     <string name="key_topbutton_show">topbutton_show</string>
     <string name="title_preff_topbutton_show">Show</string>
@@ -113,6 +110,7 @@
     <string name="url_prefix">https://</string>
     <string name="ticket_created">Ticket has been successfully created</string>
     <string name="content_description_screenshot">Screenshot</string>
+    <string name="message_clear_environment">You will lose all the device specifications</string>
 
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>

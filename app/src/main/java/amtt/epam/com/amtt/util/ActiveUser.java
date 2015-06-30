@@ -97,10 +97,6 @@ public class ActiveUser {
         this.mLastAssigneeName = lastAssigneeName;
     }
 
-    public String getLastProjectName() {
-        return mLastProjectName;
-    }
-
     public void setLastProjectName(String lastProjectName) {
         this.mLastProjectName = lastProjectName;
     }

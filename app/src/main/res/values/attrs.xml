@@ -76,6 +76,8 @@
         <attr name="rd_delayClick" format="boolean"/>
     </declare-styleable>
 
-
+    <declare-styleable name="TextInput">
+        <attr name="defaultErrorText" format="string"/>
+    </declare-styleable>
 
 </resources>

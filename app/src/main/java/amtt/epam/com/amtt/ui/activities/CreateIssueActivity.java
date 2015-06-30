@@ -1,22 +1,22 @@
 package amtt.epam.com.amtt.ui.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,16 +49,19 @@ import amtt.epam.com.amtt.ui.views.MultiAutoCompleteView;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.InputsUtil;
+import amtt.epam.com.amtt.util.Validator;
+import amtt.epam.com.amtt.view.TextInput;
 
-
-public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener{
+public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener {
 
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final String DEFAULT_PRIORITY_ID = "3";
     private AutocompleteProgressView mAssignableAutocompleteView;
-    private EditText mDescriptionEditText;
-    private EditText mEnvironmentEditText;
-    private EditText mSummaryEditText;
+
+    private TextInput mDescriptionTextInput;
+    private TextInput mEnvironmentTextInput;
+    private TextInput mSummaryTextInput;
+
     private String mAssignableUserName = null;
     private String mIssueTypeName;
     private String mPriorityName;
@@ -142,7 +145,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initEnvironmentEditText();
         initListStepButton();
         initPrioritiesSpinner();
-    }
+        initCreateIssueButton();
+        initClearEnvironmentButton();
+        }
 
     private void reinitRelatedViews(String projectKey) {
         mQueueRequests.add(JiraContentConst.ISSUE_TYPES_RESPONSE);
@@ -337,13 +342,13 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         issueTypesSpinner.setAdapter(issueTypesAdapter);
                         mQueueRequests.remove(JiraContentConst.ISSUE_TYPES_RESPONSE);
                         showProgressIfNeed();
-                        issueTypesSpinner.setEnabled(true);
-                        hideKeyboard(CreateIssueActivity.this.getWindow());
-                    }
-                });
+                            issueTypesSpinner.setEnabled(true);
+                            hideKeyboard(CreateIssueActivity.this.getWindow());
+                        }
+                    });
+                }
             }
-        }
-    });
+        });
         issueTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -357,7 +362,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void initDescriptionEditText() {
-        mDescriptionEditText = (EditText) findViewById(R.id.et_description);
+        mDescriptionTextInput = (TextInput) findViewById(R.id.description_input);
         JiraContent.getInstance().getDescription(new JiraGetContentCallback<Spanned>() {
             @Override
             public void resultOfDataLoading(final Spanned result) {
@@ -365,7 +370,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mDescriptionEditText.setText(result);
+                            mDescriptionTextInput.setText(result);
                         }
                     });
                 }
@@ -388,8 +393,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void initEnvironmentEditText() {
-        mEnvironmentEditText = (EditText) findViewById(R.id.et_environment);
-        mEnvironmentEditText.setText(SystemInfoHelper.getDeviceOsInfo());
+        mEnvironmentTextInput = (TextInput) findViewById(R.id.environment_input);
+        mEnvironmentTextInput.setText(SystemInfoHelper.getDeviceOsInfo());
     }
 
     private void initCreateIssueButton() {
@@ -398,24 +403,14 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         mCreateIssueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Boolean isValid = true;
-                if (TextUtils.isEmpty(mSummaryEditText.getText().toString())) {
-                    mSummaryEditText.requestFocus();
-                    mSummaryEditText.setError(getString(R.string.enter_prefix) + getString(R.string.enter_summary));
-                    showKeyboard(mSummaryEditText);
-                    isValid = false;
-                    Toast.makeText(CreateIssueActivity.this, getString(R.string.enter_prefix) + getString(R.string.enter_summary), Toast.LENGTH_LONG).show();
-                } else if (InputsUtil.hasWhitespaceMargins(mSummaryEditText.getText().toString())) {
-                    mSummaryEditText.requestFocus();
-                    mSummaryEditText.setError(getString(R.string.label_summary) + getString(R.string.label_cannot_whitespaces));
-                    isValid = false;
-                    Toast.makeText(CreateIssueActivity.this, getString(R.string.label_summary) + getString(R.string.label_cannot_whitespaces), Toast.LENGTH_LONG).show();
+                if (!mSummaryTextInput.validate() | !mAssignableAutocompleteView.validate()) {
+                    return;
                 }
                 if (mIssueTypeName == null) {
-                    isValid = false;
                     Toast.makeText(CreateIssueActivity.this, getString(R.string.error_message_host), Toast.LENGTH_LONG).show();
+                    return;
                 }
-                if (isValid) {
+
                     showProgress(true);
                     if (mComponents.getSelectedItems() != null) {
                         List<String> components = mComponents.getSelectedItems();
@@ -428,8 +423,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         }
                     }
                     JiraContent.getInstance().createIssue(mIssueTypeName,
-                            mPriorityName, mVersionName, mSummaryEditText.getText().toString(),
-                            mDescriptionEditText.getText().toString(), mEnvironmentEditText.getText().toString(),
+                            mPriorityName, mVersionName, mSummaryTextInput.getText().toString(),
+                            mDescriptionTextInput.getText().toString(), mEnvironmentTextInput.getText().toString(),
                             mAssignableUserName, ActiveUser.getInstance().getLastComponentsIds(), new JiraGetContentCallback<JCreateIssueResponse>() {
                                 @Override
                                 public void resultOfDataLoading(JCreateIssueResponse result) {
@@ -444,17 +439,26 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                                     showProgress(false);
                                 }
                             });
-                }
             }
+
         });
     }
 
     private void initSummaryEditText() {
-        mSummaryEditText = (EditText) findViewById(R.id.et_summary);
+        mSummaryTextInput = (TextInput) findViewById(R.id.summary_input);
+        mSummaryTextInput.setValidators(new ArrayList<Validator>() {{
+            add(InputsUtil.getEmptyValidator());
+            add(InputsUtil.getEndStartWhitespacesValidator());
+        }});
     }
 
     private void initAssigneeAutocompleteView() {
         mAssignableAutocompleteView = (AutocompleteProgressView) findViewById(R.id.atv_assignable_users);
+        mAssignableAutocompleteView.setValidators(new ArrayList<Validator>() {{
+            add(InputsUtil.getEmptyValidator());
+            add(InputsUtil.getWhitespacesValidator());
+            add(InputsUtil.getEndStartWhitespacesValidator());
+        }});
         mAssignableAutocompleteView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -468,7 +472,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 2 && before <= count) {
-                    if (InputsUtil.haveWhitespaces(s.toString())) {
+                    if (InputsUtil.getWhitespacesValidator().validate(mAssignableAutocompleteView)) {
                         Toast.makeText(CreateIssueActivity.this, getString(R.string.label_tester) + getString(R.string.label_no_whitespaces), Toast.LENGTH_LONG).show();
                     } else {
                         mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
@@ -513,6 +517,32 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             }
         });
 
+    }
+
+    private void initClearEnvironmentButton() {
+        Button clearEnvironmentButton = (Button)findViewById(R.id.btn_clear_environment);
+        clearEnvironmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(CreateIssueActivity.this)
+                        .setTitle(R.string.label_clear_environment)
+                        .setMessage(R.string.message_clear_environment)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mEnvironmentTextInput.setText("");
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+            }
+        });
     }
 
     private void setAssignableNames(String s) {
