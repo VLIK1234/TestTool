@@ -53,25 +53,13 @@ public class StepUtil {
         cleanActivityMeta();
     }
 
-    public static void applyNotesToScreenshot(PaintView paintView, ImageView screenshotImageView, String screenshotPath) {
-        Bitmap drawnNotesBitmap = paintView.getDrawingCache();
-        Bitmap screenshotBitmap = BitmapFactory.decodeFile(screenshotPath).copy(Bitmap.Config.ARGB_8888, true);
-
-        if (screenshotBitmap == null) {
-            //TODO finish logic
-            //In case the screenshot has been deleted
-            screenshotBitmap = Bitmap.createBitmap(screenshotImageView.getWidth(), screenshotImageView.getHeight(), Bitmap.Config.ARGB_8888);
-        }
-
-        Canvas canvas = new Canvas(screenshotBitmap);
-        canvas.drawBitmap(drawnNotesBitmap, 0, 0, new Paint(Paint.DITHER_FLAG));
-
+    public static void applyNotesToScreenshot(PaintView paintView, String screenshotPath) {
         Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals(MimeType.IMAGE_PNG.getFileExtension()) ?
                 Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
 
         FileOutputStream outputStream = IOUtils.openFileOutput(screenshotPath);
         if (outputStream != null) {
-            screenshotBitmap.compress(compressFormat, 100, outputStream);
+            paintView.getDrawingCache().compress(compressFormat, 100, outputStream);
         }
     }
 

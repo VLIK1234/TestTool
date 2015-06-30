@@ -94,11 +94,7 @@
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
         <activity
             android:name=".app.PreviewActivity"
-            android:launchMode="standard"
-            android:noHistory="true"
-            android:excludeFromRecents="true"
-            android:label="@string/title_activity_preview"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+            android:label="@string/title_activity_preview" />
 
         <service
             android:name=".service.AttachmentService"
@@ -124,6 +120,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".app.MainActivity"/>
         </activity>
+
     </application>
 
 </manifest>

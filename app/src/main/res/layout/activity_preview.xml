@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/activity_preview"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/abc_action_bar_content_inset_material"
-    android:paddingRight="@dimen/abc_action_bar_content_inset_material"
-    android:paddingTop="@dimen/abc_action_bar_content_inset_material">
-
-    <ImageView
-        android:id="@+id/iv_preview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@string/content_description_screenshot"/>
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_horizontal_margin"
+    tools:context=".app.PreviewActivity">
 
     <amtt.epam.com.amtt.view.PaintView
         android:id="@+id/paint_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:layout_centerInParent="true"/>
 
     <TextView
         android:id="@+id/tv_preview"

@@ -8,11 +8,12 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 /**
  * Created by Artsiom_Kaliaha on 25.06.2015.
  */
-public class PaintView extends View {
+public class PaintView extends ImageView {
 
     private Canvas mDrawCanvas;
     private Bitmap mCanvasBitmap;
