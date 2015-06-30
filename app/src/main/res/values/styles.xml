@@ -17,10 +17,13 @@
 
     <style name="Material.Widget.AutocompleteProgressView">
         <item name="android:dropDownItemStyle">@style/Material.Widget.DropDownItem</item>
-        <item name="android:spinnerStyle">@style/Base.Widget.AppCompat.Spinner.Underlined.Custom</item>
+        <item name="android:spinnerStyle">@style/Base.Widget.AppCompat.Spinner.Underlined.Custom
+        </item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
         <item name="android:inputType">textAutoComplete</item>
         <item name="android:textColor">@color/primary_text</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
     </style>
 
     <style name="Material.Widget.DropDownItem">
@@ -35,8 +38,8 @@
     </style>
 
     <style name="Material.Widget.TextViewLabel">
-        <item name="android:layout_marginLeft">4dp</item>
-        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginLeft">12dp</item>
+        <item name="android:layout_marginRight">12dp</item>
         <item name="android:textColor">@color/secondary_text</item>
         <item name="android:textSize">11sp</item>
     </style>
@@ -47,8 +50,8 @@
     </style>
 
     <style name="Base.Widget.AppCompat.Spinner.Underlined.Custom">
-        <item name="android:paddingRight">4dp</item>
-        <item name="android:paddingLeft">4dp</item>
+        <!--<item name="android:paddingRight">4dp</item>-->
+        <!--<item name="android:paddingLeft">4dp</item>-->
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingBottom">12dp</item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
@@ -57,8 +60,8 @@
     </style>
 
     <style name="Material.Widget.RecyclerView">
-        <item name="android:layout_marginLeft">4dp</item>
-        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginLeft">12dp</item>
+        <item name="android:layout_marginRight">12dp</item>
         <item name="android:layout_height">140dp</item>
         <item name="android:background">@drawable/dotted_border</item>
         <item name="android:scrollbars">horizontal</item>
@@ -68,7 +71,17 @@
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
         <item name="android:textColor">@color/primary_text</item>
     </style>
+
     <style name="Dialog" parent="Theme.AppCompat.Light.Dialog">
-</style>
+    </style>
+
+    <style name="Material.Widget.SpinnerProgress">
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+    </style>
+
+    <style name="Material.Widget.CreateIssueButton" parent="Base.Widget.AppCompat.Button">
+        <item name="android:layout_marginRight">4dp</item>
+    </style>
 
 </resources>

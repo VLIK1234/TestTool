@@ -2,55 +2,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_horizontal_margin"
     android:paddingLeft="12dp"
     android:paddingRight="12dp"
-    tools:context=".app.LoginActivity">
+    android:paddingTop="@dimen/activity_horizontal_margin"
+    tools:context="amtt.epam.com.amtt.app.LoginActivity">
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_username"
-        style="@style/Material.Widget.TextViewLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/et_username"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/label_user_name"
-            android:inputType="text" />
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_jira_url"
-        style="@style/Material.Widget.TextViewLabel"
+    <amtt.epam.com.amtt.view.TextInput
+        android:id="@+id/username_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/til_username">
+        android:hint="@string/label_user_name"
+        android:inputType="text" />
 
-        <EditText
-            android:id="@+id/et_jira_url"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/label_url"
-            android:inputType="textUri" />
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_password"
-        style="@style/Material.Widget.TextViewLabel"
+    <amtt.epam.com.amtt.view.TextInput
+        android:id="@+id/url_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/til_jira_url">
+        android:layout_below="@+id/username_input"
+        android:hint="@string/label_url"
+        android:inputType="textUri"
+        android:text="@string/url_prefix" />
 
-        <EditText
-            android:id="@+id/et_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/label_password"
-            android:inputType="textPassword" />
-    </android.support.design.widget.TextInputLayout>
+    <amtt.epam.com.amtt.view.TextInput
+        android:id="@+id/password_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/url_input"
+        android:hint="@string/label_password"
+        android:inputType="textPassword" />
 
     <Button
         android:id="@+id/btn_login"
@@ -58,8 +38,7 @@
         android:layout_height="@dimen/material_vertical_button_height_size"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/til_password"
-        android:layout_marginTop="@dimen/material_vertical_button_padding_top"
+        android:layout_below="@id/password_input"
         android:minWidth="@dimen/material_vertical_button_min_width_size"
         android:text="@string/label_login"
         android:textSize="@dimen/abc_text_size_button_material" />
@@ -68,7 +47,7 @@
         android:id="@android:id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
 </RelativeLayout>
