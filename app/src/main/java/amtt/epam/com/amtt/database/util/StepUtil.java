@@ -59,7 +59,7 @@ public class StepUtil {
         return Html.fromHtml(
                 "<b>" + context.getString(R.string.label_activity) + "</b>" + "<small>" + step.getActivity() + "</small>" + "<br />" +
                         "<b>" + context.getString(R.string.label_screen_orientation) + "</b>" + "<small>" + step.getOrientation() + "</small>" + "<br />" +
-                        "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>" + "<br />" + "<br />");
+                        "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>");
     }
 
     public static Spanned getStepInfo(List<DatabaseEntity> listStep) {
@@ -68,13 +68,13 @@ public class StepUtil {
         Context context = AmttApplication.getContext();
         for (int i = 0; i < list.size(); i++) {
             Step step = list.get(i);
-            if (!step.isStepWithoutActivityInfo()) {
-                builder.append(Html.fromHtml("<h5>" + context.getString(R.string.label_step) + String.valueOf(i + 1) + "</h5>"));
-                if (!step.isStepWithActivityInfo()) {
-                    builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(step.getFilePath()) + "</small>" + "<br />"));
-                }
+            builder.append(Html.fromHtml("<h5>" + context.getString(R.string.label_step) + String.valueOf(i + 1) + "</h5>"));
+            if (step.isStepWithActivityInfo()) {
                 builder.append(getStepInfo(step));
+            } else {
+                builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(step.getFilePath()) + "</small>"));
             }
+            builder.append(Html.fromHtml("<br />" + "<br />"));
         }
         return builder;
     }
