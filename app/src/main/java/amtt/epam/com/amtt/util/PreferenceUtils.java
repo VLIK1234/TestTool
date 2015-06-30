@@ -3,6 +3,8 @@ package amtt.epam.com.amtt.util;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import amtt.epam.com.amtt.AmttApplication;
+
 public class PreferenceUtils {
 
     private static SharedPreferences mSharedPreferences = null;
@@ -28,7 +30,7 @@ public class PreferenceUtils {
 
     public static SharedPreferences getPref() {
         if (mSharedPreferences == null) {
-            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(ContextHolder.getContext());
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(AmttApplication.getContext());
         }
         return mSharedPreferences;
     }

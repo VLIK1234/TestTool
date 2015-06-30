@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.database.util;
 import android.content.ComponentName;
 import android.content.Context;
 import android.text.Html;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
@@ -18,14 +17,13 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.util.ContextHolder;
+import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.util.FileUtil;
 
 /**
  @author Artsiom_Kaliaha
  @version on 16.05.2015
  */
-
 public class StepUtil {
 
     public static void saveStep(ComponentName componentName, String mScreenPath){
@@ -55,20 +53,23 @@ public class StepUtil {
     }
 
      public static Spanned getStepInfo(Step step){
-         Context context = ContextHolder.getContext();
+         Context context = AmttApplication.getContext();
          return Html.fromHtml(
                  "<b>" + context.getString(R.string.label_activity) + "</b>" + "<small>" + step.getActivity() + "</small>" + "<br />" +
                  "<b>" + context.getString(R.string.label_screen_orientation) + "</b>" + "<small>" + step.getOreintation() + "</small>" + "<br />" +
                  "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>" + "<br />" + "<br />");
      }
 
+    @SuppressWarnings("unchecked")
     public static Spanned getStepInfo(List<DatabaseEntity> listStep){
         ArrayList<Step> list = (ArrayList)listStep;
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        Context context = ContextHolder.getContext();
+        Context context = AmttApplication.getContext();
         for (int i = 0; i < listStep.size(); i++) {
             builder.append(Html.fromHtml("<h5>" + context.getString(R.string.label_step) + String.valueOf(i + 1) + "</h5>"));
-            builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(list.get(i).getFilePath()) + "</small>" + "<br />"));
+            if (list.get(i).getFilePath() != null) {
+                builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(list.get(i).getFilePath()) + "</small>" + "<br />"));
+            }
             builder.append(getStepInfo(list.get(i)));
         }
         return builder;
