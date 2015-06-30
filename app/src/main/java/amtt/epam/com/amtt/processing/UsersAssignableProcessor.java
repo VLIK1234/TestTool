@@ -23,6 +23,7 @@ public class UsersAssignableProcessor implements Processor<JUserAssignableRespon
     @Override
     public JUserAssignableResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
+        inputStream.consumeContent();
         JsonParser parser = new JsonParser();
         JsonArray jsonArray = parser.parse(_response).getAsJsonArray();
         JUserAssignableResponse userAssignableResponse = new JUserAssignableResponse();

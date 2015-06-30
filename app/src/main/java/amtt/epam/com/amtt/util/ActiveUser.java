@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.util;
 import android.util.Base64;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import amtt.epam.com.amtt.api.JiraApiConst;
 
@@ -21,7 +22,7 @@ public class ActiveUser {
     private String mCredentialsString;
     private String mLastProjectName;
     private String mLastAssigneeName;
-    private ArrayList<String> mLastComponentsIds;
+    private List<String> mLastComponentsIds;
 
     private ActiveUser() {
     }
@@ -80,11 +81,11 @@ public class ActiveUser {
         this.mLastProjectKey = lastProjectKey;
     }
 
-    public ArrayList<String> getLastComponentsIds() {
+    public List<String> getLastComponentsIds() {
         return mLastComponentsIds;
     }
 
-    public void setLastComponentsIds(ArrayList<String> lastComponentsIds) {
+    public void setLastComponentsIds(List<String> lastComponentsIds) {
         this.mLastComponentsIds = lastComponentsIds;
     }
 

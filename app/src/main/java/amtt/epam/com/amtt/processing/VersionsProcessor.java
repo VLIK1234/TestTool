@@ -25,6 +25,7 @@ public class VersionsProcessor implements Processor<JVersionsResponse, HttpEntit
     @Override
     public JVersionsResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
+        inputStream.consumeContent();
         JsonParser parser = new JsonParser();
         JsonArray jsonArray = parser.parse(_response).getAsJsonArray();
         JVersionsResponse projectExtVersionsResponse = new JVersionsResponse();

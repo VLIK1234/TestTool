@@ -23,6 +23,7 @@ public class PriorityProcessor  implements Processor<JPriorityResponse, HttpEnti
     @Override
     public JPriorityResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
+        inputStream.consumeContent();
         JsonParser parser = new JsonParser();
         JsonArray jsonArray = parser.parse(_response).getAsJsonArray();
         JPriorityResponse priorityResponse = new JPriorityResponse();

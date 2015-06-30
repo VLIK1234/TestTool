@@ -29,6 +29,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.util.Logger;
@@ -46,7 +47,7 @@ public class MultiAutoCompleteView extends MultiAutoCompleteTextView {
 	private int mBeforeChangeIndex = 0;
     private int mStringLength = 0;
 	private String mChangeString = "";
-    public static ArrayList<String> mSelectedItem = new ArrayList<>();
+    public static List<String> mSelectedItem = new ArrayList<>();
 
     public MultiAutoCompleteView(Context context) {
 		super(context);
@@ -291,7 +292,7 @@ public class MultiAutoCompleteView extends MultiAutoCompleteTextView {
 	}
 
 	private void deleteFromHashMap(String subString) {
-		ArrayList<String> selectedContactClone =  this.mSelectedItem;
+		List<String> selectedContactClone =  this.mSelectedItem;
 		for (int i = 0; i < selectedContactClone.size(); i++){
 			if (subString.equals(selectedContactClone.get(i))) {
 				mSelectedItem.remove(selectedContactClone.get(i));
@@ -365,7 +366,7 @@ public class MultiAutoCompleteView extends MultiAutoCompleteTextView {
         return new BitmapDrawable(viewBmp);
     }
 
-    public ArrayList<String> getSelectedItems(){
+    public List<String> getSelectedItems(){
         return mSelectedItem;
     }
 

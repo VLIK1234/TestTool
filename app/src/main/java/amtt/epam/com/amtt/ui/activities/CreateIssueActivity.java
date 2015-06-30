@@ -118,7 +118,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     protected void onStop() {
         super.onStop();
         if (mComponents.getSelectedItems() != null) {
-            ArrayList<String> components = mComponents.getSelectedItems();
+            List<String> components = mComponents.getSelectedItems();
             if (components.size()!= 0) {
                 ArrayList<String> componentsList = new ArrayList<>();
                 for (int i = 1; i < components.size(); i++) {
@@ -299,7 +299,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     ComponentPickerAdapter componentPickerAdapter = new ComponentPickerAdapter(CreateIssueActivity.this, R.layout.spinner_layout, componentsNames);
                     mComponents.setAdapter(componentPickerAdapter);
                     if (ActiveUser.getInstance().getLastComponentsIds() != null) {
-                        ArrayList<String> components = ActiveUser.getInstance().getLastComponentsIds();
+                        List<String> components = ActiveUser.getInstance().getLastComponentsIds();
                         ArrayList<String> componentsList = new ArrayList<>();
                         if (components.size()!= 0) {
                             for (int i = 0; i < components.size(); i++) {
@@ -417,7 +417,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 if (isValid) {
                     showProgress(true);
                     if (mComponents.getSelectedItems() != null) {
-                        ArrayList<String> components = mComponents.getSelectedItems();
+                        List<String> components = mComponents.getSelectedItems();
                         ActiveUser.getInstance().setLastComponentsIds(components);
 
                     }

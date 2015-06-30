@@ -24,6 +24,7 @@ public class ComponentsProcessor implements Processor<JComponentsResponse, HttpE
     @Override
     public JComponentsResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
+        inputStream.consumeContent();
         JsonParser parser = new JsonParser();
         JsonArray jsonArray = parser.parse(_response).getAsJsonArray();
         JComponentsResponse componentsResponse = new JComponentsResponse();

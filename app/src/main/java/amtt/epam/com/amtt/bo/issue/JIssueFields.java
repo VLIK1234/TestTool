@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.bo.issue;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import amtt.epam.com.amtt.bo.project.JComponent;
 import amtt.epam.com.amtt.bo.project.JIssueVersion;
@@ -225,7 +226,7 @@ public class JIssueFields {
         this.mJComponents.add(component);
     }
 
-    public void setJiraIssueComponentsIds(ArrayList<String> componentsIds) {
+    public void setJiraIssueComponentsIds(List<String> componentsIds) {
         if(componentsIds!=null){
             if(componentsIds.size()!=0){
                 for(int i=0; i<componentsIds.size();i++){
