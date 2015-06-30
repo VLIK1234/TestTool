@@ -1,6 +1,6 @@
 package amtt.epam.com.amtt.api.loadcontent;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import amtt.epam.com.amtt.api.ContentLoadingCallback;
 import amtt.epam.com.amtt.api.JiraApi;
@@ -106,7 +106,7 @@ public class ContentFromBackend {
     }
 
     public void sendAttachmentAsynchronously(String issueKey,
-                                             ArrayList<String> fullFileName,
+                                             List<String> fullFileName,
                                              final ContentLoadingCallback<Boolean> contentLoadingCallback,
                                              final JiraGetContentCallback jiraGetContentCallback) {
         JiraApi.get().createAttachment(issueKey,

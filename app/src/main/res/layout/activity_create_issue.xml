@@ -51,7 +51,7 @@
             <!-- *******ISSUE TYPES END**********************************************-->
 
             <!-- *******SUMMARY BEGIN*************************************************-->
-            <amtt.epam.com.amtt.view.TextInput
+            <amtt.epam.com.amtt.ui.views.TextInput
                 android:id="@+id/summary_input"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:layout_width="match_parent"
@@ -131,7 +131,7 @@
             <!-- *******AFFECTS VERSIONS END****************************************-->
 
             <!-- *******ENVIRONMENT BEGIN****************************************-->
-            <amtt.epam.com.amtt.view.TextInput
+            <amtt.epam.com.amtt.ui.views.TextInput
                 android:id="@+id/environment_input"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:layout_width="match_parent"
@@ -148,7 +148,7 @@
                 android:layout_gravity="end"/>
 
             <!-- *******DESCRIPTION BEGIN****************************************-->
-            <amtt.epam.com.amtt.view.TextInput
+            <amtt.epam.com.amtt.ui.views.TextInput
                 android:id="@+id/description_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

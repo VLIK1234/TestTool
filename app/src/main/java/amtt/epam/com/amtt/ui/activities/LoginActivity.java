@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -42,7 +41,7 @@ import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.util.Validator;
-import amtt.epam.com.amtt.view.TextInput;
+import amtt.epam.com.amtt.ui.views.TextInput;
 
 /**
  * @author Artsiom_Kaliaha

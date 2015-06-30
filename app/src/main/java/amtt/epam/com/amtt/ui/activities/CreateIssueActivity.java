@@ -50,7 +50,7 @@ import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Validator;
-import amtt.epam.com.amtt.view.TextInput;
+import amtt.epam.com.amtt.ui.views.TextInput;
 
 public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener {
 
@@ -125,7 +125,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         if (mComponents.getSelectedItems() != null) {
             List<String> components = mComponents.getSelectedItems();
             if (components.size()!= 0) {
-                ArrayList<String> componentsList = new ArrayList<>();
+                List<String> componentsList = new ArrayList<>();
                 for (int i = 1; i < components.size(); i++) {
                     componentsList.add(JiraContent.getInstance().getComponentIdByName(components.get(i)));
                 }
@@ -330,9 +330,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void initIssueTypesSpinner() {
         final Spinner issueTypesSpinner = (Spinner) findViewById(R.id.spin_issue_name);
         issueTypesSpinner.setEnabled(false);
-        JiraContent.getInstance().getIssueTypesNames(new JiraGetContentCallback<ArrayList<String>>() {
+        JiraContent.getInstance().getIssueTypesNames(new JiraGetContentCallback<List<String>>() {
             @Override
-            public void resultOfDataLoading(final ArrayList<String> result) {
+            public void resultOfDataLoading(final List<String> result) {
                 if(result != null)
                 {
                 CreateIssueActivity.this.runOnUiThread(new Runnable() {
@@ -415,7 +415,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     if (mComponents.getSelectedItems() != null) {
                         List<String> components = mComponents.getSelectedItems();
                         if (components.size()!= 0) {
-                            ArrayList<String> componentsList = new ArrayList<>();
+                            List<String> componentsList = new ArrayList<>();
                             for (int i = 1; i < components.size(); i++) {
                                 componentsList.add(JiraContent.getInstance().getComponentIdByName(components.get(i)));
                             }
@@ -500,7 +500,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     @Override
                     public void run() {
                         if (result != null) {
-                            ArrayList<Attachment> screenArray = AttachmentManager.getInstance().
+                            List<Attachment> screenArray = AttachmentManager.getInstance().
                                     getAttachmentList(result);
                             mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
                             recyclerView.setAdapter(mAdapter);
@@ -548,9 +548,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void setAssignableNames(String s) {
         mAssignableAutocompleteView.setEnabled(false);
         mAssignableAutocompleteView.showProgress(true);
-        JiraContent.getInstance().getUsersAssignable(s, new JiraGetContentCallback<ArrayList<String>>() {
+        JiraContent.getInstance().getUsersAssignable(s, new JiraGetContentCallback<List<String>>() {
             @Override
-            public void resultOfDataLoading(ArrayList<String> result) {
+            public void resultOfDataLoading(List<String> result) {
                 if (result != null) {
                     ArrayAdapter<String> assignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
                     mAssignableAutocompleteView.setThreshold(1);

@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.view;
+package amtt.epam.com.amtt.ui.views;
 
 import android.content.res.ColorStateList;
 import android.graphics.Canvas;

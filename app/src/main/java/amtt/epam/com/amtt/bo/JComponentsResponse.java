@@ -1,7 +1,7 @@
 package amtt.epam.com.amtt.bo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import amtt.epam.com.amtt.bo.project.JComponent;
 
@@ -12,12 +12,12 @@ import amtt.epam.com.amtt.bo.project.JComponent;
 
 public class JComponentsResponse {
 
-    private ArrayList<JComponent> mComponents;
+    private List<JComponent> mComponents;
 
     public JComponentsResponse() {
     }
 
-    public JComponentsResponse(ArrayList<JComponent> components) {
+    public JComponentsResponse(List<JComponent> components) {
         this.mComponents = components;
     }
 
@@ -34,11 +34,11 @@ public class JComponentsResponse {
         }
     }
 
-    public ArrayList<JComponent> getComponents() {
+    public List<JComponent> getComponents() {
         return mComponents;
     }
 
-    public void setComponents(ArrayList<JComponent> components) {
+    public void setComponents(List<JComponent> components) {
         this.mComponents = components;
     }
 

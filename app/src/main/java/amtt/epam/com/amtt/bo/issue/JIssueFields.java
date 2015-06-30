@@ -2,7 +2,6 @@ package amtt.epam.com.amtt.bo.issue;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.bo.project.JComponent;
@@ -29,13 +28,13 @@ public class JIssueFields {
     @SerializedName("priority")
     private JIssuePriority mPriority;
     @SerializedName("labels")
-    private ArrayList<String> mLabels = new ArrayList<>();
+    private List<String> mLabels;
     @SerializedName("timetracking")
     private JIssueTimeTracking mJIssueTimeTracking;
     @SerializedName("security")
     private JIssueSecurity mJIssueSecurity;
     @SerializedName("versions")
-    private ArrayList<JIssueVersion> mJIssueVersions = new ArrayList<>();
+    private List<JIssueVersion> mJIssueVersions;
     @SerializedName("environment")
     private String mEnvironment;
     @SerializedName("summary")
@@ -43,9 +42,9 @@ public class JIssueFields {
     @SerializedName("duedate")
     private String mDueDate;
     @SerializedName("fixVersions")
-    private ArrayList<JIssueVersion> mJiraIssueFixVersions = new ArrayList<>();
+    private List<JIssueVersion> mJiraIssueFixVersions;
     @SerializedName("components")
-    private ArrayList<JComponent> mJComponents = new ArrayList<>();
+    private List<JComponent> mJComponents;
 
   /*  private String timespent;
  private String[] fixVersions;
@@ -80,9 +79,9 @@ public class JIssueFields {
     }
 
     public JIssueFields(JIssueProject mProject, String mSummary, JIssueTypesIssueType mIssueType, JUser mAssignee,
-                        JUser mReporter, JIssuePriority mPriority, ArrayList<String> labels, JIssueTimeTracking jIssueTimeTracking,
-                        JIssueSecurity jIssueSecurity, ArrayList<JIssueVersion> jIssueVersions, String mEnvironment, String mDescription,
-                        String mDueDate, ArrayList<JIssueVersion> jiraIssueFixVersions, ArrayList<JComponent> jComponents) {
+                        JUser mReporter, JIssuePriority mPriority, List<String> labels, JIssueTimeTracking jIssueTimeTracking,
+                        JIssueSecurity jIssueSecurity, List<JIssueVersion> jIssueVersions, String mEnvironment, String mDescription,
+                        String mDueDate, List<JIssueVersion> jiraIssueFixVersions, List<JComponent> jComponents) {
         this.mProject = mProject;
         this.mSummary = mSummary;
         this.mIssueType = mIssueType;
@@ -148,11 +147,11 @@ public class JIssueFields {
         this.mPriority = priority;
     }
 
-    public ArrayList<String> getLabels() {
+    public List<String> getLabels() {
         return mLabels;
     }
 
-    public void setLabels(ArrayList<String> labels) {
+    public void setLabels(List<String> labels) {
         this.mLabels = labels;
     }
 
@@ -172,7 +171,7 @@ public class JIssueFields {
         this.mJIssueSecurity = jIssueSecurity;
     }
 
-    public ArrayList<JIssueVersion> getJiraIssueVersions() {
+    public List<JIssueVersion> getJiraIssueVersions() {
         return mJIssueVersions;
     }
 
@@ -206,19 +205,19 @@ public class JIssueFields {
         this.mDueDate = dueDate;
     }
 
-    public ArrayList<JIssueVersion> getJiraIssueFixVersions() {
+    public List<JIssueVersion> getJiraIssueFixVersions() {
         return mJiraIssueFixVersions;
     }
 
-    public void setJiraIssueFixVersions(ArrayList<JIssueVersion> jiraIssueFixVersions) {
+    public void setJiraIssueFixVersions(List<JIssueVersion> jiraIssueFixVersions) {
         this.mJiraIssueFixVersions = jiraIssueFixVersions;
     }
 
-    public ArrayList<JComponent> getJiraIssueComponents() {
+    public List<JComponent> getJiraIssueComponents() {
         return mJComponents;
     }
 
-    public void setJiraIssueComponents(ArrayList<JComponent> jComponents) {
+    public void setJiraIssueComponents(List<JComponent> jComponents) {
         this.mJComponents = jComponents;
     }
 
@@ -227,9 +226,9 @@ public class JIssueFields {
     }
 
     public void setJiraIssueComponentsIds(List<String> componentsIds) {
-        if(componentsIds!=null){
-            if(componentsIds.size()!=0){
-                for(int i=0; i<componentsIds.size();i++){
+        if (componentsIds != null) {
+            if (componentsIds.size() != 0) {
+                for (int i = 0; i < componentsIds.size(); i++) {
                     setJiraIssueComponentsItem(new JComponent(componentsIds.get(i)));
                 }
             }

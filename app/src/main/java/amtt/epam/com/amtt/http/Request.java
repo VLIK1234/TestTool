@@ -7,6 +7,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,7 +50,7 @@ public class Request {
             return this;
         }
 
-        public Builder setEntity(ArrayList<String> filesPaths) {
+        public Builder setEntity(List<String> filesPaths) {
             MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create();
             for (int i = 0; i < filesPaths.size(); i++) {
                 String file = filesPaths.get(i);

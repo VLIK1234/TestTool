@@ -37,8 +37,8 @@ import amtt.epam.com.amtt.util.Logger;
 public class JiraContent{
 
     private final String TAG = this.getClass().getSimpleName();
-    private ArrayList<String> mIssueTypesNames;
-    private ArrayList<String> mUsersAssignableNames;
+    private List<String> mIssueTypesNames;
+    private List<String> mUsersAssignableNames;
     private HashMap<JProjects, String> mProjectsNames;
     private HashMap<String, String> mProjectPrioritiesNames;
     private HashMap<String, String> mProjectVersionsNames;
@@ -124,7 +124,7 @@ public class JiraContent{
         jiraGetContentCallback.resultOfDataLoading(lastProjectName);
     }
 
-    public void getIssueTypesNames(final JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
+    public void getIssueTypesNames(final JiraGetContentCallback<List<String>> jiraGetContentCallback) {
         if (mIssueTypesNames != null) {
             Logger.d(TAG, "mIssueTypesNames != null");
             jiraGetContentCallback.resultOfDataLoading(mIssueTypesNames);
@@ -203,7 +203,7 @@ public class JiraContent{
         return versionName;
     }
 
-    public void setUsersAssignableNames(ArrayList<String> usersAssignableNames){
+    public void setUsersAssignableNames(List<String> usersAssignableNames){
         this.mUsersAssignableNames = usersAssignableNames;
     }
 
@@ -284,7 +284,7 @@ public class JiraContent{
     }
 
     public void getUsersAssignable(String userName,
-                                   final JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
+                                   final JiraGetContentCallback<List<String>> jiraGetContentCallback) {
         ContentFromBackend.getInstance().getUsersAssignableAsynchronously(mLastProject.getKey(), userName, new ContentLoadingCallback<JUserAssignableResponse>() {
             @Override
             public void resultFromBackend(JUserAssignableResponse result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback) {
@@ -358,7 +358,7 @@ public class JiraContent{
     }
 
     @SuppressWarnings("unchecked")
-    public void sendAttachment(String issueKey, ArrayList<String> fullFileName,
+    public void sendAttachment(String issueKey, List<String> fullFileName,
                             final JiraGetContentCallback<Boolean> jiraGetContentCallback) {
         ContentFromBackend.getInstance().sendAttachmentAsynchronously(issueKey, fullFileName, new ContentLoadingCallback<Boolean>() {
             @Override
@@ -426,7 +426,7 @@ public class JiraContent{
         }
     }
 
-    private void getIssueTypesSynchronously(final JiraGetContentCallback<ArrayList<String>> jiraGetContentCallback) {
+    private void getIssueTypesSynchronously(final JiraGetContentCallback<List<String>> jiraGetContentCallback) {
         ContentFromDatabase.getIssueTypes(mLastProject.getKey(), new IResult<List<JIssueTypes>>() {
             @Override
             public void onResult(List<JIssueTypes> result) {
