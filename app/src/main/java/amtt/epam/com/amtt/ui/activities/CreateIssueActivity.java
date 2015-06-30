@@ -117,6 +117,10 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     @Override
     protected void onStop() {
         super.onStop();
+        setDefaultConfigs();
+    }
+
+    private void setDefaultConfigs() {
         if (mComponents.getSelectedItems() != null) {
             List<String> components = mComponents.getSelectedItems();
             if (components.size()!= 0) {
@@ -418,8 +422,13 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     showProgress(true);
                     if (mComponents.getSelectedItems() != null) {
                         List<String> components = mComponents.getSelectedItems();
-                        ActiveUser.getInstance().setLastComponentsIds(components);
-
+                        if (components.size()!= 0) {
+                            ArrayList<String> componentsList = new ArrayList<>();
+                            for (int i = 1; i < components.size(); i++) {
+                                componentsList.add(JiraContent.getInstance().getComponentIdByName(components.get(i)));
+                            }
+                            ActiveUser.getInstance().setLastComponentsIds(componentsList);
+                        }
                     }
                     JiraContent.getInstance().createIssue(mIssueTypeName,
                             mPriorityName, mVersionName, mSummaryEditText.getText().toString(),
@@ -449,9 +458,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     private void initAssigneeAutocompleteView() {
         mAssignableAutocompleteView = (AutocompleteProgressView) findViewById(R.id.atv_assignable_users);
-        if (ActiveUser.getInstance().getLastAssignee() != null) {
-            mAssignableAutocompleteView.setText(ActiveUser.getInstance().getLastAssignee());
-        }
         mAssignableAutocompleteView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -475,6 +481,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 }
             }
         });
+        if (ActiveUser.getInstance().getLastAssignee() != null) {
+            mAssignableAutocompleteView.setText(ActiveUser.getInstance().getLastAssignee());
+        }
     }
 
     private void initAttachmentsView() {
