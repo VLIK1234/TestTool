@@ -36,7 +36,6 @@ import amtt.epam.com.amtt.view.PaletteItem;
 public class PreviewActivity extends BaseActivity {
 
     public static final String FILE_PATH = "filePath";
-    public static final double SCALE_DIALOG_MARGIN_RATIO = 0.8;
 
     private String mScreenshotPath;
 
@@ -57,17 +56,6 @@ public class PreviewActivity extends BaseActivity {
 
         mLayoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 
-//        final AlertDialog.Builder paletteDialog = new AlertDialog.Builder(PreviewActivity.this, R.style.Dialog)
-//                .setMessage("mess")
-//                .setTitle("title")
-//                .setNegativeButton("close", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog1, int which) {
-//                        dialog1.dismiss();
-//                        finish();
-//                    }
-//                });
-
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             initPaintView();
@@ -75,36 +63,6 @@ public class PreviewActivity extends BaseActivity {
 
             mScreenshotPath = extra.getString(FILE_PATH);
             showPreview(mScreenshotPath);
-
-//            new AlertDialog.Builder(this, R.style.Dialog)
-//                    .setView(view)
-//                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
-//                        @Override
-//                        public void onDismiss(final DialogInterface dialog) {
-//                            PreviewActivity.this.finish();
-//                        }
-//                    })
-//                    .setNegativeButton(R.string.close, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            PreviewActivity.this.finish();
-//                        }
-//                    })
-//                    .setPositiveButton("Customize brush", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                            startActivity(new Intent(PreviewActivity.this, PreviewActivity.class));
-//                            finish();
-//                        }
-//                    })
-//                    .show();
-        } else {
-//            view = LayoutInflater.from(getBaseContext()).inflate(R.layout.activity_preview_palette, null);
-//            paletteDialog
-//                    .setView(view)
-//                    .create()
-//                    .show();
         }
     }
 
@@ -155,6 +113,9 @@ public class PreviewActivity extends BaseActivity {
                 }
                 mPaletteDialog.show();
                 return true;
+            case R.id.action_erase:
+                mPaintView.setEraseMode(true);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -164,7 +125,7 @@ public class PreviewActivity extends BaseActivity {
 
     private void initPaintView() {
         mPaintView = (PaintView) findViewById(R.id.paint_view);
-        mPaintView.setDrawingCacheEnabled(true);
+        mPaintView.setBrushColor(getResources().getColor(R.color.red_paint));
     }
 
     private void initPaletteDialog() {
@@ -172,6 +133,10 @@ public class PreviewActivity extends BaseActivity {
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
+                if (mPaintView.isEraseMode()) {
+                    return;
+                }
+
                 PaletteItem paletteItem = (PaletteItem) v.findViewById(mLastSelectedPaletteItem);
                 paletteItem.setSelected();
             }
@@ -216,6 +181,10 @@ public class PreviewActivity extends BaseActivity {
                         mPaintView.setBrushColor(newBrushColor);
                         mLastBrushColor = newBrushColor;
                         mLastSelectedPaletteItem = paletteItem.getId();
+                    }
+
+                    if (mPaintView.isEraseMode()) {
+                        mPaintView.setEraseMode(false);
                     }
                     mPaletteDialog.dismiss();
                 }

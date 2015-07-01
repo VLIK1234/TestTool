@@ -3,12 +3,13 @@ package amtt.epam.com.amtt.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Region;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ImageView;
 
 /**
@@ -21,17 +22,21 @@ public class PaintView extends ImageView {
     private Path mDrawPath;
     private Paint mDrawPaint;
     private Paint mBitmapPaint;
+    private boolean isEraseMode;
 
     public PaintView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        setDrawingCacheEnabled(true);
         setUpDrawingArticles();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        //TODO canvas.save / restoreToCount
         super.onDraw(canvas);
-        canvas.drawBitmap(mCanvasBitmap, 0, 0, mBitmapPaint);
         canvas.drawPath(mDrawPath, mDrawPaint);
+        canvas.clipPath(mDrawPath, Region.Op.UNION);
+        canvas.drawBitmap(mCanvasBitmap, 0, 0, mBitmapPaint);
     }
 
     @Override
@@ -81,6 +86,19 @@ public class PaintView extends ImageView {
 
     public void setBrushColor(int brushColor) {
         mDrawPaint.setColor(brushColor);
+    }
+
+    public void setEraseMode(boolean eraseMode) {
+        isEraseMode = eraseMode;
+        if (eraseMode) {
+            mDrawPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        } else {
+            mDrawPaint.setXfermode(null);
+        }
+    }
+
+    public boolean isEraseMode() {
+        return isEraseMode;
     }
 
 }

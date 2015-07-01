@@ -14,7 +14,7 @@
         android:icon="@drawable/ic_redo"
         app:showAsAction="always"/>
 
-    <item android:id="@+id/action_eraser"
+    <item android:id="@+id/action_erase"
         android:title="@string/label_eraser"
         android:icon="@drawable/ic_eraser"
         app:showAsAction="always"/>
