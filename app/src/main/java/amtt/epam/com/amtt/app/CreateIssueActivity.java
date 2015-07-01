@@ -434,7 +434,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mEnvironmentEditText.setText("");
+                                mEnvironmentTextInput.setText("");
                             }
                         })
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
