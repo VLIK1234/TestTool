@@ -1,29 +1,26 @@
 package amtt.epam.com.amtt.app;
 
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.database.util.StepUtil;
@@ -31,6 +28,7 @@ import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.UIUtil;
 import amtt.epam.com.amtt.view.PaintView;
+import amtt.epam.com.amtt.view.PaletteItem;
 
 /**
  * Created by Ivan_Bakach on 09.06.2015.
@@ -45,11 +43,19 @@ public class PreviewActivity extends BaseActivity {
     private TextView mTextPreview;
     private PaintView mPaintView;
 
+    private LayoutInflater mLayoutInflater;
+    private int mLastBrushColor;
+    private AlertDialog mPaletteDialog;
+    private List<PaletteItem> mPaletteItems;
+    private int mLastSelectedPaletteItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mLayoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 
 //        final AlertDialog.Builder paletteDialog = new AlertDialog.Builder(PreviewActivity.this, R.style.Dialog)
 //                .setMessage("mess")
@@ -144,34 +150,16 @@ public class PreviewActivity extends BaseActivity {
                         .show();
                 return true;
             case R.id.action_palette:
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.title_choose_color)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                StepUtil.applyNotesToScreenshot(mPaintView, mScreenshotPath);
-                                finish();
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                        .setNeutralButton(R.string.label_continue_editing, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .create()
-                        .show();
+                if (mPaletteDialog == null) {
+                    initPaletteDialog();
+                }
+                mPaletteDialog.show();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
+
+
     }
 
     private void initPaintView() {
@@ -179,16 +167,65 @@ public class PreviewActivity extends BaseActivity {
         mPaintView.setDrawingCacheEnabled(true);
     }
 
+    private void initPaletteDialog() {
+        final View view = mLayoutInflater.inflate(R.layout.activity_preview_palette, null);
+        view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                PaletteItem paletteItem = (PaletteItem) v.findViewById(mLastSelectedPaletteItem);
+                paletteItem.setSelected();
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+
+            }
+        });
+
+        mPaletteDialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.title_choose_color)
+                .setView(view)
+                .create();
+
+        mPaletteItems = new ArrayList<PaletteItem>() {{
+            add((PaletteItem) view.findViewById(mLastSelectedPaletteItem = R.id.pi_red));
+            add((PaletteItem) view.findViewById(R.id.pi_blue));
+            add((PaletteItem) view.findViewById(R.id.pi_green));
+            add((PaletteItem) view.findViewById(R.id.pi_indigo));
+            add((PaletteItem) view.findViewById(R.id.pi_orange));
+            add((PaletteItem) view.findViewById(R.id.pi_violet));
+            add((PaletteItem) view.findViewById(R.id.pi_white));
+            add((PaletteItem) view.findViewById(R.id.pi_yellow));
+        }};
+
+        for (PaletteItem paletteItem : mPaletteItems) {
+            paletteItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    for (PaletteItem paletteItem : mPaletteItems) {
+                        if (paletteItem.isItemSelected()) {
+                            paletteItem.setUnselected();
+                            break;
+                        }
+                    }
+
+                    PaletteItem paletteItem = (PaletteItem) v;
+                    paletteItem.setSelected();
+                    int newBrushColor = paletteItem.getColor();
+                    if (newBrushColor != mLastBrushColor) {
+                        mPaintView.setBrushColor(newBrushColor);
+                        mLastBrushColor = newBrushColor;
+                        mLastSelectedPaletteItem = paletteItem.getId();
+                    }
+                    mPaletteDialog.dismiss();
+                }
+            });
+        }
+    }
+
     private void initTextPreview() {
         mTextPreview = (TextView) findViewById(R.id.tv_preview);
     }
-
-//    private void setPaintViewFitToScreenshot() {
-//        ViewGroup.LayoutParams layoutParams = mPaintView.getLayoutParams();
-//        layoutParams.height = mImagePreview.getHeight();
-//        layoutParams.width = mImagePreview.getWidth();
-//        mPaintView.setLayoutParams(layoutParams);
-//    }
 
     private CharSequence readLogFromFile(String filePath) {
         File file = new File(filePath);

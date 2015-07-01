@@ -72,10 +72,10 @@
 
     <style name="Dialog" parent="Theme.AppCompat.Light.Dialog"/>
 
-    <style name="PaintButton" parent="Base.Widget.AppCompat.Button">
+
+    <style name="PaletteButton" parent="Base.Widget.AppCompat.Button">
         <item name="android:layout_width">@dimen/button_small_size</item>
         <item name="android:layout_height">@dimen/button_small_size</item>
-        <item name="android:src">@drawable/background_paint_button</item>
     </style>
 
 </resources>

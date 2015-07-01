@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.view;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
@@ -24,18 +25,6 @@ public class PaintView extends ImageView {
     public PaintView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setUpDrawingArticles();
-    }
-
-    private void setUpDrawingArticles() {
-        mDrawPath = new Path();
-
-        mDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        mDrawPaint.setStrokeWidth(20);
-        mDrawPaint.setStyle(Paint.Style.STROKE);
-        mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
-        mDrawPaint.setStrokeJoin(Paint.Join.ROUND);
-
-        mBitmapPaint = new Paint(Paint.DITHER_FLAG);
     }
 
     @Override
@@ -76,6 +65,22 @@ public class PaintView extends ImageView {
 
         invalidate();
         return true;
+    }
+
+    private void setUpDrawingArticles() {
+        mDrawPath = new Path();
+
+        mDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        mDrawPaint.setStrokeWidth(20);
+        mDrawPaint.setStyle(Paint.Style.STROKE);
+        mDrawPaint.setStrokeCap(Paint.Cap.ROUND);
+        mDrawPaint.setStrokeJoin(Paint.Join.ROUND);
+
+        mBitmapPaint = new Paint(Paint.DITHER_FLAG);
+    }
+
+    public void setBrushColor(int brushColor) {
+        mDrawPaint.setColor(brushColor);
     }
 
 }

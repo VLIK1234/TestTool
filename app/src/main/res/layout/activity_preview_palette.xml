@@ -1,56 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/material_menu_item_vertical_bottom_padding"
+    android:paddingLeft="@dimen/navigation_icon_padding"
+    android:paddingBottom="@dimen/material_menu_item_vertical_bottom_padding">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageButton
-            android:background="@color/red_paint"
-            android:tag="@color/red_paint"
-            style="@style/PaintButton"/>
+        <amtt.epam.com.amtt.view.PaletteItem
+            android:id="@+id/pi_red"
+            app:background_unselected="@drawable/background_palette_unselected_red"
+            app:background_selected="@drawable/background_palette_selected"
+            app:item_color="@color/red_paint"
+            style="@style/PaletteButton"/>
 
-        <ImageButton
-            android:background="@color/orange_paint"
-            android:tag="@color/orange_paint"
-            style="@style/PaintButton"/>
+        <amtt.epam.com.amtt.view.PaletteItem
+            android:id="@+id/pi_orange"
+            app:background_unselected="@drawable/background_palette_unselected_orange"
+            app:background_selected="@drawable/background_palette_selected"
+            app:item_color="@color/orange_paint"
+            android:layout_marginLeft="@dimen/navigation_padding_bottom"
+            android:layout_marginStart="@dimen/navigation_padding_bottom"
+            style="@style/PaletteButton"/>
 
-        <ImageButton
-            android:background="@color/yellow_paint"
-            android:tag="@color/yellow_paint"
-            style="@style/PaintButton"/>
+        <amtt.epam.com.amtt.view.PaletteItem
+            android:id="@+id/pi_yellow"
+            app:background_unselected="@drawable/background_palette_unselected_yellow"
+            app:background_selected="@drawable/background_palette_selected_2"
+            app:item_color="@color/yellow_paint"
+            android:layout_marginLeft="@dimen/navigation_padding_bottom"
+            android:layout_marginStart="@dimen/navigation_padding_bottom"
+            style="@style/PaletteButton"/>
 
-        <ImageButton
-            android:background="@color/green_paint"
-            android:tag="@color/green_paint"
-            style="@style/PaintButton"/>
+        <amtt.epam.com.amtt.view.PaletteItem
+            android:id="@+id/pi_green"
+            app:background_unselected="@drawable/background_palette_unselected_green"
+            app:background_selected="@drawable/background_palette_selected"
+            app:item_color="@color/green_paint"
+            android:layout_marginLeft="@dimen/navigation_padding_bottom"
+            android:layout_marginStart="@dimen/navigation_padding_bottom"
+            style="@style/PaletteButton"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/navigation_padding_bottom"
         android:orientation="horizontal">
 
-        <ImageButton
-            android:background="@color/blue_paint"
-            android:tag="@color/blue_paint"
-            style="@style/PaintButton"/>
+        <amtt.epam.com.amtt.view.PaletteItem
+            android:id="@+id/pi_blue"
+            app:background_unselected="@drawable/background_palette_unselected_blue"
+            app:background_selected="@drawable/background_palette_selected"
+            app:item_color="@color/blue_paint"
+            style="@style/PaletteButton"/>
 
-        <ImageButton
-            android:background="@color/indigo_paint"
-            android:tag="@color/indigo_paint"
-            style="@style/PaintButton"/>
+        <amtt.epam.com.amtt.view.PaletteItem
+            android:id="@+id/pi_indigo"
+            app:background_unselected="@drawable/background_palette_unselected_indigo"
+            app:background_selected="@drawable/background_palette_selected"
+            android:layout_marginLeft="@dimen/navigation_padding_bottom"
+            android:layout_marginStart="@dimen/navigation_padding_bottom"
+            app:item_color="@color/indigo_paint"
+            style="@style/PaletteButton"/>
 
-        <ImageButton
-            android:background="@color/violet_paint"
-            android:tag="@color/violet_paint"
-            style="@style/PaintButton"/>
+        <amtt.epam.com.amtt.view.PaletteItem
+            android:id="@+id/pi_violet"
+            app:background_unselected="@drawable/background_palette_unselected_violet"
+            app:background_selected="@drawable/background_palette_selected"
+            android:layout_marginLeft="@dimen/navigation_padding_bottom"
+            android:layout_marginStart="@dimen/navigation_padding_bottom"
+            app:item_color="@color/violet_paint"
+            style="@style/PaletteButton"/>
+
+        <amtt.epam.com.amtt.view.PaletteItem
+            android:id="@+id/pi_white"
+            app:background_unselected="@drawable/background_palette_unselected_white"
+            app:background_selected="@drawable/background_palette_selected_2"
+            android:layout_marginLeft="@dimen/navigation_padding_bottom"
+            android:layout_marginStart="@dimen/navigation_padding_bottom"
+            app:item_color="@color/icons"
+            style="@style/PaletteButton"/>
 
     </LinearLayout>
 

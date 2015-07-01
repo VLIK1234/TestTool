@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
     <attr name="rd_style" format="reference"/>
     <attr name="rd_enable" format="boolean"/>
-
-
 
     <declare-styleable name="Spinner">
         <attr name="android:dropDownWidth" />
@@ -96,7 +93,6 @@
         <attr name="rd_enable" />
     </declare-styleable>
 
-
     <declare-styleable name="RippleDrawable">
         <attr name="rd_backgroundColor" format="reference|color"/>
         <attr name="rd_backgroundAnimDuration" format="reference|integer"/>
@@ -128,6 +124,10 @@
         <attr name="rd_delayClick" format="boolean"/>
     </declare-styleable>
 
-
+    <declare-styleable name="PaletteItem">
+        <attr name="item_color" format="color"/>
+        <attr name="background_selected" format="reference"/>
+        <attr name="background_unselected" format="reference"/>
+    </declare-styleable>
 
 </resources>
