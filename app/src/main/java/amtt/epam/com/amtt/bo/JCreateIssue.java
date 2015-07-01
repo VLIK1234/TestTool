@@ -1,7 +1,5 @@
 package amtt.epam.com.amtt.bo;
 
-import java.util.List;
-
 import amtt.epam.com.amtt.bo.issue.JIssueFields;
 import amtt.epam.com.amtt.bo.issue.JIssuePriority;
 import amtt.epam.com.amtt.bo.issue.JIssueProject;
@@ -29,7 +27,7 @@ public class JCreateIssue {
     private GsonSerializeProcessor<JCreatingIssueRequest> mGsonSerializeProcessor = new GsonSerializeProcessor<>();
 
     public JCreateIssue(String keyProject, String issueTypeId, String summary, String description,
-                        String priorityId, String versionsId, String environment, String userAssigneName, List<String> componentIds) {
+                        String priorityId, String versionsId, String environment, String userAssigneName, String componentIds) {
         mProject.setKey(keyProject);
         mIssueType.setId(issueTypeId);
         mPriority.setId(priorityId);
@@ -45,7 +43,7 @@ public class JCreateIssue {
         mFields.setSummary(summary);
         mFields.setDescription(description);
         mFields.setEnvironment(environment);
-        mFields.setJiraIssueComponentsIds(componentIds);
+        mFields.setJiraIssueComponentsId(componentIds);
         mBData.setFields(mFields);
         getResultJson();
     }

@@ -44,8 +44,6 @@ import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.service.AttachmentService;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.AutocompleteProgressView;
-import amtt.epam.com.amtt.ui.views.ComponentPickerAdapter;
-import amtt.epam.com.amtt.ui.views.MultiAutoCompleteView;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.InputsUtil;
@@ -70,7 +68,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private AttachmentAdapter mAdapter;
     public Spinner mProjectNamesSpinner;
     private RecyclerView recyclerView;
-    private MultiAutoCompleteView mComponents;
+    private Spinner mComponents;
     private Queue<JiraContentConst> mQueueRequests = new LinkedList<>();
     private Button mCreateIssueButton;
 
@@ -122,15 +120,10 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void setDefaultConfigs() {
-        if (mComponents.getSelectedItems() != null) {
-            List<String> components = mComponents.getSelectedItems();
-            if (components.size()!= 0) {
-                List<String> componentsList = new ArrayList<>();
-                for (int i = 1; i < components.size(); i++) {
-                    componentsList.add(JiraContent.getInstance().getComponentIdByName(components.get(i)));
-                }
-                ActiveUser.getInstance().setLastComponentsIds(componentsList);
-            }
+        if (mComponents.getSelectedItem() != null) {
+            String component = JiraContent.getInstance().getComponentIdByName((String) mComponents.getSelectedItem());
+                ActiveUser.getInstance().setLastComponentsIds(component);
+
         }
         JiraContent.getInstance().setDefaultConfig(ActiveUser.getInstance().getLastProjectKey(),
                 ActiveUser.getInstance().getLastAssignee(), ActiveUser.getInstance().getLastComponentsIds());
@@ -290,33 +283,28 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     private void initComponentsSpinner(String projectKey) {
         final TextView componentsTextView = (TextView) findViewById(R.id.tv_components);
-        mComponents = (MultiAutoCompleteView) findViewById(R.id.editText);
+        mComponents = (Spinner) findViewById(R.id.spin_components);
         mComponents.setEnabled(false);
         JiraContent.getInstance().getComponentsNames(projectKey, new JiraGetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
                 if (result != null && result.size() > 0) {
-                    componentsTextView.setVisibility(View.VISIBLE);
-                    mComponents.setVisibility(View.VISIBLE);
                     ArrayList<String> componentsNames = new ArrayList<>();
                     componentsNames.addAll(result.values());
                     ArrayAdapter<String> componentsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, componentsNames);
                     componentsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                    ComponentPickerAdapter componentPickerAdapter = new ComponentPickerAdapter(CreateIssueActivity.this, R.layout.spinner_layout, componentsNames);
-                    mComponents.setAdapter(componentPickerAdapter);
+                    componentsTextView.setVisibility(View.VISIBLE);
+                    mComponents.setAdapter(componentsAdapter);
+                    mComponents.setVisibility(View.VISIBLE);
+                    mComponents.setEnabled(true);
                     if (ActiveUser.getInstance().getLastComponentsIds() != null) {
-                        List<String> components = ActiveUser.getInstance().getLastComponentsIds();
-                        ArrayList<String> componentsList = new ArrayList<>();
-                        if (components.size() != 0) {
-                            for (int i = 0; i < components.size(); i++) {
-                                componentsList.add(JiraContent.getInstance().getComponentNameById(components.get(i)));
-                            }
-                        }
-                        mComponents.setSelectedItems(componentsList);
+                        mComponents.setSelection(componentsAdapter.getPosition(JiraContent.getInstance().getComponentNameById(ActiveUser.getInstance().getLastComponentsIds())));
+                    } else {
+                        mComponents.setSelection(0);
                     }
                     mQueueRequests.remove(JiraContentConst.COMPONENTS_RESPONSE);
                     showProgressIfNeed();
-                    mComponents.setEnabled(true);
+
                 } else {
                     mQueueRequests.remove(JiraContentConst.COMPONENTS_RESPONSE);
                     showProgressIfNeed();
@@ -410,19 +398,13 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     Toast.makeText(CreateIssueActivity.this, getString(R.string.error_message_host), Toast.LENGTH_LONG).show();
                     return;
                 }
+                showProgress(true);
+                if (mComponents.getSelectedItem() != null) {
+                    String components = (String) mComponents.getSelectedItem();
+                    ActiveUser.getInstance().setLastComponentsIds(JiraContent.getInstance().getComponentIdByName(components));
 
-                    showProgress(true);
-                    if (mComponents.getSelectedItems() != null) {
-                        List<String> components = mComponents.getSelectedItems();
-                        if (components.size()!= 0) {
-                            List<String> componentsList = new ArrayList<>();
-                            for (int i = 1; i < components.size(); i++) {
-                                componentsList.add(JiraContent.getInstance().getComponentIdByName(components.get(i)));
-                            }
-                            ActiveUser.getInstance().setLastComponentsIds(componentsList);
-                        }
-                    }
-                    JiraContent.getInstance().createIssue(mIssueTypeName,
+                }
+                JiraContent.getInstance().createIssue(mIssueTypeName,
                             mPriorityName, mVersionName, mSummaryTextInput.getText().toString(),
                             mDescriptionTextInput.getText().toString(), mEnvironmentTextInput.getText().toString(),
                             mAssignableUserName, ActiveUser.getInstance().getLastComponentsIds(), new JiraGetContentCallback<JCreateIssueResponse>() {

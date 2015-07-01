@@ -331,7 +331,7 @@ public class JiraContent{
     }
 
     public void createIssue(String issueTypeName, String priorityName, String versionName, String summary,
-                            String description, String environment, String userAssigneName, List<String> componentsIds,
+                            String description, String environment, String userAssigneName, String componentsIds,
                             final JiraGetContentCallback<JCreateIssueResponse> jiraGetContentCallback) {
         final String mProjectKey;
         final String issueTypeId;
@@ -395,7 +395,7 @@ public class JiraContent{
         mLastProject = null;
     }
 
-    public void setDefaultConfig(final String lastProjectKey, final String lastAssignee, final List<String> lastComponentsIds) {
+    public void setDefaultConfig(final String lastProjectKey, final String lastAssignee, final String lastComponentsIds) {
         if (lastProjectKey != null) {
             StepUtil.checkUser(ActiveUser.getInstance().getUserName(), new IResult<List<JUserInfo>>() {
                 @Override
@@ -404,7 +404,7 @@ public class JiraContent{
                         JUserInfo user = result.get(0);
                         user.setLastProjectKey(lastProjectKey);
                         user.setLastAssigneeName(lastAssignee);
-                        user.setListLastComponentsIds(lastComponentsIds);
+                        user.setLastComponentsIds(lastComponentsIds);
                         ContentFromDatabase.updateUser(user, new IResult<Integer>() {
                             @Override
                             public void onResult(Integer res) {

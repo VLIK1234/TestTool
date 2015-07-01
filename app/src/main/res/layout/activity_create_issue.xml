@@ -85,12 +85,11 @@
                 android:layout_height="wrap_content"
                 android:text="@string/label_components"/>
 
-            <amtt.epam.com.amtt.ui.views.MultiAutoCompleteView
-                android:id="@+id/editText"
+            <Spinner
+                android:id="@+id/spin_components"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined.Custom"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="0dp"
-                android:textColor="@android:color/black" />
+                android:layout_height="match_parent"/>
             <!-- *******COMPONENTS END*************************************************-->
 
             <!-- *******ATTACHMENT BEGIN****************************************-->

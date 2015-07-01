@@ -29,7 +29,7 @@ public class JIssueFields {
     @SerializedName("priority")
     private JIssuePriority mPriority;
     @SerializedName("labels")
-    private List<String> mLabels;
+    private List<String> mLabels = new ArrayList<>();
     @SerializedName("timetracking")
     private JIssueTimeTracking mJIssueTimeTracking;
     @SerializedName("security")
@@ -43,9 +43,9 @@ public class JIssueFields {
     @SerializedName("duedate")
     private String mDueDate;
     @SerializedName("fixVersions")
-    private List<JIssueVersion> mJiraIssueFixVersions;
+    private List<JIssueVersion> mJiraIssueFixVersions = new ArrayList<>();
     @SerializedName("components")
-    private List<JComponent> mJComponents;
+    private List<JComponent> mJComponents = new ArrayList<>();
 
   /*  private String timespent;
  private String[] fixVersions;
@@ -226,13 +226,9 @@ public class JIssueFields {
         this.mJComponents.add(component);
     }
 
-    public void setJiraIssueComponentsIds(List<String> componentsIds) {
+    public void setJiraIssueComponentsId(String componentsIds) {
         if (componentsIds != null) {
-            if (componentsIds.size() != 0) {
-                for (int i = 0; i < componentsIds.size(); i++) {
-                    setJiraIssueComponentsItem(new JComponent(componentsIds.get(i)));
-                }
-            }
+            setJiraIssueComponentsItem(new JComponent(componentsIds));
         }
     }
 

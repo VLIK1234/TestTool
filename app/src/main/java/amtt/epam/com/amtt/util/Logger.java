@@ -1,13 +1,5 @@
 package amtt.epam.com.amtt.util;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.util.EntityUtils;
-
-import java.io.IOException;
-
 /**
  @author Iryna Monchanka
  @version on 3/27/2015
