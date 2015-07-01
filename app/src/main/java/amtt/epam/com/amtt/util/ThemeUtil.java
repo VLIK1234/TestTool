@@ -17,10 +17,6 @@ public class ThemeUtil {
 
     private static TypedValue value;
 
-    public static int dpToPx(Context context, int dp) {
-        return (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics()) + 0.5f);
-    }
-
     private static int getColor(Context context, int id, int defaultValue) {
         if (value == null)
             value = new TypedValue();

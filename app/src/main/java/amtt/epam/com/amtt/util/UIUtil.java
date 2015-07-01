@@ -1,9 +1,7 @@
 package amtt.epam.com.amtt.util;
 
-import android.content.Context;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 
 import amtt.epam.com.amtt.AmttApplication;
 
@@ -33,15 +31,5 @@ public final class UIUtil {
 
     public static int getOrientation() {
         return AmttApplication.getContext().getResources().getConfiguration().orientation;
-    }
-
-    public static float dipToPixels(Context context, float dipValue) {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
-    }
-
-    public static float spToPixels(Context context, float spValue) {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, spValue, metrics);
     }
 }
