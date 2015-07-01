@@ -17,6 +17,7 @@ public class ProjectsProcessor implements Processor<JProjectsResponse, HttpEntit
     @Override
     public JProjectsResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
+        inputStream.consumeContent();
         JProjectsResponse result = Gson.getInstance().fromJson(_response, JProjectsResponse.class);
         JiraContent.getInstance().setProjectsNames(result.getProjectsNames());
         return result;

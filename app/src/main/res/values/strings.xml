@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+    <resources>
 
     <string name="app_name">amtt</string>
-    <string name="action_settings">Settings</string>
 
+    <string name="title_activity_expected_results">Expected Results</string>
     <string name="title_activity_create_issue">Creating issue</string>
     <string name="title_activity_steps">StepsActivity</string>
     <string name="title_activity_user_info">UserInfoActivity</string>
@@ -20,53 +20,58 @@
     <string name="error_message_auth_forbidden">Visit jira.epam.com before using Amtt</string>
     <string name="error_title_request">Request error</string>
     <string name="error_message_no_internet">You are offline</string>
-    <string name="error_button_try">Try again</string>
-    <string name="error_button_settings">Open settings</string>
     <string name="error_message_host">Unknown error</string>
     <string name="error_message_gateway">Server error</string>
     <string name="error_message_web_address">Wrong web address</string>
     <string name="error_button_close">Close</string>
 
-    <string name="label_file_name">"File name: "</string>
     <string name="label_activity">"Activity: "</string>
+    <string name="label_added_step_without_screen">Added step without screen</string>
     <string name="label_affects_versions">Affects Version/s</string>
     <string name="label_attachment">Attachment</string>
+    <string name="label_button_main">Main button</string>
+    <string name="label_cancel_record">Cancel record</string>
+    <string name="label_clear_environment">Clear environment</string>
     <string name="label_close">Close</string>
-    <string name="label_configuration_changes">"Configuration changes: "</string>
+    <string name="label_close_app">Close Amtt</string>
+    <string name="label_components">Component/s</string>
     <string name="label_create">Create</string>
-    <string name="label_delete_and_close">Delete and close</string>
+    <string name="label_create_ticket">Create Ticket</string>
     <string name="label_description">Description</string>
-    <string name="label_divider">Divider</string>
     <string name="label_email">Email</string>
     <string name="label_environment">Environment</string>
-    <string name="label_flags">"Flags: "</string>
+    <string name="label_expected_result">Expected result</string>
+    <string name="label_file_name">"File name: "</string>
     <string name="label_full_name">Full Name</string>
-    <string name="label_groups">Groups</string>
     <string name="label_hide">Hide</string>
     <string name="label_issue_type">Issue Type</string>
-    <string name="label_launch_mode">"Launch mode: "</string>
+    <string name="label_jira_url">JIRA Url</string>
+    <string name="label_list_step">Show list step</string>
+    <string name="label_list_users">List users</string>
     <string name="label_locale">Locale</string>
     <string name="label_login">Log In</string>
-    <string name="label_max_recents">"Max recents: "</string>
+    <string name="label_name_activity">"Name activity"</string>
     <string name="label_new_user">Add new QA</string>
+    <string name="label_no_email">" nor email and symbol @"</string>
+    <string name="label_no_whitespaces">" cannot contain whitespaces"</string>
+    <string name="label_no_whitespace_margins">" cannot begin and end to whitespace"</string>
+    <string name="label_open_amtt">Open Amtt</string>
     <string name="label_package_name">"Package name: "</string>
-    <string name="label_parent_app">"Parent app: "</string>
     <string name="label_password">Password</string>
-    <string name="label_permission">"Permission: "</string>
-    <string name="label_persistable_mode">"Persistable mode: "</string>
     <string name="label_priority">Priority</string>
-    <string name="label_process_name">"Process name: "</string>
     <string name="label_project">Project</string>
+    <string name="label_return">Return</string>
     <string name="label_screen_orientation">"Screen orientation: "</string>
     <string name="label_show">Show</string>
-    <string name="label_soft_input_mode">"Soft input mode: "</string>
+    <string name="label_show_steps">Show recorded steps</string>
+    <string name="label_start_record">Start record</string>
     <string name="label_step">"Step "</string>
+    <string name="label_step_with_screen">Step with screen</string>
+    <string name="label_step_without_screen">Step without screen</string>
     <string name="label_summary">Title</string>
-    <string name="label_target_app_name">"Target app name: "</string>
-    <string name="label_task_affinity">"Task affinity: "</string>
+    <string name="label_tags">Tags</string>
     <string name="label_tester">Assignee</string>
     <string name="label_time_zone">Time zone</string>
-    <string name="label_ui_options">"Ui options: "</string>
     <string name="label_url">URL</string>
     <string name="label_user_name">Username</string>
 
@@ -74,71 +79,37 @@
 
     <string name="notification_title">AMTT</string>
     <string name="notification_text">Tap to go to the settings</string>
-    <string name="enter_prefix">Please, enter %s</string>
-    <string name="enter_username">" username"</string>
-    <string name="enter_password">" password"</string>
-    <string name="enter_url">" url"</string>
-    <string name="enter_summary">"title"</string>
-    <string name="enter_postfix_jira">" postfix '/jira'"</string>
-    <string name="auth_passed">Authorization passed</string>
-
-    <string name="label_start_record">Start record</string>
-    <string name="label_create_ticket">Create Ticket</string>
-    <string name="label_open_amtt">Open Amtt</string>
-    <string name="label_expected_result">Expected result</string>
-    <string name="label_step_with_screen">Step with screen</string>
-    <string name="label_step_without_screen">Step without screen</string>
-    <string name="label_added_step_without_screen">Added step without screen</string>
-    <string name="label_step_view">Step</string>
-    <string name="label_cancel_record">Cancel record</string>
-    <string name="label_button_main">Main button</string>
-    <string name="activity_info_unavailable">Activity information isn\'t available</string>
-    <string name="helper_url">Enter url</string>
-    <string name="helper_user_name">Enter username</string>
-    <string name="helper_password">Enter password</string>
-    <string name="dialog_description">To make screenshot please use next combination button for your device - </string>
-    <string name="dialog_label_checkbox">Don\'t show again</string>
-    <string name="dialog_button_ok">OK</string>
-    <string name="dialog_button_cancel">Cancel</string>
-    <string name="label_close_app">Close Amtt</string>
-    <string name="label_show_steps">Show recorded steps</string>
-    <string name="nexus_help_message">\nNexus - volume down+power</string>
-    <string name="samsung_help_message">\nSamsung - power+home</string>
-    <string name="sony_help_message">\nSony - volume down+power</string>
-    <string name="htc_help_message">\nHTC - power+home</string>
-    <string name="huawei_help_message">\HUAWEI - volume down+power</string>
-    <string name="xiaomi_help_message">\nXiaomi tablet - power+options \nXiaomi phone - volume down+power</string>
-    <string name="all_help_message">\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nSony - volume down+power \nXiaomi phone - volume down+power \nHTC - power+home \HUAWEI - volume down+power</string>
-    <string name="label_list_users">List users</string>
-    <string name="label_jira_url">JIRA Url</string>
     <string name="notification_attach_title_done">Uploaded %s done</string>
     <string name="notification_attachment_text_done">Uploaded successfully %s attached items.</string>
     <string name="notification_attach_title_init">Uploading %s</string>
     <string name="notification_attachment_text_init">Uploading %s attached items.</string>
-    <string name="epam_url">https://jira.epam.com</string>
+
+    <string name="enter_prefix">Please, enter %s</string>
+    <string name="enter_postfix_jira">" postfix '/jira'"</string>
+    <string name="auth_passed">Authorization passed</string>
+
+    <string name="dialog_description">To make screenshot please use next combination button for your device - </string>
+    <string name="dialog_label_checkbox">Don\'t show again</string>
     <string name="dialog_are_you_sure">Are you sure?</string>
     <string name="dialog_exit">Do you want to close AMTT application?</string>
-    <string name="label_return">Return</string>
-    <string name="label_no_whitespace_margins">" cannot begin and end to whitespace"</string>
-    <string name="label_no_email">" nor email and symbol @"</string>
-    <string name="enter_correct_url">" correct url"</string>
-    <string name="label_no_whitespaces">" cannot contain whitespaces"</string>
+
+    <string name="nexus_help_message">\nNexus - volume down+power</string>
+    <string name="samsung_help_message">\nSamsung - power+home</string>
+    <string name="htc_help_message">\nHTC - power+home</string>
+    <string name="xiaomi_help_message">\nXiaomi tablet - power+options \nXiaomi phone - volume down+power</string>
+    <string name="all_help_message">\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nSony - volume down+power \nXiaomi phone - volume down+power \nHTC - power+home \HUAWEI - volume down+power</string>
+    <string name="epam_url">https://jira.epam.com</string>
+
     <string name="key_dialog_hide">dialog_hide</string>
     <string name="key_topbutton_show">topbutton_show</string>
     <string name="title_preff_topbutton_show">Show</string>
     <string name="title_preff_dialog_hide">Hide dialog</string>
     <string name="preff_category_topbutton">Top button</string>
     <string name="preff_category_help_dialog">Help dialog</string>
-    <string name="title_activity_expected_results">Expected Results</string>
-    <string name="label_name_activity">"Name activity"</string>
-    <string name="label_tags">Tags</string>
 
     <string name="url_prefix">https://</string>
     <string name="ticket_created">Ticket has been successfully created</string>
-    <string name="label_list_step">Show list step</string>
-    <string name="activity_info_text_size">16sp</string>
     <string name="content_description_screenshot">Screenshot</string>
-    <string name="label_clear_environment">Clear environment</string>
     <string name="message_clear_environment">You will lose all the device specifications</string>
 
     <string name="ok">OK</string>

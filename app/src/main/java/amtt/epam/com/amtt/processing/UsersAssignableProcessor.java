@@ -14,7 +14,8 @@ import org.apache.http.util.EntityUtils;
 import java.util.ArrayList;
 
 /**
- * Created by Iryna_Monchanka on 06.05.2015.
+ @author Iryna Monchanka
+ @version on 06.05.2015
  */
 public class UsersAssignableProcessor implements Processor<JUserAssignableResponse, HttpEntity> {
 
@@ -22,10 +23,11 @@ public class UsersAssignableProcessor implements Processor<JUserAssignableRespon
     @Override
     public JUserAssignableResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
+        inputStream.consumeContent();
         JsonParser parser = new JsonParser();
         JsonArray jsonArray = parser.parse(_response).getAsJsonArray();
         JUserAssignableResponse userAssignableResponse = new JUserAssignableResponse();
-        ArrayList<JUser> jUsers = new ArrayList<JUser>();
+        ArrayList<JUser> jUsers = new ArrayList<>();
         for(JsonElement obj : jsonArray )
         {
             JUser jUser = Gson.getInstance().fromJson(obj, JUser.class);

@@ -15,18 +15,21 @@ import amtt.epam.com.amtt.bo.project.JIssueVersion;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 
 /**
- * Created by Irina Monchenko on 05.05.2015.
+ @author Iryna Monchanka
+ @version on 05.05.2015
  */
+
 public class VersionsProcessor implements Processor<JVersionsResponse, HttpEntity> {
 
     public static final String NAME = VersionsProcessor.class.getName();
     @Override
     public JVersionsResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
+        inputStream.consumeContent();
         JsonParser parser = new JsonParser();
         JsonArray jsonArray = parser.parse(_response).getAsJsonArray();
         JVersionsResponse projectExtVersionsResponse = new JVersionsResponse();
-        ArrayList<JIssueVersion> jIssueVersions = new ArrayList<JIssueVersion>();
+        ArrayList<JIssueVersion> jIssueVersions = new ArrayList<>();
         for (JsonElement obj : jsonArray) {
             JIssueVersion jIssueVersion = Gson.getInstance().fromJson(obj, JIssueVersion.class);
             jIssueVersions.add(jIssueVersion);

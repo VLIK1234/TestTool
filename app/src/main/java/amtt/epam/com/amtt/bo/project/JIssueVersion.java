@@ -25,8 +25,6 @@ public class JIssueVersion {
     private Boolean mOverdue;
     @SerializedName("userReleaseDate")
     private String mUserReleaseDate;
-    //@SerializedName("projectId")
-   // private int mProjectId;
 
     public JIssueVersion(){}
 
@@ -34,7 +32,7 @@ public class JIssueVersion {
         this.mId = id;
     }
 
-    public JIssueVersion(String id, String self, String description, String name, Boolean archived, Boolean released, String releaseDate, Boolean overdue, String userReleaseDate, int projectId) {
+    public JIssueVersion(String id, String self, String description, String name, Boolean archived, Boolean released, String releaseDate, Boolean overdue, String userReleaseDate) {
         this.mId = id;
         this.mSelf = self;
         this.mDescription = description;
@@ -44,7 +42,6 @@ public class JIssueVersion {
         this.mReleaseDate = releaseDate;
         this.mOverdue = overdue;
         this.mUserReleaseDate = userReleaseDate;
-        //this.mProjectId = projectId;
     }
 
     public String getId() {

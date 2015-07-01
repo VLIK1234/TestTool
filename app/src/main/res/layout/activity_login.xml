@@ -8,14 +8,14 @@
     android:paddingTop="@dimen/activity_horizontal_margin"
     tools:context="amtt.epam.com.amtt.app.LoginActivity">
 
-    <amtt.epam.com.amtt.view.TextInput
+    <amtt.epam.com.amtt.ui.views.TextInput
         android:id="@+id/username_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/label_user_name"
         android:inputType="text" />
 
-    <amtt.epam.com.amtt.view.TextInput
+    <amtt.epam.com.amtt.ui.views.TextInput
         android:id="@+id/url_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         android:inputType="textUri"
         android:text="@string/url_prefix" />
 
-    <amtt.epam.com.amtt.view.TextInput
+    <amtt.epam.com.amtt.ui.views.TextInput
         android:id="@+id/password_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

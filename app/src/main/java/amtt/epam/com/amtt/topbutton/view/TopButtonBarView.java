@@ -21,12 +21,12 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.app.AskExitActivity;
-import amtt.epam.com.amtt.app.CreateIssueActivity;
-import amtt.epam.com.amtt.app.ExpectedResultsActivity;
-import amtt.epam.com.amtt.app.HelpDialogActivity;
-import amtt.epam.com.amtt.app.StepsActivity;
-import amtt.epam.com.amtt.app.UserInfoActivity;
+import amtt.epam.com.amtt.ui.activities.AskExitActivity;
+import amtt.epam.com.amtt.ui.activities.CreateIssueActivity;
+import amtt.epam.com.amtt.ui.activities.ExpectedResultsActivity;
+import amtt.epam.com.amtt.ui.activities.HelpDialogActivity;
+import amtt.epam.com.amtt.ui.activities.StepsActivity;
+import amtt.epam.com.amtt.ui.activities.UserInfoActivity;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.database.util.StepUtil;
@@ -99,7 +99,6 @@ public class TopButtonBarView extends FrameLayout {
         });
     }
 
-    @SuppressWarnings("unchecked")
     private void initButtonsHandlers() {
         mButtonStartRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), R.drawable.background_start_record, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override

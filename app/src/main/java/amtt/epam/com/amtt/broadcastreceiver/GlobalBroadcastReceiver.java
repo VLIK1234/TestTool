@@ -3,16 +3,16 @@ package amtt.epam.com.amtt.broadcastreceiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 
 /**
- * Created by Ivan_Bakach on 02.06.2015.
+ @author Ivan_Bakach
+ @version on 02.06.2015
  */
+
 public class GlobalBroadcastReceiver extends BroadcastReceiver {
 
     public static final String SHOW = "SHOW";

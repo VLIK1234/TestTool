@@ -20,6 +20,7 @@ public class UserInfoProcessor implements Processor<JUserInfo, HttpEntity> {
         String _response = null;
         try {
             _response = EntityUtils.toString(httpEntity, HTTP.UTF_8);
+            httpEntity.consumeContent();
         } catch (IOException e) {
             e.printStackTrace();
         }

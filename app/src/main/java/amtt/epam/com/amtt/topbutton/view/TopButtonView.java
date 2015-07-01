@@ -37,12 +37,10 @@ public class TopButtonView extends FrameLayout {
 
         private float mRotation;
 
-        @SuppressWarnings("UnusedDeclaration")
         public float getRotation() {
             return mRotation;
         }
 
-        @SuppressWarnings("UnusedDeclaration")
         public void setRotation(float rotation) {
             mRotation = rotation;
             invalidateSelf();
@@ -85,7 +83,6 @@ public class TopButtonView extends FrameLayout {
         mHeightProportion = (float) mLayoutParams.y / mDisplayMetrics.heightPixels;
     }
 
-    @SuppressWarnings("unchecked")
     private void initComponent() {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.top_button_layout, this, true);

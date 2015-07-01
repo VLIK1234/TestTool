@@ -4,8 +4,8 @@ import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import amtt.epam.com.amtt.AmttApplication;
@@ -82,7 +82,7 @@ public class JiraApi {
         execute(requestBuilder, processorName, callback);
     }
 
-    public void createAttachment(String issueKey, ArrayList<String> filesPaths, Callback callback) {
+    public void createAttachment(String issueKey, List<String> filesPaths, Callback callback) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, ActiveUser.getInstance().getCredentials());
         headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);

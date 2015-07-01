@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import amtt.epam.com.amtt.api.JiraGetContentCallback;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
@@ -25,7 +26,7 @@ public class AttachmentService extends Service {
     public static final String ACTION_CLOSE = "CLOSE";
     public static final String RESULT = "RESULT";
     private static final String TAG = "Log";
-    private static ArrayList<String> attachmentList;
+    private static List<String> attachmentList;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -75,7 +76,7 @@ public class AttachmentService extends Service {
         context.startService(new Intent(context, AttachmentService.class).setAction(ACTION_START));
     }
 
-    public void attachFile(final String issueKey, final ArrayList<String> fileFullName) {
+    public void attachFile(final String issueKey, final List<String> fileFullName) {
         if (fileFullName.size() > 0) {
             final int notificationId = AttachNotificationHelper.showNotification(getBaseContext(),
                     AttachNotificationHelper.getInitBuilder(getBaseContext(), issueKey, fileFullName.size()));
