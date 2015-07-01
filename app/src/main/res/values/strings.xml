@@ -74,11 +74,11 @@
 
     <string name="notification_title">AMTT</string>
     <string name="notification_text">Tap to go to the settings</string>
-    <string name="enter_prefix">Please, enter</string>
+    <string name="enter_prefix">Please, enter %s</string>
     <string name="enter_username">" username"</string>
     <string name="enter_password">" password"</string>
     <string name="enter_url">" url"</string>
-    <string name="enter_summary">" title"</string>
+    <string name="enter_summary">"title"</string>
     <string name="enter_postfix_jira">" postfix '/jira'"</string>
     <string name="auth_passed">Authorization passed</string>
 
@@ -119,9 +119,9 @@
     <string name="dialog_are_you_sure">Are you sure?</string>
     <string name="dialog_exit">Do you want to close AMTT application?</string>
     <string name="label_return">Return</string>
-    <string name="label_cannot_whitespaces">" cannot begin and end to whitespace"</string>
-    <string name="label_cannot_at">" nor email and symbol @"</string>
-    <string name="enter_correct_url">" url"</string>
+    <string name="label_no_whitespace_margins">" cannot begin and end to whitespace"</string>
+    <string name="label_no_email">" nor email and symbol @"</string>
+    <string name="enter_correct_url">" correct url"</string>
     <string name="label_no_whitespaces">" cannot contain whitespaces"</string>
     <string name="key_dialog_hide">dialog_hide</string>
     <string name="key_topbutton_show">topbutton_show</string>
@@ -138,6 +138,8 @@
     <string name="label_list_step">Show list step</string>
     <string name="activity_info_text_size">16sp</string>
     <string name="content_description_screenshot">Screenshot</string>
+    <string name="label_clear_environment">Clear environment</string>
+    <string name="message_clear_environment">You will lose all the device specifications</string>
 
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>

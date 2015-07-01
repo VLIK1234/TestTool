@@ -9,8 +9,9 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/activity_horizontal_margin"
-        android:paddingRight="12dp"
-        android:paddingLeft="12dp">
+        android:paddingLeft="4dp"
+        android:paddingStart="4dp"
+        android:scrollbarStyle="outsideInset">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,13 +23,14 @@
                 style="@style/Material.Widget.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_project" />
+                android:text="@string/label_project"/>
 
             <amtt.epam.com.amtt.view.SpinnerProgress
                 android:id="@+id/spin_projects_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="true"/>
+                android:focusable="true"
+                style="@style/Material.Widget.SpinnerProgress"/>
             <!-- *******PROJECTS END***************************************************-->
 
             <!-- *******ISSUE TYPES BEGIN**********************************************-->
@@ -43,23 +45,19 @@
                 android:id="@+id/spin_issue_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/label_issue_type"/>
+                android:hint="@string/label_issue_type"
+                style="@style/Material.Widget.SpinnerProgress"/>
 
             <!-- *******ISSUE TYPES END**********************************************-->
 
             <!-- *******SUMMARY BEGIN*************************************************-->
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/til_summary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/et_summary"
+            <amtt.epam.com.amtt.view.TextInput
+                android:id="@+id/summary_input"
+                android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/label_summary"
                 android:inputType="textMultiLine"/>
-            </android.support.design.widget.TextInputLayout>
             <!-- *******SUMMARY END*************************************************-->
 
             <!-- *******PRIORITY BEGIN*************************************************-->
@@ -74,7 +72,8 @@
                 android:id="@+id/spin_priority"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/label_priority"/>
+                android:hint="@string/label_priority"
+                style="@style/Material.Widget.SpinnerProgress"/>
 
             <!-- *******PRIORITY END*************************************************-->
 
@@ -110,45 +109,43 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/label_affects_versions"
                 android:paddingBottom="@dimen/spinner_padding_bottom"
-                android:visibility="gone" />
+                android:visibility="gone"
+                style="@style/Material.Widget.SpinnerProgress"/>
 
             <!-- *******AFFECTS VERSIONS END****************************************-->
 
             <!-- *******ENVIRONMENT BEGIN****************************************-->
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/til_environment"
+            <amtt.epam.com.amtt.view.TextInput
+                android:id="@+id/environment_input"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <EditText
-                    android:id="@+id/et_environment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/label_environment"
-                    android:inputType="textMultiLine" />
-            </android.support.design.widget.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:hint="@string/label_environment"
+                android:inputType="textMultiLine"/>
             <!-- *******ENVIRONMENT END****************************************-->
 
-            <!-- *******DESCRIPTION BEGIN****************************************-->
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/til_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btn_clear_environment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_clear_environment"
+                android:layout_gravity="end"/>
 
-                <EditText
-                    android:id="@+id/et_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/label_description"
-                    android:inputType="textMultiLine" />
-            </android.support.design.widget.TextInputLayout>
+            <!-- *******DESCRIPTION BEGIN****************************************-->
+            <amtt.epam.com.amtt.view.TextInput
+                android:id="@+id/description_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/label_description"
+                android:inputType="textMultiLine"/>
 
             <Button
                 android:id="@+id/btn_list_step"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_list_step"
-                android:layout_gravity="end"/>
+                android:layout_gravity="end"
+                style="@style/Material.Widget.CreateIssueButton"/>
             <!-- *******DESCRIPTION END****************************************-->
 
             <!-- *******TESTER BEGIN****************************************-->
@@ -176,7 +173,8 @@
                 android:layout_marginTop="@dimen/material_vertical_button_padding_top"
                 android:minWidth="@dimen/material_vertical_button_min_width_size"
                 android:text="@string/label_create"
-                android:textSize="@dimen/abc_text_size_button_material" />
+                android:textSize="@dimen/abc_text_size_button_material"
+                style="@style/Material.Widget.CreateIssueButton"/>
         </LinearLayout>
     </ScrollView>
 
