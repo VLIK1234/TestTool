@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.bo.issue;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.bo.project.JComponent;
@@ -34,7 +35,7 @@ public class JIssueFields {
     @SerializedName("security")
     private JIssueSecurity mJIssueSecurity;
     @SerializedName("versions")
-    private List<JIssueVersion> mJIssueVersions;
+    private List<JIssueVersion> mJIssueVersions = new ArrayList<>();
     @SerializedName("environment")
     private String mEnvironment;
     @SerializedName("summary")

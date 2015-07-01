@@ -455,7 +455,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void initAssigneeAutocompleteView() {
         mAssignableAutocompleteView = (AutocompleteProgressView) findViewById(R.id.atv_assignable_users);
         mAssignableAutocompleteView.setValidators(new ArrayList<Validator>() {{
-            add(InputsUtil.getEmptyValidator());
             add(InputsUtil.getWhitespacesValidator());
             add(InputsUtil.getEndStartWhitespacesValidator());
         }});
