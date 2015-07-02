@@ -93,7 +93,7 @@
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
         <activity
-            android:name=".app.PreviewActivity"
+            android:name=".app.PaintActivity"
             android:label="@string/title_activity_preview"
             android:screenOrientation="portrait"/>
 

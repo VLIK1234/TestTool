@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -33,7 +34,7 @@ import amtt.epam.com.amtt.view.PaletteItem;
 /**
  * Created by Ivan_Bakach on 09.06.2015.
  */
-public class PreviewActivity extends BaseActivity {
+public class PaintActivity extends BaseActivity {
 
     public static final String FILE_PATH = "filePath";
 
@@ -51,7 +52,7 @@ public class PreviewActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_preview);
+        setContentView(R.layout.activity_paint);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mLayoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -135,7 +136,7 @@ public class PreviewActivity extends BaseActivity {
     }
 
     private void initPaletteDialog() {
-        final View view = mLayoutInflater.inflate(R.layout.activity_preview_palette, null);
+        final View view = mLayoutInflater.inflate(R.layout.dialog_palette, null);
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
@@ -153,11 +154,6 @@ public class PreviewActivity extends BaseActivity {
             }
         });
 
-        mPaletteDialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.title_choose_color)
-                .setView(view)
-                .create();
-
         mPaletteItems = new ArrayList<PaletteItem>() {{
             add((PaletteItem) view.findViewById(mLastSelectedPaletteItem = R.id.pi_red));
             add((PaletteItem) view.findViewById(R.id.pi_blue));
@@ -168,7 +164,6 @@ public class PreviewActivity extends BaseActivity {
             add((PaletteItem) view.findViewById(R.id.pi_white));
             add((PaletteItem) view.findViewById(R.id.pi_yellow));
         }};
-
         for (PaletteItem paletteItem : mPaletteItems) {
             paletteItem.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -195,6 +190,13 @@ public class PreviewActivity extends BaseActivity {
                     mPaletteDialog.dismiss();
                 }
             });
+
+//            ImageButton eraserButton = view.findViewById(R.id)
+
+            mPaletteDialog = new AlertDialog.Builder(this)
+                    .setTitle(R.string.title_choose_color)
+                    .setView(view)
+                    .create();
         }
     }
 

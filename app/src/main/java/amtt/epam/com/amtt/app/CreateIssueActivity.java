@@ -450,8 +450,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     @Override
     public void onItemShow(int position) {
-        Intent preview = new Intent(CreateIssueActivity.this, PreviewActivity.class);
-        preview.putExtra(PreviewActivity.FILE_PATH, mAdapter.getAttachmentFilePathList().get(position));
+        Intent preview = new Intent(CreateIssueActivity.this, PaintActivity.class);
+        preview.putExtra(PaintActivity.FILE_PATH, mAdapter.getAttachmentFilePathList().get(position));
         startActivity(preview);
     }
 
