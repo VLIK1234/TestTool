@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.observer;
 
+import android.annotation.SuppressLint;
 import android.os.FileObserver;
 
 import java.text.ParseException;
@@ -116,6 +117,7 @@ public class AmttFileObserver extends FileObserver {
         Matcher matcherTime = timePattern.matcher(path);
         if (matcherScreenshot.find() && matcherTime.find()) {
             long imageTime = System.currentTimeMillis();
+            @SuppressLint("SimpleDateFormat")
             SimpleDateFormat imageDate = new SimpleDateFormat(SCREENSHOT_DATE_FORMAT);
             try {
                 Date screenshotTime = imageDate.parse(matcherTime.group());

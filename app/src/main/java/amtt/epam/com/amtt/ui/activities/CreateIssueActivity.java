@@ -60,6 +60,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private TextInput mEnvironmentTextInput;
     private TextInput mSummaryTextInput;
 
+    private final Queue<JiraContentConst> mQueueRequests = new LinkedList<>();
     private String mAssignableUserName = null;
     private String mIssueTypeName;
     private String mPriorityName;
@@ -69,7 +70,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     public Spinner mProjectNamesSpinner;
     private RecyclerView recyclerView;
     private Spinner mComponents;
-    private Queue<JiraContentConst> mQueueRequests = new LinkedList<>();
     private Button mCreateIssueButton;
 
     public static class AssigneeHandler extends Handler {

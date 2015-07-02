@@ -13,12 +13,12 @@ public enum MimeType {
     String mCompoundType;
     String mFileExtension;
 
-    private MimeType(String type, String subType, String fileExtension) {
+    MimeType(String type, String subType, String fileExtension) {
         mCompoundType = type + "/" + subType;
         mFileExtension = "." + fileExtension;
     }
 
-    private MimeType(String type, String subType) {
+    MimeType(String type, String subType) {
         this(type, subType, subType);
     }
 

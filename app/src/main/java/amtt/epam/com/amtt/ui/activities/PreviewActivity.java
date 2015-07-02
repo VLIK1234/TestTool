@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.ui.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
@@ -42,6 +43,7 @@ public class PreviewActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LayoutInflater factory = LayoutInflater.from(getBaseContext());
+        @SuppressLint("InflateParams")
         final View view = factory.inflate(R.layout.activity_preview, null);
         imagePreview = (ImageView) view.findViewById(R.id.image_preview);
         textPreview = (TextView) view.findViewById(R.id.text_preview);

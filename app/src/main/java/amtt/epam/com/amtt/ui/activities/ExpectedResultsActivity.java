@@ -6,14 +6,12 @@ import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.ExpectedResultAdapter;
-import amtt.epam.com.amtt.excel.ReadExcel;
+import amtt.epam.com.amtt.excel.XMLParser;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
@@ -27,7 +25,6 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
     private ListView mExpectedResultsListView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ExpectedResultsHandler mHandler;
-    private ArrayList<ExpectedResultAdapter.ExpectedResult> mExpectedResultsList;
     private ExpectedResultAdapter mResultsAdapter;
 
     public static class ExpectedResultsHandler extends Handler {
@@ -66,7 +63,7 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
 
     private void initViews() {
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        mExpectedResultsList = new ArrayList<>();
+        ArrayList<ExpectedResultAdapter.ExpectedResult> mExpectedResultsList = new ArrayList<>();
         mResultsAdapter = new ExpectedResultAdapter(ExpectedResultsActivity.this, mExpectedResultsList);
         mExpectedResultsListView = (ListView) findViewById(android.R.id.list);
 
@@ -76,15 +73,10 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
     public void onRefresh() {
         mHandler.removeMessages(MESSAGE_REFRESH);
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_REFRESH), 750);
-        try {
-            InputStream excel = getAssets().open("Unified_TCs.xlsx");
-            ReadExcel.parseExcel(excel);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void refreshSteps() {
+        XMLParser.fetchXML(ExpectedResultsActivity.this);
         ExpectedResultAdapter.ExpectedResult result1 = new ExpectedResultAdapter.ExpectedResult("Top button", "assets://image3.png", "1) Center in parent");
         mResultsAdapter.add(result1);
         ExpectedResultAdapter.ExpectedResult result2 = new ExpectedResultAdapter.ExpectedResult("Top button", "assets://image2.png", "1) Center in parent\n2) Show Toast 'Start Record'");
