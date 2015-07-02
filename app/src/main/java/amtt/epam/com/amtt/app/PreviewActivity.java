@@ -116,6 +116,12 @@ public class PreviewActivity extends BaseActivity {
             case R.id.action_erase:
                 mPaintView.setEraseMode(true);
                 return true;
+            case R.id.action_undo:
+                mPaintView.undo();
+                return true;
+            case R.id.action_redo:
+                mPaintView.redo();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

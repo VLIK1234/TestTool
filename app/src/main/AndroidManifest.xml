@@ -94,7 +94,8 @@
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
         <activity
             android:name=".app.PreviewActivity"
-            android:label="@string/title_activity_preview" />
+            android:label="@string/title_activity_preview"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name=".service.AttachmentService"
