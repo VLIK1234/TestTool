@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.ivan_bakach.testpermissionclient">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <application
+        android:name=".CoreApplication"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:allowBackup="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".app.PermissionTestClientActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.SecondActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:parentActivityName=".app.PermissionTestClientActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".app.PermissionTestClientActivity" />
+        </activity>
+        <activity
+            android:name=".app.ThirdActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleInstance"
+            android:parentActivityName=".app.PermissionTestClientActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".app.PermissionTestClientActivity" />
+        </activity>
+    </application>
+
+</manifest>
