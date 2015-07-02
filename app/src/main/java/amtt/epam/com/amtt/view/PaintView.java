@@ -10,6 +10,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Region;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 
 /**
@@ -26,7 +27,6 @@ public class PaintView extends ImageView {
 
     public PaintView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setDrawingCacheEnabled(true);
         setUpDrawingArticles();
     }
 
@@ -35,7 +35,6 @@ public class PaintView extends ImageView {
         //TODO canvas.save / restoreToCount
         super.onDraw(canvas);
         canvas.drawPath(mDrawPath, mDrawPaint);
-        canvas.clipPath(mDrawPath, Region.Op.UNION);
         canvas.drawBitmap(mCanvasBitmap, 0, 0, mBitmapPaint);
     }
 
@@ -59,6 +58,11 @@ public class PaintView extends ImageView {
                 break;
             case MotionEvent.ACTION_MOVE:
                 mDrawPath.lineTo(x, y);
+                mDrawCanvas.drawPath(mDrawPath, mDrawPaint);
+                if (isEraseMode) {
+                    mDrawPath.reset();
+                    mDrawPath.moveTo(x, y);
+                }
                 break;
             case MotionEvent.ACTION_UP:
                 mDrawCanvas.drawPath(mDrawPath, mDrawPaint);
