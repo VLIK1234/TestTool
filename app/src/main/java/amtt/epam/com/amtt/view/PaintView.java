@@ -21,14 +21,15 @@ import java.util.List;
  */
 public class PaintView extends ImageView {
 
-    //TODO add field with PAINT COLOR
     private static final class DrawnPath {
 
         private final Path mPath;
+        private final Paint mPaint;
         private final PaintMode mPaintMode;
 
-        public DrawnPath(Path path, PaintMode paintMode) {
+        public DrawnPath(Path path, Paint paint, PaintMode paintMode) {
             mPath = path;
+            mPaint = paint;
             mPaintMode = paintMode;
         }
 
@@ -38,6 +39,10 @@ public class PaintView extends ImageView {
 
         public PaintMode getPaintMode() {
             return mPaintMode;
+        }
+
+        public Paint getPaint() {
+            return mPaint;
         }
 
         public void addPath(Path path) {
@@ -93,7 +98,7 @@ public class PaintView extends ImageView {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (isEraseMode) {
-                    mDrawnPaths.add(new DrawnPath(new Path(mDrawPath), PaintMode.ERASE));
+                    mDrawnPaths.add(new DrawnPath(new Path(mDrawPath), new Paint(mPaint), PaintMode.ERASE));
                 }
                 mDrawPath.moveTo(x, y);
                 break;
@@ -111,7 +116,7 @@ public class PaintView extends ImageView {
                 if (isEraseMode) {
                     mDrawnPaths.get(mDrawnPaths.size() - 1).addPath(mDrawPath);
                 } else {
-                    mDrawnPaths.add(new DrawnPath(new Path(mDrawPath), PaintMode.DRAW));
+                    mDrawnPaths.add(new DrawnPath(new Path(mDrawPath), new Paint(mPaint), PaintMode.DRAW));
                 }
                 mDrawPath.reset();
                 break;
@@ -159,29 +164,16 @@ public class PaintView extends ImageView {
 
     public void undo() {
         if (mDrawnPaths.size() != 0) {
-            for (DrawnPath drawnPath : mDrawnPaths) {
-                if (drawnPath.getPaintMode() == PaintMode.DRAW) {
-                    //TODO code below
-                } else {
-                    //TODO draw erased path
-                }
-            }
-
-            //code below
             mUndone.add(mDrawnPaths.remove(mDrawnPaths.size() - 1));
             mCacheCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
-            Xfermode currentXfermode = mPaint.getXfermode();
             for (DrawnPath drawnPath : mDrawnPaths) {
                 if (drawnPath.getPaintMode() == PaintMode.DRAW) {
-                    mCacheCanvas.drawPath(drawnPath.getPath(), mPaint);
+                    mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
                 } else {
-                    mPaint.setXfermode(mClearMode);
-                    mCacheCanvas.drawPath(drawnPath.getPath(), mPaint);
-                    mPaint.setXfermode(currentXfermode);
+                    mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
                 }
             }
-            mPaint.setXfermode(currentXfermode);
             invalidate();
         }
     }
@@ -189,15 +181,12 @@ public class PaintView extends ImageView {
     public void redo() {
         if (mUndone.size() != 0) {
             mDrawnPaths.add(mUndone.remove(mUndone.size() - 1));
-
-            Xfermode currentXfermode = mPaint.getXfermode();
             DrawnPath drawnPath = mDrawnPaths.get(mDrawnPaths.size() - 1);
+
             if (drawnPath.getPaintMode() == PaintMode.DRAW) {
-                mCacheCanvas.drawPath(drawnPath.getPath(), mPaint);
+                mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
             } else {
-                mPaint.setXfermode(mClearMode);
-                mCacheCanvas.drawPath(drawnPath.getPath(), mPaint);
-                mPaint.setXfermode(currentXfermode);
+                mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
             }
             invalidate();
         }
