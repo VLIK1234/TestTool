@@ -137,67 +137,65 @@ public class PaintActivity extends BaseActivity {
 
     private void initPaletteDialog() {
         final View view = mLayoutInflater.inflate(R.layout.dialog_palette, null);
-        view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(View v) {
-                if (mPaintView.isEraseMode()) {
-                    return;
-                }
+//        view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+//            @Override
+//            public void onViewAttachedToWindow(View v) {
+//                if (mPaintView.isEraseMode()) {
+//                    return;
+//                }
+//
+//                PaletteItem paletteItem = (PaletteItem) v.findViewById(mLastSelectedPaletteItem);
+//                paletteItem.setSelected();
+//            }
+//
+//            @Override
+//            public void onViewDetachedFromWindow(View v) {
+//
+//            }
+//        });
 
-                PaletteItem paletteItem = (PaletteItem) v.findViewById(mLastSelectedPaletteItem);
-                paletteItem.setSelected();
-            }
-
-            @Override
-            public void onViewDetachedFromWindow(View v) {
-
-            }
-        });
-
-        mPaletteItems = new ArrayList<PaletteItem>() {{
-            add((PaletteItem) view.findViewById(mLastSelectedPaletteItem = R.id.pi_red));
-            add((PaletteItem) view.findViewById(R.id.pi_blue));
-            add((PaletteItem) view.findViewById(R.id.pi_green));
-            add((PaletteItem) view.findViewById(R.id.pi_indigo));
-            add((PaletteItem) view.findViewById(R.id.pi_orange));
-            add((PaletteItem) view.findViewById(R.id.pi_violet));
-            add((PaletteItem) view.findViewById(R.id.pi_white));
-            add((PaletteItem) view.findViewById(R.id.pi_yellow));
-        }};
-        for (PaletteItem paletteItem : mPaletteItems) {
-            paletteItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    for (PaletteItem paletteItem : mPaletteItems) {
-                        if (paletteItem.isItemSelected()) {
-                            paletteItem.setUnselected();
-                            break;
-                        }
-                    }
-
-                    PaletteItem paletteItem = (PaletteItem) v;
-                    paletteItem.setSelected();
-                    int newBrushColor = paletteItem.getColor();
-                    if (newBrushColor != mLastBrushColor) {
-                        mPaintView.setBrushColor(newBrushColor);
-                        mLastBrushColor = newBrushColor;
-                        mLastSelectedPaletteItem = paletteItem.getId();
-                    }
-
-                    if (mPaintView.isEraseMode()) {
-                        mPaintView.setEraseMode(false);
-                    }
-                    mPaletteDialog.dismiss();
-                }
-            });
-
-//            ImageButton eraserButton = view.findViewById(R.id)
+//        mPaletteItems = new ArrayList<PaletteItem>() {{
+//            add((PaletteItem) view.findViewById(mLastSelectedPaletteItem = R.id.pi_red));
+//            add((PaletteItem) view.findViewById(R.id.pi_blue));
+//            add((PaletteItem) view.findViewById(R.id.pi_green));
+//            add((PaletteItem) view.findViewById(R.id.pi_indigo));
+//            add((PaletteItem) view.findViewById(R.id.pi_orange));
+//            add((PaletteItem) view.findViewById(R.id.pi_violet));
+//            add((PaletteItem) view.findViewById(R.id.pi_white));
+//            add((PaletteItem) view.findViewById(R.id.pi_yellow));
+//        }};
+//        for (PaletteItem paletteItem : mPaletteItems) {
+//            paletteItem.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    for (PaletteItem paletteItem : mPaletteItems) {
+//                        if (paletteItem.isItemSelected()) {
+//                            paletteItem.setUnselected();
+//                            break;
+//                        }
+//                    }
+//
+//                    PaletteItem paletteItem = (PaletteItem) v;
+//                    paletteItem.setSelected();
+//                    int newBrushColor = paletteItem.getColor();
+//                    if (newBrushColor != mLastBrushColor) {
+//                        mPaintView.setBrushColor(newBrushColor);
+//                        mLastBrushColor = newBrushColor;
+//                        mLastSelectedPaletteItem = paletteItem.getId();
+//                    }
+//
+//                    if (mPaintView.isEraseMode()) {
+//                        mPaintView.setEraseMode(false);
+//                    }
+//                    mPaletteDialog.dismiss();
+//                }
+//            });
 
             mPaletteDialog = new AlertDialog.Builder(this)
                     .setTitle(R.string.title_choose_color)
                     .setView(view)
                     .create();
-        }
+        //}
     }
 
     private void initTextPreview() {
@@ -238,7 +236,6 @@ public class PaintActivity extends BaseActivity {
             mTextPreview.setVisibility(View.VISIBLE);
         }
     }
-
 
     public SpannableStringBuilder append(SpannableStringBuilder stringBuilder, CharSequence text, Object what, int flags) {
         int start = stringBuilder.length();

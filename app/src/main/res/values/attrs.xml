@@ -125,9 +125,7 @@
     </declare-styleable>
 
     <declare-styleable name="PaletteItem">
-        <attr name="item_color" format="color"/>
-        <attr name="background_selected" format="reference"/>
-        <attr name="background_unselected" format="reference"/>
+        <attr name="cell_color" format="color"/>
     </declare-styleable>
 
 </resources>

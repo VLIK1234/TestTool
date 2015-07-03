@@ -1,112 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/material_menu_item_vertical_bottom_padding"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/material_menu_item_vertical_bottom_padding"
     android:paddingLeft="@dimen/navigation_icon_padding"
-    android:paddingBottom="@dimen/material_menu_item_vertical_bottom_padding">
+    android:paddingTop="@dimen/material_menu_item_vertical_bottom_padding">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageButton
-            android:id="@+id/btn_eraser"
-            android:src="@drawable/ic_eraser"
-            style="@style/PaletteButton"/>
-
-        <ImageButton
-            android:id="@+id/btn_pencil"
-            android:layout_marginLeft="@dimen/navigation_padding_bottom"
-            android:layout_marginStart="@dimen/navigation_padding_bottom"
-            android:src="@drawable/ic_pencil"
-            style="@style/PaletteButton"/>
-
-    </LinearLayout>
-
-    <LinearLayout
+    <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <amtt.epam.com.amtt.view.PaletteItem
-            android:id="@+id/pi_red"
-            app:background_unselected="@drawable/background_palette_unselected_red"
-            app:background_selected="@drawable/background_palette_selected"
-            app:item_color="@color/red_paint"
-            style="@style/PaletteButton"/>
+        <RadioButton
+            style="@style/PaletteButtonFirst"
+            android:background="@drawable/palette_tool_selector"
+            android:button="@drawable/ic_pencil" />
 
-        <amtt.epam.com.amtt.view.PaletteItem
-            android:id="@+id/pi_orange"
-            app:background_unselected="@drawable/background_palette_unselected_orange"
-            app:background_selected="@drawable/background_palette_selected"
-            app:item_color="@color/orange_paint"
-            android:layout_marginLeft="@dimen/navigation_padding_bottom"
-            android:layout_marginStart="@dimen/navigation_padding_bottom"
-            style="@style/PaletteButton"/>
+        <RadioButton
+            style="@style/PaletteButtonNext"
+            android:background="@drawable/palette_tool_selector"
+            android:button="@drawable/ic_eraser" />
 
-        <amtt.epam.com.amtt.view.PaletteItem
-            android:id="@+id/pi_yellow"
-            app:background_unselected="@drawable/background_palette_unselected_yellow"
-            app:background_selected="@drawable/background_palette_selected_2"
-            app:item_color="@color/yellow_paint"
-            android:layout_marginLeft="@dimen/navigation_padding_bottom"
-            android:layout_marginStart="@dimen/navigation_padding_bottom"
-            style="@style/PaletteButton"/>
+    </RadioGroup>
 
-        <amtt.epam.com.amtt.view.PaletteItem
-            android:id="@+id/pi_green"
-            app:background_unselected="@drawable/background_palette_unselected_green"
-            app:background_selected="@drawable/background_palette_selected"
-            app:item_color="@color/green_paint"
-            android:layout_marginLeft="@dimen/navigation_padding_bottom"
-            android:layout_marginStart="@dimen/navigation_padding_bottom"
-            style="@style/PaletteButton"/>
-
-    </LinearLayout>
-
-    <LinearLayout
+    <amtt.epam.com.amtt.view.RadioGroupContainer
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/navigation_padding_bottom"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <amtt.epam.com.amtt.view.PaletteItem
-            android:id="@+id/pi_blue"
-            app:background_unselected="@drawable/background_palette_unselected_blue"
-            app:background_selected="@drawable/background_palette_selected"
-            app:item_color="@color/blue_paint"
-            style="@style/PaletteButton"/>
+        <RadioGroup
+            android:id="@+id/group_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/navigation_padding_bottom"
+            android:orientation="horizontal">
 
-        <amtt.epam.com.amtt.view.PaletteItem
-            android:id="@+id/pi_indigo"
-            app:background_unselected="@drawable/background_palette_unselected_indigo"
-            app:background_selected="@drawable/background_palette_selected"
-            android:layout_marginLeft="@dimen/navigation_padding_bottom"
-            android:layout_marginStart="@dimen/navigation_padding_bottom"
-            app:item_color="@color/indigo_paint"
-            style="@style/PaletteButton"/>
+            <amtt.epam.com.amtt.view.PaletteItem
+                android:id="@+id/pi_red"
+                style="@style/PaletteButtonFirst"
+                android:background="@drawable/palette_cell_selector_red"
+                android:button="@drawable/palette_cell_empty"
+                app:cell_color="@color/red_paint" />
 
-        <amtt.epam.com.amtt.view.PaletteItem
-            android:id="@+id/pi_violet"
-            app:background_unselected="@drawable/background_palette_unselected_violet"
-            app:background_selected="@drawable/background_palette_selected"
-            android:layout_marginLeft="@dimen/navigation_padding_bottom"
-            android:layout_marginStart="@dimen/navigation_padding_bottom"
-            app:item_color="@color/violet_paint"
-            style="@style/PaletteButton"/>
 
-        <amtt.epam.com.amtt.view.PaletteItem
-            android:id="@+id/pi_white"
-            app:background_unselected="@drawable/background_palette_unselected_white"
-            app:background_selected="@drawable/background_palette_selected_2"
-            android:layout_marginLeft="@dimen/navigation_padding_bottom"
-            android:layout_marginStart="@dimen/navigation_padding_bottom"
-            app:item_color="@color/icons"
-            style="@style/PaletteButton"/>
+            <amtt.epam.com.amtt.view.PaletteItem
+                android:id="@+id/pi_orange"
+                style="@style/PaletteButtonNext"
+                android:background="@drawable/palette_cell_selector_orange"
+                android:button="@drawable/palette_cell_empty"
+                app:cell_color="@color/orange_paint" />
 
-    </LinearLayout>
+            <amtt.epam.com.amtt.view.PaletteItem
+                android:id="@+id/pi_yellow"
+                style="@style/PaletteButtonNext"
+                android:background="@drawable/palette_cell_selector_yellow"
+                android:button="@drawable/palette_cell_empty"
+                app:cell_color="@color/yellow_paint" />
+
+            <amtt.epam.com.amtt.view.PaletteItem
+                android:id="@+id/pi_green"
+                style="@style/PaletteButtonNext"
+                android:background="@drawable/palette_cell_selector_green"
+                android:button="@drawable/palette_cell_empty"
+                app:cell_color="@color/green_paint" />
+
+        </RadioGroup>
+
+        <RadioGroup
+            android:id="@+id/group_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/navigation_padding_bottom"
+            android:orientation="horizontal">
+
+            <amtt.epam.com.amtt.view.PaletteItem
+                android:id="@+id/pi_blue"
+                style="@style/PaletteButtonFirst"
+                android:background="@drawable/palette_cell_selector_blue"
+                android:button="@drawable/palette_cell_empty"
+                app:cell_color="@color/blue_paint" />
+
+            <amtt.epam.com.amtt.view.PaletteItem
+                android:id="@+id/pi_indigo"
+                style="@style/PaletteButtonNext"
+                android:background="@drawable/palette_cell_selector_indigo"
+                android:button="@drawable/palette_cell_empty"
+                app:cell_color="@color/indigo_paint" />
+
+            <amtt.epam.com.amtt.view.PaletteItem
+                android:id="@+id/pi_violet"
+                style="@style/PaletteButtonNext"
+                android:background="@drawable/palette_cell_selector_violet"
+                android:button="@drawable/palette_cell_empty"
+                app:cell_color="@color/violet_paint" />
+
+            <amtt.epam.com.amtt.view.PaletteItem
+                android:id="@+id/pi_white"
+                style="@style/PaletteButtonNext"
+                android:background="@drawable/palette_cell_selector_white"
+                android:button="@drawable/palette_cell_empty"
+                app:cell_color="@color/icons" />
+
+        </RadioGroup>
+
+    </amtt.epam.com.amtt.view.RadioGroupContainer>
 
 </LinearLayout>

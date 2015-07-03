@@ -72,10 +72,13 @@
 
     <style name="Dialog" parent="Theme.AppCompat.Light.Dialog"/>
 
-
-    <style name="PaletteButton" parent="Base.Widget.AppCompat.Button">
+    <style name="PaletteButtonFirst" parent="Base.Widget.AppCompat.Button">
         <item name="android:layout_width">@dimen/button_small_size</item>
         <item name="android:layout_height">@dimen/button_small_size</item>
+    </style>
+
+    <style name="PaletteButtonNext" parent="PaletteButtonFirst">
+        <item name="android:layout_marginLeft">@dimen/navigation_padding_bottom</item>
     </style>
 
 </resources>
