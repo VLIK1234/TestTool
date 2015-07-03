@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import amtt.epam.com.amtt.excel.bo.GoogleApiConst;
+import amtt.epam.com.amtt.excel.bo.GoogleEntrySpreadshet;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -24,44 +26,41 @@ public class XMLParser {
 
     public static void xmlParse(XmlPullParser resourse, Context context) {
         try {
-            XmlPullParser parser = resourse;//getResources().getXml(R.xml.contacts);
-
-            while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+            while (resourse.getEventType() != XmlPullParser.END_DOCUMENT) {
                 final String TAG = "ЛогКот";
-                String tmp;
-
-                switch (parser.getEventType()) {
+                GoogleEntrySpreadshet spreadshet = new GoogleEntrySpreadshet();
+                String tmp = "";
+                switch (resourse.getEventType()) {
                     case XmlPullParser.START_DOCUMENT:
                         Logger.d(TAG, "Начало документа");
                         break;
-                    // начало тэга
                     case XmlPullParser.START_TAG:
-                        Logger.d(TAG,
-                                "START_TAG: имя тега = " + parser.getName()
-                                        + ", уровень = " + parser.getDepth()
-                                        + ", число атрибутов = "
-                                        + parser.getAttributeCount());
-                        tmp = "";
-                        for (int i = 0; i < parser.getAttributeCount(); i++) {
-                            tmp = tmp + parser.getAttributeName(i) + " = "
-                                    + parser.getAttributeValue(i) + ", ";
-                        }
-                        if (!TextUtils.isEmpty(tmp))
-                            Logger.d(TAG, "Атрибуты: " + tmp);
-                        break;
-                    // конец тега
-                    case XmlPullParser.END_TAG:
-                        Logger.d(TAG, "END_TAG: имя тега = " + parser.getName());
-                        break;
-                    // содержимое тега
-                    case XmlPullParser.TEXT:
-                        Logger.d(TAG, "текст = " + parser.getText());
-                        break;
+                        if (resourse.getDepth() == 2) {
+                            if(resourse.getName() == GoogleApiConst.ID_TAG){
+                                spreadshet.setIdLink(resourse.getText());
+                                Logger.d(TAG, "IDDD = " + spreadshet.getIdLink());
+                            }else if(resourse.getName() == GoogleApiConst.UPDATED_TAG){
 
+                            }
+                            Logger.d(TAG, "START_TAG: имя тега = " + resourse.getName() + ", уровень = "
+                                    + resourse.getDepth() + ", число атрибутов = " + resourse.getAttributeCount());
+                            for (int i = 0; i < resourse.getAttributeCount(); i++) {
+                                tmp = tmp + resourse.getAttributeName(i) + " = " + resourse.getAttributeValue(i) + ", ";
+                            }
+                            if (!TextUtils.isEmpty(tmp))
+                                Logger.d(TAG, "Атрибуты: " + tmp);
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        Logger.d(TAG, "END_TAG: имя тега = " + resourse.getName());
+                        break;
+                    case XmlPullParser.TEXT:
+                        Logger.d(TAG, "текст = " + resourse.getText());
+                        break;
                     default:
                         break;
                 }
-                parser.next();
+                resourse.next();
             }
         } catch (Throwable t) {
             Toast.makeText(context,
@@ -71,31 +70,26 @@ public class XMLParser {
     }
 
 
-    public static void fetchXML(final Context context){
-        Thread thread = new Thread(new Runnable(){
+    public static void fetchXML(final Context context) {
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    URL url = new URL("https://spreadsheets.google.com/feeds/worksheets/1t9Yl39HHl4FjXkT9vGu__Q0glvdIk6SctGrVjeACt5k/public/full");
-                    HttpURLConnection conn = (HttpURLConnection)url.openConnection();
-
+                    URL url = new URL(GoogleApiConst.SPREADSHEET_PATH);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setReadTimeout(10000 /* milliseconds */);
                     conn.setConnectTimeout(15000 /* milliseconds */);
                     conn.setRequestMethod("GET");
                     conn.setDoInput(true);
                     conn.connect();
-
                     InputStream stream = conn.getInputStream();
                     xmlFactoryObject = XmlPullParserFactory.newInstance();
                     XmlPullParser myparser = xmlFactoryObject.newPullParser();
-
                     myparser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
                     myparser.setInput(stream, null);
-
                     xmlParse(myparser, context);
                     stream.close();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
