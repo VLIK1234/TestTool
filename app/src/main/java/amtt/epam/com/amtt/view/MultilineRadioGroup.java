@@ -37,11 +37,14 @@ public class MultilineRadioGroup extends RadioGroup {
             RadioGroupLine radioGroup = (RadioGroupLine) child;
             radioGroup.setOnGroupCheckedListener(new RadioGroupLine.OnLineCheckedChangeListener() {
                 @Override
-                public void onCheckedChanged(PaletteItem paletteItem) {
+                public void onCheckedChanged(RadioGroupLine radioGroup, PaletteItem paletteItem) {
                     if (mListener != null) {
                         mListener.onCheckedChanged(paletteItem);
-                        for (RadioGroupLine radioGroup : mRadioGroups) {
-                            radioGroup.clearCheck();
+                        for (RadioGroupLine group : mRadioGroups) {
+                            if (group != radioGroup) {
+                                group.setEnabled(true);
+                                group.clearCheck();
+                            }
                         }
                     }
                 }
@@ -57,7 +60,13 @@ public class MultilineRadioGroup extends RadioGroup {
     }
 
     public void restoreCheck() {
-        mRadioGroups.get(mLastCheckedGroupIndex).restoreCheck();
+        for (int i = 0; i < mRadioGroups.size(); i++) {
+            if (i == mLastCheckedGroupIndex) {
+                mRadioGroups.get(mLastCheckedGroupIndex).restoreCheck();
+            } else {
+                mRadioGroups.get(i).setEnabled(true);
+            }
+        }
     }
 
     public void setOnEntireGroupCheckedListener(OnEntireGroupCheckedChangeListener listener) {
@@ -78,6 +87,7 @@ public class MultilineRadioGroup extends RadioGroup {
                 mLastCheckedGroupIndex = i;
             }
             radioGroup.clearCheck();
+            radioGroup.setEnabled(false);
         }
     }
 

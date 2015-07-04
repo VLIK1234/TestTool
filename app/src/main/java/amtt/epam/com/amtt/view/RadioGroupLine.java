@@ -14,11 +14,12 @@ public class RadioGroupLine extends RadioGroup {
 
     public interface OnLineCheckedChangeListener {
 
-        void onCheckedChanged(PaletteItem paletteItem);
+        void onCheckedChanged(RadioGroupLine radioGroup, PaletteItem paletteItem);
 
     }
 
-    private int mLastCheckedRadioButton;
+    private boolean isEnabled = true;
+    private int mLastCheckedRadioButton = -1;
     private boolean isGroupChecked;
     private OnLineCheckedChangeListener mListener;
 
@@ -35,8 +36,9 @@ public class RadioGroupLine extends RadioGroup {
     }
 
     public void restoreCheck() {
-        PaletteItem lastCheckedPaletteItem = (PaletteItem) findViewById(mLastCheckedRadioButton);
-        if (lastCheckedPaletteItem != null) {
+        isEnabled = true;
+        if (mLastCheckedRadioButton != -1) {
+            PaletteItem lastCheckedPaletteItem = (PaletteItem) findViewById(mLastCheckedRadioButton);
             lastCheckedPaletteItem.setChecked(true);
         }
     }
@@ -52,8 +54,12 @@ public class RadioGroupLine extends RadioGroup {
             ((PaletteItem) child).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isGroupChecked = isChecked) {
-                        mListener.onCheckedChanged((PaletteItem) buttonView);
+                    if (isEnabled) {
+                        if (isGroupChecked = isChecked) {
+                            mListener.onCheckedChanged(RadioGroupLine.this, (PaletteItem) buttonView);
+                        }
+                    } else {
+                        buttonView.setChecked(false);
                     }
                 }
             });
@@ -62,7 +68,18 @@ public class RadioGroupLine extends RadioGroup {
 
     @Override
     public void clearCheck() {
+        isGroupChecked = false;
         mLastCheckedRadioButton = getCheckedRadioButtonId();
         super.clearCheck();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 }
