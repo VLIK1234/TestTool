@@ -11,6 +11,12 @@
         <item name="android:divider">@color/divider</item>
     </style>
 
+    <style name="MaterialTransparentActioBar" parent="Material">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="colorPrimary">@color/primaryTranslucent</item>
+    </style>
+
     <style name="Material.Drawable"></style>
 
     <style name="Material.Widget"></style>

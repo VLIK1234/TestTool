@@ -95,7 +95,8 @@
         <activity
             android:name=".app.PaintActivity"
             android:label="@string/title_activity_preview"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/MaterialTransparentActioBar"/>
 
         <service
             android:name=".service.AttachmentService"

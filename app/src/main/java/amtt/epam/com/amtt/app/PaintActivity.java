@@ -3,7 +3,11 @@ package amtt.epam.com.amtt.app;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -12,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -52,13 +58,16 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
     private LayoutInflater mLayoutInflater;
     private AlertDialog mPaletteDialog;
 
-    private boolean hasSomethongGoneWrong;
+    private boolean hasSomethingGoneWrong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setActionBar();
         setContentView(R.layout.activity_paint);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
         mLayoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 
@@ -203,7 +212,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                     showProgress(false);
                     findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
-                    hasSomethongGoneWrong = true;
+                    hasSomethingGoneWrong = true;
                 }
 
                 @Override
@@ -225,7 +234,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
     }
 
     private void showSavingDialog() {
-        if (hasSomethongGoneWrong) {
+        if (hasSomethingGoneWrong) {
             finish();
         } else {
             new AlertDialog.Builder(this)
@@ -258,6 +267,31 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
                     })
                     .create()
                     .show();
+        }
+    }
+
+    private void setActionBar() {
+        if (Build.VERSION.SDK_INT < 16) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_LOW_PROFILE;
+            decorView.setSystemUiVisibility(uiOptions);
+            final ActionBar supportActionBar = getSupportActionBar();
+            supportActionBar.setShowHideAnimationEnabled(true);
+            supportActionBar.hide();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    supportActionBar.show();
+                }
+            }, 2000);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    supportActionBar.hide();
+                }
+            }, 5000);
         }
     }
 
