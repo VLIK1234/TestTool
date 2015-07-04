@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -34,7 +36,7 @@ import amtt.epam.com.amtt.view.PaletteItem;
 /**
  * Created by Ivan_Bakach on 09.06.2015.
  */
-public class PaintActivity extends BaseActivity {
+public class PaintActivity extends BaseActivity implements OnSeekBarChangeListener {
 
     public static final String FILE_PATH = "filePath";
 
@@ -153,6 +155,12 @@ public class PaintActivity extends BaseActivity {
         });
         ((RadioButton)paintToolsGroup.findViewById(R.id.rb_pencil)).setChecked(true);
 
+        SeekBar thicknessBar = (SeekBar)view.findViewById(R.id.sb_thickness);
+        thicknessBar.setOnSeekBarChangeListener(this);
+        SeekBar opacityBar = (SeekBar)view.findViewById(R.id.sb_opacity);
+        opacityBar.setMax(255);
+        opacityBar.setOnSeekBarChangeListener(this);
+
         mPaletteDialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.title_choose_color)
                 .setView(view)
@@ -205,4 +213,25 @@ public class PaintActivity extends BaseActivity {
         return stringBuilder;
     }
 
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        switch (seekBar.getId()) {
+            case R.id.sb_opacity:
+                mPaintView.setBrushOpacity(progress);
+                break;
+            case R.id.sb_thickness:
+                mPaintView.setBrushThickness(progress);
+                break;
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
 }

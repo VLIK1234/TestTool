@@ -6,12 +6,53 @@
     android:orientation="vertical"
     android:paddingBottom="@dimen/material_menu_item_vertical_bottom_padding"
     android:paddingLeft="@dimen/navigation_icon_padding"
+    android:paddingRight="@dimen/navigation_icon_padding"
     android:paddingTop="@dimen/material_menu_item_vertical_bottom_padding">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_thickness" />
+
+        <SeekBar
+            android:id="@+id/sb_thickness"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/navigation_padding_bottom"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_opacity" />
+
+        <SeekBar
+            android:id="@+id/sb_opacity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
 
     <RadioGroup
         android:id="@+id/rg_paint_tools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/navigation_padding_bottom"
         android:orientation="horizontal">
 
         <RadioButton
@@ -47,7 +88,6 @@
                 android:background="@drawable/palette_cell_selector_red"
                 android:button="@drawable/palette_cell_empty"
                 app:cell_color="@color/red_paint" />
-
 
             <amtt.epam.com.amtt.view.PaletteItem
                 android:id="@+id/pi_orange"

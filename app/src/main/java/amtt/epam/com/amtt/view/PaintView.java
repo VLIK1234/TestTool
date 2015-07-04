@@ -158,10 +158,6 @@ public class PaintView extends ImageView {
         }
     }
 
-    public boolean isEraseMode() {
-        return isEraseMode;
-    }
-
     public void undo() {
         if (mDrawnPaths.size() != 0) {
             mUndone.add(mDrawnPaths.remove(mDrawnPaths.size() - 1));
@@ -190,6 +186,14 @@ public class PaintView extends ImageView {
             }
             invalidate();
         }
+    }
+
+    public void setBrushThickness(float thickness) {
+        mPaint.setStrokeWidth(thickness);
+    }
+
+    public void setBrushOpacity(int opacity) {
+        mPaint.setAlpha(opacity);
     }
 
 }
