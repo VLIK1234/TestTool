@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.app;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableStringBuilder;
@@ -89,38 +88,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (!hasSomethongGoneWrong) {
-                    new AlertDialog.Builder(this)
-                            .setTitle(R.string.title_lose_notes)
-                            .setMessage(R.string.message_lose_notes)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    final Bitmap drawingCache = mPaintView.getDrawingCache();
-                                    new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            StepUtil.applyNotesToScreenshot(drawingCache, mScreenshotPath);
-                                        }
-                                    }).start();
-                                    finish();
-                                }
-                            })
-                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    finish();
-                                }
-                            })
-                            .setNeutralButton(R.string.label_continue_editing, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .create()
-                            .show();
-                }
+                showSavingDialog();
                 return true;
             case R.id.action_palette:
                 if (mPaletteDialog == null) {
@@ -137,8 +105,11 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
 
-
+    @Override
+    public void onBackPressed() {
+        showSavingDialog();
     }
 
     private void initPaintView() {
@@ -149,16 +120,16 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
     private void initPaletteDialog() {
         final View view = mLayoutInflater.inflate(R.layout.dialog_palette, null);
 
-        SeekBar thicknessBar = (SeekBar)view.findViewById(R.id.sb_thickness);
+        SeekBar thicknessBar = (SeekBar) view.findViewById(R.id.sb_thickness);
         thicknessBar.setProgress(PaintView.DEFAULT_BRUSH_THICKNESS);
         thicknessBar.setOnSeekBarChangeListener(this);
 
-        final SeekBar opacityBar = (SeekBar)view.findViewById(R.id.sb_opacity);
+        final SeekBar opacityBar = (SeekBar) view.findViewById(R.id.sb_opacity);
         opacityBar.setMax(mPaintView.DEFAULT_OPACITY);
         opacityBar.setProgress(mPaintView.DEFAULT_OPACITY);
         opacityBar.setOnSeekBarChangeListener(this);
 
-        final ImageView opacityImage = (ImageView)view.findViewById(R.id.iv_opacity);
+        final ImageView opacityImage = (ImageView) view.findViewById(R.id.iv_opacity);
 
         final MultilineRadioGroup multilineRadioGroup = (MultilineRadioGroup) view.findViewById(R.id.multi_line_radio_group);
         multilineRadioGroup.setOnEntireGroupCheckedListener(new MultilineRadioGroup.OnEntireGroupCheckedChangeListener() {
@@ -167,7 +138,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
                 mPaintView.setBrushColor(paletteItem.getColor());
             }
         });
-        RadioGroup paintToolsGroup = (RadioGroup)view.findViewById(R.id.rg_paint_tools);
+        RadioGroup paintToolsGroup = (RadioGroup) view.findViewById(R.id.rg_paint_tools);
         paintToolsGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -184,7 +155,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
                 }
             }
         });
-        ((RadioButton)paintToolsGroup.findViewById(R.id.rb_pencil)).setChecked(true);
+        ((RadioButton) paintToolsGroup.findViewById(R.id.rb_pencil)).setChecked(true);
 
         mPaletteDialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.title_choose_color)
@@ -250,6 +221,43 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
             mTextPreview.setPadding(dpSize, dpSize, dpSize, dpSize);
             mTextPreview.setText(readLogFromFile(filePath));
             mTextPreview.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showSavingDialog() {
+        if (hasSomethongGoneWrong) {
+            finish();
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.title_lose_notes)
+                    .setMessage(R.string.message_lose_notes)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            final Bitmap drawingCache = mPaintView.getDrawingCache();
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    StepUtil.applyNotesToScreenshot(drawingCache, mScreenshotPath);
+                                }
+                            }).start();
+                            finish();
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .setNeutralButton(R.string.label_continue_editing, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
         }
     }
 
