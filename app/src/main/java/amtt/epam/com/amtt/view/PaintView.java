@@ -75,14 +75,17 @@ public class PaintView extends ImageView {
     public PaintView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setUpDrawingArticles();
+        setDrawingCacheEnabled(true);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         redrawCache();
-        canvas.drawBitmap(mCacheCanvasBitmap, 0, 0, mBitmapPaint);
-        canvas.drawPath(mDrawPath, mPaint);
+        if (mCacheCanvas != null) {
+            canvas.drawBitmap(mCacheCanvasBitmap, 0, 0, mBitmapPaint);
+            canvas.drawPath(mDrawPath, mPaint);
+        }
     }
 
     @Override
@@ -193,15 +196,17 @@ public class PaintView extends ImageView {
     }
 
     private void redrawCache() {
-        mCacheCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-        for (DrawnPath drawnPath : mDrawnPaths) {
-            if (drawnPath.getPaintMode() == PaintMode.DRAW) {
-                mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
-            } else {
-                mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
+        if (mCacheCanvas != null) {
+            mCacheCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            for (DrawnPath drawnPath : mDrawnPaths) {
+                if (drawnPath.getPaintMode() == PaintMode.DRAW) {
+                    mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
+                } else {
+                    mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
+                }
             }
+            invalidate();
         }
-        invalidate();
     }
 
 }

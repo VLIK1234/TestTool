@@ -150,5 +150,6 @@
     <string name="title_lose_notes">Save changes?</string>
     <string name="title_choose_color">Choose color</string>
     <string name="label_continue_editing">Continue editing</string>
+    <string name="screenshot_loading_error">Ooops! Something went wrong=)</string>
 
 </resources>

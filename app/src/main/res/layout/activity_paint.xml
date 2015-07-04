@@ -10,9 +10,9 @@
         android:id="@+id/paint_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_centerInParent="true"
         android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        android:layout_centerInParent="true"/>
+        android:scaleType="fitXY" />
 
     <TextView
         android:id="@+id/tv_preview"
@@ -20,6 +20,21 @@
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:textColor="@android:color/black"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/screenshot_loading_error"
+        android:textSize="@dimen/abc_text_size_medium_material"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@android:id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
 
 </RelativeLayout>

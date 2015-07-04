@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.app;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -49,6 +52,8 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
 
     private LayoutInflater mLayoutInflater;
     private AlertDialog mPaletteDialog;
+
+    private boolean hasSomethongGoneWrong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,30 +89,38 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.title_lose_notes)
-                        .setMessage(R.string.message_lose_notes)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                StepUtil.applyNotesToScreenshot(mPaintView, mScreenshotPath);
-                                finish();
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                        .setNeutralButton(R.string.label_continue_editing, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .create()
-                        .show();
+                if (!hasSomethongGoneWrong) {
+                    new AlertDialog.Builder(this)
+                            .setTitle(R.string.title_lose_notes)
+                            .setMessage(R.string.message_lose_notes)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    final Bitmap drawingCache = mPaintView.getDrawingCache();
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            StepUtil.applyNotesToScreenshot(drawingCache, mScreenshotPath);
+                                        }
+                                    }).start();
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            })
+                            .setNeutralButton(R.string.label_continue_editing, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .create()
+                            .show();
+                }
                 return true;
             case R.id.action_palette:
                 if (mPaletteDialog == null) {
@@ -209,7 +222,29 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         if (filePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
                 filePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
                 filePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
-            ImageLoader.getInstance().displayImage("file:///" + filePath, mPaintView);
+            ImageLoader.getInstance().displayImage("file:///" + filePath, mPaintView, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                    showProgress(true);
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    showProgress(false);
+                    findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
+                    hasSomethongGoneWrong = true;
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    showProgress(false);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+
+                }
+            });
         } else if (filePath.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
             int dpSize = UIUtil.getInDp(8);
             mTextPreview.setPadding(dpSize, dpSize, dpSize, dpSize);

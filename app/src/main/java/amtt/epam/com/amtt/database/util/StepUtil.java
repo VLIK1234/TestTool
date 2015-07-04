@@ -53,13 +53,13 @@ public class StepUtil {
         cleanActivityMeta();
     }
 
-    public static void applyNotesToScreenshot(PaintView paintView, String screenshotPath) {
+    public static void applyNotesToScreenshot(Bitmap drawingCache, String screenshotPath) {
         Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals(MimeType.IMAGE_PNG.getFileExtension()) ?
                 Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
 
         FileOutputStream outputStream = IOUtils.openFileOutput(screenshotPath);
         if (outputStream != null) {
-            paintView.getDrawingCache().compress(compressFormat, 100, outputStream);
+            drawingCache.compress(compressFormat, 100, outputStream);
         }
     }
 
