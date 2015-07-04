@@ -9,28 +9,32 @@
     android:paddingTop="@dimen/material_menu_item_vertical_bottom_padding">
 
     <RadioGroup
+        android:id="@+id/rg_paint_tools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <RadioButton
+            android:id="@+id/rb_pencil"
             style="@style/PaletteButtonFirst"
             android:background="@drawable/palette_tool_selector"
             android:button="@drawable/ic_pencil" />
 
         <RadioButton
+            android:id="@+id/rb_eraser"
             style="@style/PaletteButtonNext"
             android:background="@drawable/palette_tool_selector"
             android:button="@drawable/ic_eraser" />
 
     </RadioGroup>
 
-    <amtt.epam.com.amtt.view.RadioGroupContainer
+    <amtt.epam.com.amtt.view.MultilineRadioGroup
+        android:id="@+id/multi_line_radio_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <RadioGroup
+        <amtt.epam.com.amtt.view.RadioGroupLine
             android:id="@+id/group_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,9 +70,9 @@
                 android:button="@drawable/palette_cell_empty"
                 app:cell_color="@color/green_paint" />
 
-        </RadioGroup>
+        </amtt.epam.com.amtt.view.RadioGroupLine>
 
-        <RadioGroup
+        <amtt.epam.com.amtt.view.RadioGroupLine
             android:id="@+id/group_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -103,8 +107,8 @@
                 android:button="@drawable/palette_cell_empty"
                 app:cell_color="@color/icons" />
 
-        </RadioGroup>
+        </amtt.epam.com.amtt.view.RadioGroupLine>
 
-    </amtt.epam.com.amtt.view.RadioGroupContainer>
+    </amtt.epam.com.amtt.view.MultilineRadioGroup>
 
 </LinearLayout>

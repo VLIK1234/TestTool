@@ -11,7 +11,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -20,14 +21,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.UIUtil;
+import amtt.epam.com.amtt.view.MultilineRadioGroup;
 import amtt.epam.com.amtt.view.PaintView;
 import amtt.epam.com.amtt.view.PaletteItem;
 
@@ -44,10 +44,7 @@ public class PaintActivity extends BaseActivity {
     private PaintView mPaintView;
 
     private LayoutInflater mLayoutInflater;
-    private int mLastBrushColor;
     private AlertDialog mPaletteDialog;
-    private List<PaletteItem> mPaletteItems;
-    private int mLastSelectedPaletteItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,9 +111,6 @@ public class PaintActivity extends BaseActivity {
                 }
                 mPaletteDialog.show();
                 return true;
-            case R.id.action_erase:
-                mPaintView.setEraseMode(true);
-                return true;
             case R.id.action_undo:
                 mPaintView.undo();
                 return true;
@@ -137,65 +131,32 @@ public class PaintActivity extends BaseActivity {
 
     private void initPaletteDialog() {
         final View view = mLayoutInflater.inflate(R.layout.dialog_palette, null);
-//        view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-//            @Override
-//            public void onViewAttachedToWindow(View v) {
-//                if (mPaintView.isEraseMode()) {
-//                    return;
-//                }
-//
-//                PaletteItem paletteItem = (PaletteItem) v.findViewById(mLastSelectedPaletteItem);
-//                paletteItem.setSelected();
-//            }
-//
-//            @Override
-//            public void onViewDetachedFromWindow(View v) {
-//
-//            }
-//        });
+        final MultilineRadioGroup multilineRadioGroup = (MultilineRadioGroup) view.findViewById(R.id.multi_line_radio_group);
+        multilineRadioGroup.setOnEntireGroupCheckedListener(new MultilineRadioGroup.OnEntireGroupCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(PaletteItem paletteItem) {
+                mPaintView.setBrushColor(paletteItem.getColor());
+            }
+        });
+        RadioGroup paintToolsGroup = (RadioGroup)view.findViewById(R.id.rg_paint_tools);
+        paintToolsGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                boolean isEraseMode = checkedId == R.id.rb_eraser;
+                mPaintView.setEraseMode(isEraseMode);
+                if (isEraseMode) {
+                    multilineRadioGroup.clearCheck();
+                } else {
+                    multilineRadioGroup.restoreCheck();
+                }
+            }
+        });
+        ((RadioButton)paintToolsGroup.findViewById(R.id.rb_pencil)).setChecked(true);
 
-//        mPaletteItems = new ArrayList<PaletteItem>() {{
-//            add((PaletteItem) view.findViewById(mLastSelectedPaletteItem = R.id.pi_red));
-//            add((PaletteItem) view.findViewById(R.id.pi_blue));
-//            add((PaletteItem) view.findViewById(R.id.pi_green));
-//            add((PaletteItem) view.findViewById(R.id.pi_indigo));
-//            add((PaletteItem) view.findViewById(R.id.pi_orange));
-//            add((PaletteItem) view.findViewById(R.id.pi_violet));
-//            add((PaletteItem) view.findViewById(R.id.pi_white));
-//            add((PaletteItem) view.findViewById(R.id.pi_yellow));
-//        }};
-//        for (PaletteItem paletteItem : mPaletteItems) {
-//            paletteItem.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    for (PaletteItem paletteItem : mPaletteItems) {
-//                        if (paletteItem.isItemSelected()) {
-//                            paletteItem.setUnselected();
-//                            break;
-//                        }
-//                    }
-//
-//                    PaletteItem paletteItem = (PaletteItem) v;
-//                    paletteItem.setSelected();
-//                    int newBrushColor = paletteItem.getColor();
-//                    if (newBrushColor != mLastBrushColor) {
-//                        mPaintView.setBrushColor(newBrushColor);
-//                        mLastBrushColor = newBrushColor;
-//                        mLastSelectedPaletteItem = paletteItem.getId();
-//                    }
-//
-//                    if (mPaintView.isEraseMode()) {
-//                        mPaintView.setEraseMode(false);
-//                    }
-//                    mPaletteDialog.dismiss();
-//                }
-//            });
-
-            mPaletteDialog = new AlertDialog.Builder(this)
-                    .setTitle(R.string.title_choose_color)
-                    .setView(view)
-                    .create();
-        //}
+        mPaletteDialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.title_choose_color)
+                .setView(view)
+                .create();
     }
 
     private void initTextPreview() {
