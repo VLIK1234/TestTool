@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.app;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableStringBuilder;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
@@ -133,6 +135,18 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
 
     private void initPaletteDialog() {
         final View view = mLayoutInflater.inflate(R.layout.dialog_palette, null);
+
+        SeekBar thicknessBar = (SeekBar)view.findViewById(R.id.sb_thickness);
+        thicknessBar.setProgress(PaintView.DEFAULT_BRUSH_THICKNESS);
+        thicknessBar.setOnSeekBarChangeListener(this);
+
+        final SeekBar opacityBar = (SeekBar)view.findViewById(R.id.sb_opacity);
+        opacityBar.setMax(mPaintView.DEFAULT_OPACITY);
+        opacityBar.setProgress(mPaintView.DEFAULT_OPACITY);
+        opacityBar.setOnSeekBarChangeListener(this);
+
+        final ImageView opacityImage = (ImageView)view.findViewById(R.id.iv_opacity);
+
         final MultilineRadioGroup multilineRadioGroup = (MultilineRadioGroup) view.findViewById(R.id.multi_line_radio_group);
         multilineRadioGroup.setOnEntireGroupCheckedListener(new MultilineRadioGroup.OnEntireGroupCheckedChangeListener() {
             @Override
@@ -147,19 +161,17 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
                 boolean isEraseMode = checkedId == R.id.rb_eraser;
                 mPaintView.setEraseMode(isEraseMode);
                 if (isEraseMode) {
+                    opacityBar.setEnabled(false);
+                    opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity_disabled));
                     multilineRadioGroup.clearCheck();
                 } else {
+                    opacityBar.setEnabled(true);
+                    opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity));
                     multilineRadioGroup.restoreCheck();
                 }
             }
         });
         ((RadioButton)paintToolsGroup.findViewById(R.id.rb_pencil)).setChecked(true);
-
-        SeekBar thicknessBar = (SeekBar)view.findViewById(R.id.sb_thickness);
-        thicknessBar.setOnSeekBarChangeListener(this);
-        SeekBar opacityBar = (SeekBar)view.findViewById(R.id.sb_opacity);
-        opacityBar.setMax(255);
-        opacityBar.setOnSeekBarChangeListener(this);
 
         mPaletteDialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.title_choose_color)

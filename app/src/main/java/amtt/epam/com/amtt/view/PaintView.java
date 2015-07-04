@@ -8,7 +8,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Xfermode;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.ImageView;
@@ -58,6 +57,9 @@ public class PaintView extends ImageView {
 
     }
 
+    public static final int DEFAULT_OPACITY = 255;
+    public static final int DEFAULT_BRUSH_THICKNESS = 20;
+
     private Canvas mCacheCanvas;
     private Bitmap mCacheCanvasBitmap;
     private Path mDrawPath;
@@ -65,6 +67,7 @@ public class PaintView extends ImageView {
     private Paint mBitmapPaint;
     private PorterDuffXfermode mClearMode;
     private boolean isEraseMode;
+    private int mCurrentOpacity = 255;
 
     private List<DrawnPath> mDrawnPaths;
     private List<DrawnPath> mUndone;
@@ -77,8 +80,9 @@ public class PaintView extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawPath(mDrawPath, mPaint);
+        redrawCache();
         canvas.drawBitmap(mCacheCanvasBitmap, 0, 0, mBitmapPaint);
+        canvas.drawPath(mDrawPath, mPaint);
     }
 
     @Override
@@ -129,15 +133,14 @@ public class PaintView extends ImageView {
     }
 
     private void setUpDrawingArticles() {
+        mBitmapPaint = new Paint(Paint.DITHER_FLAG);
         mDrawPath = new Path();
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        mPaint.setStrokeWidth(20);
+        mPaint.setStrokeWidth(DEFAULT_BRUSH_THICKNESS);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
-
-        mBitmapPaint = new Paint(Paint.DITHER_FLAG);
 
         mClearMode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
 
@@ -147,6 +150,7 @@ public class PaintView extends ImageView {
 
     public void setBrushColor(int brushColor) {
         mPaint.setColor(brushColor);
+        mPaint.setAlpha(mCurrentOpacity);
     }
 
     public void setEraseMode(boolean eraseMode) {
@@ -161,16 +165,7 @@ public class PaintView extends ImageView {
     public void undo() {
         if (mDrawnPaths.size() != 0) {
             mUndone.add(mDrawnPaths.remove(mDrawnPaths.size() - 1));
-            mCacheCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-
-            for (DrawnPath drawnPath : mDrawnPaths) {
-                if (drawnPath.getPaintMode() == PaintMode.DRAW) {
-                    mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
-                } else {
-                    mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
-                }
-            }
-            invalidate();
+            redrawCache();
         }
     }
 
@@ -194,6 +189,19 @@ public class PaintView extends ImageView {
 
     public void setBrushOpacity(int opacity) {
         mPaint.setAlpha(opacity);
+        mCurrentOpacity = opacity;
+    }
+
+    private void redrawCache() {
+        mCacheCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        for (DrawnPath drawnPath : mDrawnPaths) {
+            if (drawnPath.getPaintMode() == PaintMode.DRAW) {
+                mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
+            } else {
+                mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
+            }
+        }
+        invalidate();
     }
 
 }
