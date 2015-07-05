@@ -123,7 +123,7 @@
             <amtt.epam.com.amtt.view.PaletteItem
                 android:id="@+id/pi_blue"
                 style="@style/PaletteButtonFirst"
-                android:background="@null"
+                android:background="@drawable/palette_cell_selector_blue"
                 android:button="@null"
                 app:cell_color="@color/blue_paint" />
 

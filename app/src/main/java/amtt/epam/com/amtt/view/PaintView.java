@@ -68,6 +68,7 @@ public class PaintView extends ImageView {
     private PorterDuffXfermode mClearMode;
     private boolean isEraseMode;
     private int mCurrentOpacity = 255;
+    private OnTouchListener mOnTouchListener;
 
     private List<DrawnPath> mDrawnPaths;
     private List<DrawnPath> mUndone;
@@ -131,8 +132,14 @@ public class PaintView extends ImageView {
                 return false;
         }
 
+        mOnTouchListener.onTouch(this, event);
         invalidate();
         return true;
+    }
+
+    @Override
+    public void setOnTouchListener(OnTouchListener l) {
+        mOnTouchListener = l;
     }
 
     private void setUpDrawingArticles() {

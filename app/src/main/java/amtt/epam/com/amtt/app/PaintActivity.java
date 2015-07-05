@@ -3,10 +3,9 @@ package amtt.epam.com.amtt.app;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.text.SpannableStringBuilder;
@@ -15,9 +14,9 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.View.OnSystemUiVisibilityChangeListener;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -46,30 +45,31 @@ import amtt.epam.com.amtt.view.PaletteItem;
 /**
  * Created by Ivan_Bakach on 09.06.2015.
  */
-public class PaintActivity extends BaseActivity implements OnSeekBarChangeListener {
+public class PaintActivity extends BaseActivity implements OnSeekBarChangeListener, Handler.Callback, OnSystemUiVisibilityChangeListener {
 
     public static final String FILE_PATH = "filePath";
+    public static final int HIDDEN_UI_FLAG = View.SYSTEM_UI_FLAG_LOW_PROFILE;
+    public static final int HIDE_UI_DELAY = 4000;
+    public static final int HIDE_UI = 0;
+    public static final int SHOW_UI = 1;
 
     private String mScreenshotPath;
-
     private TextView mTextPreview;
     private PaintView mPaintView;
-
-    private LayoutInflater mLayoutInflater;
     private AlertDialog mPaletteDialog;
-
     private boolean hasSomethingGoneWrong;
+
+    private Handler mHandler;
+    private View mDecorView;
+    private ActionBar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setActionBar();
+        setImmersiveUiComponents();
         setContentView(R.layout.activity_paint);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-
-        mLayoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
@@ -123,11 +123,26 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
 
     private void initPaintView() {
         mPaintView = (PaintView) findViewById(R.id.paint_view);
+        mPaintView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mHandler.sendEmptyMessage(HIDE_UI);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        mHandler.sendEmptyMessage(SHOW_UI);
+                        break;
+                }
+                return true;
+            }
+        });
+
         mPaintView.setBrushColor(getResources().getColor(R.color.red_paint));
     }
 
     private void initPaletteDialog() {
-        final View view = mLayoutInflater.inflate(R.layout.dialog_palette, null);
+        final View view = ((LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_palette, null);
 
         SeekBar thicknessBar = (SeekBar) view.findViewById(R.id.sb_thickness);
         thicknessBar.setProgress(PaintView.DEFAULT_BRUSH_THICKNESS);
@@ -270,29 +285,13 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         }
     }
 
-    private void setActionBar() {
-        if (Build.VERSION.SDK_INT < 16) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        } else {
-            View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_LOW_PROFILE;
-            decorView.setSystemUiVisibility(uiOptions);
-            final ActionBar supportActionBar = getSupportActionBar();
-            supportActionBar.setShowHideAnimationEnabled(true);
-            supportActionBar.hide();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    supportActionBar.show();
-                }
-            }, 2000);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    supportActionBar.hide();
-                }
-            }, 5000);
-        }
+    private void setImmersiveUiComponents() {
+        mDecorView = getWindow().getDecorView();
+        mDecorView.setOnSystemUiVisibilityChangeListener(this);
+        mActionBar = getSupportActionBar();
+        mActionBar.setShowHideAnimationEnabled(true);
+        mHandler = new Handler(this);
+        mHandler.sendEmptyMessageDelayed(HIDE_UI, HIDE_UI_DELAY);
     }
 
     public SpannableStringBuilder append(SpannableStringBuilder stringBuilder, CharSequence text, Object what, int flags) {
@@ -302,6 +301,8 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         return stringBuilder;
     }
 
+    //Callbacks
+    //SeekBar
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         switch (seekBar.getId()) {
@@ -323,4 +324,30 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
     public void onStopTrackingTouch(SeekBar seekBar) {
 
     }
+
+    //Handler
+    @Override
+    public boolean handleMessage(Message msg) {
+        switch (msg.what) {
+            case HIDE_UI:
+                mDecorView.setSystemUiVisibility(HIDDEN_UI_FLAG);
+                break;
+            case SHOW_UI:
+                mDecorView.setSystemUiVisibility(NO_FLAGS);
+                break;
+        }
+        return true;
+    }
+
+    //Immersive UI
+    @Override
+    public void onSystemUiVisibilityChange(int visibility) {
+        if (visibility == HIDDEN_UI_FLAG) {
+            mActionBar.hide();
+        } else {
+            mHandler.sendEmptyMessageDelayed(HIDE_UI, HIDE_UI_DELAY);
+            mActionBar.show();
+        }
+    }
+
 }
