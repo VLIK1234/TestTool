@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.excel.bo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,5 +33,12 @@ public class GoogleSpreadsheet extends GoogleSheet {
 
     public void setEntry(List<GoogleEntrySpreadshet> entry) {
         this.mEntry = entry;
+    }
+
+    public void setEntryItem(GoogleEntrySpreadshet googleEntrySpreadshet){
+        if(mEntry==null){
+            mEntry = new ArrayList<>();
+        }
+        mEntry.add(googleEntrySpreadshet);
     }
 }

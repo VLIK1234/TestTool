@@ -76,7 +76,7 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
     }
 
     private void refreshSteps() {
-        XMLParser.fetchXML(ExpectedResultsActivity.this);
+        XMLParser.fetchXML();
         ExpectedResultAdapter.ExpectedResult result1 = new ExpectedResultAdapter.ExpectedResult("Top button", "assets://image3.png", "1) Center in parent");
         mResultsAdapter.add(result1);
         ExpectedResultAdapter.ExpectedResult result2 = new ExpectedResultAdapter.ExpectedResult("Top button", "assets://image2.png", "1) Center in parent\n2) Show Toast 'Start Record'");

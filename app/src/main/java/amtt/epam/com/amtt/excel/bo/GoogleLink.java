@@ -7,25 +7,15 @@ package amtt.epam.com.amtt.excel.bo;
 
 public class GoogleLink {
 
-    private String mType;
     private String mHref;
     private String mRel;
 
     public GoogleLink() {
     }
 
-    public GoogleLink(String type, String href, String rel) {
-        this.mType = type;
+    public GoogleLink(String href, String rel) {
         this.mHref = href;
         this.mRel = rel;
-    }
-
-    public String getType() {
-        return mType;
-    }
-
-    public void setType(String type) {
-        this.mType = type;
     }
 
     public String getHref() {
