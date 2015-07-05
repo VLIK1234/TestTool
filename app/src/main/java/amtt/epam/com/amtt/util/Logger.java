@@ -1,13 +1,5 @@
 package amtt.epam.com.amtt.util;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.util.EntityUtils;
-
-import java.io.IOException;
-
 /**
  @author Iryna Monchanka
  @version on 3/27/2015
@@ -88,29 +80,6 @@ public class Logger {
         }
     }
 
-    public static void printRequestPost(HttpPost post) throws IOException {
-        HttpEntity entity = post.getEntity();
-        String content = EntityUtils.toString(entity);
-        Logger.i(TAG, PROTOCOL_VERSION + post.getRequestLine().getProtocolVersion());
-        Logger.i(TAG, METHOD + post.getRequestLine().getMethod());
-        Logger.i(TAG, URI + post.getRequestLine().getUri());
-        Logger.i(TAG, BODY + content);
-    }
-
-    public static void printRequestGet(HttpGet get) throws IOException {
-        Logger.i(TAG, PROTOCOL_VERSION + get.getRequestLine().getProtocolVersion());
-        Logger.i(TAG, METHOD + get.getRequestLine().getMethod());
-        Logger.i(TAG, URI + get.getRequestLine().getUri());
-    }
-
-    public static void printResponseLog(HttpResponse response) throws IOException {
-        HttpEntity entity = response.getEntity();
-        String content = EntityUtils.toString(entity, ENCODING_UTF_8);
-        Logger.i(TAG, PROTOCOL_VERSION + response.getStatusLine().getProtocolVersion());
-        Logger.i(TAG, STATUS_CODE + response.getStatusLine().getStatusCode());
-        Logger.i(TAG, REASON_PHRASE + response.getStatusLine().getReasonPhrase());
-        Logger.i(TAG, BODY + content);
-    }
     public static void loggerOn(){
         IS_SHOW_LOGS = true;
     }

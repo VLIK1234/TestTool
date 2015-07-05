@@ -10,20 +10,7 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#FFB6B6B6</color>
 
-    <color name="green">#64c46d</color>
-    <color name="red">#e26241</color>
-    <color name="blue_grey">#607d8b</color>
     <color name="black">#000000</color>
-    <color name="grey">#727272</color>
-    <color name="light_grey">#dbdbdb</color>
-    <color name="cardview_background">#11ffffff</color>
-
-
-    <color name="et_divider_focused">@color/accent</color>
-    <color name="et_divider_not_focused">#FF6D6D6D</color>
-    <color name="et_divider_disable">#FFC1C1C1</color>
-    <color name="et_divider_error">#FFFF0000</color>
-    <color name="iv_divider_color">#FF8D8D8D</color>
 
     <color name="photo_tint">#88101010</color>
 

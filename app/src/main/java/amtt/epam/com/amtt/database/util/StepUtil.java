@@ -3,13 +3,9 @@ package amtt.epam.com.amtt.database.util;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.widget.ImageView;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -27,7 +23,6 @@ import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.IOUtils;
-import amtt.epam.com.amtt.view.PaintView;
 
 /**
  @author Artsiom_Kaliaha
@@ -75,7 +70,6 @@ public class StepUtil {
                  "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>" + "<br />" + "<br />");
      }
 
-    @SuppressWarnings("unchecked")
     public static Spanned getStepInfo(List<DatabaseEntity> listStep){
         ArrayList<Step> list = (ArrayList)listStep;
         SpannableStringBuilder builder = new SpannableStringBuilder();

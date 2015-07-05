@@ -36,58 +36,6 @@
         <attr name="spn_dividerAnimDuration" format="reference|integer"/>
     </declare-styleable>
 
-    <declare-styleable name="EditText">
-        <attr name="et_inputId" format="reference"/>
-        <attr name="et_labelEnable" format="boolean"/>
-        <attr name="et_labelPadding" format="reference|dimension"/>
-        <attr name="et_labelTextSize" format="reference|dimension"/>
-        <attr name="et_labelTextColor" format="reference|color"/>
-        <attr name="et_labelTextAppearance" format="reference"/>
-        <attr name="et_labelEllipsize" format="integer">
-            <enum name="start" value="0x00000001" />
-            <enum name="middle" value="0x00000002" />
-            <enum name="end" value="0x00000003" />
-            <enum name="marquee" value="0x00000004" />
-        </attr>
-        <attr name="et_labelInAnim" format="reference"/>
-        <attr name="et_labelOutAnim" format="reference"/>
-        <attr name="et_supportMode" format="integer">
-            <enum name="none" value="0x00000000" />
-            <enum name="helper" value="0x00000001" />
-            <enum name="helperWithError" value="0x00000002" />
-            <enum name="charCounter" value="0x00000003" />
-            <enum name="error" value="0x00000004" />
-        </attr>
-        <attr name="et_supportMaxChars" format="reference|integer"/>
-        <attr name="et_helper" format="reference|string"/>
-        <attr name="et_error" format="reference|string"/>
-        <attr name="et_supportPadding" format="reference|dimension"/>
-        <attr name="et_supportTextSize" format="reference|dimension"/>
-        <attr name="et_supportTextColor" format="reference|color"/>
-        <attr name="et_supportTextErrorColor" format="reference|color"/>
-        <attr name="et_supportTextAppearance" format="reference"/>
-        <attr name="et_supportSingleLine" format="boolean"/>
-        <attr name="et_supportMaxLines" format="reference|integer"/>
-        <attr name="et_supportLines" format="reference|integer"/>
-        <attr name="et_supportEllipsize" format="integer">
-            <enum name="start" value="0x00000001" />
-            <enum name="middle" value="0x00000002" />
-            <enum name="end" value="0x00000003" />
-            <enum name="marquee" value="0x00000004" />
-        </attr>
-        <attr name="et_dividerColor" format="reference|color"/>
-        <attr name="et_dividerErrorColor" format="reference|color"/>
-        <attr name="et_dividerHeight" format="reference|dimension"/>
-        <attr name="et_dividerPadding" format="reference|dimension"/>
-        <attr name="et_dividerAnimDuration" format="reference|integer"/>
-        <attr name="et_dividerCompoundPadding" format="boolean"/>
-        <attr name="et_autoCompleteMode" format="integer">
-            <enum name="none"   value="0"/>
-            <enum name="single" value="1"/>
-            <enum name="multi"  value="2"/>
-        </attr>
-    </declare-styleable>
-
     <declare-styleable name="RippleView">
         <attr name="rd_style" />
         <attr name="rd_enable" />
@@ -126,6 +74,10 @@
 
     <declare-styleable name="PaletteItem">
         <attr name="cell_color" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="TextInput">
+        <attr name="defaultErrorText" format="string"/>
     </declare-styleable>
 
 </resources>

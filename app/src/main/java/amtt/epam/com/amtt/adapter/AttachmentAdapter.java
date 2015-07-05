@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
@@ -24,11 +25,11 @@ import amtt.epam.com.amtt.util.Logger;
 public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ViewHolder> {
 
     private final String TAG = this.getClass().getSimpleName();
-    private ArrayList<Attachment> screenshots;
+    private List<Attachment> screenshots;
     private int rowLayout;
     private ViewHolder.ClickListener clickListener;
 
-    public AttachmentAdapter(ArrayList<Attachment> screenshots, int rowLayout, ViewHolder.ClickListener clickListener) {
+    public AttachmentAdapter(List<Attachment> screenshots, int rowLayout, ViewHolder.ClickListener clickListener) {
         this.screenshots = screenshots;
         this.rowLayout = rowLayout;
         this.clickListener = clickListener;

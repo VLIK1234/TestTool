@@ -7,6 +7,7 @@ import android.net.Uri;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import amtt.epam.com.amtt.bo.issue.JAvatarUrls;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
@@ -33,7 +34,7 @@ public class JProjects extends DatabaseEntity<JProjects> {
     @SerializedName("avatarUrls")
     private JAvatarUrls mAvatarUrls;
     @SerializedName("issuetypes")
-    private ArrayList<JIssueTypes> mIssueTypes;
+    private List<JIssueTypes> mIssueTypes;
 
     private int mId;
     private String mIdUser;
@@ -52,32 +53,13 @@ public class JProjects extends DatabaseEntity<JProjects> {
         mIdUser = cursor.getString(cursor.getColumnIndex(ProjectTable._ID_USER));
     }
 
-    public JProjects(String expand, String self, String jiraId, String key, String name, JAvatarUrls avatarUrls, ArrayList<JIssueTypes> issueTypes) {
-        this.mExpand = expand;
-        this.mSelf = self;
-        this.mJiraId = jiraId;
-        this.mKey = key;
-        this.mName = name;
-        this.mAvatarUrls = avatarUrls;
-        this.mIssueTypes = issueTypes;
-    }
-
-    public JProjects(String self, String id, String key, String name, JAvatarUrls avatarUrls, ArrayList<JIssueTypes> issueTypes) {
-        this.mSelf = self;
-        this.mJiraId = id;
-        this.mKey = key;
-        this.mName = name;
-        this.mAvatarUrls = avatarUrls;
-        this.mIssueTypes = issueTypes;
-    }
-
     @Override
     public JProjects parse(Cursor cursor) {
         return new JProjects(cursor);
     }
 
-    public ArrayList<String> getIssueTypesNames() {
-        ArrayList<String> issueTypesNames;
+    public List<String> getIssueTypesNames() {
+        List<String> issueTypesNames;
         if (mIssueTypes==null) {
             issueTypesNames = null;
         } else {
@@ -138,11 +120,11 @@ public class JProjects extends DatabaseEntity<JProjects> {
         this.mAvatarUrls = avatarUrls;
     }
 
-    public ArrayList<JIssueTypes> getIssueTypes() {
+    public List<JIssueTypes> getIssueTypes() {
         return mIssueTypes;
     }
 
-    public void setIssueTypes(ArrayList<JIssueTypes> issueTypes) {
+    public void setIssueTypes(List<JIssueTypes> issueTypes) {
         this.mIssueTypes = issueTypes;
     }
 

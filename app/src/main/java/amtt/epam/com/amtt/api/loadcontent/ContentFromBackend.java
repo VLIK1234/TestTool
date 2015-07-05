@@ -1,18 +1,20 @@
 package amtt.epam.com.amtt.api.loadcontent;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import amtt.epam.com.amtt.api.ContentLoadingCallback;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.JiraContentConst;
 import amtt.epam.com.amtt.api.JiraGetContentCallback;
+import amtt.epam.com.amtt.bo.JComponentsResponse;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
 import amtt.epam.com.amtt.bo.JPriorityResponse;
 import amtt.epam.com.amtt.bo.JProjectsResponse;
 import amtt.epam.com.amtt.bo.JUserAssignableResponse;
 import amtt.epam.com.amtt.bo.JVersionsResponse;
 import amtt.epam.com.amtt.common.Callback;
+import amtt.epam.com.amtt.processing.ComponentsProcessor;
 import amtt.epam.com.amtt.processing.PostCreateIssueProcessor;
 import amtt.epam.com.amtt.processing.PriorityProcessor;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
@@ -23,7 +25,7 @@ import amtt.epam.com.amtt.processing.VersionsProcessor;
  * @author Iryna Monchanka
  * @version on 15.05.2015
  */
-@SuppressWarnings("unchecked")
+
 public class ContentFromBackend {
 
     private static class ContentFromBackendHolder {
@@ -54,6 +56,18 @@ public class ContentFromBackend {
                 null,
                 null,
                 getCallback(JiraContentConst.VERSIONS_RESPONSE, contentLoadingCallback, jiraGetContentCallback));
+    }
+
+    public void getComponentsAsynchronously(String projectsKey,
+                                          final ContentLoadingCallback<JComponentsResponse> contentLoadingCallback,
+                                          final JiraGetContentCallback jiraGetContentCallback) {
+        String path = JiraApiConst.PROJECT_COMPONENTS_PATH + projectsKey + JiraApiConst.PROJECT_COMPONENTS_PATH_C;
+        JiraApi.get().searchData(path,
+                ComponentsProcessor.NAME,
+                null,
+                null,
+                null,
+                getCallback(JiraContentConst.COMPONENTS_RESPONSE, contentLoadingCallback, jiraGetContentCallback));
     }
 
     public void getUsersAssignableAsynchronously(String projectKey,
@@ -92,7 +106,7 @@ public class ContentFromBackend {
     }
 
     public void sendAttachmentAsynchronously(String issueKey,
-                                             ArrayList<String> fullFileName,
+                                             List<String> fullFileName,
                                              final ContentLoadingCallback<Boolean> contentLoadingCallback,
                                              final JiraGetContentCallback jiraGetContentCallback) {
         JiraApi.get().createAttachment(issueKey,

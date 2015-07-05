@@ -20,7 +20,7 @@ import android.view.WindowManager;
 import java.io.File;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.app.SettingActivity;
+import amtt.epam.com.amtt.ui.activities.SettingActivity;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
@@ -39,6 +39,7 @@ public class TopButtonService extends Service{
     public static final String ACTION_CHANGE_NOTIFICATION_BUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_NOTIFICATION_BUTTON";
     public static final String ACTION_SHOW_SCREEN = "amtt.epam.com.amtt.topbutton.service.SHOW_SCREEN";
     public static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.START";
+    public static final String ACTION_STOP_RECORD = "amtt.epam.com.amtt.topbutton.service.STOP_RECORD";
     public static final String VISIBILITY_TOP_BUTTON = "amtt.epam.com.amtt.topbutton.service.VISIBILITY_TOP_BUTTON";
     public static final String PATH_TO_SCREEENSHOT_KEY = "PATH_TO_SCREENSHOT";
     //don't use REQUEST_CODE = 0 - it's broke mActionNotificationCompat in notification for some device
@@ -84,6 +85,10 @@ public class TopButtonService extends Service{
 
     public static void close(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE));
+    }
+
+    public static void stopRecord(Context context){
+        context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_STOP_RECORD));
     }
 
     @Override
@@ -139,6 +144,9 @@ public class TopButtonService extends Service{
                         showScreenInGallery(extra.getString(PATH_TO_SCREEENSHOT_KEY));
                     }
                     break;
+                case ACTION_STOP_RECORD:
+                    stopRecord();
+                    break;
             }
         } else {
             stopSelf();
@@ -165,8 +173,7 @@ public class TopButtonService extends Service{
 
     private void closeService() {
         if (mTopButtonView != null && isViewAdd) {
-            //TODO cancel comment
-            //StepUtil.clearAllStep();
+            StepUtil.clearAllStep();
             isViewAdd = false;
             mTopButtonView.getButtonsBar().setIsRecordStarted(false);
             mWindowManager.removeViewImmediate(mTopButtonView);
@@ -203,8 +210,8 @@ public class TopButtonService extends Service{
     private void changeStateNotificationAction() {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (mTopButtonView.getVisibility() == View.VISIBLE) {
-            mTopButtonView.setVisibility(View.GONE);
             mTopButtonView.getButtonsBar().hide();
+            mTopButtonView.setVisibility(View.GONE);
             mActionNotificationCompat.icon = R.drawable.ic_stat_action_visibility;
             mActionNotificationCompat.title = getString(R.string.label_show);
             notificationManager.notify(NOTIFICATION_ID, mBuilderNotificationCompat.build());
@@ -226,5 +233,10 @@ public class TopButtonService extends Service{
                 changeStateNotificationAction();
             }
         }
+    }
+
+    private void stopRecord(){
+        mTopButtonView.getButtonsBar().setIsRecordStarted(false);
+        StepUtil.clearAllStep();
     }
 }

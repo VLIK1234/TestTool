@@ -27,6 +27,8 @@ public class UsersTable extends Table {
     public static final String _AVATAR_32= "_avatar_32";
     public static final String _AVATAR_48 = "_avatar_48";
     public static final String _LAST_PROJECT_KEY = "_last_project_key";
+    public static final String _LAST_ASSIGNEE_NAME = "_last_assignee_name";
+    public static final String _LAST_COMPONENTS_IDS = "_last_components_ids";
 
     private static MultiValueMap<String, String> sColumnsMap;
 
@@ -44,7 +46,9 @@ public class UsersTable extends Table {
             _AVATAR_32,
             _AVATAR_48,
             _CREDENTIALS,
-            _LAST_PROJECT_KEY
+            _LAST_PROJECT_KEY,
+            _LAST_ASSIGNEE_NAME,
+            _LAST_COMPONENTS_IDS
     };
 
     static {
@@ -63,6 +67,8 @@ public class UsersTable extends Table {
             add(_AVATAR_48);
             add(_CREDENTIALS);
             add(_LAST_PROJECT_KEY);
+            add(_LAST_ASSIGNEE_NAME);
+            add(_LAST_COMPONENTS_IDS);
         }});
         sColumnsMap.put(BaseColumns.TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);

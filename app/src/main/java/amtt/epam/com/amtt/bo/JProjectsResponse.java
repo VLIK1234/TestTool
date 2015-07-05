@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 
@@ -17,15 +18,15 @@ public class JProjectsResponse {
     @SerializedName("expand")
     private String mExpand;
     @SerializedName("projects")
-    private ArrayList<JProjects> mProjects;
+    private List<JProjects> mProjects;
     private HashMap<JProjects, String> mProjectsNames;
-    private ArrayList<String> mProjectsKeys;
+    private List<String> mProjectsKeys;
 
     public JProjectsResponse() {
 
     }
 
-    public JProjectsResponse(String expand, ArrayList<JProjects> projects) {
+    public JProjectsResponse(String expand, List<JProjects> projects) {
         this.mExpand = expand;
         this.mProjects = projects;
     }
@@ -38,11 +39,11 @@ public class JProjectsResponse {
         this.mExpand = expand;
     }
 
-    public ArrayList<JProjects> getProjects() {
+    public List<JProjects> getProjects() {
         return mProjects;
     }
 
-    public void setProjects(ArrayList<JProjects> projects) {
+    public void setProjects(List<JProjects> projects) {
         this.mProjects = projects;
     }
 
@@ -57,7 +58,7 @@ public class JProjectsResponse {
         return mProjectsNames;
     }
 
-    public ArrayList<String> getProjectsKeys() {
+    public List<String> getProjectsKeys() {
         if (mProjectsKeys == null) {
             mProjectsKeys = new ArrayList<>();
             int size = mProjects.size();
@@ -69,7 +70,7 @@ public class JProjectsResponse {
         return mProjectsKeys;
     }
 
-    private void setProjectsKeys(ArrayList<String> projectsKeys) {
+    private void setProjectsKeys(List<String> projectsKeys) {
         this.mProjectsKeys = projectsKeys;
     }
 
