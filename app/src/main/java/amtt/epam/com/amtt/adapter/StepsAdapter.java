@@ -14,15 +14,15 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
+import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.util.StepUtil;
-import amtt.epam.com.amtt.AmttApplication;
 
 /**
- @author Ivan_Bakach
- @version on 10.06.2015
+ * @author Ivan_Bakach
+ * @version on 10.06.2015
  */
 
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> {
@@ -31,7 +31,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
     private ViewHolder.ClickListener clickListener;
     private final static int IMAGE_SIZE_RATIO = 3;
 
-    public StepsAdapter(ArrayList<Step> listStep, ViewHolder.ClickListener clickListener){
+    public StepsAdapter(ArrayList<Step> listStep, ViewHolder.ClickListener clickListener) {
         this.listStep = listStep;
         this.clickListener = clickListener;
     }
@@ -47,9 +47,12 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         Step step = listStep.get(position);
         holder.step.setText(AmttApplication.getContext().getString(R.string.label_step) + (position + 1));
-        SpannableStringBuilder info = new SpannableStringBuilder();
-        info.append(StepUtil.getStepInfo(step));
-        holder.activityInfo.setText(info);
+        if (step.getActivity() != null) {
+            SpannableStringBuilder info = new SpannableStringBuilder();
+            info.append(StepUtil.getStepInfo(step));
+            holder.activityInfo.setVisibility(View.VISIBLE);
+            holder.activityInfo.setText(info);
+        }
         if (!TextUtils.isEmpty(step.getFilePath())) {
             ImageLoader.getInstance().displayImage("file:///" + step.getFilePath(), holder.screenshotView);
         } else {
@@ -62,18 +65,18 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
         return listStep == null ? 0 : listStep.size();
     }
 
-    public void removeItem(int position){
+    public void removeItem(int position) {
         DbObjectManager.INSTANCE.remove(listStep.get(position));
         listStep.remove(position);
         notifyItemRemoved(position);
         notifyDataSetChanged();
     }
 
-    public String getScreenPath(int position){
+    public String getScreenPath(int position) {
         return listStep.get(position).getFilePath();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView screenshotView;
         public ImageView removeButton;
         public TextView activityInfo;
@@ -83,15 +86,15 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
         public ViewHolder(View itemView, ClickListener listener) {
             super(itemView);
             this.listener = listener;
-            screenshotView = (ImageView)itemView.findViewById(R.id.screenshot_image);
+            screenshotView = (ImageView) itemView.findViewById(R.id.screenshot_image);
             DisplayMetrics metrics = AmttApplication.getContext().getResources().getDisplayMetrics();
-            screenshotView.setMaxWidth(metrics.widthPixels/ IMAGE_SIZE_RATIO);
-            screenshotView.setMaxHeight(metrics.heightPixels/ IMAGE_SIZE_RATIO);
+            screenshotView.setMaxWidth(metrics.widthPixels / IMAGE_SIZE_RATIO);
+            screenshotView.setMaxHeight(metrics.heightPixels / IMAGE_SIZE_RATIO);
             screenshotView.setOnClickListener(this);
-            removeButton = (ImageView)itemView.findViewById(R.id.iv_close);
+            removeButton = (ImageView) itemView.findViewById(R.id.iv_close);
             removeButton.setOnClickListener(this);
-            activityInfo = (TextView)itemView.findViewById(R.id.activity_info_text);
-            step = (TextView)itemView.findViewById(R.id.step_text);
+            activityInfo = (TextView) itemView.findViewById(R.id.activity_info_text);
+            step = (TextView) itemView.findViewById(R.id.step_text);
         }
 
         @Override
@@ -113,7 +116,9 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
 
         public interface ClickListener {
             void onItemRemove(int position);
+
             void onItemShow(int position);
         }
     }
+
 }

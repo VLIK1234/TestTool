@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"
             android:background="?android:selectableItemBackground"
             android:contentDescription="@string/screenshot_image_description"
+            android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
             android:layout_gravity="start"/>
 
         <TextView
@@ -50,7 +51,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/abc_text_size_medium_material"
-            android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material" />
+            android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

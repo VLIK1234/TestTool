@@ -31,7 +31,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.key_dialog_hide))) {
         }else if (key.equals(getString(R.string.key_topbutton_show))) {
-            TopButtonService.sendActionChangeVisibilityTopbutton(sharedPreferences.getBoolean(getString(R.string.key_topbutton_show),true));
+            TopButtonService.sendActionChangeTopButtonVisibility(sharedPreferences.getBoolean(getString(R.string.key_topbutton_show), true));
         }
     }
 
