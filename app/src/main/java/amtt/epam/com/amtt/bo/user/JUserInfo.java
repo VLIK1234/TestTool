@@ -6,6 +6,10 @@ import android.net.Uri;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import amtt.epam.com.amtt.bo.issue.JAvatarUrls;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
@@ -39,6 +43,9 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
     private int mId;
     private String mCredentials;
     private String mLastProjectKey;
+    private String mLastAssigneeName;
+    private String mLastComponentsIds;
+    private List<String> mListLastComponentsIds;
 
     public JUserInfo() {
     }
@@ -61,6 +68,8 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         mCredentials = cursor.getString(cursor.getColumnIndex(UsersTable._CREDENTIALS));
         mAvatarUrls = new JAvatarUrls(avatar48, avatar24, avatar16, avatar32);
         mLastProjectKey = cursor.getString(cursor.getColumnIndex(UsersTable._LAST_PROJECT_KEY));
+        mLastAssigneeName = cursor.getString(cursor.getColumnIndex(UsersTable._LAST_ASSIGNEE_NAME));
+        mLastComponentsIds = cursor.getString(cursor.getColumnIndex(UsersTable._LAST_COMPONENTS_IDS));
     }
 
     public JUserInfo(String key, String self, String name, JAvatarUrls avatarUrls, String emailAddress, String displayName, String timeZone, String locale) {
@@ -147,6 +156,52 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         this.mLastProjectKey = lastProjectKey;
     }
 
+    public String getLastAssigneeName() {
+        return mLastAssigneeName;
+    }
+
+    public void setLastAssigneeName(String lastAssignee) {
+        this.mLastAssigneeName = lastAssignee;
+    }
+
+    public String getLastComponentsIds() {
+        return mLastComponentsIds;
+    }
+
+    public void setLastComponent(String lastComponentId) {
+        if (lastComponentId != null) {
+            if (mListLastComponentsIds == null || mListLastComponentsIds.isEmpty()) {
+                setLastComponentsIds(lastComponentId);
+            } else {
+                mLastComponentsIds = mLastComponentsIds.concat(lastComponentId);
+            }
+            if (mLastComponentsIds != null) {
+                mLastComponentsIds = mLastComponentsIds.concat("$&");
+            }
+        }
+    }
+
+    public void setLastComponentsIds(String lastComponents) {
+        this.mLastComponentsIds = lastComponents;
+    }
+
+    public List<String> getListLastComponentsIds() {
+        if (mListLastComponentsIds == null && mLastComponentsIds != null) {
+            mListLastComponentsIds = new ArrayList<>(Arrays.asList(mLastComponentsIds.split("$&")));
+        }
+        return mListLastComponentsIds;
+    }
+
+    public void setListLastComponentsIds(List<String> listLastComponentsIds) {
+        if (listLastComponentsIds != null) {
+            if (!listLastComponentsIds.isEmpty()) {
+                for (int i = 0; i < listLastComponentsIds.size(); i++) {
+                    setLastComponent(listLastComponentsIds.get(i));
+                }
+            }
+        }
+    }
+
     @Override
     public int getId() {
         return mId;
@@ -173,6 +228,8 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         values.put(UsersTable._AVATAR_48, getAvatarUrls().getAvatarUrl());
         values.put(UsersTable._CREDENTIALS, mCredentials);
         values.put(UsersTable._LAST_PROJECT_KEY, mLastProjectKey);
+        values.put(UsersTable._LAST_ASSIGNEE_NAME, mLastAssigneeName);
+        values.put(UsersTable._LAST_COMPONENTS_IDS, mLastComponentsIds);
         return values;
     }
 

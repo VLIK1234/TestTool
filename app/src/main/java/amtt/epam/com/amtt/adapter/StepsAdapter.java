@@ -21,8 +21,10 @@ import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.util.StepUtil;
 
 /**
- * Created by Ivan_Bakach on 10.06.2015.
+ * @author Ivan_Bakach
+ * @version on 10.06.2015
  */
+
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> {
 
     private ArrayList<Step> listStep = new ArrayList<>();
@@ -45,7 +47,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         Step step = listStep.get(position);
         holder.step.setText(AmttApplication.getContext().getString(R.string.label_step) + (position + 1));
-
         if (step.getActivity() != null) {
             SpannableStringBuilder info = new SpannableStringBuilder();
             info.append(StepUtil.getStepInfo(step));

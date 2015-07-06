@@ -5,6 +5,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import amtt.epam.com.amtt.common.CoreApplication;
 import amtt.epam.com.amtt.http.HttpClient;
+import amtt.epam.com.amtt.processing.ComponentsProcessor;
 import amtt.epam.com.amtt.processing.PostCreateIssueProcessor;
 import amtt.epam.com.amtt.processing.PriorityProcessor;
 import amtt.epam.com.amtt.processing.ProjectsProcessor;
@@ -28,6 +29,7 @@ public class AmttApplication extends CoreApplication {
     public void performRegistration() {
         registerPlugin(new HttpClient());
 
+        registerPlugin(new ComponentsProcessor());
         registerPlugin(new UserInfoProcessor());
         registerPlugin(new VersionsProcessor());
         registerPlugin(new UsersAssignableProcessor());

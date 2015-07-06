@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.view.AutocompleteProgressView;
+import amtt.epam.com.amtt.ui.views.AutocompleteProgressView;
 
 /**
  * @author Iryna Monchanka

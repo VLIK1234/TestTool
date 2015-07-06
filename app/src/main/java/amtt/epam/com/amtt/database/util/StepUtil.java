@@ -53,7 +53,6 @@ public class StepUtil {
         DbObjectManager.INSTANCE.query(new JUserInfo(), null, new String[]{UsersTable._USER_NAME}, new String[]{userName}, result);
     }
 
-
     public static Spanned getStepInfo(Step step) {
         Context context = AmttApplication.getContext();
         return Html.fromHtml(

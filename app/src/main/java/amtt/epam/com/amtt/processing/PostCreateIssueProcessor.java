@@ -16,6 +16,7 @@ public class PostCreateIssueProcessor implements Processor<JCreateIssueResponse,
     @Override
     public JCreateIssueResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
+        inputStream.consumeContent();
         return Gson.getInstance().fromJson(_response, JCreateIssueResponse.class);
     }
 

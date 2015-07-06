@@ -27,7 +27,7 @@
 
         <TextView
             android:id="@+id/tv_user_url"
-            style="@style/Material.Widget.TextViewSecondary"
+            style="@style/Material.TextViewSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>

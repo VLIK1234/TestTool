@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="amtt.epam.com.amtt.app.UserInfoActivity">
+    tools:context="amtt.epam.com.amtt.ui.activities.UserInfoActivity">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
@@ -51,7 +51,7 @@
 
                         <TextView
                             android:id="@+id/user_name_subhead"
-                            style="@style/Material.Widget.TextViewSecondary"
+                            style="@style/Material.TextViewSecondary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/tv_user_name"
@@ -77,7 +77,7 @@
 
                     <TextView
                         android:id="@+id/jira_url_subhead"
-                        style="@style/Material.Widget.TextViewSecondary"
+                        style="@style/Material.TextViewSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_jira_url"
@@ -103,7 +103,7 @@
 
                     <TextView
                         android:id="@+id/user_display_name_subhead"
-                        style="@style/Material.Widget.TextViewSecondary"
+                        style="@style/Material.TextViewSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_fullname"
@@ -129,7 +129,7 @@
 
                     <TextView
                         android:id="@+id/user_email_subhead"
-                        style="@style/Material.Widget.TextViewSecondary"
+                        style="@style/Material.TextViewSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_email"
@@ -155,7 +155,7 @@
 
                     <TextView
                         android:id="@+id/user_time_zone_subhead"
-                        style="@style/Material.Widget.TextViewSecondary"
+                        style="@style/Material.TextViewSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_time_zone"
@@ -181,7 +181,7 @@
 
                     <TextView
                         android:id="@+id/user_locale_subhead"
-                        style="@style/Material.Widget.TextViewSecondary"
+                        style="@style/Material.TextViewSecondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_locale"

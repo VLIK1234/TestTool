@@ -35,10 +35,6 @@ public class ContentFromDatabase {
         DbObjectManager.INSTANCE.query(new JPriority(), null, new String[]{PriorityTable._URL}, new String[]{url}, result);
     }
 
-    public static void getLastProject(String lastProjectKey, IResult<List<JProjects>> result) {
-        DbObjectManager.INSTANCE.query(new JProjects(), null, new String[]{ProjectTable._KEY}, new String[]{lastProjectKey}, result);
-    }
-
     public static void setPriorities(JPriorityResponse priorities, IResult<Integer> result){
         List list = priorities.getPriorities();
         DbObjectManager.INSTANCE.add(list, result);
@@ -54,7 +50,8 @@ public class ContentFromDatabase {
         DbObjectManager.INSTANCE.add(list, result);
     }
 
-    public static void setLastProject(JUserInfo user, IResult<Integer> result) {
+    public static void updateUser(JUserInfo user, IResult<Integer> result) {
         DbObjectManager.INSTANCE.update(user, BaseColumns._ID + "=" + ActiveUser.getInstance().getId(), null, result);
     }
+
 }

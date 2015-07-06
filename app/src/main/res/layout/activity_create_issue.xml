@@ -9,49 +9,49 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/activity_horizontal_margin"
-        android:paddingLeft="4dp"
-        android:paddingStart="4dp"
         android:scrollbarStyle="outsideInset">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingRight="12dp"
+            android:paddingLeft="12dp">
 
             <!-- *******PROJECTS BEGIN***************************************************-->
             <TextView
                 android:id="@+id/tv_project_name"
-                style="@style/Material.Widget.TextViewLabel"
+                style="@style/Material.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_project"/>
 
-            <amtt.epam.com.amtt.view.SpinnerProgress
+            <Spinner
                 android:id="@+id/spin_projects_name"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined.Custom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="true"
-                style="@style/Material.Widget.SpinnerProgress"/>
+                android:focusable="true"/>
             <!-- *******PROJECTS END***************************************************-->
 
             <!-- *******ISSUE TYPES BEGIN**********************************************-->
             <TextView
                 android:id="@+id/tv_project_issue_name"
-                style="@style/Material.Widget.TextViewLabel"
+                style="@style/Material.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_issue_type"/>
 
-            <amtt.epam.com.amtt.view.SpinnerProgress
+            <Spinner
                 android:id="@+id/spin_issue_name"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined.Custom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/label_issue_type"
-                style="@style/Material.Widget.SpinnerProgress"/>
+                android:hint="@string/label_issue_type"/>
 
             <!-- *******ISSUE TYPES END**********************************************-->
 
             <!-- *******SUMMARY BEGIN*************************************************-->
-            <amtt.epam.com.amtt.view.TextInput
+            <amtt.epam.com.amtt.ui.views.TextInput
                 android:id="@+id/summary_input"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:layout_width="match_parent"
@@ -63,31 +63,46 @@
             <!-- *******PRIORITY BEGIN*************************************************-->
             <TextView
                 android:id="@+id/tv_priority"
-                style="@style/Material.Widget.TextViewLabel"
+                style="@style/Material.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_priority"/>
 
-            <amtt.epam.com.amtt.view.SpinnerProgress
+            <Spinner
                 android:id="@+id/spin_priority"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined.Custom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/label_priority"
-                style="@style/Material.Widget.SpinnerProgress"/>
+                android:hint="@string/label_priority"/>
 
             <!-- *******PRIORITY END*************************************************-->
+
+            <!-- *******COMPONENTS BEGIN*************************************************-->
+            <TextView
+                android:id="@+id/tv_components"
+                style="@style/Material.TextViewLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_components"/>
+
+            <Spinner
+                android:id="@+id/spin_components"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined.Custom"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+            <!-- *******COMPONENTS END*************************************************-->
 
             <!-- *******ATTACHMENT BEGIN****************************************-->
             <TextView
                 android:id="@+id/tv_attachment"
-                style="@style/Material.Widget.TextViewLabel"
+                style="@style/Material.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_attachment"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/listScreens"
-                style="@style/Material.Widget.RecyclerView"
+                style="@style/Material.RecyclerView"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="12dp"
                 tools:context=".app.CreateIssueActivity" />
@@ -96,26 +111,26 @@
             <!-- *******AFFECTS VERSIONS BEGIN****************************************-->
             <TextView
                 android:id="@+id/tv_affects_versions"
-                style="@style/Material.Widget.TextViewLabel"
+                style="@style/Material.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_affects_versions"
                 android:visibility="gone"/>
 
-            <amtt.epam.com.amtt.view.SpinnerProgress
+            <Spinner
                 android:id="@+id/spin_affects_versions"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined.Custom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/label_affects_versions"
                 android:paddingBottom="@dimen/spinner_padding_bottom"
-                android:visibility="gone"
-                style="@style/Material.Widget.SpinnerProgress"/>
+                android:visibility="gone"/>
 
             <!-- *******AFFECTS VERSIONS END****************************************-->
 
             <!-- *******ENVIRONMENT BEGIN****************************************-->
-            <amtt.epam.com.amtt.view.TextInput
+            <amtt.epam.com.amtt.ui.views.TextInput
                 android:id="@+id/environment_input"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:layout_width="match_parent"
@@ -133,7 +148,7 @@
                 style="@style/Material.Widget.CreateIssueButton"/>
 
             <!-- *******DESCRIPTION BEGIN****************************************-->
-            <amtt.epam.com.amtt.view.TextInput
+            <amtt.epam.com.amtt.ui.views.TextInput
                 android:id="@+id/description_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -146,21 +161,21 @@
                 android:layout_height="wrap_content"
                 android:text="@string/label_list_step"
                 android:layout_gravity="end"
-                style="@style/Material.Widget.CreateIssueButton"/>
+                style="@style/Material.CreateIssueButton"/>
             <!-- *******DESCRIPTION END****************************************-->
 
             <!-- *******TESTER BEGIN****************************************-->
             <TextView
                 android:id="@+id/tv_tester"
-                style="@style/Material.Widget.TextViewLabel"
+                style="@style/Material.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_tester"/>
 
-            <amtt.epam.com.amtt.view.AutocompleteProgressView
+            <amtt.epam.com.amtt.ui.views.AutocompleteProgressView
                 android:id="@+id/atv_assignable_users"
-                style="@style/Material.Widget.AutocompleteProgressView"
+                style="@style/Material.AutocompleteProgressView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/label_tester"/>
@@ -175,7 +190,7 @@
                 android:minWidth="@dimen/material_vertical_button_min_width_size"
                 android:text="@string/label_create"
                 android:textSize="@dimen/abc_text_size_button_material"
-                style="@style/Material.Widget.CreateIssueButton"/>
+                style="@style/Material.CreateIssueButton"/>
         </LinearLayout>
     </ScrollView>
 
@@ -183,8 +198,8 @@
         android:id="@android:id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:layout_gravity="center"
-        android:visibility="gone"
-        android:layout_centerInParent="true" />
+        android:visibility="gone" />
 
 </RelativeLayout>

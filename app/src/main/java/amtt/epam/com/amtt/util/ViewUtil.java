@@ -28,8 +28,8 @@ public class ViewUtil {
                     newValue = 1; // Roll over to 1, not 0.
                 }
             }
-                while (!(sNextGeneratedId.compareAndSet(result, newValue))); {
-                    return newValue;
+            while (!(sNextGeneratedId.compareAndSet(result, newValue))); {
+                return newValue;
 
             }
 

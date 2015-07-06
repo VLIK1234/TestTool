@@ -12,8 +12,10 @@ import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
- * Created by Artsiom_Kaliaha on 12.05.2015.
+ @author Artsiom_Kaliaha
+ @version on 12.05.2015
  */
+
 public class Step extends DatabaseEntity<Step> {
 
     private int mStepNumber;

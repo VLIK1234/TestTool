@@ -3,30 +3,33 @@ package amtt.epam.com.amtt.bo;
 import amtt.epam.com.amtt.bo.user.JUser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by Iryna_Monchanka on 04.05.2015.
+ @author Iryna Monchanka
+ @version on 04.05.2015
  */
+
 public class JUserAssignableResponse {
 
-    private ArrayList<JUser> mAssignableUsers;
-    private ArrayList<String> mAssignableUsersNames;
+    private List<JUser> mAssignableUsers;
+    private List<String> mAssignableUsersNames;
 
     public JUserAssignableResponse(){}
 
-    public JUserAssignableResponse(ArrayList<JUser> assignableUsers) {
+    public JUserAssignableResponse(List<JUser> assignableUsers) {
         this.mAssignableUsers = assignableUsers;
     }
 
-    public ArrayList<JUser> getAssignableUsers() {
+    public List<JUser> getAssignableUsers() {
         return mAssignableUsers;
     }
 
-    public void setAssignableUsers(ArrayList<JUser> assignableUsers) {
+    public void setAssignableUsers(List<JUser> assignableUsers) {
         this.mAssignableUsers = assignableUsers;
     }
 
-    public ArrayList<String> getAssignableUsersNames() {
+    public List<String> getAssignableUsersNames() {
         if (mAssignableUsers != null) {
             mAssignableUsersNames = new ArrayList<>();
             for (int i = 0; i < mAssignableUsers.size(); i++) {

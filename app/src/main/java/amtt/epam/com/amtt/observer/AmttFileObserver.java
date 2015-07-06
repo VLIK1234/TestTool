@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import amtt.epam.com.amtt.app.HelpDialogActivity;
+import amtt.epam.com.amtt.ui.activities.HelpDialogActivity;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.database.util.StepUtil;
@@ -39,7 +39,6 @@ public class AmttFileObserver extends FileObserver {
         super(path, FileObserver.ALL_EVENTS);
         absolutePath = path;
         imageArray = new ArrayList<>();
-        Logger.loggerOff();
     }
 
     @Override

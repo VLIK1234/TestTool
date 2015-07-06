@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.util;
 import android.util.Base64;
 
 import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.util.Constants.SharedPreference;
 
 /**
  @author Iryna Monchanka
@@ -18,6 +17,8 @@ public class ActiveUser {
     private int mId;
     private String mLastProjectKey;
     private String mCredentialsString;
+    private String mLastAssigneeName;
+    private String mLastComponentsIds;
 
     private ActiveUser() {
     }
@@ -76,12 +77,30 @@ public class ActiveUser {
         this.mLastProjectKey = lastProjectKey;
     }
 
+    public String getLastComponentsIds() {
+        return mLastComponentsIds;
+    }
+
+    public void setLastComponentsIds(String lastComponentsIds) {
+        this.mLastComponentsIds = lastComponentsIds;
+    }
+
+    public String getLastAssignee() {
+        return mLastAssigneeName;
+    }
+
+    public void setLastAssigneeName(String lastAssigneeName) {
+        this.mLastAssigneeName = lastAssigneeName;
+    }
+
     public void clearActiveUser() {
         setUserName(null);
         setUrl(null);
         setId(0);
         setLastProjectKey(null);
         setCredentials(null);
+        setLastAssigneeName(null);
+        setLastComponentsIds(null);
     }
 }
 

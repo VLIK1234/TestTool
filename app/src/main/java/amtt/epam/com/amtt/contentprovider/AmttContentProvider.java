@@ -5,16 +5,18 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import amtt.epam.com.amtt.database.DataBaseManager;
 import amtt.epam.com.amtt.database.table.ActivityInfoTable;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
 
-
 /**
- * Created by Artsiom_Kaliaha on 23.03.2015.
+ @author Artsiom_Kaliaha
+ @version on 23.03.2015
  */
+
 public class AmttContentProvider extends ContentProvider {
 
     public static final String AUTHORITY = "amtt.epam.com.amtt.contentprovider";
@@ -60,7 +62,7 @@ public class AmttContentProvider extends ContentProvider {
     }
 
     @Override
-    public int bulkInsert(Uri uri, ContentValues[] values) {
+    public int bulkInsert(Uri uri, @NonNull ContentValues[] values) {
         String tableName = uri.getLastPathSegment();
         return getDataBaseManager().bulkInsert(tableName, values);
     }
