@@ -75,7 +75,8 @@
         <item name="android:layout_marginRight">8dp</item>
     </style>
 
-    <style name="Material.CreateIssueButton">
+
+    <style name="Material.CreateIssueButton" parent="Base.Widget.AppCompat.Button">
         <item name="android:layout_marginRight">4dp</item>
     </style>
 

@@ -56,7 +56,7 @@ public class HelpDialogActivity extends Activity {
                     public void onClick(DialogInterface dialog, int which) {
                         setIsCanTakeScreenshot(false);
                         finish();
-                        TopButtonService.sendActionChangeVisibilityTopbutton(true);
+                        TopButtonService.sendActionChangeTopButtonVisibility(true);
                     }
                 })
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {

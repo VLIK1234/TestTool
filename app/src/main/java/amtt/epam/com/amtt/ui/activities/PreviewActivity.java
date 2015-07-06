@@ -72,7 +72,7 @@ public class PreviewActivity extends Activity{
     @Override
     protected void onResume() {
         super.onResume();
-        TopButtonService.sendActionChangeVisibilityTopbutton(false);
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
     }
 
     private void initPreviewImage() {
