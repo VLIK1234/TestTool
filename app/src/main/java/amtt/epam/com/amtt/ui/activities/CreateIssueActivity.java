@@ -363,7 +363,12 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     });
                 }
                 mQueueRequests.remove(JiraContentConst.DESCRIPTION_RESPONSE);
-                showProgressIfNeed();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showProgressIfNeed();
+                    }
+                });
             }
         });
     }
@@ -481,9 +486,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     @Override
                     public void run() {
                         if (result != null) {
-                            List<Attachment> screenArray = AttachmentManager.getInstance().
-                                    getAttachmentList(result);
-                            mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
+                            List<Attachment> screenArray = AttachmentManager.getInstance().getAttachmentList(result);
+                            mAdapter = new AttachmentAdapter(screenArray, R.layout.adapter_attachment, CreateIssueActivity.this);
                             recyclerView.setAdapter(mAdapter);
                         }
                         mQueueRequests.remove(JiraContentConst.ATTACHMENT_RESPONSE);

@@ -19,6 +19,7 @@ import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.util.FileUtil;
@@ -53,14 +54,24 @@ public class StepUtil {
         cleanActivityMeta();
     }
 
-    public static void applyNotesToScreenshot(Bitmap drawingCache, String screenshotPath) {
-        Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals(MimeType.IMAGE_PNG.getFileExtension()) ?
-                Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
+    public static void applyNotesToScreenshot(final Bitmap drawingCache, final String screenshotPath, final Step step) {
+        step.setScreenshotState(Step.ScreenshotState.IS_BEING_WRITTEN);
+        DbObjectManager.INSTANCE.update(step, StepsTable._ID + "=" + step.getId(), null);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals(MimeType.IMAGE_PNG.getFileExtension()) ?
+                        Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
 
-        FileOutputStream outputStream = IOUtils.openFileOutput(screenshotPath);
-        if (outputStream != null) {
-            drawingCache.compress(compressFormat, 100, outputStream);
-        }
+                FileOutputStream outputStream = IOUtils.openFileOutput(screenshotPath);
+                if (outputStream != null) {
+                    drawingCache.compress(compressFormat, 100, outputStream);
+                }
+
+                step.setScreenshotState(Step.ScreenshotState.WRITTEN);
+                DbObjectManager.INSTANCE.update(step, StepsTable._ID + "=" + step.getId(), null);
+            }
+        }).start();
     }
 
     public static void checkUser(String userName, IResult<List<JUserInfo>> result) {

@@ -23,7 +23,13 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import java.util.List;
+
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.bo.database.Step;
+import amtt.epam.com.amtt.database.object.DbObjectManager;
+import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.MultilineRadioGroup;
@@ -36,7 +42,9 @@ import amtt.epam.com.amtt.ui.views.PaletteItem;
  */
 public class PaintActivity extends BaseActivity implements OnSeekBarChangeListener,
         Handler.Callback,
-        OnSystemUiVisibilityChangeListener, OnEntireGroupCheckedChangeListener {
+        OnSystemUiVisibilityChangeListener,
+        OnEntireGroupCheckedChangeListener,
+        IResult<List<Step>> {
 
     public static final String FILE_PATH = "filePath";
     public static final int HIDDEN_UI_FLAG = View.SYSTEM_UI_FLAG_LOW_PROFILE;
@@ -44,6 +52,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
     public static final int HIDE_UI = 0;
     public static final int SHOW_UI = 1;
 
+    private Step mStep;
     private String mScreenshotPath;
     private PaintView mPaintView;
     private AlertDialog mPaletteDialog;
@@ -63,6 +72,9 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         if (extra != null) {
             mScreenshotPath = extra.getString(FILE_PATH);
             initPaintView();
+
+            DbObjectManager.INSTANCE.query(new Step(), StepsTable.PROJECTION, new String[]{StepsTable._SCREEN_PATH}, new String[]{mScreenshotPath}, this);
+
             ImageLoader.getInstance().displayImage("file:///" + mScreenshotPath, mPaintView, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
@@ -71,9 +83,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
 
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    showProgress(false);
-                    findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
-                    hasSomethingGoneWrong = true;
+                    setErrorState();
                 }
 
                 @Override
@@ -201,13 +211,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            final Bitmap drawingCache = mPaintView.getDrawingCache();
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    StepUtil.applyNotesToScreenshot(drawingCache, mScreenshotPath);
-                                }
-                            }).start();
+                            StepUtil.applyNotesToScreenshot(mPaintView.getDrawingCache(), mScreenshotPath, mStep);
                             finish();
                         }
                     })
@@ -236,6 +240,12 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mHandler = new Handler(this);
         mHandler.sendEmptyMessageDelayed(HIDE_UI, HIDE_UI_DELAY);
+    }
+
+    private void setErrorState() {
+        showProgress(false);
+        findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
+        hasSomethingGoneWrong = true;
     }
 
     //Callbacks
@@ -291,6 +301,17 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
     @Override
     public void onCheckedChanged(PaletteItem paletteItem) {
         mPaintView.setBrushColor(paletteItem.getColor());
+    }
+
+    //Database
+    @Override
+    public void onResult(List<Step> result) {
+        mStep = result.get(0);
+    }
+
+    @Override
+    public void onError(Exception e) {
+        setErrorState();
     }
 
 }

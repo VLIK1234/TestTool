@@ -18,11 +18,19 @@ import amtt.epam.com.amtt.util.UIUtil;
 
 public class Step extends DatabaseEntity<Step> {
 
+    public enum ScreenshotState {
+
+        IS_BEING_WRITTEN,
+        WRITTEN
+
+    }
+
     private int mStepNumber;
     private String mActivity;
     private String mScreenPath;
     private String mPackageName;
     private String mOrientation;
+    private ScreenshotState mScreenState; //0 - is being written, 1 - written
 
     public Step() {
         mScreenPath = "";
@@ -35,6 +43,7 @@ public class Step extends DatabaseEntity<Step> {
             mActivity = componentName.getClassName();
             mPackageName = componentName.getPackageName();
         }
+        mScreenState = ScreenshotState.WRITTEN;
     }
 
     public Step(Cursor cursor) {
@@ -44,6 +53,7 @@ public class Step extends DatabaseEntity<Step> {
         mActivity =  cursor.getString(cursor.getColumnIndex(StepsTable._ASSOCIATED_ACTIVITY));
         mPackageName = cursor.getString(cursor.getColumnIndex(StepsTable._PACKAGE_NAME));
         mOrientation =  cursor.getString(cursor.getColumnIndex(StepsTable._ORIENTATION));
+        mScreenState = cursor.getInt(cursor.getColumnIndex(StepsTable._SCREEN_STATE)) == 1 ? ScreenshotState.WRITTEN : ScreenshotState.IS_BEING_WRITTEN;
     }
 
     @Override
@@ -66,6 +76,7 @@ public class Step extends DatabaseEntity<Step> {
         ContentValues values = new ContentValues();
         values.put(StepsTable._SCREEN_PATH, mScreenPath);
         values.put(StepsTable._ORIENTATION, mOrientation);
+        values.put(StepsTable._SCREEN_STATE, mScreenState.ordinal());
         if (isStepWithActivityInfo()) {
             values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity);
             values.put(StepsTable._PACKAGE_NAME, mPackageName);
@@ -95,6 +106,14 @@ public class Step extends DatabaseEntity<Step> {
 
     public boolean isStepWithScreenshot() {
         return mScreenPath != null;
+    }
+
+    public void setScreenshotState(ScreenshotState screenState) {
+        mScreenState = screenState;
+    }
+
+    public ScreenshotState getScreenshotState() {
+        return mScreenState;
     }
 
 }

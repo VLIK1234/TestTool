@@ -15,6 +15,7 @@ public class StepsTable extends Table {
     public static final String TABLE_NAME = "steps";
 
     public static final String _SCREEN_PATH = "_screen_path";
+    public static final String _SCREEN_STATE = "_screen_state"; //0 - is being written, 1 - written
     public static final String _ASSOCIATED_ACTIVITY = "_associated_activity";
     public static final String _PACKAGE_NAME = "_package_name";
     public static final String _ORIENTATION = "_orientation";
@@ -24,6 +25,7 @@ public class StepsTable extends Table {
     public static final String[] PROJECTION = {
             _ID,
             _SCREEN_PATH,
+            _SCREEN_STATE,
             _ASSOCIATED_ACTIVITY,
             _PACKAGE_NAME,
             _ORIENTATION
@@ -39,6 +41,9 @@ public class StepsTable extends Table {
         }});
         sColumnsMap.put(BaseColumns.TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);
+        }});
+        sColumnsMap.put(BaseColumns.TYPE_INTEGER, new ArrayList<String>() {{
+            add(_SCREEN_STATE);
         }});
     }
 
