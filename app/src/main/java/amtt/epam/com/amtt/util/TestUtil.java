@@ -16,6 +16,9 @@ import amtt.epam.com.amtt.R;
  * Created by Ivan_Bakach on 06.07.2015.
  */
 public class TestUtil {
+
+    public static final String CLOSE_TEST = "CLOSE_TEST";
+
     private static InstrumentationInfo getInstrumentationInfo(final String packageName) {
         final List<InstrumentationInfo> list =
                 AmttApplication.getContext().getPackageManager()
@@ -42,7 +45,7 @@ public class TestUtil {
 
     public static void closeTest(){
         Intent in = new Intent();
-        in.setAction("CLOSE_TEST");
+        in.setAction(CLOSE_TEST);
         AmttApplication.getContext().sendBroadcast(in);
         Toast.makeText(AmttApplication.getContext(), in.getAction(), Toast.LENGTH_LONG).show();
     }

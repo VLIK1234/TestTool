@@ -34,6 +34,7 @@
     <string name="label_clear_environment">Clear environment</string>
     <string name="label_close">Close</string>
     <string name="label_close_app">Close Amtt</string>
+    <string name="label_close_test">Close test</string>
     <string name="label_components">Component/s</string>
     <string name="label_create">Create</string>
     <string name="label_create_ticket">Create Ticket</string>

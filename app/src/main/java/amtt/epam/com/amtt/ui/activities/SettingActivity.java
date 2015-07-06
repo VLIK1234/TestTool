@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.ui.activities;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
 
 import amtt.epam.com.amtt.R;

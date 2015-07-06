@@ -533,6 +533,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     private void initAttachLogsCheckBox() {
         CheckBox attachLogs = (CheckBox)findViewById(R.id.cb_attach_logs);
+        attachLogs.setChecked(PreferenceUtils.getBoolean((getString(R.string.key_is_attach_logs))));
         attachLogs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

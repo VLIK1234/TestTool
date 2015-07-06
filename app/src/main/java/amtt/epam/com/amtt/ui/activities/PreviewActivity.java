@@ -43,10 +43,8 @@ public class PreviewActivity extends Activity{
         super.onCreate(savedInstanceState);
         LayoutInflater factory = LayoutInflater.from(getBaseContext());
         final View view = factory.inflate(R.layout.activity_preview, null);
-        imagePreview = (ImageView) view.findViewById(R.id.image_preview);
+//        imagePreview = (ImageView) view.findViewById(R.id.image_preview);
         textPreview = (TextView) view.findViewById(R.id.text_preview);
-
-        initPreviewImage();
 
         String title = "";
         Bundle extra = getIntent().getExtras();
@@ -115,10 +113,11 @@ public class PreviewActivity extends Activity{
     }
 
     public void showPreview(String filePath){
-        if(filePath.contains(".png")||filePath.contains(".jpg")||filePath.contains(".jpeg")){
+        if(FileUtil.isPicture(filePath)){
+            initPreviewImage();
             ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.displayImage("file:///"+filePath, imagePreview);
-        }else if (filePath.contains(".txt")) {
+        }else if (FileUtil.isText(filePath)) {
             int sizeDp = 8;
             textPreview.setPadding(sizeInDp(sizeDp), sizeInDp(sizeDp), sizeInDp(sizeDp), sizeInDp(sizeDp));
             textPreview.setText(readLogFromFile(filePath));

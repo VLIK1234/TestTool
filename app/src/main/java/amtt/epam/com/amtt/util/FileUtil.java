@@ -25,4 +25,12 @@ public class FileUtil {
             return "";
         }
     }
+
+    public static boolean isPicture(String filePath){
+        return  filePath.endsWith(".png")||filePath.endsWith(".jpg")||filePath.endsWith(".jpeg");
+    }
+
+    public static boolean isText(String filePath){
+        return  filePath.endsWith(".txt");
+    }
 }
