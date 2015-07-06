@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +49,8 @@ import amtt.epam.com.amtt.ui.views.AutocompleteProgressView;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.InputsUtil;
+import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.util.TestUtil;
 import amtt.epam.com.amtt.util.Validator;
 import amtt.epam.com.amtt.ui.views.TextInput;
 
@@ -140,6 +144,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initPrioritiesSpinner();
         initCreateIssueButton();
         initClearEnvironmentButton();
+        initAttachLogsCheckBox();
         }
 
     private void reinitRelatedViews(String projectKey) {
@@ -321,15 +326,14 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         JiraContent.getInstance().getIssueTypesNames(new JiraGetContentCallback<List<String>>() {
             @Override
             public void resultOfDataLoading(final List<String> result) {
-                if(result != null)
-                {
-                CreateIssueActivity.this.runOnUiThread(new Runnable() {
-                    public void run() {
-                        ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
-                        issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                        issueTypesSpinner.setAdapter(issueTypesAdapter);
-                        mQueueRequests.remove(JiraContentConst.ISSUE_TYPES_RESPONSE);
-                        showProgressIfNeed();
+                if (result != null) {
+                    CreateIssueActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
+                            issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                            issueTypesSpinner.setAdapter(issueTypesAdapter);
+                            mQueueRequests.remove(JiraContentConst.ISSUE_TYPES_RESPONSE);
+                            showProgressIfNeed();
                             issueTypesSpinner.setEnabled(true);
                             hideKeyboard(CreateIssueActivity.this.getWindow());
                         }
@@ -405,22 +409,23 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
                 }
                 JiraContent.getInstance().createIssue(mIssueTypeName,
-                            mPriorityName, mVersionName, mSummaryTextInput.getText().toString(),
-                            mDescriptionTextInput.getText().toString(), mEnvironmentTextInput.getText().toString(),
-                            mAssignableUserName, ActiveUser.getInstance().getLastComponentsIds(), new JiraGetContentCallback<JCreateIssueResponse>() {
-                                @Override
-                                public void resultOfDataLoading(JCreateIssueResponse result) {
-                                    if (result != null) {
-                                        AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
-                                        Toast.makeText(CreateIssueActivity.this, R.string.ticket_created, Toast.LENGTH_LONG).show();
-                                        TopButtonService.stopRecord(CreateIssueActivity.this);
-                                        finish();
-                                    } else {
-                                        Toast.makeText(CreateIssueActivity.this, R.string.error, Toast.LENGTH_LONG).show();
-                                    }
-                                    showProgress(false);
+                        mPriorityName, mVersionName, mSummaryTextInput.getText().toString(),
+                        mDescriptionTextInput.getText().toString(), mEnvironmentTextInput.getText().toString(),
+                        mAssignableUserName, ActiveUser.getInstance().getLastComponentsIds(), new JiraGetContentCallback<JCreateIssueResponse>() {
+                            @Override
+                            public void resultOfDataLoading(JCreateIssueResponse result) {
+                                if (result != null) {
+                                    AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
+                                    Toast.makeText(CreateIssueActivity.this, R.string.ticket_created, Toast.LENGTH_LONG).show();
+                                    TopButtonService.stopRecord(CreateIssueActivity.this);
+                                    finish();
+                                } else {
+                                    Toast.makeText(CreateIssueActivity.this, R.string.error, Toast.LENGTH_LONG).show();
                                 }
-                            });
+                                showProgress(false);
+                            }
+                        });
+                TestUtil.closeTest();
             }
 
         });
@@ -522,6 +527,16 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         })
                         .create()
                         .show();
+            }
+        });
+    }
+
+    private void initAttachLogsCheckBox() {
+        CheckBox attachLogs = (CheckBox)findViewById(R.id.cb_attach_logs);
+        attachLogs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                PreferenceUtils.putBoolean(getString(R.string.key_is_attach_logs), isChecked);
             }
         });
     }

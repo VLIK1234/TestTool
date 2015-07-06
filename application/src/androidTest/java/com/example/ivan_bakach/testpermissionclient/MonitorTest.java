@@ -3,6 +3,7 @@ package com.example.ivan_bakach.testpermissionclient;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.test.InstrumentationTestCase;
+import android.util.Log;
 
 import junit.framework.Assert;
 
@@ -20,7 +21,7 @@ public class MonitorTest extends InstrumentationTestCase {
 
     public void testMonitor() {
         final Context context = getInstrumentation().getTargetContext();
-        TestBroadcastReceiver.writeMultipleLogs();
+        TestBroadcastReceiver.writeMultipleLogs(context);
 
         IntentFilter filterReceiver = new IntentFilter();
         filterReceiver.addCategory(TestBroadcastReceiver.CATEGORY);

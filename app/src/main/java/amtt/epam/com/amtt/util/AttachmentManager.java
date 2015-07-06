@@ -1,8 +1,13 @@
 package amtt.epam.com.amtt.util;
 
+import android.os.Environment;
+
+import java.net.ContentHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
@@ -45,6 +50,15 @@ public class AttachmentManager {
                 if (step.getFilePath()!=null) {
                     attachmentArrayList.add(new Attachment(FileUtil.getFileName(step.getFilePath()), step.getFilePath()));
                 }
+            }
+            if (PreferenceUtils.getBoolean(AmttApplication.getContext().getString(R.string.key_is_attach_logs))) {
+                String template = Environment.getExternalStorageDirectory()+"/Android"+Environment.getDataDirectory()+
+                        "%s"+Environment.getDownloadCacheDirectory()+"/%s";
+                String packageName = String.format(template, PreferenceUtils.getString(AmttApplication.getContext().getString(R.string.key_test_project)));
+                String pathLogCommon = String.format(template, packageName,"log_common.txt");
+                String pathLogException = String.format(template, packageName,"log_exception.txt");
+                attachmentArrayList.add(new Attachment(FileUtil.getFileName(pathLogCommon),pathLogCommon));
+                attachmentArrayList.add(new Attachment(FileUtil.getFileName(pathLogException),pathLogException));
             }
         }
 

@@ -47,9 +47,9 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         Attachment screenshot = screenshots.get(i);
         Logger.d(TAG, screenshot.name);
         viewHolder.screenshotName.setText(screenshot.name);
-        if (screenshot.filePath.contains(".png")) {
+        if (screenshot.filePath.endsWith(".png")) {
             ImageLoader.getInstance().displayImage("file:///" + screenshot.filePath, viewHolder.screenshotImage);
-        }else if (screenshot.filePath.contains(".txt")){
+        }else if (screenshot.filePath.endsWith(".txt")){
             viewHolder.screenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
         }
 

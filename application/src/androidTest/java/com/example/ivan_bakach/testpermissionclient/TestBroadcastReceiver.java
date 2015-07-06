@@ -33,12 +33,13 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
-    public static void writeMultipleLogs() {
+    public static void writeMultipleLogs(Context context) {
         String templateException = "%s/log_exception.txt";
         String templateCommon = "%s/log_common.txt";
-
-        String exceptionLog = String.format(templateException, Environment.getExternalStorageDirectory().getPath());
-        String commonLog = String.format(templateCommon, Environment.getExternalStorageDirectory().getPath());
+        File externalCache = context.getExternalCacheDir();
+        externalCache.mkdirs();
+        String exceptionLog = String.format(templateException, externalCache.getPath());
+        String commonLog = String.format(templateCommon, externalCache.getPath());
         deleteFileIfExist(exceptionLog);
         deleteFileIfExist(commonLog);
         try {
