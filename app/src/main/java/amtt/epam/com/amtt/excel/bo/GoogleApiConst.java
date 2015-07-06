@@ -28,7 +28,6 @@ public final class GoogleApiConst {
     public static final String COL_COUNT_TAG = "gs:colCount";
     public static final String ROW_COUNT_TAG = "gs:rowCount";
     public static final String REL_ATTR = "rel";
-    public static final String TYPE_ATTR = "type";
     public static final String HREF_ATTR = "href";
     public static final String ALTERNATE_ATTR = "alternate";
     public static final String FEED_ATTR = "http://schemas.google.com/g/2005#feed";

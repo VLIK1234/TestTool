@@ -28,6 +28,7 @@ import amtt.epam.com.amtt.ui.activities.HelpDialogActivity;
 import amtt.epam.com.amtt.ui.activities.StepsActivity;
 import amtt.epam.com.amtt.ui.activities.UserInfoActivity;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.util.PreferenceUtils;
@@ -104,6 +105,7 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 isRecordStarted = true;
+                ActiveUser.getInstance().setStartedRecod(true);
                 hide();
                 StepUtil.clearAllStep();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
@@ -181,6 +183,7 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 isRecordStarted = false;
+                ActiveUser.getInstance().setStartedRecod(false);
                 hide();
                 StepUtil.clearAllStep();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
@@ -284,6 +287,7 @@ public class TopButtonBarView extends FrameLayout {
 
     public void setIsRecordStarted(boolean isRecordStarted){
         TopButtonBarView.isRecordStarted = isRecordStarted;
+        ActiveUser.getInstance().setStartedRecod(isRecordStarted);
     }
 
     public void move(int x, int y) {

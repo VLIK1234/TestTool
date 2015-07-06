@@ -44,11 +44,11 @@ import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.service.AttachmentService;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.AutocompleteProgressView;
+import amtt.epam.com.amtt.ui.views.TextInput;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Validator;
-import amtt.epam.com.amtt.ui.views.TextInput;
 
 public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener {
 
@@ -328,11 +328,20 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
                         issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                         issueTypesSpinner.setAdapter(issueTypesAdapter);
+                        if (ActiveUser.getInstance().getStartedRecod()) {
+                            if (issueTypesAdapter.getPosition("Bug") != -1) {
+                                mComponents.setSelection(issueTypesAdapter.getPosition("Bug"));
+                            }
+                        } else {
+                            if (issueTypesAdapter.getPosition("Task") != -1) {
+                                mComponents.setSelection(issueTypesAdapter.getPosition("Task"));
+                            }
+                        }
                         mQueueRequests.remove(JiraContentConst.ISSUE_TYPES_RESPONSE);
                         showProgressIfNeed();
-                            issueTypesSpinner.setEnabled(true);
-                            hideKeyboard(CreateIssueActivity.this.getWindow());
-                        }
+                        issueTypesSpinner.setEnabled(true);
+                        hideKeyboard(CreateIssueActivity.this.getWindow());
+                    }
                     });
                 }
             }
