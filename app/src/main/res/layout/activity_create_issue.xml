@@ -145,7 +145,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/label_clear_environment"
                 android:layout_gravity="end"
-                style="@style/Material.Widget.CreateIssueButton"/>
+                style="@style/Material.CreateIssueButton"/>
 
             <!-- *******DESCRIPTION BEGIN****************************************-->
             <amtt.epam.com.amtt.ui.views.TextInput

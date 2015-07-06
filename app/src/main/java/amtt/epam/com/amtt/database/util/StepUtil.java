@@ -68,10 +68,14 @@ public class StepUtil {
         for (int i = 0; i < list.size(); i++) {
             Step step = list.get(i);
             builder.append(Html.fromHtml("<h5>" + context.getString(R.string.label_step) + String.valueOf(i + 1) + "</h5>"));
-            if (step.isStepWithActivityInfo()) {
-                builder.append(getStepInfo(step));
-            } else {
+            if (step.isStepWithScreenshot()) {
                 builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(step.getFilePath()) + "</small>"));
+            }
+            if (step.isStepWithActivityInfo()) {
+                if (step.isStepWithScreenshot()) {
+                    builder.append(Html.fromHtml("<br />"));
+                }
+                builder.append(getStepInfo(step));
             }
             builder.append(Html.fromHtml("<br />" + "<br />"));
         }

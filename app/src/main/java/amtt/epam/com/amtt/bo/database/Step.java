@@ -66,7 +66,7 @@ public class Step extends DatabaseEntity<Step> {
         ContentValues values = new ContentValues();
         values.put(StepsTable._SCREEN_PATH, mScreenPath);
         values.put(StepsTable._ORIENTATION, mOrientation);
-        if (!isStepWithoutActivityInfo()) {
+        if (isStepWithActivityInfo()) {
             values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity);
             values.put(StepsTable._PACKAGE_NAME, mPackageName);
         }
@@ -89,12 +89,12 @@ public class Step extends DatabaseEntity<Step> {
         return mOrientation;
     }
 
-    public boolean isStepWithoutActivityInfo() {
-        return mActivity == null;
+    public boolean isStepWithActivityInfo() {
+        return mActivity != null;
     }
 
-    public boolean isStepWithActivityInfo() {
-        return mScreenPath == null;
+    public boolean isStepWithScreenshot() {
+        return mScreenPath != null;
     }
 
 }
