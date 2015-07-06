@@ -2,10 +2,12 @@ package amtt.epam.com.amtt.database.util;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,9 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.util.FileUtil;
+import amtt.epam.com.amtt.util.IOUtils;
 
 /**
  * @author Artsiom_Kaliaha
@@ -47,6 +51,16 @@ public class StepUtil {
     public static void clearAllStep() {
         cleanStep();
         cleanActivityMeta();
+    }
+
+    public static void applyNotesToScreenshot(Bitmap drawingCache, String screenshotPath) {
+        Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals(MimeType.IMAGE_PNG.getFileExtension()) ?
+                Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
+
+        FileOutputStream outputStream = IOUtils.openFileOutput(screenshotPath);
+        if (outputStream != null) {
+            drawingCache.compress(compressFormat, 100, outputStream);
+        }
     }
 
     public static void checkUser(String userName, IResult<List<JUserInfo>> result) {
