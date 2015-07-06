@@ -115,13 +115,13 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initAttachmentsView();
         initAttachLogsCheckBox();
         initDescriptionEditText();
-        TopButtonService.sendActionChangeVisibilityTopbutton(false);
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        TopButtonService.sendActionChangeVisibilityTopbutton(true);
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     @Override

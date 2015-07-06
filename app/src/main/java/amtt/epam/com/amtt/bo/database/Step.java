@@ -28,11 +28,13 @@ public class Step extends DatabaseEntity<Step> {
         mScreenPath = "";
     }
 
-    public Step(ComponentName componentName, String mScreenPath) {
-        this.mScreenPath = mScreenPath;
-        mActivity = componentName.getClassName();
-        mPackageName = componentName.getPackageName();
+    public Step(ComponentName componentName, String screenPath) {
+        mScreenPath = screenPath;
         mOrientation = ActivityMetaUtil.getScreenOrientation(UIUtil.getOrientation());
+        if (componentName != null) {
+            mActivity = componentName.getClassName();
+            mPackageName = componentName.getPackageName();
+        }
     }
 
     public Step(Cursor cursor) {
@@ -63,9 +65,11 @@ public class Step extends DatabaseEntity<Step> {
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         values.put(StepsTable._SCREEN_PATH, mScreenPath);
-        values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity);
-        values.put(StepsTable._PACKAGE_NAME, mPackageName);
         values.put(StepsTable._ORIENTATION, mOrientation);
+        if (isStepWithActivityInfo()) {
+            values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity);
+            values.put(StepsTable._PACKAGE_NAME, mPackageName);
+        }
         return values;
     }
 
@@ -80,7 +84,17 @@ public class Step extends DatabaseEntity<Step> {
     public String getPackageName() {
         return mPackageName;
     }
-    public String getOreintation() {
+
+    public String getOrientation() {
         return mOrientation;
     }
+
+    public boolean isStepWithActivityInfo() {
+        return mActivity != null;
+    }
+
+    public boolean isStepWithScreenshot() {
+        return mScreenPath != null;
+    }
+
 }
