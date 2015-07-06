@@ -38,4 +38,12 @@ public final class GoogleApiConst {
     public static final String VISUALISATION_API_ATTR = "http://schemas.google.com/visualization/2008#visualizationApi";
     public static final String EXPORTCSV_ATTR = "http://schemas.google.com/spreadsheets/2006#exportcsv";
 
+    public static final String ID_GSX_TAG = "gsx:id";
+    public static final String PRIORITY_GSX_TAG = "gsx:priority";
+    public static final String DEVICE_GSX_TAG = "gsx:device";
+    public static final String TC_NAME_GSX_TAG = "gsx:testcasename";
+    public static final String TC_DESCRIPTION_GSX_TAG = "gsx:testcasedescription";
+    public static final String TEST_STEPS_GSX_TAG = "gsx:teststeps";
+    public static final String LABEL_GSX_TAG = "gsx:label";
+    public static final String EXPECTED_RESULT_GSX_TAG = "gsx:expectedresult";
 }

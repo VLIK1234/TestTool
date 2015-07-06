@@ -12,6 +12,7 @@ import java.net.URL;
 import amtt.epam.com.amtt.excel.bo.GoogleApiConst;
 import amtt.epam.com.amtt.excel.bo.GoogleAuthor;
 import amtt.epam.com.amtt.excel.bo.GoogleEntrySpreadshet;
+import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
 import amtt.epam.com.amtt.excel.bo.GoogleLink;
 import amtt.epam.com.amtt.excel.bo.GoogleSpreadsheet;
 import amtt.epam.com.amtt.excel.bo.GoogleWorksheet;
@@ -28,139 +29,66 @@ public class XMLParser {
     private static final String TAG = XMLParser.class.getSimpleName();
     private static XmlPullParser xmlPullParser;
 
-    public static GoogleSpreadsheet xmlParse(HttpURLConnection conn) {
+    public static GoogleSpreadsheet spreadsheetParse(HttpURLConnection conn) {
         try {
             InputStream stream = conn.getInputStream();
             xmlFactoryObject = XmlPullParserFactory.newInstance();
             xmlPullParser = xmlFactoryObject.newPullParser();
             xmlPullParser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             xmlPullParser.setInput(stream, null);
-
             GoogleSpreadsheet spreadshet = new GoogleSpreadsheet();
             xmlPullParser.nextTag();
             xmlPullParser.require(XmlPullParser.START_TAG, null, "feed");
-            while (xmlPullParser.nextTag() == XmlPullParser.START_TAG) {
+            Logger.d(TAG, "SPREADSHEET BEGIN");
+            xmlPullParser.nextTag();
+            while (xmlPullParser.getDepth() != 0) {
                 spreadshet.setIdLink(loadIdLink());
+                Logger.d(TAG, "ID = " + spreadshet.getIdLink());
                 spreadshet.setUpdated(loadUpdated());
-
-                xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.TITLE_TAG);
-                spreadshet.setTitle(xmlPullParser.nextText());
-                Logger.d(TAG, spreadshet.getTitle());
-                xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.TITLE_TAG);
-                xmlPullParser.nextTag();
-
-                xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                spreadshet = setGoogleLinks(xmlPullParser, spreadshet);
-                xmlPullParser.nextTag();
-
-                xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                spreadshet = setGoogleLinks(xmlPullParser, spreadshet);
-                xmlPullParser.nextTag();
-
-                xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                spreadshet = setGoogleLinks(xmlPullParser, spreadshet);
-                xmlPullParser.nextTag();
-
-                xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                spreadshet = setGoogleLinks(xmlPullParser, spreadshet);
-                xmlPullParser.nextTag();
-
-                xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.AUTHOR_TAG);
-                GoogleAuthor author = new GoogleAuthor();
-                xmlPullParser.nextTag();
-                xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.NAME_TAG);
-                author.setName(xmlPullParser.nextText());
-                xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.NAME_TAG);
-                xmlPullParser.nextTag();
-                xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.EMAIL_TAG);
-                author.setEmail(xmlPullParser.nextText());
-                spreadshet.setAuthor(author);
-                xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.EMAIL_TAG);
-                xmlPullParser.nextTag();
-                xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.AUTHOR_TAG);
-                xmlPullParser.nextTag();
-
-                xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.TOTAL_RESULTS_TAG);
-                spreadshet.setOpenSearchTotalResults(Integer.parseInt(xmlPullParser.nextText()));
-                Logger.d(TAG, String.valueOf(spreadshet.getOpenSearchTotalResults()));
-                xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.TOTAL_RESULTS_TAG);
-                xmlPullParser.nextTag();
-
-                xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.START_INDEX_TAG);
-                spreadshet.setOpenSearchStartIndex(Integer.parseInt(xmlPullParser.nextText()));
-                Logger.d(TAG, String.valueOf(spreadshet.getOpenSearchStartIndex()));
-                xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.START_INDEX_TAG);
-                xmlPullParser.nextTag();
-
+                Logger.d(TAG, "UPDATED = " + spreadshet.getUpdated());
+                skipTag();//category
+                spreadshet.setTitle(loadTitle());
+                Logger.d(TAG, "TITLE = " + spreadshet.getTitle());
+                spreadshet.setAlternateLink(loadGoogleLink());
+                Logger.d(TAG, "ALTERNATE = " + spreadshet.getAlternateLink().getHref());
+                spreadshet.setFeedLink(loadGoogleLink());
+                Logger.d(TAG, "FEED = " + spreadshet.getFeedLink().getHref());
+                spreadshet.setPostLink(loadGoogleLink());
+                Logger.d(TAG, "POST = " + spreadshet.getPostLink().getHref());
+                spreadshet.setSelfLink(loadGoogleLink());
+                Logger.d(TAG, "SELF = " + spreadshet.getSelfLink().getHref());
+                spreadshet.setAuthor(loadAuthor());
+                Logger.d(TAG, "AUTHOR NAME = " + spreadshet.getAuthor().getName());
+                Logger.d(TAG, "AUTHOR EMAIL = " + spreadshet.getAuthor().getEmail());
+                spreadshet.setOpenSearchTotalResults(loadTotalResults());
+                Logger.d(TAG, "TOTAL RESULTS = " + spreadshet.getOpenSearchTotalResults());
+                spreadshet.setOpenSearchStartIndex(loadStartIndex());
+                Logger.d(TAG, "START INDEX = " + spreadshet.getOpenSearchStartIndex());
                 for (int i = 0; i < spreadshet.getOpenSearchTotalResults(); i++) {
                     GoogleEntrySpreadshet entrySpreadshet = new GoogleEntrySpreadshet();
+                    Logger.d(TAG, "SPREADSHEET ENTRY BEGIN");
                     xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.ENTRY_TAG);
                     xmlPullParser.nextTag();
-                    xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.ID_TAG);
-                    entrySpreadshet.setIdLink(xmlPullParser.nextText());
-                    Logger.d(TAG, entrySpreadshet.getIdLink());
-                    xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.ID_TAG);
-                    xmlPullParser.nextTag();
-
-                    xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.UPDATED_TAG);
-                    entrySpreadshet.setUpdated(xmlPullParser.nextText());
-                    Logger.d(TAG, entrySpreadshet.getUpdated());
-                    xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.UPDATED_TAG);
-                    xmlPullParser.nextTag();
-                    xmlPullParser.nextTag();//skip category
-                    xmlPullParser.nextTag();
-
-                    xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.TITLE_TAG);
-                    entrySpreadshet.setTitle(xmlPullParser.nextText());
-                    Logger.d(TAG, entrySpreadshet.getTitle());
-                    xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.TITLE_TAG);
-                    xmlPullParser.nextTag();
-
-                    xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.CONTENT_TAG);
-                    entrySpreadshet.setTitle(xmlPullParser.nextText());
-                    Logger.d(TAG, entrySpreadshet.getTitle());
-                    xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.CONTENT_TAG);
-                    xmlPullParser.nextTag();
-
-                    xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                    entrySpreadshet = setGoogleLinks(xmlPullParser, entrySpreadshet);
-                    xmlPullParser.nextTag();
-
-                    xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                    entrySpreadshet = setGoogleLinks(xmlPullParser, entrySpreadshet);
-                    xmlPullParser.nextTag();
-
-                    xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                    entrySpreadshet = setGoogleLinks(xmlPullParser, entrySpreadshet);
-                    xmlPullParser.nextTag();
-
-                    xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                    entrySpreadshet = setGoogleLinks(xmlPullParser, entrySpreadshet);
-                    xmlPullParser.nextTag();
-
-                    xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                    entrySpreadshet = setGoogleLinks(xmlPullParser, entrySpreadshet);
-                    xmlPullParser.nextTag();
-
-                    xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.COL_COUNT_TAG);
-                    entrySpreadshet.setGSColCount(Integer.parseInt(xmlPullParser.nextText()));
-                    Logger.d(TAG, String.valueOf(entrySpreadshet.getGSColCount()));
-                    xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.COL_COUNT_TAG);
-                    xmlPullParser.nextTag();
-
-                    xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.ROW_COUNT_TAG);
-                    entrySpreadshet.setGSRowCount(Integer.parseInt(xmlPullParser.nextText()));
-                    Logger.d(TAG, String.valueOf(entrySpreadshet.getGSRowCount()));
-                    xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.ROW_COUNT_TAG);
-                    xmlPullParser.nextTag();
+                    entrySpreadshet.setIdLink(loadIdLink());
+                    entrySpreadshet.setUpdated(loadUpdated());
+                    skipTag();//category
+                    entrySpreadshet.setTitle(loadTitle());
+                    entrySpreadshet.setContent(loadContent());
+                    entrySpreadshet.setListFeedLink(loadGoogleLink());
+                    entrySpreadshet.setCellsFeedLink(loadGoogleLink());
+                    entrySpreadshet.setVisualisationApiLink(loadGoogleLink());
+                    entrySpreadshet.setExportCSVLink(loadGoogleLink());
+                    entrySpreadshet.setSelfLink(loadGoogleLink());
+                    entrySpreadshet.setGSColCount(loadColCount());
+                    entrySpreadshet.setGSRowCount(loadRowCount());
                     spreadshet.setEntryItem(entrySpreadshet);
+                    Logger.d(TAG, "SPREADSHEET ENTRY END");
                     xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.ENTRY_TAG);
                     xmlPullParser.nextTag();
                 }
-
+                xmlPullParser.require(XmlPullParser.END_TAG, null, "feed");
+                xmlPullParser.next();
             }
-            xmlPullParser.require(XmlPullParser.END_TAG, null, "feed");
-
             stream.close();
             return spreadshet;
         } catch (Throwable t) {
@@ -169,124 +97,165 @@ public class XMLParser {
         }
     }
 
+    private static int loadRowCount() throws XmlPullParserException, IOException {
+        return readInt(GoogleApiConst.ROW_COUNT_TAG);
+    }
+
+    private static int loadColCount() throws XmlPullParserException, IOException {
+        return readInt(GoogleApiConst.COL_COUNT_TAG);
+    }
+
+    private static String loadContent() throws XmlPullParserException, IOException {
+        return readString(GoogleApiConst.CONTENT_TAG);
+    }
+
+    private static int loadStartIndex() throws XmlPullParserException, IOException {
+        return readInt(GoogleApiConst.START_INDEX_TAG);
+    }
+
+    private static int loadTotalResults() throws XmlPullParserException, IOException {
+        return readInt(GoogleApiConst.TOTAL_RESULTS_TAG);
+    }
+
+    private static GoogleAuthor loadAuthor() throws XmlPullParserException, IOException {
+        GoogleAuthor author = new GoogleAuthor();
+        xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.AUTHOR_TAG);
+        xmlPullParser.nextTag();
+        author.setName(readString(GoogleApiConst.NAME_TAG));
+        author.setEmail(readString(GoogleApiConst.EMAIL_TAG));
+        xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.AUTHOR_TAG);
+        xmlPullParser.nextTag();
+        return author;
+    }
+
+    private static String loadTitle() throws XmlPullParserException, IOException {
+        return readString(GoogleApiConst.TITLE_TAG);
+    }
+
     private static String loadUpdated() throws XmlPullParserException, IOException {
-        xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.UPDATED_TAG);
-        String updated = xmlPullParser.nextText();
-        xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.UPDATED_TAG);
-        xmlPullParser.nextTag();
-        xmlPullParser.nextTag();//skip category
-        xmlPullParser.nextTag();
-        return updated;
+        return readString(GoogleApiConst.UPDATED_TAG);
     }
 
     private static String loadIdLink() throws XmlPullParserException, IOException {
-        xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.ID_TAG);
-        String id = xmlPullParser.nextText();
-        xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.ID_TAG);
-        xmlPullParser.nextTag();
-        return id;
+        return readString(GoogleApiConst.ID_TAG);
     }
 
-    private static GoogleSpreadsheet setGoogleLinks(XmlPullParser resourse, GoogleSpreadsheet spreadshet) {
+    private static String loadIdGSX() throws XmlPullParserException, IOException {
+        return readString(GoogleApiConst.ID_GSX_TAG);
+    }
+
+    private static String loadPriorityGSX() throws XmlPullParserException, IOException {
+        return readString(GoogleApiConst.PRIORITY_GSX_TAG);
+    }
+
+    private static String loadTestCaseNameGSX() throws XmlPullParserException, IOException {
+        return readString(GoogleApiConst.TC_NAME_GSX_TAG);
+    }
+
+    private static String loadTestCaseDescriptionGSX() throws XmlPullParserException, IOException {
+        return readString(GoogleApiConst.TC_DESCRIPTION_GSX_TAG);
+    }
+
+    private static String loadTestStepsGSX() throws XmlPullParserException, IOException {
+        return readString(GoogleApiConst.TEST_STEPS_GSX_TAG);
+    }
+
+    private static String loadLabelGSX() throws XmlPullParserException, IOException {
+        return readString(GoogleApiConst.LABEL_GSX_TAG);
+    }
+
+    private static String loadExpectedResultsGSX() throws XmlPullParserException, IOException {
+        return readString(GoogleApiConst.EXPECTED_RESULT_GSX_TAG);
+    }
+
+    private static String readString(String tag) throws XmlPullParserException, IOException {
+        xmlPullParser.require(XmlPullParser.START_TAG, null, tag);
+        String result = xmlPullParser.nextText();
+        xmlPullParser.require(XmlPullParser.END_TAG, null, tag);
+        xmlPullParser.nextTag();
+        return result;
+    }
+
+    private static int readInt(String tag) throws XmlPullParserException, IOException {
+        xmlPullParser.require(XmlPullParser.START_TAG, null, tag);
+        int result = Integer.parseInt(xmlPullParser.nextText());
+        xmlPullParser.require(XmlPullParser.END_TAG, null, tag);
+        xmlPullParser.nextTag();
+        return result;
+    }
+
+    private static void skipTag() throws XmlPullParserException, IOException {
+        if (xmlPullParser.getEventType() != XmlPullParser.START_TAG) {
+            Logger.e(TAG, "null tag");
+        } else {
+            int depth = 1;
+            while (depth != 0) {
+                switch (xmlPullParser.next()) {
+                    case XmlPullParser.END_TAG:
+                        depth--;
+                        break;
+                    case XmlPullParser.START_TAG:
+                        depth++;
+                        break;
+                }
+            }
+            xmlPullParser.nextTag();
+        }
+    }
+
+    private static GoogleLink loadGoogleLink() {
         GoogleLink googleLink = new GoogleLink();
         try {
-            resourse.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
+            xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
 
-            String tag = resourse.getName();
-            String relType = resourse.getAttributeValue(null, GoogleApiConst.REL_ATTR);
+            String tag = xmlPullParser.getName();
+            String relType = xmlPullParser.getAttributeValue(null, GoogleApiConst.REL_ATTR);
             if (tag.equals(GoogleApiConst.LINK_TAG)) {
                 switch (relType) {
                     case GoogleApiConst.FEED_ATTR:
                         googleLink.setRel(relType);
-                        Logger.e(TAG, relType);
-                        googleLink.setHref(resourse.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        resourse.nextTag();
-                        spreadshet.setFeedLink(googleLink);
+                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                     case GoogleApiConst.POST_ATTR:
                         googleLink.setRel(relType);
-                        Logger.e(TAG, relType);
-                        googleLink.setHref(resourse.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        resourse.nextTag();
-                        spreadshet.setPostLink(googleLink);
+                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                     case GoogleApiConst.SELF_ATTR:
                         googleLink.setRel(relType);
-                        Logger.e(TAG, relType);
-                        googleLink.setHref(resourse.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        resourse.nextTag();
-                        spreadshet.setSelfLink(googleLink);
+                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                     case GoogleApiConst.ALTERNATE_ATTR:
                         googleLink.setRel(relType);
-                        Logger.e(TAG, relType);
-                        googleLink.setHref(resourse.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        resourse.nextTag();
-                        spreadshet.setAlternateLink(googleLink);
+                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
-                }
-            }
-            resourse.require(XmlPullParser.END_TAG, null, GoogleApiConst.LINK_TAG);
-        } catch (XmlPullParserException | IOException e) {
-            e.printStackTrace();
-        }
-        return spreadshet;
-    }
-
-    private static GoogleEntrySpreadshet setGoogleLinks(XmlPullParser resourse, GoogleEntrySpreadshet spreadshet) {
-        GoogleLink googleLink = new GoogleLink();
-        try {
-            resourse.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-
-            String tag = resourse.getName();
-            String relType = resourse.getAttributeValue(null, GoogleApiConst.REL_ATTR);
-            if (tag.equals(GoogleApiConst.LINK_TAG)) {
-                switch (relType) {
                     case GoogleApiConst.LISTFEED_ATTR:
                         googleLink.setRel(relType);
-                        Logger.e(TAG, relType);
-                        googleLink.setHref(resourse.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        resourse.nextTag();
-                        spreadshet.setListFeedLink(googleLink);
+                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                     case GoogleApiConst.CELLSFEED_ATTR:
                         googleLink.setRel(relType);
-                        Logger.e(TAG, relType);
-                        googleLink.setHref(resourse.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        resourse.nextTag();
-                        spreadshet.setCellsFeedLink(googleLink);
-                        break;
-                    case GoogleApiConst.SELF_ATTR:
-                        googleLink.setRel(relType);
-                        Logger.e(TAG, relType);
-                        googleLink.setHref(resourse.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        resourse.nextTag();
-                        spreadshet.setSelfLink(googleLink);
+                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                     case GoogleApiConst.VISUALISATION_API_ATTR:
                         googleLink.setRel(relType);
-                        Logger.e(TAG, relType);
-                        googleLink.setHref(resourse.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        resourse.nextTag();
-                        spreadshet.setVisualisationApiLink(googleLink);
+                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                     case GoogleApiConst.EXPORTCSV_ATTR:
                         googleLink.setRel(relType);
-                        Logger.e(TAG, relType);
-                        googleLink.setHref(resourse.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        resourse.nextTag();
-                        spreadshet.setExportCSVLink(googleLink);
+                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                 }
             }
-            resourse.require(XmlPullParser.END_TAG, null, GoogleApiConst.LINK_TAG);
+            xmlPullParser.nextTag();
+            xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.LINK_TAG);
+            xmlPullParser.nextTag();
         } catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
         }
-        return spreadshet;
+        return googleLink;
     }
 
-    public static void fetchXML() {
+    public static synchronized void fetchXML() {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -298,17 +267,18 @@ public class XMLParser {
                     conn.setRequestMethod("GET");
                     conn.setDoInput(true);
                     conn.connect();
-                    GoogleSpreadsheet spreadsheet = xmlParse(conn);
-                    if (spreadsheet != null) {
-                        URL url2 = new URL(spreadsheet.getListWorksheets().get(3));
+                    XMLContent.getInstance().setSpreadsheet(spreadsheetParse(conn));
+                    conn.disconnect();
+                    if (XMLContent.getInstance().getSpreadsheet() != null) {
+                        URL url2 = new URL(XMLContent.getInstance().getSpreadsheet().getListWorksheets().get(3));
                         HttpURLConnection con = (HttpURLConnection) url2.openConnection();
                         con.setReadTimeout(10000 /* milliseconds */);
                         con.setConnectTimeout(15000 /* milliseconds */);
                         con.setRequestMethod("GET");
                         con.setDoInput(true);
                         con.connect();
+                        XMLContent.getInstance().setWorksheet(worksheetParse(con));
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -321,146 +291,69 @@ public class XMLParser {
         try {
             InputStream stream = conn.getInputStream();
             xmlFactoryObject = XmlPullParserFactory.newInstance();
-            XmlPullParser myparser = xmlFactoryObject.newPullParser();
-            myparser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            myparser.setInput(stream, null);
+            xmlPullParser = xmlFactoryObject.newPullParser();
+            xmlPullParser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            xmlPullParser.setInput(stream, null);
 
             GoogleWorksheet worksheet = new GoogleWorksheet();
-            myparser.nextTag();
-            myparser.require(XmlPullParser.START_TAG, null, "feed");
-            while (myparser.nextTag() == XmlPullParser.START_TAG) {
-                myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.ID_TAG);
-                worksheet.setIdLink(myparser.nextText());
+            xmlPullParser.nextTag();
+            xmlPullParser.require(XmlPullParser.START_TAG, null, "feed");
+            xmlPullParser.nextTag();
+            Logger.d(TAG, "WORKSHEET BEGIN");
+            while (xmlPullParser.getDepth() != 0) {
+                worksheet.setIdLink(loadIdLink());
                 Logger.d(TAG, worksheet.getIdLink());
-                myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.ID_TAG);
-                myparser.nextTag();
-
-                myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.UPDATED_TAG);
-                worksheet.setUpdated(myparser.nextText());
+                worksheet.setUpdated(loadUpdated());
                 Logger.d(TAG, worksheet.getUpdated());
-                myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.UPDATED_TAG);
-                myparser.nextTag();
-                myparser.nextTag();//skip category
-                myparser.nextTag();
-
-                myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.TITLE_TAG);
-                worksheet.setTitle(myparser.nextText());
+                skipTag();//category
+                worksheet.setTitle(loadTitle());
                 Logger.d(TAG, worksheet.getTitle());
-                myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.TITLE_TAG);
-                myparser.nextTag();
-
-                myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                worksheet = setGoogleLinks(myparser, worksheet);
-                myparser.nextTag();
-
-                myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                worksheet = setGoogleLinks(myparser, worksheet);
-                myparser.nextTag();
-
-                myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                worksheet = setGoogleLinks(myparser, worksheet);
-                myparser.nextTag();
-
-                myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                worksheet = setGoogleLinks(myparser, worksheet);
-                myparser.nextTag();
-
-                myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.AUTHOR_TAG);
-                GoogleAuthor author = new GoogleAuthor();
-                myparser.nextTag();
-                myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.NAME_TAG);
-                author.setName(myparser.nextText());
-                myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.NAME_TAG);
-                myparser.nextTag();
-                myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.EMAIL_TAG);
-                author.setEmail(myparser.nextText());
-                worksheet.setAuthor(author);
-                myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.EMAIL_TAG);
-                myparser.nextTag();
-                myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.AUTHOR_TAG);
-                myparser.nextTag();
-
-                myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.TOTAL_RESULTS_TAG);
-                worksheet.setOpenSearchTotalResults(Integer.parseInt(myparser.nextText()));
+                worksheet.setAlternateLink(loadGoogleLink());
+                worksheet.setFeedLink(loadGoogleLink());
+                worksheet.setPostLink(loadGoogleLink());
+                worksheet.setSelfLink(loadGoogleLink());
+                worksheet.setAuthor(loadAuthor());
+                worksheet.setOpenSearchTotalResults(loadTotalResults());
                 Logger.d(TAG, String.valueOf(worksheet.getOpenSearchTotalResults()));
-                myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.TOTAL_RESULTS_TAG);
-                myparser.nextTag();
-
-                myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.START_INDEX_TAG);
-                worksheet.setOpenSearchStartIndex(Integer.parseInt(myparser.nextText()));
+                worksheet.setOpenSearchStartIndex(loadStartIndex());
                 Logger.d(TAG, String.valueOf(worksheet.getOpenSearchStartIndex()));
-                myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.START_INDEX_TAG);
-                myparser.nextTag();
-
                 for (int i = 0; i < worksheet.getOpenSearchTotalResults(); i++) {
-                    GoogleEntrySpreadshet entrySpreadshet = new GoogleEntrySpreadshet();
-                    myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.ENTRY_TAG);
-                    myparser.nextTag();
-                    myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.ID_TAG);
-                    entrySpreadshet.setIdLink(myparser.nextText());
-                    Logger.d(TAG, entrySpreadshet.getIdLink());
-                    myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.ID_TAG);
-                    myparser.nextTag();
-
-                    myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.UPDATED_TAG);
-                    entrySpreadshet.setUpdated(myparser.nextText());
-                    Logger.d(TAG, entrySpreadshet.getUpdated());
-                    myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.UPDATED_TAG);
-                    myparser.nextTag();
-                    myparser.nextTag();//skip category
-                    myparser.nextTag();
-
-                    myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.TITLE_TAG);
-                    entrySpreadshet.setTitle(myparser.nextText());
-                    Logger.d(TAG, entrySpreadshet.getTitle());
-                    myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.TITLE_TAG);
-                    myparser.nextTag();
-
-                    myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.CONTENT_TAG);
-                    entrySpreadshet.setTitle(myparser.nextText());
-                    Logger.d(TAG, entrySpreadshet.getTitle());
-                    myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.CONTENT_TAG);
-                    myparser.nextTag();
-
-                    myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                    entrySpreadshet = setGoogleLinks(myparser, entrySpreadshet);
-                    myparser.nextTag();
-
-                    myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                    entrySpreadshet = setGoogleLinks(myparser, entrySpreadshet);
-                    myparser.nextTag();
-
-                    myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                    entrySpreadshet = setGoogleLinks(myparser, entrySpreadshet);
-                    myparser.nextTag();
-
-                    myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                    entrySpreadshet = setGoogleLinks(myparser, entrySpreadshet);
-                    myparser.nextTag();
-
-                    myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-                    entrySpreadshet = setGoogleLinks(myparser, entrySpreadshet);
-                    myparser.nextTag();
-
-                    myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.COL_COUNT_TAG);
-                    entrySpreadshet.setGSColCount(Integer.parseInt(myparser.nextText()));
-                    Logger.d(TAG, String.valueOf(entrySpreadshet.getGSColCount()));
-                    myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.COL_COUNT_TAG);
-                    myparser.nextTag();
-
-                    myparser.require(XmlPullParser.START_TAG, null, GoogleApiConst.ROW_COUNT_TAG);
-                    entrySpreadshet.setGSRowCount(Integer.parseInt(myparser.nextText()));
-                    Logger.d(TAG, String.valueOf(entrySpreadshet.getGSRowCount()));
-                    myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.ROW_COUNT_TAG);
-                    myparser.nextTag();
-                    worksheet.setEntryItem(entrySpreadshet);
-                    myparser.require(XmlPullParser.END_TAG, null, GoogleApiConst.ENTRY_TAG);
-                    myparser.nextTag();
+                    GoogleEntryWorksheet entryWorksheet = new GoogleEntryWorksheet();
+                    Logger.d(TAG, "WORKSHEET ENTRY BEGIN");
+                    xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.ENTRY_TAG);
+                    xmlPullParser.nextTag();
+                    entryWorksheet.setIdLink(loadIdLink());
+                    Logger.d(TAG, entryWorksheet.getIdLink());
+                    entryWorksheet.setUpdated(loadUpdated());
+                    Logger.d(TAG, entryWorksheet.getUpdated());
+                    skipTag();
+                    entryWorksheet.setTitle(loadTitle());
+                    Logger.d(TAG, entryWorksheet.getTitle());
+                    entryWorksheet.setContent(loadContent());
+                    Logger.d(TAG, entryWorksheet.getContent());
+                    entryWorksheet.setSelfLink(loadGoogleLink());
+                    entryWorksheet.setIdGSX(loadIdGSX());
+                    entryWorksheet.setPriorityGSX(loadPriorityGSX());
+                    skipTag();//device
+                    entryWorksheet.setTestCaseNameGSX(loadTestCaseNameGSX());
+                    entryWorksheet.setTestCaseDescriptionGSX(loadTestCaseDescriptionGSX());
+                    entryWorksheet.setTestStepsGSX(loadTestStepsGSX());
+                    entryWorksheet.setLabelGSX(loadLabelGSX());
+                    entryWorksheet.setExpectedResultGSX(loadExpectedResultsGSX());
+                    skipTag();//gsx:automationstatus
+                    skipTag();//gsx:testresult
+                    skipTag();//gsx:testresult
+                    skipTag();//gsx:testresult
+                    skipTag();//gsx:testresult
+                    worksheet.setEntryItem(entryWorksheet);
+                    xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.ENTRY_TAG);
+                    Logger.d(TAG, "WORKSHEET ENTRY END");
+                    xmlPullParser.nextTag();
                 }
-
+                xmlPullParser.require(XmlPullParser.END_TAG, null, "feed");
+                Logger.d(TAG, "WORKSHEET END");
+                xmlPullParser.next();
             }
-            myparser.require(XmlPullParser.END_TAG, null, "feed");
-
             stream.close();
             return worksheet;
         } catch (Throwable t) {

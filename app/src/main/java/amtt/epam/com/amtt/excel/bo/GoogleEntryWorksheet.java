@@ -8,59 +8,57 @@ public class GoogleEntryWorksheet extends GoogleEntry {
 
     private String mIdGSX;
     private String mPriorityGSX;
-    private String mDeviceGSX;
+   // private String mDeviceGSX;
     private String mTestCaseNameGSX;
     private String mTestCaseDescriptionGSX;
     private String mTestStepsGSX;
     private String mLabelGSX;
     private String mExpectedResultGSX;
-    private String mAutomatisationStatusGSX;
-    private String mAndroidGSX;
-    private String mAndroidNoteGSX;
-    private String mIOSGSX;
-    private String mIOSNoteGSX;
+   // private String mAutomatisationStatusGSX;
+   // private String mAndroidGSX;
+   // private String mAndroidNoteGSX;
+   // private String mIOSGSX;
+   // private String mIOSNoteGSX;
 
     public GoogleEntryWorksheet() {
     }
 
-    public GoogleEntryWorksheet(String idGSX, String priorityGSX, String deviceGSX, String testCaseNameGSX,
+    public GoogleEntryWorksheet(String idGSX, String priorityGSX, String testCaseNameGSX,
                                 String testCaseDescriptionGSX, String testStepsGSX, String labelGSX,
-                                String expectedResultGSX, String automatisationStatusGSX, String androidGSX,
-                                String androidNoteGSX, String iOSGSX, String iOSNoteGSX) {
+                                String expectedResultGSX) {
         this.mIdGSX = idGSX;
         this.mPriorityGSX = priorityGSX;
-        this.mDeviceGSX = deviceGSX;
+        //this.mDeviceGSX = deviceGSX;
         this.mTestCaseNameGSX = testCaseNameGSX;
         this.mTestCaseDescriptionGSX = testCaseDescriptionGSX;
         this.mTestStepsGSX = testStepsGSX;
         this.mLabelGSX = labelGSX;
         this.mExpectedResultGSX = expectedResultGSX;
-        this.mAutomatisationStatusGSX = automatisationStatusGSX;
-        this.mAndroidGSX = androidGSX;
-        this.mAndroidNoteGSX = androidNoteGSX;
-        this.mIOSGSX = iOSGSX;
-        this.mIOSNoteGSX = iOSNoteGSX;
+        //this.mAutomatisationStatusGSX = automatisationStatusGSX;
+       // this.mAndroidGSX = androidGSX;
+       // this.mAndroidNoteGSX = androidNoteGSX;
+        //this.mIOSGSX = iOSGSX;
+       // this.mIOSNoteGSX = iOSNoteGSX;
     }
 
     public GoogleEntryWorksheet(String idLink, String updated, String title, GoogleLink selfLink,
-                                String content, String idGSX, String priorityGSX, String deviceGSX,
-                                String testCaseNameGSX, String testCaseDescriptionGSX, String testStepsGSX,
-                                String labelGSX, String expectedResultGSX, String automatisationStatusGSX,
-                                String androidGSX, String androidNoteGSX, String iOSGSX, String iOSNoteGSX) {
+                                String content, String idGSX, String priorityGSX, String testCaseNameGSX,
+                                String testCaseDescriptionGSX, String testStepsGSX,String labelGSX,
+                                String expectedResultGSX) {
         super(idLink, updated, title, selfLink, content);
         this.mIdGSX = idGSX;
         this.mPriorityGSX = priorityGSX;
-        this.mDeviceGSX = deviceGSX;
+        //this.mDeviceGSX = deviceGSX;
         this.mTestCaseNameGSX = testCaseNameGSX;
         this.mTestCaseDescriptionGSX = testCaseDescriptionGSX;
         this.mTestStepsGSX = testStepsGSX;
         this.mLabelGSX = labelGSX;
         this.mExpectedResultGSX = expectedResultGSX;
-        this.mAutomatisationStatusGSX = automatisationStatusGSX;
+        /*this.mAutomatisationStatusGSX = automatisationStatusGSX;
         this.mAndroidGSX = androidGSX;
         this.mAndroidNoteGSX = androidNoteGSX;
         this.mIOSGSX = iOSGSX;
-        this.mIOSNoteGSX = iOSNoteGSX;
+        this.mIOSNoteGSX = iOSNoteGSX;*/
     }
 
     public String getIdGSX() {
@@ -77,14 +75,6 @@ public class GoogleEntryWorksheet extends GoogleEntry {
 
     public void setPriorityGSX(String priorityGSX) {
         this.mPriorityGSX = priorityGSX;
-    }
-
-    public String getDeviceGSX() {
-        return mDeviceGSX;
-    }
-
-    public void setDeviceGSX(String deviceGSX) {
-        this.mDeviceGSX = deviceGSX;
     }
 
     public String getTestCaseNameGSX() {
@@ -127,43 +117,4 @@ public class GoogleEntryWorksheet extends GoogleEntry {
         this.mExpectedResultGSX = expectedResultGSX;
     }
 
-    public String getAutomatisationStatusGSX() {
-        return mAutomatisationStatusGSX;
-    }
-
-    public void setAutomatisationStatusGSX(String automatisationStatusGSX) {
-        this.mAutomatisationStatusGSX = automatisationStatusGSX;
-    }
-
-    public String getAndroidGSX() {
-        return mAndroidGSX;
-    }
-
-    public void setAndroidGSX(String androidGSX) {
-        this.mAndroidGSX = androidGSX;
-    }
-
-    public String getAndroidNoteGSX() {
-        return mAndroidNoteGSX;
-    }
-
-    public void setAndroidNoteGSX(String androidNoteGSX) {
-        this.mAndroidNoteGSX = androidNoteGSX;
-    }
-
-    public String getIOSGSX() {
-        return mIOSGSX;
-    }
-
-    public void setIOSGSX(String iOSGSX) {
-        this.mIOSGSX = iOSGSX;
-    }
-
-    public String getIOSNoteGSX() {
-        return mIOSNoteGSX;
-    }
-
-    public void setIOSNoteGSX(String iOSNoteGSX) {
-        this.mIOSNoteGSX = iOSNoteGSX;
-    }
 }

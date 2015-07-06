@@ -8,10 +8,13 @@ import android.widget.ListView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.ExpectedResultAdapter;
+import amtt.epam.com.amtt.excel.XMLContent;
 import amtt.epam.com.amtt.excel.XMLParser;
+import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
@@ -76,14 +79,23 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
     }
 
     private void refreshSteps() {
-        XMLParser.fetchXML();
-        ExpectedResultAdapter.ExpectedResult result1 = new ExpectedResultAdapter.ExpectedResult("Top button", "assets://image3.png", "1) Center in parent");
-        mResultsAdapter.add(result1);
-        ExpectedResultAdapter.ExpectedResult result2 = new ExpectedResultAdapter.ExpectedResult("Top button", "assets://image2.png", "1) Center in parent\n2) Show Toast 'Start Record'");
-        mResultsAdapter.add(result2);
-        ExpectedResultAdapter.ExpectedResult result3 = new ExpectedResultAdapter.ExpectedResult("Top button", "assets://image4.png", "1) Align end\n2) Show child's buttons\n3) Rotate image main button");
-        mResultsAdapter.add(result3);
-        mExpectedResultsListView.setAdapter(mResultsAdapter);
+        List<GoogleEntryWorksheet> entryWorksheetList = XMLContent.getInstance().getWorksheet().getEntry();
+        if (entryWorksheetList != null) {
+            if (!entryWorksheetList.isEmpty()) {
+                for (int i = 1; i <= entryWorksheetList.size(); i++) {
+                    if (entryWorksheetList.get(i).getTestCaseNameGSX() != null) {
+                        ExpectedResultAdapter.ExpectedResult result = new ExpectedResultAdapter.ExpectedResult(entryWorksheetList.get(i).getLabelGSX(),
+                                entryWorksheetList.get(i).getTestCaseNameGSX(),
+                                entryWorksheetList.get(i).getPriorityGSX(),
+                                entryWorksheetList.get(i).getTestStepsGSX(),
+                                entryWorksheetList.get(i).getExpectedResultGSX(),
+                                "assets://image3.png");
+                        mResultsAdapter.add(result);
+                    }
+                }
+                mExpectedResultsListView.setAdapter(mResultsAdapter);
+            }
+        }
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
