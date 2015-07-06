@@ -330,11 +330,11 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         issueTypesSpinner.setAdapter(issueTypesAdapter);
                         if (ActiveUser.getInstance().getStartedRecod()) {
                             if (issueTypesAdapter.getPosition("Bug") != -1) {
-                                mComponents.setSelection(issueTypesAdapter.getPosition("Bug"));
+                                issueTypesSpinner.setSelection(issueTypesAdapter.getPosition("Bug"));
                             }
                         } else {
                             if (issueTypesAdapter.getPosition("Task") != -1) {
-                                mComponents.setSelection(issueTypesAdapter.getPosition("Task"));
+                                issueTypesSpinner.setSelection(issueTypesAdapter.getPosition("Task"));
                             }
                         }
                         mQueueRequests.remove(JiraContentConst.ISSUE_TYPES_RESPONSE);

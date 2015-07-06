@@ -79,21 +79,23 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
     }
 
     private void refreshSteps() {
-        List<GoogleEntryWorksheet> entryWorksheetList = XMLContent.getInstance().getWorksheet().getEntry();
-        if (entryWorksheetList != null) {
-            if (!entryWorksheetList.isEmpty()) {
-                for (int i = 1; i <= entryWorksheetList.size(); i++) {
-                    if (entryWorksheetList.get(i).getTestCaseNameGSX() != null) {
-                        ExpectedResultAdapter.ExpectedResult result = new ExpectedResultAdapter.ExpectedResult(entryWorksheetList.get(i).getLabelGSX(),
-                                entryWorksheetList.get(i).getTestCaseNameGSX(),
-                                entryWorksheetList.get(i).getPriorityGSX(),
-                                entryWorksheetList.get(i).getTestStepsGSX(),
-                                entryWorksheetList.get(i).getExpectedResultGSX(),
-                                "assets://image3.png");
-                        mResultsAdapter.add(result);
+        if (XMLContent.getInstance().getWorksheet() != null) {
+            List<GoogleEntryWorksheet> entryWorksheetList = XMLContent.getInstance().getWorksheet().getEntry();
+            if (entryWorksheetList != null) {
+                if (!entryWorksheetList.isEmpty()) {
+                    for (int i = 1; i < entryWorksheetList.size(); i++) {
+                        if (entryWorksheetList.get(i).getTestCaseNameGSX() != null) {
+                            ExpectedResultAdapter.ExpectedResult result = new ExpectedResultAdapter.ExpectedResult(entryWorksheetList.get(i).getLabelGSX(),
+                                    entryWorksheetList.get(i).getTestCaseNameGSX(),
+                                    entryWorksheetList.get(i).getPriorityGSX(),
+                                    entryWorksheetList.get(i).getTestStepsGSX(),
+                                    entryWorksheetList.get(i).getExpectedResultGSX(),
+                                    "assets://image3.png");
+                            mResultsAdapter.add(result);
+                        }
                     }
+                    mExpectedResultsListView.setAdapter(mResultsAdapter);
                 }
-                mExpectedResultsListView.setAdapter(mResultsAdapter);
             }
         }
         mSwipeRefreshLayout.setRefreshing(false);

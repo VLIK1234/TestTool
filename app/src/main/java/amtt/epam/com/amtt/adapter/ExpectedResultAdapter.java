@@ -57,10 +57,10 @@ public class ExpectedResultAdapter extends ArrayAdapter<ExpectedResultAdapter.Ex
         TextView expectedResults = (TextView) convertView.findViewById(R.id.tv_expected_results);
         ImageView screenshot = (ImageView) convertView.findViewById(R.id.iv_screenshot);
         label.setText(expectedResult.mLabel);
-        testcaseName.setText("Testcase name : " + expectedResult.mTestcaseName);
-        priority.setText("Priority : " + expectedResult.mPriority);
-        steps.setText("Steps : " + expectedResult.mSteps);
-        expectedResults.setText("Expected results : " + expectedResult.mExpectedResults);
+        testcaseName.setText(expectedResult.mTestcaseName);
+        priority.setText(expectedResult.mPriority);
+        steps.setText(expectedResult.mSteps);
+        expectedResults.setText(expectedResult.mExpectedResults);
         ImageLoader.getInstance().displayImage(expectedResult.mScreenshotPath, screenshot);
         return convertView;
     }

@@ -12,41 +12,62 @@
         android:layout_gravity="start"
         android:layout_marginTop="@dimen/abc_dialog_list_padding_vertical_material"
         android:text="@string/label_name_activity"
-        android:textSize="@dimen/abc_text_size_headline_material"/>
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
 
     <TextView
         android:id="@+id/tv_testcase_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_label"
-        android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
-        android:paddingRight="138dp"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
-
+        android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
+        android:textSize="@dimen/abc_text_size_headline_material"/>
     <TextView
-        android:id="@+id/tv_priority"
+        android:id="@+id/tv_priority_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_testcase_name"
         android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
+        android:text="Priority"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+    <TextView
+        android:id="@+id/tv_priority"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_priority_label"
+        android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
         android:paddingRight="138dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
 
     <TextView
-        android:id="@+id/tv_steps"
+        android:id="@+id/tv_steps_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_priority"
         android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
+        android:text="Steps"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+    <TextView
+        android:id="@+id/tv_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_steps_label"
+        android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
         android:paddingRight="138dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
-
     <TextView
-        android:id="@+id/tv_expected_results"
+        android:id="@+id/tv_expected_results_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_steps"
         android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
+        android:text="Expected results"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+    <TextView
+        android:id="@+id/tv_expected_results"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_expected_results_label"
+        android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
         android:paddingRight="138dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
 
@@ -54,6 +75,7 @@
         android:id="@+id/iv_screenshot"
         android:layout_width="112dp"
         android:layout_height="112dp"
+        android:layout_below="@id/tv_testcase_name"
         android:layout_alignParentRight="true"
         android:layout_marginLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
         android:contentDescription="@string/screenshot_image_description"
