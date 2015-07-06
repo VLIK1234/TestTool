@@ -41,4 +41,17 @@ public class GoogleSpreadsheet extends GoogleSheet {
         }
         mEntry.add(googleEntrySpreadshet);
     }
+
+    public ArrayList<String> getListWorksheets() {
+        ArrayList<String> worksheets = null;
+        if (mEntry != null) {
+            if (!mEntry.isEmpty()) {
+                worksheets = new ArrayList<>();
+                for (int i = 0; i < mEntry.size(); i++) {
+                    worksheets.add(mEntry.get(i).getListFeedLink().getHref());
+                }
+            }
+        }
+        return worksheets;
+    }
 }
