@@ -18,6 +18,8 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
     public static final String CLOSE_TEST = "CLOSE_TEST";
     public static final String CATEGORY = "android.intent.category.DEFAULT";
     private boolean closeUnitTest;
+    private static String sExceptionLog;
+    private static String sCommonLog;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -28,6 +30,8 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                 context.sendBroadcast(in);
                 break;
             case CLOSE_TEST:
+                deleteFileIfExist(sExceptionLog);
+                deleteFileIfExist(sCommonLog);
                 closeUnitTest = true;
                 break;
         }
@@ -38,13 +42,13 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
         String templateCommon = "%s/log_common.txt";
         File externalCache = context.getExternalCacheDir();
         externalCache.mkdirs();
-        String exceptionLog = String.format(templateException, externalCache.getPath());
-        String commonLog = String.format(templateCommon, externalCache.getPath());
-        deleteFileIfExist(exceptionLog);
-        deleteFileIfExist(commonLog);
+        sExceptionLog = String.format(templateException, externalCache.getPath());
+        sCommonLog = String.format(templateCommon, externalCache.getPath());
+        deleteFileIfExist(sExceptionLog);
+        deleteFileIfExist(sCommonLog);
         try {
-            Runtime.getRuntime().exec("logcat -f " + exceptionLog + " *:w");
-            Runtime.getRuntime().exec("logcat -f " + commonLog);
+            Runtime.getRuntime().exec("logcat -f " + sExceptionLog + " *:w");
+            Runtime.getRuntime().exec("logcat -f " + sCommonLog);
         } catch (IOException e) {
             e.printStackTrace();
         }

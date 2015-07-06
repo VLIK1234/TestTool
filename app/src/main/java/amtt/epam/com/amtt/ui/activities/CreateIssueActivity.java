@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.ui.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
@@ -23,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.AttachmentAdapter;
 import amtt.epam.com.amtt.api.JiraContentConst;
@@ -48,6 +51,7 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.AutocompleteProgressView;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
+import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 import amtt.epam.com.amtt.util.TestUtil;
@@ -425,7 +429,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                                 showProgress(false);
                             }
                         });
-                TestUtil.closeTest();
             }
 
         });
@@ -537,6 +540,21 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         attachLogs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                        String template = Environment.getExternalStorageDirectory()+"/Android"+Environment.getDataDirectory()+
+                                "/%s"+Environment.getDownloadCacheDirectory()+"/%s";
+                        String pathLogCommon = String.format(template, PreferenceUtils.getString(AmttApplication.getContext().getString(R.string.key_test_project)),"log_common.txt");
+                        String pathLogException = String.format(template, PreferenceUtils.getString(AmttApplication.getContext().getString(R.string.key_test_project)),"log_exception.txt");
+                        File fileLogCommon = new File(pathLogCommon);
+                        File fileLogException = new File(pathLogException);
+                        if (fileLogCommon.exists()&&fileLogException.exists()) {
+                            mAdapter.addItem(mAdapter.getItemCount(), new Attachment(FileUtil.getFileName(pathLogCommon),pathLogCommon));
+                            mAdapter.addItem(mAdapter.getItemCount(), new Attachment(FileUtil.getFileName(pathLogException),pathLogException));
+                        }
+                }else{
+
+                }
+                mAdapter.addItem();
                 PreferenceUtils.putBoolean(getString(R.string.key_is_attach_logs), isChecked);
             }
         });
@@ -559,9 +577,10 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             ActiveUser.getInstance().setLastAssigneeName(mAssignableAutocompleteView.getText().toString());
                         }
                     }
-                    mAssignableAutocompleteView.showProgress(false);
-                    mAssignableAutocompleteView.setEnabled(true);
+
                 }
+                mAssignableAutocompleteView.showProgress(false);
+                mAssignableAutocompleteView.setEnabled(true);
             }
         });
     }

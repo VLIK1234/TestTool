@@ -54,19 +54,6 @@ public class AttachmentManager {
                     attachmentArrayList.add(new Attachment(FileUtil.getFileName(step.getFilePath()), step.getFilePath()));
                 }
             }
-            if (PreferenceUtils.getBoolean(AmttApplication.getContext().getString(R.string.key_is_attach_logs))) {
-
-                String template = Environment.getExternalStorageDirectory()+"/Android"+Environment.getDataDirectory()+
-                        "/%s"+Environment.getDownloadCacheDirectory()+"/%s";
-                String pathLogCommon = String.format(template, PreferenceUtils.getString(AmttApplication.getContext().getString(R.string.key_test_project)),"log_common.txt");
-                String pathLogException = String.format(template, PreferenceUtils.getString(AmttApplication.getContext().getString(R.string.key_test_project)),"log_exception.txt");
-                File fileLogCommon = new File(pathLogCommon);
-                File fileLogException = new File(pathLogException);
-                if (fileLogCommon.exists()&&fileLogException.exists()) {
-                    attachmentArrayList.add(new Attachment(FileUtil.getFileName(pathLogCommon),pathLogCommon));
-                    attachmentArrayList.add(new Attachment(FileUtil.getFileName(pathLogException),pathLogException));
-                }
-            }
         }
 
         return attachmentArrayList;
