@@ -43,7 +43,7 @@ public class PreviewActivity extends Activity{
         super.onCreate(savedInstanceState);
         LayoutInflater factory = LayoutInflater.from(getBaseContext());
         final View view = factory.inflate(R.layout.activity_preview, null);
-//        imagePreview = (ImageView) view.findViewById(R.id.image_preview);
+        imagePreview = (ImageView) view.findViewById(R.id.image_preview);
         textPreview = (TextView) view.findViewById(R.id.text_preview);
 
         String title = "";

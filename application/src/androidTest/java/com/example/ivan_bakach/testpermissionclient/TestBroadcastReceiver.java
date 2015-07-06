@@ -47,6 +47,7 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
         deleteFileIfExist(sExceptionLog);
         deleteFileIfExist(sCommonLog);
         try {
+            Runtime.getRuntime().exec("logcat -c");
             Runtime.getRuntime().exec("logcat -f " + sExceptionLog + " *:w");
             Runtime.getRuntime().exec("logcat -f " + sCommonLog);
         } catch (IOException e) {

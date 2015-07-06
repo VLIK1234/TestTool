@@ -183,6 +183,7 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 isRecordStarted = false;
+                TestUtil.closeTest();
                 hide();
                 StepUtil.clearAllStep();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();

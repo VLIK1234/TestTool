@@ -2,8 +2,10 @@ package amtt.epam.com.amtt.adapter;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
+import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.Logger;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +27,12 @@ import amtt.epam.com.amtt.R;
 public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ViewHolder>{
 
     private final String TAG = this.getClass().getSimpleName();
-    private List<Attachment> screenshots;
+    private List<Attachment> attachments;
     private int rowLayout;
     private ViewHolder.ClickListener clickListener;
 
-        public AttachmentAdapter(List<Attachment> screenshots, int rowLayout, ViewHolder.ClickListener clickListener) {
-        this.screenshots = screenshots;
+        public AttachmentAdapter(List<Attachment> attachments, int rowLayout, ViewHolder.ClickListener clickListener) {
+        this.attachments = attachments;
         this.rowLayout = rowLayout;
         this.clickListener = clickListener;
 
@@ -44,12 +46,11 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     }
 
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Attachment screenshot = screenshots.get(i);
-        Logger.d(TAG, screenshot.name);
+        Attachment screenshot = attachments.get(i);
         viewHolder.screenshotName.setText(screenshot.name);
-        if (screenshot.filePath.endsWith(".png")) {
+        if (FileUtil.isPicture(screenshot.filePath)) {
             ImageLoader.getInstance().displayImage("file:///" + screenshot.filePath, viewHolder.screenshotImage);
-        }else if (screenshot.filePath.endsWith(".txt")){
+        }else if (FileUtil.isText(screenshot.filePath)){
             viewHolder.screenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
         }
 
@@ -58,27 +59,46 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return screenshots == null ? 0 : screenshots.size();
+        return attachments == null ? 0 : attachments.size();
     }
 
-    public void addItem(int position, Attachment data) {
-        screenshots.add(position, data);
-        notifyItemInserted(position);
+    public void addItem(Attachment data) {
+        attachments.add(data);
+        notifyItemInserted(getItemCount()-1);
     }
 
     public void removeItem(int position) {
-        screenshots.remove(position);
+        attachments.remove(position);
         notifyItemRemoved(position);
-        Logger.d(TAG, String.valueOf(position));
     }
 
     public ArrayList<String> getAttachmentFilePathList(){
         ArrayList<String> filePathList = new ArrayList<>();
-        for (Attachment attachment:screenshots) {
+        for (Attachment attachment: attachments) {
             filePathList.add(attachment.filePath);
         }
         return filePathList;
     }
+
+    public boolean contains(Attachment filePath) {
+        for (Attachment attachment:attachments) {
+            if (attachment.filePath.equals(filePath.filePath)) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+//    public ArrayList removeLogFiles(){
+//        ArrayList<Integer> arrayList = new ArrayList<>();
+//        for (int i = 0; i < attachments.size();i++) {
+//            if (FileUtil.isText(attachments.get(i).filePath)) {
+//                arrayList.remove(i);
+//            }
+//        }
+//        return arrayList;
+//    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public ImageView screenshotImage;

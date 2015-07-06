@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.ui.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -58,7 +59,7 @@ import amtt.epam.com.amtt.util.TestUtil;
 import amtt.epam.com.amtt.util.Validator;
 import amtt.epam.com.amtt.ui.views.TextInput;
 
-public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener {
+public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final String DEFAULT_PRIORITY_ID = "3";
@@ -100,6 +101,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
+        PreferenceUtils.getPref().registerOnSharedPreferenceChangeListener(CreateIssueActivity.this);
         mHandler = new AssigneeHandler(this);
         initViews();
     }
@@ -111,6 +113,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         mQueueRequests.add(JiraContentConst.ATTACHMENT_RESPONSE);
         showProgressIfNeed();
         initAttachmentsView();
+        initAttachLogsCheckBox();
         initDescriptionEditText();
         TopButtonService.sendActionChangeVisibilityTopbutton(false);
     }
@@ -125,6 +128,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     protected void onStop() {
         super.onStop();
         setDefaultConfigs();
+        PreferenceUtils.getPref().unregisterOnSharedPreferenceChangeListener(CreateIssueActivity.this);
     }
 
     private void setDefaultConfigs() {
@@ -148,7 +152,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initPrioritiesSpinner();
         initCreateIssueButton();
         initClearEnvironmentButton();
-        initAttachLogsCheckBox();
         }
 
     private void reinitRelatedViews(String projectKey) {
@@ -491,6 +494,20 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         if (result != null) {
                             List<Attachment> screenArray = AttachmentManager.getInstance().
                                     getAttachmentList(result);
+                            String template = Environment.getExternalStorageDirectory() + "/Android" + Environment.getDataDirectory() +
+                                    "/%s" + Environment.getDownloadCacheDirectory() + "/%s";
+                            String pathLogCommon = String.format(template, PreferenceUtils.getString(AmttApplication.getContext().getString(R.string.key_test_project)), "log_common.txt");
+                            String pathLogException = String.format(template, PreferenceUtils.getString(AmttApplication.getContext().getString(R.string.key_test_project)), "log_exception.txt");
+                            final File fileLogCommon = new File(pathLogCommon);
+                            final File fileLogException = new File(pathLogException);
+                            final Attachment attachLogCommon = new Attachment(FileUtil.getFileName(pathLogCommon), pathLogCommon);
+                            final Attachment attachLogException = new Attachment(FileUtil.getFileName(pathLogException), pathLogException);
+                            if (PreferenceUtils.getBoolean(getString(R.string.key_is_attach_logs))) {
+                                if (fileLogCommon.exists()&&fileLogException.exists()) {
+                                    screenArray.add(attachLogCommon);
+                                    screenArray.add(attachLogException);
+                                }
+                            }
                             mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
                             recyclerView.setAdapter(mAdapter);
                         }
@@ -535,26 +552,11 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void initAttachLogsCheckBox() {
-        CheckBox attachLogs = (CheckBox)findViewById(R.id.cb_attach_logs);
+        CheckBox attachLogs = (CheckBox) findViewById(R.id.cb_attach_logs);
         attachLogs.setChecked(PreferenceUtils.getBoolean((getString(R.string.key_is_attach_logs))));
         attachLogs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                        String template = Environment.getExternalStorageDirectory()+"/Android"+Environment.getDataDirectory()+
-                                "/%s"+Environment.getDownloadCacheDirectory()+"/%s";
-                        String pathLogCommon = String.format(template, PreferenceUtils.getString(AmttApplication.getContext().getString(R.string.key_test_project)),"log_common.txt");
-                        String pathLogException = String.format(template, PreferenceUtils.getString(AmttApplication.getContext().getString(R.string.key_test_project)),"log_exception.txt");
-                        File fileLogCommon = new File(pathLogCommon);
-                        File fileLogException = new File(pathLogException);
-                        if (fileLogCommon.exists()&&fileLogException.exists()) {
-                            mAdapter.addItem(mAdapter.getItemCount(), new Attachment(FileUtil.getFileName(pathLogCommon),pathLogCommon));
-                            mAdapter.addItem(mAdapter.getItemCount(), new Attachment(FileUtil.getFileName(pathLogException),pathLogException));
-                        }
-                }else{
-
-                }
-                mAdapter.addItem();
                 PreferenceUtils.putBoolean(getString(R.string.key_is_attach_logs), isChecked);
             }
         });
@@ -607,4 +609,11 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         }
     }
 
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.key_is_attach_logs))) {
+            initAttachmentsView();
+        }
+    }
 }
