@@ -9,11 +9,13 @@ import amtt.epam.com.amtt.bo.database.Step.ScreenshotState;
 
 public class Attachment {
 
+    public String mStepId;
     public String mName;
     public String mFilePath;
     public ScreenshotState mStepScreenshotState;
 
-    public Attachment(String name, String filePath, ScreenshotState screenshotState) {
+    public Attachment(int stepId, String name, String filePath, ScreenshotState screenshotState) {
+        mStepId = String.valueOf(stepId);
         mName = name;
         mFilePath = filePath;
         mStepScreenshotState = screenshotState;

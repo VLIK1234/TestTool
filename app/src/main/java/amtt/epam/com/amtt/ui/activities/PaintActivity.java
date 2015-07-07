@@ -44,9 +44,10 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         Handler.Callback,
         OnSystemUiVisibilityChangeListener,
         OnEntireGroupCheckedChangeListener,
-        IResult<List<Step>> {
+        IResult<List<Step>>,
+        ImageLoadingListener {
 
-    public static final String FILE_PATH = "filePath";
+    public static final String STEP_ID_PATH = "step_id_path";
     public static final int HIDDEN_UI_FLAG = View.SYSTEM_UI_FLAG_LOW_PROFILE;
     public static final int HIDE_UI_DELAY = 4000;
     public static final int HIDE_UI = 0;
@@ -70,32 +71,10 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
 
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
-            mScreenshotPath = extra.getString(FILE_PATH);
             initPaintView();
-
-            DbObjectManager.INSTANCE.query(new Step(), StepsTable.PROJECTION, new String[]{StepsTable._SCREEN_PATH}, new String[]{mScreenshotPath}, this);
-
-            ImageLoader.getInstance().displayImage("file:///" + mScreenshotPath, mPaintView, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-                    showProgress(true);
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    setErrorState();
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    showProgress(false);
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-
-                }
-            });
+            DbObjectManager.INSTANCE.query(new Step(), StepsTable.PROJECTION, new String[]{StepsTable._ID}, new String[]{extra.getString(STEP_ID_PATH)}, this);
+        } else {
+            setErrorState();
         }
     }
 
@@ -203,6 +182,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
 
     private void showSavingDialog() {
         if (hasSomethingGoneWrong) {
+            setResult(RESULT_CANCELED);
             finish();
         } else {
             new AlertDialog.Builder(this)
@@ -211,13 +191,15 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            StepUtil.applyNotesToScreenshot(mPaintView.getDrawingCache(), mScreenshotPath, mStep);
+                            StepUtil.applyNotesToScreenshot(mPaintView.getDrawingCache(), mStep.getScreenshotPath(), mStep);
+                            setResult(RESULT_OK);
                             finish();
                         }
                     })
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            setResult(RESULT_CANCELED);
                             finish();
                         }
                     })
@@ -307,11 +289,33 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
     @Override
     public void onResult(List<Step> result) {
         mStep = result.get(0);
+        ImageLoader.getInstance().displayImage("file:///" + mStep.getScreenshotPath(), mPaintView, this);
     }
 
     @Override
     public void onError(Exception e) {
         setErrorState();
+    }
+
+    //ImageLoader
+    @Override
+    public void onLoadingStarted(String imageUri, View view) {
+        showProgress(true);
+    }
+
+    @Override
+    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+        setErrorState();
+    }
+
+    @Override
+    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+        showProgress(false);
+    }
+
+    @Override
+    public void onLoadingCancelled(String imageUri, View view) {
+
     }
 
 }

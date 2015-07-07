@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.adapter;
 
 import android.database.ContentObserver;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +22,14 @@ import java.util.List;
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.database.Step;
+import amtt.epam.com.amtt.bo.database.Step.ScreenshotState;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.table.StepsTable;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
+import amtt.epam.com.amtt.database.object.DbObjectManager;
+import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.http.MimeType;
+import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -30,7 +37,93 @@ import amtt.epam.com.amtt.util.Logger;
  * @version on 27.05.2015
  */
 
-public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ViewHolder> {
+public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ViewHolder> implements IResult<List<DatabaseEntity>> {
+
+    private static class StepScreenshotObserver extends ContentObserver {
+
+        private AttachmentAdapter mAdapter;
+
+        public StepScreenshotObserver(Handler handler, AttachmentAdapter attachmentAdapter) {
+            super(handler);
+            mAdapter = attachmentAdapter;
+        }
+
+        @Override
+        public boolean deliverSelfNotifications() {
+            return super.deliverSelfNotifications();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            onChange(selfChange, null);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            mAdapter.reloadData();
+
+//            List<Attachment> attachments = mAdapter.mAttachments;
+//            int changedItemPosition = -1;
+//
+//            for (int i = 0; i < attachments.size(); i++) {
+//                Attachment attachment = attachments.get(i);
+//                if (attachment.mStepScreenshotState == ScreenshotState.IS_BEING_WRITTEN) {
+//                    attachment.mStepScreenshotState = ScreenshotState.WRITTEN;
+//                    changedItemPosition = i;
+//                    break;
+//                }
+//            }
+//
+//            if (changedItemPosition != -1) {
+//                mAdapter.notifyItemChanged(changedItemPosition);
+//            }
+        }
+
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public ImageView mScreenshotImage;
+        public TextView mScreenshotName;
+        public ImageView mScreenshotClose;
+        public ProgressBar mProgress;
+        private ClickListener mListener;
+
+        public ViewHolder(View itemView, ClickListener listener) {
+            super(itemView);
+            mScreenshotImage = (ImageView) itemView.findViewById(R.id.iv_screenImage);
+            mScreenshotImage.setOnClickListener(this);
+            mScreenshotName = (TextView) itemView.findViewById(R.id.tv_screenName);
+            mScreenshotClose = (ImageView) itemView.findViewById(R.id.iv_close);
+            mProgress = (ProgressBar) itemView.findViewById(android.R.id.progress);
+            mListener = listener;
+            mScreenshotClose.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.iv_close:
+                    if (mListener != null) {
+                        mListener.onItemRemove(getAdapterPosition());
+                    }
+                    break;
+                case R.id.iv_screenImage:
+                    if (mListener != null) {
+                        mListener.onItemShow(getAdapterPosition());
+                    }
+                    break;
+
+            }
+        }
+
+        public interface ClickListener {
+            void onItemRemove(int position);
+
+            void onItemShow(int position);
+        }
+
+    }
 
     private final String TAG = this.getClass().getSimpleName();
 
@@ -42,6 +135,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         mAttachments = attachments;
         mRowLayout = rowLayout;
         mClickListener = clickListener;
+        AmttApplication.getContext().getContentResolver().registerContentObserver(AmttUri.STEP.get(), true, new StepScreenshotObserver(new Handler(), this));
     }
 
     @Override
@@ -58,11 +152,30 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         if (attachment.mFilePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
                 attachment.mFilePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
                 attachment.mFilePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
-            if (attachment.mStepScreenshotState == Step.ScreenshotState.WRITTEN) {
-                ImageLoader.getInstance().displayImage("file:///" + attachment.mFilePath, viewHolder.mScreenshotImage);
-                viewHolder.mProgress.setVisibility(View.GONE);
+            if (attachment.mStepScreenshotState == ScreenshotState.IS_BEING_WRITTEN) {
+                viewHolder.mProgress.setVisibility(View.VISIBLE);
             } else {
-                //viewHolder.mProgress.setVisibility(View.VISIBLE);
+                ImageLoader.getInstance().displayImage("file:///" + attachment.mFilePath, viewHolder.mScreenshotImage, new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        viewHolder.mProgress.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+
+                    }
+                });
             }
         } else if (attachment.mFilePath.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
             viewHolder.mScreenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
@@ -95,47 +208,24 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         return filePathList;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public String getStepId(int position) {
+        return mAttachments.get(position).mStepId;
+    }
 
-        public ImageView mScreenshotImage;
-        public TextView mScreenshotName;
-        public ImageView mScreenshotClose;
-        public ProgressBar mProgress;
-        private ClickListener mListener;
+    private void reloadData() {
+        DbObjectManager.INSTANCE.getAll(new Step(), this);
+    }
 
-        public ViewHolder(View itemView, ClickListener listener) {
-            super(itemView);
-            mScreenshotImage = (ImageView) itemView.findViewById(R.id.iv_screenImage);
-            mScreenshotImage.setOnClickListener(this);
-            mScreenshotName = (TextView) itemView.findViewById(R.id.tv_screenName);
-            mScreenshotClose = (ImageView) itemView.findViewById(R.id.iv_close);
-            mProgress = (ProgressBar)itemView.findViewById(android.R.id.progress);
-            mListener = listener;
-            mScreenshotClose.setOnClickListener(this);
-        }
+    //Callbacks
+    //IResult
+    @Override
+    public void onResult(List<DatabaseEntity> result) {
+        mAttachments = AttachmentManager.getInstance().getAttachmentList(result);
+        notifyDataSetChanged();
+    }
 
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.iv_close:
-                    if (mListener != null) {
-                        mListener.onItemRemove(getAdapterPosition());
-                    }
-                    break;
-                case R.id.iv_screenImage:
-                    if (mListener != null) {
-                        mListener.onItemShow(getAdapterPosition());
-                    }
-                    break;
-
-            }
-        }
-
-        public interface ClickListener {
-            void onItemRemove(int position);
-
-            void onItemShow(int position);
-        }
+    @Override
+    public void onError(Exception e) {
 
     }
 

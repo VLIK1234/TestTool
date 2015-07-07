@@ -51,8 +51,9 @@ import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Validator;
 
-public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener {
+public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, IResult<List<DatabaseEntity>> {
 
+    private static final int PAINT_ACTIVITY_REQUEST_CODE = 0;
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final String DEFAULT_PRIORITY_ID = "3";
     private AutocompleteProgressView mAssignableAutocompleteView;
@@ -70,7 +71,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     public Spinner mProjectNamesSpinner;
     private RecyclerView recyclerView;
     private Spinner mComponents;
-    private Queue<JiraContentConst> mQueueRequests = new LinkedList<>();
+    private Queue<JiraContentConst> mRequestsQueue = new LinkedList<>();
     private Button mCreateIssueButton;
 
     public static class AssigneeHandler extends Handler {
@@ -100,8 +101,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     @Override
     protected void onResume() {
         super.onResume();
-        mQueueRequests.add(JiraContentConst.DESCRIPTION_RESPONSE);
-        mQueueRequests.add(JiraContentConst.ATTACHMENT_RESPONSE);
+        mRequestsQueue.add(JiraContentConst.DESCRIPTION_RESPONSE);
+        mRequestsQueue.add(JiraContentConst.ATTACHMENT_RESPONSE);
         showProgressIfNeed();
         initAttachmentsView();
         initDescriptionEditText();
@@ -120,6 +121,17 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         setDefaultConfigs();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case PAINT_ACTIVITY_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    loadAttachments();
+                }
+                break;
+        }
+    }
+
     private void setDefaultConfigs() {
         if (mComponents.getSelectedItem() != null) {
             String component = JiraContent.getInstance().getComponentIdByName((String) mComponents.getSelectedItem());
@@ -131,8 +143,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void initViews() {
-        mQueueRequests.add(JiraContentConst.PROJECTS_RESPONSE);
-        mQueueRequests.add(JiraContentConst.PRIORITIES_RESPONSE);
+        mRequestsQueue.add(JiraContentConst.PROJECTS_RESPONSE);
+        mRequestsQueue.add(JiraContentConst.PRIORITIES_RESPONSE);
         initCreateIssueButton();
         initProjectNamesSpinner();
         initSummaryEditText();
@@ -144,9 +156,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void reinitRelatedViews(String projectKey) {
-        mQueueRequests.add(JiraContentConst.ISSUE_TYPES_RESPONSE);
-        mQueueRequests.add(JiraContentConst.VERSIONS_RESPONSE);
-        mQueueRequests.add(JiraContentConst.COMPONENTS_RESPONSE);
+        mRequestsQueue.add(JiraContentConst.ISSUE_TYPES_RESPONSE);
+        mRequestsQueue.add(JiraContentConst.VERSIONS_RESPONSE);
+        mRequestsQueue.add(JiraContentConst.COMPONENTS_RESPONSE);
         showProgressIfNeed();
         initIssueTypesSpinner();
         initVersionsSpinner(projectKey);
@@ -180,7 +192,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             } else {
                                 mProjectNamesSpinner.setSelection(0);
                             }
-                            mQueueRequests.remove(JiraContentConst.PROJECTS_RESPONSE);
+                            mRequestsQueue.remove(JiraContentConst.PROJECTS_RESPONSE);
                             mProjectNamesSpinner.setEnabled(true);
                         }
                     });
@@ -224,7 +236,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             if (defaultPriority != null) {
                                 prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
                             }
-                            mQueueRequests.remove(JiraContentConst.PRIORITIES_RESPONSE);
+                            mRequestsQueue.remove(JiraContentConst.PRIORITIES_RESPONSE);
                             showProgressIfNeed();
                             prioritiesSpinner.setEnabled(true);
                         }
@@ -260,12 +272,12 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     versionsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                     versionsSpinner.setAdapter(versionsAdapter);
                     versionsSpinner.setEnabled(true);
-                    mQueueRequests.remove(JiraContentConst.VERSIONS_RESPONSE);
+                    mRequestsQueue.remove(JiraContentConst.VERSIONS_RESPONSE);
                     showProgressIfNeed();
                 } else {
                     versionsSpinner.setVisibility(View.GONE);
                     affectTextView.setVisibility(View.GONE);
-                    mQueueRequests.remove(JiraContentConst.VERSIONS_RESPONSE);
+                    mRequestsQueue.remove(JiraContentConst.VERSIONS_RESPONSE);
                     showProgressIfNeed();
                 }
             }
@@ -303,11 +315,11 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     } else {
                         mComponents.setSelection(0);
                     }
-                    mQueueRequests.remove(JiraContentConst.COMPONENTS_RESPONSE);
+                    mRequestsQueue.remove(JiraContentConst.COMPONENTS_RESPONSE);
                     showProgressIfNeed();
 
                 } else {
-                    mQueueRequests.remove(JiraContentConst.COMPONENTS_RESPONSE);
+                    mRequestsQueue.remove(JiraContentConst.COMPONENTS_RESPONSE);
                     showProgressIfNeed();
                     componentsTextView.setVisibility(View.GONE);
                     mComponents.setVisibility(View.GONE);
@@ -328,7 +340,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
                             issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                             issueTypesSpinner.setAdapter(issueTypesAdapter);
-                            mQueueRequests.remove(JiraContentConst.ISSUE_TYPES_RESPONSE);
+                            mRequestsQueue.remove(JiraContentConst.ISSUE_TYPES_RESPONSE);
                             showProgressIfNeed();
                             issueTypesSpinner.setEnabled(true);
                             hideKeyboard(CreateIssueActivity.this.getWindow());
@@ -362,7 +374,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         }
                     });
                 }
-                mQueueRequests.remove(JiraContentConst.DESCRIPTION_RESPONSE);
+                mRequestsQueue.remove(JiraContentConst.DESCRIPTION_RESPONSE);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -479,29 +491,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         linearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        DbObjectManager.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
-            @Override
-            public void onResult(final List<DatabaseEntity> result) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (result != null) {
-                            List<Attachment> screenArray = AttachmentManager.getInstance().getAttachmentList(result);
-                            mAdapter = new AttachmentAdapter(screenArray, R.layout.adapter_attachment, CreateIssueActivity.this);
-                            recyclerView.setAdapter(mAdapter);
-                        }
-                        mQueueRequests.remove(JiraContentConst.ATTACHMENT_RESPONSE);
-                        showProgressIfNeed();
-                    }
-                });
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        });
-
+        loadAttachments();
     }
 
     private void initClearEnvironmentButton() {
@@ -554,6 +544,44 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         });
     }
 
+    public void showProgressIfNeed() {
+        if (!mRequestsQueue.isEmpty()) {
+            showProgress(true);
+            mCreateIssueButton.setEnabled(false);
+        } else {
+            showProgress(false);
+            mCreateIssueButton.setEnabled(true);
+        }
+    }
+
+    private void loadAttachments() {
+        DbObjectManager.INSTANCE.getAll(new Step(), this);
+    }
+
+    //Callbacks
+    //IResult for attachments
+    @Override
+    public void onResult(final List<DatabaseEntity> result) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (result != null) {
+                    List<Attachment> screenArray = AttachmentManager.getInstance().getAttachmentList(result);
+                    mAdapter = new AttachmentAdapter(screenArray, R.layout.adapter_attachment, CreateIssueActivity.this);
+                    recyclerView.setAdapter(mAdapter);
+                }
+                mRequestsQueue.remove(JiraContentConst.ATTACHMENT_RESPONSE);
+                showProgressIfNeed();
+            }
+        });
+    }
+
+    @Override
+    public void onError(Exception e) {
+
+    }
+
+    //Recycler
     @Override
     public void onItemRemove(int position) {
         mAdapter.removeItem(position);
@@ -561,29 +589,19 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     @Override
     public void onItemShow(int position) {
+        Intent intent;
         String filePath = mAdapter.getAttachmentFilePathList().get(position);
 
-        Class targetActivity = null;
         if (filePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
                 filePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
                 filePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
-            targetActivity = PaintActivity.class;
+            intent = new Intent(this, PaintActivity.class);
+            intent.putExtra(PaintActivity.STEP_ID_PATH, mAdapter.getStepId(position));
+            startActivityForResult(intent, PAINT_ACTIVITY_REQUEST_CODE);
         } else if (filePath.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
-            targetActivity = PreviewActivity.class;
-        }
-
-        Intent intent = new Intent(this, targetActivity);
-        intent.putExtra(PaintActivity.FILE_PATH, filePath);
-        startActivity(intent);
-    }
-
-    public void showProgressIfNeed() {
-        if (!mQueueRequests.isEmpty()) {
-            showProgress(true);
-            mCreateIssueButton.setEnabled(false);
-        } else {
-            showProgress(false);
-            mCreateIssueButton.setEnabled(true);
+            intent = new Intent(this, PreviewActivity.class);
+            intent.putExtra(PaintActivity.STEP_ID_PATH, filePath);
+            startActivity(intent);
         }
     }
 

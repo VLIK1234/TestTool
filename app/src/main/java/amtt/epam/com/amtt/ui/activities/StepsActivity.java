@@ -104,7 +104,7 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
     @Override
     public void onItemShow(int position) {
         Intent preview = new Intent(StepsActivity.this, PaintActivity.class);
-        preview.putExtra(PaintActivity.FILE_PATH, adapter.getScreenPath(position));
+        preview.putExtra(PaintActivity.STEP_ID_PATH, adapter.getScreenPath(position));
         startActivity(preview);
     }
 }

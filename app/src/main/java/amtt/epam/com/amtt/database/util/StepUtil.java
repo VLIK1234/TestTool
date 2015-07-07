@@ -41,7 +41,7 @@ public class StepUtil {
         DbObjectManager.INSTANCE.add(step, null);
     }
 
-    public static void cleanStep() {
+    public static void cleanSteps() {
         DbObjectManager.INSTANCE.removeAll(new Step());
     }
 
@@ -49,14 +49,14 @@ public class StepUtil {
         DbObjectManager.INSTANCE.removeAll(new ActivityMeta());
     }
 
-    public static void clearAllStep() {
-        cleanStep();
+    public static void clearAllSteps() {
+        cleanSteps();
         cleanActivityMeta();
     }
 
     public static void applyNotesToScreenshot(final Bitmap drawingCache, final String screenshotPath, final Step step) {
         step.setScreenshotState(Step.ScreenshotState.IS_BEING_WRITTEN);
-        DbObjectManager.INSTANCE.update(step, StepsTable._ID + "=" + step.getId(), null);
+        DbObjectManager.INSTANCE.update(step, StepsTable._ID + "=?", new String[]{String.valueOf(step.getId())});
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -69,7 +69,7 @@ public class StepUtil {
                 }
 
                 step.setScreenshotState(Step.ScreenshotState.WRITTEN);
-                DbObjectManager.INSTANCE.update(step, StepsTable._ID + "=" + step.getId(), null);
+                DbObjectManager.INSTANCE.update(step, StepsTable._ID + "=?", new String[]{String.valueOf(step.getId())});
             }
         }).start();
     }
@@ -94,7 +94,7 @@ public class StepUtil {
             Step step = list.get(i);
             builder.append(Html.fromHtml("<h5>" + context.getString(R.string.label_step) + String.valueOf(i + 1) + "</h5>"));
             if (step.isStepWithScreenshot()) {
-                builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(step.getFilePath()) + "</small>"));
+                builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(step.getScreenshotPath()) + "</small>"));
             }
             if (step.isStepWithActivityInfo()) {
                 if (step.isStepWithScreenshot()) {

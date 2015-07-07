@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.database.object;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,6 +112,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
 
     public <T extends DatabaseEntity> void query(final T entity, final String[] projection,
                                                  final String[] mSelection, final String[] mSelectionArgs, final IResult<List<T>> result) {
+        final Handler handler = new Handler();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -132,13 +134,10 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
                     }
                 }
 
-                Cursor cursor = AmttApplication.getContext().getContentResolver()
-                        .query(entity.getUri(), projection, selectionString, mSelectionArgs, null);
-                List<T> listObject = new ArrayList<>();
+                Cursor cursor = AmttApplication.getContext().getContentResolver().query(entity.getUri(), projection, selectionString, mSelectionArgs, null);
+                final List<T> listObject = new ArrayList<>();
 
-                if (cursor.moveToFirst())
-
-                {
+                if (cursor.moveToFirst()) {
                     do {
                         try {
                             listObject.add((T) entity.parse(cursor));
@@ -149,7 +148,12 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
                 }
 
                 cursor.close();
-                result.onResult(listObject);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        result.onResult(listObject);
+                    }
+                });
             }
         }).start();
     }
