@@ -8,6 +8,9 @@ import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.api.JiraGetContentCallback;
 import amtt.epam.com.amtt.excel.XMLParser;
+import amtt.epam.com.amtt.excel.api.GoogleSpreadsheetContentCallback;
+import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
+import amtt.epam.com.amtt.excel.bo.GoogleSpreadsheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.IOUtils;
@@ -115,7 +118,16 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         }
                     }
                 });
-                XMLParser.fetchXML();
+                XMLContent.getInstance().getSpreadsheet(new GoogleSpreadsheetContentCallback<GoogleSpreadsheet>() {
+                    @Override
+                    public void resultOfDataLoading(GoogleSpreadsheet result) {
+                        if (result != null) {
+                            Logger.d(TAG, "Loading spreadsheet finish");
+                        }else{
+                            Logger.d(TAG, "Loading spreadsheet crashed");
+                        }
+                    }
+                });
             }
         };
         worker.schedule(task, 1, TimeUnit.SECONDS);

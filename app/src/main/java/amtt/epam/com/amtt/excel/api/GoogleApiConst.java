@@ -1,10 +1,15 @@
-package amtt.epam.com.amtt.excel.bo;
+package amtt.epam.com.amtt.excel.api;
 
 /**
  * @author Iryna Monchanka
  * @version on 03.07.2015
  */
 public final class GoogleApiConst {
+
+    public enum ContentType {
+        SPREADSHEET_RESPONSE,
+        WORKSHEET_RESPONSE
+    }
 
     private static final String BASE_PATH = "https://spreadsheets.google.com/feeds/";
     private static final String WORKSHEETS = "worksheets/";

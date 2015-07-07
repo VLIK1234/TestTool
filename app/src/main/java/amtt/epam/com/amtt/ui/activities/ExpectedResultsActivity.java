@@ -12,9 +12,10 @@ import java.util.List;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.ExpectedResultAdapter;
-import amtt.epam.com.amtt.excel.XMLContent;
-import amtt.epam.com.amtt.excel.XMLParser;
+import amtt.epam.com.amtt.excel.api.GoogleSpreadsheetContentCallback;
+import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
 import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
+import amtt.epam.com.amtt.excel.bo.GoogleWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
@@ -79,24 +80,31 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
     }
 
     private void refreshSteps() {
-        if (XMLContent.getInstance().getWorksheet() != null) {
-            List<GoogleEntryWorksheet> entryWorksheetList = XMLContent.getInstance().getWorksheet().getEntry();
-            if (entryWorksheetList != null) {
-                if (!entryWorksheetList.isEmpty()) {
-                    for (int i = 1; i < entryWorksheetList.size(); i++) {
-                        if (entryWorksheetList.get(i).getTestCaseNameGSX() != null) {
-                            ExpectedResultAdapter.ExpectedResult result = new ExpectedResultAdapter.ExpectedResult(entryWorksheetList.get(i).getLabelGSX(),
-                                    entryWorksheetList.get(i).getTestCaseNameGSX(),
-                                    entryWorksheetList.get(i).getPriorityGSX(),
-                                    entryWorksheetList.get(i).getTestStepsGSX(),
-                                    entryWorksheetList.get(i).getIdGSX());
-                            mResultsAdapter.add(result);
+        XMLContent.getInstance().getWorksheet(new GoogleSpreadsheetContentCallback<GoogleWorksheet>() {
+            @Override
+            public void resultOfDataLoading(GoogleWorksheet result) {
+                if(result != null){
+                    List<GoogleEntryWorksheet> entryWorksheetList = result.getEntry();
+                    if (entryWorksheetList != null) {
+                        if (!entryWorksheetList.isEmpty()) {
+                            for (int i = 1; i < entryWorksheetList.size(); i++) {
+                                if (entryWorksheetList.get(i).getTestCaseNameGSX() != null) {
+                                    ExpectedResultAdapter.ExpectedResult expectedResult = new ExpectedResultAdapter.ExpectedResult(entryWorksheetList.get(i).getLabelGSX(),
+                                            entryWorksheetList.get(i).getTestCaseNameGSX(),
+                                            entryWorksheetList.get(i).getPriorityGSX(),
+                                            entryWorksheetList.get(i).getTestStepsGSX(),
+                                            entryWorksheetList.get(i).getIdGSX());
+                                    mResultsAdapter.add(expectedResult);
+                                }
+                            }
+                            mExpectedResultsListView.setAdapter(mResultsAdapter);
                         }
                     }
-                    mExpectedResultsListView.setAdapter(mResultsAdapter);
                 }
             }
-        }
+        });
+
+
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
