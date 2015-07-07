@@ -20,7 +20,7 @@ public class MonitorTest extends InstrumentationTestCase {
 
     public void testMonitor() {
         final Context context = getInstrumentation().getTargetContext();
-        TestBroadcastReceiver.writeMultipleLogs(context);
+        TestBroadcastReceiver.writeMultipleLogs();
 
         IntentFilter filterReceiver = new IntentFilter();
         filterReceiver.addCategory(TestBroadcastReceiver.CATEGORY);

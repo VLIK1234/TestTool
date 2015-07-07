@@ -37,15 +37,20 @@ public class TestUtil {
         List<PackageInfo> packs = AmttApplication.getContext().getPackageManager().getInstalledPackages(PackageManager.GET_ACTIVITIES);
         for (PackageInfo packageInfo: packs) {
             try {
-                final InstrumentationInfo info = TestUtil.getInstrumentationInfo(packageInfo.packageName);
+                InstrumentationInfo info = TestUtil.getInstrumentationInfo(packageInfo.packageName);
                 if (info != null) {
-                    final ComponentName cn = new ComponentName(info.packageName, info.name);
-                    InstrumentationInfo ai = AmttApplication.getContext().getPackageManager().getInstrumentationInfo(cn, PackageManager.GET_META_DATA);
-                    Bundle bundle = ai.metaData;
+                    ComponentName componentName = new ComponentName(info.packageName, info.name);
+                    InstrumentationInfo instrumentationInfo = AmttApplication.getContext().getPackageManager().getInstrumentationInfo(componentName, PackageManager.GET_META_DATA);
+                    Log.d("TAG", instrumentationInfo.name+" ");
+                    if (instrumentationInfo!=null) {
+                        Log.d("TAG", instrumentationInfo+" ");
+                    }
+                    Bundle bundle = instrumentationInfo.metaData;
                     if (bundle!=null) {
+                        Log.d("TAG", instrumentationInfo.name+" ");
                         String myApiKey = bundle.getString(AMTT_TEST_KEY);
                         if (myApiKey.equals(AMTT_APP_VALUE)) {
-                            res.add(ai.targetPackage);
+                            res.add(instrumentationInfo.targetPackage);
                         }
                     }
                 }

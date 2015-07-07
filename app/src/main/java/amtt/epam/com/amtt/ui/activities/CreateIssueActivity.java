@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -494,17 +495,21 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         if (result != null) {
                             List<Attachment> screenArray = AttachmentManager.getInstance().
                                     getAttachmentList(result);
-                            String template = Environment.getExternalStorageDirectory() + "/Android" + Environment.getDataDirectory() +
-                                    "/%s" + Environment.getDownloadCacheDirectory() + "/%s";
-                            String pathLogCommon = String.format(template, PreferenceUtils.getString(AmttApplication.getContext().getString(R.string.key_test_project)), "log_common.txt");
-                            String pathLogException = String.format(template, PreferenceUtils.getString(AmttApplication.getContext().getString(R.string.key_test_project)), "log_exception.txt");
+                            File externalCache = new File(Environment.getExternalStorageDirectory(),"Amtt_cache");
+                            String template = externalCache.getPath() + "/%s";
+                            String pathLogCommon = String.format(template, "log_common.txt");
+                            String pathLogWarning = String.format(template, "log_warning.txt");
+                            String pathLogException = String.format(template, "log_exception.txt");
                             final File fileLogCommon = new File(pathLogCommon);
+                            final File fileLogWarning = new File(pathLogWarning);
                             final File fileLogException = new File(pathLogException);
                             final Attachment attachLogCommon = new Attachment(FileUtil.getFileName(pathLogCommon), pathLogCommon);
+                            final Attachment attachLogWarning = new Attachment(FileUtil.getFileName(pathLogWarning), pathLogWarning);
                             final Attachment attachLogException = new Attachment(FileUtil.getFileName(pathLogException), pathLogException);
                             if (PreferenceUtils.getBoolean(getString(R.string.key_is_attach_logs))) {
-                                if (fileLogCommon.exists()&&fileLogException.exists()) {
+                                if (fileLogCommon.exists()&&fileLogException.exists()&&fileLogWarning.exists()) {
                                     screenArray.add(attachLogCommon);
+                                    screenArray.add(attachLogWarning);
                                     screenArray.add(attachLogException);
                                 }
                             }
