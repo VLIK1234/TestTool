@@ -71,6 +71,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private RecyclerView recyclerView;
     private Spinner mComponents;
     private Button mCreateIssueButton;
+    private Button mAssignSelfButton;
 
     public static class AssigneeHandler extends Handler {
 
@@ -179,11 +180,13 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             } else {
                                 mProjectNamesSpinner.setSelection(0);
                             }
-                            mQueueRequests.remove(JiraContentConst.PROJECTS_RESPONSE);
-                            mProjectNamesSpinner.setEnabled(true);
+
                         }
                     });
+                    mProjectNamesSpinner.setEnabled(true);
                 }
+                mQueueRequests.remove(JiraContentConst.PROJECTS_RESPONSE);
+
             }
         });
         mProjectNamesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -223,12 +226,12 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             if (defaultPriority != null) {
                                 prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
                             }
-                            mQueueRequests.remove(JiraContentConst.PRIORITIES_RESPONSE);
-                            showProgressIfNeed();
                             prioritiesSpinner.setEnabled(true);
                         }
                     });
                 }
+                mQueueRequests.remove(JiraContentConst.PRIORITIES_RESPONSE);
+                showProgressIfNeed();
             }
         });
         prioritiesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -259,14 +262,14 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     versionsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                     versionsSpinner.setAdapter(versionsAdapter);
                     versionsSpinner.setEnabled(true);
-                    mQueueRequests.remove(JiraContentConst.VERSIONS_RESPONSE);
-                    showProgressIfNeed();
+
                 } else {
                     versionsSpinner.setVisibility(View.GONE);
                     affectTextView.setVisibility(View.GONE);
-                    mQueueRequests.remove(JiraContentConst.VERSIONS_RESPONSE);
-                    showProgressIfNeed();
+
                 }
+                mQueueRequests.remove(JiraContentConst.VERSIONS_RESPONSE);
+                showProgressIfNeed();
             }
         });
         versionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -302,15 +305,12 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     } else {
                         mComponents.setSelection(0);
                     }
-                    mQueueRequests.remove(JiraContentConst.COMPONENTS_RESPONSE);
-                    showProgressIfNeed();
-
                 } else {
-                    mQueueRequests.remove(JiraContentConst.COMPONENTS_RESPONSE);
-                    showProgressIfNeed();
                     componentsTextView.setVisibility(View.GONE);
                     mComponents.setVisibility(View.GONE);
                 }
+                mQueueRequests.remove(JiraContentConst.COMPONENTS_RESPONSE);
+                showProgressIfNeed();
             }
         });
     }
@@ -337,13 +337,14 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                                 issueTypesSpinner.setSelection(issueTypesAdapter.getPosition("Task"));
                             }
                         }
-                        mQueueRequests.remove(JiraContentConst.ISSUE_TYPES_RESPONSE);
-                        showProgressIfNeed();
+
                         issueTypesSpinner.setEnabled(true);
                         hideKeyboard(CreateIssueActivity.this.getWindow());
                     }
                     });
                 }
+                mQueueRequests.remove(JiraContentConst.ISSUE_TYPES_RESPONSE);
+                showProgressIfNeed();
             }
         });
         issueTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -400,7 +401,11 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         mCreateIssueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mSummaryTextInput.validate() | !mAssignableAutocompleteView.validate()) {
+                if (!mSummaryTextInput.validate()){
+                    showKeyboard(mSummaryTextInput);
+                    return;
+                }
+                if(!mAssignableAutocompleteView.validate()) {
                     return;
                 }
                 if (mIssueTypeName == null) {
@@ -475,6 +480,17 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         if (ActiveUser.getInstance().getLastAssignee() != null) {
             mAssignableAutocompleteView.setText(ActiveUser.getInstance().getLastAssignee());
         }
+        initAssignSelfButton();
+    }
+
+    private void initAssignSelfButton(){
+        mAssignSelfButton = (Button) findViewById(R.id.btn_assign_self);
+        mAssignSelfButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAssignableAutocompleteView.setText(ActiveUser.getInstance().getUserName());
+            }
+        });
     }
 
     private void initAttachmentsView() {

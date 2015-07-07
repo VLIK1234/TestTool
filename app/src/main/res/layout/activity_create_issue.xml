@@ -83,13 +83,15 @@
                 style="@style/Material.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_components"/>
+                android:text="@string/label_components"
+                android:visibility="gone"/>
 
             <Spinner
                 android:id="@+id/spin_components"
                 style="@style/Base.Widget.AppCompat.Spinner.Underlined.Custom"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
             <!-- *******COMPONENTS END*************************************************-->
 
             <!-- *******ATTACHMENT BEGIN****************************************-->
@@ -179,6 +181,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/label_tester"/>
+            <Button
+                android:id="@+id/btn_assign_self"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/material_vertical_button_height_size"
+                android:layout_gravity="end"
+                android:text="@string/label_assign_self"
+                android:textSize="@dimen/abc_text_size_button_material"
+                style="@style/Material.CreateIssueButton"/>
             <!-- *******TESTER END****************************************-->
 
             <Button

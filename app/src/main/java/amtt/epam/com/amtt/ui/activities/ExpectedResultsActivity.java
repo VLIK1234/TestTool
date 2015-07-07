@@ -89,8 +89,7 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
                                     entryWorksheetList.get(i).getTestCaseNameGSX(),
                                     entryWorksheetList.get(i).getPriorityGSX(),
                                     entryWorksheetList.get(i).getTestStepsGSX(),
-                                    entryWorksheetList.get(i).getExpectedResultGSX(),
-                                    "assets://image3.png");
+                                    entryWorksheetList.get(i).getIdGSX());
                             mResultsAdapter.add(result);
                         }
                     }

@@ -27,16 +27,14 @@ public class ExpectedResultAdapter extends ArrayAdapter<ExpectedResultAdapter.Ex
         private String mTestcaseName;
         private String mPriority;
         private String mSteps;
-        private String mExpectedResults;
-        private String mScreenshotPath;
+        private String mId;
 
-        public ExpectedResult(String mLabel, String mTestcaseName, String mPriority, String mSteps, String mExpectedResults, String mScreenshotPath) {
-            this.mLabel = mLabel;
-            this.mTestcaseName = mTestcaseName;
-            this.mPriority = mPriority;
-            this.mSteps = mSteps;
-            this.mExpectedResults = mExpectedResults;
-            this.mScreenshotPath = mScreenshotPath;
+        public ExpectedResult(String label, String testcaseName, String priority, String steps, String id) {
+            this.mLabel = label;
+            this.mTestcaseName = testcaseName;
+            this.mPriority = priority;
+            this.mSteps = steps;
+            this.mId = id;
         }
     }
 
@@ -54,14 +52,10 @@ public class ExpectedResultAdapter extends ArrayAdapter<ExpectedResultAdapter.Ex
         TextView testcaseName = (TextView) convertView.findViewById(R.id.tv_testcase_name);
         TextView priority = (TextView) convertView.findViewById(R.id.tv_priority);
         TextView steps = (TextView) convertView.findViewById(R.id.tv_steps);
-        TextView expectedResults = (TextView) convertView.findViewById(R.id.tv_expected_results);
-        ImageView screenshot = (ImageView) convertView.findViewById(R.id.iv_screenshot);
         label.setText(expectedResult.mLabel);
-        testcaseName.setText(expectedResult.mTestcaseName);
+        testcaseName.setText(expectedResult.mTestcaseName + " [ " + expectedResult.mId + " ]");
         priority.setText(expectedResult.mPriority);
         steps.setText(expectedResult.mSteps);
-        expectedResults.setText(expectedResult.mExpectedResults);
-        ImageLoader.getInstance().displayImage(expectedResult.mScreenshotPath, screenshot);
         return convertView;
     }
 
