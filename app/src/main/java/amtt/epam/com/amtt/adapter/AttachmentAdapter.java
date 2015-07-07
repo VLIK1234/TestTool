@@ -163,7 +163,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
                     @Override
                     public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
+                        viewHolder.mProgress.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -173,7 +173,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
                     @Override
                     public void onLoadingCancelled(String imageUri, View view) {
-
+                        viewHolder.mProgress.setVisibility(View.GONE);
                     }
                 });
             }

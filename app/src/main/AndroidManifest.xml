@@ -45,6 +45,7 @@
 
         <activity
             android:name=".ui.activities.CreateIssueActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_create_issue" />
 
         <provider
