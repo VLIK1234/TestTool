@@ -38,32 +38,21 @@ public class XMLParser {
             xmlPullParser.setInput(stream, null);
             GoogleSpreadsheet spreadshet = new GoogleSpreadsheet();
             xmlPullParser.nextTag();
-            xmlPullParser.require(XmlPullParser.START_TAG, null, "feed");
+            xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.FEED_TAG);
             Logger.d(TAG, "SPREADSHEET BEGIN");
             xmlPullParser.nextTag();
             while (xmlPullParser.getDepth() != 0) {
                 spreadshet.setIdLink(loadIdLink());
-                Logger.d(TAG, "ID = " + spreadshet.getIdLink());
                 spreadshet.setUpdated(loadUpdated());
-                Logger.d(TAG, "UPDATED = " + spreadshet.getUpdated());
                 skipTag();//category
                 spreadshet.setTitle(loadTitle());
-                Logger.d(TAG, "TITLE = " + spreadshet.getTitle());
                 spreadshet.setAlternateLink(loadGoogleLink());
-                Logger.d(TAG, "ALTERNATE = " + spreadshet.getAlternateLink().getHref());
                 spreadshet.setFeedLink(loadGoogleLink());
-                Logger.d(TAG, "FEED = " + spreadshet.getFeedLink().getHref());
                 spreadshet.setPostLink(loadGoogleLink());
-                Logger.d(TAG, "POST = " + spreadshet.getPostLink().getHref());
                 spreadshet.setSelfLink(loadGoogleLink());
-                Logger.d(TAG, "SELF = " + spreadshet.getSelfLink().getHref());
                 spreadshet.setAuthor(loadAuthor());
-                Logger.d(TAG, "AUTHOR NAME = " + spreadshet.getAuthor().getName());
-                Logger.d(TAG, "AUTHOR EMAIL = " + spreadshet.getAuthor().getEmail());
                 spreadshet.setOpenSearchTotalResults(loadTotalResults());
-                Logger.d(TAG, "TOTAL RESULTS = " + spreadshet.getOpenSearchTotalResults());
                 spreadshet.setOpenSearchStartIndex(loadStartIndex());
-                Logger.d(TAG, "START INDEX = " + spreadshet.getOpenSearchStartIndex());
                 for (int i = 0; i < spreadshet.getOpenSearchTotalResults(); i++) {
                     GoogleEntrySpreadshet entrySpreadshet = new GoogleEntrySpreadshet();
                     Logger.d(TAG, "SPREADSHEET ENTRY BEGIN");
@@ -86,13 +75,14 @@ public class XMLParser {
                     xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.ENTRY_TAG);
                     xmlPullParser.nextTag();
                 }
-                xmlPullParser.require(XmlPullParser.END_TAG, null, "feed");
+                xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.FEED_TAG);
+                Logger.d(TAG, "SPREADSHEET END");
                 xmlPullParser.next();
             }
             stream.close();
             return spreadshet;
         } catch (Throwable t) {
-            Logger.e(TAG, "Ошибка при загрузке XML-документа: " + t.toString(), t);
+            Logger.e(TAG, "Error loading xml : " + t.toString(), t);
             return null;
         }
     }
@@ -297,40 +287,31 @@ public class XMLParser {
 
             GoogleWorksheet worksheet = new GoogleWorksheet();
             xmlPullParser.nextTag();
-            xmlPullParser.require(XmlPullParser.START_TAG, null, "feed");
+            xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.FEED_TAG);
             xmlPullParser.nextTag();
             Logger.d(TAG, "WORKSHEET BEGIN");
             while (xmlPullParser.getDepth() != 0) {
                 worksheet.setIdLink(loadIdLink());
-                Logger.d(TAG, worksheet.getIdLink());
                 worksheet.setUpdated(loadUpdated());
-                Logger.d(TAG, worksheet.getUpdated());
                 skipTag();//category
                 worksheet.setTitle(loadTitle());
-                Logger.d(TAG, worksheet.getTitle());
                 worksheet.setAlternateLink(loadGoogleLink());
                 worksheet.setFeedLink(loadGoogleLink());
                 worksheet.setPostLink(loadGoogleLink());
                 worksheet.setSelfLink(loadGoogleLink());
                 worksheet.setAuthor(loadAuthor());
                 worksheet.setOpenSearchTotalResults(loadTotalResults());
-                Logger.d(TAG, String.valueOf(worksheet.getOpenSearchTotalResults()));
                 worksheet.setOpenSearchStartIndex(loadStartIndex());
-                Logger.d(TAG, String.valueOf(worksheet.getOpenSearchStartIndex()));
                 for (int i = 0; i < worksheet.getOpenSearchTotalResults(); i++) {
                     GoogleEntryWorksheet entryWorksheet = new GoogleEntryWorksheet();
                     Logger.d(TAG, "WORKSHEET ENTRY BEGIN");
                     xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.ENTRY_TAG);
                     xmlPullParser.nextTag();
                     entryWorksheet.setIdLink(loadIdLink());
-                    Logger.d(TAG, entryWorksheet.getIdLink());
                     entryWorksheet.setUpdated(loadUpdated());
-                    Logger.d(TAG, entryWorksheet.getUpdated());
                     skipTag();
                     entryWorksheet.setTitle(loadTitle());
-                    Logger.d(TAG, entryWorksheet.getTitle());
                     entryWorksheet.setContent(loadContent());
-                    Logger.d(TAG, entryWorksheet.getContent());
                     entryWorksheet.setSelfLink(loadGoogleLink());
                     entryWorksheet.setIdGSX(loadIdGSX());
                     entryWorksheet.setPriorityGSX(loadPriorityGSX());
@@ -350,14 +331,14 @@ public class XMLParser {
                     Logger.d(TAG, "WORKSHEET ENTRY END");
                     xmlPullParser.nextTag();
                 }
-                xmlPullParser.require(XmlPullParser.END_TAG, null, "feed");
+                xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.FEED_TAG);
                 Logger.d(TAG, "WORKSHEET END");
                 xmlPullParser.next();
             }
             stream.close();
             return worksheet;
         } catch (Throwable t) {
-            Logger.e(TAG, "Ошибка при загрузке XML-документа: " + t.toString(), t);
+            Logger.e(TAG, "Error loading xml : " + t.toString(), t);
             return null;
         }
     }

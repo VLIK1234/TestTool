@@ -14,6 +14,7 @@ public final class GoogleApiConst {
     public static final String SPREADSHEET_PATH = BASE_PATH + WORKSHEETS + DEFAULT_SPREADSHEET_KEY + PATH_POSTFIX;
     public static final String WORKSHEET_PATH = BASE_PATH + LIST;
 
+    public static final String FEED_TAG = "feed";
     public static final String ID_TAG = "id";
     public static final String UPDATED_TAG = "updated";
     public static final String TITLE_TAG = "title";
