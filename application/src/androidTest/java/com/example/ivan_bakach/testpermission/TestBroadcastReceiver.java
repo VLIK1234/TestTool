@@ -1,9 +1,8 @@
-package com.example.ivan_bakach.testpermissionclient;
+package com.example.ivan_bakach.testpermission;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Environment;
 
 import java.io.File;
 import java.io.IOException;

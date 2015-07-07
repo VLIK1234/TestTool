@@ -1,4 +1,4 @@
-package com.example.ivan_bakach.testpermissionclient;
+package com.example.ivan_bakach.testpermission;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,10 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 //import com.example.ivan_bakach.injectlibrary.FragmentInfoManger;
-import com.example.ivan_bakach.testpermissionclient.app.ThirdActivity;
+import com.example.ivan_bakach.testpermission.app.ThirdActivity;
 
 /**
  * Created by Ivan_Bakach on 03.06.2015.

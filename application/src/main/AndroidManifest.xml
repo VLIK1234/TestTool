@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ivan_bakach.testpermissionclient">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.ivan_bakach.testpermission">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
-        android:name=".CoreApplication"
+        android:name="com.example.ivan_bakach.testpermission.CoreApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:allowBackup="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".app.PermissionTestClientActivity"
+            android:name="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             <intent-filter>
@@ -19,23 +20,26 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".app.SecondActivity"
+            android:name="com.example.ivan_bakach.testpermission.app.SecondActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:parentActivityName=".app.PermissionTestClientActivity">
+            android:parentActivityName="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".app.PermissionTestClientActivity" />
+                android:value="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity" />
         </activity>
         <activity
-            android:name=".app.ThirdActivity"
+            android:name="com.example.ivan_bakach.testpermission.app.ThirdActivity"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
-            android:parentActivityName=".app.PermissionTestClientActivity">
+            android:parentActivityName="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".app.PermissionTestClientActivity" />
+                android:value="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity" />
         </activity>
+        <meta-data
+            android:name="my_api_key"
+            android:value="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity" />
     </application>
 
 </manifest>

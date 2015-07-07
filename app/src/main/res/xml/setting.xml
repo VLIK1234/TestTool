@@ -15,9 +15,8 @@
             android:title="@string/title_preff_topbutton_show" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preff_category_test_project">
-        <EditTextPreference
+        <ListPreference
             android:id="@+id/etp_project_name"
-            android:defaultValue="com.example.ivan_bakach.testpermissionclient"
             android:key="@string/key_test_project"
             android:title="@string/title_preff_test_project"
             />

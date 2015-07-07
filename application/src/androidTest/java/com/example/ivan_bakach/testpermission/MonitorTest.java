@@ -1,9 +1,8 @@
-package com.example.ivan_bakach.testpermissionclient;
+package com.example.ivan_bakach.testpermission;
 
 import android.content.Context;
 import android.content.IntentFilter;
 import android.test.InstrumentationTestCase;
-import android.util.Log;
 
 import junit.framework.Assert;
 

@@ -1,4 +1,4 @@
-package com.example.ivan_bakach.testpermissionclient.app;
+package com.example.ivan_bakach.testpermission.app;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.ivan_bakach.testpermissionclient.R;
+import com.example.ivan_bakach.testpermission.R;
 
 /**
  * Created by Ivan_Bakach on 04.06.2015.

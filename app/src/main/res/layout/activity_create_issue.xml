@@ -106,6 +106,14 @@
                 android:layout_width="wrap_content"
                 android:layout_marginTop="12dp"
                 tools:context=".app.CreateIssueActivity" />
+
+            <CheckBox
+                android:id="@+id/cb_attach_logs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="24dp"
+                android:layout_gravity="end"
+                android:text="@string/label_attach_logs"/>
             <!-- *******ATTACHMENT END*************************************************-->
 
             <!-- *******AFFECTS VERSIONS BEGIN****************************************-->
@@ -180,13 +188,6 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/label_tester"/>
             <!-- *******TESTER END****************************************-->
-
-            <CheckBox
-                android:id="@+id/cb_attach_logs"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="@string/label_attach_logs"/>
 
             <Button
                 android:id="@+id/btn_create"

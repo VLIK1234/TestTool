@@ -1,4 +1,4 @@
-package com.example.ivan_bakach.testpermissionclient;
+package com.example.ivan_bakach.testpermission;
 
 import android.app.Application;
 

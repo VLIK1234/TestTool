@@ -5,7 +5,6 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.example.ivan_bakach.testpermissionclient"
         minSdkVersion 14
         targetSdkVersion 22
         versionCode 1
