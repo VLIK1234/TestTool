@@ -54,7 +54,6 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
     public static final int SHOW_UI = 1;
 
     private Step mStep;
-    private String mScreenshotPath;
     private PaintView mPaintView;
     private AlertDialog mPaletteDialog;
     private boolean hasSomethingGoneWrong;
@@ -86,7 +85,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_preview, menu);
+        getMenuInflater().inflate(R.menu.menu_palette, menu);
         return true;
     }
 
@@ -107,6 +106,25 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
                 return true;
             case R.id.action_redo:
                 mPaintView.redo();
+                return true;
+            case R.id.action_clear:
+                new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.title_clear_notes))
+                        .setMessage(R.string.message_clear_notes)
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mPaintView.clear();
+                            }
+                        })
+                        .create()
+                        .show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -141,7 +159,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
     private void initPaletteDialog() {
         final View view = ((LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_palette, null);
 
-        SeekBar thicknessBar = (SeekBar) view.findViewById(R.id.sb_thickness);
+        final SeekBar thicknessBar = (SeekBar) view.findViewById(R.id.sb_thickness);
         thicknessBar.setProgress(PaintView.DEFAULT_BRUSH_THICKNESS);
         thicknessBar.setOnSeekBarChangeListener(this);
 
@@ -162,20 +180,23 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
                 boolean isEraseMode = checkedId == R.id.rb_eraser;
                 mPaintView.setEraseMode(isEraseMode);
                 if (isEraseMode) {
+                    thicknessBar.setProgress(mPaintView.getEraserThickness());
                     opacityBar.setEnabled(false);
                     opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity_disabled));
                     multilineRadioGroup.clearCheck();
                 } else {
+                    thicknessBar.setProgress(mPaintView.getBrushThickness());
                     opacityBar.setEnabled(true);
                     opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity));
                     multilineRadioGroup.restoreCheck();
+                    multilineRadioGroup.setEnabled(true);
                 }
             }
         });
         ((RadioButton) paintToolsGroup.findViewById(R.id.rb_pencil)).setChecked(true);
 
         mPaletteDialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.title_choose_color)
+                .setTitle(R.string.title_drawing_customization)
                 .setView(view)
                 .create();
     }
@@ -239,7 +260,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
                 mPaintView.setBrushOpacity(progress);
                 break;
             case R.id.sb_thickness:
-                mPaintView.setBrushThickness(progress);
+                mPaintView.setThickness(progress);
                 break;
         }
     }

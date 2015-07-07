@@ -81,5 +81,14 @@ public class RadioGroupLine extends RadioGroup {
     @Override
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+        for (int i = 0; i < getChildCount(); i++) {
+            View paletteItem = getChildAt(0);
+            if (isEnabled) {
+                paletteItem.setClickable(true);
+            } else {
+                paletteItem.setClickable(false);
+            }
+        }
     }
+
 }

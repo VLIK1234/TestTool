@@ -32,7 +32,7 @@ public class MultilineRadioGroup extends RadioGroup {
         super(context, attrs);
     }
 
-    private void addRadioGroup(View child, int index) {
+    private void addRadioGroup(View child) {
         if (child instanceof RadioGroup) {
             RadioGroupLine radioGroup = (RadioGroupLine) child;
             radioGroup.setOnGroupCheckedListener(new RadioGroupLine.OnLineCheckedChangeListener() {
@@ -76,7 +76,7 @@ public class MultilineRadioGroup extends RadioGroup {
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
         super.addView(child, index, params);
-        addRadioGroup(child, index);
+        addRadioGroup(child);
     }
 
     @Override

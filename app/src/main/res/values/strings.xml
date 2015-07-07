@@ -55,6 +55,7 @@
     <string name="label_new_user">Add new QA</string>
     <string name="label_palette">Palette</string>
     <string name="label_eraser">Eraser</string>
+    <string name="label_clear_notes">Clear notes</string>
     <string name="label_undo">Undo</string>
     <string name="label_redo">Redo</string>
     <string name="label_no_email">" nor email and symbol @"</string>
@@ -125,8 +126,10 @@
     <string name="cancel">Cancel</string>
     <string name="message_lose_notes">Otherwise all the notes will be lost.</string>
     <string name="title_lose_notes">Save changes?</string>
-    <string name="title_choose_color">Choose color</string>
+    <string name="title_drawing_customization">Drawing customization</string>
     <string name="label_continue_editing">Continue editing</string>
     <string name="screenshot_loading_error">Ooops! Something went wrong=)</string>
+    <string name="message_clear_notes">All the drawn notes will be erased!</string>
+    <string name="title_clear_notes">Clear screenshot?</string>
 
 </resources>
