@@ -212,7 +212,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            StepUtil.applyNotesToScreenshot(mPaintView.getDrawingCache(), mStep.getScreenshotPath(), mStep);
+                            StepUtil.applyNotesToScreenshot(Bitmap.createBitmap(mPaintView.getDrawingCache()), mStep.getScreenshotPath(), mStep);
                             setResult(RESULT_OK);
                             finish();
                         }

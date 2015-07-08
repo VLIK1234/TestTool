@@ -94,31 +94,28 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
+
         mHandler = new AssigneeHandler(this);
         initViews();
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
         mRequestsQueue.add(JiraContentConst.DESCRIPTION_RESPONSE);
         mRequestsQueue.add(JiraContentConst.ATTACHMENT_RESPONSE);
         showProgressIfNeed();
         initAttachmentsView();
         initDescriptionEditText();
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         setDefaultConfigs();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     @Override

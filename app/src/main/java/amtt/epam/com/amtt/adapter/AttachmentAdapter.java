@@ -61,22 +61,6 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             mAdapter.reloadData();
-
-//            List<Attachment> attachments = mAdapter.mAttachments;
-//            int changedItemPosition = -1;
-//
-//            for (int i = 0; i < attachments.size(); i++) {
-//                Attachment attachment = attachments.get(i);
-//                if (attachment.mStepScreenshotState == ScreenshotState.IS_BEING_WRITTEN) {
-//                    attachment.mStepScreenshotState = ScreenshotState.WRITTEN;
-//                    changedItemPosition = i;
-//                    break;
-//                }
-//            }
-//
-//            if (changedItemPosition != -1) {
-//                mAdapter.notifyItemChanged(changedItemPosition);
-//            }
         }
 
     }
@@ -152,30 +136,32 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         if (attachment.mFilePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
                 attachment.mFilePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
                 attachment.mFilePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
-            if (attachment.mStepScreenshotState == ScreenshotState.IS_BEING_WRITTEN) {
-                viewHolder.mProgress.setVisibility(View.VISIBLE);
+            if (attachment.mStepScreenshotState == ScreenshotState.WRITTEN) {
+                if (viewHolder.mScreenshotImage.getDrawable() == null) {
+                    ImageLoader.getInstance().displayImage("file:///" + attachment.mFilePath, viewHolder.mScreenshotImage, new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted(String imageUri, View view) {
+                            viewHolder.mProgress.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            viewHolder.mProgress.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onLoadingCancelled(String imageUri, View view) {
+
+                        }
+                    });
+                }
             } else {
-                ImageLoader.getInstance().displayImage("file:///" + attachment.mFilePath, viewHolder.mScreenshotImage, new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                        viewHolder.mProgress.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        viewHolder.mProgress.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
-                        viewHolder.mProgress.setVisibility(View.GONE);
-                    }
-                });
+                viewHolder.mProgress.setVisibility(View.VISIBLE);
             }
         } else if (attachment.mFilePath.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
             viewHolder.mScreenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
