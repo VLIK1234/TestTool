@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.util;
 
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Patterns;
 
@@ -40,7 +41,11 @@ public class InputsUtil {
 
             @Override
             public boolean validate(TextEditable editable) {
-                String text = editable.getText().toString();
+                Editable editableText = editable.getText();
+                if (editableText == null) {
+                    return true;
+                }
+                String text = editableText.toString();
                 String urlPrefix = AmttApplication.getContext().getString(R.string.url_prefix);
                 if (text.equals(urlPrefix)) {
                     return text.length() > urlPrefix.length();
@@ -130,6 +135,10 @@ public class InputsUtil {
     }
 
     private static Boolean checkUrl(TextEditable editable) {
+        Editable editableText = editable.getText();
+        if (editableText == null) {
+            return false;
+        }
         String url = editable.getText().toString();
         mPattern = Patterns.WEB_URL;
         mMatcher = mPattern.matcher(url.toLowerCase());
@@ -138,8 +147,11 @@ public class InputsUtil {
     }
 
     private static Boolean hasEndStartWhitespaces(TextEditable editable) {
-        //check To Whitespace After And Before
-        String string = editable.getText().toString();
+        Editable editableText = editable.getText();
+        if (editableText == null) {
+            return false;
+        }
+        String string = editableText.toString();
         mPattern = Pattern.compile(mNoWhitespaceAfterAndBefore);
         mMatcher = mPattern.matcher(string.toLowerCase());
         Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": not passed.");
@@ -147,23 +159,23 @@ public class InputsUtil {
     }
 
     private static Boolean isEmail(TextEditable editable) {
-        String string = editable.getText().toString();
+        Editable editableText = editable.getText();
+        if (editableText == null) {
+            return false;
+        }
+        String string = editableText.toString();
         mPattern = Pattern.compile(mHasAtSymbol);
         mMatcher = mPattern.matcher(string.toLowerCase());
         Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": not passed.");
         return mMatcher.matches();
     }
 
-    private static Boolean hasWhitespaces(TextEditable textEditable) {
-        String string = textEditable.getText().toString();
-        mPattern = Pattern.compile(mHaveWhitespaces);
-        mMatcher = mPattern.matcher(string.toLowerCase());
-        Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": not passed.");
-        return mMatcher.matches();
-    }
-
-    private static Boolean hasWhitespaces(AutocompleteProgressView autocompleteProgressView) {
-        String string = autocompleteProgressView.getText().toString();
+    private static Boolean hasWhitespaces(TextEditable editable) {
+        Editable editableText = editable.getText();
+        if (editableText == null) {
+            return false;
+        }
+        String string = editableText.toString();
         mPattern = Pattern.compile(mHaveWhitespaces);
         mMatcher = mPattern.matcher(string.toLowerCase());
         Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": not passed.");
