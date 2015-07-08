@@ -29,7 +29,6 @@ public class TextInput extends TextInputLayout implements TextEditable, Validata
     private CharSequence mHint;
     private boolean isErrorShown;
     private List<Validator> mValidators;
-    private int mInitialTextLength;
 
     public TextInput(Context context) {
         this(context, null);
@@ -82,7 +81,6 @@ public class TextInput extends TextInputLayout implements TextEditable, Validata
 
             }
         });
-        mInitialTextLength = mText.getText().length();
 
         Divider mDivider = new Divider(2, mText.getTotalPaddingLeft(), mText.getTotalPaddingRight(), mDividerColors, 0);
         mDivider.setInEditMode(isInEditMode());
