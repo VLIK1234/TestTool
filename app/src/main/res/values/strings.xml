@@ -118,5 +118,6 @@
     <string name="cancel">Cancel</string>
     <string name="empty">""</string>
     <string name="label_assign_self">Assign to me</string>
+    <string name="label_create_another">Create another</string>
 
 </resources>

@@ -201,6 +201,14 @@
                 android:text="@string/label_create"
                 android:textSize="@dimen/abc_text_size_button_material"
                 style="@style/Material.CreateIssueButton"/>
+
+            <CheckBox
+                android:id="@+id/chb_create_another"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_create_another"
+                android:layout_gravity="left"/>
+
         </LinearLayout>
     </ScrollView>
 

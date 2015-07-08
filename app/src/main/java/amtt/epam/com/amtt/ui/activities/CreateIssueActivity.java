@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,7 +73,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private RecyclerView recyclerView;
     private Spinner mComponents;
     private Button mCreateIssueButton;
-    private Button mAssignSelfButton;
+    private Boolean mCreateAnotherIssue;
 
     public static class AssigneeHandler extends Handler {
 
@@ -140,8 +142,19 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initListStepButton();
         initPrioritiesSpinner();
         initCreateIssueButton();
+        initCreateAnotherCheckBox();
         initClearEnvironmentButton();
         }
+
+    private void initCreateAnotherCheckBox() {
+        CheckBox createAnotherChectBox = (CheckBox) findViewById(R.id.chb_create_another);
+        createAnotherChectBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mCreateAnotherIssue = isChecked;
+            }
+        });
+    }
 
     private void reinitRelatedViews(String projectKey) {
         mQueueRequests.add(ContentConst.ISSUE_TYPES_RESPONSE);
@@ -428,7 +441,13 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                                         AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
                                         Toast.makeText(CreateIssueActivity.this, R.string.ticket_created, Toast.LENGTH_LONG).show();
                                         TopButtonService.stopRecord(CreateIssueActivity.this);
-                                        finish();
+                                        if (mCreateAnotherIssue) {
+                                            mSummaryTextInput.setText("");
+                                            initAttachmentsView();
+                                            initDescriptionEditText();
+                                        } else {
+                                            finish();
+                                        }
                                     } else {
                                         Toast.makeText(CreateIssueActivity.this, R.string.error, Toast.LENGTH_LONG).show();
                                     }
@@ -484,7 +503,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void initAssignSelfButton(){
-        mAssignSelfButton = (Button) findViewById(R.id.btn_assign_self);
+        Button mAssignSelfButton = (Button) findViewById(R.id.btn_assign_self);
         mAssignSelfButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
