@@ -4,7 +4,7 @@
     <string name="app_name">amtt</string>
 
     <string name="title_activity_expected_results">Expected Results</string>
-    <string name="title_activity_create_issue">Creating issue</string>
+    <string name="title_activity_create_issue">Issue creating</string>
     <string name="title_activity_steps">StepsActivity</string>
     <string name="title_activity_user_info">UserInfoActivity</string>
     <string name="title_activity_amtt">Choose user</string>
