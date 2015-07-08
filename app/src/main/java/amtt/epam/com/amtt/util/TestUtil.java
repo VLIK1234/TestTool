@@ -49,7 +49,7 @@ public class TestUtil {
                     if (bundle!=null) {
                         Log.d("TAG", instrumentationInfo.name+" ");
                         String myApiKey = bundle.getString(AMTT_TEST_KEY);
-                        if (myApiKey.equals(AMTT_APP_VALUE)) {
+                        if (myApiKey!=null) {
                             res.add(instrumentationInfo.targetPackage);
                         }
                     }
