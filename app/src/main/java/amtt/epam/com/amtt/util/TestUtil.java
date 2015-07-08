@@ -60,14 +60,7 @@ public class TestUtil {
                 Log.e("TAG", "Failed to load meta-data, NullPointer: " + e.getMessage());
             }
         }
-
-        String[] array = new String[res.size()];
-        int i = 0;
-        for (String value:res) {
-            array[i] = value;
-            i++;
-        }
-        return array;
+        return res.toArray(new String[res.size()]);
     }
 
     public static void runTests() {
