@@ -97,6 +97,7 @@ public class TopButtonView extends FrameLayout {
                     @Override
                     public void onTouch() {
                         playMainButtonRotateAnimation(300, 180, 0);
+                        mTopButtonBarView.hide();
                     }
                 });
                 return true;
