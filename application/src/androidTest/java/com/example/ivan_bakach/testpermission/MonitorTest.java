@@ -30,11 +30,15 @@ public class MonitorTest extends InstrumentationTestCase {
         receiver.setCloseUnitTest(false);
 
         while (!receiver.getCloseUnitTest()) {
-            if (receiver.getCloseUnitTest()) {
-                context.unregisterReceiver(receiver);
-                Assert.assertTrue(true);
+            try {
+                Thread.sleep(1000);
+                if (receiver.getCloseUnitTest()) {
+                    context.unregisterReceiver(receiver);
+                    Assert.assertTrue(true);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
-
 }
