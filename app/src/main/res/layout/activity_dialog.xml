@@ -10,5 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dialog_margin"
         android:layout_marginStart="@dimen/dialog_margin"
+        android:textColor="@android:color/black"
         android:text="@string/dialog_label_checkbox"/>
 </LinearLayout>

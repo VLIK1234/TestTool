@@ -98,7 +98,7 @@
     <string name="samsung_help_message">\nSamsung - power+home</string>
     <string name="htc_help_message">\nHTC - power+home</string>
     <string name="xiaomi_help_message">\nXiaomi tablet - power+options \nXiaomi phone - volume down+power</string>
-    <string name="all_help_message">\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nSony - volume down+power \nXiaomi phone - volume down+power \nHTC - power+home \HUAWEI - volume down+power</string>
+    <string name="all_help_message">\nSamsung - power+home \nNexus - volume down+power \nXiaomi tablet - power+options \nSony - volume down+power \nXiaomi phone - volume down+power \nHTC - power+home \nHUAWEI - volume down+power</string>
     <string name="epam_url">https://jira.epam.com</string>
 
     <string name="key_dialog_hide">dialog_hide</string>

@@ -80,7 +80,7 @@
             android:excludeFromRecents="true"
             android:label="@string/title_activity_help_dialog"
             android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+            android:theme="@android:style/Theme.Panel" />
         <activity
             android:name=".ui.activities.SettingActivity"
             android:label="@string/title_activity_settings"
@@ -89,14 +89,18 @@
             android:name=".ui.activities.AskExitActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+            android:theme="@android:style/Theme.Panel" />
         <activity
             android:name=".ui.activities.PreviewActivity"
             android:launchMode="standard"
             android:noHistory="true"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_preview"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+            android:parentActivityName=".ui.activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.MainActivity"/>
+        </activity>
 
         <service
             android:name=".service.AttachmentService"

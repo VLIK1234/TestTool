@@ -563,6 +563,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 PreferenceUtils.putBoolean(getString(R.string.key_is_attach_logs), isChecked);
+                initAttachmentsView();
             }
         });
     }
