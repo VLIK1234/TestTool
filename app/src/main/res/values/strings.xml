@@ -116,5 +116,6 @@
 
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="label_attach_gif">Attach gif image</string>
 
 </resources>
