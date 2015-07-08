@@ -8,12 +8,13 @@ import android.os.Handler;
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.database.constant.BaseColumns;
+import amtt.epam.com.amtt.util.IOUtils;
 
 /**
- @author Artsiom_Kaliaha
- @version on 15.05.2015
+ * @author Artsiom_Kaliaha
+ * @version on 15.05.2015
  */
 
 public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
@@ -26,7 +27,6 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
 
     public static final String SIGN_SELECTION = "=?";
     public static final String SIGN_AND = " AND ";
-
 
 
     @Override
@@ -77,7 +77,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         new Thread(new Runnable() {
             @Override
             public void run() {
-               int outcome = update(object, selection, selectionArgs);
+                int outcome = update(object, selection, selectionArgs);
                 if (result != null) {
                     result.onResult(outcome);
                 }
@@ -106,7 +106,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
     }
 
     @Override
-    public void getAll(DatabaseEntity object, IResult<List<DatabaseEntity>> result){
+    public void getAll(DatabaseEntity object, IResult<List<DatabaseEntity>> result) {
         query(object, null, null, null, result);
     }
 
@@ -136,18 +136,18 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
 
                 Cursor cursor = AmttApplication.getContext().getContentResolver().query(entity.getUri(), projection, selectionString, mSelectionArgs, null);
                 final List<T> listObject = new ArrayList<>();
-
-                if (cursor.moveToFirst()) {
-                    do {
-                        try {
-                            listObject.add((T) entity.parse(cursor));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } while (cursor.moveToNext());
+                if (cursor != null) {
+                    if (cursor.moveToFirst()) {
+                        do {
+                            try {
+                                listObject.add((T) entity.parse(cursor));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } while (cursor.moveToNext());
+                    }
                 }
-
-                cursor.close();
+                IOUtils.close(cursor);
                 handler.post(new Runnable() {
                     @Override
                     public void run() {

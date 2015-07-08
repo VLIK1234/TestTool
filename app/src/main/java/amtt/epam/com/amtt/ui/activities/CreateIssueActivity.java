@@ -564,7 +564,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             public void run() {
                 if (result != null) {
                     List<Attachment> screenArray = AttachmentManager.getInstance().getAttachmentList(result);
-                    mAdapter = new AttachmentAdapter(screenArray, R.layout.adapter_attachment, CreateIssueActivity.this);
+                    mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment, CreateIssueActivity.this);
                     recyclerView.setAdapter(mAdapter);
                 }
                 mRequestsQueue.remove(JiraContentConst.ATTACHMENT_RESPONSE);

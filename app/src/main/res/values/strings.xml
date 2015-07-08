@@ -131,5 +131,7 @@
     <string name="screenshot_loading_error">Ooops! Something went wrong=)</string>
     <string name="message_clear_notes">All the drawn notes will be erased!</string>
     <string name="title_clear_notes">Clear screenshot?</string>
+    <string name="title_notes_arent_applied">Notes aren\'t applied yet</string>
+    <string name="message_notes_arent_applied">Usually operation takes few seconds.</string>
 
 </resources>

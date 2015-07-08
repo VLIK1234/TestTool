@@ -1,9 +1,12 @@
 package amtt.epam.com.amtt.adapter;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,8 +75,10 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         public ImageView mScreenshotClose;
         public ProgressBar mProgress;
         private ClickListener mListener;
+        private ScreenshotState mScreenshotState;
+        private Context mContext;
 
-        public ViewHolder(View itemView, ClickListener listener) {
+        public ViewHolder(Context context, View itemView, ClickListener listener) {
             super(itemView);
             mScreenshotImage = (ImageView) itemView.findViewById(R.id.iv_screenImage);
             mScreenshotImage.setOnClickListener(this);
@@ -82,22 +87,34 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
             mProgress = (ProgressBar) itemView.findViewById(android.R.id.progress);
             mListener = listener;
             mScreenshotClose.setOnClickListener(this);
+            mContext = context;
         }
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.iv_close:
-                    if (mListener != null) {
+            if (mListener != null) {
+                if (mScreenshotState == ScreenshotState.IS_BEING_WRITTEN) {
+                    new AlertDialog.Builder(mContext, R.style.Dialog)
+                            .setTitle(R.string.title_notes_arent_applied)
+                            .setMessage(R.string.message_notes_arent_applied)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .create()
+                            .show();
+                    return;
+                }
+                switch (v.getId()) {
+                    case R.id.iv_close:
                         mListener.onItemRemove(getAdapterPosition());
-                    }
-                    break;
-                case R.id.iv_screenImage:
-                    if (mListener != null) {
+                        break;
+                    case R.id.iv_screenImage:
                         mListener.onItemShow(getAdapterPosition());
-                    }
-                    break;
-
+                        break;
+                }
             }
         }
 
@@ -114,8 +131,10 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     private List<Attachment> mAttachments;
     private int mRowLayout;
     private ViewHolder.ClickListener mClickListener;
+    private Context mContext;
 
-    public AttachmentAdapter(List<Attachment> attachments, int rowLayout, ViewHolder.ClickListener clickListener) {
+    public AttachmentAdapter(Context context, List<Attachment> attachments, int rowLayout, ViewHolder.ClickListener clickListener) {
+        mContext = context;
         mAttachments = attachments;
         mRowLayout = rowLayout;
         mClickListener = clickListener;
@@ -126,17 +145,18 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         viewGroup.setHorizontalScrollBarEnabled(true);
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(mRowLayout, viewGroup, false);
-        return new ViewHolder(v, mClickListener);
+        return new ViewHolder(mContext, v, mClickListener);
     }
 
     public void onBindViewHolder(final ViewHolder viewHolder, int i) {
         Attachment attachment = mAttachments.get(i);
+        viewHolder.mScreenshotState = attachment.mScreenshotState;
         Logger.d(TAG, attachment.mName);
         viewHolder.mScreenshotName.setText(attachment.mName);
         if (attachment.mFilePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
                 attachment.mFilePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
                 attachment.mFilePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
-            if (attachment.mStepScreenshotState == ScreenshotState.WRITTEN) {
+            if (attachment.mScreenshotState == ScreenshotState.WRITTEN) {
                 if (viewHolder.mScreenshotImage.getDrawable() == null) {
                     ImageLoader.getInstance().displayImage("file:///" + attachment.mFilePath, viewHolder.mScreenshotImage, new ImageLoadingListener() {
                         @Override
@@ -166,7 +186,6 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         } else if (attachment.mFilePath.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
             viewHolder.mScreenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
         }
-
         viewHolder.mScreenshotClose.setEnabled(true);
     }
 
