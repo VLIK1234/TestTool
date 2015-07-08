@@ -7,6 +7,6 @@ package amtt.epam.com.amtt.api;
 
 public interface ContentLoadingCallback<Content> {
 
-    void resultFromBackend(Content result, JiraContentConst tag, JiraGetContentCallback jiraGetContentCallback);
+    void resultFromBackend(Content result, ContentConst tag, GetContentCallback getContentCallback);
 
 }

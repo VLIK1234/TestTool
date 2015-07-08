@@ -6,9 +6,7 @@ import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
-import amtt.epam.com.amtt.api.JiraGetContentCallback;
-import amtt.epam.com.amtt.excel.XMLParser;
-import amtt.epam.com.amtt.excel.api.GoogleSpreadsheetContentCallback;
+import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
 import amtt.epam.com.amtt.excel.bo.GoogleSpreadsheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -102,7 +100,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
             public void run() {
-                JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
+                JiraContent.getInstance().getPrioritiesNames(new GetContentCallback<HashMap<String, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<String, String> result) {
                         if (result != null) {
@@ -110,7 +108,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         }
                     }
                 });
-                JiraContent.getInstance().getProjectsNames(new JiraGetContentCallback<HashMap<JProjects, String>>() {
+                JiraContent.getInstance().getProjectsNames(new GetContentCallback<HashMap<JProjects, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<JProjects, String> result) {
                         if (result != null) {
@@ -118,7 +116,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         }
                     }
                 });
-                XMLContent.getInstance().getSpreadsheet(new GoogleSpreadsheetContentCallback<GoogleSpreadsheet>() {
+                XMLContent.getInstance().getSpreadsheet(new GetContentCallback<GoogleSpreadsheet>() {
                     @Override
                     public void resultOfDataLoading(GoogleSpreadsheet result) {
                         if (result != null) {

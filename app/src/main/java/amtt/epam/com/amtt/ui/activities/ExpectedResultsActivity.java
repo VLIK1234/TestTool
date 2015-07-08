@@ -12,7 +12,7 @@ import java.util.List;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.ExpectedResultAdapter;
-import amtt.epam.com.amtt.excel.api.GoogleSpreadsheetContentCallback;
+import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
 import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
 import amtt.epam.com.amtt.excel.bo.GoogleWorksheet;
@@ -80,7 +80,7 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
     }
 
     private void refreshSteps() {
-        XMLContent.getInstance().getWorksheet(new GoogleSpreadsheetContentCallback<GoogleWorksheet>() {
+        XMLContent.getInstance().getWorksheet(new GetContentCallback<GoogleWorksheet>() {
             @Override
             public void resultOfDataLoading(GoogleWorksheet result) {
                 if(result != null){

@@ -19,7 +19,7 @@ public class ActiveUser {
     private String mCredentialsString;
     private String mLastAssigneeName;
     private String mLastComponentsIds;
-    private Boolean mStartedRecod;
+    private Boolean mRecord;
 
     private ActiveUser() {
     }
@@ -94,12 +94,12 @@ public class ActiveUser {
         this.mLastAssigneeName = lastAssigneeName;
     }
 
-    public Boolean getStartedRecod() {
-        return mStartedRecod;
+    public Boolean getRecord() {
+        return mRecord;
     }
 
-    public void setStartedRecod(Boolean startedRecod) {
-        this.mStartedRecod = startedRecod;
+    public void setRecord(Boolean record) {
+        this.mRecord = record;
     }
 
     public void clearActiveUser() {
@@ -110,7 +110,7 @@ public class ActiveUser {
         setCredentials(null);
         setLastAssigneeName(null);
         setLastComponentsIds(null);
-        setStartedRecod(false);
+        setRecord(false);
     }
 }
 

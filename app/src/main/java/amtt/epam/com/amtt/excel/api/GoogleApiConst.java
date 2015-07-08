@@ -6,11 +6,6 @@ package amtt.epam.com.amtt.excel.api;
  */
 public final class GoogleApiConst {
 
-    public enum ContentType {
-        SPREADSHEET_RESPONSE,
-        WORKSHEET_RESPONSE
-    }
-
     private static final String BASE_PATH = "https://spreadsheets.google.com/feeds/";
     private static final String WORKSHEETS = "worksheets/";
     private static final String LIST = "list/";

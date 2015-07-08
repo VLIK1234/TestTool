@@ -30,8 +30,8 @@ import java.util.Queue;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.AttachmentAdapter;
-import amtt.epam.com.amtt.api.JiraContentConst;
-import amtt.epam.com.amtt.api.JiraGetContentCallback;
+import amtt.epam.com.amtt.api.ContentConst;
+import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
 import amtt.epam.com.amtt.bo.database.Step;
@@ -60,7 +60,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private TextInput mEnvironmentTextInput;
     private TextInput mSummaryTextInput;
 
-    private final Queue<JiraContentConst> mQueueRequests = new LinkedList<>();
+    private final Queue<ContentConst> mQueueRequests = new LinkedList<>();
     private String mAssignableUserName = null;
     private String mIssueTypeName;
     private String mPriorityName;
@@ -100,8 +100,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     @Override
     protected void onResume() {
         super.onResume();
-        mQueueRequests.add(JiraContentConst.DESCRIPTION_RESPONSE);
-        mQueueRequests.add(JiraContentConst.ATTACHMENT_RESPONSE);
+        mQueueRequests.add(ContentConst.DESCRIPTION_RESPONSE);
+        mQueueRequests.add(ContentConst.ATTACHMENT_RESPONSE);
         showProgressIfNeed();
         initAttachmentsView();
         initDescriptionEditText();
@@ -131,8 +131,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void initViews() {
-        mQueueRequests.add(JiraContentConst.PROJECTS_RESPONSE);
-        mQueueRequests.add(JiraContentConst.PRIORITIES_RESPONSE);
+        mQueueRequests.add(ContentConst.PROJECTS_RESPONSE);
+        mQueueRequests.add(ContentConst.PRIORITIES_RESPONSE);
         initCreateIssueButton();
         initProjectNamesSpinner();
         initSummaryEditText();
@@ -144,9 +144,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         }
 
     private void reinitRelatedViews(String projectKey) {
-        mQueueRequests.add(JiraContentConst.ISSUE_TYPES_RESPONSE);
-        mQueueRequests.add(JiraContentConst.VERSIONS_RESPONSE);
-        mQueueRequests.add(JiraContentConst.COMPONENTS_RESPONSE);
+        mQueueRequests.add(ContentConst.ISSUE_TYPES_RESPONSE);
+        mQueueRequests.add(ContentConst.VERSIONS_RESPONSE);
+        mQueueRequests.add(ContentConst.COMPONENTS_RESPONSE);
         showProgressIfNeed();
         initIssueTypesSpinner();
         initVersionsSpinner(projectKey);
@@ -157,7 +157,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void initProjectNamesSpinner() {
         mProjectNamesSpinner = (Spinner) findViewById(R.id.spin_projects_name);
         mProjectNamesSpinner.setEnabled(false);
-        JiraContent.getInstance().getProjectsNames(new JiraGetContentCallback<HashMap<JProjects, String>>() {
+        JiraContent.getInstance().getProjectsNames(new GetContentCallback<HashMap<JProjects, String>>() {
             @Override
             public void resultOfDataLoading(final HashMap<JProjects, String> result) {
                 if (result != null) {
@@ -169,7 +169,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             projectsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                             mProjectNamesSpinner.setAdapter(projectsAdapter);
                             if (ActiveUser.getInstance().getLastProjectKey() != null) {
-                                JiraContent.getInstance().getProjectNameByKey(ActiveUser.getInstance().getLastProjectKey(), new JiraGetContentCallback<String>() {
+                                JiraContent.getInstance().getProjectNameByKey(ActiveUser.getInstance().getLastProjectKey(), new GetContentCallback<String>() {
                                     @Override
                                     public void resultOfDataLoading(String result) {
                                         if (result != null) {
@@ -185,14 +185,14 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     });
                     mProjectNamesSpinner.setEnabled(true);
                 }
-                mQueueRequests.remove(JiraContentConst.PROJECTS_RESPONSE);
+                mQueueRequests.remove(ContentConst.PROJECTS_RESPONSE);
 
             }
         });
         mProjectNamesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                JiraContent.getInstance().getProjectKeyByName((String) parent.getItemAtPosition(position), new JiraGetContentCallback<String>() {
+                JiraContent.getInstance().getProjectKeyByName((String) parent.getItemAtPosition(position), new GetContentCallback<String>() {
                     @Override
                     public void resultOfDataLoading(String result) {
                         if (result != null) {
@@ -211,7 +211,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void initPrioritiesSpinner() {
         final Spinner prioritiesSpinner = (Spinner) findViewById(R.id.spin_priority);
         prioritiesSpinner.setEnabled(false);
-        JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
+        JiraContent.getInstance().getPrioritiesNames(new GetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(final HashMap<String, String> result) {
                 if (result != null) {
@@ -230,7 +230,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         }
                     });
                 }
-                mQueueRequests.remove(JiraContentConst.PRIORITIES_RESPONSE);
+                mQueueRequests.remove(ContentConst.PRIORITIES_RESPONSE);
                 showProgressIfNeed();
             }
         });
@@ -250,7 +250,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         final Spinner versionsSpinner = (Spinner) findViewById(R.id.spin_affects_versions);
         final TextView affectTextView = (TextView)findViewById(R.id.tv_affects_versions);
         versionsSpinner.setEnabled(false);
-        JiraContent.getInstance().getVersionsNames(projectKey, new JiraGetContentCallback<HashMap<String, String>>() {
+        JiraContent.getInstance().getVersionsNames(projectKey, new GetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
                 if (result != null && result.size() > 0) {
@@ -268,7 +268,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     affectTextView.setVisibility(View.GONE);
 
                 }
-                mQueueRequests.remove(JiraContentConst.VERSIONS_RESPONSE);
+                mQueueRequests.remove(ContentConst.VERSIONS_RESPONSE);
                 showProgressIfNeed();
             }
         });
@@ -288,7 +288,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         final TextView componentsTextView = (TextView) findViewById(R.id.tv_components);
         mComponents = (Spinner) findViewById(R.id.spin_components);
         mComponents.setEnabled(false);
-        JiraContent.getInstance().getComponentsNames(projectKey, new JiraGetContentCallback<HashMap<String, String>>() {
+        JiraContent.getInstance().getComponentsNames(projectKey, new GetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
                 if (result != null && result.size() > 0) {
@@ -309,7 +309,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     componentsTextView.setVisibility(View.GONE);
                     mComponents.setVisibility(View.GONE);
                 }
-                mQueueRequests.remove(JiraContentConst.COMPONENTS_RESPONSE);
+                mQueueRequests.remove(ContentConst.COMPONENTS_RESPONSE);
                 showProgressIfNeed();
             }
         });
@@ -318,7 +318,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void initIssueTypesSpinner() {
         final Spinner issueTypesSpinner = (Spinner) findViewById(R.id.spin_issue_name);
         issueTypesSpinner.setEnabled(false);
-        JiraContent.getInstance().getIssueTypesNames(new JiraGetContentCallback<List<String>>() {
+        JiraContent.getInstance().getIssueTypesNames(new GetContentCallback<List<String>>() {
             @Override
             public void resultOfDataLoading(final List<String> result) {
                 if(result != null)
@@ -328,7 +328,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
                         issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                         issueTypesSpinner.setAdapter(issueTypesAdapter);
-                        if (ActiveUser.getInstance().getStartedRecod()) {
+                        if (ActiveUser.getInstance().getRecord()) {
                             if (issueTypesAdapter.getPosition("Bug") != -1) {
                                 issueTypesSpinner.setSelection(issueTypesAdapter.getPosition("Bug"));
                             }
@@ -343,7 +343,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     }
                     });
                 }
-                mQueueRequests.remove(JiraContentConst.ISSUE_TYPES_RESPONSE);
+                mQueueRequests.remove(ContentConst.ISSUE_TYPES_RESPONSE);
                 showProgressIfNeed();
             }
         });
@@ -361,7 +361,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     private void initDescriptionEditText() {
         mDescriptionTextInput = (TextInput) findViewById(R.id.description_input);
-        JiraContent.getInstance().getDescription(new JiraGetContentCallback<Spanned>() {
+        JiraContent.getInstance().getDescription(new GetContentCallback<Spanned>() {
             @Override
             public void resultOfDataLoading(final Spanned result) {
                 if (result != null) {
@@ -372,7 +372,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         }
                     });
                 }
-                mQueueRequests.remove(JiraContentConst.DESCRIPTION_RESPONSE);
+                mQueueRequests.remove(ContentConst.DESCRIPTION_RESPONSE);
                 showProgressIfNeed();
             }
         });
@@ -421,7 +421,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 JiraContent.getInstance().createIssue(mIssueTypeName,
                             mPriorityName, mVersionName, mSummaryTextInput.getText().toString(),
                             mDescriptionTextInput.getText().toString(), mEnvironmentTextInput.getText().toString(),
-                            mAssignableUserName, ActiveUser.getInstance().getLastComponentsIds(), new JiraGetContentCallback<JCreateIssueResponse>() {
+                            mAssignableUserName, ActiveUser.getInstance().getLastComponentsIds(), new GetContentCallback<JCreateIssueResponse>() {
                                 @Override
                                 public void resultOfDataLoading(JCreateIssueResponse result) {
                                     if (result != null) {
@@ -511,7 +511,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
                             recyclerView.setAdapter(mAdapter);
                         }
-                        mQueueRequests.remove(JiraContentConst.ATTACHMENT_RESPONSE);
+                        mQueueRequests.remove(ContentConst.ATTACHMENT_RESPONSE);
                         showProgressIfNeed();
                     }
                 });
@@ -554,7 +554,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void setAssignableNames(String s) {
         mAssignableAutocompleteView.setEnabled(false);
         mAssignableAutocompleteView.showProgress(true);
-        JiraContent.getInstance().getUsersAssignable(s, new JiraGetContentCallback<List<String>>() {
+        JiraContent.getInstance().getUsersAssignable(s, new GetContentCallback<List<String>>() {
             @Override
             public void resultOfDataLoading(List<String> result) {
                 if (result != null) {
