@@ -149,44 +149,46 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     }
 
     public void onBindViewHolder(final ViewHolder viewHolder, int i) {
-        Attachment attachment = mAttachments.get(i);
-        viewHolder.mScreenshotState = attachment.mScreenshotState;
-        Logger.d(TAG, attachment.mName);
-        viewHolder.mScreenshotName.setText(attachment.mName);
-        if (attachment.mFilePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
-                attachment.mFilePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
-                attachment.mFilePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
-            if (attachment.mScreenshotState == ScreenshotState.WRITTEN) {
-                if (viewHolder.mScreenshotImage.getDrawable() == null) {
-                    ImageLoader.getInstance().displayImage("file:///" + attachment.mFilePath, viewHolder.mScreenshotImage, new ImageLoadingListener() {
-                        @Override
-                        public void onLoadingStarted(String imageUri, View view) {
-                            viewHolder.mProgress.setVisibility(View.VISIBLE);
-                        }
+        if (mAttachments != null && mAttachments.size() != 0) {
+            Attachment attachment = mAttachments.get(i);
+            viewHolder.mScreenshotState = attachment.mScreenshotState;
+            Logger.d(TAG, attachment.mName);
+            viewHolder.mScreenshotName.setText(attachment.mName);
+            if (attachment.mFilePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
+                    attachment.mFilePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
+                    attachment.mFilePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
+                if (attachment.mScreenshotState == ScreenshotState.WRITTEN) {
+                    if (viewHolder.mScreenshotImage.getDrawable() == null) {
+                        ImageLoader.getInstance().displayImage("file:///" + attachment.mFilePath, viewHolder.mScreenshotImage, new ImageLoadingListener() {
+                            @Override
+                            public void onLoadingStarted(String imageUri, View view) {
+                                viewHolder.mProgress.setVisibility(View.VISIBLE);
+                            }
 
-                        @Override
-                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                            @Override
+                            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                            viewHolder.mProgress.setVisibility(View.GONE);
-                        }
+                            @Override
+                            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                                viewHolder.mProgress.setVisibility(View.GONE);
+                            }
 
-                        @Override
-                        public void onLoadingCancelled(String imageUri, View view) {
+                            @Override
+                            public void onLoadingCancelled(String imageUri, View view) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
+                } else {
+                    viewHolder.mProgress.setVisibility(View.VISIBLE);
                 }
-            } else {
-                viewHolder.mProgress.setVisibility(View.VISIBLE);
+            } else if (attachment.mFilePath.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
+                viewHolder.mScreenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
             }
-        } else if (attachment.mFilePath.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
-            viewHolder.mScreenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
+            viewHolder.mScreenshotClose.setEnabled(true);
         }
-        viewHolder.mScreenshotClose.setEnabled(true);
     }
 
     @Override
