@@ -40,7 +40,12 @@ public class InputsUtil {
 
             @Override
             public boolean validate(TextEditable editable) {
-                return TextUtils.isEmpty(editable.getText().toString());
+                String text = editable.getText().toString();
+                String urlPrefix = AmttApplication.getContext().getString(R.string.url_prefix);
+                if (text.equals(urlPrefix)) {
+                    return text.length() > urlPrefix.length();
+                }
+                return TextUtils.isEmpty(text);
             }
         };
         sWhitespacesValidator = new Validator() {
