@@ -42,7 +42,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     public void initListValue(){
-        String[] array = TestUtil.getTestedApps(false);;
+        String[] array = TestUtil.getTestedApps();;
         projectName.setEntries(array);
         projectName.setEntryValues(array);
     }

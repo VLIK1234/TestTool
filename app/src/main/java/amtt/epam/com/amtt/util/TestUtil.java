@@ -32,7 +32,7 @@ public class TestUtil {
         return (!list.isEmpty()) ? list.get(0) : null;
     }
 
-    public static String[] getTestedApps(boolean getSysPackages) {
+    public static String[] getTestedApps() {
         ArrayList<String> res = new ArrayList<>();
         List<PackageInfo> packs = AmttApplication.getContext().getPackageManager().getInstalledPackages(PackageManager.GET_ACTIVITIES);
         for (PackageInfo packageInfo: packs) {
