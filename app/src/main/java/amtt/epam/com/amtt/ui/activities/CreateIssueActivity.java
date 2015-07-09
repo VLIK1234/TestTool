@@ -2,8 +2,8 @@ package amtt.epam.com.amtt.ui.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -21,13 +21,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,21 +46,23 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
+import amtt.epam.com.amtt.http.MediaType;
+import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.AutocompleteProgressView;
 import amtt.epam.com.amtt.ui.views.TextInput;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
-import amtt.epam.com.amtt.util.GifEncoder;
-import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.util.GifUtil;
+import amtt.epam.com.amtt.util.GifUtil.GifProgressListener;
 import amtt.epam.com.amtt.util.InputsUtil;
-import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.Validator;
 
-public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener {
+public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, GifProgressListener {
 
-    private static final String TAG = CreateIssueActivity.class.getSimpleName();
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final String DEFAULT_PRIORITY_ID = "3";
     private AutocompleteProgressView mAssignableAutocompleteView;
@@ -82,8 +82,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private Spinner mComponents;
     private Queue<JiraContentConst> mQueueRequests = new LinkedList<>();
     private Button mCreateIssueButton;
-    private CheckBox mCheckBox;
-    private List<Bitmap> mScreenshots;
+    private ProgressBar mGifProgress;
+    private List<Step> mSteps;
 
     public static class AssigneeHandler extends Handler {
 
@@ -153,34 +153,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initPrioritiesSpinner();
         initCreateIssueButton();
         initClearEnvironmentButton();
-
-        mCheckBox = (CheckBox) findViewById(R.id.ch_attach_gif);
-        mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked && mScreenshots.size() != 0) {
-
-                    GifEncoder encoder = new GifEncoder();
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    encoder.start(bos);
-                    for (Bitmap bitmap : mScreenshots) {
-                        encoder.addFrame(bitmap);
-                    }
-                    encoder.finish();
-
-
-                    FileOutputStream outputStream = null;
-                    try {
-                        outputStream = openFileOutput("file.gif", MODE_PRIVATE);
-                        outputStream.write(bos.toByteArray());
-                    } catch (IOException e) {
-                        Logger.e(TAG, e.getMessage());
-                    } finally {
-                        IOUtils.close(outputStream);
-                    }
-                }
-            }
-        });
+        initGifAttachmentControls();
     }
 
     private void reinitRelatedViews(String projectKey) {
@@ -520,8 +493,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (result != null) {
-                            populateEncoderBitmaps((List) result);
+                        if (result != null && mAdapter == null) {
+                            mSteps = (List) result;
 
                             List<Attachment> screenArray = AttachmentManager.getInstance().getAttachmentList(result);
                             mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
@@ -551,7 +524,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mEnvironmentTextInput.setText("");
+                                mEnvironmentTextInput.setText(Constants.Symbols.EMPTY);
                             }
                         })
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -564,6 +537,50 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         .show();
             }
         });
+    }
+
+    private void initGifAttachmentControls() {
+        CheckBox gifCheckBox = (CheckBox) findViewById(R.id.cb_gif_attachment);
+        gifCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                if (!PreferenceUtil.getBoolean(getString(R.string.key_gif_info_dialog))) {
+                    new AlertDialog.Builder(CreateIssueActivity.this)
+                            .setTitle(R.string.title_gif_info)
+                            .setMessage(R.string.message_gif_info)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    PreferenceUtil.putBoolean(getString(R.string.key_gif_info_dialog), true);
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    PreferenceUtil.putBoolean(getString(R.string.key_gif_info_dialog), true);
+                                }
+                            })
+                            .create()
+                            .show();
+                }
+
+                int stepsArraySize = mSteps.size();
+                if (isChecked && stepsArraySize != 0) {
+                    mGifProgress.setMax(stepsArraySize);
+                    mGifProgress.setIndeterminate(true);
+                    mGifProgress.setVisibility(View.VISIBLE);
+                    GifUtil.createGif(CreateIssueActivity.this, mSteps);
+                } else {
+                    GifUtil.setCanceled(true);
+                    mGifProgress.setVisibility(View.GONE);
+                }
+            }
+        });
+        mGifProgress = (ProgressBar) findViewById(R.id.pb_gif_attachment);
+        int progressColor = getResources().getColor(R.color.accent);
+        mGifProgress.getProgressDrawable().setColorFilter(progressColor, PorterDuff.Mode.SRC_IN);
+        mGifProgress.getIndeterminateDrawable().setColorFilter(progressColor, PorterDuff.Mode.SRC_IN);
     }
 
     private void setAssignableNames(String s) {
@@ -590,27 +607,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         });
     }
 
-    private void populateEncoderBitmaps(List<Step> stepList) {
-        mScreenshots = new ArrayList<>();
-        for (Step step : stepList) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = //TODO LOAD IMAGEES WITH LOWER QUALITY!!!
-            mScreenshots.add(BitmapFactory.decodeFile(step.getFilePath(), ));
-        }
-    }
-
-    @Override
-    public void onItemRemove(int position) {
-        mAdapter.removeItem(position);
-    }
-
-    @Override
-    public void onItemShow(int position) {
-        Intent preview = new Intent(CreateIssueActivity.this, PreviewActivity.class);
-        preview.putExtra(PreviewActivity.FILE_PATH, mAdapter.getAttachmentFilePathList().get(position));
-        startActivity(preview);
-    }
-
     public void showProgressIfNeed() {
         if (!mQueueRequests.isEmpty()) {
             showProgress(true);
@@ -619,6 +615,59 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             showProgress(false);
             mCreateIssueButton.setEnabled(true);
         }
+    }
+
+    //Callbacks
+    //Recycler item callback
+    @Override
+    public void onItemRemove(int position) {
+        mAdapter.removeItem(position);
+    }
+
+    @Override
+    public void onItemShow(int position) {
+        Intent intent;
+        String filePath = mAdapter.getAttachments().get(position).filePath;
+
+        if (filePath.contains(MimeType.IMAGE_GIF.getFileExtension())) {
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse(MediaType.FILE_PATH_PREFIX + filePath), MimeType.IMAGE_GIF.getType());
+        } else {
+            intent = new Intent(CreateIssueActivity.this, PreviewActivity.class);
+            intent.putExtra(PreviewActivity.KEY_FILE_PATH, filePath);
+        }
+        startActivity(intent);
+    }
+
+    //Gif processing
+    @Override
+    public void onProgress(int progress) {
+        if (progress == 1) {
+            mGifProgress.setIndeterminate(false);
+        }
+        mGifProgress.setProgress(progress);
+    }
+
+    @Override
+    public void onGifCreated() {
+        mGifProgress.setVisibility(View.GONE);
+        mAdapter.getAttachments().add(0, new Attachment(GifUtil.FILE_NAME, getFilesDir() + "/" + GifUtil.FILE_NAME));
+        mAdapter.notifyItemInserted(0);
+    }
+
+    @Override
+    public void onSavingError() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.title_gif_isnt_saved)
+                .setMessage(R.string.message_gif_isnt_saved)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
     }
 
 }

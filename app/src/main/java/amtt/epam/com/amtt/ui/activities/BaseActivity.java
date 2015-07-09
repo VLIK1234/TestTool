@@ -1,17 +1,9 @@
 package amtt.epam.com.amtt.ui.activities;
 
-import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import amtt.epam.com.amtt.util.Logger;
 
 /**
  * @author Ivan_Bakach
@@ -41,22 +33,4 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public FileOutputStream openFileOutput(String name, int mode) {
-        FileOutputStream outputStream = null;
-        try {
-            outputStream = super.openFileOutput(name, mode);
-        } catch (FileNotFoundException e) {
-            Logger.e(TAG, e.getMessage());
-            File file = new File(getFilesDir() + "/" + Uri.parse(name).getLastPathSegment());
-            try {
-                if (file.createNewFile()) {
-                    outputStream = new FileOutputStream(file);
-                }
-            } catch (IOException internalException) {
-                Logger.e(TAG, internalException.getMessage());
-            }
-        }
-        return outputStream;
-    }
 }

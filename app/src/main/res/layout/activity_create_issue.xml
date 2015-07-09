@@ -107,11 +107,30 @@
                 android:layout_marginTop="12dp"
                 tools:context=".app.CreateIssueActivity" />
 
-            <CheckBox
-                android:id="@+id/ch_attach_gif"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_attach_gif"/>
+            <RelativeLayout
+                android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <CheckBox
+                    android:id="@+id/cb_gif_attachment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_attach_gif" />
+
+                <ProgressBar
+                    android:id="@+id/pb_gif_attachment"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_toEndOf="@id/cb_gif_attachment"
+                    android:layout_toRightOf="@id/cb_gif_attachment"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
             <!-- *******ATTACHMENT END*************************************************-->
 
             <!-- *******AFFECTS VERSIONS BEGIN****************************************-->

@@ -5,11 +5,11 @@ import android.preference.PreferenceManager;
 
 import amtt.epam.com.amtt.AmttApplication;
 
-public class PreferenceUtils {
+public class PreferenceUtil {
 
     private static SharedPreferences mSharedPreferences = null;
 
-    public PreferenceUtils() {
+    public PreferenceUtil() {
     }
 
     public static String getString(String key) {

@@ -8,17 +8,18 @@ public enum MimeType {
 
     TEXT_PLAIN(MediaType.TEXT_TYPE, "plain", "txt"),
     IMAGE_JPEG(MediaType.IMAGE_TYPE, "jpeg"),
-    IMAGE_PNG(MediaType.IMAGE_TYPE, "png");
+    IMAGE_PNG(MediaType.IMAGE_TYPE, "png"),
+    IMAGE_GIF(MediaType.IMAGE_TYPE, "gif");
 
     String mCompoundType;
     String mFileExtension;
 
-    private MimeType(String type, String subType, String fileExtension) {
+    MimeType(String type, String subType, String fileExtension) {
         mCompoundType = type + "/" + subType;
         mFileExtension = "." + fileExtension;
     }
 
-    private MimeType(String type, String subType) {
+    MimeType(String type, String subType) {
         this(type, subType, subType);
     }
 

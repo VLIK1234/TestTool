@@ -1,8 +1,5 @@
 package amtt.epam.com.amtt.adapter;
 
-import amtt.epam.com.amtt.AmttApplication;
-import amtt.epam.com.amtt.bo.ticket.Attachment;
-import amtt.epam.com.amtt.util.Logger;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,21 +12,26 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.bo.ticket.Attachment;
+import amtt.epam.com.amtt.http.MediaType;
+import amtt.epam.com.amtt.http.MimeType;
+import amtt.epam.com.amtt.util.Logger;
 
 /**
-@author Iryna Monchanka
-@version on 27.05.2015
+ * @author Iryna Monchanka
+ * @version on 27.05.2015
  */
 
-public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ViewHolder>{
+public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ViewHolder> {
 
     private final String TAG = this.getClass().getSimpleName();
     private List<Attachment> screenshots;
     private int rowLayout;
     private ViewHolder.ClickListener clickListener;
 
-        public AttachmentAdapter(List<Attachment> screenshots, int rowLayout, ViewHolder.ClickListener clickListener) {
+    public AttachmentAdapter(List<Attachment> screenshots, int rowLayout, ViewHolder.ClickListener clickListener) {
         this.screenshots = screenshots;
         this.rowLayout = rowLayout;
         this.clickListener = clickListener;
@@ -47,9 +49,11 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         Attachment screenshot = screenshots.get(i);
         Logger.d(TAG, screenshot.name);
         viewHolder.screenshotName.setText(screenshot.name);
-        if (screenshot.filePath.contains(".png")) {
-            ImageLoader.getInstance().displayImage("file:///" + screenshot.filePath, viewHolder.screenshotImage);
-        }else if (screenshot.filePath.contains(".txt")){
+        if (screenshot.filePath.contains(MimeType.IMAGE_PNG.getFileExtension())
+                || screenshot.filePath.contains(MimeType.IMAGE_JPEG.getFileExtension())
+                || screenshot.filePath.contains(MimeType.IMAGE_GIF.getFileExtension())) {
+            ImageLoader.getInstance().displayImage(MediaType.FILE_PATH_PREFIX + screenshot.filePath, viewHolder.screenshotImage);
+        } else if (screenshot.filePath.contains(".txt")) {
             viewHolder.screenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
         }
 
@@ -72,15 +76,15 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         Logger.d(TAG, String.valueOf(position));
     }
 
-    public ArrayList<String> getAttachmentFilePathList(){
+    public ArrayList<String> getAttachmentFilePathList() {
         ArrayList<String> filePathList = new ArrayList<>();
-        for (Attachment attachment:screenshots) {
+        for (Attachment attachment : screenshots) {
             filePathList.add(attachment.filePath);
         }
         return filePathList;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView screenshotImage;
         public TextView screenshotName;
         public ImageView screenshotClose;
@@ -89,10 +93,10 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
         public ViewHolder(View itemView, ClickListener listener) {
             super(itemView);
-            screenshotImage = (ImageView)itemView.findViewById(R.id.iv_screenImage);
+            screenshotImage = (ImageView) itemView.findViewById(R.id.iv_screenImage);
             screenshotImage.setOnClickListener(this);
-            screenshotName = (TextView)itemView.findViewById(R.id.tv_screenName);
-            screenshotClose = (ImageView)itemView.findViewById(R.id.iv_close);
+            screenshotName = (TextView) itemView.findViewById(R.id.tv_screenName);
+            screenshotClose = (ImageView) itemView.findViewById(R.id.iv_close);
             this.listener = listener;
             screenshotClose.setOnClickListener(this);
         }
@@ -113,10 +117,16 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
             }
         }
+
         public interface ClickListener {
             void onItemRemove(int position);
+
             void onItemShow(int position);
         }
+    }
+
+    public List<Attachment> getAttachments() {
+        return screenshots;
     }
 
 }

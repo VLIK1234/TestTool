@@ -2,6 +2,8 @@ package amtt.epam.com.amtt.database.util;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -80,6 +82,20 @@ public class StepUtil {
             builder.append(Html.fromHtml("<br />" + "<br />"));
         }
         return builder;
+    }
+
+    public static List<Bitmap> getStepBitmaps(List<Step> stepsList) {
+        List<Bitmap> bitmaps = new ArrayList<>();
+        for (Step step : stepsList) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(step.getFilePath(), options);
+            options.inJustDecodeBounds = false;
+            options.outHeight /= 32;
+            options.outWidth /= 32;
+            bitmaps.add(BitmapFactory.decodeFile(step.getFilePath(), options));
+        }
+        return bitmaps;
     }
 
 }

@@ -33,7 +33,7 @@ import amtt.epam.com.amtt.util.UIUtil;
  */
 public class PreviewActivity extends Activity{
 
-    public static final String FILE_PATH = "filePath";
+    public static final String KEY_FILE_PATH = "filePath";
     public static final double RATIO_SCALE_DIALOG_MARGIN = 0.8;
     private ImageView imagePreview;
     private TextView textPreview;
@@ -51,7 +51,7 @@ public class PreviewActivity extends Activity{
         String title = "";
         Bundle extra = getIntent().getExtras();
         if (extra!=null) {
-            String filePath = extra.getString(FILE_PATH);
+            String filePath = extra.getString(KEY_FILE_PATH);
             title = FileUtil.getFileName(filePath);
             showPreview(filePath);
         }

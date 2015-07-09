@@ -7,7 +7,7 @@ import android.preference.PreferenceActivity;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.ui.fragments.SettingsFragment;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.util.PreferenceUtil;
 
 /**
  @author Ivan_Bakach
@@ -24,7 +24,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
     @Override
     protected void onResume() {
         super.onResume();
-        PreferenceUtils.getPref().registerOnSharedPreferenceChangeListener(this);
+        PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class SettingActivity extends PreferenceActivity implements SharedPrefere
     @Override
     protected void onPause() {
         super.onPause();
-        PreferenceUtils.getPref().unregisterOnSharedPreferenceChangeListener(this);
+        PreferenceUtil.getPref().unregisterOnSharedPreferenceChangeListener(this);
         finish();
     }
 }
