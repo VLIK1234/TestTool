@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="amtt.epam.com.amtt.ui.activities.PreviewActivity">
+
+    <item android:id="@+id/action_search"
+        android:title="Search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:orderInCategory="1"
+        app:showAsAction="ifRoom|withText"
+        app:actionViewClass="android.support.v7.widget.SearchView"/>
+    <item android:id="@+id/action_search_forward"
+        android:title="Forward"
+        android:icon="@android:drawable/arrow_down_float"
+        android:orderInCategory="2"
+        app:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/action_search_backward"
+        android:title="Backward"
+        android:icon="@android:drawable/arrow_up_float"
+        android:orderInCategory="3"
+        app:showAsAction="ifRoom|withText"
+        app:actionViewClass="android.support.v7.widget.SearchView"/>
+</menu>
