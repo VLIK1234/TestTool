@@ -7,16 +7,21 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -27,16 +32,18 @@ import amtt.epam.com.amtt.util.ReadLargeTextUtil;
 /**
  * Created by Ivan_Bakach on 09.06.2015.
  */
-public class PreviewActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class PreviewActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
 
     public static final String FILE_PATH = "filePath";
     private TextView mTextPreview;
     public ScrollView mRootView;
-    public int mOffset;
-    public int mLine;
     public String filePath;
     public String logText;
     public SearchView searchView;
+    public Button forwardButton;
+    public Button backwardButton;
+    public ArrayList<Integer> allIndexes;
+    private int currentIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,15 +54,6 @@ public class PreviewActivity extends AppCompatActivity implements SearchView.OnQ
             getSupportActionBar().setDisplayShowHomeEnabled(false);
         }
         mRootView = (ScrollView) findViewById(R.id.scroll_view);
-        mRootView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-
-            @Override
-            public void onScrollChanged() {
-                int scrollX = mRootView.getScrollX();
-                int scrollY = mRootView.getScrollY();
-                Log.d("TAG", scrollX + " : " + scrollY);
-            }
-        });
         mTextPreview = (TextView) findViewById(R.id.text_preview);
 
         String title = "";
@@ -109,6 +107,7 @@ public class PreviewActivity extends AppCompatActivity implements SearchView.OnQ
     public void showPreview(String filePath) {
         if (FileUtil.isText(filePath)) {
             mTextPreview.setText(readLogFromFile(filePath));
+            logText = readTextLogFromFile(filePath);
         }
     }
 
@@ -118,22 +117,43 @@ public class PreviewActivity extends AppCompatActivity implements SearchView.OnQ
         MenuItem searchItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setQueryHint("Search");
+        searchView.setSubmitButtonEnabled(false);
+        LinearLayout linearLayoutOfSearchView = (LinearLayout) searchView.getChildAt(0);
+        LayoutInflater factory = LayoutInflater.from(getBaseContext());
+        final View view = factory.inflate(R.layout.search_panel, null);
+        backwardButton = (Button) view.findViewById(R.id.bt_backward);
+        backwardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (allIndexes!=null) {
+                    if (0 < currentIndex - 1) {
+                        currentIndex--;
+                        goToIndexPostion(currentIndex);
+                    }else if (currentIndex==0) {
+                        currentIndex = allIndexes.size()-1;
+                        goToIndexPostion(currentIndex);
+                    }
+                }
+            }
+        });
+        forwardButton = (Button) view.findViewById(R.id.bt_forward);
+        forwardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (allIndexes!=null) {
+                    if (allIndexes.size() > currentIndex + 1) {
+                        currentIndex++;
+                        goToIndexPostion(currentIndex);
+                    }else if (currentIndex == allIndexes.size()-1) {
+                        currentIndex = 0;
+                        goToIndexPostion(currentIndex);
+                    }
+                }
+            }
+        });
+        linearLayoutOfSearchView.addView(view);
         searchView.setOnQueryTextListener(this);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_search_forward:
-                Toast.makeText(getBaseContext(), "Forward", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_search_backward:
-                Toast.makeText(getBaseContext(), "Backward", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override
@@ -148,15 +168,28 @@ public class PreviewActivity extends AppCompatActivity implements SearchView.OnQ
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        currentIndex = 0;
         return true;
     }
 
     private void onSearch(String search) throws UnsupportedEncodingException {
-        logText = readTextLogFromFile(filePath);
-        mOffset = logText.indexOf(search);
-        mLine = mTextPreview.getLayout().getLineForOffset(mOffset+1);
-//        mLine = mTextPreview.getLayout().getLineTop(Integer.valueOf(search));
-        mRootView.smoothScrollTo(0, mLine * 24);
-        Toast.makeText(getBaseContext(), mRootView.getVerticalScrollbarPosition() +" mLine: " + mLine + " mOffset: " + mOffset, Toast.LENGTH_LONG).show();
+        int index = logText.indexOf(search);
+        allIndexes = new ArrayList<>();
+        if (index==-1) {
+            Toast.makeText(getBaseContext(), "Nothing Found",Toast.LENGTH_SHORT).show();
+        }
+        while (index >= 0) {
+            allIndexes.add(index);
+            index = logText.indexOf(search, index + 1);
+        }
+        goToIndexPostion(currentIndex);
+    }
+    private void goToIndexPostion(int position) {
+        if (allIndexes.size()>0&&position<allIndexes.size()) {
+            int offset = allIndexes.get(position);
+            int line = mTextPreview.getLayout().getLineForOffset(offset);
+            double ratioLineInScrollPoint = mRootView.getChildAt(0).getHeight() / mTextPreview.getLayout().getLineCount();
+            mRootView.smoothScrollTo(0, line * (int) ratioLineInScrollPoint);
+        }
     }
 }

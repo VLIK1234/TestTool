@@ -16,14 +16,9 @@ public class BaseActivity extends AppCompatActivity {
     static final int NO_FLAGS = 0;
     private InputMethodManager mInputManager;
     public void showProgress(final boolean show) {
-        final View progressBar = findViewById(android.R.id.progress);
+        View progressBar = findViewById(android.R.id.progress);
         if (progressBar != null) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
+            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
 
