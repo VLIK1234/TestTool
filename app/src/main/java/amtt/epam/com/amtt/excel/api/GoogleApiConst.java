@@ -9,7 +9,7 @@ public final class GoogleApiConst {
     private static final String BASE_PATH = "https://spreadsheets.google.com/feeds/";
     private static final String WORKSHEETS = "worksheets/";
     private static final String LIST = "list/";
-    private static final String DEFAULT_SPREADSHEET_KEY = "1t9Yl39HHl4FjXkT9vGu__Q0glvdIk6SctGrVjeACt5k/";
+    private static final String DEFAULT_SPREADSHEET_KEY = "1tUoL9M-2HZOmxL8W83fiRyGJ35iabXQ4CEpM3A2IlC4/";
     public static final String PATH_POSTFIX = "public/full";
     public static final String SPREADSHEET_PATH = BASE_PATH + WORKSHEETS + DEFAULT_SPREADSHEET_KEY + PATH_POSTFIX;
     public static final String WORKSHEET_PATH = BASE_PATH + LIST;
