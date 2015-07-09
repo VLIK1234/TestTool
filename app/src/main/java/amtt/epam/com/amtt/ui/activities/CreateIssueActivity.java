@@ -56,6 +56,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final String DEFAULT_PRIORITY_ID = "3";
+    public static final String BUG = "Bug";
+    public static final String TASK = "Task";
     private AutocompleteProgressView mAssignableAutocompleteView;
 
     private TextInput mDescriptionTextInput;
@@ -342,12 +344,12 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                         issueTypesSpinner.setAdapter(issueTypesAdapter);
                         if (ActiveUser.getInstance().getRecord()) {
-                            if (issueTypesAdapter.getPosition("Bug") != -1) {
-                                issueTypesSpinner.setSelection(issueTypesAdapter.getPosition("Bug"));
+                            if (issueTypesAdapter.getPosition(BUG) != -1) {
+                                issueTypesSpinner.setSelection(issueTypesAdapter.getPosition(BUG));
                             }
                         } else {
-                            if (issueTypesAdapter.getPosition("Task") != -1) {
-                                issueTypesSpinner.setSelection(issueTypesAdapter.getPosition("Task"));
+                            if (issueTypesAdapter.getPosition(TASK) != -1) {
+                                issueTypesSpinner.setSelection(issueTypesAdapter.getPosition(TASK));
                             }
                         }
 

@@ -85,20 +85,18 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
             public void resultOfDataLoading(GoogleWorksheet result) {
                 if(result != null){
                     List<GoogleEntryWorksheet> entryWorksheetList = result.getEntry();
-                    if (entryWorksheetList != null) {
-                        if (!entryWorksheetList.isEmpty()) {
-                            for (int i = 1; i < entryWorksheetList.size(); i++) {
-                                if (entryWorksheetList.get(i).getTestCaseNameGSX() != null) {
-                                    ExpectedResultAdapter.ExpectedResult expectedResult = new ExpectedResultAdapter.ExpectedResult(entryWorksheetList.get(i).getLabelGSX(),
-                                            entryWorksheetList.get(i).getTestCaseNameGSX(),
-                                            entryWorksheetList.get(i).getPriorityGSX(),
-                                            entryWorksheetList.get(i).getTestStepsGSX(),
-                                            entryWorksheetList.get(i).getIdGSX());
-                                    mResultsAdapter.add(expectedResult);
-                                }
+                    if (entryWorksheetList != null && !entryWorksheetList.isEmpty()) {
+                        for (int i = 1; i < entryWorksheetList.size(); i++) {
+                            if (entryWorksheetList.get(i).getTestCaseNameGSX() != null) {
+                                ExpectedResultAdapter.ExpectedResult expectedResult = new ExpectedResultAdapter.ExpectedResult(entryWorksheetList.get(i).getLabelGSX(),
+                                        entryWorksheetList.get(i).getTestCaseNameGSX(),
+                                        entryWorksheetList.get(i).getPriorityGSX(),
+                                        entryWorksheetList.get(i).getTestStepsGSX(),
+                                        entryWorksheetList.get(i).getIdGSX());
+                                mResultsAdapter.add(expectedResult);
                             }
-                            mExpectedResultsListView.setAdapter(mResultsAdapter);
                         }
+                        mExpectedResultsListView.setAdapter(mResultsAdapter);
                     }
                 }
             }

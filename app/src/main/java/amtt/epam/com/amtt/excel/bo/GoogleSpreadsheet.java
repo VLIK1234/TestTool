@@ -36,7 +36,7 @@ public class GoogleSpreadsheet extends GoogleSheet {
     }
 
     public void setEntryItem(GoogleEntrySpreadshet googleEntrySpreadshet){
-        if(mEntry==null){
+        if(mEntry == null){
             mEntry = new ArrayList<>();
         }
         mEntry.add(googleEntrySpreadshet);
@@ -44,12 +44,10 @@ public class GoogleSpreadsheet extends GoogleSheet {
 
     public ArrayList<String> getListWorksheets() {
         ArrayList<String> worksheets = null;
-        if (mEntry != null) {
-            if (!mEntry.isEmpty()) {
-                worksheets = new ArrayList<>();
-                for (int i = 0; i < mEntry.size(); i++) {
-                    worksheets.add(mEntry.get(i).getListFeedLink().getHref());
-                }
+        if (mEntry != null && !mEntry.isEmpty()) {
+            worksheets = new ArrayList<>();
+            for (int i = 0; i < mEntry.size(); i++) {
+                worksheets.add(mEntry.get(i).getListFeedLink().getHref());
             }
         }
         return worksheets;
