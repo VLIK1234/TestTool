@@ -20,7 +20,7 @@ public class MonitorTest extends InstrumentationTestCase {
 
     public void testMonitor() {
         final Context context = getInstrumentation().getTargetContext();
-        TestBroadcastReceiver.writeMultipleLogs();
+        LogManger.writeMultipleLogs();
 
         IntentFilter filterReceiver = new IntentFilter();
         filterReceiver.addCategory(TestBroadcastReceiver.CATEGORY);
@@ -29,10 +29,10 @@ public class MonitorTest extends InstrumentationTestCase {
         context.registerReceiver(receiver, filterReceiver);
         receiver.setCloseUnitTest(false);
 
-        while (!receiver.getCloseUnitTest()) {
+        while (!receiver.needCloseUnitTest()) {
             try {
                 Thread.sleep(1000);
-                if (receiver.getCloseUnitTest()) {
+                if (receiver.needCloseUnitTest()) {
                     context.unregisterReceiver(receiver);
                     Assert.assertTrue(true);
                 }
