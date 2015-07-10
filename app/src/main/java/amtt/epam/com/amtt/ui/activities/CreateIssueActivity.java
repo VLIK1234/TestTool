@@ -651,8 +651,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     @Override
     public void onGifCreated() {
         mGifProgress.setVisibility(View.GONE);
-        mAdapter.getAttachments().add(0, new Attachment(GifUtil.FILE_NAME, getFilesDir() + "/" + GifUtil.FILE_NAME));
-        mAdapter.notifyItemInserted(0);
+        mAdapter.addItem(0, new Attachment(GifUtil.FILE_NAME, getFilesDir() + "/" + GifUtil.FILE_NAME));
     }
 
     @Override
