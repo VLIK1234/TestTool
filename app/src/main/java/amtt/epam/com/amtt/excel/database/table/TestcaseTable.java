@@ -16,6 +16,7 @@ public class TestcaseTable extends Table {
     public static final String TABLE_NAME = "testcase";
 
     public static final String _TESTCASE_ID_LINK = "_testcase_id_link";
+    public static final String _WORKSHEET_ID_LINK = "_worksheet_id_link";
     public static final String _UPDATED = "_updated";
     public static final String _TITLE = "_title";
     public static final String _TESTCASE_ID = "_testcase_id";
@@ -31,6 +32,7 @@ public class TestcaseTable extends Table {
     public static final String[] PROJECTION = {
             _ID,
             _TESTCASE_ID_LINK,
+            _WORKSHEET_ID_LINK,
             _UPDATED,
             _TITLE,
             _TESTCASE_ID,
@@ -46,6 +48,7 @@ public class TestcaseTable extends Table {
         sColumnsMap = new MultiValueMap<>();
         sColumnsMap.put(BaseColumns.TYPE_TEXT, new ArrayList<String>() {{
             add(_TESTCASE_ID_LINK);
+            add(_WORKSHEET_ID_LINK);
             add(_UPDATED);
             add(_TITLE);
             add(_TESTCASE_ID);

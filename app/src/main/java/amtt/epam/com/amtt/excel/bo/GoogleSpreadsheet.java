@@ -1,17 +1,43 @@
 package amtt.epam.com.amtt.excel.bo;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import amtt.epam.com.amtt.excel.database.contentprovider.GSUri;
+import amtt.epam.com.amtt.excel.database.table.SpreadsheetTable;
 
 /**
  * @author Iryna Monchanka
  * @version on 7/1/2015
  */
-public class GoogleSpreadsheet extends GoogleSheet {
 
+public class GoogleSpreadsheet extends GoogleSheet<GoogleSpreadsheet> {
+
+    private int mId;
     private List<GoogleEntrySpreadshet> mEntry;
 
     public GoogleSpreadsheet() {
+    }
+
+    public GoogleSpreadsheet(Cursor cursor) {
+        if (cursor.getPosition() == -1) {
+            cursor.moveToNext();
+        }
+        mId = cursor.getInt(cursor.getColumnIndex(SpreadsheetTable._ID));
+        mIdLink = cursor.getString(cursor.getColumnIndex(SpreadsheetTable._SPREADSHEET_ID_LINK));
+        mUpdated = cursor.getString(cursor.getColumnIndex(SpreadsheetTable._UPDATED));
+        mTitle = cursor.getString(cursor.getColumnIndex(SpreadsheetTable._TITLE));
+        mOpenSearchTotalResults = Integer.parseInt(cursor.getString(cursor.getColumnIndex(SpreadsheetTable._TOTAL_RESULTS)));
+        mOpenSearchStartIndex = Integer.parseInt(cursor.getString(cursor.getColumnIndex(SpreadsheetTable._START_INDEX)));
+    }
+
+    @Override
+    public GoogleSpreadsheet parse(Cursor cursor) {
+        return null;
     }
 
     public GoogleSpreadsheet(List<GoogleEntrySpreadshet> mEntry) {
@@ -35,8 +61,8 @@ public class GoogleSpreadsheet extends GoogleSheet {
         this.mEntry = entry;
     }
 
-    public void setEntryItem(GoogleEntrySpreadshet googleEntrySpreadshet){
-        if(mEntry == null){
+    public void setEntryItem(GoogleEntrySpreadshet googleEntrySpreadshet) {
+        if (mEntry == null) {
             mEntry = new ArrayList<>();
         }
         mEntry.add(googleEntrySpreadshet);
@@ -51,5 +77,26 @@ public class GoogleSpreadsheet extends GoogleSheet {
             }
         }
         return worksheets;
+    }
+
+    @Override
+    public int getId() {
+        return mId;
+    }
+
+    @Override
+    public Uri getUri() {
+        return GSUri.SPREADSHEET.get();
+    }
+
+    @Override
+    public ContentValues getContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(SpreadsheetTable._SPREADSHEET_ID_LINK, mIdLink);
+        values.put(SpreadsheetTable._UPDATED, mUpdated);
+        values.put(SpreadsheetTable._TITLE, mTitle);
+        values.put(SpreadsheetTable._TOTAL_RESULTS, mOpenSearchTotalResults);
+        values.put(SpreadsheetTable._START_INDEX, mOpenSearchStartIndex);
+        return values;
     }
 }

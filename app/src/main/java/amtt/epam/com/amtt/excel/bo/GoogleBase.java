@@ -1,10 +1,14 @@
 package amtt.epam.com.amtt.excel.bo;
 
+import android.database.Cursor;
+
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
+
 /**
  * @author Iryna Monchanka
  * @version on 7/1/2015
  */
-public class GoogleBase {
+public class GoogleBase<T> extends DatabaseEntity<T> {
 
     protected String mIdLink;
     protected String mUpdated;
@@ -53,4 +57,8 @@ public class GoogleBase {
         this.mSelfLink = selfLink;
     }
 
+    @Override
+    public T parse(Cursor cursor) {
+        return null;
+    }
 }
