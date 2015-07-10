@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.database.util;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -18,6 +19,7 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.ui.views.TextInput;
 import amtt.epam.com.amtt.util.FileUtil;
 
 /**
@@ -80,6 +82,24 @@ public class StepUtil {
             builder.append(Html.fromHtml("<br />" + "<br />"));
         }
         return builder;
+    }
+
+    public static void removeStepInfo(TextInput textInput, int stepId, boolean isStepWithActivityInfo) {
+        Editable editableText = textInput.getText();
+        if (editableText != null) {
+            Context context = AmttApplication.getContext();
+            String text = editableText.toString();
+            int startIndex = text.indexOf(context.getString(R.string.label_step) + stepId);
+            String lastLineText;
+            if (isStepWithActivityInfo) {
+                lastLineText = context.getString(R.string.label_package_name);
+            } else {
+                lastLineText = context.getString(R.string.label_file_name);
+            }
+            int lastLineIndex = text.indexOf(lastLineText, startIndex);
+            int endIndex = text.indexOf("\n\n", lastLineIndex) + 2;
+            editableText.delete(startIndex, endIndex);
+        }
     }
 
 }

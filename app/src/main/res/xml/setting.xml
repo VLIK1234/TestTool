@@ -6,7 +6,7 @@
         android:title="@string/preff_category_help_dialog">
         <CheckBoxPreference
             android:key="@string/key_dialog_hide"
-            android:summary="@string/dialog_label_checkbox"
+            android:summary="@string/check_box_do_not_show_again"
             android:defaultValue="false"
             android:title="@string/title_preff_dialog_hide" />
     </PreferenceCategory>

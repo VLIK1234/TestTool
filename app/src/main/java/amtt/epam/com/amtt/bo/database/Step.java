@@ -25,7 +25,11 @@ public class Step extends DatabaseEntity<Step> {
     private String mOrientation;
 
     public Step() {
-        mScreenPath = "";
+
+    }
+
+    public Step(int stepNumber) {
+        mStepNumber = stepNumber;
     }
 
     public Step(ComponentName componentName, String screenPath) {
