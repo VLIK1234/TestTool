@@ -3,6 +3,7 @@
 
     <string name="app_name">amtt</string>
 
+    <string name="title_activity_log">LogActivity</string>
     <string name="title_activity_expected_results">Expected Results</string>
     <string name="title_activity_create_issue">Creating issue</string>
     <string name="title_activity_steps">StepsActivity</string>
