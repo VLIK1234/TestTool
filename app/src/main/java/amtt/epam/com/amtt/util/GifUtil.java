@@ -117,7 +117,7 @@ public final class GifUtil {
         protected static final int alpharadbias = (((int) 1) << alpharadbshift);
 
 	  /*
-	   * Types and Global Variables --------------------------
+       * Types and Global Variables --------------------------
 	   */
 
         protected byte[] thepicture; /* the input image itself */
@@ -1287,12 +1287,14 @@ public final class GifUtil {
                         if (!isCanceled) {
                             encoder.addFrame(bitmaps.get(i));
                             final int progress = i + 1;
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    listener.onProgress(progress);
-                                }
-                            });
+                            if (listener != null) {
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        listener.onProgress(progress);
+                                    }
+                                });
+                            }
                         }
                     }
                     encoder.finish();
@@ -1302,14 +1304,23 @@ public final class GifUtil {
                     FileOutputStream outputStream = IOUtils.openFileOutput(context, FILE_NAME);
                     try {
                         outputStream.write(byteArrayStream.toByteArray());
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                listener.onGifCreated();
-                            }
-                        });
+                        if (listener != null) {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    listener.onGifCreated();
+                                }
+                            });
+                        }
                     } catch (IOException e) {
-                        listener.onSavingError();
+                        if (listener != null) {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    listener.onSavingError();
+                                }
+                            });
+                        }
                     } finally {
                         IOUtils.close(outputStream);
                     }
