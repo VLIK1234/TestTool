@@ -1,19 +1,19 @@
 package amtt.epam.com.amtt.ui.activities;
 
-import android.app.SearchManager;
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -32,7 +32,7 @@ import amtt.epam.com.amtt.util.ReadLargeTextUtil;
 /**
  * Created by Ivan_Bakach on 09.06.2015.
  */
-public class PreviewActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
+public class PreviewActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener{
 
     public static final String FILE_PATH = "filePath";
     private TextView mTextPreview;
@@ -44,6 +44,8 @@ public class PreviewActivity extends AppCompatActivity implements SearchView.OnQ
     public Button backwardButton;
     public ArrayList<Integer> allIndexes;
     private int currentIndex = 0;
+    public CharSequence spannedLog;
+    public boolean isDoneChangeText = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +108,8 @@ public class PreviewActivity extends AppCompatActivity implements SearchView.OnQ
 
     public void showPreview(String filePath) {
         if (FileUtil.isText(filePath)) {
-            mTextPreview.setText(readLogFromFile(filePath));
+            mTextPreview.setText(readLogFromFile(filePath), TextView.BufferType.SPANNABLE);
+            spannedLog = mTextPreview.getText();
             logText = readTextLogFromFile(filePath);
         }
     }
@@ -117,7 +120,6 @@ public class PreviewActivity extends AppCompatActivity implements SearchView.OnQ
         MenuItem searchItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setQueryHint("Search");
-        searchView.setSubmitButtonEnabled(false);
         LinearLayout linearLayoutOfSearchView = (LinearLayout) searchView.getChildAt(0);
         LayoutInflater factory = LayoutInflater.from(getBaseContext());
         final View view = factory.inflate(R.layout.search_panel, null);
@@ -126,7 +128,7 @@ public class PreviewActivity extends AppCompatActivity implements SearchView.OnQ
             @Override
             public void onClick(View v) {
                 if (allIndexes!=null) {
-                    if (0 < currentIndex - 1) {
+                    if (0 < currentIndex) {
                         currentIndex--;
                         goToIndexPostion(currentIndex);
                     }else if (currentIndex==0) {
@@ -169,20 +171,30 @@ public class PreviewActivity extends AppCompatActivity implements SearchView.OnQ
     @Override
     public boolean onQueryTextChange(String newText) {
         currentIndex = 0;
+        if (isDoneChangeText) {
+            mTextPreview.setText(spannedLog, TextView.BufferType.SPANNABLE);
+        }
+        isDoneChangeText = false;
         return true;
     }
 
     private void onSearch(String search) throws UnsupportedEncodingException {
-        int index = logText.indexOf(search);
+        isDoneChangeText = true;
+        String capsLogText = logText.toUpperCase();
+        CharSequence tempLogWithSelection = spannedLog;
+        int index = capsLogText.indexOf(search.toUpperCase());
         allIndexes = new ArrayList<>();
+        SpannableStringBuilder builder = new SpannableStringBuilder(tempLogWithSelection);
         if (index==-1) {
             Toast.makeText(getBaseContext(), "Nothing Found",Toast.LENGTH_SHORT).show();
         }
         while (index >= 0) {
             allIndexes.add(index);
-            index = logText.indexOf(search, index + 1);
+            builder.setSpan(new BackgroundColorSpan(getResources().getColor(R.color.light_blue_selection)), index, index+search.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            index = capsLogText.indexOf(search.toUpperCase(), index + 1);
         }
         goToIndexPostion(currentIndex);
+        mTextPreview.setText(builder, TextView.BufferType.SPANNABLE);
     }
     private void goToIndexPostion(int position) {
         if (allIndexes.size()>0&&position<allIndexes.size()) {
@@ -191,5 +203,11 @@ public class PreviewActivity extends AppCompatActivity implements SearchView.OnQ
             double ratioLineInScrollPoint = mRootView.getChildAt(0).getHeight() / mTextPreview.getLayout().getLineCount();
             mRootView.smoothScrollTo(0, line * (int) ratioLineInScrollPoint);
         }
+    }
+
+    @Override
+    public boolean onClose() {
+        mTextPreview.setText(spannedLog, TextView.BufferType.SPANNABLE);
+        return false;
     }
 }
