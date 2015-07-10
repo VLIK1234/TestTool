@@ -25,16 +25,16 @@ public enum GSUri {
     TESTCASE(TestcaseTable.TABLE_NAME, 5, 6);
 
     private static final UriMatcher sUriMatcher;
-    private static Map<Integer, String> sContentType;
-    private static Map<GSUri, String[]> sProjections;
-    private static List<GSUri> sValues;
+    private static final Map<Integer, String> sContentType;
+    private static final Map<GSUri, String[]> sProjections;
+    private static final List<GSUri> sValues;
 
-    private Uri mUri;
-    private String mContentType;
-    private String mContentItemType;
-    private int mOrdinal;
-    private int mItemOrdinal;
-    private String mTableName;
+    private final Uri mUri;
+    private final String mContentType;
+    private final String mContentItemType;
+    private final int mOrdinal;
+    private final int mItemOrdinal;
+    private final String mTableName;
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);

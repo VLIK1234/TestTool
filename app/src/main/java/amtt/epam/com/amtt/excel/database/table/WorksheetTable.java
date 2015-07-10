@@ -23,7 +23,7 @@ public class WorksheetTable extends Table {
     public static final String _START_INDEX = "_start_index";
     public static final String _LABELS = "_labels";
 
-    private static MultiValueMap<String, String> sColumnsMap;
+    private static final MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
             _ID,

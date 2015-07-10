@@ -27,7 +27,7 @@ public class TestcaseTable extends Table {
     public static final String _LABEL = "_label";
     public static final String _EXPECTED_RESULTS = "_expected_results";
 
-    private static MultiValueMap<String, String> sColumnsMap;
+    private static final MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
             _ID,

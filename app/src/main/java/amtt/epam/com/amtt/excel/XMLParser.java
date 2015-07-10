@@ -4,10 +4,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
-import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
 import amtt.epam.com.amtt.excel.api.GoogleApiConst;
 import amtt.epam.com.amtt.excel.bo.GoogleAuthor;
 import amtt.epam.com.amtt.excel.bo.GoogleLink;
