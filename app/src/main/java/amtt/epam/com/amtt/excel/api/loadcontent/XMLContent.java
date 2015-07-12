@@ -1,10 +1,14 @@
 package amtt.epam.com.amtt.excel.api.loadcontent;
 
+import java.util.List;
+
 import amtt.epam.com.amtt.api.ContentConst;
-import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.api.ContentLoadingCallback;
+import amtt.epam.com.amtt.api.GetContentCallback;
+import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.excel.bo.GoogleSpreadsheet;
 import amtt.epam.com.amtt.excel.bo.GoogleWorksheet;
+import amtt.epam.com.amtt.util.ActiveUser;
 
 /**
  * @author Iryna Monchanka
@@ -27,7 +31,7 @@ public class XMLContent {
         if (mSpreadsheet != null) {
             getContentCallback.resultOfDataLoading(mSpreadsheet);
         } else {
-            getSpreadsheetAsynchronously(getContentCallback);
+            getSpreadsheetSynchronously(getContentCallback);
         }
     }
 
@@ -50,7 +54,27 @@ public class XMLContent {
         this.mWorksheet = worksheet;
     }
 
-    private void getSpreadsheetAsynchronously(final GetContentCallback<GoogleSpreadsheet> getContentCallback) {
+    private void getSpreadsheetSynchronously(final GetContentCallback<GoogleSpreadsheet> getContentCallback) {
+        ContentFromDatabase.getSpreadsheet(ActiveUser.getInstance().getSpreadsheetLink(), new IResult<List<GoogleSpreadsheet>>() {
+            @Override
+            public void onResult(List<GoogleSpreadsheet> result) {
+                if (result != null && !result.isEmpty()) {
+                    GoogleSpreadsheet spreadsheet = result.get(0);
+                    setSpreadsheet(spreadsheet);
+                    getContentCallback.resultOfDataLoading(mSpreadsheet);
+                } else {
+                    getSpreadsheetAsynchronously(getContentCallback);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                getSpreadsheetAsynchronously(getContentCallback);
+            }
+        });
+    }
+
+    private void getSpreadsheetAsynchronously(GetContentCallback<GoogleSpreadsheet> getContentCallback) {
         ContentFromBackend.getInstance().getSpreadsheetAsynchronously(new ContentLoadingCallback<GoogleSpreadsheet>() {
             @Override
             public void resultFromBackend(GoogleSpreadsheet result, ContentConst tag, GetContentCallback getContentCallback1) {

@@ -13,7 +13,14 @@
         android:layout_marginTop="@dimen/abc_dialog_list_padding_vertical_material"
         android:text="@string/label_name_activity"
         android:textSize="@dimen/abc_text_size_subhead_material"/>
-
+    <TextView
+        android:id="@+id/tv_testcase_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tv_testcase_name"
+        android:layout_marginTop="@dimen/abc_dialog_list_padding_vertical_material"
+        android:text="@string/label_name_activity"
+        android:textSize="@dimen/abc_text_size_subhead_material"/>
     <TextView
         android:id="@+id/tv_label"
         android:layout_width="wrap_content"

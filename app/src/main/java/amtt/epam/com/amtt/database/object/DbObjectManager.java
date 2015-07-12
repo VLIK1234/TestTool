@@ -109,7 +109,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         query(object, null, null, null, result);
     }
 
-    public <T extends DatabaseEntity> void query(final T entity, final String[] projection,
+    public synchronized <T extends DatabaseEntity> void query(final T entity, final String[] projection,
                                                  final String[] mSelection, final String[] mSelectionArgs, final IResult<List<T>> result) {
         new Thread(new Runnable() {
             @Override

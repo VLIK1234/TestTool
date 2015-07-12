@@ -49,10 +49,12 @@ public class ExpectedResultAdapter extends ArrayAdapter<ExpectedResultAdapter.Ex
         TextView testcaseName = (TextView) convertView.findViewById(R.id.tv_testcase_name);
         TextView priority = (TextView) convertView.findViewById(R.id.tv_priority);
         TextView steps = (TextView) convertView.findViewById(R.id.tv_steps);
+        TextView id = (TextView) convertView.findViewById(R.id.tv_testcase_id);
         label.setText(expectedResult.mLabel);
-        testcaseName.setText(expectedResult.mTestcaseName + " [ " + expectedResult.mId + " ]");
+        testcaseName.setText(expectedResult.mTestcaseName);
         priority.setText(expectedResult.mPriority);
         steps.setText(expectedResult.mSteps);
+        id.setText(" [ " + expectedResult.mId + " ]");
         return convertView;
     }
 
