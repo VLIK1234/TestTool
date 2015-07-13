@@ -183,8 +183,8 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
                     builder.setSpan(new BackgroundColorSpan(getResources().getColor(R.color.highlighted_text_material_dark)), i, i + search.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     listLogLine.set(item, builder);
                 }
-                logAdapter.notifyItemChanged(item);
             }
+            logAdapter.notifyDataSetChanged();
             linearLayoutManager.scrollToPositionWithOffset(allIndexes.get(currentIndex), SEARCH_TOP_OFFSET);
         } else {
             Toast.makeText(getBaseContext(), getString(R.string.label_null_search_result), Toast.LENGTH_SHORT).show();

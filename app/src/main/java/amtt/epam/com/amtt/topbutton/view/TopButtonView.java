@@ -187,7 +187,7 @@ public class TopButtonView extends FrameLayout {
             boolean tap = Math.abs(totalDeltaX) < sThreshold
                     && Math.abs(totalDeltaY) < sThreshold;
             if (tap) {
-                this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                this.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                 if (mTopButtonBarView.getVisibility() == VISIBLE) {
                     mTopButtonBarView.hide();
                     playMainButtonRotateAnimation(300, 180, 0);
