@@ -40,7 +40,7 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
     public SearchView searchView;
     public Button forwardButton;
     public Button backwardButton;
-    public ArrayList<Integer> allIndexes;
+    public ArrayList<Integer> allIndexes = new ArrayList<>();
     private ArrayList<CharSequence> originLogList = new ArrayList<>();
     private int currentIndex = 0;
     public boolean isDoneChangeText = false;
@@ -164,7 +164,7 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
 
     private void onSearch(String search){
         isDoneChangeText = true;
-        allIndexes = new ArrayList<>();
+        allIndexes.clear();
         for (int i = 0; i < listLogLine.size(); i++) {
             if (listLogLine.get(i).toString().toUpperCase().contains(search.toUpperCase())) {
                 allIndexes.add(i);

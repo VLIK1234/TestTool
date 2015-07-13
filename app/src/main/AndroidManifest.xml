@@ -128,6 +128,9 @@
         </activity>
         <activity
             android:name=".ui.activities.LogActivity"
+            android:launchMode="standard"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
             android:label="@string/title_activity_log"
             android:parentActivityName=".ui.activities.MainActivity">
             <meta-data
