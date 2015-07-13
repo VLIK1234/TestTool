@@ -203,7 +203,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
                 });
             }
         };
-        worker.schedule(task, 1, TimeUnit.SECONDS);
+        worker.schedule(task, 2, TimeUnit.SECONDS);
     }
 
     private boolean isNewUserAdditionFromUserInfo() {

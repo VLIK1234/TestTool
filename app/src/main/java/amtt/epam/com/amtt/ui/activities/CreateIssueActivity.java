@@ -72,7 +72,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private AssigneeHandler mHandler;
     private AttachmentAdapter mAdapter;
     public Spinner mProjectNamesSpinner;
-    private RecyclerView recyclerView;
+    private RecyclerView mRecyclerView;
     private Spinner mComponents;
     private Button mCreateIssueButton;
     private Boolean mCreateAnotherIssue;
@@ -515,11 +515,11 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void initAttachmentsView() {
-        recyclerView = (RecyclerView) findViewById(R.id.listScreens);
+        mRecyclerView = (RecyclerView) findViewById(R.id.listScreens);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CreateIssueActivity.this);
         linearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         DbObjectManager.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
             @Override
             public void onResult(final List<DatabaseEntity> result) {
@@ -530,7 +530,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             List<Attachment> screenArray = AttachmentManager.getInstance().
                                     getAttachmentList(result);
                             mAdapter = new AttachmentAdapter(screenArray, R.layout.item_screenshot, CreateIssueActivity.this);
-                            recyclerView.setAdapter(mAdapter);
+                            mRecyclerView.setAdapter(mAdapter);
                         }
                         mQueueRequests.remove(ContentConst.ATTACHMENT_RESPONSE);
                         showProgressIfNeed();

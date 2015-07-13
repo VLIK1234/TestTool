@@ -44,8 +44,7 @@ public class XMLContent {
             getContentCallback.resultOfDataLoading(mWorksheet);
         } else {
             if (mSpreadsheet != null) {
-                mSpreadsheet.getListWorksheets().get(3);
-                getWorksheetAsynchronously(mSpreadsheet.getListWorksheets().get(3), getContentCallback);
+                getWorksheetAsynchronously(mSpreadsheet.getListWorksheets().get(8), getContentCallback);
             }
         }
     }
@@ -55,36 +54,40 @@ public class XMLContent {
     }
 
     private void getSpreadsheetSynchronously(final GetContentCallback<GoogleSpreadsheet> getContentCallback) {
-        ContentFromDatabase.getSpreadsheet(ActiveUser.getInstance().getSpreadsheetLink(), new IResult<List<GoogleSpreadsheet>>() {
-            @Override
-            public void onResult(List<GoogleSpreadsheet> result) {
-                if (result != null && !result.isEmpty()) {
-                    GoogleSpreadsheet spreadsheet = result.get(0);
-                    setSpreadsheet(spreadsheet);
-                    getContentCallback.resultOfDataLoading(mSpreadsheet);
-                } else {
+        if (ActiveUser.getInstance().getSpreadsheetLink() != null) {
+            ContentFromDatabase.getSpreadsheet(ActiveUser.getInstance().getSpreadsheetLink(), new IResult<List<GoogleSpreadsheet>>() {
+                @Override
+                public void onResult(List<GoogleSpreadsheet> result) {
+                    if (result != null && !result.isEmpty()) {
+                        GoogleSpreadsheet spreadsheet = result.get(0);
+                        setSpreadsheet(spreadsheet);
+                        getContentCallback.resultOfDataLoading(mSpreadsheet);
+                    } else {
+                        getSpreadsheetAsynchronously(getContentCallback);
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
                     getSpreadsheetAsynchronously(getContentCallback);
                 }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                getSpreadsheetAsynchronously(getContentCallback);
-            }
-        });
+            });
+        } else {
+            getSpreadsheetAsynchronously(getContentCallback);
+        }
     }
 
-    private void getSpreadsheetAsynchronously(GetContentCallback<GoogleSpreadsheet> getContentCallback) {
+    private void getSpreadsheetAsynchronously(final GetContentCallback<GoogleSpreadsheet> getContentCallback) {
         ContentFromBackend.getInstance().getSpreadsheetAsynchronously(new ContentLoadingCallback<GoogleSpreadsheet>() {
             @Override
-            public void resultFromBackend(GoogleSpreadsheet result, ContentConst tag, GetContentCallback getContentCallback1) {
+            public void resultFromBackend(GoogleSpreadsheet result, ContentConst tag, GetContentCallback contentCallback) {
                 if (tag == ContentConst.SPREADSHEET_RESPONSE) {
-                    if (getContentCallback1 != null) {
+                    if (contentCallback != null) {
                         if (result != null) {
                             XMLContent.getInstance().setSpreadsheet(result);
-                            getContentCallback1.resultOfDataLoading(mSpreadsheet);
+                            contentCallback.resultOfDataLoading(mSpreadsheet);
                         } else {
-                            getContentCallback1.resultOfDataLoading(null);
+                            contentCallback.resultOfDataLoading(null);
                         }
                     }
                 }
@@ -92,17 +95,17 @@ public class XMLContent {
         }, getContentCallback);
     }
 
-    private void getWorksheetAsynchronously(String worksheetKey, GetContentCallback<GoogleWorksheet> getContentCallback) {
+    private void getWorksheetAsynchronously(String worksheetKey, final GetContentCallback<GoogleWorksheet> getContentCallback) {
         ContentFromBackend.getInstance().getWorksheetAsynchronously(worksheetKey, new ContentLoadingCallback<GoogleWorksheet>() {
             @Override
-            public void resultFromBackend(GoogleWorksheet result, ContentConst tag, GetContentCallback getContentCallback1) {
+            public void resultFromBackend(GoogleWorksheet result, ContentConst tag, GetContentCallback contentCallback) {
                 if (tag == ContentConst.WORKSHEET_RESPONSE) {
-                    if (getContentCallback1 != null) {
+                    if (contentCallback != null) {
                         if (result != null) {
                             XMLContent.getInstance().setWorksheet(result);
-                            getContentCallback1.resultOfDataLoading(mWorksheet);
+                            contentCallback.resultOfDataLoading(mWorksheet);
                         } else {
-                            getContentCallback1.resultOfDataLoading(null);
+                            contentCallback.resultOfDataLoading(null);
                         }
                     }
                 }

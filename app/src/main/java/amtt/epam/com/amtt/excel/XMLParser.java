@@ -117,7 +117,7 @@ public class XMLParser {
 
     public static void skipTag() throws XmlPullParserException, IOException {
         if (xmlPullParser.getEventType() != XmlPullParser.START_TAG) {
-            Logger.e(TAG, "null tag");
+            Logger.i(TAG, "null tag, skip");
         } else {
             int depth = 1;
             while (depth != 0) {

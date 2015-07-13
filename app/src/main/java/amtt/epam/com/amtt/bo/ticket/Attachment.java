@@ -7,12 +7,12 @@ package amtt.epam.com.amtt.bo.ticket;
 
 public class Attachment {
 
-    public String name;
-    public String filePath;
+    public String mName;
+    public String mFilePath;
 
     public Attachment(String name, String filePath){
-        this.name = name;
-        this.filePath = filePath;
+        this.mName = name;
+        this.mFilePath = filePath;
     }
 
 }

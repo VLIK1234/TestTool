@@ -25,89 +25,89 @@ import amtt.epam.com.amtt.R;
 public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ViewHolder>{
 
     private final String TAG = this.getClass().getSimpleName();
-    private List<Attachment> screenshots;
-    private int rowLayout;
-    private ViewHolder.ClickListener clickListener;
+    private List<Attachment> mScreenshots;
+    private int mRowLayout;
+    private ViewHolder.ClickListener mClickListener;
 
         public AttachmentAdapter(List<Attachment> screenshots, int rowLayout, ViewHolder.ClickListener clickListener) {
-        this.screenshots = screenshots;
-        this.rowLayout = rowLayout;
-        this.clickListener = clickListener;
+        this.mScreenshots = screenshots;
+        this.mRowLayout = rowLayout;
+        this.mClickListener = clickListener;
 
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         viewGroup.setHorizontalScrollBarEnabled(true);
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(rowLayout, viewGroup, false);
-        return new ViewHolder(v, clickListener);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(mRowLayout, viewGroup, false);
+        return new ViewHolder(v, mClickListener);
     }
 
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Attachment screenshot = screenshots.get(i);
-        Logger.d(TAG, screenshot.name);
-        viewHolder.screenshotName.setText(screenshot.name);
-        if (screenshot.filePath.contains(".png")) {
-            ImageLoader.getInstance().displayImage("file:///" + screenshot.filePath, viewHolder.screenshotImage);
-        }else if (screenshot.filePath.contains(".txt")){
-            viewHolder.screenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
+        Attachment screenshot = mScreenshots.get(i);
+        Logger.d(TAG, screenshot.mName);
+        viewHolder.mScreenshotName.setText(screenshot.mName);
+        if (screenshot.mFilePath.contains(".png")) {
+            ImageLoader.getInstance().displayImage("file:///" + screenshot.mFilePath, viewHolder.mScreenshotImage);
+        }else if (screenshot.mFilePath.contains(".txt")){
+            viewHolder.mScreenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
         }
 
-        viewHolder.screenshotClose.setEnabled(true);
+        viewHolder.mScreenshotClose.setEnabled(true);
     }
 
     @Override
     public int getItemCount() {
-        return screenshots == null ? 0 : screenshots.size();
+        return mScreenshots == null ? 0 : mScreenshots.size();
     }
 
     public void addItem(int position, Attachment data) {
-        screenshots.add(position, data);
+        mScreenshots.add(position, data);
         notifyItemInserted(position);
     }
 
     public void removeItem(int position) {
-        screenshots.remove(position);
+        mScreenshots.remove(position);
         notifyItemRemoved(position);
         Logger.d(TAG, String.valueOf(position));
     }
 
     public ArrayList<String> getAttachmentFilePathList(){
         ArrayList<String> filePathList = new ArrayList<>();
-        for (Attachment attachment:screenshots) {
-            filePathList.add(attachment.filePath);
+        for (Attachment attachment: mScreenshots) {
+            filePathList.add(attachment.mFilePath);
         }
         return filePathList;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        public ImageView screenshotImage;
-        public TextView screenshotName;
-        public ImageView screenshotClose;
-        private ClickListener listener;
+        public ImageView mScreenshotImage;
+        public TextView mScreenshotName;
+        public ImageView mScreenshotClose;
+        private ClickListener mListener;
 
 
         public ViewHolder(View itemView, ClickListener listener) {
             super(itemView);
-            screenshotImage = (ImageView)itemView.findViewById(R.id.iv_screenImage);
-            screenshotImage.setOnClickListener(this);
-            screenshotName = (TextView)itemView.findViewById(R.id.tv_screenName);
-            screenshotClose = (ImageView)itemView.findViewById(R.id.iv_close);
-            this.listener = listener;
-            screenshotClose.setOnClickListener(this);
+            mScreenshotImage = (ImageView)itemView.findViewById(R.id.iv_screenImage);
+            mScreenshotImage.setOnClickListener(this);
+            mScreenshotName = (TextView)itemView.findViewById(R.id.tv_screenName);
+            mScreenshotClose = (ImageView)itemView.findViewById(R.id.iv_close);
+            this.mListener = listener;
+            mScreenshotClose.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.iv_close:
-                    if (listener != null) {
-                        listener.onItemRemove(getAdapterPosition());
+                    if (mListener != null) {
+                        mListener.onItemRemove(getAdapterPosition());
                     }
                     break;
                 case R.id.iv_screenImage:
-                    if (listener != null) {
-                        listener.onItemShow(getAdapterPosition());
+                    if (mListener != null) {
+                        mListener.onItemShow(getAdapterPosition());
                     }
                     break;
 

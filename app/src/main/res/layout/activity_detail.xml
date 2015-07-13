@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -13,6 +14,7 @@
         android:layout_marginTop="@dimen/abc_dialog_list_padding_vertical_material"
         android:text="@string/label_name_activity"
         android:textSize="@dimen/abc_text_size_subhead_material"/>
+
     <TextView
         android:id="@+id/tv_label"
         android:layout_width="wrap_content"
@@ -20,12 +22,13 @@
         android:layout_below="@id/tv_testcase_name"
         android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
         android:textSize="@dimen/abc_text_size_caption_material"/>
+
     <TextView
         android:id="@+id/tv_priority"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_testcase_name"
         android:layout_alignParentRight="true"
+        android:layout_below="@id/tv_testcase_name"
         android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
         android:textSize="@dimen/abc_text_size_caption_material"/>
 
@@ -46,4 +49,43 @@
         android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
         android:textSize="@dimen/abc_text_size_body_1_material"/>
 
+    <View
+        style="@style/Divider"
+        android:id="@+id/divider"
+        android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
+        android:layout_below="@id/tv_steps"/>
+
+    <TextView
+        android:id="@+id/tv_description_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/divider"
+        android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
+        android:text="Description"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_description_label"
+        android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
+        android:textSize="@dimen/abc_text_size_body_1_material"/>
+
+    <TextView
+        android:id="@+id/tv_expected_results_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_description"
+        android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
+        android:text="Expected results"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+
+    <TextView
+        android:id="@+id/tv_expected_results"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_expected_results_label"
+        android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
+        android:textSize="@dimen/abc_text_size_body_1_material"/>
 </RelativeLayout>

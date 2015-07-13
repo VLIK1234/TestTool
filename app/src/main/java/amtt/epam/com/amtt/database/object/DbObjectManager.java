@@ -109,7 +109,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         query(object, null, null, null, result);
     }
 
-    public synchronized <T extends DatabaseEntity> void query(final T entity, final String[] projection,
+    public  <T extends DatabaseEntity> void query(final T entity, final String[] projection,
                                                  final String[] mSelection, final String[] mSelectionArgs, final IResult<List<T>> result) {
         new Thread(new Runnable() {
             @Override
@@ -135,9 +135,8 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
                 Cursor cursor = AmttApplication.getContext().getContentResolver()
                         .query(entity.getUri(), projection, selectionString, mSelectionArgs, null);
                 List<T> listObject = new ArrayList<>();
-
+                if (cursor != null) {
                 if (cursor.moveToFirst())
-
                 {
                     do {
                         try {
@@ -147,8 +146,8 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
                         }
                     } while (cursor.moveToNext());
                 }
-
-                cursor.close();
+                    cursor.close();
+                }
                 result.onResult(listObject);
             }
         }).start();
