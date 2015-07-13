@@ -51,7 +51,7 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
         }  else if (logLine.toString().contains("W/")) {
             textView.setTextColor(AmttApplication.getContext().getResources().getColor(android.R.color.holo_orange_light));
         } else if (logLine.toString().contains("I/")) {
-            textView.setTextColor(Color.GREEN);
+            textView.setTextColor(AmttApplication.getContext().getResources().getColor(android.R.color.holo_green_light));
         }else {
             textView.setTextColor(AmttApplication.getContext().getResources().getColor(android.R.color.black));
         }
