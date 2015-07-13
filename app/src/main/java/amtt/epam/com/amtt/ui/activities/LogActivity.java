@@ -104,11 +104,11 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_preview, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint(getString(R.string.search_view_hint));
         LinearLayout linearLayoutOfSearchView = (LinearLayout) searchView.getChildAt(0);
         LayoutInflater factory = LayoutInflater.from(getBaseContext());
         final View view = factory.inflate(R.layout.search_panel, null);
-        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setQueryHint(getString(R.string.search_view_hint));
         backwardButton = (Button) view.findViewById(R.id.bt_backward);
         backwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,12 +172,19 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
         }
         if (allIndexes.size() >= 1) {
             for (Integer item : allIndexes) {
-                int index = listLogLine.get(item).toString().toUpperCase().indexOf(search.toUpperCase());
-                SpannableStringBuilder builder = new SpannableStringBuilder(listLogLine.get(item));
-                builder.setSpan(new BackgroundColorSpan(getResources().getColor(R.color.highlighted_text_material_dark)), index, index + search.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                listLogLine.set(item, builder);
+                String capsItem = listLogLine.get(item).toString().toUpperCase();
+                String capsSearch = search.toUpperCase();
+                ArrayList<Integer> localIndexes = new ArrayList<>();
+                for (int index = capsItem.indexOf(capsSearch); index >= 0; index = capsItem.indexOf(capsSearch, index + 1)){
+                    localIndexes.add(index);
+                }
+                for (int i: localIndexes) {
+                    SpannableStringBuilder builder = new SpannableStringBuilder(listLogLine.get(item));
+                    builder.setSpan(new BackgroundColorSpan(getResources().getColor(R.color.highlighted_text_material_dark)), i, i + search.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    listLogLine.set(item, builder);
+                }
+                logAdapter.notifyItemChanged(item);
             }
-            logAdapter.notifyDataSetChanged();
             linearLayoutManager.scrollToPositionWithOffset(allIndexes.get(currentIndex), SEARCH_TOP_OFFSET);
         } else {
             Toast.makeText(getBaseContext(), getString(R.string.label_null_search_result), Toast.LENGTH_SHORT).show();
