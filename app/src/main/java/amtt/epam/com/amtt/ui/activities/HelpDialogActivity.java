@@ -70,14 +70,6 @@ public class HelpDialogActivity extends Activity {
                         finish();
                     }
                 })
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        setIsCanTakeScreenshot(false);
-                        finish();
-                        TopButtonService.sendActionChangeTopButtonVisibility(true);
-                    }
-                })
                 .show();
     }
 
