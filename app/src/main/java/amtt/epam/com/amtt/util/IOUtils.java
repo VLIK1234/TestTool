@@ -1,13 +1,9 @@
 package amtt.epam.com.amtt.util;
 
-import android.support.annotation.NonNull;
-
-import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 
 /**
@@ -17,7 +13,7 @@ public class IOUtils {
 
     private static final String CLASS_NAME = IOUtils.class.getSimpleName();
 
-    public static void close(@NonNull Closeable... closeablesArray) {
+    public static void close(Closeable... closeablesArray) {
         for (Closeable closeable : closeablesArray) {
             if (closeable != null) {
                 try {
@@ -29,45 +25,24 @@ public class IOUtils {
         }
     }
 
-    public static FileOutputStream openFileOutput(String path) {
-        FileOutputStream outputStream = null;
+    public static FileOutputStream openFileOutput(String path, boolean createIfNotExists) throws FileNotFoundException {
+        FileOutputStream outputStream;
+
         try {
             outputStream = new FileOutputStream(path);
         } catch (FileNotFoundException e) {
-            try {
-                File file = new File(path);
-                outputStream = new FileOutputStream(file);
-            } catch (FileNotFoundException repeatedException) {
-                Logger.e(CLASS_NAME, repeatedException.getMessage());
+            if (!createIfNotExists) {
+                throw e;
             }
+            File file = createNewFile(path);
+            outputStream = new FileOutputStream(file);
         }
+
         return outputStream;
     }
 
-    public static void destroyProcesses(@NonNull Process... processArray) {
-        for (Process process : processArray) {
-            if (process != null) {
-                process.destroy();
-            }
-        }
-    }
-
-    /**
-     * Method for retrieving string data from internal storage
-     */
-    public static String loadStringFromInternalStorage(String filePath) throws IOException {
-        BufferedReader bufferedReader = null;
-        StringBuilder crashText = new StringBuilder();
-        String buffer;
-        try {
-            bufferedReader = new BufferedReader(new FileReader(filePath));
-            while ((buffer = bufferedReader.readLine()) != null) {
-                crashText.append(buffer);
-            }
-        } finally {
-            IOUtils.close(bufferedReader);
-        }
-        return crashText.toString();
+    public static File createNewFile(String path) {
+        return new File(path);
     }
 
 }

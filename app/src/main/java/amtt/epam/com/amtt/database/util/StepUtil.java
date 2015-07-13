@@ -7,6 +7,7 @@ import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,13 @@ public class StepUtil {
                 Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals(MimeType.IMAGE_PNG.getFileExtension()) ?
                         Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
 
-                FileOutputStream outputStream = IOUtils.openFileOutput(screenshotPath);
+                FileOutputStream outputStream = null;
+                try {
+                    outputStream = IOUtils.openFileOutput(screenshotPath, true);
+                } catch (FileNotFoundException e) {
+                    //ignored in this implementation, because exception won't be thrown as we need to create new file
+                    //look through IOUtils.openFileOutput method for more information
+                }
                 if (outputStream != null) {
                     drawingCache.compress(compressFormat, 100, outputStream);
                 }
