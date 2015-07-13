@@ -13,7 +13,6 @@ import java.util.List;
 public class JUserAssignableResponse {
 
     private List<JUser> mAssignableUsers;
-    private List<String> mAssignableUsersNames;
 
     public JUserAssignableResponse(){}
 
@@ -31,11 +30,11 @@ public class JUserAssignableResponse {
 
     public List<String> getAssignableUsersNames() {
         if (mAssignableUsers != null) {
-            mAssignableUsersNames = new ArrayList<>();
+            List<String> mAssignableUsersNames = new ArrayList<>();
             for (int i = 0; i < mAssignableUsers.size(); i++) {
                 mAssignableUsersNames.add(mAssignableUsers.get(i).getName());
             }
-            return  mAssignableUsersNames;
+            return mAssignableUsersNames;
         } else {
             return null;
         }

@@ -5,6 +5,6 @@ package amtt.epam.com.amtt.api;
  @version on 5/13/2015
  */
 
-public interface JiraGetContentCallback<Content> {
+public interface GetContentCallback<Content> {
     void resultOfDataLoading(Content result);
 }

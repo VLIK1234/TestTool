@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:scrollbars="none"
     android:background="@android:color/black">
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -16,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"/>
+
     </RelativeLayout>
 
 </ScrollView>

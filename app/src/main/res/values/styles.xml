@@ -99,4 +99,9 @@
         <item name="android:layout_marginRight">4dp</item>
     </style>
 
+    <style name="UserInfoDescriptor">
+        <item name="android:paddingLeft">@dimen/CreateIssueActivityDescriptor</item>
+        <item name="android:paddingRight">@dimen/abc_action_bar_icon_vertical_padding_material</item>
+    </style>
+
 </resources>

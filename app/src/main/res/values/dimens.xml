@@ -31,6 +31,6 @@
     <dimen name="dialog_margin">24dp</dimen>
     <dimen name="icon_size_step_delete">24dp</dimen>
 
-
+    <dimen name="CreateIssueActivityDescriptor">80dp</dimen>
 
 </resources>

@@ -9,6 +9,7 @@
         android:id="@+id/iv_screenImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@null"
         android:scaleType="centerCrop"
         android:tint="@color/photo_tint" />
 
@@ -29,6 +30,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_margin="12dp"
+        android:contentDescription="@null"
         android:background="?android:selectableItemBackground"
         android:gravity="center"
         android:src="@drawable/ic_delete" />

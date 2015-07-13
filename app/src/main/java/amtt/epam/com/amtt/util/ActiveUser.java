@@ -19,6 +19,7 @@ public class ActiveUser {
     private String mCredentialsString;
     private String mLastAssigneeName;
     private String mLastComponentsIds;
+    private Boolean mRecord;
 
     private ActiveUser() {
     }
@@ -93,6 +94,14 @@ public class ActiveUser {
         this.mLastAssigneeName = lastAssigneeName;
     }
 
+    public Boolean getRecord() {
+        return mRecord;
+    }
+
+    public void setRecord(Boolean record) {
+        this.mRecord = record;
+    }
+
     public void clearActiveUser() {
         setUserName(null);
         setUrl(null);
@@ -101,6 +110,7 @@ public class ActiveUser {
         setCredentials(null);
         setLastAssigneeName(null);
         setLastComponentsIds(null);
+        setRecord(false);
     }
 }
 

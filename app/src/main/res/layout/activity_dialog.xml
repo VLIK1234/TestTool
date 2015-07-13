@@ -11,4 +11,5 @@
         android:layout_marginLeft="@dimen/dialog_margin"
         android:layout_marginStart="@dimen/dialog_margin"
         android:text="@string/dialog_label_checkbox"/>
+
 </LinearLayout>

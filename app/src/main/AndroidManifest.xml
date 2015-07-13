@@ -48,6 +48,7 @@
             android:screenOrientation="portrait"
             android:label="@string/title_activity_create_issue" />
 
+
         <provider
             android:name=".contentprovider.AmttContentProvider"
             android:authorities="amtt.epam.com.amtt.contentprovider"

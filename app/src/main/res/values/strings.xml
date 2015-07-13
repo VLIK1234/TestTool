@@ -133,5 +133,7 @@
     <string name="title_clear_notes">Clear screenshot?</string>
     <string name="title_notes_arent_applied">Notes aren\'t applied yet</string>
     <string name="message_notes_arent_applied">Usually operation takes few seconds.</string>
+    <string name="label_assign_self">Assign to me</string>
+    <string name="label_create_another">Create another</string>
 
 </resources>
