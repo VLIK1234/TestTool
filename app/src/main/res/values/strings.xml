@@ -123,5 +123,7 @@
     <string name="cancel">Cancel</string>
     <string name="label_attach_logs">Attach logs</string>
     <string name="key_is_attach_logs">IS_ATTACH_LOGS</string>
+    <string name="search_view_hint">Search</string>
+    <string name="label_null_search_result">Nothing Found</string>
 
 </resources>
