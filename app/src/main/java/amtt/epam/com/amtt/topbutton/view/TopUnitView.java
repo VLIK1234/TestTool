@@ -8,6 +8,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -110,6 +111,7 @@ public class TopUnitView extends LinearLayout {
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                this.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 mTouchAction.onTouch();
                 break;
         }
