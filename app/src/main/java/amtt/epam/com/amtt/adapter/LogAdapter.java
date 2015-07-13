@@ -1,9 +1,6 @@
 package amtt.epam.com.amtt.adapter;
 
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.style.QuoteSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +16,10 @@ import amtt.epam.com.amtt.R;
  */
 public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
 
-    private ArrayList<CharSequence> listLog = new ArrayList<>();
+    private ArrayList<CharSequence> mListLog = new ArrayList<>();
 
     public LogAdapter(ArrayList<CharSequence> listLog) {
-        this.listLog = listLog;
+        this.mListLog = listLog;
     }
 
     @Override
@@ -34,13 +31,13 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.logLine.setText(listLog.get(position));
-        setColorTextView(holder.logLine, listLog.get(position));
+        holder.logLine.setText(mListLog.get(position));
+        setColorTextView(holder.logLine, mListLog.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return listLog == null ? 0 : listLog.size();
+        return mListLog == null ? 0 : mListLog.size();
     }
 
     public void setColorTextView(TextView textView, CharSequence logLine){

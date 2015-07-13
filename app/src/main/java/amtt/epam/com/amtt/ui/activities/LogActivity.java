@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
@@ -33,18 +32,18 @@ import amtt.epam.com.amtt.util.ReadLargeTextUtil;
 public class LogActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
     public static final String FILE_PATH = "filePath";
     public static final int SEARCH_TOP_OFFSET = 20;
-    public String filePath;
-    public ArrayList<CharSequence> listLogLine = new ArrayList<>();
-    public RecyclerView recyclerView;
-    public LogAdapter logAdapter;
-    public SearchView searchView;
-    public Button forwardButton;
-    public Button backwardButton;
-    public ArrayList<Integer> allIndexes = new ArrayList<>();
-    private ArrayList<CharSequence> originLogList = new ArrayList<>();
-    private int currentIndex = 0;
-    public boolean isDoneChangeText = false;
-    public LinearLayoutManager linearLayoutManager;
+    public String mFilePath;
+    public ArrayList<CharSequence> mListLogLine = new ArrayList<>();
+    public RecyclerView mRecyclerView;
+    public LogAdapter mLogAdapter;
+    public SearchView mSearchView;
+    public Button mForwardButton;
+    public Button mBackwardButton;
+    public ArrayList<Integer> mAllIndexes = new ArrayList<>();
+    private ArrayList<CharSequence> mOriginLogList = new ArrayList<>();
+    private int mCurrentIndex = 0;
+    public boolean mIsDoneChangeText = false;
+    public LinearLayoutManager mLinearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,17 +53,17 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(false);
         }
-        recyclerView = (RecyclerView) findViewById(R.id.log_lines);
-        linearLayoutManager = new LinearLayoutManager(getBaseContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setScrollbarFadingEnabled(false);
+        mRecyclerView = (RecyclerView) findViewById(R.id.log_lines);
+        mLinearLayoutManager = new LinearLayoutManager(getBaseContext());
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mRecyclerView.setScrollbarFadingEnabled(false);
 
         String title = "";
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
-            filePath = extra.getString(FILE_PATH);
-            title = FileUtil.getFileName(filePath);
-            showLog(filePath);
+            mFilePath = extra.getString(FILE_PATH);
+            title = FileUtil.getFileName(mFilePath);
+            showLog(mFilePath);
         }
         setTitle(title);
     }
@@ -77,10 +76,10 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
 
     public void showLog(String filePath) {
         if (FileUtil.isText(filePath)) {
-            listLogLine = readTextLogFromFile(filePath);
-            originLogList.addAll(listLogLine);
-            logAdapter = new LogAdapter(listLogLine);
-            recyclerView.setAdapter(logAdapter);
+            mListLogLine = readTextLogFromFile(filePath);
+            mOriginLogList.addAll(mListLogLine);
+            mLogAdapter = new LogAdapter(mListLogLine);
+            mRecyclerView.setAdapter(mLogAdapter);
         }
     }
 
@@ -104,41 +103,41 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_preview, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setQueryHint(getString(R.string.search_view_hint));
-        LinearLayout linearLayoutOfSearchView = (LinearLayout) searchView.getChildAt(0);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        mSearchView.setQueryHint(getString(R.string.search_view_hint));
+        LinearLayout linearLayoutOfSearchView = (LinearLayout) mSearchView.getChildAt(0);
         LayoutInflater factory = LayoutInflater.from(getBaseContext());
         final View view = factory.inflate(R.layout.search_panel, null);
-        backwardButton = (Button) view.findViewById(R.id.bt_backward);
-        backwardButton.setOnClickListener(new View.OnClickListener() {
+        mBackwardButton = (Button) view.findViewById(R.id.bt_backward);
+        mBackwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (allIndexes.size() >= 1) {
-                    if (0 < currentIndex) {
-                        currentIndex--;
-                    } else if (currentIndex == 0) {
-                        currentIndex = allIndexes.size() - 1;
+                if (mAllIndexes.size() >= 1) {
+                    if (0 < mCurrentIndex) {
+                        mCurrentIndex--;
+                    } else if (mCurrentIndex == 0) {
+                        mCurrentIndex = mAllIndexes.size() - 1;
                     }
-                    linearLayoutManager.scrollToPositionWithOffset(allIndexes.get(currentIndex), SEARCH_TOP_OFFSET);
+                    mLinearLayoutManager.scrollToPositionWithOffset(mAllIndexes.get(mCurrentIndex), SEARCH_TOP_OFFSET);
                 }
             }
         });
-        forwardButton = (Button) view.findViewById(R.id.bt_forward);
-        forwardButton.setOnClickListener(new View.OnClickListener() {
+        mForwardButton = (Button) view.findViewById(R.id.bt_forward);
+        mForwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (allIndexes.size() >= 1) {
-                    if (currentIndex + 1 < allIndexes.size()) {
-                        currentIndex++;
-                    } else if (currentIndex == allIndexes.size() - 1) {
-                        currentIndex = 0;
+                if (mAllIndexes.size() >= 1) {
+                    if (mCurrentIndex + 1 < mAllIndexes.size()) {
+                        mCurrentIndex++;
+                    } else if (mCurrentIndex == mAllIndexes.size() - 1) {
+                        mCurrentIndex = 0;
                     }
-                    linearLayoutManager.scrollToPositionWithOffset(allIndexes.get(currentIndex), SEARCH_TOP_OFFSET);
+                    mLinearLayoutManager.scrollToPositionWithOffset(mAllIndexes.get(mCurrentIndex), SEARCH_TOP_OFFSET);
                 }
             }
         });
         linearLayoutOfSearchView.addView(view);
-        searchView.setOnQueryTextListener(this);
+        mSearchView.setOnQueryTextListener(this);
         return true;
     }
 
@@ -150,42 +149,42 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        currentIndex = 0;
-        if (isDoneChangeText) {
-            for (int i : allIndexes) {
-                listLogLine.set(i, originLogList.get(i));
-                logAdapter.notifyItemChanged(i);
+        mCurrentIndex = 0;
+        if (mIsDoneChangeText) {
+            for (int i : mAllIndexes) {
+                mListLogLine.set(i, mOriginLogList.get(i));
+                mLogAdapter.notifyItemChanged(i);
             }
-            allIndexes.clear();
+            mAllIndexes.clear();
         }
-        isDoneChangeText = false;
+        mIsDoneChangeText = false;
         return true;
     }
 
     private void onSearch(String search){
-        isDoneChangeText = true;
-        allIndexes.clear();
-        for (int i = 0; i < listLogLine.size(); i++) {
-            if (listLogLine.get(i).toString().toUpperCase().contains(search.toUpperCase())) {
-                allIndexes.add(i);
+        mIsDoneChangeText = true;
+        mAllIndexes.clear();
+        for (int i = 0; i < mListLogLine.size(); i++) {
+            if (mListLogLine.get(i).toString().toUpperCase().contains(search.toUpperCase())) {
+                mAllIndexes.add(i);
             }
         }
-        if (allIndexes.size() >= 1) {
-            for (Integer item : allIndexes) {
-                String capsItem = listLogLine.get(item).toString().toUpperCase();
+        if (mAllIndexes.size() >= 1) {
+            for (Integer item : mAllIndexes) {
+                String capsItem = mListLogLine.get(item).toString().toUpperCase();
                 String capsSearch = search.toUpperCase();
                 ArrayList<Integer> localIndexes = new ArrayList<>();
                 for (int index = capsItem.indexOf(capsSearch); index >= 0; index = capsItem.indexOf(capsSearch, index + 1)){
                     localIndexes.add(index);
                 }
                 for (int i: localIndexes) {
-                    SpannableStringBuilder builder = new SpannableStringBuilder(listLogLine.get(item));
+                    SpannableStringBuilder builder = new SpannableStringBuilder(mListLogLine.get(item));
                     builder.setSpan(new BackgroundColorSpan(getResources().getColor(R.color.highlighted_text_material_dark)), i, i + search.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    listLogLine.set(item, builder);
+                    mListLogLine.set(item, builder);
                 }
             }
-            logAdapter.notifyDataSetChanged();
-            linearLayoutManager.scrollToPositionWithOffset(allIndexes.get(currentIndex), SEARCH_TOP_OFFSET);
+            mLogAdapter.notifyDataSetChanged();
+            mLinearLayoutManager.scrollToPositionWithOffset(mAllIndexes.get(mCurrentIndex), SEARCH_TOP_OFFSET);
         } else {
             Toast.makeText(getBaseContext(), getString(R.string.label_null_search_result), Toast.LENGTH_SHORT).show();
         }
@@ -193,11 +192,11 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
 
     @Override
     public boolean onClose() {
-        for (int i : allIndexes) {
-            listLogLine.set(i, originLogList.get(i));
-            logAdapter.notifyItemChanged(i);
+        for (int i : mAllIndexes) {
+            mListLogLine.set(i, mOriginLogList.get(i));
+            mLogAdapter.notifyItemChanged(i);
         }
-        allIndexes.clear();
+        mAllIndexes.clear();
         return false;
     }
 }
