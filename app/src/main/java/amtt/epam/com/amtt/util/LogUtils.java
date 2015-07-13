@@ -21,24 +21,24 @@ public class LogUtils {
 
     public static final int SPAN_EXCLUSIVE_EXCLUSIVE = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 
-    public static CharSequence getFormatLog(ArrayList<String> listLines) {
+    public static CharSequence getFormatLog(ArrayList<CharSequence> listLines) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        for (String line : listLines) {
-            if (line.contains("E/")) {
-                builder.append(Html.fromHtml("<font color='#FF0000'>"+line+"</font>"));
+        for (CharSequence line : listLines) {
+            if (line.toString().contains("E/")) {
+                builder.append(Html.fromHtml("<font color='#FF0000'>" + line + "</font>"));
 //                SpannableUtil.appendCompact(builder, line, new ForegroundColorSpan(AmttApplication.getContext().getResources().getColor(android.R.color.holo_red_light)), SPAN_EXCLUSIVE_EXCLUSIVE);
                 builder.append("\n");
-            } else if (line.contains("F/")) {
+            } else if (line.toString().contains("F/")) {
                 final int lengthBefore = builder.length();
                 builder.append(Html.fromHtml("<font color='#FF0000'>" + line + "</font>"));
 //                SpannableUtil.appendCompact(builder, line, new ForegroundColorSpan(AmttApplication.getContext().getResources().getColor(android.R.color.holo_red_light)), SPAN_EXCLUSIVE_EXCLUSIVE);
                 builder.setSpan(new QuoteSpan(), lengthBefore, builder.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                 builder.append("\n");
-            }  else if (line.contains("W/")) {
+            }  else if (line.toString().contains("W/")) {
                 builder.append(Html.fromHtml("<font color='#FFD700'>" + line + "</font>"));
 //                SpannableUtil.appendCompact(builder, line, new ForegroundColorSpan(AmttApplication.getContext().getResources().getColor(android.R.color.holo_orange_light)), SPAN_EXCLUSIVE_EXCLUSIVE);
                 builder.append("\n");
-            } else if (line.contains("I/")) {
+            } else if (line.toString().contains("I/")) {
                 builder.append(Html.fromHtml("<font color='#9ACD32'>" + line + "</font>"));
 //                SpannableUtil.appendCompact(builder, line, new ForegroundColorSpan(Color.GREEN), SPAN_EXCLUSIVE_EXCLUSIVE);
                 builder.append("\n");

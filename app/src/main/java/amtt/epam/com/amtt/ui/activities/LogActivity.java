@@ -1,11 +1,15 @@
 package amtt.epam.com.amtt.ui.activities;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.BackgroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +35,7 @@ import amtt.epam.com.amtt.util.ReadLargeTextUtil;
 public class LogActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener{
     public static final String FILE_PATH = "filePath";
     public String filePath;
-    public ArrayList<String> listLogLine = new ArrayList<>();
+    public ArrayList<CharSequence> listLogLine = new ArrayList<>();
     public RecyclerView recyclerView;
     public LogAdapter logAdapter;
     private TextView mTextPreview;
@@ -40,6 +44,7 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
     public Button forwardButton;
     public Button backwardButton;
     public ArrayList<Integer> allIndexes;
+    private ArrayList<CharSequence> tempSearchList = new ArrayList<>();
     private int currentIndex = 0;
     public boolean isDoneChangeText = false;
     public LinearLayoutManager linearLayoutManager;
@@ -81,7 +86,7 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
         }
     }
 
-    private ArrayList<String> readTextLogFromFile(String filePath) {
+    private ArrayList<CharSequence> readTextLogFromFile(String filePath) {
         File file = new File(filePath);
         ReadLargeTextUtil fileReader = new ReadLargeTextUtil(file);
         try {
@@ -175,9 +180,16 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
 //        int index = capsLogText.indexOf(search.toUpperCase());
         allIndexes = new ArrayList<>();
         for (int i = 0; i<listLogLine.size();i++) {
-            if (listLogLine.get(i).toUpperCase().contains(search.toUpperCase())) {
+            if (listLogLine.get(i).toString().toUpperCase().contains(search.toUpperCase())) {
                 allIndexes.add(i);
             }
+        }
+        tempSearchList = (ArrayList<CharSequence>)listLogLine.clone();
+        for (Integer item:allIndexes) {
+            int index = listLogLine.get(item).toString().indexOf(search);
+            SpannableStringBuilder builder = new SpannableStringBuilder(listLogLine.get(item));
+            builder.setSpan(new BackgroundColorSpan(Color.GRAY),index,index+search.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            listLogLine.set(item,builder);
         }
         linearLayoutManager.scrollToPositionWithOffset(allIndexes.get(currentIndex), 20);
 //        if (index==-1) {

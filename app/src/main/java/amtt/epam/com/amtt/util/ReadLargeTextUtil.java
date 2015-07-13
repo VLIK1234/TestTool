@@ -19,7 +19,7 @@ import amtt.epam.com.amtt.R;
 public class ReadLargeTextUtil extends Thread{
     private final File file;
 
-    private ArrayList<String> lines = new ArrayList<>();
+    private ArrayList<CharSequence> lines = new ArrayList<>();
 
     public ReadLargeTextUtil(File file) {
         this.file = file;
@@ -39,7 +39,7 @@ public class ReadLargeTextUtil extends Thread{
         }
     }
 
-    public ArrayList<String> getLines() {
+    public ArrayList<CharSequence> getLines() {
         return lines;
     }
 }

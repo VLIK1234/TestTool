@@ -90,27 +90,27 @@ public class PreviewActivity extends AppCompatActivity implements SearchView.OnQ
         return LogUtils.getFormatLog(fileReader.getLines());
     }
 
-    private String readTextLogFromFile(String filePath) {
-        File file = new File(filePath);
-        ReadLargeTextUtil fileReader = new ReadLargeTextUtil(file);
-        try {
-            fileReader.start();
-            fileReader.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            if (!fileReader.isAlive()) {
-                fileReader.interrupt();
-            }
-        }
-        return LogUtils.getTextLog(fileReader.getLines());
-    }
+//    private String readTextLogFromFile(String filePath) {
+//        File file = new File(filePath);
+//        ReadLargeTextUtil fileReader = new ReadLargeTextUtil(file);
+//        try {
+//            fileReader.start();
+//            fileReader.join();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (!fileReader.isAlive()) {
+//                fileReader.interrupt();
+//            }
+//        }
+//        return LogUtils.getTextLog(fileReader.getLines());
+//    }
 
     public void showPreview(String filePath) {
         if (FileUtil.isText(filePath)) {
             mTextPreview.setText(readLogFromFile(filePath), TextView.BufferType.NORMAL);
             spannedLog = mTextPreview.getText();
-            logText = readTextLogFromFile(filePath);
+//            logText = readTextLogFromFile(filePath);
         }
     }
 

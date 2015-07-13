@@ -19,9 +19,9 @@ import amtt.epam.com.amtt.R;
  */
 public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
 
-    private ArrayList<String> listLog = new ArrayList<>();
+    private ArrayList<CharSequence> listLog = new ArrayList<>();
 
-    public LogAdapter(ArrayList<String> listLog) {
+    public LogAdapter(ArrayList<CharSequence> listLog) {
         this.listLog = listLog;
     }
 
@@ -43,14 +43,14 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
         return listLog == null ? 0 : listLog.size();
     }
 
-    public void setColorTextView(TextView textView, String logLine){
-        if (logLine.contains("E/")) {
+    public void setColorTextView(TextView textView, CharSequence logLine){
+        if (logLine.toString().contains("E/")) {
             textView.setTextColor(AmttApplication.getContext().getResources().getColor(android.R.color.holo_red_light));
-        } else if (logLine.contains("F/")) {
+        } else if (logLine.toString().contains("F/")) {
             textView.setTextColor(AmttApplication.getContext().getResources().getColor(android.R.color.holo_red_light));
-        }  else if (logLine.contains("W/")) {
+        }  else if (logLine.toString().contains("W/")) {
             textView.setTextColor(AmttApplication.getContext().getResources().getColor(android.R.color.holo_orange_light));
-        } else if (logLine.contains("I/")) {
+        } else if (logLine.toString().contains("I/")) {
             textView.setTextColor(Color.GREEN);
         }else {
             textView.setTextColor(AmttApplication.getContext().getResources().getColor(android.R.color.black));
