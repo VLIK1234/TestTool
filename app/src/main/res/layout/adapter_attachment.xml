@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="120dp"
-    android:layout_height="wrap_content"
+    android:layout_height="120dp"
     android:layout_margin="1dp"
-    android:orientation="horizontal"
     android:duplicateParentState="false">
 
     <ImageView
         android:id="@+id/iv_screenImage"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:contentDescription="@string/empty"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
         android:scaleType="centerCrop"
-        android:tint="@color/photo_tint"/>
+        android:tint="@color/photo_tint" />
 
     <TextView
         android:id="@+id/tv_screenName"
@@ -28,11 +27,19 @@
         android:id="@+id/iv_close"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_margin="12dp"
-        android:contentDescription="@string/empty"
+        android:contentDescription="@null"
         android:background="?android:selectableItemBackground"
         android:gravity="center"
         android:src="@drawable/ic_delete" />
+
+    <ProgressBar
+        android:id="@android:id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
 </RelativeLayout>

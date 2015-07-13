@@ -109,7 +109,7 @@ public class TopButtonBarView extends FrameLayout {
                 isRecordStarted = true;
                 ActiveUser.getInstance().setRecord(true);
                 hide();
-                StepUtil.clearAllStep();
+                StepUtil.clearAllSteps();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
                 mTopButtonListener.onTouch();
             }
@@ -203,12 +203,12 @@ public class TopButtonBarView extends FrameLayout {
                 isRecordStarted = false;
                 ActiveUser.getInstance().setRecord(false);
                 hide();
-                StepUtil.clearAllStep();
+                StepUtil.clearAllSteps();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
                 mTopButtonListener.onTouch();
             }
         });
-        mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.label_close_app), R.drawable.background_close, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
+        mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.close), R.drawable.background_close, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
                 TopButtonService.sendActionChangeTopButtonVisibility(false);
