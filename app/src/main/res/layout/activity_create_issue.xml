@@ -192,23 +192,34 @@
                 style="@style/Material.CreateIssueButton"/>
             <!-- *******TESTER END****************************************-->
 
-            <Button
-                android:id="@+id/btn_create"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/material_vertical_button_height_size"
-                android:layout_gravity="end"
-                android:layout_marginTop="@dimen/material_vertical_button_padding_top"
-                android:minWidth="@dimen/material_vertical_button_min_width_size"
-                android:text="@string/label_create"
-                android:textSize="@dimen/abc_text_size_button_material"
-                style="@style/Material.CreateIssueButton"/>
-
-            <CheckBox
-                android:id="@+id/chb_create_another"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/label_create_another"
-                android:layout_gravity="left"/>
+                android:layout_marginTop="@dimen/material_vertical_button_padding_top">
+
+                <Button
+                    android:id="@+id/btn_create"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/material_vertical_button_height_size"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:minWidth="@dimen/material_vertical_button_min_width_size"
+                    android:text="@string/label_create"
+                    android:textSize="@dimen/abc_text_size_button_material"
+                    style="@style/Material.CreateIssueButton"/>
+
+                <CheckBox
+                    android:id="@+id/chb_create_another"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_create_another"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+
+
 
         </LinearLayout>
     </ScrollView>

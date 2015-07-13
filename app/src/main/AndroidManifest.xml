@@ -45,8 +45,9 @@
 
         <activity
             android:name=".ui.activities.CreateIssueActivity"
-            android:label="@string/title_activity_create_issue"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:label="@string/title_activity_create_issue" />
+
 
         <provider
             android:name=".contentprovider.AmttContentProvider"
@@ -91,6 +92,13 @@
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+
+        <activity
+            android:name=".ui.activities.PaintActivity"
+            android:label="@string/title_activity_paint"
+            android:screenOrientation="portrait"
+            android:theme="@style/MaterialTransparentActioBar"/>
+
         <activity
             android:name=".ui.activities.PreviewActivity"
             android:launchMode="standard"
@@ -123,6 +131,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.MainActivity"/>
         </activity>
+        <activity
+            android:name=".ui.activities.DetailActivity"
+            android:launchMode="standard"
+            android:noHistory="true"
+            android:excludeFromRecents="true"/>
+        <provider
+            android:name=".excel.database.contentprovider.GSContentProvider"
+            android:authorities="amtt.epam.com.amtt.excel.database.contentprovider"
+            android:exported="false" />
     </application>
 
 </manifest>

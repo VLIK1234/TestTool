@@ -10,7 +10,7 @@
         android:id="@+id/tv_avatar"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:contentDescription="@string/empty"/>
+        android:contentDescription="@null"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
