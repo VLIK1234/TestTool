@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primary">#795548</color>
+    <color name="primaryTranslucent">#B3795548</color>
     <color name="primary_dark">#5D4037</color>
     <color name="primary_light">#D7CCC8</color>
     <color name="accent">#FFC107</color>
@@ -14,4 +15,14 @@
     <color name="light_blue_selection">#6633b5e5</color>
 
     <color name="photo_tint">#88101010</color>
+
+    <color name="red_paint">#FF0000</color>
+    <color name="orange_paint">#FF7F00</color>
+    <color name="yellow_paint">#FFFF00</color>
+    <color name="green_paint">#00FF00</color>
+    <color name="blue_paint">#00FFFF</color>
+    <color name="indigo_paint">#0000FF</color>
+    <color name="violet_paint">#4B0082</color>
+    <color name="material_light">#FFEEEEEE</color>
+
 </resources>

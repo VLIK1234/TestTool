@@ -11,9 +11,20 @@
         <item name="android:divider">@color/divider</item>
     </style>
 
+    <style name="MaterialTransparentActioBar" parent="Material">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="colorPrimary">@color/primaryTranslucent</item>
+    </style>
+
+    <style name="Material.Drawable"></style>
+
+    <style name="Material.Widget"></style>
+
     <style name="Material.AutocompleteProgressView">
         <item name="android:dropDownItemStyle">@style/Material.DropDownItem</item>
-        <item name="android:spinnerStyle">@style/Base.Widget.AppCompat.Spinner.Underlined.Custom</item>
+        <item name="android:spinnerStyle">@style/Base.Widget.AppCompat.Spinner.Underlined.Custom
+        </item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
         <item name="android:inputType">textAutoComplete</item>
         <item name="android:textColor">@color/primary_text</item>
@@ -67,7 +78,15 @@
         <item name="android:textColor">@color/primary_text</item>
     </style>
 
-    <style name="Dialog" parent="Theme.AppCompat.Light.Dialog">
+    <style name="Dialog" parent="Theme.AppCompat.Light.Dialog" />
+
+    <style name="PaletteButtonFirst" parent="Base.Widget.AppCompat.Button">
+        <item name="android:layout_width">@dimen/button_small_size</item>
+        <item name="android:layout_height">@dimen/button_small_size</item>
+    </style>
+
+    <style name="PaletteButtonNext" parent="PaletteButtonFirst">
+        <item name="android:layout_marginLeft">@dimen/navigation_padding_bottom</item>
     </style>
 
     <style name="Material.SpinnerProgress">
@@ -78,6 +97,11 @@
 
     <style name="Material.CreateIssueButton" parent="Base.Widget.AppCompat.Button">
         <item name="android:layout_marginRight">4dp</item>
+    </style>
+
+    <style name="UserInfoDescriptor">
+        <item name="android:paddingLeft">@dimen/CreateIssueActivityDescriptor</item>
+        <item name="android:paddingRight">@dimen/abc_action_bar_icon_vertical_padding_material</item>
     </style>
 
 </resources>

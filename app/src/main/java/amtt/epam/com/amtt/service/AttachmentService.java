@@ -9,7 +9,7 @@ import android.os.IBinder;
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.api.JiraGetContentCallback;
+import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.helper.AttachNotificationHelper;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
@@ -62,7 +62,7 @@ public class AttachmentService extends Service {
     }
 
     private void checkIssueKey() {
-        JiraContent.getInstance().getRecentIssueKey(new JiraGetContentCallback<String>() {
+        JiraContent.getInstance().getRecentIssueKey(new GetContentCallback<String>() {
             @Override
             public void resultOfDataLoading(String result) {
                 if (result != null) {
@@ -81,7 +81,7 @@ public class AttachmentService extends Service {
         if (fileFullName.size() > 0) {
             final int notificationId = AttachNotificationHelper.showNotification(getBaseContext(),
                     AttachNotificationHelper.getInitBuilder(getBaseContext(), issueKey, fileFullName.size()));
-            JiraContent.getInstance().sendAttachment(issueKey, fileFullName, new JiraGetContentCallback<Boolean>() {
+            JiraContent.getInstance().sendAttachment(issueKey, fileFullName, new GetContentCallback<Boolean>() {
                 @Override
                 public void resultOfDataLoading(Boolean result) {
                     AttachNotificationHelper.updateNotification(getBaseContext(),

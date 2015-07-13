@@ -46,7 +46,9 @@
 
         <activity
             android:name=".ui.activities.CreateIssueActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_create_issue" />
+
 
         <provider
             android:name=".contentprovider.AmttContentProvider"
@@ -91,6 +93,13 @@
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Panel" />
+
+        <activity
+            android:name=".ui.activities.PaintActivity"
+            android:label="@string/title_activity_paint"
+            android:screenOrientation="portrait"
+            android:theme="@style/MaterialTransparentActioBar"/>
+
 
         <service
             android:name=".service.AttachmentService"

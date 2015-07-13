@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/activity_horizontal_margin"
-        android:scrollbarStyle="outsideInset">
+        android:scrollbarStyle="outsideInset"
+        android:clipToPadding="false">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,13 +84,15 @@
                 style="@style/Material.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_components"/>
+                android:text="@string/label_components"
+                android:visibility="gone"/>
 
             <Spinner
                 android:id="@+id/spin_components"
                 style="@style/Base.Widget.AppCompat.Spinner.Underlined.Custom"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
             <!-- *******COMPONENTS END*************************************************-->
 
             <!-- *******ATTACHMENT BEGIN****************************************-->
@@ -187,18 +190,45 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/label_tester"/>
-            <!-- *******TESTER END****************************************-->
-
             <Button
-                android:id="@+id/btn_create"
+                android:id="@+id/btn_assign_self"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/material_vertical_button_height_size"
                 android:layout_gravity="end"
-                android:layout_marginTop="@dimen/material_vertical_button_padding_top"
-                android:minWidth="@dimen/material_vertical_button_min_width_size"
-                android:text="@string/label_create"
+                android:text="@string/label_assign_self"
                 android:textSize="@dimen/abc_text_size_button_material"
                 style="@style/Material.CreateIssueButton"/>
+            <!-- *******TESTER END****************************************-->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/material_vertical_button_padding_top">
+
+                <Button
+                    android:id="@+id/btn_create"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/material_vertical_button_height_size"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:minWidth="@dimen/material_vertical_button_min_width_size"
+                    android:text="@string/label_create"
+                    android:textSize="@dimen/abc_text_size_button_material"
+                    style="@style/Material.CreateIssueButton"/>
+
+                <CheckBox
+                    android:id="@+id/chb_create_another"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_create_another"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+
+
+
         </LinearLayout>
     </ScrollView>
 

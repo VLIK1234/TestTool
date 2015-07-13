@@ -8,9 +8,14 @@ import android.widget.ListView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.ExpectedResultAdapter;
+import amtt.epam.com.amtt.api.GetContentCallback;
+import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
+import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
+import amtt.epam.com.amtt.excel.bo.GoogleWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
@@ -24,7 +29,6 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
     private ListView mExpectedResultsListView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ExpectedResultsHandler mHandler;
-    private ArrayList<ExpectedResultAdapter.ExpectedResult> mExpectedResultsList;
     private ExpectedResultAdapter mResultsAdapter;
 
     public static class ExpectedResultsHandler extends Handler {
@@ -63,7 +67,7 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
 
     private void initViews() {
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        mExpectedResultsList = new ArrayList<>();
+        ArrayList<ExpectedResultAdapter.ExpectedResult> mExpectedResultsList = new ArrayList<>();
         mResultsAdapter = new ExpectedResultAdapter(ExpectedResultsActivity.this, mExpectedResultsList);
         mExpectedResultsListView = (ListView) findViewById(android.R.id.list);
 
@@ -76,13 +80,29 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
     }
 
     private void refreshSteps() {
-        ExpectedResultAdapter.ExpectedResult result1 = new ExpectedResultAdapter.ExpectedResult("Top button", "assets://image3.png", "1) Center in parent");
-        mResultsAdapter.add(result1);
-        ExpectedResultAdapter.ExpectedResult result2 = new ExpectedResultAdapter.ExpectedResult("Top button", "assets://image2.png", "1) Center in parent\n2) Show Toast 'Start Record'");
-        mResultsAdapter.add(result2);
-        ExpectedResultAdapter.ExpectedResult result3 = new ExpectedResultAdapter.ExpectedResult("Top button", "assets://image4.png", "1) Align end\n2) Show child's buttons\n3) Rotate image main button");
-        mResultsAdapter.add(result3);
-        mExpectedResultsListView.setAdapter(mResultsAdapter);
+        XMLContent.getInstance().getWorksheet(new GetContentCallback<GoogleWorksheet>() {
+            @Override
+            public void resultOfDataLoading(GoogleWorksheet result) {
+                if(result != null){
+                    List<GoogleEntryWorksheet> entryWorksheetList = result.getEntry();
+                    if (entryWorksheetList != null && !entryWorksheetList.isEmpty()) {
+                        for (int i = 1; i < entryWorksheetList.size(); i++) {
+                            if (entryWorksheetList.get(i).getTestCaseNameGSX() != null) {
+                                ExpectedResultAdapter.ExpectedResult expectedResult = new ExpectedResultAdapter.ExpectedResult(entryWorksheetList.get(i).getLabelGSX(),
+                                        entryWorksheetList.get(i).getTestCaseNameGSX(),
+                                        entryWorksheetList.get(i).getPriorityGSX(),
+                                        entryWorksheetList.get(i).getTestStepsGSX(),
+                                        entryWorksheetList.get(i).getIdGSX());
+                                mResultsAdapter.add(expectedResult);
+                            }
+                        }
+                        mExpectedResultsListView.setAdapter(mResultsAdapter);
+                    }
+                }
+            }
+        });
+
+
         mSwipeRefreshLayout.setRefreshing(false);
     }
 

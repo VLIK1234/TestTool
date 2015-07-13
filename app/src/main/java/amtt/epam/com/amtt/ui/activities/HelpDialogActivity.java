@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.ui.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
@@ -36,6 +37,7 @@ public class HelpDialogActivity extends Activity {
         super.onCreate(savedInstanceState);
         setIsCanTakeScreenshot(true);
         LayoutInflater factory = LayoutInflater.from(getBaseContext());
+        @SuppressLint("InflateParams")
         final View view = factory.inflate(R.layout.activity_dialog, null);
 
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder();

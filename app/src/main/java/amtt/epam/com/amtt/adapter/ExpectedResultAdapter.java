@@ -23,14 +23,18 @@ public class ExpectedResultAdapter extends ArrayAdapter<ExpectedResultAdapter.Ex
 
     public static class ExpectedResult {
 
-        private String mActivityName;
-        private String mScreenshotPath;
-        private String mDescriptionResult;
+        private String mLabel;
+        private String mTestcaseName;
+        private String mPriority;
+        private String mSteps;
+        private String mId;
 
-        public ExpectedResult(String activityName, String screenshotPath, String descriptionResult) {
-            this.mActivityName = activityName;
-            this.mScreenshotPath = screenshotPath;
-            this.mDescriptionResult = descriptionResult;
+        public ExpectedResult(String label, String testcaseName, String priority, String steps, String id) {
+            this.mLabel = label;
+            this.mTestcaseName = testcaseName;
+            this.mPriority = priority;
+            this.mSteps = steps;
+            this.mId = id;
         }
     }
 
@@ -44,12 +48,14 @@ public class ExpectedResultAdapter extends ArrayAdapter<ExpectedResultAdapter.Ex
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.adapter_expected_results, parent, false);
         }
-        TextView activityName = (TextView) convertView.findViewById(R.id.tv_name_activity);
-        TextView descriptionResult = (TextView) convertView.findViewById(R.id.tv_description_result);
-        ImageView screenshot = (ImageView) convertView.findViewById(R.id.iv_screenshot);
-        activityName.setText(expectedResult.mActivityName);
-        descriptionResult.setText(expectedResult.mDescriptionResult);
-        ImageLoader.getInstance().displayImage(expectedResult.mScreenshotPath, screenshot);
+        TextView label = (TextView) convertView.findViewById(R.id.tv_label);
+        TextView testcaseName = (TextView) convertView.findViewById(R.id.tv_testcase_name);
+        TextView priority = (TextView) convertView.findViewById(R.id.tv_priority);
+        TextView steps = (TextView) convertView.findViewById(R.id.tv_steps);
+        label.setText(expectedResult.mLabel);
+        testcaseName.setText(expectedResult.mTestcaseName + " [ " + expectedResult.mId + " ]");
+        priority.setText(expectedResult.mPriority);
+        steps.setText(expectedResult.mSteps);
         return convertView;
     }
 
