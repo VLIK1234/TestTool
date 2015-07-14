@@ -30,4 +30,7 @@
     <dimen name="spinner_padding_bottom">7dp</dimen>
     <dimen name="dialog_margin">24dp</dimen>
     <dimen name="icon_size_step_delete">24dp</dimen>
+
+    <dimen name="activity_with_text_input">8dp</dimen>
+
 </resources>
