@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.database.util.StepUtil;
 
@@ -1267,7 +1268,7 @@ public final class GifUtil {
     }
 
     public static final int REPEAT_AD_INFINITUM = 0;
-    public static final String FILE_NAME = "StepsSequence.gif";
+    public static final String FILE_PATH = AmttApplication.getContext().getExternalFilesDir(null) + "/" +"StepsSequence.gif";
     public static boolean isCanceled;
 
     public static void createGif(final Context context, final List<Step> stepList) {
@@ -1305,7 +1306,7 @@ public final class GifUtil {
                 if (!isCanceled) {
                     FileOutputStream outputStream = null;
                     try {
-                        outputStream = IOUtils.openFileOutput(context.getFilesDir() + "/" + FILE_NAME, true);
+                        outputStream = IOUtils.openFileOutput(FILE_PATH, true);
                     } catch (FileNotFoundException e) {
                         //ignored in this implementation, because exception won't be thrown as we need to create new file
                         //look through IOUtils.openFileOutput method for more information

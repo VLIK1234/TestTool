@@ -161,7 +161,8 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
             viewHolder.mScreenshotName.setText(attachment.mFileName);
             if (attachment.mFilePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
                     attachment.mFilePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
-                    attachment.mFilePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
+                    attachment.mFilePath.contains(MimeType.IMAGE_JPEG.getFileExtension()) ||
+                    attachment.mFilePath.contains(MimeType.IMAGE_GIF.getFileExtension())) {
                 if (attachment.mScreenshotState == ScreenshotState.WRITTEN) {
                     if (viewHolder.mScreenshotImage.getDrawable() == null) {
                         ImageLoader.getInstance().displayImage("file:///" + attachment.mFilePath, viewHolder.mScreenshotImage, new ImageLoadingListener() {

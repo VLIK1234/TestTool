@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -664,6 +665,7 @@ public class CreateIssueActivity extends BaseActivity
     private void removeStepFromDatabase(int position) {
         Attachment attachment = mAdapter.getAttachments().get(position);
         int stepId = attachment.mStepId;
+        FileUtil.delete(attachment.mFilePath);
         DbObjectManager.INSTANCE.remove(new Step(stepId));
         mAdapter.getAttachments().remove(position);
         mAdapter.notifyItemRemoved(position);
@@ -772,8 +774,7 @@ public class CreateIssueActivity extends BaseActivity
                 removeStepFromDatabase(position);
             }
         } else if (FileUtil.isText(mAdapter.getAttachments().get(position).mFilePath)) {
-            mAdapter.getAttachments().remove(position);
-            mAdapter.notifyItemRemoved(position);
+            removeStepFromDatabase(position);
         }
 
     }
@@ -800,6 +801,10 @@ public class CreateIssueActivity extends BaseActivity
             intent = new Intent(this, LogActivity.class);
             intent.putExtra(LogActivity.FILE_PATH, filePath);
             startActivity(intent);
+        } else if (filePath.contains(MimeType.IMAGE_GIF.getFileExtension())) {
+            intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse("file:///" + filePath), MimeType.IMAGE_GIF.getType());
         }
         if (intent != null) {
             startActivity(intent);
@@ -809,16 +814,20 @@ public class CreateIssueActivity extends BaseActivity
     //Gif processing
     @Override
     public void onProgress(int progress) {
-        if (progress == 1) {
-            mGifProgress.setIndeterminate(false);
+        if (mGifProgress != null) {
+            if (progress == 1) {
+                mGifProgress.setIndeterminate(false);
+            }
+            mGifProgress.setProgress(progress);
         }
-        mGifProgress.setProgress(progress);
     }
 
     @Override
     public void onGifCreated() {
-        mGifProgress.setVisibility(View.GONE);
-        mAdapter.addItem(0, new Attachment(GifUtil.FILE_NAME));
+        if (mGifProgress != null && mAdapter != null) {
+            mGifProgress.setVisibility(View.GONE);
+            mAdapter.addItem(0, new Attachment(GifUtil.FILE_PATH));
+        }
     }
 
     @Override
