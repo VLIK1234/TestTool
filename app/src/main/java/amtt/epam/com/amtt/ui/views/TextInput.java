@@ -126,4 +126,5 @@ public class TextInput extends TextInputLayout implements TextEditable, Validata
     public Editable getText() {
         return mText.getText();
     }
+
 }

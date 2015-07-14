@@ -112,8 +112,8 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         mUrlTextInput = (TextInput) findViewById(R.id.url_input);
         mUrlTextInput.setValidators(new ArrayList<Validator>() {{
             add(InputsUtil.getEmptyValidator());
-            add(InputsUtil.getCorrectUrlValidator());
             add(InputsUtil.getEpamUrlValidator());
+            add(InputsUtil.getCorrectUrlValidator());
         }});
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {

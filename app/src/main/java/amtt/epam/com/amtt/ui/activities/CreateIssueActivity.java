@@ -394,7 +394,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         mCreateIssueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mTitleTextInput.validate() | !mAssignableAutocompleteView.validate()) {
+                if (!mTitleTextInput.validate()) {
                     mScrollView.smoothScrollTo(mTitlePoint[0], mTitlePoint[1]);
                     showKeyboard(mTitleTextInput.getEdit());
                     return;
@@ -443,10 +443,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     private void initAssigneeAutocompleteView() {
         mAssignableAutocompleteView = (AutocompleteProgressView) findViewById(R.id.atv_assignable_users);
-        mAssignableAutocompleteView.setValidators(new ArrayList<Validator>() {{
-            add(InputsUtil.getWhitespacesValidator());
-            add(InputsUtil.getEndStartWhitespacesValidator());
-        }});
         mAssignableAutocompleteView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
