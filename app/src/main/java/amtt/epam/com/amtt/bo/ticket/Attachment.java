@@ -12,14 +12,12 @@ import amtt.epam.com.amtt.bo.database.Step.ScreenshotState;
 public class Attachment {
 
     public int mStepId;
-    public boolean isStepWithActivityInfo;
     public String mFileName;
     public String mFilePath;
     public ScreenshotState mScreenshotState;
 
     public Attachment(Step step) {
         mStepId = step.getId();
-        isStepWithActivityInfo = step.isStepWithActivityInfo();
         mFilePath = step.getScreenshotPath();
         mFileName = FileUtil.getFileName(mFilePath);
         mScreenshotState = step.getScreenshotState();
@@ -27,7 +25,6 @@ public class Attachment {
 
     public Attachment(String filePath) {
         mStepId = -1;
-        isStepWithActivityInfo = false;
         mFilePath = filePath;
         mFileName = FileUtil.getFileName(mFilePath);
         mScreenshotState = null;

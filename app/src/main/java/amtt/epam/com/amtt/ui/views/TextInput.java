@@ -97,6 +97,10 @@ public class TextInput extends TextInputLayout implements TextEditable, Validata
         mText.setText(text);
     }
 
+    public EditText getEdit() {
+        return mText;
+    }
+
     @Override
     public void setValidators(List<Validator> validators) {
         mValidators = validators;
@@ -122,4 +126,5 @@ public class TextInput extends TextInputLayout implements TextEditable, Validata
     public Editable getText() {
         return mText.getText();
     }
+
 }

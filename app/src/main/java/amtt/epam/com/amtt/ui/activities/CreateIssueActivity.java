@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +50,6 @@ import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
-import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -88,6 +88,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private Spinner mComponents;
     private Queue<ContentConst> mRequestsQueue = new LinkedList<>();
     private Button mCreateIssueButton;
+    private ScrollView mScrollView;
+    private int[] mTitlePoint;
     private CheckBox mCreateAnotherCheckBox;
     private boolean mCreateAnotherIssue;
     private LayoutInflater mLayoutInflater;
@@ -112,9 +114,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
         PreferenceUtils.getPref().registerOnSharedPreferenceChangeListener(CreateIssueActivity.this);
-
         mHandler = new AssigneeHandler(this);
         initViews();
         mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
@@ -132,8 +132,14 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onResume() {
+        super.onResume();
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
@@ -171,6 +177,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initCreateIssueButton();
         initCreateAnotherCheckBox();
         initClearEnvironmentButton();
+        mScrollView = (ScrollView) findViewById(R.id.scroll_view);
     }
 
     private void initCreateAnotherCheckBox() {
@@ -375,7 +382,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             }
 
                             issueTypesSpinner.setEnabled(true);
-                            hideKeyboard(CreateIssueActivity.this.getWindow());
+                            hideKeyboard();
                         }
                     });
                 }
@@ -397,21 +404,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     private void initDescriptionEditText() {
         mDescriptionTextInput = (TextInput) findViewById(R.id.description_input);
-        JiraContent.getInstance().getDescription(new GetContentCallback<Spanned>() {
-            @Override
-            public void resultOfDataLoading(final Spanned result) {
-                if (result != null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDescriptionTextInput.setText(result);
-                        }
-                    });
-                }
-                mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
-                showProgressIfNeed();
-            }
-        });
+        getDescription();
     }
 
     private void initListStepButton() {
@@ -438,10 +431,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             @Override
             public void onClick(View v) {
                 if (!mTitleTextInput.validate()) {
-                    showKeyboard(mTitleTextInput);
-                    return;
-                }
-                if (!mAssignableAutocompleteView.validate()) {
+                    mScrollView.smoothScrollTo(mTitlePoint[0], mTitlePoint[1]);
+                    showKeyboard(mTitleTextInput.getEdit());
                     return;
                 }
                 if (mIssueTypeName == null) {
@@ -488,14 +479,12 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             add(InputsUtil.getEmptyValidator());
             add(InputsUtil.getEndStartWhitespacesValidator());
         }});
+        mTitlePoint = new int[2];
+        mTitleTextInput.getLocationOnScreen(mTitlePoint);
     }
 
     private void initAssigneeAutocompleteView() {
         mAssignableAutocompleteView = (AutocompleteProgressView) findViewById(R.id.atv_assignable_users);
-        mAssignableAutocompleteView.setValidators(new ArrayList<Validator>() {{
-            add(InputsUtil.getWhitespacesValidator());
-            add(InputsUtil.getEndStartWhitespacesValidator());
-        }});
         mAssignableAutocompleteView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -624,11 +613,30 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void removeStepFromDatabase(int position) {
         Attachment attachment = mAdapter.getAttachments().get(position);
         int stepId = attachment.mStepId;
-        boolean isStepWithActivityInfo = attachment.isStepWithActivityInfo;
         DbObjectManager.INSTANCE.remove(new Step(stepId));
         mAdapter.getAttachments().remove(position);
         mAdapter.notifyItemRemoved(position);
-        StepUtil.removeStepInfo(mDescriptionTextInput, stepId, isStepWithActivityInfo);
+        getDescription();
+    }
+
+    private void getDescription() {
+        JiraContent.getInstance().getDescription(new GetContentCallback<Spanned>() {
+            @Override
+            public void resultOfDataLoading(final Spanned result) {
+                if (result != null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mDescriptionTextInput != null) {
+                                mDescriptionTextInput.setText(result);
+                            }
+                        }
+                    });
+                }
+                mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
+                showProgressIfNeed();
+            }
+        });
     }
 
     //Callbacks
