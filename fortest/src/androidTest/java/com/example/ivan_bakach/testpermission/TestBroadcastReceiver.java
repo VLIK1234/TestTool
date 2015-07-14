@@ -1,5 +1,6 @@
 package com.example.ivan_bakach.testpermission;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +18,9 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
     public static final String PING_REQUEST = "PING_REQUEST";
     public static final String CLOSE_TEST = "CLOSE_TEST";
     public static final String CATEGORY = "android.intent.category.DEFAULT";
+    public static final String TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
     private boolean closeUnitTest;
+    private Activity mActivity;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -33,7 +36,14 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                 LogManger.deleteFileIfExist(LogManger.sCommonLog);
                 closeUnitTest = true;
                 break;
+            case TAKE_SCREENSHOT:
+                ScreenshotHelper.takeScreenshot(mActivity, context);
+                break;
         }
+    }
+
+    public void setActivity(Activity activity){
+        mActivity = activity;
     }
 
     public boolean needCloseUnitTest() {

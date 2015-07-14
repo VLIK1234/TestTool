@@ -111,7 +111,7 @@
             android:enabled="true"
             android:exported="true" >
             <intent-filter>
-                <action android:name="SHOW" />
+                <action android:name="REQUEST_TAKE_SCREENSHOT" />
                 <action android:name="LOG_FILE" />
 
                 <category android:name="android.intent.category.DEFAULT" />
