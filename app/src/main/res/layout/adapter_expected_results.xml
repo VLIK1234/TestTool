@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:id="@+id/result_card"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="@dimen/abc_action_bar_icon_vertical_padding_material"
-    android:duplicateParentState="true"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginLeft="8dp"
     android:clickable="true"
-    android:id="@+id/result_card">
+    android:background="@drawable/dotted_border"
+    android:duplicateParentState="true"
+    android:orientation="horizontal"
+    android:padding="@dimen/abc_action_bar_icon_vertical_padding_material">
 
     <TextView
         android:id="@+id/tv_testcase_name"
