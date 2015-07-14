@@ -39,6 +39,7 @@ public class AskExitActivity  extends Activity {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         finish();
+                        TopButtonService.sendActionChangeTopButtonVisibility(true);
                     }
                 })
                 .show();

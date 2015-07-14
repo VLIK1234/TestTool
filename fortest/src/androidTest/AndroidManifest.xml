@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.ivan_bakach.testpermission">
+
+    <application>
+        <uses-library android:name="android.test.runner" />
+
+    </application>
+
+    <instrumentation
+        android:name="com.example.ivan_bakach.testpermission.TestRunner"
+        android:functionalTest="false"
+        android:handleProfiling="false"
+        android:label="Tests for com.example.ivan_bakach.testpermission"
+        android:targetPackage="com.example.ivan_bakach.testpermission"
+        tools:replace="android:targetPackage, android:label">
+        <meta-data
+            android:name="amtt_test_key"
+            android:value="amtt_app" />
+    </instrumentation>
+
+
+</manifest>
