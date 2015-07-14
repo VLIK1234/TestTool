@@ -25,4 +25,12 @@ public class Attachment {
         mScreenshotState = step.getScreenshotState();
     }
 
+    public Attachment(String filePath) {
+        mStepId = -1;
+        isStepWithActivityInfo = false;
+        mFilePath = filePath;
+        mFileName = FileUtil.getFileName(mFilePath);
+        mScreenshotState = null;
+    }
+
 }

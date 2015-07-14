@@ -11,6 +11,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -186,6 +187,7 @@ public class TopButtonView extends FrameLayout {
             boolean tap = Math.abs(totalDeltaX) < sThreshold
                     && Math.abs(totalDeltaY) < sThreshold;
             if (tap) {
+                this.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                 if (mTopButtonBarView.getVisibility() == VISIBLE) {
                     mTopButtonBarView.hide();
                     playMainButtonRotateAnimation(300, 180, 0);
