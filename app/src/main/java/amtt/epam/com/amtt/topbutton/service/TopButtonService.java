@@ -173,7 +173,7 @@ public class TopButtonService extends Service{
 
     private void closeService() {
         if (mTopButtonView != null && isViewAdd) {
-            StepUtil.clearAllStep();
+            StepUtil.clearAllSteps();
             isViewAdd = false;
             mTopButtonView.getButtonsBar().setIsRecordStarted(false);
             mWindowManager.removeViewImmediate(mTopButtonView);
@@ -237,6 +237,6 @@ public class TopButtonService extends Service{
 
     private void stopRecord(){
         mTopButtonView.getButtonsBar().setIsRecordStarted(false);
-        StepUtil.clearAllStep();
+        StepUtil.clearAllSteps();
     }
 }

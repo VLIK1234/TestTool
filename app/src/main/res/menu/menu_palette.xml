@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="amtt.epam.com.amtt.app.AmttActivity">
+
+    <item android:id="@+id/action_clear"
+        android:title="@string/label_clear_notes"
+        android:icon="@drawable/ic_clear_notes"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/action_undo"
+        android:title="@string/label_undo"
+        android:icon="@drawable/ic_undo"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/action_redo"
+        android:title="@string/label_redo"
+        android:icon="@drawable/ic_redo"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/action_palette"
+        android:title="@string/label_palette"
+        android:icon="@drawable/ic_palette"
+        app:showAsAction="always"/>
+
+
+</menu>

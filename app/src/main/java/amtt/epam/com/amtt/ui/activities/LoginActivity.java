@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.JiraApi;
 import amtt.epam.com.amtt.api.JiraApiConst;
-import amtt.epam.com.amtt.api.JiraGetContentCallback;
+import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
@@ -33,6 +33,8 @@ import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
+import amtt.epam.com.amtt.excel.bo.GoogleSpreadsheet;
 import amtt.epam.com.amtt.exception.ExceptionType;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -115,6 +117,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
             add(InputsUtil.getEpamUrlValidator());
             add(InputsUtil.getCorrectUrlValidator());
         }});
+        showKeyboard(mUserNameTextInput.getEditText());
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,7 +185,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         Runnable task = new Runnable() {
             public void run() {
                 TopButtonService.start(getBaseContext());
-                JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
+                JiraContent.getInstance().getPrioritiesNames(new GetContentCallback<HashMap<String, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<String, String> result) {
                         if (result != null) {
@@ -190,11 +193,19 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
                         }
                     }
                 });
-                JiraContent.getInstance().getProjectsNames(new JiraGetContentCallback<HashMap<JProjects, String>>() {
+                JiraContent.getInstance().getProjectsNames(new GetContentCallback<HashMap<JProjects, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<JProjects, String> result) {
                         if (result != null) {
                             Logger.d(TAG, "Loading projects finish");
+                        }
+                    }
+                });
+                XMLContent.getInstance().getSpreadsheet(new GetContentCallback<GoogleSpreadsheet>() {
+                    @Override
+                    public void resultOfDataLoading(GoogleSpreadsheet result) {
+                        if (result != null) {
+                            Logger.d(TAG, "Loading spreadsheet finish");
                         }
                     }
                 });

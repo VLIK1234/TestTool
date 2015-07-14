@@ -17,7 +17,7 @@ public class IssuetypeTable extends Table {
     public static final String _NAME = "_name";
     public static final String _KEY_PROJECT = "_id_project";
 
-    private static MultiValueMap<String, String> sColumnsMap;
+    private static final MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
             _ID,

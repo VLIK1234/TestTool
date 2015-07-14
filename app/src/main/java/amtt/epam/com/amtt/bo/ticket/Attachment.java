@@ -1,18 +1,26 @@
 package amtt.epam.com.amtt.bo.ticket;
 
+import amtt.epam.com.amtt.bo.database.Step;
+import amtt.epam.com.amtt.util.FileUtil;
+import amtt.epam.com.amtt.bo.database.Step.ScreenshotState;
+
 /**
- @author Iryna Monchanka
- @version on 27.05.2015
+ * @author Iryna Monchanka
+ * @version on 27.05.2015
  */
 
 public class Attachment {
 
-    public String name;
-    public String filePath;
+    public int mStepId;
+    public String mFileName;
+    public String mFilePath;
+    public ScreenshotState mScreenshotState;
 
-    public Attachment(String name, String filePath){
-        this.name = name;
-        this.filePath = filePath;
+    public Attachment(Step step) {
+        mStepId = step.getId();
+        mFilePath = step.getScreenshotPath();
+        mFileName = FileUtil.getFileName(mFilePath);
+        mScreenshotState = step.getScreenshotState();
     }
 
 }
