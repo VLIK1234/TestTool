@@ -16,6 +16,14 @@ import amtt.epam.com.amtt.R;
  */
 public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
 
+    public static final String ERROR_TAG = "E/";
+    public static final String FATAL_TAG = "F/";
+    public static final String WARNING_TAG = "W/";
+    public static final String INFO_TAG = "I/";
+    public static final int ERROR_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.holo_red_light);
+    public static final int WARNING_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.holo_orange_light);
+    public static final int INFO_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.holo_green_light);
+    public static final int DEBUG_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.black);
     private ArrayList<CharSequence> mListLog = new ArrayList<>();
 
     public LogAdapter(ArrayList<CharSequence> listLog) {
@@ -41,16 +49,16 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
     }
 
     public void setColorTextView(TextView textView, CharSequence logLine){
-        if (logLine.toString().contains("E/")) {
-            textView.setTextColor(AmttApplication.getContext().getResources().getColor(android.R.color.holo_red_light));
-        } else if (logLine.toString().contains("F/")) {
-            textView.setTextColor(AmttApplication.getContext().getResources().getColor(android.R.color.holo_red_light));
-        }  else if (logLine.toString().contains("W/")) {
-            textView.setTextColor(AmttApplication.getContext().getResources().getColor(android.R.color.holo_orange_light));
-        } else if (logLine.toString().contains("I/")) {
-            textView.setTextColor(AmttApplication.getContext().getResources().getColor(android.R.color.holo_green_light));
+        if (logLine.toString().contains(ERROR_TAG)) {
+            textView.setTextColor(ERROR_COLOR);
+        } else if (logLine.toString().contains(FATAL_TAG)) {
+            textView.setTextColor(ERROR_COLOR);
+        }  else if (logLine.toString().contains(WARNING_TAG)) {
+            textView.setTextColor(WARNING_COLOR);
+        } else if (logLine.toString().contains(INFO_TAG)) {
+            textView.setTextColor(INFO_COLOR);
         }else {
-            textView.setTextColor(AmttApplication.getContext().getResources().getColor(android.R.color.black));
+            textView.setTextColor(DEBUG_COLOR);
         }
     }
 

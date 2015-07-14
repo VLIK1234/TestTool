@@ -24,6 +24,7 @@ public class TestUtil {
     public static final String CLOSE_TEST = "CLOSE_TEST";
     public static final String AMTT_TEST_KEY = "amtt_test_key";
     public static final String AMTT_APP_VALUE = "amtt_app";
+    public static final String TAG = "TAG";
 
     public static InstrumentationInfo getInstrumentationInfo(final String packageName) {
         final List<InstrumentationInfo> list =
@@ -41,23 +42,23 @@ public class TestUtil {
                 if (info != null) {
                     ComponentName componentName = new ComponentName(info.packageName, info.name);
                     InstrumentationInfo instrumentationInfo = AmttApplication.getContext().getPackageManager().getInstrumentationInfo(componentName, PackageManager.GET_META_DATA);
-                    Log.d("TAG", instrumentationInfo.name+" ");
+                    Log.d(TAG, instrumentationInfo.name+" ");
                     if (instrumentationInfo!=null) {
-                        Log.d("TAG", instrumentationInfo+" ");
+                        Log.d(TAG, instrumentationInfo+" ");
                     }
                     Bundle bundle = instrumentationInfo.metaData;
                     if (bundle!=null) {
-                        Log.d("TAG", instrumentationInfo.name+" ");
+                        Log.d(TAG, instrumentationInfo.name + " ");
                         String myApiKey = bundle.getString(AMTT_TEST_KEY);
-                        if (myApiKey!=null) {
+                        if (AMTT_APP_VALUE.equals(myApiKey)) {
                             res.add(instrumentationInfo.targetPackage);
                         }
                     }
                 }
             } catch (PackageManager.NameNotFoundException e) {
-                Log.e("TAG", "Failed to load meta-data, NameNotFound: " + e.getMessage());
+                Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
             } catch (NullPointerException e) {
-                Log.e("TAG", "Failed to load meta-data, NullPointer: " + e.getMessage());
+                Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
             }
         }
         return res.toArray(new String[res.size()]);
