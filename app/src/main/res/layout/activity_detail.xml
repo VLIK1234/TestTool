@@ -7,7 +7,14 @@
     tools:context=".ui.activities.DetailActivity"
     android:padding="@dimen/abc_action_bar_icon_vertical_padding_material"
     android:clickable="true">
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbarStyle="outsideInset"
+        android:clipToPadding="false">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
     <TextView
         android:id="@+id/tv_testcase_name"
         android:layout_width="wrap_content"
@@ -56,8 +63,8 @@
         android:id="@+id/divider"
         android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
         android:layout_below="@id/tv_steps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
 
     <TextView
         android:id="@+id/tv_description_label"
@@ -94,9 +101,13 @@
         android:textSize="@dimen/abc_text_size_body_1_material"/>
 
     <ImageButton
+        android:id="@+id/btn_bug"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:background="@drawable/background_main_button"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/tv_expected_results"/>
+        android:layout_below="@+id/tv_expected_results"
+        android:onClick="onBugClick"/>
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

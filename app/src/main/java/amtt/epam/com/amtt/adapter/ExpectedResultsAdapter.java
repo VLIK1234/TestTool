@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +37,9 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         viewGroup.setHorizontalScrollBarEnabled(true);
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(mItemLayout, viewGroup, false);
-        return new ViewHolder(v, mClickListener);
+        ViewHolder viewHolder = new ViewHolder(v);
+        viewHolder.setClickListener(mClickListener);
+        return viewHolder;
     }
 
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
@@ -68,19 +71,22 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
         public TextView mSteps;
         private ClickListener mListener;
 
-        public ViewHolder(View itemView, ClickListener listener) {
+        public ViewHolder(View itemView) {
             super(itemView);
             mLabel = (TextView) itemView.findViewById(R.id.tv_label);
             mTestcaseName = (TextView) itemView.findViewById(R.id.tv_testcase_name);
             mPriority = (TextView) itemView.findViewById(R.id.tv_priority);
             mSteps = (TextView) itemView.findViewById(R.id.tv_steps);
-            this.mListener = listener;
+            itemView.setOnClickListener(this);
         }
-
+        public void setClickListener(ClickListener clickListener) {
+            mListener = clickListener;
+        }
         @Override
         public void onClick(View v) {
             if (mListener != null) {
-                mListener.onItemSelected(getAdapterPosition());
+                if(v.getId()==R.id.result_card){
+                mListener.onItemSelected(getAdapterPosition());}
             }
         }
 

@@ -5,7 +5,8 @@
     android:orientation="horizontal"
     android:padding="@dimen/abc_action_bar_icon_vertical_padding_material"
     android:duplicateParentState="true"
-                android:clickable="true">
+    android:clickable="true"
+    android:id="@+id/result_card">
 
     <TextView
         android:id="@+id/tv_testcase_name"

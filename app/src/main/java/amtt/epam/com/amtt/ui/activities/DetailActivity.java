@@ -2,6 +2,8 @@ package amtt.epam.com.amtt.ui.activities;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
@@ -22,17 +24,19 @@ public class DetailActivity extends BaseActivity{
     private TextView mStepsTextView;
     private TextView mDescriptionTextView;
     private TextView mExpectedResultsTextView;
+    private ImageButton mBugButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LayoutInflater factory = LayoutInflater.from(getBaseContext());
+        setContentView(R.layout.activity_detail);
         mNameTextView = (TextView) findViewById(R.id.tv_testcase_name);
         mLabelTextView = (TextView) findViewById(R.id.tv_label);
         mPriorityTextView = (TextView) findViewById(R.id.tv_priority);
         mStepsTextView = (TextView) findViewById(R.id.tv_steps);
         mDescriptionTextView = (TextView) findViewById(R.id.tv_description);
         mExpectedResultsTextView = (TextView) findViewById(R.id.tv_expected_results);
+        mBugButton = (ImageButton) findViewById(R.id.btn_bug);
         Bundle extra = getIntent().getExtras();
         String testCaseId = null;
         GoogleEntryWorksheet testcase;
@@ -41,15 +45,19 @@ public class DetailActivity extends BaseActivity{
         }
         if (testCaseId != null && !testCaseId.equals("")) {
             testcase = XMLContent.getInstance().getTestcaseByIdGSX(testCaseId);
-            mNameTextView.setText(testcase.getTestCaseNameGSX());
-            mLabelTextView.setText(testcase.getLabelGSX());
-            mPriorityTextView.setText(testcase.getPriorityGSX());
-            mStepsTextView.setText(testcase.getTestStepsGSX());
-            mDescriptionTextView.setText(testcase.getTestCaseDescriptionGSX());
-            mExpectedResultsTextView.setText(testcase.getExpectedResultGSX());
+            if (testcase != null) {
+                if (testcase.getTestCaseNameGSX() != null) {
+                    mNameTextView.setText(testcase.getTestCaseNameGSX());
+                }
+                mLabelTextView.setText(testcase.getLabelGSX());
+                mPriorityTextView.setText(testcase.getPriorityGSX());
+                mStepsTextView.setText(testcase.getTestStepsGSX());
+                mDescriptionTextView.setText(testcase.getTestCaseDescriptionGSX());
+                mExpectedResultsTextView.setText(testcase.getExpectedResultGSX());
+            }
         }
-
     }
 
-
+    public void onBugClick(View view) {
+    }
 }
