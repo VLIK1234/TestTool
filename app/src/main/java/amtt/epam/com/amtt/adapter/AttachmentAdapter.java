@@ -196,11 +196,6 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         return mAttachments == null ? 0 : mAttachments.size();
     }
 
-    public void addItem(int position, Attachment data) {
-        mAttachments.add(position, data);
-        notifyItemInserted(position);
-    }
-
     public void removeItem(int position) {
         mAttachments.remove(position);
         notifyItemRemoved(position);

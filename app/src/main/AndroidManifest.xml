@@ -131,7 +131,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.MainActivity"/>
         </activity>
-
+        <activity
+            android:name=".ui.activities.DetailActivity"
+            android:launchMode="standard"
+            android:noHistory="true"
+            android:excludeFromRecents="true"/>
+        <provider
+            android:name=".excel.database.contentprovider.GSContentProvider"
+            android:authorities="amtt.epam.com.amtt.excel.database.contentprovider"
+            android:exported="false" />
     </application>
 
 </manifest>

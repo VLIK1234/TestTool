@@ -45,14 +45,6 @@ public abstract class CoreApplication extends Application {
         }
     }
 
-    public void unregisterDataSource(String sourceName) {
-        sDataSources.remove(sourceName);
-    }
-
-    public void unregisterProcessor(String sourceName) {
-        sProcessors.remove(sourceName);
-    }
-
     public static <Param> void executeRequest(DataRequest<Param> request) {
         String dataSourceName = request.getDataSource();
         String processorName = request.getProcessor();

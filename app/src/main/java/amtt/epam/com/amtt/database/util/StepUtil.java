@@ -14,7 +14,6 @@ import java.util.List;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.bo.database.ActivityMeta;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
@@ -46,13 +45,8 @@ public class StepUtil {
         DbObjectManager.INSTANCE.removeAll(new Step());
     }
 
-    public static void cleanActivityMeta() {
-        DbObjectManager.INSTANCE.removeAll(new ActivityMeta());
-    }
-
     public static void clearAllSteps() {
         cleanSteps();
-        cleanActivityMeta();
     }
 
     public static void applyNotesToScreenshot(final Bitmap drawingCache, final String screenshotPath, final Step step) {
