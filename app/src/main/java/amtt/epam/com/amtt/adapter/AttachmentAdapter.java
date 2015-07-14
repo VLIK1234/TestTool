@@ -39,8 +39,68 @@ import amtt.epam.com.amtt.util.Logger;
  * @author Iryna Monchanka
  * @version on 27.05.2015
  */
-
 public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ViewHolder> implements IResult<List<DatabaseEntity>> {
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public interface ClickListener {
+
+            void onItemRemove(int position);
+
+            void onItemShow(int position);
+
+        }
+
+        public ImageView mScreenshotImage;
+        public TextView mScreenshotName;
+        public ImageView mScreenshotClose;
+        public ProgressBar mProgress;
+        private ScreenshotState mScreenshotState;
+        private Context mContext;
+        private ClickListener mListener;
+
+        public ViewHolder(Context context, View itemView) {
+            super(itemView);
+            mContext = context;
+            mScreenshotImage = (ImageView) itemView.findViewById(R.id.iv_screenImage);
+            mScreenshotImage.setOnClickListener(this);
+            mScreenshotName = (TextView) itemView.findViewById(R.id.tv_screenName);
+            mScreenshotClose = (ImageView) itemView.findViewById(R.id.iv_close);
+            mProgress = (ProgressBar) itemView.findViewById(android.R.id.progress);
+            mScreenshotClose.setOnClickListener(this);
+        }
+
+        public void setClickListener(ClickListener clickListener) {
+            mListener = clickListener;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mScreenshotState == ScreenshotState.IS_BEING_WRITTEN) {
+                new AlertDialog.Builder(mContext, R.style.Dialog)
+                        .setTitle(R.string.title_notes_arent_applied)
+                        .setMessage(R.string.message_notes_arent_applied)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+                return;
+            }
+            switch (v.getId()) {
+                case R.id.iv_close:
+                    mListener.onItemRemove(getAdapterPosition());
+                    break;
+                case R.id.iv_screenImage:
+                    mListener.onItemShow(getAdapterPosition());
+                    break;
+            }
+        }
+
+    }
 
     private static class StepScreenshotObserver extends ContentObserver {
 
@@ -68,76 +128,18 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        public ImageView mScreenshotImage;
-        public TextView mScreenshotName;
-        public ImageView mScreenshotClose;
-        public ProgressBar mProgress;
-        private ClickListener mListener;
-        private ScreenshotState mScreenshotState;
-        private Context mContext;
-
-        public ViewHolder(Context context, View itemView, ClickListener listener) {
-            super(itemView);
-            mScreenshotImage = (ImageView) itemView.findViewById(R.id.iv_screenImage);
-            mScreenshotImage.setOnClickListener(this);
-            mScreenshotName = (TextView) itemView.findViewById(R.id.tv_screenName);
-            mScreenshotClose = (ImageView) itemView.findViewById(R.id.iv_close);
-            mProgress = (ProgressBar) itemView.findViewById(android.R.id.progress);
-            mListener = listener;
-            mScreenshotClose.setOnClickListener(this);
-            mContext = context;
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (mListener != null) {
-                if (mScreenshotState == ScreenshotState.IS_BEING_WRITTEN) {
-                    new AlertDialog.Builder(mContext, R.style.Dialog)
-                            .setTitle(R.string.title_notes_arent_applied)
-                            .setMessage(R.string.message_notes_arent_applied)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .create()
-                            .show();
-                    return;
-                }
-                switch (v.getId()) {
-                    case R.id.iv_close:
-                        mListener.onItemRemove(getAdapterPosition());
-                        break;
-                    case R.id.iv_screenImage:
-                        mListener.onItemShow(getAdapterPosition());
-                        break;
-                }
-            }
-        }
-
-        public interface ClickListener {
-            void onItemRemove(int position);
-
-            void onItemShow(int position);
-        }
-
-    }
-
     private final String TAG = this.getClass().getSimpleName();
 
     private List<Attachment> mAttachments;
     private int mRowLayout;
-    private ViewHolder.ClickListener mClickListener;
     private Context mContext;
+    private ViewHolder.ClickListener mListener;
 
-    public AttachmentAdapter(Context context, List<Attachment> attachments, int rowLayout, ViewHolder.ClickListener clickListener) {
+    public AttachmentAdapter(Context context, List<Attachment> screenshots, int rowLayout, ViewHolder.ClickListener clickListener) {
         mContext = context;
-        mAttachments = attachments;
+        mListener = clickListener;
+        mAttachments = screenshots;
         mRowLayout = rowLayout;
-        mClickListener = clickListener;
         AmttApplication.getContext().getContentResolver().registerContentObserver(AmttUri.STEP.get(), true, new StepScreenshotObserver(new Handler(), this));
     }
 
@@ -145,15 +147,18 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         viewGroup.setHorizontalScrollBarEnabled(true);
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(mRowLayout, viewGroup, false);
-        return new ViewHolder(mContext, v, mClickListener);
+        ViewHolder viewHolder = new ViewHolder(mContext, v);
+        viewHolder.setClickListener(mListener);
+        return viewHolder;
     }
 
+    @Override
     public void onBindViewHolder(final ViewHolder viewHolder, int i) {
         if (mAttachments != null && mAttachments.size() != 0) {
             Attachment attachment = mAttachments.get(i);
             viewHolder.mScreenshotState = attachment.mScreenshotState;
-            Logger.d(TAG, attachment.mName);
-            viewHolder.mScreenshotName.setText(attachment.mName);
+            Logger.d(TAG, attachment.mFileName);
+            viewHolder.mScreenshotName.setText(attachment.mFileName);
             if (attachment.mFilePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
                     attachment.mFilePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
                     attachment.mFilePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
@@ -196,10 +201,9 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         return mAttachments == null ? 0 : mAttachments.size();
     }
 
-    public void removeItem(int position) {
-        mAttachments.remove(position);
-        notifyItemRemoved(position);
-        Logger.d(TAG, String.valueOf(position));
+    public void addItem(int position, Attachment data) {
+        mAttachments.add(position, data);
+        notifyItemInserted(position);
     }
 
     public ArrayList<String> getAttachmentFilePathList() {
@@ -210,7 +214,11 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         return filePathList;
     }
 
-    public String getStepId(int position) {
+    public List<Attachment> getAttachments() {
+        return mAttachments;
+    }
+
+    public int getStepId(int position) {
         return mAttachments.get(position).mStepId;
     }
 

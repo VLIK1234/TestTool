@@ -71,7 +71,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             initPaintView();
-            DbObjectManager.INSTANCE.query(new Step(), StepsTable.PROJECTION, new String[]{StepsTable._ID}, new String[]{extra.getString(STEP_ID_PATH)}, this);
+            DbObjectManager.INSTANCE.query(new Step(), StepsTable.PROJECTION, new String[]{StepsTable._ID}, new String[]{String.valueOf(extra.getInt(STEP_ID_PATH))}, this);
         } else {
             setErrorState();
         }

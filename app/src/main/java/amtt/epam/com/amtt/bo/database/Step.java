@@ -33,7 +33,11 @@ public class Step extends DatabaseEntity<Step> {
     private ScreenshotState mScreenState; //0 - is being written, 1 - written
 
     public Step() {
-        mScreenPath = "";
+
+    }
+
+    public Step(int stepNumber) {
+        mStepNumber = stepNumber;
     }
 
     public Step(ComponentName componentName, String screenPath) {
