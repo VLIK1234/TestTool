@@ -59,16 +59,19 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         private Context mContext;
         private ClickListener mListener;
 
-        public ViewHolder(Context context, View itemView, ClickListener clickListener) {
+        public ViewHolder(Context context, View itemView) {
             super(itemView);
             mContext = context;
-            mListener = clickListener;
             mScreenshotImage = (ImageView) itemView.findViewById(R.id.iv_screenImage);
             mScreenshotImage.setOnClickListener(this);
             mScreenshotName = (TextView) itemView.findViewById(R.id.tv_screenName);
             mScreenshotClose = (ImageView) itemView.findViewById(R.id.iv_close);
             mProgress = (ProgressBar) itemView.findViewById(android.R.id.progress);
             mScreenshotClose.setOnClickListener(this);
+        }
+
+        public void setClickListener(ClickListener clickListener) {
+            mListener = clickListener;
         }
 
         @Override
@@ -144,7 +147,9 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         viewGroup.setHorizontalScrollBarEnabled(true);
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(mRowLayout, viewGroup, false);
-        return new ViewHolder(mContext, v, mListener);
+        ViewHolder viewHolder = new ViewHolder(mContext, v);
+        viewHolder.setClickListener(mListener);
+        return viewHolder;
     }
 
     @Override
