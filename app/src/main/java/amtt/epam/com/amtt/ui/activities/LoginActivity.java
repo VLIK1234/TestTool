@@ -204,6 +204,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
             }
         };
         worker.schedule(task, 2, TimeUnit.SECONDS);
+        finish();
     }
 
     private boolean isNewUserAdditionFromUserInfo() {
@@ -229,13 +230,12 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         } else {
             setActiveUser();
             Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
-            finish();
         }
     }
 
     @Override
     public void onLoadError(Exception e) {
-        DialogUtils.createDialog(this, ExceptionType.valueOf(e)).show();
+        DialogUtils.createDialog(LoginActivity.this, ExceptionType.valueOf(e)).show();
         showProgress(false);
         mLoginButton.setEnabled(true);
     }

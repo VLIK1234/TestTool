@@ -91,4 +91,14 @@ public class GoogleWorksheet extends GoogleSheet<GoogleWorksheet> {
         values.put(WorksheetTable._LABELS, mLabels);
         return values;
     }
+
+    public GoogleEntryWorksheet getEntryById(String id) {
+        GoogleEntryWorksheet entryWorksheet = null;
+        for (GoogleEntryWorksheet entry : mEntry) {
+            if (entry.getIdGSX().equals(id)) {
+                entryWorksheet = entry;
+            }
+        }
+        return entryWorksheet;
+    }
 }

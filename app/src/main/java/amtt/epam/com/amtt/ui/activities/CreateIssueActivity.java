@@ -101,7 +101,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
         TopButtonService.sendActionChangeTopButtonVisibility(false);
-
         mHandler = new AssigneeHandler(this);
         initViews();
         mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);

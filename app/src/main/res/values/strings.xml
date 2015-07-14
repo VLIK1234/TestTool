@@ -12,6 +12,7 @@
     <string name="title_activity_help_dialog">How to make screenshot?</string>
     <string name="title_activity_paint">Notes</string>
     <string name="title_activity_preview">Preview</string>
+    <string name="title_activity_detail">Detail</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
 
@@ -132,5 +133,5 @@
     <string name="message_notes_arent_applied">Usually operation takes few seconds.</string>
     <string name="label_assign_self">Assign to me</string>
     <string name="label_create_another">Create another</string>
-
+<string name="artsiom">"ARTSIOM FIX IT!!"</string>
 </resources>

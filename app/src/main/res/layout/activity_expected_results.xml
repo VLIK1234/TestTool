@@ -35,7 +35,8 @@
             android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".ui.activities.ExpectedResultsActivity"/>
+            tools:context=".ui.activities.ExpectedResultsActivity"
+            android:clickable="true"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

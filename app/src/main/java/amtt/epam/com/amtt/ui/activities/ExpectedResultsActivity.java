@@ -37,7 +37,7 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
     @Override
     public void onItemSelected(int position) {
         Intent detail = new Intent(ExpectedResultsActivity.this, DetailActivity.class);
-        detail.putExtra(DetailActivity.TESTCASE_KEY, mResultsAdapter.getIdTestcaseList().get(position));
+        detail.putExtra(DetailActivity.TESTCASE_ID, mResultsAdapter.getIdTestcaseList().get(position));
         startActivity(detail);
     }
 
@@ -61,6 +61,7 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expected_results);
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         initViews();

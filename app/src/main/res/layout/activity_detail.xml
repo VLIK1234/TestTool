@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="@dimen/abc_action_bar_icon_vertical_padding_material">
+    android:layout_height="match_parent"
+    tools:context=".ui.activities.DetailActivity"
+    android:padding="@dimen/abc_action_bar_icon_vertical_padding_material"
+    android:clickable="true">
 
     <TextView
         android:id="@+id/tv_testcase_name"
@@ -36,7 +38,7 @@
         android:id="@+id/tv_steps_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_priority"
+        android:layout_below="@id/tv_label"
         android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
         android:text="Steps"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
@@ -53,7 +55,9 @@
         style="@style/Divider"
         android:id="@+id/divider"
         android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
-        android:layout_below="@id/tv_steps"/>
+        android:layout_below="@id/tv_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/tv_description_label"
@@ -88,4 +92,11 @@
         android:layout_below="@id/tv_expected_results_label"
         android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
         android:textSize="@dimen/abc_text_size_body_1_material"/>
+
+    <ImageButton
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:background="@drawable/background_main_button"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tv_expected_results"/>
 </RelativeLayout>

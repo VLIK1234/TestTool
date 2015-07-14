@@ -133,9 +133,12 @@
         </activity>
         <activity
             android:name=".ui.activities.DetailActivity"
-            android:launchMode="standard"
-            android:noHistory="true"
-            android:excludeFromRecents="true"/>
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".ui.activities.ExpectedResultsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.ExpectedResultsActivity"/>
+        </activity>
         <provider
             android:name=".excel.database.contentprovider.GSContentProvider"
             android:authorities="amtt.epam.com.amtt.excel.database.contentprovider"

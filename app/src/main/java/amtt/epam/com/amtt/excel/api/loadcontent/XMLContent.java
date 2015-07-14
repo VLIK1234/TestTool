@@ -6,6 +6,7 @@ import amtt.epam.com.amtt.api.ContentConst;
 import amtt.epam.com.amtt.api.ContentLoadingCallback;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
 import amtt.epam.com.amtt.excel.bo.GoogleSpreadsheet;
 import amtt.epam.com.amtt.excel.bo.GoogleWorksheet;
 import amtt.epam.com.amtt.util.ActiveUser;
@@ -45,6 +46,17 @@ public class XMLContent {
         } else {
             if (mSpreadsheet != null) {
                 getWorksheetAsynchronously(mSpreadsheet.getListWorksheets().get(8), getContentCallback);
+            } else {
+                getSpreadsheet(new GetContentCallback<GoogleSpreadsheet>() {
+                    @Override
+                    public void resultOfDataLoading(GoogleSpreadsheet result) {
+                        if (result != null) {
+                            getWorksheetAsynchronously(result.getListWorksheets().get(8), getContentCallback);
+                        }else{
+                            getContentCallback.resultOfDataLoading(mWorksheet);
+                        }
+                    }
+                });
             }
         }
     }
@@ -85,7 +97,7 @@ public class XMLContent {
                     if (contentCallback != null) {
                         if (result != null) {
                             XMLContent.getInstance().setSpreadsheet(result);
-                            contentCallback.resultOfDataLoading(mSpreadsheet);
+                            contentCallback.resultOfDataLoading(result);
                         } else {
                             contentCallback.resultOfDataLoading(null);
                         }
@@ -103,7 +115,7 @@ public class XMLContent {
                     if (contentCallback != null) {
                         if (result != null) {
                             XMLContent.getInstance().setWorksheet(result);
-                            contentCallback.resultOfDataLoading(mWorksheet);
+                            contentCallback.resultOfDataLoading(result);
                         } else {
                             contentCallback.resultOfDataLoading(null);
                         }
@@ -111,5 +123,13 @@ public class XMLContent {
                 }
             }
         }, getContentCallback);
+    }
+
+    public GoogleEntryWorksheet getTestcaseByIdGSX(String idGSX) {
+        GoogleEntryWorksheet testcase = null;
+        if (mWorksheet != null) {
+            testcase = mWorksheet.getEntryById(idGSX);
+        }
+        return testcase;
     }
 }

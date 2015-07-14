@@ -30,7 +30,8 @@ public enum ExceptionType {
     NO_INTERNET(R.string.error_title_request, R.string.error_message_no_internet),
     HOST(R.string.error_title_request, R.string.error_message_host),
     BAD_GATEWAY(R.string.error_title_request, R.string.error_message_gateway),
-    NOT_FOUND(R.string.error_title_request, R.string.error_message_web_address);
+    NOT_FOUND(R.string.error_title_request, R.string.error_message_web_address),
+    UNKNOWN_ERROR(R.string.error_title_request,R.string.artsiom);
 
     private static Map<String, ExceptionType> sExceptionsMap;
     private static Map<Integer, ExceptionType> sStatusCodeMap;
@@ -49,6 +50,7 @@ public enum ExceptionType {
         sExceptionsMap.put(ConnectException.class.getName(), ExceptionType.NO_INTERNET);
         sExceptionsMap.put(ConnectTimeoutException.class.getName(), NO_INTERNET);
         sExceptionsMap.put(HttpHostConnectException.class.getName(), HOST);
+        sExceptionsMap.put(UnknownError.class.getName(), UNKNOWN_ERROR);
 
         sStatusCodeMap = new HashMap<>();
         sStatusCodeMap.put(HttpStatus.SC_UNAUTHORIZED, AUTH);
@@ -57,6 +59,7 @@ public enum ExceptionType {
         sStatusCodeMap.put(HttpStatus.SC_NOT_FOUND, NOT_FOUND);
         sStatusCodeMap.put(HttpStatus.SC_INTERNAL_SERVER_ERROR, HOST);
         sStatusCodeMap.put(HttpClient.EMPTY_STATUS_CODE, HOST);
+        sStatusCodeMap.put(HttpClient.EMPTY_STATUS_CODE, UNKNOWN_ERROR);
     }
 
     ExceptionType(int titleId, int messageId) {
