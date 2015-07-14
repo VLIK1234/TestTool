@@ -109,7 +109,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/tv_expected_results"
-                android:background="@drawable/background_main_button"/>
+                android:background="@drawable/background_main_button"
+                android:contentDescription="@null"/>
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

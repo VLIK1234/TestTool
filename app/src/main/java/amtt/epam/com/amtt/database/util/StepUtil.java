@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.database.util;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -23,7 +22,6 @@ import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.http.MimeType;
-import amtt.epam.com.amtt.ui.views.TextInput;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.IOUtils;
 

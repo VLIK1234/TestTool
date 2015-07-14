@@ -17,7 +17,6 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,7 +36,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.AttachmentAdapter;
 import amtt.epam.com.amtt.api.ContentConst;
@@ -64,7 +62,6 @@ import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.PreferenceUtils;
-import amtt.epam.com.amtt.util.TestUtil;
 import amtt.epam.com.amtt.util.Validator;
 
 public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, IResult<List<DatabaseEntity>>, SharedPreferences.OnSharedPreferenceChangeListener {

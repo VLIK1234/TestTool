@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 
 import amtt.epam.com.amtt.ui.activities.HelpDialogActivity;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
-import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
