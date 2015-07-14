@@ -31,6 +31,9 @@
     <dimen name="dialog_margin">20dp</dimen>
     <dimen name="icon_size_step_delete">24dp</dimen>
 
+    <dimen name="activity_with_text_input">8dp</dimen>
+    <dimen name="user_info_descriptor_padding">80dp</dimen>
     <dimen name="CreateIssueActivityDescriptor">80dp</dimen>
+    <dimen name="search_button_width">48dp</dimen>
 
 </resources>

@@ -33,6 +33,7 @@ import amtt.epam.com.amtt.ui.activities.UserInfoActivity;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.PreferenceUtil;
+import amtt.epam.com.amtt.util.TestUtil;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
@@ -108,6 +109,7 @@ public class TopButtonBarView extends FrameLayout {
             public void onTouch() {
                 isRecordStarted = true;
                 ActiveUser.getInstance().setRecord(true);
+                TestUtil.runTests();
                 hide();
                 StepUtil.clearAllSteps();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
@@ -202,6 +204,7 @@ public class TopButtonBarView extends FrameLayout {
             public void onTouch() {
                 isRecordStarted = false;
                 ActiveUser.getInstance().setRecord(false);
+                TestUtil.closeTest();
                 hide();
                 StepUtil.clearAllSteps();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();

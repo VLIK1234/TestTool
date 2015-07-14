@@ -3,11 +3,13 @@ package amtt.epam.com.amtt.ui.activities;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -17,10 +19,11 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.helper.HelpTakeScreen;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.PreferenceUtil;
+import amtt.epam.com.amtt.util.SpannableUtil;
 
 /**
- @author Ivan_Bakach
- @version on 19.05.2015
+ * @author Ivan_Bakach
+ * @version on 19.05.2015
  */
 
 public class HelpDialogActivity extends Activity {
@@ -36,8 +39,8 @@ public class HelpDialogActivity extends Activity {
         final View view = factory.inflate(R.layout.activity_dialog, null);
 
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
-        stringBuilder.append(getString(R.string.dialog_description))
-                .append(Html.fromHtml(" <br /><b>" + getMessageForCurrentDevice() + "</b><br />"));
+        stringBuilder.append(getString(R.string.dialog_description));
+        SpannableUtil.appendCompact(stringBuilder, getMessageForCurrentDevice(), new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         CheckBox checkShowAgain = (CheckBox) view.findViewById(R.id.dialog_check_show_again);
         checkShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -65,12 +68,6 @@ public class HelpDialogActivity extends Activity {
                         finish();
                     }
                 })
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        finish();
-                    }
-                })
                 .show();
     }
 
@@ -78,7 +75,7 @@ public class HelpDialogActivity extends Activity {
         if (Build.MODEL.toUpperCase().contains(HelpTakeScreen.Constants.NEXUS.toUpperCase())) {
             return HelpTakeScreen.NEXUS.getValue();
         } else {
-            switch (Build.BRAND.toUpperCase()){
+            switch (Build.BRAND.toUpperCase()) {
                 case HelpTakeScreen.Constants.SAMSUNG:
                     return HelpTakeScreen.SAMSUNG.getValue();
                 case HelpTakeScreen.Constants.SONY:
@@ -94,10 +91,13 @@ public class HelpDialogActivity extends Activity {
             }
         }
     }
-    public static boolean getIsCanTakeScreenshot(){
+
+    public static boolean getIsCanTakeScreenshot() {
         return PreferenceUtil.getBoolean(IS_CAN_TAKE_SCREENSHOT);
     }
-    public static void setIsCanTakeScreenshot(boolean value){
+
+    public static void setIsCanTakeScreenshot(boolean value) {
         PreferenceUtil.putBoolean(IS_CAN_TAKE_SCREENSHOT, value);
     }
+
 }

@@ -22,6 +22,8 @@
     <style name="Material.Widget"></style>
 
     <style name="Material.AutocompleteProgressView">
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
         <item name="android:dropDownItemStyle">@style/Material.DropDownItem</item>
         <item name="android:spinnerStyle">@style/Base.Widget.AppCompat.Spinner.Underlined.Custom
         </item>
@@ -42,8 +44,7 @@
     </style>
 
     <style name="Material.TextViewLabel">
-        <item name="android:layout_marginLeft">4dp</item>
-        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginLeft">12dp</item>
         <item name="android:textColor">@color/secondary_text</item>
         <item name="android:textSize">11sp</item>
     </style>
@@ -54,10 +55,8 @@
     </style>
 
     <style name="Base.Widget.AppCompat.Spinner.Underlined.Custom">
-        <item name="android:paddingRight">20dp</item>
-        <item name="android:paddingLeft">4dp</item>
-        <!--<item name="android:paddingRight">4dp</item>-->
-        <!--<item name="android:paddingLeft">4dp</item>-->
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingBottom">12dp</item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
@@ -66,8 +65,8 @@
     </style>
 
     <style name="Material.RecyclerView">
-        <item name="android:layout_marginLeft">4dp</item>
-        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
         <item name="android:layout_height">140dp</item>
         <item name="android:background">@drawable/dotted_border</item>
         <item name="android:scrollbars">horizontal</item>
@@ -96,11 +95,11 @@
 
 
     <style name="Material.CreateIssueButton" parent="Base.Widget.AppCompat.Button">
-        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_marginRight">6dp</item>
     </style>
 
     <style name="UserInfoDescriptor">
-        <item name="android:paddingLeft">@dimen/CreateIssueActivityDescriptor</item>
+        <item name="android:paddingLeft">@dimen/user_info_descriptor_padding</item>
         <item name="android:paddingRight">@dimen/abc_action_bar_icon_vertical_padding_material</item>
     </style>
 

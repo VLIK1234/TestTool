@@ -10,7 +10,9 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#FFB6B6B6</color>
 
+
     <color name="black">#000000</color>
+    <color name="light_blue_selection">#6633b5e5</color>
 
     <color name="photo_tint">#88101010</color>
 

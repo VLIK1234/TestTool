@@ -5,18 +5,22 @@
     android:layout_height="match_parent">
 
     <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_horizontal_margin"
         android:scrollbarStyle="outsideInset"
         android:clipToPadding="false">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingRight="12dp"
-            android:paddingLeft="12dp">
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_horizontal_margin"
+            android:paddingLeft="@dimen/abc_button_padding_horizontal_material"
+            android:paddingStart="@dimen/abc_button_padding_horizontal_material"
+            android:paddingRight="@null"
+            android:paddingEnd="@null">
 
             <!-- *******PROJECTS BEGIN***************************************************-->
             <TextView
@@ -51,7 +55,6 @@
 
             <!-- *******ISSUE TYPES END**********************************************-->
 
-            <!-- *******SUMMARY BEGIN*************************************************-->
             <amtt.epam.com.amtt.ui.views.TextInput
                 android:id="@+id/summary_input"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
@@ -59,7 +62,6 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/label_summary"
                 android:inputType="textMultiLine"/>
-            <!-- *******SUMMARY END*************************************************-->
 
             <!-- *******PRIORITY BEGIN*************************************************-->
             <TextView
@@ -75,7 +77,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/label_priority"/>
-
             <!-- *******PRIORITY END*************************************************-->
 
             <!-- *******COMPONENTS BEGIN*************************************************-->
@@ -134,6 +135,14 @@
                     android:visibility="gone" />
 
             </RelativeLayout>
+
+            <CheckBox
+                android:id="@+id/cb_attach_logs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="24dp"
+                android:layout_gravity="end"
+                android:text="@string/label_attach_logs"/>
             <!-- *******ATTACHMENT END*************************************************-->
 
             <!-- *******AFFECTS VERSIONS BEGIN****************************************-->
@@ -154,7 +163,6 @@
                 android:hint="@string/label_affects_versions"
                 android:paddingBottom="@dimen/spinner_padding_bottom"
                 android:visibility="gone"/>
-
             <!-- *******AFFECTS VERSIONS END****************************************-->
 
             <!-- *******ENVIRONMENT BEGIN****************************************-->
@@ -244,9 +252,8 @@
 
             </RelativeLayout>
 
-
-
         </LinearLayout>
+
     </ScrollView>
 
     <ProgressBar

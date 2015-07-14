@@ -1,9 +1,11 @@
 package amtt.epam.com.amtt.ui.activities;
 
+import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 /**
  * @author Ivan_Bakach
@@ -16,6 +18,12 @@ public class BaseActivity extends AppCompatActivity {
     static final int NO_FLAGS = 0;
     private InputMethodManager mInputManager;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mInputManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+    }
+
     public void showProgress(boolean show) {
         View progressBar = findViewById(android.R.id.progress);
         if (progressBar != null) {
@@ -23,11 +31,24 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void hideKeyboard(Window window) {
-        View view = window.getCurrentFocus();
+    public void hideKeyboard() {
+        View view = getWindow().getDecorView();
         if (view != null) {
-            mInputManager = (InputMethodManager) getBaseContext().getSystemService(INPUT_METHOD_SERVICE);
             mInputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    public void showKeyboard(final View view) {
+        if (view != null) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (view != null && mInputManager != null) {
+                        view.requestFocus();
+                        mInputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                }
+            }, 500);
         }
     }
 
