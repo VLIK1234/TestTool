@@ -32,23 +32,25 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:layout_centerVertical="true"
-                        android:contentDescription="@string/empty"
+                        android:contentDescription="@null"
                         android:scaleType="centerCrop" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_toEndOf="@+id/tv_avatar"
                         android:layout_toRightOf="@+id/tv_avatar"
                         android:paddingBottom="@dimen/abc_dialog_list_padding_vertical_material"
-                        android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material">
+                        android:paddingLeft="@dimen/abc_action_bar_icon_vertical_padding_material"
+                        android:paddingStart="@dimen/abc_action_bar_icon_vertical_padding_material">
 
                         <TextView
                             android:id="@+id/tv_user_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/label_user_name"
-                            android:textColor="@color/abc_primary_text_material_light"
-                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/abc_primary_text_material_light" />
 
                         <TextView
                             android:id="@+id/user_name_subhead"
@@ -61,11 +63,10 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    style="@style/UserInfoDescriptor"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingBottom="@dimen/abc_dialog_list_padding_vertical_material"
-                    android:paddingLeft="80dp"
-                    android:paddingRight="@dimen/abc_action_bar_icon_vertical_padding_material"
                     android:paddingTop="@dimen/abc_dialog_list_padding_vertical_material">
 
                     <TextView
@@ -73,8 +74,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_jira_url"
-                        android:textColor="@color/abc_primary_text_material_light"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/abc_primary_text_material_light" />
 
                     <TextView
                         android:id="@+id/jira_url_subhead"
@@ -87,11 +88,10 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    style="@style/UserInfoDescriptor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/abc_dialog_list_padding_vertical_material"
-                    android:paddingLeft="80dp"
-                    android:paddingRight="@dimen/abc_action_bar_icon_vertical_padding_material"
                     android:paddingTop="@dimen/abc_action_bar_icon_vertical_padding_material">
 
                     <TextView
@@ -99,8 +99,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_full_name"
-                        android:textColor="@color/abc_primary_text_material_light"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/abc_primary_text_material_light" />
 
                     <TextView
                         android:id="@+id/user_display_name_subhead"
@@ -113,11 +113,10 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    style="@style/UserInfoDescriptor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/abc_dialog_list_padding_vertical_material"
-                    android:paddingLeft="80dp"
-                    android:paddingRight="@dimen/abc_action_bar_icon_vertical_padding_material"
                     android:paddingTop="@dimen/abc_dialog_list_padding_vertical_material">
 
                     <TextView
@@ -125,8 +124,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_email"
-                        android:textColor="@color/abc_primary_text_material_light"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/abc_primary_text_material_light" />
 
                     <TextView
                         android:id="@+id/user_email_subhead"
@@ -139,11 +138,10 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    style="@style/UserInfoDescriptor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/abc_dialog_list_padding_vertical_material"
-                    android:paddingLeft="80dp"
-                    android:paddingRight="@dimen/abc_action_bar_icon_vertical_padding_material"
                     android:paddingTop="@dimen/abc_dialog_list_padding_vertical_material">
 
                     <TextView
@@ -151,8 +149,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_time_zone"
-                        android:textColor="@color/abc_primary_text_material_light"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/abc_primary_text_material_light" />
 
                     <TextView
                         android:id="@+id/user_time_zone_subhead"
@@ -165,11 +163,10 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    style="@style/UserInfoDescriptor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/abc_dialog_list_padding_vertical_material"
-                    android:paddingLeft="80dp"
-                    android:paddingRight="@dimen/abc_action_bar_icon_vertical_padding_material"
                     android:paddingTop="@dimen/abc_dialog_list_padding_vertical_material">
 
                     <TextView
@@ -177,8 +174,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/label_locale"
-                        android:textColor="@color/abc_primary_text_material_light"
-                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/abc_primary_text_material_light" />
 
                     <TextView
                         android:id="@+id/user_locale_subhead"
@@ -189,8 +186,11 @@
                         android:text="@string/label_locale" />
 
                 </RelativeLayout>
+
             </LinearLayout>
+
         </ScrollView>
+
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <ProgressBar
