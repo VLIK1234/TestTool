@@ -3,7 +3,9 @@ package amtt.epam.com.amtt.ui.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
@@ -15,16 +17,19 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.AttachmentAdapter;
 import amtt.epam.com.amtt.api.ContentConst;
@@ -44,8 +50,9 @@ import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
-import amtt.epam.com.amtt.database.util.StepUtil;
+
 import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
+
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -54,12 +61,13 @@ import amtt.epam.com.amtt.ui.views.AutocompleteProgressView;
 import amtt.epam.com.amtt.ui.views.TextInput;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
+import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.util.TestUtil;
 import amtt.epam.com.amtt.util.Validator;
 
-
-public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, IResult<List<DatabaseEntity>> {
+public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, IResult<List<DatabaseEntity>>, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int PAINT_ACTIVITY_REQUEST_CODE = 0;
     private static final int MESSAGE_TEXT_CHANGED = 100;
@@ -83,6 +91,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private Spinner mComponents;
     private Queue<ContentConst> mRequestsQueue = new LinkedList<>();
     private Button mCreateIssueButton;
+    private ScrollView mScrollView;
+    private int[] mTitlePoint;
     private CheckBox mCreateAnotherCheckBox;
     private boolean mCreateAnotherIssue;
     private LayoutInflater mLayoutInflater;
@@ -108,12 +118,14 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
         TopButtonService.sendActionChangeTopButtonVisibility(false);
+        PreferenceUtils.getPref().registerOnSharedPreferenceChangeListener(CreateIssueActivity.this);
         mHandler = new AssigneeHandler(this);
         initViews();
         mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
         mRequestsQueue.add(ContentConst.ATTACHMENT_RESPONSE);
         showProgressIfNeed();
         initAttachmentsView();
+        initAttachLogsCheckBox();
         initDescriptionEditText();
     }
 
@@ -124,8 +136,14 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onResume() {
+        super.onResume();
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
@@ -138,6 +156,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 }
                 break;
         }
+        PreferenceUtils.getPref().unregisterOnSharedPreferenceChangeListener(CreateIssueActivity.this);
     }
 
     private void setDefaultConfigs() {
@@ -162,6 +181,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initCreateIssueButton();
         initCreateAnotherCheckBox();
         initClearEnvironmentButton();
+        mScrollView = (ScrollView) findViewById(R.id.scroll_view);
     }
 
     private void initCreateAnotherCheckBox() {
@@ -364,8 +384,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                                     issueTypesSpinner.setSelection(issueTypesAdapter.getPosition(TASK));
                                 }
                             }
+
                             issueTypesSpinner.setEnabled(true);
-                            hideKeyboard(CreateIssueActivity.this.getWindow());
+                            hideKeyboard();
                         }
                     });
                 }
@@ -388,27 +409,12 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void initDescriptionEditText() {
         mDescriptionTextInput = (TextInput) findViewById(R.id.description_input);
         if (XMLContent.getInstance().getLastTestcase() == null) {
-            JiraContent.getInstance().getDescription(new GetContentCallback<Spanned>() {
-                @Override
-                public void resultOfDataLoading(final Spanned result) {
-                    if (result != null) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mDescriptionTextInput.setText(result);
-                            }
-                        });
-                    } else {
-                        mDescriptionTextInput.setText("");
-                    }
-                    mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
-                    showProgressIfNeed();
-                }
-            });
+            getDescription();
         } else {
             mDescriptionTextInput.setText(XMLContent.getInstance().getLastTestcase().getTestStepsGSX());
             mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
         }
+
     }
 
     private void initListStepButton() {
@@ -435,10 +441,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             @Override
             public void onClick(View v) {
                 if (!mTitleTextInput.validate()) {
-                    showKeyboard(mTitleTextInput);
-                    return;
-                }
-                if (!mAssignableAutocompleteView.validate()) {
+                    mScrollView.smoothScrollTo(mTitlePoint[0], mTitlePoint[1]);
+                    showKeyboard(mTitleTextInput.getEdit());
                     return;
                 }
                 if (mIssueTypeName == null) {
@@ -488,14 +492,12 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         if (XMLContent.getInstance().getLastTestcase() != null) {
             mTitleTextInput.setText(XMLContent.getInstance().getLastTestcase().getTestCaseNameGSX());
         }
+        mTitlePoint = new int[2];
+        mTitleTextInput.getLocationOnScreen(mTitlePoint);
     }
 
     private void initAssigneeAutocompleteView() {
         mAssignableAutocompleteView = (AutocompleteProgressView) findViewById(R.id.atv_assignable_users);
-        mAssignableAutocompleteView.setValidators(new ArrayList<Validator>() {{
-            add(InputsUtil.getWhitespacesValidator());
-            add(InputsUtil.getEndStartWhitespacesValidator());
-        }});
         mAssignableAutocompleteView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -570,6 +572,18 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         });
     }
 
+    private void initAttachLogsCheckBox() {
+        CheckBox attachLogs = (CheckBox) findViewById(R.id.cb_attach_logs);
+        attachLogs.setChecked(PreferenceUtils.getBoolean((getString(R.string.key_is_attach_logs))));
+        attachLogs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                PreferenceUtils.putBoolean(getString(R.string.key_is_attach_logs), isChecked);
+                initAttachmentsView();
+            }
+        });
+    }
+
     private void setAssignableNames(String s) {
         mAssignableAutocompleteView.setEnabled(false);
         mAssignableAutocompleteView.showProgress(true);
@@ -587,9 +601,10 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             ActiveUser.getInstance().setLastAssigneeName(mAssignableAutocompleteView.getText().toString());
                         }
                     }
-                    mAssignableAutocompleteView.showProgress(false);
-                    mAssignableAutocompleteView.setEnabled(true);
+
                 }
+                mAssignableAutocompleteView.showProgress(false);
+                mAssignableAutocompleteView.setEnabled(true);
             }
         });
     }
@@ -611,11 +626,30 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void removeStepFromDatabase(int position) {
         Attachment attachment = mAdapter.getAttachments().get(position);
         int stepId = attachment.mStepId;
-        boolean isStepWithActivityInfo = attachment.isStepWithActivityInfo;
         DbObjectManager.INSTANCE.remove(new Step(stepId));
         mAdapter.getAttachments().remove(position);
         mAdapter.notifyItemRemoved(position);
-        StepUtil.removeStepInfo(mDescriptionTextInput, stepId, isStepWithActivityInfo);
+        getDescription();
+    }
+
+    private void getDescription() {
+        JiraContent.getInstance().getDescription(new GetContentCallback<Spanned>() {
+            @Override
+            public void resultOfDataLoading(final Spanned result) {
+                if (result != null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mDescriptionTextInput != null) {
+                                mDescriptionTextInput.setText(result);
+                            }
+                        }
+                    });
+                }
+                mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
+                showProgressIfNeed();
+            }
+        });
     }
 
     //Callbacks
@@ -626,7 +660,26 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             @Override
             public void run() {
                 if (result != null) {
-                    List<Attachment> screenArray = AttachmentManager.getInstance().getAttachmentList(result);
+                    List<Attachment> screenArray = AttachmentManager.getInstance().
+                            getAttachmentList(result);
+                    File externalCache = new File(Environment.getExternalStorageDirectory(), "Amtt_cache");
+                    String template = externalCache.getPath() + "/%s";
+                    String pathLogCommon = String.format(template, "log_common.txt");
+                    String pathLogWarning = String.format(template, "log_warning.txt");
+                    String pathLogException = String.format(template, "log_exception.txt");
+                    final File fileLogCommon = new File(pathLogCommon);
+                    final File fileLogWarning = new File(pathLogWarning);
+                    final File fileLogException = new File(pathLogException);
+                    final Attachment attachLogCommon = new Attachment(pathLogCommon);
+                    final Attachment attachLogWarning = new Attachment(pathLogWarning);
+                    final Attachment attachLogException = new Attachment(pathLogException);
+                    if (PreferenceUtils.getBoolean(getString(R.string.key_is_attach_logs))) {
+                        if (fileLogCommon.exists() && fileLogException.exists() && fileLogWarning.exists()) {
+                            screenArray.add(attachLogCommon);
+                            screenArray.add(attachLogWarning);
+                            screenArray.add(attachLogException);
+                        }
+                    }
                     mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment, CreateIssueActivity.this);
                     mRecyclerView.setAdapter(mAdapter);
                 }
@@ -647,41 +700,51 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         if (mLayoutInflater == null) {
             mLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
+        if (FileUtil.isPicture(mAdapter.getAttachments().get(position).mFilePath)) {
+            if (!PreferenceUtils.getBoolean(getString(R.string.key_step_deletion_dialog))) {
+                View dialogView = mLayoutInflater.inflate(R.layout.dialog_step_deletion, null);
+                CheckBox doNotShowAgain = (CheckBox) dialogView.findViewById(R.id.cb_do_not_show_again);
+                doNotShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        PreferenceUtils.putBoolean(getString(R.string.key_step_deletion_dialog), isChecked);
+                    }
+                });
 
-        if (!PreferenceUtils.getBoolean(getString(R.string.key_step_deletion_dialog))) {
-            View dialogView = mLayoutInflater.inflate(R.layout.dialog_step_deletion, null);
-            CheckBox doNotShowAgain = (CheckBox) dialogView.findViewById(R.id.cb_do_not_show_again);
-            doNotShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    PreferenceUtils.putBoolean(getString(R.string.key_step_deletion_dialog), isChecked);
-                }
-            });
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.title_step_deletion)
+                        .setMessage(R.string.message_step_deletion)
+                        .setView(dialogView)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                removeStepFromDatabase(position);
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+            } else {
+                removeStepFromDatabase(position);
+            }
+        }else if (FileUtil.isText(mAdapter.getAttachments().get(position).mFilePath)){
+            mAdapter.getAttachments().remove(position);
+            mAdapter.notifyItemRemoved(position);
+        }
 
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.title_step_deletion)
-                    .setMessage(R.string.message_step_deletion)
-                    .setView(dialogView)
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            removeStepFromDatabase(position);
-                            dialog.dismiss();
-                        }
-                    })
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .create()
-                    .show();
-        } else {
-            removeStepFromDatabase(position);
+    }
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.key_is_attach_logs))) {
+            initAttachmentsView();
         }
     }
-
     @Override
     public void onItemShow(int position) {
         Intent intent;
@@ -694,8 +757,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             intent.putExtra(PaintActivity.STEP_ID_PATH, mAdapter.getStepId(position));
             startActivityForResult(intent, PAINT_ACTIVITY_REQUEST_CODE);
         } else if (filePath.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
-            intent = new Intent(this, PreviewActivity.class);
-            intent.putExtra(PaintActivity.STEP_ID_PATH, filePath);
+            intent = new Intent(this, LogActivity.class);
+            intent.putExtra(LogActivity.FILE_PATH, filePath);
             startActivity(intent);
         }
     }

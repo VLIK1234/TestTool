@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <!--
      To retrieve OAuth 2.0 tokens or invalidate tokens to disconnect a user. This disconnect
@@ -82,7 +83,7 @@
             android:excludeFromRecents="true"
             android:label="@string/title_activity_help_dialog"
             android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+            android:theme="@android:style/Theme.Panel" />
         <activity
             android:name=".ui.activities.SettingActivity"
             android:label="@string/title_activity_settings"
@@ -91,7 +92,8 @@
             android:name=".ui.activities.AskExitActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+            android:theme="@android:style/Theme.Panel" />
+
 
         <activity
             android:name=".ui.activities.PaintActivity"
@@ -99,13 +101,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/MaterialTransparentActioBar"/>
 
-        <activity
-            android:name=".ui.activities.PreviewActivity"
-            android:launchMode="standard"
-            android:noHistory="true"
-            android:excludeFromRecents="true"
-            android:label="@string/title_activity_preview"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
 
         <service
             android:name=".service.AttachmentService"
@@ -132,6 +127,7 @@
                 android:value=".ui.activities.MainActivity"/>
         </activity>
         <activity
+
             android:name=".ui.activities.DetailActivity"
             android:label="@string/title_activity_detail"
             android:parentActivityName=".ui.activities.ExpectedResultsActivity">
@@ -143,6 +139,17 @@
             android:name=".excel.database.contentprovider.GSContentProvider"
             android:authorities="amtt.epam.com.amtt.excel.database.contentprovider"
             android:exported="false" />
+        <activity
+            android:name=".ui.activities.LogActivity"
+            android:launchMode="standard"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
+            android:label="@string/title_activity_log"
+            android:parentActivityName=".ui.activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.MainActivity"/>
+        </activity>
     </application>
 
 </manifest>
