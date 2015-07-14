@@ -94,6 +94,7 @@
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.Panel" />
 
+
         <activity
             android:name=".ui.activities.PaintActivity"
             android:label="@string/title_activity_paint"

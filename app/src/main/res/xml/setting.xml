@@ -5,7 +5,7 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="@string/key_dialog_hide"
-            android:summary="@string/dialog_label_checkbox"
+            android:summary="@string/check_box_do_not_show_again"
             android:title="@string/title_preff_dialog_hide" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preff_category_topbutton">

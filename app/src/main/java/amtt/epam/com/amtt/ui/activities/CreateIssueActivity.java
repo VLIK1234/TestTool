@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.ui.activities;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -47,6 +49,7 @@ import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -72,7 +75,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     private TextInput mDescriptionTextInput;
     private TextInput mEnvironmentTextInput;
-    private TextInput mSummaryTextInput;
+    private TextInput mTitleTextInput;
 
     private String mAssignableUserName = null;
     private String mIssueTypeName;
@@ -87,6 +90,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private Button mCreateIssueButton;
     private CheckBox mCreateAnotherCheckBox;
     private boolean mCreateAnotherIssue;
+    private LayoutInflater mLayoutInflater;
 
     public static class AssigneeHandler extends Handler {
 
@@ -433,8 +437,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         mCreateIssueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mSummaryTextInput.validate()) {
-                    showKeyboard(mSummaryTextInput);
+                if (!mTitleTextInput.validate()) {
+                    showKeyboard(mTitleTextInput);
                     return;
                 }
                 if (!mAssignableAutocompleteView.validate()) {
@@ -450,8 +454,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     ActiveUser.getInstance().setLastComponentsIds(JiraContent.getInstance().getComponentIdByName(components));
 
                 }
-                JiraContent.getInstance().createIssue(mIssueTypeName,
-                        mPriorityName, mVersionName, mSummaryTextInput.getText().toString(),
+                JiraContent.getInstance().createIssue(mIssueTypeName, mPriorityName, mVersionName, mTitleTextInput.getText().toString(),
                         mDescriptionTextInput.getText().toString(), mEnvironmentTextInput.getText().toString(),
                         mAssignableUserName, ActiveUser.getInstance().getLastComponentsIds(), new GetContentCallback<JCreateIssueResponse>() {
                             @Override
@@ -462,7 +465,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                                     TopButtonService.stopRecord(CreateIssueActivity.this);
                                     if (mCreateAnotherIssue) {
                                         mCreateAnotherCheckBox.setChecked(false);
-                                        mSummaryTextInput.setText("");
+                                        mTitleTextInput.setText("");
                                         initAttachmentsView();
                                         initDescriptionEditText();
                                     } else {
@@ -480,8 +483,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void initSummaryEditText() {
-        mSummaryTextInput = (TextInput) findViewById(R.id.summary_input);
-        mSummaryTextInput.setValidators(new ArrayList<Validator>() {{
+        mTitleTextInput = (TextInput) findViewById(R.id.summary_input);
+        mTitleTextInput.setValidators(new ArrayList<Validator>() {{
             add(InputsUtil.getEmptyValidator());
             add(InputsUtil.getEndStartWhitespacesValidator());
         }});
@@ -618,6 +621,16 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         DbObjectManager.INSTANCE.getAll(new Step(), this);
     }
 
+    private void removeStepFromDatabase(int position) {
+        Attachment attachment = mAdapter.getAttachments().get(position);
+        int stepId = attachment.mStepId;
+        boolean isStepWithActivityInfo = attachment.isStepWithActivityInfo;
+        DbObjectManager.INSTANCE.remove(new Step(stepId));
+        mAdapter.getAttachments().remove(position);
+        mAdapter.notifyItemRemoved(position);
+        StepUtil.removeStepInfo(mDescriptionTextInput, stepId, isStepWithActivityInfo);
+    }
+
     //Callbacks
     //IResult for attachments
     @Override
@@ -628,7 +641,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 if (result != null) {
                     List<Attachment> screenArray = AttachmentManager.getInstance().
                             getAttachmentList(result);
-                    File externalCache = new File(Environment.getExternalStorageDirectory(),"Amtt_cache");
+                    File externalCache = new File(Environment.getExternalStorageDirectory(), "Amtt_cache");
                     String template = externalCache.getPath() + "/%s";
                     String pathLogCommon = String.format(template, "log_common.txt");
                     String pathLogWarning = String.format(template, "log_warning.txt");
@@ -636,11 +649,11 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     final File fileLogCommon = new File(pathLogCommon);
                     final File fileLogWarning = new File(pathLogWarning);
                     final File fileLogException = new File(pathLogException);
-                    final Attachment attachLogCommon = new Attachment(-1, FileUtil.getFileName(pathLogCommon), pathLogCommon, null);
-                    final Attachment attachLogWarning = new Attachment(-1, FileUtil.getFileName(pathLogWarning), pathLogWarning, null);
-                    final Attachment attachLogException = new Attachment(-1, FileUtil.getFileName(pathLogException), pathLogException, null);
+                    final Attachment attachLogCommon = new Attachment(pathLogCommon);
+                    final Attachment attachLogWarning = new Attachment(pathLogWarning);
+                    final Attachment attachLogException = new Attachment(pathLogException);
                     if (PreferenceUtils.getBoolean(getString(R.string.key_is_attach_logs))) {
-                        if (fileLogCommon.exists()&&fileLogException.exists()&&fileLogWarning.exists()) {
+                        if (fileLogCommon.exists() && fileLogException.exists() && fileLogWarning.exists()) {
                             screenArray.add(attachLogCommon);
                             screenArray.add(attachLogWarning);
                             screenArray.add(attachLogException);
@@ -662,14 +675,60 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     //Recycler
     @Override
-    public void onItemRemove(int position) {
-        mAdapter.removeItem(position);
-    }
+    public void onItemRemove(final int position) {
+        if (mLayoutInflater == null) {
+            mLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+        if (FileUtil.isPicture(mAdapter.getAttachments().get(position).mFilePath)) {
+            if (!PreferenceUtils.getBoolean(getString(R.string.key_step_deletion_dialog))) {
+                View dialogView = mLayoutInflater.inflate(R.layout.dialog_step_deletion, null);
+                CheckBox doNotShowAgain = (CheckBox) dialogView.findViewById(R.id.cb_do_not_show_again);
+                doNotShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        PreferenceUtils.putBoolean(getString(R.string.key_step_deletion_dialog), isChecked);
+                    }
+                });
 
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.title_step_deletion)
+                        .setMessage(R.string.message_step_deletion)
+                        .setView(dialogView)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                removeStepFromDatabase(position);
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create()
+                        .show();
+            } else {
+                removeStepFromDatabase(position);
+            }
+        }else if (FileUtil.isText(mAdapter.getAttachments().get(position).mFilePath)){
+            mAdapter.getAttachments().remove(position);
+            mAdapter.notifyItemRemoved(position);
+        }
+
+    }
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.key_is_attach_logs))) {
+            initAttachmentsView();
+        }
+    }
     @Override
     public void onItemShow(int position) {
         Intent intent;
         String filePath = mAdapter.getAttachmentFilePathList().get(position);
+
         if (filePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
                 filePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
                 filePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
@@ -677,17 +736,10 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             intent.putExtra(PaintActivity.STEP_ID_PATH, mAdapter.getStepId(position));
             startActivityForResult(intent, PAINT_ACTIVITY_REQUEST_CODE);
         } else if (filePath.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
-            Intent preview = new Intent(CreateIssueActivity.this, LogActivity.class);
-            preview.putExtra(LogActivity.FILE_PATH, mAdapter.getAttachmentFilePathList().get(position));
-            startActivity(preview);
+            intent = new Intent(this, LogActivity.class);
+            intent.putExtra(LogActivity.FILE_PATH, filePath);
+            startActivity(intent);
         }
     }
 
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.key_is_attach_logs))) {
-            initAttachmentsView();
-        }
-    }
 }
