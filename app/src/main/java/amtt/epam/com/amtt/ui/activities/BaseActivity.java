@@ -43,8 +43,10 @@ public class BaseActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    view.requestFocus();
-                    mInputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+                    if (view != null && mInputManager != null) {
+                        view.requestFocus();
+                        mInputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+                    }
                 }
             }, 500);
         }

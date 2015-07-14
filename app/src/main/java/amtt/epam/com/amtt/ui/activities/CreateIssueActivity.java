@@ -19,9 +19,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ScrollView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +45,6 @@ import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
-import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -605,7 +604,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mDescriptionTextInput.setText(result);
+                            if (mDescriptionTextInput != null) {
+                                mDescriptionTextInput.setText(result);
+                            }
                         }
                     });
                 }
