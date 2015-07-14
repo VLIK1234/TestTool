@@ -30,6 +30,7 @@ import amtt.epam.com.amtt.ui.activities.ExpectedResultsActivity;
 import amtt.epam.com.amtt.ui.activities.HelpDialogActivity;
 import amtt.epam.com.amtt.ui.activities.StepsActivity;
 import amtt.epam.com.amtt.ui.activities.UserInfoActivity;
+import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.UIUtil;
@@ -106,8 +107,9 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 isRecordStarted = true;
+                ActiveUser.getInstance().setRecord(true);
                 hide();
-                StepUtil.clearAllStep();
+                StepUtil.clearAllSteps();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
                 mTopButtonListener.onTouch();
             }
@@ -199,13 +201,14 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 isRecordStarted = false;
+                ActiveUser.getInstance().setRecord(false);
                 hide();
-                StepUtil.clearAllStep();
+                StepUtil.clearAllSteps();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
                 mTopButtonListener.onTouch();
             }
         });
-        mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.label_close_app), R.drawable.background_close, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
+        mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.close), R.drawable.background_close, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
                 TopButtonService.sendActionChangeTopButtonVisibility(false);
@@ -303,6 +306,7 @@ public class TopButtonBarView extends FrameLayout {
 
     public void setIsRecordStarted(boolean isRecordStarted) {
         TopButtonBarView.isRecordStarted = isRecordStarted;
+        ActiveUser.getInstance().setRecord(isRecordStarted);
     }
 
     public void move(int x, int y) {

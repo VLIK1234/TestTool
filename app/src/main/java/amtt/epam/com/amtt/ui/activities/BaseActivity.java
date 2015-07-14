@@ -12,8 +12,6 @@ import android.view.inputmethod.InputMethodManager;
 
 public class BaseActivity extends AppCompatActivity {
 
-    private static final String TAG = BaseActivity.class.getSimpleName();
-
     static final int CURSOR_LOADER_ID = 0;
     static final int NO_FLAGS = 0;
     private InputMethodManager mInputManager;

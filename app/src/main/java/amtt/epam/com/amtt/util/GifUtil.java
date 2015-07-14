@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.os.Handler;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -198,7 +199,7 @@ public final class GifUtil {
                 p = network[i];
                 smallpos = i;
                 smallval = p[1]; /* index on g */
-	      /* find smallest in i..netsize-1 */
+          /* find smallest in i..netsize-1 */
                 for (j = i + 1; j < netsize; j++) {
                     q = network[j];
                     if (q[1] < smallval) { /* index on g */
@@ -1265,6 +1266,7 @@ public final class GifUtil {
 
     }
 
+    public static final int REPEAT_AD_INFINITUM = 0;
     public static final String FILE_NAME = "StepsSequence.gif";
     public static boolean isCanceled;
 
@@ -1279,7 +1281,7 @@ public final class GifUtil {
                 ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
                 GifEncoder encoder = new GifEncoder();
                 encoder.setFrameRate((float) 1);
-                encoder.setRepeat(0);
+                encoder.setRepeat(REPEAT_AD_INFINITUM);
                 encoder.start(byteArrayStream);
 
                 if (!isCanceled) {
@@ -1301,16 +1303,24 @@ public final class GifUtil {
                 }
 
                 if (!isCanceled) {
-                    FileOutputStream outputStream = IOUtils.openFileOutput(context, FILE_NAME);
+                    FileOutputStream outputStream = null;
                     try {
-                        outputStream.write(byteArrayStream.toByteArray());
-                        if (listener != null) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    listener.onGifCreated();
-                                }
-                            });
+                        outputStream = IOUtils.openFileOutput(context.getFilesDir() + "/" + FILE_NAME, true);
+                    } catch (FileNotFoundException e) {
+                        //ignored in this implementation, because exception won't be thrown as we need to create new file
+                        //look through IOUtils.openFileOutput method for more information
+                    }
+                    try {
+                        if (outputStream != null) {
+                            outputStream.write(byteArrayStream.toByteArray());
+                            if (listener != null) {
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        listener.onGifCreated();
+                                    }
+                                });
+                            }
                         }
                     } catch (IOException e) {
                         if (listener != null) {

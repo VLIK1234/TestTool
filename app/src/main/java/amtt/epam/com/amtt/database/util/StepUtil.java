@@ -4,10 +4,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +22,12 @@ import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.UsersTable;
+import amtt.epam.com.amtt.http.MimeType;
+import amtt.epam.com.amtt.ui.views.TextInput;
 import amtt.epam.com.amtt.util.FileUtil;
+import amtt.epam.com.amtt.util.IOUtils;
 
 /**
  * @author Artsiom_Kaliaha
@@ -38,7 +45,7 @@ public class StepUtil {
         DbObjectManager.INSTANCE.add(step, null);
     }
 
-    public static void cleanStep() {
+    public static void cleanSteps() {
         DbObjectManager.INSTANCE.removeAll(new Step());
     }
 
@@ -46,9 +53,35 @@ public class StepUtil {
         DbObjectManager.INSTANCE.removeAll(new ActivityMeta());
     }
 
-    public static void clearAllStep() {
-        cleanStep();
+    public static void clearAllSteps() {
+        cleanSteps();
         cleanActivityMeta();
+    }
+
+    public static void applyNotesToScreenshot(final Bitmap drawingCache, final String screenshotPath, final Step step) {
+        step.setScreenshotState(Step.ScreenshotState.IS_BEING_WRITTEN);
+        DbObjectManager.INSTANCE.update(step, StepsTable._ID + "=?", new String[]{String.valueOf(step.getId())});
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals(MimeType.IMAGE_PNG.getFileExtension()) ?
+                        Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
+
+                FileOutputStream outputStream = null;
+                try {
+                    outputStream = IOUtils.openFileOutput(screenshotPath, true);
+                } catch (FileNotFoundException e) {
+                    //ignored in this implementation, because exception won't be thrown as we need to create new file
+                    //look through IOUtils.openFileOutput method for more information
+                }
+                if (outputStream != null) {
+                    drawingCache.compress(compressFormat, 100, outputStream);
+                }
+
+                step.setScreenshotState(Step.ScreenshotState.WRITTEN);
+                DbObjectManager.INSTANCE.update(step, StepsTable._ID + "=?", new String[]{String.valueOf(step.getId())});
+            }
+        }).start();
     }
 
     public static void checkUser(String userName, IResult<List<JUserInfo>> result) {
@@ -71,7 +104,7 @@ public class StepUtil {
             Step step = list.get(i);
             builder.append(Html.fromHtml("<h5>" + context.getString(R.string.label_step) + String.valueOf(i + 1) + "</h5>"));
             if (step.isStepWithScreenshot()) {
-                builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(step.getFilePath()) + "</small>"));
+                builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(step.getScreenshotPath()) + "</small>"));
             }
             if (step.isStepWithActivityInfo()) {
                 if (step.isStepWithScreenshot()) {
@@ -89,13 +122,31 @@ public class StepUtil {
         for (Step step : stepsList) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(step.getFilePath(), options);
+            BitmapFactory.decodeFile(step.getScreenshotPath(), options);
             options.inJustDecodeBounds = false;
             options.outHeight /= 32;
             options.outWidth /= 32;
-            bitmaps.add(BitmapFactory.decodeFile(step.getFilePath(), options));
+            bitmaps.add(BitmapFactory.decodeFile(step.getScreenshotPath(), options));
         }
         return bitmaps;
+    }
+
+    public static void removeStepInfo(TextInput textInput, int stepId, boolean isStepWithActivityInfo) {
+        Editable editableText = textInput.getText();
+        if (editableText != null) {
+            Context context = AmttApplication.getContext();
+            String text = editableText.toString();
+            int startIndex = text.indexOf(context.getString(R.string.label_step) + stepId);
+            String lastLineText;
+            if (isStepWithActivityInfo) {
+                lastLineText = context.getString(R.string.label_package_name);
+            } else {
+                lastLineText = context.getString(R.string.label_file_name);
+            }
+            int lastLineIndex = text.indexOf(lastLineText, startIndex);
+            int endIndex = text.indexOf("\n\n", lastLineIndex) + 2;
+            editableText.delete(startIndex, endIndex);
+        }
     }
 
 }

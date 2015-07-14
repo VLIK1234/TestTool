@@ -53,8 +53,8 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
             holder.activityInfo.setVisibility(View.VISIBLE);
             holder.activityInfo.setText(info);
         }
-        if (!TextUtils.isEmpty(step.getFilePath())) {
-            ImageLoader.getInstance().displayImage("file:///" + step.getFilePath(), holder.screenshotView);
+        if (!TextUtils.isEmpty(step.getScreenshotPath())) {
+            ImageLoader.getInstance().displayImage("file:///" + step.getScreenshotPath(), holder.screenshotView);
         } else {
             holder.screenshotView.setImageDrawable(null);
         }
@@ -73,7 +73,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
     }
 
     public String getScreenPath(int position) {
-        return listStep.get(position).getFilePath();
+        return listStep.get(position).getScreenshotPath();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

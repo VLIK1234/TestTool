@@ -17,22 +17,22 @@ import amtt.epam.com.amtt.util.Logger;
 public class JCreateIssue {
 
     private final String TAG = this.getClass().getSimpleName();
-    private JIssueProject mProject = new JIssueProject();
-    private JIssueTypesIssueType mIssueType = new JIssueTypesIssueType();
-    private JIssueFields mFields = new JIssueFields();
-    private JIssuePriority mPriority = new JIssuePriority();
-    private JIssueVersion mVersion = new JIssueVersion();
-    private JUser mAssignee = new JUser();
     private JCreatingIssueRequest mBData = new JCreatingIssueRequest();
     private GsonSerializeProcessor<JCreatingIssueRequest> mGsonSerializeProcessor = new GsonSerializeProcessor<>();
 
     public JCreateIssue(String keyProject, String issueTypeId, String summary, String description,
                         String priorityId, String versionsId, String environment, String userAssigneName, String componentIds) {
+        JIssueProject mProject = new JIssueProject();
         mProject.setKey(keyProject);
+        JIssueTypesIssueType mIssueType = new JIssueTypesIssueType();
         mIssueType.setId(issueTypeId);
+        JIssuePriority mPriority = new JIssuePriority();
         mPriority.setId(priorityId);
+        JIssueVersion mVersion = new JIssueVersion();
         mVersion.setId(versionsId);
+        JIssueFields mFields = new JIssueFields();
         if (userAssigneName != null) {
+            JUser mAssignee = new JUser();
             mAssignee.setName(userAssigneName);
             mFields.setAssignee(mAssignee);
         }

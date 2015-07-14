@@ -10,5 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dialog_margin"
         android:layout_marginStart="@dimen/dialog_margin"
-        android:text="@string/dialog_label_checkbox"/>
+        android:text="@string/check_box_do_not_show_again"/>
+
 </LinearLayout>

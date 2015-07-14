@@ -1,8 +1,5 @@
 package amtt.epam.com.amtt.util;
 
-import android.content.Context;
-import android.net.Uri;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,22 +25,24 @@ public class IOUtils {
         }
     }
 
-    public static FileOutputStream openFileOutput(Context context, String name) {
-        FileOutputStream outputStream = null;
+    public static FileOutputStream openFileOutput(String path, boolean createIfNotExists) throws FileNotFoundException {
+        FileOutputStream outputStream;
+
         try {
-            outputStream = context.openFileOutput(name, Context.MODE_PRIVATE);
+            outputStream = new FileOutputStream(path);
         } catch (FileNotFoundException e) {
-            Logger.e(TAG, e.getMessage());
-            File file = new File(context.getFilesDir() + "/" + Uri.parse(name).getLastPathSegment());
-            try {
-                if (file.createNewFile()) {
-                    outputStream = new FileOutputStream(file);
-                }
-            } catch (IOException internalException) {
-                Logger.e(TAG, internalException.getMessage());
+            if (!createIfNotExists) {
+                throw e;
             }
+            File file = createNewFile(path);
+            outputStream = new FileOutputStream(file);
         }
+
         return outputStream;
+    }
+
+    public static File createNewFile(String path) {
+        return new File(path);
     }
 
 }

@@ -8,6 +8,7 @@ public enum MimeType {
 
     TEXT_PLAIN(MediaType.TEXT_TYPE, "plain", "txt"),
     IMAGE_JPEG(MediaType.IMAGE_TYPE, "jpeg"),
+    IMAGE_JPG(MediaType.IMAGE_TYPE, "jpg"),
     IMAGE_PNG(MediaType.IMAGE_TYPE, "png"),
     IMAGE_GIF(MediaType.IMAGE_TYPE, "gif");
 

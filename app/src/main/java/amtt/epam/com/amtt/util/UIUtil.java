@@ -32,4 +32,9 @@ public final class UIUtil {
     public static int getOrientation() {
         return AmttApplication.getContext().getResources().getConfiguration().orientation;
     }
+
+    public static int getInDp(int px) {
+        float scale = AmttApplication.getContext().getResources().getDisplayMetrics().density;
+        return (int) (px * scale + 0.5f);
+    }
 }
