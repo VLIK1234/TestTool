@@ -6,7 +6,9 @@ import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
-import amtt.epam.com.amtt.api.JiraGetContentCallback;
+import amtt.epam.com.amtt.api.GetContentCallback;
+import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
+import amtt.epam.com.amtt.excel.bo.GoogleSpreadsheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.IOUtils;
@@ -98,7 +100,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
             public void run() {
-                JiraContent.getInstance().getPrioritiesNames(new JiraGetContentCallback<HashMap<String, String>>() {
+                JiraContent.getInstance().getPrioritiesNames(new GetContentCallback<HashMap<String, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<String, String> result) {
                         if (result != null) {
@@ -106,11 +108,21 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         }
                     }
                 });
-                JiraContent.getInstance().getProjectsNames(new JiraGetContentCallback<HashMap<JProjects, String>>() {
+                JiraContent.getInstance().getProjectsNames(new GetContentCallback<HashMap<JProjects, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<JProjects, String> result) {
                         if (result != null) {
                             Logger.d(TAG, "Loading projects finish");
+                        }
+                    }
+                });
+                XMLContent.getInstance().getSpreadsheet(new GetContentCallback<GoogleSpreadsheet>() {
+                    @Override
+                    public void resultOfDataLoading(GoogleSpreadsheet result) {
+                        if (result != null) {
+                            Logger.d(TAG, "Loading spreadsheet finish");
+                        }else{
+                            Logger.d(TAG, "Loading spreadsheet crashed");
                         }
                     }
                 });

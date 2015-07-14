@@ -32,12 +32,11 @@ public class AttachmentManager {
         if (result != null) {
             ArrayList<Step> listStep = (ArrayList) result;
             for (Step step : listStep) {
-                if (step.getFilePath() != null) {
+                if (step.getScreenshotPath() != null) {
                     attachmentArrayList.add(new Attachment(step));
                 }
             }
         }
-
         return attachmentArrayList;
     }
 }

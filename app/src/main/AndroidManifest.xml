@@ -45,7 +45,9 @@
 
         <activity
             android:name=".ui.activities.CreateIssueActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_create_issue" />
+
 
         <provider
             android:name=".contentprovider.AmttContentProvider"
@@ -90,6 +92,13 @@
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+
+        <activity
+            android:name=".ui.activities.PaintActivity"
+            android:label="@string/title_activity_paint"
+            android:screenOrientation="portrait"
+            android:theme="@style/MaterialTransparentActioBar"/>
+
         <activity
             android:name=".ui.activities.PreviewActivity"
             android:launchMode="standard"
@@ -122,6 +131,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.MainActivity"/>
         </activity>
+
     </application>
 
 </manifest>
