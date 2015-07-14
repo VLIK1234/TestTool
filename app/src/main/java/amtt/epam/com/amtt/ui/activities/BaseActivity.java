@@ -46,7 +46,7 @@ public class BaseActivity extends AppCompatActivity {
                     view.requestFocus();
                     mInputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
                 }
-            }, 100);
+            }, 500);
         }
     }
 
