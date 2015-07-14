@@ -33,11 +33,10 @@ public class AttachmentManager {
             ArrayList<Step> listStep = (ArrayList) result;
             for (Step step : listStep) {
                 if (step.getScreenshotPath() != null) {
-                    attachmentArrayList.add(new Attachment(step.getId(), FileUtil.getFileName(step.getScreenshotPath()), step.getScreenshotPath(), step.getScreenshotState()));
+                    attachmentArrayList.add(new Attachment(step));
                 }
             }
         }
-
         return attachmentArrayList;
     }
 }
