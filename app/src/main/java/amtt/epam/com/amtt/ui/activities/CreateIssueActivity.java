@@ -45,6 +45,7 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -386,23 +387,28 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     private void initDescriptionEditText() {
         mDescriptionTextInput = (TextInput) findViewById(R.id.description_input);
-        JiraContent.getInstance().getDescription(new GetContentCallback<Spanned>() {
-            @Override
-            public void resultOfDataLoading(final Spanned result) {
-                if (result != null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDescriptionTextInput.setText(result);
-                        }
-                    });
-                } else {
-                    mDescriptionTextInput.setText("");
+        if (XMLContent.getInstance().getLastTestcase() == null) {
+            JiraContent.getInstance().getDescription(new GetContentCallback<Spanned>() {
+                @Override
+                public void resultOfDataLoading(final Spanned result) {
+                    if (result != null) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDescriptionTextInput.setText(result);
+                            }
+                        });
+                    } else {
+                        mDescriptionTextInput.setText("");
+                    }
+                    mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
+                    showProgressIfNeed();
                 }
-                mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
-                showProgressIfNeed();
-            }
-        });
+            });
+        } else {
+            mDescriptionTextInput.setText(XMLContent.getInstance().getLastTestcase().getTestStepsGSX());
+            mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
+        }
     }
 
     private void initListStepButton() {
@@ -479,6 +485,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             add(InputsUtil.getEmptyValidator());
             add(InputsUtil.getEndStartWhitespacesValidator());
         }});
+        if (XMLContent.getInstance().getLastTestcase() != null) {
+            mTitleTextInput.setText(XMLContent.getInstance().getLastTestcase().getTestCaseNameGSX());
+        }
     }
 
     private void initAssigneeAutocompleteView() {

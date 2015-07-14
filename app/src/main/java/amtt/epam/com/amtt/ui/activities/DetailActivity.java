@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ public class DetailActivity extends BaseActivity{
     private TextView mDescriptionTextView;
     private TextView mExpectedResultsTextView;
     private ImageButton mBugButton;
+    private GoogleEntryWorksheet testcase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +39,20 @@ public class DetailActivity extends BaseActivity{
         mDescriptionTextView = (TextView) findViewById(R.id.tv_description);
         mExpectedResultsTextView = (TextView) findViewById(R.id.tv_expected_results);
         mBugButton = (ImageButton) findViewById(R.id.btn_bug);
+        mBugButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(testcase!=null){
+                    XMLContent.getInstance().setLastTestCase(testcase);
+                    Intent loginIntent = new Intent(DetailActivity.this, CreateIssueActivity.class);
+                    startActivity(loginIntent);
+                    finish();
+                }
+            }
+        });
         Bundle extra = getIntent().getExtras();
         String testCaseId = null;
-        GoogleEntryWorksheet testcase;
+
         if (extra != null) {
             testCaseId = extra.getString(TESTCASE_ID);
         }
@@ -56,8 +69,5 @@ public class DetailActivity extends BaseActivity{
                 mExpectedResultsTextView.setText(testcase.getExpectedResultGSX());
             }
         }
-    }
-
-    public void onBugClick(View view) {
     }
 }

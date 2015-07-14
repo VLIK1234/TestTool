@@ -4,110 +4,112 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.DetailActivity"
+    android:clickable="true"
     android:padding="@dimen/abc_action_bar_icon_vertical_padding_material"
-    android:clickable="true">
+    tools:context=".ui.activities.DetailActivity">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbarStyle="outsideInset"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:scrollbarStyle="outsideInset">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/tv_testcase_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="@dimen/abc_dialog_list_padding_vertical_material"
-        android:text="@string/label_name_activity"
-        android:textSize="@dimen/abc_text_size_subhead_material"/>
 
-    <TextView
-        android:id="@+id/tv_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_testcase_name"
-        android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
-        android:textSize="@dimen/abc_text_size_caption_material"/>
+            <TextView
+                android:id="@+id/tv_testcase_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/abc_dialog_list_padding_vertical_material"
+                android:text="@string/label_name_activity"
+                android:textSize="@dimen/abc_text_size_subhead_material"/>
 
-    <TextView
-        android:id="@+id/tv_priority"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/tv_testcase_name"
-        android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
-        android:textSize="@dimen/abc_text_size_caption_material"/>
+            <TextView
+                android:id="@+id/tv_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_testcase_name"
+                android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
+                android:textSize="@dimen/abc_text_size_caption_material"/>
 
-    <TextView
-        android:id="@+id/tv_steps_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_label"
-        android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
-        android:text="Steps"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+            <TextView
+                android:id="@+id/tv_priority"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/tv_testcase_name"
+                android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
+                android:textSize="@dimen/abc_text_size_caption_material"/>
 
-    <TextView
-        android:id="@+id/tv_steps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_steps_label"
-        android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
-        android:textSize="@dimen/abc_text_size_body_1_material"/>
+            <TextView
+                android:id="@+id/tv_steps_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_label"
+                android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
+                android:text="Steps"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
 
-    <View
-        style="@style/Divider"
-        android:id="@+id/divider"
-        android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
-        android:layout_below="@id/tv_steps"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"/>
+            <TextView
+                android:id="@+id/tv_steps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_steps_label"
+                android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
+                android:textSize="@dimen/abc_text_size_body_1_material"/>
 
-    <TextView
-        android:id="@+id/tv_description_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/divider"
-        android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
-        android:text="Description"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+            <View
+                android:id="@+id/divider"
+                style="@style/Divider"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@id/tv_steps"
+                android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"/>
 
-    <TextView
-        android:id="@+id/tv_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_description_label"
-        android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
-        android:textSize="@dimen/abc_text_size_body_1_material"/>
+            <TextView
+                android:id="@+id/tv_description_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/divider"
+                android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
+                android:text="Description"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
 
-    <TextView
-        android:id="@+id/tv_expected_results_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_description"
-        android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
-        android:text="Expected results"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_description_label"
+                android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
+                android:textSize="@dimen/abc_text_size_body_1_material"/>
 
-    <TextView
-        android:id="@+id/tv_expected_results"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_expected_results_label"
-        android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
-        android:textSize="@dimen/abc_text_size_body_1_material"/>
+            <TextView
+                android:id="@+id/tv_expected_results_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_description"
+                android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
+                android:text="Expected results"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
 
-    <ImageButton
-        android:id="@+id/btn_bug"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:background="@drawable/background_main_button"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/tv_expected_results"
-        android:onClick="onBugClick"/>
+            <TextView
+                android:id="@+id/tv_expected_results"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_expected_results_label"
+                android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
+                android:textSize="@dimen/abc_text_size_body_1_material"/>
+
+            <ImageButton
+                android:id="@+id/btn_bug"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/tv_expected_results"
+                android:background="@drawable/background_main_button"/>
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>
