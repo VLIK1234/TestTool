@@ -8,21 +8,18 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
-import android.support.v7.app.AlertDialog;
-import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.util.DialogUtils;
-import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.TestUtil;
 
 /**
- @author Ivan_Bakach
- @version on 05.06.2015
+ * @author Ivan_Bakach
+ * @version on 05.06.2015
  */
 
-public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
+public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static CheckBoxPreference checkBoxPreference;
     public static SwitchPreference switchPreference;
@@ -35,7 +32,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         projectName = (ListPreference) findPreference(getActivity().getString(R.string.key_test_project));
         checkBoxPreference = (CheckBoxPreference) findPreference(getActivity().getBaseContext().getString(R.string.key_dialog_hide));
         switchPreference = (SwitchPreference) findPreference(getActivity().getBaseContext().getString(R.string.key_topbutton_show));
-        PreferenceUtils.getPref().registerOnSharedPreferenceChangeListener(this);
+        PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -48,11 +45,11 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onDestroy() {
         super.onDestroy();
-        PreferenceUtils.getPref().unregisterOnSharedPreferenceChangeListener(this);
+        PreferenceUtil.getPref().unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    public void initListValue(){
-        String[] array = TestUtil.getTestedApps();;
+    public void initListValue() {
+        String[] array = TestUtil.getTestedApps();
         projectName.setEntries(array);
         projectName.setEntryValues(array);
     }
@@ -60,9 +57,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.key_dialog_hide))) {
-        }else if (key.equals(getString(R.string.key_topbutton_show))) {
+        } else if (key.equals(getString(R.string.key_topbutton_show))) {
             TopButtonService.sendActionChangeTopButtonVisibility(sharedPreferences.getBoolean(getString(R.string.key_topbutton_show), true));
-        }else if (key.equals(getString(R.string.key_test_project))) {
+        } else if (key.equals(getString(R.string.key_test_project))) {
             ListPreference projectName = (ListPreference) findPreference(getActivity().getString(R.string.key_test_project));
             projectName.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override

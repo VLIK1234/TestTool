@@ -22,4 +22,5 @@ public class SettingActivity extends PreferenceActivity {
         super.onPause();
         finish();
     }
+
 }

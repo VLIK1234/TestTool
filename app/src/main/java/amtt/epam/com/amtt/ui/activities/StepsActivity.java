@@ -25,7 +25,7 @@ import amtt.epam.com.amtt.util.UIUtil;
 /**
  * Created by Ivan_Bakach on 10.06.2015.
  */
-public class StepsActivity extends AppCompatActivity implements StepsAdapter.ViewHolder.ClickListener{
+public class StepsActivity extends AppCompatActivity implements StepsAdapter.ViewHolder.ClickListener {
 
     public static final int SPAN_COUNT = 3;
     private TextView emptyList;
@@ -36,7 +36,7 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps);
-        if (getSupportActionBar()!=null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(false);
         }
@@ -53,7 +53,7 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (result!=null) {
+                        if (result != null) {
                             adapter = new StepsAdapter((ArrayList) result, StepsActivity.this);
                             recyclerView.setAdapter(adapter);
                             if (result.size() == 0) {
@@ -84,10 +84,10 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
         TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
-    public RecyclerView.LayoutManager getLayoutManger(){
+    public RecyclerView.LayoutManager getLayoutManger() {
         if (UIUtil.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
             return new LinearLayoutManager(getBaseContext());
-        }else{
+        } else {
             return new GridLayoutManager(getBaseContext(), SPAN_COUNT);
         }
     }
@@ -107,4 +107,5 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
         preview.putExtra(PaintActivity.STEP_ID_PATH, adapter.getScreenPath(position));
         startActivity(preview);
     }
+
 }

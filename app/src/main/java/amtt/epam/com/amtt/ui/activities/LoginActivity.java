@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -77,6 +79,12 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        showKeyboard(mUserNameTextInput.getEdit());
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -106,16 +114,16 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         mUrlTextInput = (TextInput) findViewById(R.id.url_input);
         mUrlTextInput.setValidators(new ArrayList<Validator>() {{
             add(InputsUtil.getEmptyValidator());
-            add(InputsUtil.getCorrectUrlValidator());
             add(InputsUtil.getEpamUrlValidator());
+            add(InputsUtil.getCorrectUrlValidator());
         }});
-        showKeyboard(mUserNameTextInput.getEditText());
+        //showKeyboard(mUserNameTextInput.getEditText());
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkFields();
-                hideKeyboard(LoginActivity.this.getWindow());
+                hideKeyboard();
             }
         });
     }

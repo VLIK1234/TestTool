@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.database.util;
 import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
@@ -116,22 +117,18 @@ public class StepUtil {
         return builder;
     }
 
-    public static void removeStepInfo(TextInput textInput, int stepId, boolean isStepWithActivityInfo) {
-        Editable editableText = textInput.getText();
-        if (editableText != null) {
-            Context context = AmttApplication.getContext();
-            String text = editableText.toString();
-            int startIndex = text.indexOf(context.getString(R.string.label_step) + stepId);
-            String lastLineText;
-            if (isStepWithActivityInfo) {
-                lastLineText = context.getString(R.string.label_package_name);
-            } else {
-                lastLineText = context.getString(R.string.label_file_name);
-            }
-            int lastLineIndex = text.indexOf(lastLineText, startIndex);
-            int endIndex = text.indexOf("\n\n", lastLineIndex) + 2;
-            editableText.delete(startIndex, endIndex);
+    public static List<Bitmap> getStepBitmaps(List<Step> stepsList) {
+        List<Bitmap> bitmaps = new ArrayList<>();
+        for (Step step : stepsList) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(step.getScreenshotPath(), options);
+            options.inJustDecodeBounds = false;
+            options.outHeight /= 32;
+            options.outWidth /= 32;
+            bitmaps.add(BitmapFactory.decodeFile(step.getScreenshotPath(), options));
         }
+        return bitmaps;
     }
 
 }

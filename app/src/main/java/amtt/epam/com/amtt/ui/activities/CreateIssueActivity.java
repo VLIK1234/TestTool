@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -17,13 +19,14 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +39,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.AttachmentAdapter;
 import amtt.epam.com.amtt.api.ContentConst;
@@ -49,7 +51,6 @@ import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
-import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -58,13 +59,20 @@ import amtt.epam.com.amtt.ui.views.AutocompleteProgressView;
 import amtt.epam.com.amtt.ui.views.TextInput;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.AttachmentManager;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.FileUtil;
+import amtt.epam.com.amtt.util.GifUtil;
 import amtt.epam.com.amtt.util.InputsUtil;
-import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.TestUtil;
 import amtt.epam.com.amtt.util.Validator;
 
-public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, IResult<List<DatabaseEntity>>, SharedPreferences.OnSharedPreferenceChangeListener {
+
+public class CreateIssueActivity extends BaseActivity
+        implements AttachmentAdapter.ViewHolder.ClickListener,
+        IResult<List<DatabaseEntity>>,
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        GifUtil.ProgressListener {
 
     private static final int PAINT_ACTIVITY_REQUEST_CODE = 0;
     private static final int MESSAGE_TEXT_CHANGED = 100;
@@ -88,9 +96,14 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private Spinner mComponents;
     private Queue<ContentConst> mRequestsQueue = new LinkedList<>();
     private Button mCreateIssueButton;
+    private ProgressBar mGifProgress;
+    private List<Step> mSteps;
+    private ScrollView mScrollView;
+    private int[] mTitlePoint;
     private CheckBox mCreateAnotherCheckBox;
     private boolean mCreateAnotherIssue;
     private LayoutInflater mLayoutInflater;
+    private boolean mIsGifBeingShownInGallery;
 
     public static class AssigneeHandler extends Handler {
 
@@ -112,9 +125,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
-        PreferenceUtils.getPref().registerOnSharedPreferenceChangeListener(CreateIssueActivity.this);
-
+        PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(CreateIssueActivity.this);
         mHandler = new AssigneeHandler(this);
         initViews();
         mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
@@ -129,12 +140,16 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     protected void onStop() {
         super.onStop();
         setDefaultConfigs();
+        if (!mIsGifBeingShownInGallery) {
+            TopButtonService.sendActionChangeTopButtonVisibility(true);
+        }
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
+    protected void onResume() {
+        super.onResume();
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
+        mIsGifBeingShownInGallery = false;
     }
 
     @Override
@@ -146,7 +161,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 }
                 break;
         }
-        PreferenceUtils.getPref().unregisterOnSharedPreferenceChangeListener(CreateIssueActivity.this);
+        PreferenceUtil.getPref().unregisterOnSharedPreferenceChangeListener(CreateIssueActivity.this);
     }
 
     private void setDefaultConfigs() {
@@ -171,6 +186,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         initCreateIssueButton();
         initCreateAnotherCheckBox();
         initClearEnvironmentButton();
+        initGifAttachmentControls();
+        mScrollView = (ScrollView) findViewById(R.id.scroll_view);
     }
 
     private void initCreateAnotherCheckBox() {
@@ -375,7 +392,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             }
 
                             issueTypesSpinner.setEnabled(true);
-                            hideKeyboard(CreateIssueActivity.this.getWindow());
+                            hideKeyboard();
                         }
                     });
                 }
@@ -397,21 +414,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     private void initDescriptionEditText() {
         mDescriptionTextInput = (TextInput) findViewById(R.id.description_input);
-        JiraContent.getInstance().getDescription(new GetContentCallback<Spanned>() {
-            @Override
-            public void resultOfDataLoading(final Spanned result) {
-                if (result != null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDescriptionTextInput.setText(result);
-                        }
-                    });
-                }
-                mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
-                showProgressIfNeed();
-            }
-        });
+        getDescription();
     }
 
     private void initListStepButton() {
@@ -438,10 +441,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             @Override
             public void onClick(View v) {
                 if (!mTitleTextInput.validate()) {
-                    showKeyboard(mTitleTextInput);
-                    return;
-                }
-                if (!mAssignableAutocompleteView.validate()) {
+                    mScrollView.smoothScrollTo(mTitlePoint[0], mTitlePoint[1]);
+                    showKeyboard(mTitleTextInput.getEdit());
                     return;
                 }
                 if (mIssueTypeName == null) {
@@ -489,14 +490,12 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             add(InputsUtil.getEmptyValidator());
             add(InputsUtil.getEndStartWhitespacesValidator());
         }});
+        mTitlePoint = new int[2];
+        mTitleTextInput.getLocationOnScreen(mTitlePoint);
     }
 
     private void initAssigneeAutocompleteView() {
         mAssignableAutocompleteView = (AutocompleteProgressView) findViewById(R.id.atv_assignable_users);
-        mAssignableAutocompleteView.setValidators(new ArrayList<Validator>() {{
-            add(InputsUtil.getWhitespacesValidator());
-            add(InputsUtil.getEndStartWhitespacesValidator());
-        }});
         mAssignableAutocompleteView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -556,7 +555,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mEnvironmentTextInput.setText("");
+                                mEnvironmentTextInput.setText(Constants.Symbols.EMPTY);
                             }
                         })
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -571,13 +570,57 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         });
     }
 
+    private void initGifAttachmentControls() {
+        CheckBox gifCheckBox = (CheckBox) findViewById(R.id.cb_gif_attachment);
+        gifCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                if (!PreferenceUtil.getBoolean(getString(R.string.key_gif_info_dialog))) {
+                    new AlertDialog.Builder(CreateIssueActivity.this)
+                            .setTitle(R.string.title_gif_info)
+                            .setMessage(R.string.message_gif_info)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    PreferenceUtil.putBoolean(getString(R.string.key_gif_info_dialog), true);
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    PreferenceUtil.putBoolean(getString(R.string.key_gif_info_dialog), true);
+                                }
+                            })
+                            .create()
+                            .show();
+                }
+
+                int stepsArraySize = mSteps.size();
+                if (isChecked && stepsArraySize != 0) {
+                    mGifProgress.setMax(stepsArraySize);
+                    mGifProgress.setIndeterminate(true);
+                    mGifProgress.setVisibility(View.VISIBLE);
+                    GifUtil.createGif(CreateIssueActivity.this, mSteps);
+                } else {
+                    GifUtil.cancelGifCreating();
+                    mGifProgress.setVisibility(View.GONE);
+                }
+            }
+        });
+        mGifProgress = (ProgressBar) findViewById(R.id.pb_gif_attachment);
+        int progressColor = getResources().getColor(R.color.accent);
+        mGifProgress.getProgressDrawable().setColorFilter(progressColor, PorterDuff.Mode.SRC_IN);
+        mGifProgress.getIndeterminateDrawable().setColorFilter(progressColor, PorterDuff.Mode.SRC_IN);
+    }
+
     private void initAttachLogsCheckBox() {
         CheckBox attachLogs = (CheckBox) findViewById(R.id.cb_attach_logs);
-        attachLogs.setChecked(PreferenceUtils.getBoolean((getString(R.string.key_is_attach_logs))));
+        attachLogs.setChecked(PreferenceUtil.getBoolean((getString(R.string.key_is_attach_logs))));
         attachLogs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                PreferenceUtils.putBoolean(getString(R.string.key_is_attach_logs), isChecked);
+                PreferenceUtil.putBoolean(getString(R.string.key_is_attach_logs), isChecked);
                 initAttachmentsView();
             }
         });
@@ -625,11 +668,31 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void removeStepFromDatabase(int position) {
         Attachment attachment = mAdapter.getAttachments().get(position);
         int stepId = attachment.mStepId;
-        boolean isStepWithActivityInfo = attachment.isStepWithActivityInfo;
+        FileUtil.delete(attachment.mFilePath);
         DbObjectManager.INSTANCE.remove(new Step(stepId));
         mAdapter.getAttachments().remove(position);
         mAdapter.notifyItemRemoved(position);
-        StepUtil.removeStepInfo(mDescriptionTextInput, stepId, isStepWithActivityInfo);
+        getDescription();
+    }
+
+    private void getDescription() {
+        JiraContent.getInstance().getDescription(new GetContentCallback<Spanned>() {
+            @Override
+            public void resultOfDataLoading(final Spanned result) {
+                if (result != null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mDescriptionTextInput != null) {
+                                mDescriptionTextInput.setText(result);
+                            }
+                        }
+                    });
+                }
+                mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
+                showProgressIfNeed();
+            }
+        });
     }
 
     //Callbacks
@@ -640,8 +703,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             @Override
             public void run() {
                 if (result != null) {
-                    List<Attachment> screenArray = AttachmentManager.getInstance().
-                            getAttachmentList(result);
+                    mSteps = (List) result;
+                    List<Attachment> screenArray = AttachmentManager.getInstance().getAttachmentList(result);
                     File externalCache = new File(Environment.getExternalStorageDirectory(), "Amtt_cache");
                     String template = externalCache.getPath() + "/%s";
                     String pathLogCommon = String.format(template, "log_common.txt");
@@ -650,7 +713,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     final File fileLogException = new File(pathLogException);
                     final Attachment attachLogCommon = new Attachment(pathLogCommon);
                     final Attachment attachLogException = new Attachment(pathLogException);
-                    if (PreferenceUtils.getBoolean(getString(R.string.key_is_attach_logs))) {
+                    if (PreferenceUtil.getBoolean(getString(R.string.key_is_attach_logs))) {
                         if (fileLogCommon.exists() && fileLogException.exists()) {
                             screenArray.add(attachLogCommon);
                             screenArray.add(attachLogException);
@@ -677,13 +740,13 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             mLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
         if (FileUtil.isPicture(mAdapter.getAttachments().get(position).mFilePath)) {
-            if (!PreferenceUtils.getBoolean(getString(R.string.key_step_deletion_dialog))) {
+            if (!PreferenceUtil.getBoolean(getString(R.string.key_step_deletion_dialog))) {
                 View dialogView = mLayoutInflater.inflate(R.layout.dialog_step_deletion, null);
                 CheckBox doNotShowAgain = (CheckBox) dialogView.findViewById(R.id.cb_do_not_show_again);
                 doNotShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        PreferenceUtils.putBoolean(getString(R.string.key_step_deletion_dialog), isChecked);
+                        PreferenceUtil.putBoolean(getString(R.string.key_step_deletion_dialog), isChecked);
                     }
                 });
 
@@ -709,21 +772,22 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             } else {
                 removeStepFromDatabase(position);
             }
-        }else if (FileUtil.isText(mAdapter.getAttachments().get(position).mFilePath)){
-            mAdapter.getAttachments().remove(position);
-            mAdapter.notifyItemRemoved(position);
+        } else if (FileUtil.isText(mAdapter.getAttachments().get(position).mFilePath)) {
+            removeStepFromDatabase(position);
         }
 
     }
+
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.key_is_attach_logs))) {
             initAttachmentsView();
         }
     }
+
     @Override
     public void onItemShow(int position) {
-        Intent intent;
+        Intent intent = null;
         String filePath = mAdapter.getAttachmentFilePathList().get(position);
 
         if (filePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
@@ -736,7 +800,49 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             intent = new Intent(this, LogActivity.class);
             intent.putExtra(LogActivity.FILE_PATH, filePath);
             startActivity(intent);
+        } else if (filePath.contains(MimeType.IMAGE_GIF.getFileExtension())) {
+            mIsGifBeingShownInGallery = true;
+            intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse("file:///" + filePath), MimeType.IMAGE_GIF.getType());
         }
+        if (intent != null) {
+            startActivity(intent);
+        }
+    }
+
+    //Gif processing
+    @Override
+    public void onProgress(int progress) {
+        if (mGifProgress != null) {
+            if (mGifProgress.isIndeterminate()) {
+                mGifProgress.setIndeterminate(false);
+            }
+            mGifProgress.setProgress(progress);
+        }
+    }
+
+    @Override
+    public void onGifCreated() {
+        if (mGifProgress != null && mAdapter != null) {
+            mGifProgress.setVisibility(View.GONE);
+            mAdapter.addItem(0, new Attachment(GifUtil.FILE_PATH));
+        }
+    }
+
+    @Override
+    public void onSavingError() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.title_gif_isnt_saved)
+                .setMessage(R.string.message_gif_isnt_saved)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
     }
 
 }

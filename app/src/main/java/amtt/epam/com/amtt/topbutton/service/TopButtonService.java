@@ -31,7 +31,7 @@ import amtt.epam.com.amtt.ui.activities.SettingActivity;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
-import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.TestUtil;
 
 /**
@@ -213,14 +213,8 @@ public class TopButtonService extends Service{
                 getString(R.string.label_close),
                 PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE), PendingIntent.FLAG_CANCEL_CURRENT));
 
-        NotificationCompat.Action closeTest = new NotificationCompat.Action(
-                R.drawable.ic_close_test,
-                getString(R.string.label_close_test),
-                PendingIntent.getBroadcast(getBaseContext(), REQUEST_CODE, new Intent().setAction(TestUtil.CLOSE_TEST), PendingIntent.FLAG_CANCEL_CURRENT));
-
         mBuilderNotificationCompat.addAction(mActionNotificationCompat);
         mBuilderNotificationCompat.addAction(closeService);
-        mBuilderNotificationCompat.addAction(closeTest);
         startForeground(NotificationIdConstant.MAIN_AMTT, mBuilderNotificationCompat.build());
     }
 

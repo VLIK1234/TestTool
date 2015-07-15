@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
@@ -18,7 +17,7 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.activities.CreateIssueActivity;
 import amtt.epam.com.amtt.ui.activities.HelpDialogActivity;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
-import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.util.PreferenceUtil;
 
 /**
  @author Ivan_Bakach
@@ -70,7 +69,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                             .setContentText(context.getString(R.string.text_caught_exception))
                             .setContentIntent(PendingIntent.getActivity(context, 1, new Intent(context, CreateIssueActivity.class), PendingIntent.FLAG_CANCEL_CURRENT));
                     NotificationManager managerCompat = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    PreferenceUtils.putBoolean(context.getString(R.string.key_is_attach_logs), true);
+                    PreferenceUtil.putBoolean(context.getString(R.string.key_is_attach_logs), true);
                     managerCompat.notify(NotificationIdConstant.CAUGHT_EXCEPTION, builder.build());
                     break;
                 }break;

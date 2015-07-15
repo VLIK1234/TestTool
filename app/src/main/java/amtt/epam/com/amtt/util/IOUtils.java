@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class IOUtils {
 
-    private static final String CLASS_NAME = IOUtils.class.getSimpleName();
+    private static final String TAG = IOUtils.class.getSimpleName();
 
     public static void close(Closeable... closeablesArray) {
         for (Closeable closeable : closeablesArray) {
@@ -19,7 +19,7 @@ public class IOUtils {
                 try {
                     closeable.close();
                 } catch (IOException e) {
-                    Logger.e(CLASS_NAME, e.getMessage());
+                    Logger.e(TAG, e.getMessage());
                 }
             }
         }
