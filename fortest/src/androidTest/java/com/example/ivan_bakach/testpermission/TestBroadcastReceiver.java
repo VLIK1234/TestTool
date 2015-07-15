@@ -36,7 +36,14 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                 closeUnitTest = true;
                 break;
             case TAKE_SCREENSHOT:
-                ScreenshotHelper.takeScreenshot(mActivity, context);
+                if (mActivity!=null) {
+                    ScreenshotHelper.takeScreenshot(mActivity, context);
+                }else{
+                    Intent failIntent = new Intent();
+                    failIntent.setAction("REQUEST_TAKE_SCREENSHOT");
+                    failIntent.putExtra("failScreen", "Activity don't visible launch app and try again.");
+                    context.sendBroadcast(failIntent);
+                }
                 break;
         }
     }
