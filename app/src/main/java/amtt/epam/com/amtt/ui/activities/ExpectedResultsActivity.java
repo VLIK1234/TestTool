@@ -82,7 +82,6 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
     }
 
     @Override
