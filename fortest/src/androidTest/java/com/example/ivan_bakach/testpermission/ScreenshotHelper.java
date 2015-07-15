@@ -12,7 +12,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.SimpleTimeZone;
 
@@ -20,8 +22,12 @@ import java.util.SimpleTimeZone;
  * Created by Ivan_Bakach on 14.07.2015.
  */
 public class ScreenshotHelper {
+    private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.png";
     public static void takeScreenshot(Activity activity, Context context){
-        String mPath = Environment.getExternalStorageDirectory().toString() + "/Amtt_cache/" + "Screenshot_"+getCurrentDateTime()+".jpg";
+        long imageTime = System.currentTimeMillis();
+        String imageDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date(imageTime));
+        String imageFileName = String.format(SCREENSHOT_FILE_NAME_TEMPLATE, imageDate);
+        String path = Environment.getExternalStorageDirectory().toString() + "/Amtt_cache/" + imageFileName;
 
 // create bitmap screen capture
         Bitmap bitmap;
@@ -31,11 +37,11 @@ public class ScreenshotHelper {
         v1.setDrawingCacheEnabled(false);
 
         OutputStream fout = null;
-        File imageFile = new File(mPath);
+        File imageFile = new File(path);
 
         try {
             fout = new FileOutputStream(imageFile);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fout);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, fout);
             fout.flush();
             fout.close();
 
@@ -47,15 +53,7 @@ public class ScreenshotHelper {
 
         Intent intent = new Intent();
         intent.setAction("REQUEST_TAKE_SCREENSHOT");
-        intent.putExtra("screenPath", mPath);
+        intent.putExtra("screenPath", path);
         context.sendBroadcast(intent);
-    }
-
-    private static String getCurrentDateTime() {
-        Calendar c = new GregorianCalendar(SimpleTimeZone.getDefault());
-        String dateTimeTemplate = "%s-%s-%s-%s-%s-%s";
-        return String.format(dateTimeTemplate, c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1,
-                c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.HOUR_OF_DAY),
-                c.get(Calendar.MINUTE), c.get(Calendar.SECOND));
     }
 }
