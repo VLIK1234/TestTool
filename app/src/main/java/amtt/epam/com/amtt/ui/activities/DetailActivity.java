@@ -10,6 +10,7 @@ import android.widget.TextView;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
 import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
  * @author Iryna Monchanka
@@ -31,7 +32,16 @@ public class DetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
         initViews();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+            TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     private void setTestcaseData(String testCaseId) {
@@ -85,4 +95,5 @@ public class DetailActivity extends BaseActivity {
             }
         });
     }
+
 }

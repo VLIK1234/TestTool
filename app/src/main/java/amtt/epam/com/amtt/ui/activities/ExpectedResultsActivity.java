@@ -74,8 +74,8 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         if (!mIsShowDetail) {
             TopButtonService.sendActionChangeTopButtonVisibility(true);
         }
