@@ -35,7 +35,7 @@ public class AmttFileObserver extends FileObserver {
     public static final String SCREENSHOT_DATE_FORMAT = "yyyy-MM-dd-HH-mm-ss";
     private String absolutePath;
     private static ArrayList<String> imageArray;
-    private static boolean isStepWithoutActivityInfo = false;
+    public static boolean isStepWithoutActivityInfo = false;
 
     public AmttFileObserver(String path) {
         super(path, FileObserver.ALL_EVENTS);

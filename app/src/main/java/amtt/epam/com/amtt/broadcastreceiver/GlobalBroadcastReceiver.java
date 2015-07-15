@@ -9,6 +9,10 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.helper.NotificationIdConstant;
@@ -51,10 +55,31 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
             case REQUEST_TAKE_SCREENSHOT:
                 Bundle extrasScreenshot = intent.getExtras();
                 if (extrasScreenshot!=null) {
-                    String screenPath = extrasScreenshot.getString(SCREEN_PATH_KEY);
-                    StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), screenPath);
-                    TopButtonService.sendActionChangeTopButtonVisibility(true);
-                    HelpDialogActivity.setIsCanTakeScreenshot(false);
+                    final String screenPath = extrasScreenshot.getString(SCREEN_PATH_KEY);
+                    ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
+                    Runnable task;
+                    if (AmttFileObserver.isStepWithoutActivityInfo) {
+                        AmttFileObserver.isStepWithoutActivityInfo = false;
+                        task = new Runnable() {
+                            public void run() {
+                                StepUtil.savePureScreenshot(screenPath);
+                                TopButtonService.sendActionChangeTopButtonVisibility(true);
+                                HelpDialogActivity.setIsCanTakeScreenshot(false);
+                            }
+                        };
+                    } else {
+                        task = new Runnable() {
+                            public void run() {
+                                StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), screenPath);
+                                TopButtonService.sendActionChangeTopButtonVisibility(true);
+                                HelpDialogActivity.setIsCanTakeScreenshot(false);
+                            }
+                        };
+                    }
+                    worker.schedule(task, 500, TimeUnit.MILLISECONDS);
+//                    StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), screenPath);
+//                    TopButtonService.sendActionChangeTopButtonVisibility(true);
+//                    HelpDialogActivity.setIsCanTakeScreenshot(false);
                     Toast.makeText(context, "Create screenshot in "+screenPath, Toast.LENGTH_LONG).show();break;
                 }break;
             case EXCEPTION_ANSWER:

@@ -180,13 +180,17 @@ public class TopButtonBarView extends FrameLayout {
         mButtonStepWithoutActivityInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_added_step_without_activity_info), R.drawable.background_step_without_activity, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                if (!PreferenceUtil.getBoolean(getContext().getString(R.string.key_dialog_hide))) {
-                    Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
-                    intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    getContext().getApplicationContext().startActivity(intentHelp);
-                } else {
-                    HelpDialogActivity.setIsCanTakeScreenshot(true);
-                }
+//                if (!PreferenceUtil.getBoolean(getContext().getString(R.string.key_dialog_hide))) {
+//                    Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
+//                    intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    getContext().getApplicationContext().startActivity(intentHelp);
+//                } else {
+//                    HelpDialogActivity.setIsCanTakeScreenshot(true);
+//                }
+                Intent intent = new Intent();
+                intent.setAction("TAKE_SCREENSHOT");
+                getContext().sendBroadcast(intent);
+                HelpDialogActivity.setIsCanTakeScreenshot(true);
                 TopButtonService.sendActionChangeTopButtonVisibility(false);
                 AmttFileObserver.setStepWithoutActivityInfo(true);
                 mTopButtonListener.onTouch();
