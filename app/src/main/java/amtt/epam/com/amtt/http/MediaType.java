@@ -10,6 +10,7 @@ public final class MediaType {
     * Default required field
     * */
     public static final String FILE_TYPE = "file";
+    public static final String FILE_PATH_PREFIX = "file:///";
 
     public static final String IMAGE_TYPE = "image";
     public static final String TEXT_TYPE = "text";

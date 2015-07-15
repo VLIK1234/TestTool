@@ -7,11 +7,9 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -20,7 +18,7 @@ import android.widget.CompoundButton;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.helper.HelpTakeScreen;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.SpannableUtil;
 
 /**
@@ -48,7 +46,7 @@ public class HelpDialogActivity extends Activity {
         checkShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                PreferenceUtils.putBoolean(getString(R.string.key_dialog_hide), isChecked);
+                PreferenceUtil.putBoolean(getString(R.string.key_dialog_hide), isChecked);
             }
         });
 
@@ -95,10 +93,11 @@ public class HelpDialogActivity extends Activity {
     }
 
     public static boolean getIsCanTakeScreenshot() {
-        return PreferenceUtils.getBoolean(IS_CAN_TAKE_SCREENSHOT);
+        return PreferenceUtil.getBoolean(IS_CAN_TAKE_SCREENSHOT);
     }
 
     public static void setIsCanTakeScreenshot(boolean value) {
-        PreferenceUtils.putBoolean(IS_CAN_TAKE_SCREENSHOT, value);
+        PreferenceUtil.putBoolean(IS_CAN_TAKE_SCREENSHOT, value);
     }
+
 }

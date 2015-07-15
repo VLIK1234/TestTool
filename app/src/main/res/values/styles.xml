@@ -103,4 +103,17 @@
         <item name="android:paddingRight">@dimen/abc_action_bar_icon_vertical_padding_material</item>
     </style>
 
+    <style name="CreateIssueRelativeContainer">
+        <item name="android:layout_marginLeft">@dimen/abc_button_padding_horizontal_material</item>
+        <item name="android:layout_marginRight">@dimen/abc_button_padding_horizontal_material</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="CreateIssueCheckBox">
+        <item name="android:padding">@dimen/abc_button_padding_horizontal_material</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 </resources>

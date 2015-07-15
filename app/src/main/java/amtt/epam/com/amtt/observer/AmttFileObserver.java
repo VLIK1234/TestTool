@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import amtt.epam.com.amtt.ui.activities.HelpDialogActivity;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
+import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -151,7 +152,10 @@ public class AmttFileObserver extends FileObserver {
         imageArray.add(filePath);
     }
 
-    public static void clearImageArray() {
+    public static void clearAttachments() {
+        for (String filePath : imageArray) {
+            FileUtil.delete(filePath);
+        }
         imageArray.clear();
     }
 

@@ -129,6 +129,12 @@
 
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="label_attach_gif">Attach gif image</string>
+    <string name="title_gif_isnt_saved">Gif image isn\'t saved!</string>
+    <string name="message_gif_isnt_saved">Something went wrong while saving gif file.</string>
+    <string name="key_gif_info_dialog">gif_info_dialog</string>
+    <string name="title_gif_info">Please, be patient!</string>
+    <string name="message_gif_info">The amount of time that is spent for generating gif file depends on the number of screenshots and their resolution, e.g if there is two screenshots operation doesn\'t take more than five minutes.</string>
     <string name="title_step_deletion">Delete step?</string>
     <string name="message_step_deletion">All the information related to this screenshot will be removed.</string>
     <string name="key_step_deletion_dialog">key_step_deletion_dialog</string>

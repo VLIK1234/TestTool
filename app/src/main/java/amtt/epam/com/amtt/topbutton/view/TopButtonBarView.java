@@ -32,7 +32,7 @@ import amtt.epam.com.amtt.ui.activities.StepsActivity;
 import amtt.epam.com.amtt.ui.activities.UserInfoActivity;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
-import amtt.epam.com.amtt.util.PreferenceUtils;
+import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.TestUtil;
 import amtt.epam.com.amtt.util.UIUtil;
 
@@ -148,7 +148,7 @@ public class TopButtonBarView extends FrameLayout {
         mButtonStepWithScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_with_screen), R.drawable.background_step_with_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                if (!PreferenceUtils.getBoolean(getContext().getString(R.string.key_dialog_hide))) {
+                if (!PreferenceUtil.getBoolean(getContext().getString(R.string.key_dialog_hide))) {
                     Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
                     intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().getApplicationContext().startActivity(intentHelp);
@@ -177,7 +177,7 @@ public class TopButtonBarView extends FrameLayout {
         mButtonStepWithoutActivityInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_added_step_without_activity_info), R.drawable.background_step_without_activity, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                if (!PreferenceUtils.getBoolean(getContext().getString(R.string.key_dialog_hide))) {
+                if (!PreferenceUtil.getBoolean(getContext().getString(R.string.key_dialog_hide))) {
                     Intent intentHelp = new Intent(getContext(), HelpDialogActivity.class);
                     intentHelp.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     getContext().getApplicationContext().startActivity(intentHelp);

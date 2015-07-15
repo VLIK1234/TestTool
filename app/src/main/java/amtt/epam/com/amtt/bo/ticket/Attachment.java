@@ -1,8 +1,8 @@
 package amtt.epam.com.amtt.bo.ticket;
 
 import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.bo.database.Step.ScreenshotState;
+import amtt.epam.com.amtt.util.FileUtil;
 
 /**
  * @author Iryna Monchanka
@@ -27,7 +27,7 @@ public class Attachment {
         mStepId = -1;
         mFilePath = filePath;
         mFileName = FileUtil.getFileName(mFilePath);
-        mScreenshotState = null;
+        mScreenshotState = ScreenshotState.WRITTEN;
     }
 
 }
