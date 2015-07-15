@@ -1,13 +1,10 @@
 package amtt.epam.com.amtt.util;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.os.Handler;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -16,14 +13,14 @@ import java.util.List;
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.database.util.StepUtil;
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 /**
  * Created by Artsiom_Kaliaha on 08.07.2015.
  */
-
 public final class GifUtil {
 
-    public interface GifProgressListener {
+    public interface ProgressListener {
 
         void onProgress(int progress);
 
@@ -209,7 +206,7 @@ public final class GifUtil {
                     }
                 }
                 q = network[smallpos];
-	      /* swap p (i) and q (smallpos) entries */
+          /* swap p (i) and q (smallpos) entries */
                 if (i != smallpos) {
                     j = q[0];
                     q[0] = p[0];
@@ -224,7 +221,7 @@ public final class GifUtil {
                     q[3] = p[3];
                     p[3] = j;
                 }
-	      /* smallval entry is now in position i */
+          /* smallval entry is now in position i */
                 if (smallval != previouscol) {
                     netindex[previouscol] = (startpos + i) >> 1;
                     for (j = previouscol + 1; j < smallval; j++)
@@ -471,9 +468,9 @@ public final class GifUtil {
         protected int contest(int b, int g, int r) {
 
 	    /* finds closest neuron (min dist) and updates freq */
-	    /* finds best neuron (min dist-bias) and returns position */
-	    /* for frequently chosen neurons, freq[i] is high and bias[i] is negative */
-	    /* bias[i] = gamma*((1/netsize)-freq[i]) */
+        /* finds best neuron (min dist-bias) and returns position */
+        /* for frequently chosen neurons, freq[i] is high and bias[i] is negative */
+        /* bias[i] = gamma*((1/netsize)-freq[i]) */
 
             int i, dist, a, biasdist, betafreq;
             int bestpos, bestbiaspos, bestd, bestbiasd;
@@ -1267,82 +1264,80 @@ public final class GifUtil {
 
     }
 
-    public static final int REPEAT_AD_INFINITUM = 0;
-    public static final String FILE_PATH = AmttApplication.getContext().getExternalFilesDir(null) + "/" +"StepsSequence.gif";
-    public static boolean isCanceled;
+    private static class GifTask extends AsyncTask<Void, Integer, Void> {
 
-    public static void createGif(final Context context, final List<Step> stepList) {
-        final Handler handler = new Handler();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Bitmap> bitmaps = StepUtil.getStepBitmaps(stepList);
-                final GifProgressListener listener = (GifProgressListener) context;
+        private List<Bitmap> mBitmaps;
+        private ProgressListener mListener;
+        private Exception mException;
 
-                ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
-                GifEncoder encoder = new GifEncoder();
-                encoder.setFrameRate((float) 1);
-                encoder.setRepeat(REPEAT_AD_INFINITUM);
-                encoder.start(byteArrayStream);
+        public GifTask(final List<Step> stepList, ProgressListener listener) {
+            mBitmaps = StepUtil.getStepBitmaps(stepList);
+            mListener = listener;
+        }
 
-                if (!isCanceled) {
-                    for (int i = 0; i < bitmaps.size(); i++) {
-                        if (!isCanceled) {
-                            encoder.addFrame(bitmaps.get(i));
-                            final int progress = i + 1;
-                            if (listener != null) {
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        listener.onProgress(progress);
-                                    }
-                                });
-                            }
-                        }
-                    }
-                    encoder.finish();
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            mListener.onProgress(values[0]);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+            GifEncoder encoder = new GifEncoder();
+            encoder.setFrameRate(ONE_FRAME_PER_SECOND);
+            encoder.setRepeat(REPEAT_AD_INFINITUM);
+
+            encoder.start(byteArrayStream);
+            for (int i = 0; i < mBitmaps.size(); i++) {
+                if (isCancelled()) {
+                    return null;
                 }
-
-                if (!isCanceled) {
-                    FileOutputStream outputStream = null;
-                    try {
-                        outputStream = IOUtils.openFileOutput(FILE_PATH, true);
-                    } catch (FileNotFoundException e) {
-                        //ignored in this implementation, because exception won't be thrown as we need to create new file
-                        //look through IOUtils.openFileOutput method for more information
-                    }
-                    try {
-                        if (outputStream != null) {
-                            outputStream.write(byteArrayStream.toByteArray());
-                            if (listener != null) {
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        listener.onGifCreated();
-                                    }
-                                });
-                            }
-                        }
-                    } catch (IOException e) {
-                        if (listener != null) {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    listener.onSavingError();
-                                }
-                            });
-                        }
-                    } finally {
-                        IOUtils.close(outputStream);
-                    }
-                }
-                isCanceled = false;
+                encoder.addFrame(mBitmaps.get(i));
+                onProgressUpdate(i + 1);
             }
-        }).start();
+            encoder.finish();
+
+            FileOutputStream outputStream = null;
+            try {
+                outputStream = IOUtils.openFileOutput(FILE_PATH, true);
+                if (isCancelled()) {
+                    return null;
+                }
+                outputStream.write(byteArrayStream.toByteArray());
+            } catch (IOException e) {
+                mException = e;
+            } finally {
+                IOUtils.close(outputStream);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            for (Bitmap bitmap : mBitmaps) {
+                bitmap = null;
+            }
+            if (mException != null) {
+                mListener.onSavingError();
+                return;
+            }
+            mListener.onGifCreated();
+        }
+
     }
 
-    public static void setCanceled(boolean canceled) {
-        isCanceled = canceled;
+    public static final int REPEAT_AD_INFINITUM = 0;
+    public static final float ONE_FRAME_PER_SECOND = 1;
+    public static final String FILE_PATH = AmttApplication.getContext().getExternalFilesDir(null) + "/StepsSequence.gif";
+    private static GifTask mTask;
+
+    public static void createGif(ProgressListener listener, final List<Step> stepList) {
+        mTask = new GifTask(stepList, listener);
+        mTask.execute();
+    }
+
+    public static void cancelGifCreating() {
+        mTask.cancel(true);
     }
 
 }

@@ -62,14 +62,16 @@ import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.GifUtil;
-import amtt.epam.com.amtt.util.GifUtil.GifProgressListener;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.Validator;
 
 
 public class CreateIssueActivity extends BaseActivity
-        implements AttachmentAdapter.ViewHolder.ClickListener, IResult<List<DatabaseEntity>>, SharedPreferences.OnSharedPreferenceChangeListener, GifProgressListener {
+        implements AttachmentAdapter.ViewHolder.ClickListener,
+        IResult<List<DatabaseEntity>>,
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        GifUtil.ProgressListener {
 
     private static final int PAINT_ACTIVITY_REQUEST_CODE = 0;
     private static final int MESSAGE_TEXT_CHANGED = 100;
@@ -599,7 +601,7 @@ public class CreateIssueActivity extends BaseActivity
                     mGifProgress.setVisibility(View.VISIBLE);
                     GifUtil.createGif(CreateIssueActivity.this, mSteps);
                 } else {
-                    GifUtil.setCanceled(true);
+                    GifUtil.cancelGifCreating();
                     mGifProgress.setVisibility(View.GONE);
                 }
             }
@@ -815,7 +817,7 @@ public class CreateIssueActivity extends BaseActivity
     @Override
     public void onProgress(int progress) {
         if (mGifProgress != null) {
-            if (progress == 1) {
+            if (mGifProgress.isIndeterminate()) {
                 mGifProgress.setIndeterminate(false);
             }
             mGifProgress.setProgress(progress);
