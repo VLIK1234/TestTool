@@ -6,13 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    android:padding="@dimen/abc_action_bar_icon_vertical_padding_material"
     tools:context=".ui.activities.DetailActivity">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
+
+        android:padding="@dimen/abc_action_bar_icon_vertical_padding_material"
         android:scrollbarStyle="outsideInset">
 
         <RelativeLayout

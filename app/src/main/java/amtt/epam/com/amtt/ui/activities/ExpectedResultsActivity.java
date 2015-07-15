@@ -33,12 +33,15 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
     private ExpectedResultsHandler mHandler;
     private ExpectedResultsAdapter mResultsAdapter;
     private RecyclerView mRecyclerView;
+    private Boolean mIsShowDetail = false;
 
     @Override
     public void onItemSelected(int position) {
         Intent detail = new Intent(ExpectedResultsActivity.this, DetailActivity.class);
         detail.putExtra(DetailActivity.TESTCASE_ID, mResultsAdapter.getIdTestcaseList().get(position));
+        mIsShowDetail = true;
         startActivity(detail);
+        finish();
     }
 
     public static class ExpectedResultsHandler extends Handler {
@@ -71,8 +74,11 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
+        if (!mIsShowDetail) {
+            TopButtonService.sendActionChangeTopButtonVisibility(true);
+        }
     }
 
     private void initViews() {
@@ -101,9 +107,9 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
                         mRecyclerView.setAdapter(mResultsAdapter);
                     }
                 }
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
 }

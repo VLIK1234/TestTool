@@ -1,4 +1,5 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +12,7 @@
         style="@style/Material.TextViewLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="12dp"
+        android:paddingLeft="4dp"
         android:text="@string/label_tags"/>
 
     <TextView
@@ -19,10 +20,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_label_tags"
-        android:textSize="@dimen/abc_text_size_medium_material"
         android:paddingLeft="16dp"
         android:paddingTop="@dimen/abc_dialog_list_padding_vertical_material"
-        android:text="Linear, TitleCard, Now"/>
+        android:text="Linear, TitleCard, Now"
+        android:textSize="@dimen/abc_text_size_medium_material"/>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"
@@ -34,9 +35,9 @@
         <android.support.v7.widget.RecyclerView
             android:id="@android:id/list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".ui.activities.ExpectedResultsActivity"
-            android:clickable="true"/>
-
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:scrollbars="vertical"
+            tools:context=".ui.activities.ExpectedResultsActivity"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

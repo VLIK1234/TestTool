@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
