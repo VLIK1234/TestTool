@@ -100,6 +100,7 @@ public class CreateIssueActivity extends BaseActivity
     private CheckBox mCreateAnotherCheckBox;
     private boolean mCreateAnotherIssue;
     private LayoutInflater mLayoutInflater;
+    private boolean mIsGifBeingShownInGallery;
 
     public static class AssigneeHandler extends Handler {
 
@@ -136,18 +137,16 @@ public class CreateIssueActivity extends BaseActivity
     protected void onStop() {
         super.onStop();
         setDefaultConfigs();
+        if (!mIsGifBeingShownInGallery) {
+            TopButtonService.sendActionChangeTopButtonVisibility(true);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         TopButtonService.sendActionChangeTopButtonVisibility(false);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
+        mIsGifBeingShownInGallery = false;
     }
 
     @Override
@@ -802,6 +801,7 @@ public class CreateIssueActivity extends BaseActivity
             intent.putExtra(LogActivity.FILE_PATH, filePath);
             startActivity(intent);
         } else if (filePath.contains(MimeType.IMAGE_GIF.getFileExtension())) {
+            mIsGifBeingShownInGallery = true;
             intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.parse("file:///" + filePath), MimeType.IMAGE_GIF.getType());
