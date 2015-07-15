@@ -115,7 +115,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
             add(InputsUtil.getEpamUrlValidator());
             add(InputsUtil.getCorrectUrlValidator());
         }});
-        showKeyboard(mUserNameTextInput.getEditText());
+        //showKeyboard(mUserNameTextInput.getEditText());
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override

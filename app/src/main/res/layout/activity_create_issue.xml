@@ -8,19 +8,19 @@
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbarStyle="outsideInset"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:scrollbarStyle="outsideInset">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="@dimen/activity_horizontal_margin"
             android:paddingBottom="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@null"
             android:paddingLeft="@dimen/abc_button_padding_horizontal_material"
-            android:paddingStart="@dimen/abc_button_padding_horizontal_material"
             android:paddingRight="@null"
-            android:paddingEnd="@null">
+            android:paddingStart="@dimen/abc_button_padding_horizontal_material"
+            android:paddingTop="@dimen/activity_horizontal_margin">
 
             <!-- *******PROJECTS BEGIN***************************************************-->
             <TextView
@@ -28,14 +28,14 @@
                 style="@style/Material.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_project"/>
+                android:text="@string/label_project" />
 
             <Spinner
                 android:id="@+id/spin_projects_name"
                 style="@style/Base.Widget.AppCompat.Spinner.Underlined.Custom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:focusable="true"/>
+                android:focusable="true" />
             <!-- *******PROJECTS END***************************************************-->
 
             <!-- *******ISSUE TYPES BEGIN**********************************************-->
@@ -44,24 +44,24 @@
                 style="@style/Material.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_issue_type"/>
+                android:text="@string/label_issue_type" />
 
             <Spinner
                 android:id="@+id/spin_issue_name"
                 style="@style/Base.Widget.AppCompat.Spinner.Underlined.Custom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/label_issue_type"/>
+                android:hint="@string/label_issue_type" />
 
             <!-- *******ISSUE TYPES END**********************************************-->
 
             <amtt.epam.com.amtt.ui.views.TextInput
                 android:id="@+id/summary_input"
-                android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:hint="@string/label_summary"
-                android:inputType="textMultiLine"/>
+                android:inputType="textMultiLine" />
 
             <!-- *******PRIORITY BEGIN*************************************************-->
             <TextView
@@ -69,14 +69,14 @@
                 style="@style/Material.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_priority"/>
+                android:text="@string/label_priority" />
 
             <Spinner
                 android:id="@+id/spin_priority"
                 style="@style/Base.Widget.AppCompat.Spinner.Underlined.Custom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/label_priority"/>
+                android:hint="@string/label_priority" />
             <!-- *******PRIORITY END*************************************************-->
 
             <!-- *******COMPONENTS BEGIN*************************************************-->
@@ -86,14 +86,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_components"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <Spinner
                 android:id="@+id/spin_components"
                 style="@style/Base.Widget.AppCompat.Spinner.Underlined.Custom"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"/>
+                android:visibility="gone" />
             <!-- *******COMPONENTS END*************************************************-->
 
             <!-- *******ATTACHMENT BEGIN****************************************-->
@@ -102,7 +102,7 @@
                 style="@style/Material.TextViewLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_attachment"/>
+                android:text="@string/label_attachment" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/listScreens"
@@ -117,6 +117,35 @@
                 android:padding="24dp"
                 android:layout_gravity="end"
                 android:text="@string/label_attach_logs"/>
+
+            <RelativeLayout
+                style="@style/CreateIssueRelativeContainer"
+                android:layout_marginTop="@dimen/abc_button_padding_horizontal_material">
+
+                <CheckBox
+                    android:id="@+id/cb_gif_attachment"
+                    style="@style/CreateIssueCheckBox"
+                    android:text="@string/label_attach_gif" />
+
+                <ProgressBar
+                    android:id="@+id/pb_gif_attachment"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
+                    android:layout_toEndOf="@id/cb_gif_attachment"
+                    android:layout_toRightOf="@id/cb_gif_attachment"
+                    android:visibility="gone" />
+
+                <CheckBox
+                    android:id="@+id/cb_attach_logs"
+                    style="@style/CreateIssueCheckBox"
+                    android:layout_below="@id/cb_gif_attachment"
+                    android:text="@string/label_attach_logs" />
+
+            </RelativeLayout>
             <!-- *******ATTACHMENT END*************************************************-->
 
             <!-- *******AFFECTS VERSIONS BEGIN****************************************-->
@@ -127,7 +156,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:text="@string/label_affects_versions"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <Spinner
                 android:id="@+id/spin_affects_versions"
@@ -136,26 +165,26 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/label_affects_versions"
                 android:paddingBottom="@dimen/spinner_padding_bottom"
-                android:visibility="gone"/>
+                android:visibility="gone" />
             <!-- *******AFFECTS VERSIONS END****************************************-->
 
             <!-- *******ENVIRONMENT BEGIN****************************************-->
             <amtt.epam.com.amtt.ui.views.TextInput
                 android:id="@+id/environment_input"
-                android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:hint="@string/label_environment"
-                android:inputType="textMultiLine"/>
+                android:inputType="textMultiLine" />
             <!-- *******ENVIRONMENT END****************************************-->
 
             <Button
                 android:id="@+id/btn_clear_environment"
+                style="@style/Material.CreateIssueButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_clear_environment"
                 android:layout_gravity="end"
-                style="@style/Material.CreateIssueButton"/>
+                android:text="@string/label_clear_environment" />
 
             <!-- *******DESCRIPTION BEGIN****************************************-->
             <amtt.epam.com.amtt.ui.views.TextInput
@@ -163,15 +192,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/label_description"
-                android:inputType="textMultiLine"/>
+                android:inputType="textMultiLine" />
 
             <Button
                 android:id="@+id/btn_list_step"
+                style="@style/Material.CreateIssueButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_list_step"
                 android:layout_gravity="end"
-                style="@style/Material.CreateIssueButton"/>
+                android:text="@string/label_list_step" />
             <!-- *******DESCRIPTION END****************************************-->
 
             <!-- *******TESTER BEGIN****************************************-->
@@ -181,27 +210,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
-                android:text="@string/label_tester"/>
+                android:text="@string/label_tester" />
 
             <amtt.epam.com.amtt.ui.views.AutocompleteProgressView
                 android:id="@+id/atv_assignable_users"
                 style="@style/Material.AutocompleteProgressView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/label_tester"/>
+                android:hint="@string/label_tester" />
+
             <Button
                 android:id="@+id/btn_assign_self"
+                style="@style/Material.CreateIssueButton"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/material_vertical_button_height_size"
                 android:layout_gravity="end"
                 android:text="@string/label_assign_self"
-                android:textSize="@dimen/abc_text_size_button_material"
-                style="@style/Material.CreateIssueButton"/>
+                android:textSize="@dimen/abc_text_size_button_material" />
             <!-- *******TESTER END****************************************-->
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/CreateIssueRelativeContainer"
                 android:layout_marginTop="@dimen/material_vertical_button_padding_top">
 
                 <Button
@@ -210,19 +239,16 @@
                     android:layout_height="@dimen/material_vertical_button_height_size"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:minWidth="@dimen/material_vertical_button_min_width_size"
                     android:text="@string/label_create"
-                    android:textSize="@dimen/abc_text_size_button_material"
-                    style="@style/Material.CreateIssueButton"/>
+                    android:textSize="@dimen/abc_text_size_button_material" />
 
                 <CheckBox
                     android:id="@+id/chb_create_another"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_create_another"
-                    android:layout_alignParentStart="true"
+                    style="@style/CreateIssueCheckBox"
                     android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"/>
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/label_create_another" />
 
             </RelativeLayout>
 

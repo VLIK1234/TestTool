@@ -35,18 +35,18 @@ public class TestUtil {
     public static String[] getTestedApps() {
         ArrayList<String> res = new ArrayList<>();
         List<PackageInfo> packs = AmttApplication.getContext().getPackageManager().getInstalledPackages(PackageManager.GET_ACTIVITIES);
-        for (PackageInfo packageInfo: packs) {
+        for (PackageInfo packageInfo : packs) {
             try {
                 InstrumentationInfo info = TestUtil.getInstrumentationInfo(packageInfo.packageName);
                 if (info != null) {
                     ComponentName componentName = new ComponentName(info.packageName, info.name);
                     InstrumentationInfo instrumentationInfo = AmttApplication.getContext().getPackageManager().getInstrumentationInfo(componentName, PackageManager.GET_META_DATA);
-                    Log.d(TAG, instrumentationInfo.name+" ");
-                    if (instrumentationInfo!=null) {
-                        Log.d(TAG, instrumentationInfo+" ");
+                    Log.d(TAG, instrumentationInfo.name + " ");
+                    if (instrumentationInfo != null) {
+                        Log.d(TAG, instrumentationInfo + " ");
                     }
                     Bundle bundle = instrumentationInfo.metaData;
-                    if (bundle!=null) {
+                    if (bundle != null) {
                         Log.d(TAG, instrumentationInfo.name + " ");
                         String myApiKey = bundle.getString(AMTT_TEST_KEY);
                         if (AMTT_APP_VALUE.equals(myApiKey)) {
@@ -64,7 +64,7 @@ public class TestUtil {
     }
 
     public static void runTests() {
-        final String pn = PreferenceUtils.getString(AmttApplication.getContext().getString(R.string.key_test_project));
+        final String pn = PreferenceUtil.getString(AmttApplication.getContext().getString(R.string.key_test_project));
         final InstrumentationInfo info = getInstrumentationInfo(pn);
         if (info != null) {
             final ComponentName cn = new ComponentName(info.packageName,
@@ -77,7 +77,7 @@ public class TestUtil {
         }
     }
 
-    public static void closeTest(){
+    public static void closeTest() {
         Intent in = new Intent();
         in.setAction(CLOSE_TEST);
         AmttApplication.getContext().sendBroadcast(in);

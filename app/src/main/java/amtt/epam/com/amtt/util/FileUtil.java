@@ -4,12 +4,13 @@ import android.support.annotation.Nullable;
 
 import java.io.File;
 
+import amtt.epam.com.amtt.http.MimeType;
 /**
  * @author Ivan_Bakach
  * @version on 10.06.2015
  */
 
-public  class FileUtil {
+public class FileUtil {
 
     public static String getFileName(@Nullable String filePath) {
         if (filePath == null) {
@@ -36,6 +37,12 @@ public  class FileUtil {
     }
 
     public static boolean isText(String filePath) {
-        return filePath.endsWith(".txt");
+        return filePath.endsWith(MimeType.TEXT_PLAIN.getFileExtension());
     }
+
+    public static boolean delete(String filePath) {
+        File file = new File(filePath);
+        return file.delete();
+    }
+
 }
