@@ -1,14 +1,19 @@
 package amtt.epam.com.amtt.ui.fragments;
 
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
+import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.DialogUtils;
 import amtt.epam.com.amtt.util.PreferenceUtils;
 import amtt.epam.com.amtt.util.TestUtil;
 
@@ -28,11 +33,16 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.setting);
         projectName = (ListPreference) findPreference(getActivity().getString(R.string.key_test_project));
-        initListValue();
-        projectName.setSummary(projectName.getEntry());
         checkBoxPreference = (CheckBoxPreference) findPreference(getActivity().getBaseContext().getString(R.string.key_dialog_hide));
         switchPreference = (SwitchPreference) findPreference(getActivity().getBaseContext().getString(R.string.key_topbutton_show));
         PreferenceUtils.getPref().registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initListValue();
+        projectName.setSummary(projectName.getEntry());
     }
 
     @Override
@@ -54,6 +64,14 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             TopButtonService.sendActionChangeTopButtonVisibility(sharedPreferences.getBoolean(getString(R.string.key_topbutton_show), true));
         }else if (key.equals(getString(R.string.key_test_project))) {
             ListPreference projectName = (ListPreference) findPreference(getActivity().getString(R.string.key_test_project));
+            projectName.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    TestUtil.closeTest();
+                    TestUtil.runTests();
+                    return true;
+                }
+            });
             projectName.setSummary(projectName.getEntry());
         }
     }

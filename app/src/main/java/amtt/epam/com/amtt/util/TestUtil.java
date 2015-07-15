@@ -82,7 +82,6 @@ public class TestUtil {
         Intent in = new Intent();
         in.setAction(CLOSE_TEST);
         AmttApplication.getContext().sendBroadcast(in);
-        Toast.makeText(AmttApplication.getContext(), in.getAction(), Toast.LENGTH_LONG).show();
     }
 
 }

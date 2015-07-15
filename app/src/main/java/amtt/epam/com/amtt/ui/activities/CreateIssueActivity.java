@@ -460,6 +460,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             @Override
                             public void resultOfDataLoading(JCreateIssueResponse result) {
                                 if (result != null) {
+                                    TestUtil.runTests();
                                     AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
                                     Toast.makeText(CreateIssueActivity.this, R.string.ticket_created, Toast.LENGTH_LONG).show();
                                     TopButtonService.stopRecord(CreateIssueActivity.this);
@@ -644,18 +645,14 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     File externalCache = new File(Environment.getExternalStorageDirectory(), "Amtt_cache");
                     String template = externalCache.getPath() + "/%s";
                     String pathLogCommon = String.format(template, "log_common.txt");
-                    String pathLogWarning = String.format(template, "log_warning.txt");
                     String pathLogException = String.format(template, "log_exception.txt");
                     final File fileLogCommon = new File(pathLogCommon);
-                    final File fileLogWarning = new File(pathLogWarning);
                     final File fileLogException = new File(pathLogException);
                     final Attachment attachLogCommon = new Attachment(pathLogCommon);
-                    final Attachment attachLogWarning = new Attachment(pathLogWarning);
                     final Attachment attachLogException = new Attachment(pathLogException);
                     if (PreferenceUtils.getBoolean(getString(R.string.key_is_attach_logs))) {
-                        if (fileLogCommon.exists() && fileLogException.exists() && fileLogWarning.exists()) {
+                        if (fileLogCommon.exists() && fileLogException.exists()) {
                             screenArray.add(attachLogCommon);
-                            screenArray.add(attachLogWarning);
                             screenArray.add(attachLogException);
                         }
                     }

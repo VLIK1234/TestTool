@@ -32,7 +32,6 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                 break;
             case CLOSE_TEST:
                 LogManger.deleteFileIfExist(LogManger.sExceptionLog);
-                LogManger.deleteFileIfExist(LogManger.sWarningLog);
                 LogManger.deleteFileIfExist(LogManger.sCommonLog);
                 closeUnitTest = true;
                 break;

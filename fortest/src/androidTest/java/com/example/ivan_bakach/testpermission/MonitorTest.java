@@ -3,6 +3,7 @@ package com.example.ivan_bakach.testpermission;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.test.InstrumentationTestCase;
@@ -28,6 +29,18 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
         final Context context = getInstrumentation().getTargetContext();
         LogManger.writeMultipleLogs();
         mApplication = (Application)getInstrumentation().getTargetContext().getApplicationContext();
+        final Thread.UncaughtExceptionHandler exceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable ex) {
+                Log.e(thread.getName(), ex.toString());
+                Intent intent = new Intent();
+                intent.setAction("EXCEPTION_ANSWER");
+                intent.putExtra("answer", ex.getClass().getName());
+                getInstrumentation().getContext().sendBroadcast(intent);
+                exceptionHandler.uncaughtException(thread, ex);
+            }
+        });
         mApplication.registerActivityLifecycleCallbacks(this);
         IntentFilter filterReceiver = new IntentFilter();
         filterReceiver.addCategory(TestBroadcastReceiver.CATEGORY);
