@@ -4,7 +4,7 @@ package amtt.epam.com.amtt.excel.bo;
  * @author Iryna Monchanka
  * @version on 7/1/2015
  */
-public class GoogleSheet extends GoogleBase {
+public class GoogleSheet<T> extends GoogleBase<T> {
 
     protected GoogleLink mAlternateLink;
     protected GoogleLink mFeedLink;

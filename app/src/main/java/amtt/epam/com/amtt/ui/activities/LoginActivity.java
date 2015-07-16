@@ -9,8 +9,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -211,7 +209,8 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
                 });
             }
         };
-        worker.schedule(task, 1, TimeUnit.SECONDS);
+        worker.schedule(task, 2, TimeUnit.SECONDS);
+        finish();
     }
 
     private boolean isNewUserAdditionFromUserInfo() {
@@ -237,13 +236,12 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         } else {
             setActiveUser();
             Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
-            finish();
         }
     }
 
     @Override
     public void onLoadError(Exception e) {
-        DialogUtils.createDialog(this, ExceptionType.valueOf(e)).show();
+        DialogUtils.createDialog(LoginActivity.this, ExceptionType.valueOf(e)).show();
         showProgress(false);
         mLoginButton.setEnabled(true);
     }

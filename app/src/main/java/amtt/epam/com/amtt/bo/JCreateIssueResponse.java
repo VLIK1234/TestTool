@@ -16,15 +16,6 @@ public class JCreateIssueResponse {
     @SerializedName("self")
     private String mSelf;
 
-    public JCreateIssueResponse() {
-    }
-
-    public JCreateIssueResponse(String id, String key, String self) {
-        this.mId = id;
-        this.mKey = key;
-        this.mSelf = self;
-    }
-
     public String getId() {
         return mId;
     }

@@ -17,10 +17,6 @@ public class JComponentsResponse {
     public JComponentsResponse() {
     }
 
-    public JComponentsResponse(List<JComponent> components) {
-        this.mComponents = components;
-    }
-
     public HashMap<String, String> getComponentsNames() {
         HashMap<String, String> mComponentsNames;
         if (mComponents != null) {
@@ -32,10 +28,6 @@ public class JComponentsResponse {
         } else {
             return null;
         }
-    }
-
-    public List<JComponent> getComponents() {
-        return mComponents;
     }
 
     public void setComponents(List<JComponent> components) {

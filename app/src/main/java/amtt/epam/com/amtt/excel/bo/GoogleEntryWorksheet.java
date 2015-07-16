@@ -1,11 +1,20 @@
 package amtt.epam.com.amtt.excel.bo;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+
+import amtt.epam.com.amtt.excel.database.contentprovider.GSUri;
+import amtt.epam.com.amtt.excel.database.table.TestcaseTable;
+
 /**
  * @author Iryna Monchanka
  * @version on 7/1/2015
  */
-public class GoogleEntryWorksheet extends GoogleEntry {
+public class GoogleEntryWorksheet extends GoogleEntry<GoogleEntryWorksheet> {
 
+    private int mId;
+    private String mIdWorksheetLink;
     private String mIdGSX;
     private String mPriorityGSX;
    // private String mDeviceGSX;
@@ -21,6 +30,29 @@ public class GoogleEntryWorksheet extends GoogleEntry {
    // private String mIOSNoteGSX;
 
     public GoogleEntryWorksheet() {
+    }
+
+    public GoogleEntryWorksheet(Cursor cursor) {
+        if (cursor.getPosition() == -1) {
+            cursor.moveToNext();
+        }
+        mId = cursor.getInt(cursor.getColumnIndex(TestcaseTable._ID));
+        mIdLink = cursor.getString(cursor.getColumnIndex(TestcaseTable._TESTCASE_ID_LINK));
+        mIdWorksheetLink = cursor.getString(cursor.getColumnIndex(TestcaseTable._WORKSHEET_ID_LINK));
+        mUpdated = cursor.getString(cursor.getColumnIndex(TestcaseTable._UPDATED));
+        mTitle = cursor.getString(cursor.getColumnIndex(TestcaseTable._TITLE));
+        mIdGSX = cursor.getString(cursor.getColumnIndex(TestcaseTable._TESTCASE_ID));
+        mPriorityGSX = cursor.getString(cursor.getColumnIndex(TestcaseTable._PRIORITY));
+        mTestCaseNameGSX = cursor.getString(cursor.getColumnIndex(TestcaseTable._NAME));
+        mTestCaseDescriptionGSX = cursor.getString(cursor.getColumnIndex(TestcaseTable._DESCRIPTION));
+        mTestStepsGSX = cursor.getString(cursor.getColumnIndex(TestcaseTable._STEPS));
+        mLabelGSX = cursor.getString(cursor.getColumnIndex(TestcaseTable._LABEL));
+        mExpectedResultGSX = cursor.getString(cursor.getColumnIndex(TestcaseTable._EXPECTED_RESULTS));
+    }
+
+    @Override
+    public GoogleEntryWorksheet parse(Cursor cursor) {
+        return null;
     }
 
     public GoogleEntryWorksheet(String idGSX, String priorityGSX, String testCaseNameGSX,
@@ -117,4 +149,30 @@ public class GoogleEntryWorksheet extends GoogleEntry {
         this.mExpectedResultGSX = expectedResultGSX;
     }
 
+    @Override
+    public int getId() {
+        return mId;
+    }
+
+    @Override
+    public Uri getUri() {
+        return GSUri.TESTCASE.get();
+    }
+
+    @Override
+    public ContentValues getContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(TestcaseTable._TESTCASE_ID_LINK, mIdLink);
+        values.put(TestcaseTable._WORKSHEET_ID_LINK, mIdWorksheetLink);
+        values.put(TestcaseTable._UPDATED, mUpdated);
+        values.put(TestcaseTable._TITLE, mTitle);
+        values.put(TestcaseTable._TESTCASE_ID, mIdGSX);
+        values.put(TestcaseTable._PRIORITY, mPriorityGSX);
+        values.put(TestcaseTable._NAME, mTestCaseNameGSX);
+        values.put(TestcaseTable._DESCRIPTION, mTestCaseDescriptionGSX);
+        values.put(TestcaseTable._STEPS, mTestStepsGSX);
+        values.put(TestcaseTable._LABEL, mLabelGSX);
+        values.put(TestcaseTable._EXPECTED_RESULTS, mExpectedResultGSX);
+        return values;
+    }
 }

@@ -4,7 +4,7 @@ package amtt.epam.com.amtt.excel.bo;
  * @author Iryna Monchanka
  * @version on 7/1/2015
  */
-public class GoogleEntry extends GoogleBase {
+public class GoogleEntry<T> extends GoogleBase<T> {
 
     protected String mContent;
 

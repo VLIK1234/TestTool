@@ -21,7 +21,7 @@ public class SpreadsheetTable extends Table {
     public static final String _TOTAL_RESULTS = "_total_results";
     public static final String _START_INDEX = "_start_index";
 
-    private static MultiValueMap<String, String> sColumnsMap;
+    private static final MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
             _ID,

@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import java.io.File;
 
 import amtt.epam.com.amtt.http.MimeType;
-
 /**
  * @author Ivan_Bakach
  * @version on 10.06.2015

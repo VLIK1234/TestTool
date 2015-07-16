@@ -11,13 +11,7 @@ import java.util.List;
 
 import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.database.constant.SqlQueryConstants;
-import amtt.epam.com.amtt.database.table.ActivityInfoTable;
-import amtt.epam.com.amtt.database.table.IssuetypeTable;
-import amtt.epam.com.amtt.database.table.PriorityTable;
-import amtt.epam.com.amtt.database.table.ProjectTable;
-import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.database.table.Table;
-import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.excel.database.table.SpreadsheetTable;
 import amtt.epam.com.amtt.excel.database.table.TestcaseTable;
 import amtt.epam.com.amtt.excel.database.table.WorksheetTable;

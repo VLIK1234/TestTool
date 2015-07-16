@@ -18,7 +18,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/ic_thickness" />
+            android:src="@drawable/ic_thickness"
+            android:contentDescription="@null"/>
 
         <SeekBar
             android:id="@+id/sb_thickness"
@@ -39,7 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/ic_opacity" />
+            android:src="@drawable/ic_opacity"
+            android:contentDescription="@null"/>
 
         <SeekBar
             android:id="@+id/sb_opacity"

@@ -51,6 +51,9 @@ import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
+
+import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
+
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -91,7 +94,7 @@ public class CreateIssueActivity extends BaseActivity
     private AssigneeHandler mHandler;
     private AttachmentAdapter mAdapter;
     public Spinner mProjectNamesSpinner;
-    private RecyclerView recyclerView;
+    private RecyclerView mRecyclerView;
     private Spinner mComponents;
     private Queue<ContentConst> mRequestsQueue = new LinkedList<>();
     private Button mCreateIssueButton;
@@ -124,6 +127,7 @@ public class CreateIssueActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
         PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(CreateIssueActivity.this);
         mHandler = new AssigneeHandler(this);
         initViews();
@@ -413,7 +417,13 @@ public class CreateIssueActivity extends BaseActivity
 
     private void initDescriptionEditText() {
         mDescriptionTextInput = (TextInput) findViewById(R.id.description_input);
-        getDescription();
+        if (XMLContent.getInstance().getLastTestcase() == null) {
+            getDescription();
+        } else {
+            mDescriptionTextInput.setText(XMLContent.getInstance().getLastTestcase().getTestStepsGSX());
+            mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
+        }
+
     }
 
     private void initListStepButton() {
@@ -467,7 +477,7 @@ public class CreateIssueActivity extends BaseActivity
                                         mCreateAnotherCheckBox.setChecked(false);
                                         mTitleTextInput.setText("");
                                         initAttachmentsView();
-                                        initDescriptionEditText();
+                                        mDescriptionTextInput.setText("");
                                     } else {
                                         finish();
                                     }
@@ -488,6 +498,9 @@ public class CreateIssueActivity extends BaseActivity
             add(InputsUtil.getEmptyValidator());
             add(InputsUtil.getEndStartWhitespacesValidator());
         }});
+        if (XMLContent.getInstance().getLastTestcase() != null) {
+            mTitleTextInput.setText(XMLContent.getInstance().getLastTestcase().getTestCaseNameGSX());
+        }
         mTitlePoint = new int[2];
         mTitleTextInput.getLocationOnScreen(mTitlePoint);
     }
@@ -534,11 +547,11 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     private void initAttachmentsView() {
-        recyclerView = (RecyclerView) findViewById(R.id.listScreens);
+        mRecyclerView = (RecyclerView) findViewById(R.id.listScreens);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CreateIssueActivity.this);
         linearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         loadAttachments();
     }
 
@@ -722,7 +735,7 @@ public class CreateIssueActivity extends BaseActivity
                         }
                     }
                     mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment, CreateIssueActivity.this);
-                    recyclerView.setAdapter(mAdapter);
+                    mRecyclerView.setAdapter(mAdapter);
                 }
                 mRequestsQueue.remove(ContentConst.ATTACHMENT_RESPONSE);
                 showProgressIfNeed();
