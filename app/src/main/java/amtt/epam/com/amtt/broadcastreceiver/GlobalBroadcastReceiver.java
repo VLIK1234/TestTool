@@ -12,7 +12,6 @@ import android.widget.Toast;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.helper.NotificationIdConstant;
-import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.activities.CreateIssueActivity;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
@@ -32,6 +31,8 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
     public static final String EXCEPTION_ANSWER = "EXCEPTION_ANSWER";
     public static final String ANSWER_EXCEPTION_KEY = "answer";
     public static String logFilePath = "";
+    public static boolean isStepWithoutActivityInfo = false;
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -42,9 +43,6 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                 if (extras!=null) {
                     filePath = extras.getString(FILE_PATH_KEY);
                     logFilePath = filePath;
-                    if (!AmttFileObserver.getImageArray().contains(logFilePath)) {
-                        AmttFileObserver.addToImageArray(logFilePath);
-                    }
                     Toast.makeText(context, "Create log in file "+logFilePath, Toast.LENGTH_LONG).show();break;
                 }break;
             case REQUEST_TAKE_SCREENSHOT:
@@ -52,8 +50,8 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                 if (extrasScreenshot!=null) {
                     final String screenPath = extrasScreenshot.getString(SCREEN_PATH_KEY);
                     if (screenPath!=null) {
-                        if (AmttFileObserver.isStepWithoutActivityInfo) {
-                            AmttFileObserver.isStepWithoutActivityInfo = false;
+                        if (isStepWithoutActivityInfo) {
+                            isStepWithoutActivityInfo = false;
                             StepUtil.savePureScreenshot(screenPath);
                         } else {
                             StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), screenPath);
@@ -84,5 +82,9 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     break;
                 }break;
         }
+    }
+
+    public static void setStepWithoutActivityInfo(boolean stepWithoutActivityInfo) {
+        isStepWithoutActivityInfo = stepWithoutActivityInfo;
     }
 }

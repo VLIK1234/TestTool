@@ -22,16 +22,12 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.helper.NotificationIdConstant;
 import amtt.epam.com.amtt.ui.activities.SettingActivity;
 import amtt.epam.com.amtt.database.util.StepUtil;
-import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
-import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.TestUtil;
 
 /**
@@ -41,7 +37,6 @@ import amtt.epam.com.amtt.util.TestUtil;
 
 public class TopButtonService extends Service{
 
-    private static final String SCREENSHOTS_DIR_NAME = "Screenshots";
     private static final String TAG = "Log";
     public static final String ACTION_CLOSE = "amtt.epam.com.amtt.topbutton.service.CLOSE";
     public static final String ACTION_CHANGE_VISIBILITY_TOPBUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_VISIBILITY_TOPBUTTON";
@@ -55,7 +50,6 @@ public class TopButtonService extends Service{
     public static final int REQUEST_CODE = 1;
     //bellow field for cap code and will be delete after do work realization
     private static Context mContext;
-    private AmttFileObserver mFileObserver;
     private NotificationCompat.Action mActionNotificationCompat;
     private NotificationCompat.Builder mBuilderNotificationCompat;
     private static TopButtonView mTopButtonView;
@@ -114,10 +108,6 @@ public class TopButtonService extends Service{
         mYInitPosition = displayMetrics.heightPixels / 2;
         initLayoutParams();
         mTopButtonView = new TopButtonView(getBaseContext(), mLayoutParams);
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), SCREENSHOTS_DIR_NAME);
-        Log.d(TAG, file.getPath());
-        mFileObserver = new AmttFileObserver(file.getAbsolutePath());
-        mFileObserver.startWatching();
     }
 
     @Override
@@ -135,7 +125,6 @@ public class TopButtonService extends Service{
                     TestUtil.runTests();
                     break;
                 case ACTION_CLOSE:
-                    mFileObserver.stopWatching();
                     closeService();
                     break;
                 case ACTION_CHANGE_NOTIFICATION_BUTTON:
