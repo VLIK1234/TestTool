@@ -34,7 +34,10 @@ public class FileUtil {
     }
 
     public static boolean isPicture(String filePath) {
-        return filePath.endsWith(".png") || filePath.endsWith(".jpg") || filePath.endsWith(".jpeg");
+        return filePath.endsWith(MimeType.IMAGE_PNG.getFileExtension()) ||
+                filePath.endsWith(MimeType.IMAGE_JPG.getFileExtension()) ||
+                filePath.endsWith(MimeType.IMAGE_JPEG.getFileExtension()) ||
+                filePath.endsWith(MimeType.IMAGE_GIF.getFileExtension());
     }
 
     public static boolean isText(String filePath) {

@@ -102,7 +102,7 @@ public class CreateIssueActivity extends BaseActivity
     private CheckBox mCreateAnotherCheckBox;
     private boolean mCreateAnotherIssue;
     private LayoutInflater mLayoutInflater;
-    private boolean mIsGifBeingShownInGallery;
+    private boolean mDoesTopButtonShouldBeShown;
 
     public static class AssigneeHandler extends Handler {
 
@@ -139,7 +139,7 @@ public class CreateIssueActivity extends BaseActivity
     protected void onStop() {
         super.onStop();
         setDefaultConfigs();
-        if (!mIsGifBeingShownInGallery) {
+        if (mDoesTopButtonShouldBeShown) {
             TopButtonService.sendActionChangeTopButtonVisibility(true);
         }
     }
@@ -148,7 +148,7 @@ public class CreateIssueActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         TopButtonService.sendActionChangeTopButtonVisibility(false);
-        mIsGifBeingShownInGallery = false;
+        mDoesTopButtonShouldBeShown = true;
     }
 
     @Override
@@ -721,7 +721,7 @@ public class CreateIssueActivity extends BaseActivity
                             screenArray.add(attachLogException);
                         }
                     }
-                    mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment, CreateIssueActivity.this);
+                    mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment);
                     recyclerView.setAdapter(mAdapter);
                 }
                 mRequestsQueue.remove(ContentConst.ATTACHMENT_RESPONSE);
@@ -789,6 +789,7 @@ public class CreateIssueActivity extends BaseActivity
 
     @Override
     public void onItemShow(int position) {
+        mDoesTopButtonShouldBeShown = false;
         Intent intent = null;
         String filePath = mAdapter.getAttachmentFilePathList().get(position);
 
@@ -796,14 +797,14 @@ public class CreateIssueActivity extends BaseActivity
                 filePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
                 filePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
             intent = new Intent(this, PaintActivity.class);
-            intent.putExtra(PaintActivity.STEP_ID_PATH, mAdapter.getStepId(position));
+            intent.putExtra(PaintActivity.KEY_STEP_ID, mAdapter.getStepId(position));
             startActivityForResult(intent, PAINT_ACTIVITY_REQUEST_CODE);
+            return;
         } else if (filePath.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
             intent = new Intent(this, LogActivity.class);
             intent.putExtra(LogActivity.FILE_PATH, filePath);
             startActivity(intent);
         } else if (filePath.contains(MimeType.IMAGE_GIF.getFileExtension())) {
-            mIsGifBeingShownInGallery = true;
             intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.parse("file:///" + filePath), MimeType.IMAGE_GIF.getType());

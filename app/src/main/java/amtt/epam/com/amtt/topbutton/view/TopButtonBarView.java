@@ -112,7 +112,7 @@ public class TopButtonBarView extends FrameLayout {
                 TestUtil.runTests();
                 hide();
                 StepUtil.clearAllSteps();
-                Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_SHORT).show();
                 mTopButtonListener.onTouch();
             }
         });
@@ -162,7 +162,7 @@ public class TopButtonBarView extends FrameLayout {
         mButtonStepWithoutScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_without_screen), R.drawable.background_step_without_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_added_step_without_screen), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_added_step_without_screen), Toast.LENGTH_SHORT).show();
                 ScheduledExecutorService worker =
                         Executors.newSingleThreadScheduledExecutor();
                 Runnable task = new Runnable() {
@@ -207,7 +207,7 @@ public class TopButtonBarView extends FrameLayout {
                 TestUtil.closeTest();
                 hide();
                 StepUtil.clearAllSteps();
-                Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_SHORT).show();
                 mTopButtonListener.onTouch();
             }
         });
