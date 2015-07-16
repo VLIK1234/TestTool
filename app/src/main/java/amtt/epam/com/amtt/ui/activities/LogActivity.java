@@ -23,12 +23,15 @@ import java.util.ArrayList;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.LogAdapter;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.ReadLargeTextUtil;
 
 /**
- * Created by Ivan_Bakach on 10.07.2015.
+ @author Ivan_Bakach
+ @version on 10.07.2015
  */
+
 public class LogActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
     public static final String FILE_PATH = "filePath";
     public static final int SEARCH_TOP_OFFSET = 20;
@@ -58,7 +61,7 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.setScrollbarFadingEnabled(false);
 
-        String title = "";
+        String title = Constants.Symbols.EMPTY;
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             mFilePath = extra.getString(FILE_PATH);

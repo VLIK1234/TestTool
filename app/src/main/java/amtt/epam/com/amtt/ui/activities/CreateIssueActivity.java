@@ -168,7 +168,7 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     private void setDefaultConfigs() {
-        if (mComponents.getSelectedItem() != null) {
+        if (mComponents != null && mComponents.getSelectedItem() != null) {
             String component = JiraContent.getInstance().getComponentIdByName((String) mComponents.getSelectedItem());
             ActiveUser.getInstance().setLastComponentsIds(component);
 
@@ -475,9 +475,9 @@ public class CreateIssueActivity extends BaseActivity
                                     TopButtonService.stopRecord(CreateIssueActivity.this);
                                     if (mCreateAnotherIssue) {
                                         mCreateAnotherCheckBox.setChecked(false);
-                                        mTitleTextInput.setText("");
+                                        mTitleTextInput.setText(Constants.Symbols.EMPTY);
                                         initAttachmentsView();
-                                        mDescriptionTextInput.setText("");
+                                        mDescriptionTextInput.setText(Constants.Symbols.EMPTY);
                                     } else {
                                         finish();
                                     }

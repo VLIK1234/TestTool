@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.observer.AmttFileObserver;
+import amtt.epam.com.amtt.util.Constants;
 
 /**
  @author Ivan_Bakach
@@ -17,7 +18,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
 
     public static final String SHOW = "SHOW";
     public static final String LOG_FILE = "LOG_FILE";
-    public static String logFilePath = "";
+    public static String logFilePath = Constants.Symbols.EMPTY;
 
     @Override
     public void onReceive(Context context, Intent intent) {

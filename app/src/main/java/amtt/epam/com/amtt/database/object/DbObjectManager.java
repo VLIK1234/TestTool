@@ -10,6 +10,7 @@ import java.util.List;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.database.constant.BaseColumns;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.IOUtils;
 
 /**
@@ -116,7 +117,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String selectionString = "";
+                String selectionString = Constants.Symbols.EMPTY;
                 if (mSelectionArgs != null && mSelection != null) {
                     if (mSelection.length != mSelectionArgs.length) {
                         throw new IllegalStateException("Count Selection and SelectionArgs must be equals!");

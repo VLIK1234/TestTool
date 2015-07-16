@@ -11,6 +11,7 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
 import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.Constants;
 
 /**
  * @author Iryna Monchanka
@@ -41,15 +42,16 @@ public class DetailActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-            TopButtonService.sendActionChangeTopButtonVisibility(true);
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     private void setTestcaseData(String testCaseId) {
-        if (testCaseId != null && !testCaseId.equals("")) {
+        if (testCaseId != null && !testCaseId.equals(Constants.Symbols.EMPTY)) {
             mTestcase = XMLContent.getInstance().getTestcaseByIdGSX(testCaseId);
             if (mTestcase != null) {
                 if (mTestcase.getTestCaseNameGSX() != null) {
-                    mNameTextView.setText(mTestcase.getTestCaseNameGSX());
+                    mNameTextView.setText(mTestcase.getTestCaseNameGSX()  + Constants.Symbols.ID_RIGHT_BRACKET
+                            + mTestcase.getIdGSX() + Constants.Symbols.ID_LEFT_BRACKET);
                 }
                 mLabelTextView.setText(mTestcase.getLabelGSX());
                 mPriorityTextView.setText(mTestcase.getPriorityGSX());

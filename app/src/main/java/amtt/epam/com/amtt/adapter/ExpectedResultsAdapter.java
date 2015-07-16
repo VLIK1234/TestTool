@@ -11,6 +11,7 @@ import java.util.List;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -45,7 +46,8 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
         GoogleEntryWorksheet testcase = mTestcases.get(i);
         Logger.d(TAG, testcase.getTestCaseNameGSX());
         viewHolder.mLabel.setText(testcase.getLabelGSX());
-        viewHolder.mTestcaseName.setText(testcase.getTestCaseNameGSX() + " [ " + testcase.getIdGSX() + " ]");
+        viewHolder.mTestcaseName.setText(testcase.getTestCaseNameGSX() + Constants.Symbols.ID_LEFT_BRACKET
+                + testcase.getIdGSX() + Constants.Symbols.ID_RIGHT_BRACKET);
         viewHolder.mPriority.setText(testcase.getPriorityGSX());
         viewHolder.mSteps.setText(testcase.getTestStepsGSX());
     }

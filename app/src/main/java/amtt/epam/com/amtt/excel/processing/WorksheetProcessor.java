@@ -11,6 +11,7 @@ import amtt.epam.com.amtt.excel.api.GoogleApiConst;
 import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
 import amtt.epam.com.amtt.excel.bo.GoogleWorksheet;
 import amtt.epam.com.amtt.processing.Processor;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -71,7 +72,7 @@ public class WorksheetProcessor implements Processor<GoogleWorksheet, HttpEntity
                     XMLParser.skipTag();//gsx:testresult
                     XMLParser.skipTag();//gsx:testresult
                     XMLParser.skipTag();//gsx:testresult
-                    if (entryWorksheet.getTestCaseNameGSX() != null && !entryWorksheet.getTestCaseNameGSX().equals("")) {
+                    if (entryWorksheet.getTestCaseNameGSX() != null && !entryWorksheet.getTestCaseNameGSX().equals(Constants.Symbols.EMPTY)) {
                         worksheet.setEntryItem(entryWorksheet);
                     }
                     xmlPullParser = XMLParser.getXmlPullParser();
