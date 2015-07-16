@@ -16,6 +16,9 @@ import junit.framework.Assert;
  */
 public class MonitorTest extends InstrumentationTestCase implements Application.ActivityLifecycleCallbacks{
 
+    public static final String EXCEPTION_ANSWER_ACTION = "EXCEPTION_ANSWER";
+    public static final String EXCEPTION_ANSWER_KEY = "answer";
+    public static final int RECEIVER_TIMEOUT = 1000;
     public Application mApplication;
 
     @Override
@@ -35,8 +38,8 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
             public void uncaughtException(Thread thread, Throwable ex) {
                 Log.e(thread.getName(), ex.toString());
                 Intent intent = new Intent();
-                intent.setAction("EXCEPTION_ANSWER");
-                intent.putExtra("answer", ex.getClass().getName());
+                intent.setAction(EXCEPTION_ANSWER_ACTION);
+                intent.putExtra(EXCEPTION_ANSWER_KEY, ex.getClass().getName());
                 getInstrumentation().getContext().sendBroadcast(intent);
                 exceptionHandler.uncaughtException(thread, ex);
             }
@@ -52,7 +55,7 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
 
         while (!receiver.needCloseUnitTest()) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(RECEIVER_TIMEOUT);
                 if (receiver.needCloseUnitTest()) {
                     context.unregisterReceiver(receiver);
                     mApplication.unregisterActivityLifecycleCallbacks(this);
@@ -76,7 +79,6 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
 
     @Override
     public void onActivityResumed(Activity activity) {
-//        Log.d("TAG","Scream "+activity.getComponentName().getClassName());
         receiver.setActivity(activity);
     }
 

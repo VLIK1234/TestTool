@@ -19,6 +19,9 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
     public static final String CLOSE_TEST = "CLOSE_TEST";
     public static final String CATEGORY = "android.intent.category.DEFAULT";
     public static final String TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
+    public static final String PING_ANSWER_VALUE = "Success answer";
+    public static final String TAKE_SCREEN_FAIL_KEY = "failScreen";
+    public static final String TAKE_SCREEN_FAIL_VALUE = "Activity don't visible launch app and try again.";
     private boolean closeUnitTest;
     private Activity mActivity;
 
@@ -27,7 +30,7 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
         switch (intent.getAction()) {
             case PING_REQUEST:
                 Intent in = new Intent();
-                in.putExtra(PING_ANSWER, "Success answer");
+                in.putExtra(PING_ANSWER, PING_ANSWER_VALUE);
                 context.sendBroadcast(in);
                 break;
             case CLOSE_TEST:
@@ -40,8 +43,8 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                     ScreenshotHelper.takeScreenshot(mActivity, context);
                 }else{
                     Intent failIntent = new Intent();
-                    failIntent.setAction("REQUEST_TAKE_SCREENSHOT");
-                    failIntent.putExtra("failScreen", "Activity don't visible launch app and try again.");
+                    failIntent.setAction(ScreenshotHelper.REQUEST_TAKE_SCREENSHOT_ACTION);
+                    failIntent.putExtra(TAKE_SCREEN_FAIL_KEY, TAKE_SCREEN_FAIL_VALUE);
                     context.sendBroadcast(failIntent);
                 }
                 break;

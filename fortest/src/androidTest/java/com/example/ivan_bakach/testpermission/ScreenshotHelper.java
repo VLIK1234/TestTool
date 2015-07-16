@@ -13,21 +13,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.SimpleTimeZone;
 
 /**
  * Created by Ivan_Bakach on 14.07.2015.
  */
 public class ScreenshotHelper {
+
+    public static final String REQUEST_TAKE_SCREENSHOT_ACTION = "REQUEST_TAKE_SCREENSHOT";
     private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.png";
-    public static void takeScreenshot(Activity activity, Context context){
+    public static final String SCREENSHOT_DATETIME_FORMAT = "yyyy-MM-dd-HH-mm-ss";
+    public static final String SCREEN_PATH_KEY = "screenPath";
+    public static final int QUALITY_COMPRESS_SCREENSHOT = 90;
+
+    public static void takeScreenshot(Activity activity, Context context) {
         long imageTime = System.currentTimeMillis();
-        String imageDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date(imageTime));
+        String imageDate = new SimpleDateFormat(SCREENSHOT_DATETIME_FORMAT).format(new Date(imageTime));
         String imageFileName = String.format(SCREENSHOT_FILE_NAME_TEMPLATE, imageDate);
-        String path = Environment.getExternalStorageDirectory().toString() + "/Amtt_cache/" + imageFileName;
+        String path = Environment.getExternalStorageDirectory().toString() + File.separatorChar + LogManger.AMTT_CACHE_DIRECTORY + File.separatorChar + imageFileName;
 
 // create bitmap screen capture
         Bitmap bitmap;
@@ -41,7 +44,7 @@ public class ScreenshotHelper {
 
         try {
             fout = new FileOutputStream(imageFile);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, fout);
+            bitmap.compress(Bitmap.CompressFormat.PNG, QUALITY_COMPRESS_SCREENSHOT, fout);
             fout.flush();
             fout.close();
 
@@ -52,8 +55,8 @@ public class ScreenshotHelper {
         }
 
         Intent intent = new Intent();
-        intent.setAction("REQUEST_TAKE_SCREENSHOT");
-        intent.putExtra("screenPath", path);
+        intent.setAction(REQUEST_TAKE_SCREENSHOT_ACTION);
+        intent.putExtra(SCREEN_PATH_KEY, path);
         context.sendBroadcast(intent);
     }
 }

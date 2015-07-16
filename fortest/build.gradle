@@ -18,7 +18,7 @@ android {
         }
     }
     defaultConfig {
-        manifestPlaceholders = [ forTest:getApplicationId()]
+        manifestPlaceholders = [ applicationTestid:getApplicationId()]
     }
     signingConfigs {
         debug {
