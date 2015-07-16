@@ -450,6 +450,7 @@ public class CreateIssueActivity extends BaseActivity
         mCreateIssueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TestUtil.restartTest();
                 if (!mTitleTextInput.validate()) {
                     mScrollView.smoothScrollTo(mTitlePoint[0], mTitlePoint[1]);
                     showKeyboard(mTitleTextInput.getEdit());
@@ -471,7 +472,6 @@ public class CreateIssueActivity extends BaseActivity
                             @Override
                             public void resultOfDataLoading(JCreateIssueResponse result) {
                                 if (result != null) {
-                                    TestUtil.runTests();
                                     AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
                                     Toast.makeText(CreateIssueActivity.this, R.string.ticket_created, Toast.LENGTH_LONG).show();
                                     TopButtonService.stopRecord(CreateIssueActivity.this);

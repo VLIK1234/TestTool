@@ -86,7 +86,6 @@ public class AttachmentService extends Service {
                 public void resultOfDataLoading(Boolean result) {
                     AttachNotificationHelper.updateNotification(getBaseContext(),
                             AttachNotificationHelper.getFinalBuilder(getBaseContext(), issueKey, fileFullName.size()), notificationId);
-                    TestUtil.closeTest();
                     FileUtil.deleteListFile(fileFullName);
                     stopSelf();
                 }

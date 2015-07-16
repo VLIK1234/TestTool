@@ -73,6 +73,8 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     NotificationCompat.Builder builder =  new NotificationCompat.Builder(context)
                             .setSmallIcon(R.drawable.button_main)
                             .setGroup(context.getString(R.string.label_amtt_system_group_notification))
+                            .setOngoing(true)
+                            .setAutoCancel(true)
                             .setContentTitle(context.getString(R.string.title_error_caught_notification))
                             .setContentText(context.getString(R.string.text_caught_exception))
                             .setContentIntent(PendingIntent.getActivity(context, 1, new Intent(context, CreateIssueActivity.class), PendingIntent.FLAG_CANCEL_CURRENT));

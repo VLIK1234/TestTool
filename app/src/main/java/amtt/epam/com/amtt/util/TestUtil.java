@@ -14,6 +14,7 @@ import java.util.List;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.ui.activities.SettingActivity;
 
 /**
  * Created by Ivan_Bakach on 06.07.2015.
@@ -74,6 +75,10 @@ public class TestUtil {
             Toast.makeText(AmttApplication.getContext(),
                     "Cannot find instrumentation for " + pn, Toast.LENGTH_SHORT)
                     .show();
+            Intent intent = new Intent(AmttApplication.getContext(), SettingActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            AmttApplication.getContext().startActivity(intent);
+            Toast.makeText(AmttApplication.getContext(), "Please choose tested project",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -81,6 +86,11 @@ public class TestUtil {
         Intent in = new Intent();
         in.setAction(CLOSE_TEST);
         AmttApplication.getContext().sendBroadcast(in);
+    }
+
+    public static void restartTest(){
+        closeTest();
+        runTests();
     }
 
 }

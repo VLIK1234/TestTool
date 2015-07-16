@@ -64,8 +64,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             projectName.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    TestUtil.closeTest();
-                    TestUtil.runTests();
+                    TestUtil.restartTest();
                     return true;
                 }
             });
