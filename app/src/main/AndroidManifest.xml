@@ -129,6 +129,19 @@
                 android:value=".ui.activities.MainActivity"/>
         </activity>
         <activity
+
+            android:name=".ui.activities.DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".ui.activities.ExpectedResultsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.ExpectedResultsActivity"/>
+        </activity>
+        <provider
+            android:name=".excel.database.contentprovider.GSContentProvider"
+            android:authorities="amtt.epam.com.amtt.excel.database.contentprovider"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.LogActivity"
             android:launchMode="standard"
             android:noHistory="true"

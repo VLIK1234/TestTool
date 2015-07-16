@@ -71,7 +71,9 @@ public class WorksheetProcessor implements Processor<GoogleWorksheet, HttpEntity
                     XMLParser.skipTag();//gsx:testresult
                     XMLParser.skipTag();//gsx:testresult
                     XMLParser.skipTag();//gsx:testresult
-                    worksheet.setEntryItem(entryWorksheet);
+                    if (entryWorksheet.getTestCaseNameGSX() != null && !entryWorksheet.getTestCaseNameGSX().equals("")) {
+                        worksheet.setEntryItem(entryWorksheet);
+                    }
                     xmlPullParser = XMLParser.getXmlPullParser();
                     xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.ENTRY_TAG);
                     xmlPullParser.nextTag();

@@ -137,9 +137,4 @@ public enum AmttUri {
         int uriType = sUriMatcher.match(uri);
         return sContentType.get(uriType);
     }
-
-    public static String[] matchProjection(AmttUri amttUri) {
-        return sProjections.get(amttUri);
-    }
-
 }

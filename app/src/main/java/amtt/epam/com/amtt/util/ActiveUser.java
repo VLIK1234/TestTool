@@ -20,6 +20,7 @@ public class ActiveUser {
     private String mLastAssigneeName;
     private String mLastComponentsIds;
     private Boolean mRecord;
+    private String mSpreadsheetLink;
 
     private ActiveUser() {
     }
@@ -102,6 +103,14 @@ public class ActiveUser {
         this.mRecord = record;
     }
 
+    public String getSpreadsheetLink() {
+        return mSpreadsheetLink;
+    }
+
+    public void setSpreadsheetLink(String spreadsheetLink) {
+        this.mSpreadsheetLink = spreadsheetLink;
+    }
+
     public void clearActiveUser() {
         setUserName(null);
         setUrl(null);
@@ -111,6 +120,7 @@ public class ActiveUser {
         setLastAssigneeName(null);
         setLastComponentsIds(null);
         setRecord(false);
+        setSpreadsheetLink(null);
     }
 }
 

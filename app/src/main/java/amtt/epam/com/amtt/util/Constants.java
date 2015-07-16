@@ -8,13 +8,7 @@ package amtt.epam.com.amtt.util;
 public final class Constants {
 
     public final class Symbols {
-
-        public static final String NEW_LINE = "\n";
         public static final String COLON = ":";
         public static final String EMPTY = "";
-        public static final String COMMA = ",";
-
     }
-
-
 }

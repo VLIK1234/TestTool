@@ -13,6 +13,7 @@
     <string name="title_activity_help_dialog">How to make screenshot?</string>
     <string name="title_activity_paint">Notes</string>
     <string name="title_activity_preview">Preview</string>
+    <string name="title_activity_detail">Detail</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
 
@@ -56,7 +57,6 @@
     <string name="label_name_activity">"Name activity"</string>
     <string name="label_new_user">Add new QA</string>
     <string name="label_palette">Palette</string>
-    <string name="label_eraser">Eraser</string>
     <string name="label_clear_notes">Clear notes</string>
     <string name="label_undo">Undo</string>
     <string name="label_redo">Redo</string>
@@ -124,7 +124,6 @@
     <string name="content_description_screenshot">Screenshot</string>
     <string name="label_added_step_without_activity_info">Only screenshot</string>
 
-    <string name="save">Save</string>
     <string name="message_clear_environment">You will lose all the device specifications</string>
 
     <string name="ok">OK</string>

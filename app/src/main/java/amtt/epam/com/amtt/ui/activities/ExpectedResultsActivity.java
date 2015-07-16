@@ -1,17 +1,20 @@
 package amtt.epam.com.amtt.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.widget.ListView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.adapter.ExpectedResultAdapter;
+import amtt.epam.com.amtt.adapter.ExpectedResultsAdapter;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
 import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
@@ -23,13 +26,23 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
  * @version on 03.06.2015
  */
 
-public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class ExpectedResultsActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, ExpectedResultsAdapter.ViewHolder.ClickListener {
 
     private static final int MESSAGE_REFRESH = 100;
-    private ListView mExpectedResultsListView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ExpectedResultsHandler mHandler;
-    private ExpectedResultAdapter mResultsAdapter;
+    private ExpectedResultsAdapter mResultsAdapter;
+    private RecyclerView mRecyclerView;
+    private Boolean mIsShowDetail = false;
+
+    @Override
+    public void onItemSelected(int position) {
+        Intent detail = new Intent(ExpectedResultsActivity.this, DetailActivity.class);
+        detail.putExtra(DetailActivity.TESTCASE_ID, mResultsAdapter.getIdTestcaseList().get(position));
+        mIsShowDetail = true;
+        startActivity(detail);
+        finish();
+    }
 
     public static class ExpectedResultsHandler extends Handler {
 
@@ -51,6 +64,7 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expected_results);
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         initViews();
@@ -60,17 +74,20 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
+    protected void onDestroy() {
+        super.onDestroy();
+        if (!mIsShowDetail) {
+            TopButtonService.sendActionChangeTopButtonVisibility(true);
+        }
     }
 
     private void initViews() {
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        ArrayList<ExpectedResultAdapter.ExpectedResult> mExpectedResultsList = new ArrayList<>();
-        mResultsAdapter = new ExpectedResultAdapter(ExpectedResultsActivity.this, mExpectedResultsList);
-        mExpectedResultsListView = (ListView) findViewById(android.R.id.list);
-
+        mRecyclerView = (RecyclerView) findViewById(android.R.id.list);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ExpectedResultsActivity.this);
+        linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
     @Override
@@ -83,27 +100,16 @@ public class ExpectedResultsActivity  extends BaseActivity implements SwipeRefre
         XMLContent.getInstance().getWorksheet(new GetContentCallback<GoogleWorksheet>() {
             @Override
             public void resultOfDataLoading(GoogleWorksheet result) {
-                if(result != null){
+                if (result != null) {
                     List<GoogleEntryWorksheet> entryWorksheetList = result.getEntry();
                     if (entryWorksheetList != null && !entryWorksheetList.isEmpty()) {
-                        for (int i = 1; i < entryWorksheetList.size(); i++) {
-                            if (entryWorksheetList.get(i).getTestCaseNameGSX() != null) {
-                                ExpectedResultAdapter.ExpectedResult expectedResult = new ExpectedResultAdapter.ExpectedResult(entryWorksheetList.get(i).getLabelGSX(),
-                                        entryWorksheetList.get(i).getTestCaseNameGSX(),
-                                        entryWorksheetList.get(i).getPriorityGSX(),
-                                        entryWorksheetList.get(i).getTestStepsGSX(),
-                                        entryWorksheetList.get(i).getIdGSX());
-                                mResultsAdapter.add(expectedResult);
-                            }
-                        }
-                        mExpectedResultsListView.setAdapter(mResultsAdapter);
+                        mResultsAdapter = new ExpectedResultsAdapter(entryWorksheetList, R.layout.adapter_expected_results, ExpectedResultsActivity.this);
+                        mRecyclerView.setAdapter(mResultsAdapter);
                     }
                 }
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
-
-
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
 }

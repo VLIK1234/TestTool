@@ -158,7 +158,6 @@ public class TopButtonBarView extends FrameLayout {
                 intent.setAction("TAKE_SCREENSHOT");
                 getContext().sendBroadcast(intent);
                 TopButtonService.sendActionChangeTopButtonVisibility(false);
-                HelpDialogActivity.setIsCanTakeScreenshot(true);
                 mTopButtonListener.onTouch();
             }
         });
@@ -190,7 +189,6 @@ public class TopButtonBarView extends FrameLayout {
                 Intent intent = new Intent();
                 intent.setAction("TAKE_SCREENSHOT");
                 getContext().sendBroadcast(intent);
-                HelpDialogActivity.setIsCanTakeScreenshot(true);
                 TopButtonService.sendActionChangeTopButtonVisibility(false);
                 AmttFileObserver.setStepWithoutActivityInfo(true);
                 mTopButtonListener.onTouch();
