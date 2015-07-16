@@ -20,7 +20,6 @@ import amtt.epam.com.amtt.util.Constants;
 
 public class DetailActivity extends BaseActivity {
 
-    public static final String TESTCASE_ID = "testcase_key";
     private TextView mNameTextView;
     private TextView mLabelTextView;
     private TextView mPriorityTextView;
@@ -45,13 +44,13 @@ public class DetailActivity extends BaseActivity {
         TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
-    private void setTestcaseData(String testCaseId) {
+    private void setTestcaseData() {
+        String testCaseId = XMLContent.getInstance().getLastTestcaseId();
         if (testCaseId != null && !testCaseId.equals(Constants.Symbols.EMPTY)) {
             mTestcase = XMLContent.getInstance().getTestcaseByIdGSX(testCaseId);
             if (mTestcase != null) {
                 if (mTestcase.getTestCaseNameGSX() != null) {
-                    mNameTextView.setText(mTestcase.getTestCaseNameGSX()  + Constants.Symbols.ID_RIGHT_BRACKET
-                            + mTestcase.getIdGSX() + Constants.Symbols.ID_LEFT_BRACKET);
+                    mNameTextView.setText(mTestcase.getTestcaseNameAndId());
                 }
                 mLabelTextView.setText(mTestcase.getLabelGSX());
                 mPriorityTextView.setText(mTestcase.getPriorityGSX());
@@ -62,16 +61,6 @@ public class DetailActivity extends BaseActivity {
         }
     }
 
-    @Nullable
-    private String getTestcaseId() {
-        Bundle extra = getIntent().getExtras();
-        String testCaseId = null;
-        if (extra != null) {
-            testCaseId = extra.getString(TESTCASE_ID);
-        }
-        return testCaseId;
-    }
-
     private void initViews() {
         mNameTextView = (TextView) findViewById(R.id.tv_testcase_name);
         mLabelTextView = (TextView) findViewById(R.id.tv_label);
@@ -80,7 +69,7 @@ public class DetailActivity extends BaseActivity {
         mDescriptionTextView = (TextView) findViewById(R.id.tv_description);
         mExpectedResultsTextView = (TextView) findViewById(R.id.tv_expected_results);
         initBugButton();
-        setTestcaseData(getTestcaseId());
+        setTestcaseData();
     }
 
     private void initBugButton() {

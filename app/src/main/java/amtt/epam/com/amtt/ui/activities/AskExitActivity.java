@@ -28,7 +28,7 @@ public class AskExitActivity  extends Activity {
                         finish();
                     }
                 })
-                .setPositiveButton(getResources().getString(R.string.close), new DialogInterface.OnClickListener() {
+                .setPositiveButton(getResources().getString(R.string.label_close), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         TopButtonService.close(getBaseContext());

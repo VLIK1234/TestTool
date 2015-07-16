@@ -51,9 +51,7 @@ import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
-
 import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
-
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -417,13 +415,7 @@ public class CreateIssueActivity extends BaseActivity
 
     private void initDescriptionEditText() {
         mDescriptionTextInput = (TextInput) findViewById(R.id.description_input);
-        if (XMLContent.getInstance().getLastTestcase() == null) {
-            getDescription();
-        } else {
-            mDescriptionTextInput.setText(XMLContent.getInstance().getLastTestcase().getTestStepsGSX());
-            mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
-        }
-
+        getDescription();
     }
 
     private void initListStepButton() {
@@ -499,7 +491,7 @@ public class CreateIssueActivity extends BaseActivity
             add(InputsUtil.getEndStartWhitespacesValidator());
         }});
         if (XMLContent.getInstance().getLastTestcase() != null) {
-            mTitleTextInput.setText(XMLContent.getInstance().getLastTestcase().getTestCaseNameGSX());
+            mTitleTextInput.setText(XMLContent.getInstance().getLastTestcase().getTestcaseNameAndId());
         }
         mTitlePoint = new int[2];
         mTitleTextInput.getLocationOnScreen(mTitlePoint);

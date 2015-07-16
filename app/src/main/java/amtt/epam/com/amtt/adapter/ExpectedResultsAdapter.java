@@ -46,8 +46,7 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
         GoogleEntryWorksheet testcase = mTestcases.get(i);
         Logger.d(TAG, testcase.getTestCaseNameGSX());
         viewHolder.mLabel.setText(testcase.getLabelGSX());
-        viewHolder.mTestcaseName.setText(testcase.getTestCaseNameGSX() + Constants.Symbols.ID_LEFT_BRACKET
-                + testcase.getIdGSX() + Constants.Symbols.ID_RIGHT_BRACKET);
+        viewHolder.mTestcaseName.setText(testcase.getTestcaseNameAndId());
         viewHolder.mPriority.setText(testcase.getPriorityGSX());
         viewHolder.mSteps.setText(testcase.getTestStepsGSX());
     }
@@ -86,13 +85,17 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
         @Override
         public void onClick(View v) {
             if (mListener != null) {
-                if(v.getId()==R.id.result_card){
-                mListener.onItemSelected(getAdapterPosition());}
+                if (v.getId() == R.id.result_card) {
+                    mListener.onShowCard(getAdapterPosition());
+                } else if (v.getId() == R.id.btn_bug) {
+                    mListener.onShowCreationTicket(getAdapterPosition());
+                }
             }
         }
 
         public interface ClickListener {
-            void onItemSelected(int position);
+            void onShowCard(int position);
+            void onShowCreationTicket(int position);
         }
     }
 

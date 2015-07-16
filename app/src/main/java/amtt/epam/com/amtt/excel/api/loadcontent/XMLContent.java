@@ -20,6 +20,7 @@ public class XMLContent {
     private GoogleSpreadsheet mSpreadsheet;
     private GoogleWorksheet mWorksheet;
     private GoogleEntryWorksheet mLastTestCase;
+    private String mLastTestcaseId;
 
     private static class XMLContentHolder {
         public static final XMLContent INSTANCE = new XMLContent();
@@ -140,5 +141,13 @@ public class XMLContent {
 
     public void setLastTestCase(GoogleEntryWorksheet testCase){
         this.mLastTestCase = testCase;
+    }
+
+    public String getLastTestcaseId() {
+        return mLastTestcaseId;
+    }
+
+    public void setLastTestcaseId(String lastTestcaseId) {
+        this.mLastTestcaseId = lastTestcaseId;
     }
 }

@@ -36,11 +36,19 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
     private Boolean mIsShowDetail = false;
 
     @Override
-    public void onItemSelected(int position) {
+    public void onShowCard(int position) {
         Intent detail = new Intent(ExpectedResultsActivity.this, DetailActivity.class);
-        detail.putExtra(DetailActivity.TESTCASE_ID, mResultsAdapter.getIdTestcaseList().get(position));
+        XMLContent.getInstance().setLastTestcaseId(mResultsAdapter.getIdTestcaseList().get(position));
         mIsShowDetail = true;
         startActivity(detail);
+        finish();
+    }
+
+    @Override
+    public void onShowCreationTicket(int position) {
+        Intent creationTicket = new Intent(ExpectedResultsActivity.this, CreateIssueActivity.class);
+        XMLContent.getInstance().setLastTestcaseId(mResultsAdapter.getIdTestcaseList().get(position));
+        startActivity(creationTicket);
         finish();
     }
 
