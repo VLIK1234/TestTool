@@ -164,10 +164,9 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     private void setDefaultConfigs() {
-        if (mComponents.getSelectedItem() != null) {
+        if (mComponents != null && mComponents.getSelectedItem() != null) {
             String component = JiraContent.getInstance().getComponentIdByName((String) mComponents.getSelectedItem());
             ActiveUser.getInstance().setLastComponentsIds(component);
-
         }
         JiraContent.getInstance().setDefaultConfig(ActiveUser.getInstance().getLastProjectKey(),
                 ActiveUser.getInstance().getLastAssignee(), ActiveUser.getInstance().getLastComponentsIds());
