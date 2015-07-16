@@ -27,7 +27,8 @@ import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.ReadLargeTextUtil;
 
 /**
- * Created by Ivan_Bakach on 10.07.2015.
+ @author Ivan_Bakach
+ @version on 10.07.2015
  */
 public class LogActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
     public static final String FILE_PATH = "filePath";

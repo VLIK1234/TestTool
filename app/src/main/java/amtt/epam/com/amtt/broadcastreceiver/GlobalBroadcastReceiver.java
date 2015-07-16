@@ -92,7 +92,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                 Bundle extraAnswear = intent.getExtras();
                 if (extraAnswear!=null) {
                     String answer = extraAnswear.getString(ANSWER_EXCEPTION_KEY);
-                    Toast.makeText(context, answer, Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Application crashed go to notification for make ticket", Toast.LENGTH_LONG).show();
                     NotificationCompat.Builder builder =  new NotificationCompat.Builder(context)
                             .setSmallIcon(R.drawable.button_main)
                             .setGroup(context.getString(R.string.label_amtt_system_group_notification))
