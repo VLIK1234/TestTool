@@ -1,11 +1,14 @@
 package amtt.epam.com.amtt.excel.bo;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 
+import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.excel.database.contentprovider.GSUri;
 import amtt.epam.com.amtt.excel.database.table.TestcaseTable;
 import amtt.epam.com.amtt.util.Constants;
@@ -131,11 +134,15 @@ public class GoogleEntryWorksheet extends GoogleEntry<GoogleEntryWorksheet> {
 
     public String getFullTestCaseDescription(String newSteps){
         String fullDescription = getFullTestCaseDescription();
+
         return fullDescription;
     }
     public String getFullTestCaseDescription(){
+        Context context = AmttApplication.getContext();
         SpannableStringBuilder fullDescription = new SpannableStringBuilder();
-        fullDescription.append(Html.fromHtml("<h5>"));
+        fullDescription.append(Html.fromHtml("<h5>" + context.getString(R.string.label_steps) + "</h5>"));
+        fullDescription.append(Html.fromHtml("</br>" + mTestCaseDescriptionGSX + "</br>"));
+        fullDescription.append(Html.fromHtml("</br>" + mTestCaseDescriptionGSX + "</br>"));
         return String.valueOf(fullDescription);
     }
 
