@@ -1,24 +1,24 @@
-package amtt.epam.com.amtt.excel.bo;
+package amtt.epam.com.amtt.googleapi.bo;
 
 /**
  * @author Iryna Monchanka
  * @version on 7/1/2015
  */
-public class GoogleEntrySpreadshet extends GoogleEntry{
+public class GEntrySpreadshet extends GEntry {
 
-    private GoogleLink mListFeedLink;
-    private GoogleLink mCellsFeedLink;
-    private GoogleLink mVisualisationApiLink;
-    private GoogleLink mExportCSVLink;
+    private GLink mListFeedLink;
+    private GLink mCellsFeedLink;
+    private GLink mVisualisationApiLink;
+    private GLink mExportCSVLink;
     private int mGSColCount;
     private int mGSRowCount;
 
-    public GoogleEntrySpreadshet() {
+    public GEntrySpreadshet() {
     }
 
-    public GoogleEntrySpreadshet(String idLink, String updated, String title, String content, GoogleLink listFeedLink,
-                       GoogleLink cellsFeedLink, GoogleLink visualisationApiLink, GoogleLink exportCSVLink,
-                       GoogleLink selfLink, int gsColCount, int gsRowCount) {
+    public GEntrySpreadshet(String idLink, String updated, String title, String content, GLink listFeedLink,
+                            GLink cellsFeedLink, GLink visualisationApiLink, GLink exportCSVLink,
+                            GLink selfLink, int gsColCount, int gsRowCount) {
         super(idLink, updated, title, selfLink, content);
         this.mListFeedLink = listFeedLink;
         this.mCellsFeedLink = cellsFeedLink;
@@ -28,35 +28,35 @@ public class GoogleEntrySpreadshet extends GoogleEntry{
         this.mGSRowCount = gsRowCount;
     }
 
-    public GoogleLink getListFeedLink() {
+    public GLink getListFeedLink() {
         return mListFeedLink;
     }
 
-    public void setListFeedLink(GoogleLink listFeedLink) {
+    public void setListFeedLink(GLink listFeedLink) {
         this.mListFeedLink = listFeedLink;
     }
 
-    public GoogleLink getCellsFeedLink() {
+    public GLink getCellsFeedLink() {
         return mCellsFeedLink;
     }
 
-    public void setCellsFeedLink(GoogleLink cellsFeedLink) {
+    public void setCellsFeedLink(GLink cellsFeedLink) {
         this.mCellsFeedLink = cellsFeedLink;
     }
 
-    public GoogleLink getVisualisationApiLink() {
+    public GLink getVisualisationApiLink() {
         return mVisualisationApiLink;
     }
 
-    public void setVisualisationApiLink(GoogleLink visualisationApiLink) {
+    public void setVisualisationApiLink(GLink visualisationApiLink) {
         this.mVisualisationApiLink = visualisationApiLink;
     }
 
-    public GoogleLink getExportCSVLink() {
+    public GLink getExportCSVLink() {
         return mExportCSVLink;
     }
 
-    public void setExportCSVLink(GoogleLink exportCSVLink) {
+    public void setExportCSVLink(GLink exportCSVLink) {
         this.mExportCSVLink = exportCSVLink;
     }
 

@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
-import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -23,11 +22,11 @@ import amtt.epam.com.amtt.util.Logger;
 public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResultsAdapter.ViewHolder> {
 
     private final String TAG = this.getClass().getSimpleName();
-    private List<GoogleEntryWorksheet> mTestcases;
+    private List<GEntryWorksheet> mTestcases;
     private int mItemLayout;
     private ViewHolder.ClickListener mClickListener;
 
-    public ExpectedResultsAdapter(List<GoogleEntryWorksheet> testcases, int itemLayout, ViewHolder.ClickListener clickListener) {
+    public ExpectedResultsAdapter(List<GEntryWorksheet> testcases, int itemLayout, ViewHolder.ClickListener clickListener) {
         this.mTestcases = testcases;
         this.mItemLayout = itemLayout;
         this.mClickListener = clickListener;
@@ -44,7 +43,7 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
     }
 
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        GoogleEntryWorksheet testcase = mTestcases.get(i);
+        GEntryWorksheet testcase = mTestcases.get(i);
         Logger.d(TAG, testcase.getTestCaseNameGSX());
         viewHolder.mLabel.setText(testcase.getLabelGSX());
         viewHolder.mTestcaseName.setText(testcase.getTestcaseNameAndId());
@@ -59,7 +58,7 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
 
     public ArrayList<String> getIdTestcaseList() {
         ArrayList<String> idTestcaseList = new ArrayList<>();
-        for (GoogleEntryWorksheet testcase : mTestcases) {
+        for (GEntryWorksheet testcase : mTestcases) {
             idTestcaseList.add(testcase.getIdGSX());
         }
         return idTestcaseList;

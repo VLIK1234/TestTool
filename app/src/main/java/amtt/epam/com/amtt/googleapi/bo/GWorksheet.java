@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.excel.bo;
+package amtt.epam.com.amtt.googleapi.bo;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -7,24 +7,24 @@ import android.net.Uri;
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.excel.database.contentprovider.GSUri;
-import amtt.epam.com.amtt.excel.database.table.WorksheetTable;
+import amtt.epam.com.amtt.googleapi.database.contentprovider.GSUri;
+import amtt.epam.com.amtt.googleapi.database.table.WorksheetTable;
 
 /**
  * @author Iryna Monchanka
  * @version on 7/1/2015
  */
 
-public class GoogleWorksheet extends GoogleSheet<GoogleWorksheet> {
+public class GWorksheet extends GSheet<GWorksheet> {
 
     private int mId;
     private String mLabels;
-    private List<GoogleEntryWorksheet> mEntry;
+    private List<GEntryWorksheet> mEntry;
 
-    public GoogleWorksheet() {
+    public GWorksheet() {
     }
 
-    public GoogleWorksheet(Cursor cursor) {
+    public GWorksheet(Cursor cursor) {
         if (cursor.getPosition() == -1) {
             cursor.moveToNext();
         }
@@ -38,32 +38,32 @@ public class GoogleWorksheet extends GoogleSheet<GoogleWorksheet> {
     }
 
     @Override
-    public GoogleWorksheet parse(Cursor cursor) {
+    public GWorksheet parse(Cursor cursor) {
         return null;
     }
 
-    public GoogleWorksheet(List<GoogleEntryWorksheet> entry) {
+    public GWorksheet(List<GEntryWorksheet> entry) {
         this.mEntry = entry;
     }
 
-    public GoogleWorksheet(String idLink, String updated, String title, GoogleLink selfLink,
-                           GoogleLink alternateLink, GoogleLink feedLink, GoogleLink postLink,
-                           GoogleAuthor author, int openSearchTotalResults, int openSearchStartIndex,
-                           List<GoogleEntryWorksheet> entry) {
+    public GWorksheet(String idLink, String updated, String title, GLink selfLink,
+                      GLink alternateLink, GLink feedLink, GLink postLink,
+                      GAuthor author, int openSearchTotalResults, int openSearchStartIndex,
+                      List<GEntryWorksheet> entry) {
         super(idLink, updated, title, selfLink, alternateLink, feedLink, postLink, author,
                 openSearchTotalResults, openSearchStartIndex);
         this.mEntry = entry;
     }
 
-    public List<GoogleEntryWorksheet> getEntry() {
+    public List<GEntryWorksheet> getEntry() {
         return mEntry;
     }
 
-    public void setEntry(List<GoogleEntryWorksheet> entry) {
+    public void setEntry(List<GEntryWorksheet> entry) {
         this.mEntry = entry;
     }
 
-    public void setEntryItem(GoogleEntryWorksheet googleEntryWorksheet) {
+    public void setEntryItem(GEntryWorksheet googleEntryWorksheet) {
         if (mEntry == null) {
             mEntry = new ArrayList<>();
         }
@@ -92,9 +92,9 @@ public class GoogleWorksheet extends GoogleSheet<GoogleWorksheet> {
         return values;
     }
 
-    public GoogleEntryWorksheet getEntryById(String id) {
-        GoogleEntryWorksheet entryWorksheet = null;
-        for (GoogleEntryWorksheet entry : mEntry) {
+    public GEntryWorksheet getEntryById(String id) {
+        GEntryWorksheet entryWorksheet = null;
+        for (GEntryWorksheet entry : mEntry) {
             if (entry.getIdGSX().equals(id)) {
                 entryWorksheet = entry;
             }

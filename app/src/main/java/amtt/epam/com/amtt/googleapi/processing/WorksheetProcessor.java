@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.excel.processing;
+package amtt.epam.com.amtt.googleapi.processing;
 
 import org.apache.http.HttpEntity;
 import org.xmlpull.v1.XmlPullParser;
@@ -6,10 +6,10 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.InputStream;
 
-import amtt.epam.com.amtt.excel.XMLParser;
-import amtt.epam.com.amtt.excel.api.GoogleApiConst;
-import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
-import amtt.epam.com.amtt.excel.bo.GoogleWorksheet;
+import amtt.epam.com.amtt.googleapi.XMLParser;
+import amtt.epam.com.amtt.googleapi.api.GoogleApiConst;
+import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
+import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
 import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.Logger;
@@ -18,19 +18,19 @@ import amtt.epam.com.amtt.util.Logger;
  * @author Iryna Monchanka
  * @version on 07.07.2015
  */
-public class WorksheetProcessor implements Processor<GoogleWorksheet, HttpEntity> {
+public class WorksheetProcessor implements Processor<GWorksheet, HttpEntity> {
 
     public static final String NAME = WorksheetProcessor.class.getName();
 
     @Override
-    public GoogleWorksheet process(HttpEntity httpEntity) throws Exception {
+    public GWorksheet process(HttpEntity httpEntity) throws Exception {
         try {
             InputStream stream = httpEntity.getContent();
             XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
             XmlPullParser xmlPullParser = xmlFactoryObject.newPullParser();
             xmlPullParser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             xmlPullParser.setInput(stream, null);
-            GoogleWorksheet worksheet = new GoogleWorksheet();
+            GWorksheet worksheet = new GWorksheet();
             xmlPullParser.nextTag();
             xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.FEED_TAG);
             xmlPullParser.nextTag();
@@ -48,7 +48,7 @@ public class WorksheetProcessor implements Processor<GoogleWorksheet, HttpEntity
                 worksheet.setOpenSearchTotalResults(XMLParser.loadTotalResults());
                 worksheet.setOpenSearchStartIndex(XMLParser.loadStartIndex());
                 for (int i = 0; i < worksheet.getOpenSearchTotalResults(); i++) {
-                    GoogleEntryWorksheet entryWorksheet = new GoogleEntryWorksheet();
+                    GEntryWorksheet entryWorksheet = new GEntryWorksheet();
                     xmlPullParser = XMLParser.getXmlPullParser();
                     xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.ENTRY_TAG);
                     xmlPullParser.nextTag();

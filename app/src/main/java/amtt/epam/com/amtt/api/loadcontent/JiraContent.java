@@ -26,7 +26,7 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.util.StepUtil;
-import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
+import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -374,8 +374,8 @@ public class JiraContent{
             @Override
             public void onResult(List<DatabaseEntity> result) {
                 Spanned description = StepUtil.getStepInfo(result);
-                if (XMLContent.getInstance().getLastTestcase() != null) {
-                    Spanned fullDescription = XMLContent.getInstance().getLastTestcase().getFullTestCaseDescription(description);
+                if (GSpreadsheetContent.getInstance().getLastTestcase() != null) {
+                    Spanned fullDescription = GSpreadsheetContent.getInstance().getLastTestcase().getFullTestCaseDescription(description);
                     getContentCallback.resultOfDataLoading(fullDescription);
                 } else {
                     getContentCallback.resultOfDataLoading(description);

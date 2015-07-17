@@ -1,18 +1,18 @@
-package amtt.epam.com.amtt.excel.bo;
+package amtt.epam.com.amtt.googleapi.bo;
 
 /**
  * @author Iryna Monchanka
  * @version on 7/1/2015
  */
-public class GoogleAuthor {
+public class GAuthor {
 
     private String mName;
     private String mEmail;
 
-    public GoogleAuthor() {
+    public GAuthor() {
     }
 
-    public GoogleAuthor(String name, String email) {
+    public GAuthor(String name, String email) {
         this.mName = name;
         this.mEmail = email;
     }

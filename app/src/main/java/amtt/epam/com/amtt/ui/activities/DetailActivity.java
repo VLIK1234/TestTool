@@ -2,14 +2,13 @@ package amtt.epam.com.amtt.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
-import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
+import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
+import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.Constants;
 
@@ -26,7 +25,7 @@ public class DetailActivity extends BaseActivity {
     private TextView mStepsTextView;
     private TextView mDescriptionTextView;
     private TextView mExpectedResultsTextView;
-    private GoogleEntryWorksheet mTestcase;
+    private GEntryWorksheet mTestcase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +44,9 @@ public class DetailActivity extends BaseActivity {
     }
 
     private void setTestcaseData() {
-        String testCaseId = XMLContent.getInstance().getLastTestcaseId();
+        String testCaseId = GSpreadsheetContent.getInstance().getLastTestcaseId();
         if (testCaseId != null && !testCaseId.equals(Constants.Symbols.EMPTY)) {
-            mTestcase = XMLContent.getInstance().getTestcaseByIdGSX(testCaseId);
+            mTestcase = GSpreadsheetContent.getInstance().getTestcaseByIdGSX(testCaseId);
             if (mTestcase != null) {
                 if (mTestcase.getTestCaseNameGSX() != null) {
                     mNameTextView.setText(mTestcase.getTestcaseNameAndId());
@@ -78,7 +77,7 @@ public class DetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (mTestcase != null) {
-                    XMLContent.getInstance().setLastTestCase(mTestcase);
+                    GSpreadsheetContent.getInstance().setLastTestCase(mTestcase);
                     Intent loginIntent = new Intent(DetailActivity.this, CreateIssueActivity.class);
                     startActivity(loginIntent);
                     finish();

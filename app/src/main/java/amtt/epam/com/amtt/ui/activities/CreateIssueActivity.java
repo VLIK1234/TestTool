@@ -51,7 +51,7 @@ import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
-import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
+import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -280,8 +280,8 @@ public class CreateIssueActivity extends BaseActivity
                             mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                             prioritiesSpinner.setAdapter(mPrioritiesAdapter);
                             String defaultPriority;
-                            if (XMLContent.getInstance().getLastTestcase() != null) {
-                                defaultPriority = XMLContent.getInstance().getLastTestcase().getPriorityGSX();
+                            if (GSpreadsheetContent.getInstance().getLastTestcase() != null) {
+                                defaultPriority = GSpreadsheetContent.getInstance().getLastTestcase().getPriorityGSX();
                                 if (defaultPriority != null) {
                                     prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
                                 }
@@ -498,8 +498,8 @@ public class CreateIssueActivity extends BaseActivity
             add(InputsUtil.getEmptyValidator());
             add(InputsUtil.getEndStartWhitespacesValidator());
         }});
-        if (XMLContent.getInstance().getLastTestcase() != null) {
-            mTitleTextInput.setText(XMLContent.getInstance().getLastTestcase().getTestcaseNameAndId());
+        if (GSpreadsheetContent.getInstance().getLastTestcase() != null) {
+            mTitleTextInput.setText(GSpreadsheetContent.getInstance().getLastTestcase().getTestcaseNameAndId());
         }
         mTitlePoint = new int[2];
         mTitleTextInput.getLocationOnScreen(mTitlePoint);

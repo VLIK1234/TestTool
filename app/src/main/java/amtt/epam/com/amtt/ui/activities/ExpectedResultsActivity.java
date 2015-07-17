@@ -16,9 +16,9 @@ import java.util.List;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.ExpectedResultsAdapter;
 import amtt.epam.com.amtt.api.GetContentCallback;
-import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
-import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
-import amtt.epam.com.amtt.excel.bo.GoogleWorksheet;
+import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
+import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
+import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
@@ -38,7 +38,7 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
     @Override
     public void onShowCard(int position) {
         Intent detail = new Intent(ExpectedResultsActivity.this, DetailActivity.class);
-        XMLContent.getInstance().setLastTestcaseId(mResultsAdapter.getIdTestcaseList().get(position));
+        GSpreadsheetContent.getInstance().setLastTestcaseId(mResultsAdapter.getIdTestcaseList().get(position));
         mIsShowDetail = true;
         startActivity(detail);
         finish();
@@ -47,7 +47,7 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
     @Override
     public void onShowCreationTicket(int position) {
         Intent creationTicket = new Intent(ExpectedResultsActivity.this, CreateIssueActivity.class);
-        XMLContent.getInstance().setLastTestcaseId(mResultsAdapter.getIdTestcaseList().get(position));
+        GSpreadsheetContent.getInstance().setLastTestcaseId(mResultsAdapter.getIdTestcaseList().get(position));
         startActivity(creationTicket);
         finish();
     }
@@ -105,11 +105,11 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
     }
 
     private void refreshSteps() {
-        XMLContent.getInstance().getWorksheet(new GetContentCallback<GoogleWorksheet>() {
+        GSpreadsheetContent.getInstance().getWorksheet(new GetContentCallback<GWorksheet>() {
             @Override
-            public void resultOfDataLoading(GoogleWorksheet result) {
+            public void resultOfDataLoading(GWorksheet result) {
                 if (result != null) {
-                    List<GoogleEntryWorksheet> entryWorksheetList = result.getEntry();
+                    List<GEntryWorksheet> entryWorksheetList = result.getEntry();
                     if (entryWorksheetList != null && !entryWorksheetList.isEmpty()) {
                         mResultsAdapter = new ExpectedResultsAdapter(entryWorksheetList, R.layout.adapter_expected_results, ExpectedResultsActivity.this);
                         mRecyclerView.setAdapter(mResultsAdapter);

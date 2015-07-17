@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.excel.api;
+package amtt.epam.com.amtt.googleapi.api;
 
 /**
  * @author Iryna Monchanka

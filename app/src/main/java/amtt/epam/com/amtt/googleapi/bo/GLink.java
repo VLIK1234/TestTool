@@ -1,19 +1,19 @@
-package amtt.epam.com.amtt.excel.bo;
+package amtt.epam.com.amtt.googleapi.bo;
 
 /**
  * @author Iryna Monchanka
  * @version on 7/1/2015
  */
 
-public class GoogleLink {
+public class GLink {
 
     private String mHref;
     private String mRel;
 
-    public GoogleLink() {
+    public GLink() {
     }
 
-    public GoogleLink(String href, String rel) {
+    public GLink(String href, String rel) {
         this.mHref = href;
         this.mRel = rel;
     }

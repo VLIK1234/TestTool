@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.excel.database.table;
+package amtt.epam.com.amtt.googleapi.database.table;
 
 import java.util.ArrayList;
 

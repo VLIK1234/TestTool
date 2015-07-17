@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.excel.bo;
+package amtt.epam.com.amtt.googleapi.bo;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,15 +10,15 @@ import android.text.Spanned;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.excel.database.contentprovider.GSUri;
-import amtt.epam.com.amtt.excel.database.table.TestcaseTable;
+import amtt.epam.com.amtt.googleapi.database.contentprovider.GSUri;
+import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
 import amtt.epam.com.amtt.util.Constants;
 
 /**
  * @author Iryna Monchanka
  * @version on 7/1/2015
  */
-public class GoogleEntryWorksheet extends GoogleEntry<GoogleEntryWorksheet> {
+public class GEntryWorksheet extends GEntry<GEntryWorksheet> {
 
     private int mId;
     private String mIdWorksheetLink;
@@ -36,10 +36,10 @@ public class GoogleEntryWorksheet extends GoogleEntry<GoogleEntryWorksheet> {
    // private String mIOSGSX;
    // private String mIOSNoteGSX;
 
-    public GoogleEntryWorksheet() {
+    public GEntryWorksheet() {
     }
 
-    public GoogleEntryWorksheet(Cursor cursor) {
+    public GEntryWorksheet(Cursor cursor) {
         if (cursor.getPosition() == -1) {
             cursor.moveToNext();
         }
@@ -58,13 +58,13 @@ public class GoogleEntryWorksheet extends GoogleEntry<GoogleEntryWorksheet> {
     }
 
     @Override
-    public GoogleEntryWorksheet parse(Cursor cursor) {
+    public GEntryWorksheet parse(Cursor cursor) {
         return null;
     }
 
-    public GoogleEntryWorksheet(String idGSX, String priorityGSX, String testCaseNameGSX,
-                                String testCaseDescriptionGSX, String testStepsGSX, String labelGSX,
-                                String expectedResultGSX) {
+    public GEntryWorksheet(String idGSX, String priorityGSX, String testCaseNameGSX,
+                           String testCaseDescriptionGSX, String testStepsGSX, String labelGSX,
+                           String expectedResultGSX) {
         this.mIdGSX = idGSX;
         this.mPriorityGSX = priorityGSX;
         //this.mDeviceGSX = deviceGSX;
@@ -80,10 +80,10 @@ public class GoogleEntryWorksheet extends GoogleEntry<GoogleEntryWorksheet> {
        // this.mIOSNoteGSX = iOSNoteGSX;
     }
 
-    public GoogleEntryWorksheet(String idLink, String updated, String title, GoogleLink selfLink,
-                                String content, String idGSX, String priorityGSX, String testCaseNameGSX,
-                                String testCaseDescriptionGSX, String testStepsGSX,String labelGSX,
-                                String expectedResultGSX) {
+    public GEntryWorksheet(String idLink, String updated, String title, GLink selfLink,
+                           String content, String idGSX, String priorityGSX, String testCaseNameGSX,
+                           String testCaseDescriptionGSX, String testStepsGSX, String labelGSX,
+                           String expectedResultGSX) {
         super(idLink, updated, title, selfLink, content);
         this.mIdGSX = idGSX;
         this.mPriorityGSX = priorityGSX;
