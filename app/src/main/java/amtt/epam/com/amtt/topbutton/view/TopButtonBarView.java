@@ -159,7 +159,7 @@ public class TopButtonBarView extends FrameLayout {
                         Executors.newSingleThreadScheduledExecutor();
                 Runnable task = new Runnable() {
                     public void run() {
-                        StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), null);
+                        StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), null, null);
                     }
                 };
                 worker.schedule(task, 1, TimeUnit.SECONDS);

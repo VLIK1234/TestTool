@@ -27,6 +27,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
     public static final String LOG_FILE = "LOG_FILE";
     public static final String REQUEST_TAKE_SCREENSHOT = "REQUEST_TAKE_SCREENSHOT";
     public static final String SCREEN_PATH_KEY = "screenPath";
+    public static final String LIST_FRAGMENTS_KEY = "listFragments";
     public static final String FILE_PATH_KEY = "filePath";
     public static final String EXCEPTION_ANSWER = "EXCEPTION_ANSWER";
     public static final String ANSWER_EXCEPTION_KEY = "answer";
@@ -49,12 +50,13 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                 Bundle extrasScreenshot = intent.getExtras();
                 if (extrasScreenshot!=null) {
                     final String screenPath = extrasScreenshot.getString(SCREEN_PATH_KEY);
-                    if (screenPath!=null) {
+                    final String listFragments = extrasScreenshot.getString(LIST_FRAGMENTS_KEY);
+                    if (screenPath!=null&&listFragments!=null) {
                         if (isStepWithoutActivityInfo) {
                             isStepWithoutActivityInfo = false;
                             StepUtil.savePureScreenshot(screenPath);
                         } else {
-                            StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), screenPath);
+                            StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), screenPath, listFragments);
                         }
                         TopButtonService.sendActionChangeTopButtonVisibility(true);
                         Toast.makeText(context, "Create screenshot in "+screenPath, Toast.LENGTH_LONG).show();break;

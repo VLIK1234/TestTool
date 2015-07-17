@@ -33,13 +33,13 @@ import amtt.epam.com.amtt.util.IOUtils;
  */
 public class StepUtil {
 
-    public static void saveStep(ComponentName componentName, String mScreenPath) {
-        Step step = new Step(componentName, mScreenPath);
+    public static void saveStep(ComponentName componentName, String mScreenPath, String listFragments) {
+        Step step = new Step(componentName, mScreenPath, listFragments);
         DbObjectManager.INSTANCE.add(step, null);
     }
 
     public static void savePureScreenshot(String mScreenPath) {
-        Step step = new Step(null, mScreenPath);
+        Step step = new Step(null, mScreenPath, null);
         DbObjectManager.INSTANCE.add(step, null);
     }
 
@@ -85,6 +85,7 @@ public class StepUtil {
         Context context = AmttApplication.getContext();
         return Html.fromHtml(
                 "<b>" + context.getString(R.string.label_activity) + "</b>" + "<small>" + step.getActivity() + "</small>" + "<br />" +
+                        "<b>" + context.getString(R.string.lable_list_fragments) + "</b>" + "<small>" + step.getListFragments() + "</small>" + "<br />" +
                         "<b>" + context.getString(R.string.label_screen_orientation) + "</b>" + "<small>" + step.getOrientation() + "</small>" + "<br />" +
                         "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>");
     }

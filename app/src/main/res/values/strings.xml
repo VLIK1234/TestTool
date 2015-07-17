@@ -155,5 +155,6 @@
     <string name="label_amtt_system_group_notification">Amtt_system</string>
     <string name="title_error_caught_notification">Application Crashed</string>
     <string name="text_caught_exception">Tap for create ticket</string>
+    <string name="lable_list_fragments">"Visible fragments: "</string>
 
 </resources>

@@ -21,12 +21,13 @@ import java.util.Date;
 public class ScreenshotHelper {
 
     public static final String REQUEST_TAKE_SCREENSHOT_ACTION = "REQUEST_TAKE_SCREENSHOT";
+    public static final String LIST_FRAGMENTS_KEY = "listFragments";
     private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.png";
     public static final String SCREENSHOT_DATETIME_FORMAT = "yyyy-MM-dd-HH-mm-ss";
     public static final String SCREEN_PATH_KEY = "screenPath";
     public static final int QUALITY_COMPRESS_SCREENSHOT = 90;
 
-    public static void takeScreenshot(Activity activity, Context context) {
+    public static void takeScreenshot(Context context, Activity activity, String listFragments) {
         long imageTime = System.currentTimeMillis();
         String imageDate = new SimpleDateFormat(SCREENSHOT_DATETIME_FORMAT).format(new Date(imageTime));
         String imageFileName = String.format(SCREENSHOT_FILE_NAME_TEMPLATE, imageDate);
@@ -57,6 +58,7 @@ public class ScreenshotHelper {
         Intent intent = new Intent();
         intent.setAction(REQUEST_TAKE_SCREENSHOT_ACTION);
         intent.putExtra(SCREEN_PATH_KEY, path);
+        intent.putExtra(LIST_FRAGMENTS_KEY, listFragments);
         context.sendBroadcast(intent);
     }
 }

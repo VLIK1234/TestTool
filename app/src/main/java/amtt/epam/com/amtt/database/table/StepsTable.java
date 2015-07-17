@@ -17,6 +17,7 @@ public class StepsTable extends Table {
     public static final String _SCREEN_PATH = "_screen_path";
     public static final String _SCREEN_STATE = "_screen_state"; //0 - is being written, 1 - written
     public static final String _ASSOCIATED_ACTIVITY = "_associated_activity";
+    public static final String _LIST_FRAGMENTS = "_list_fragments";
     public static final String _PACKAGE_NAME = "_package_name";
     public static final String _ORIENTATION = "_orientation";
 
@@ -27,6 +28,7 @@ public class StepsTable extends Table {
             _SCREEN_PATH,
             _SCREEN_STATE,
             _ASSOCIATED_ACTIVITY,
+            _LIST_FRAGMENTS,
             _PACKAGE_NAME,
             _ORIENTATION
     };
@@ -36,6 +38,7 @@ public class StepsTable extends Table {
         sColumnsMap.put(BaseColumns.TYPE_TEXT, new ArrayList<String>() {{
             add(_SCREEN_PATH);
             add(_ASSOCIATED_ACTIVITY);
+            add(_LIST_FRAGMENTS);
             add(_PACKAGE_NAME);
             add(_ORIENTATION);
         }});

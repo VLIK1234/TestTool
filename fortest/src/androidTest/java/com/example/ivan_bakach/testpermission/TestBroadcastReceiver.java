@@ -5,6 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +27,7 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
     public static final String TAKE_SCREEN_FAIL_VALUE = "Activity don't visible launch app and try again.";
     private boolean closeUnitTest;
     private Activity mActivity;
+    private String listFragments;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -40,7 +44,7 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                 break;
             case TAKE_SCREENSHOT:
                 if (mActivity!=null) {
-                    ScreenshotHelper.takeScreenshot(mActivity, context);
+                    ScreenshotHelper.takeScreenshot(context, mActivity, listFragments);
                 }else{
                     Intent failIntent = new Intent();
                     failIntent.setAction(ScreenshotHelper.REQUEST_TAKE_SCREENSHOT_ACTION);
@@ -53,6 +57,14 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
 
     public void setActivity(Activity activity){
         mActivity = activity;
+        listFragments = "";
+        if (activity!=null && activity instanceof FragmentActivity&&((FragmentActivity) activity).getSupportFragmentManager().getFragments()!=null) {
+            for(Fragment fragment : ((FragmentActivity) activity).getSupportFragmentManager().getFragments()) {
+                if (fragment.isVisible()) {
+                    listFragments += (fragment.getClass().getName()+"\n");
+                }
+            }
+        }
     }
 
     public boolean needCloseUnitTest() {
