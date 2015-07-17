@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
@@ -132,18 +133,28 @@ public class GoogleEntryWorksheet extends GoogleEntry<GoogleEntryWorksheet> {
         return nameAndId;
     }
 
-    public String getFullTestCaseDescription(String newSteps){
-        String fullDescription = getFullTestCaseDescription();
-
+    public SpannableStringBuilder getFullTestCaseDescription(Spanned newSteps){
+        SpannableStringBuilder fullDescription = new SpannableStringBuilder();
+        if (getFullTestCaseDescription() != null) {
+            fullDescription = getFullTestCaseDescription();
+        }
+        if(newSteps != null){
+            fullDescription.append(Html.fromHtml("</br>" + "</br>" + "<h5>" + "New steps : "
+                    + "<h5>" + "</br>" + newSteps));
+        }
         return fullDescription;
     }
-    public String getFullTestCaseDescription(){
+
+    public SpannableStringBuilder getFullTestCaseDescription(){
         Context context = AmttApplication.getContext();
         SpannableStringBuilder fullDescription = new SpannableStringBuilder();
         fullDescription.append(Html.fromHtml("<h5>" + context.getString(R.string.label_steps) + "</h5>"));
+        fullDescription.append(Html.fromHtml("</br>" + mTestStepsGSX + "</br>"));
+        fullDescription.append(Html.fromHtml("<h5>" + context.getString(R.string.label_description) + "</h5>"));
         fullDescription.append(Html.fromHtml("</br>" + mTestCaseDescriptionGSX + "</br>"));
-        fullDescription.append(Html.fromHtml("</br>" + mTestCaseDescriptionGSX + "</br>"));
-        return String.valueOf(fullDescription);
+        fullDescription.append(Html.fromHtml("<h5>" + context.getString(R.string.label_description) + "</h5>"));
+        fullDescription.append(Html.fromHtml("</br>" + mExpectedResultGSX + "</br>"));
+        return fullDescription;
     }
 
     public String getTestCaseDescriptionGSX() {

@@ -136,6 +136,9 @@ public class XMLContent {
     }
 
     public GoogleEntryWorksheet getLastTestcase(){
+        if(mLastTestcaseId != null){
+            setLastTestCase(getTestcaseByIdGSX(mLastTestcaseId));
+        }
         return mLastTestCase;
     }
 

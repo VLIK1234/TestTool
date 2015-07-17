@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -69,6 +70,7 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
         public TextView mTestcaseName;
         public TextView mPriority;
         public TextView mSteps;
+        public ImageButton mBugButton;
         private ClickListener mListener;
 
         public ViewHolder(View itemView) {
@@ -77,11 +79,14 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
             mTestcaseName = (TextView) itemView.findViewById(R.id.tv_testcase_name);
             mPriority = (TextView) itemView.findViewById(R.id.tv_priority);
             mSteps = (TextView) itemView.findViewById(R.id.tv_steps);
-            itemView.setOnClickListener(this);
+            mBugButton = (ImageButton) itemView.findViewById(R.id.btn_bug);
+            mBugButton.setOnClickListener(this);
+            itemView.findViewById(R.id.result_card).setOnClickListener(this);
         }
         public void setClickListener(ClickListener clickListener) {
             mListener = clickListener;
         }
+
         @Override
         public void onClick(View v) {
             if (mListener != null) {

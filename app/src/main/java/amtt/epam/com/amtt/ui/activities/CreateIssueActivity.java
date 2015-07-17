@@ -279,9 +279,17 @@ public class CreateIssueActivity extends BaseActivity
                             ArrayAdapter<String> mPrioritiesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, priorityNames);
                             mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                             prioritiesSpinner.setAdapter(mPrioritiesAdapter);
-                            String defaultPriority = JiraContent.getInstance().getPriorityNameById(DEFAULT_PRIORITY_ID);
-                            if (defaultPriority != null) {
-                                prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
+                            String defaultPriority;
+                            if (XMLContent.getInstance().getLastTestcase() != null) {
+                                defaultPriority = XMLContent.getInstance().getLastTestcase().getPriorityGSX();
+                                if (defaultPriority != null) {
+                                    prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
+                                }
+                            } else {
+                                defaultPriority = JiraContent.getInstance().getPriorityNameById(DEFAULT_PRIORITY_ID);
+                                if (defaultPriority != null) {
+                                    prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
+                                }
                             }
                             prioritiesSpinner.setEnabled(true);
                         }
