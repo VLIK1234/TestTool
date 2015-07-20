@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,13 +56,18 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
-    public void setActivity(Activity activity){
+    public Runnable setActivity(Activity activity){
         mActivity = activity;
         listFragments = "";
+        Log.d("TAG2", (activity!=null) +" activity!=null "+ (activity instanceof FragmentActivity) +" instanceof "+ (((FragmentActivity) activity).getSupportFragmentManager().getFragments()!=null)
+                +" fragments!=null ");
         if (activity!=null && activity instanceof FragmentActivity&&((FragmentActivity) activity).getSupportFragmentManager().getFragments()!=null) {
             for(Fragment fragment : ((FragmentActivity) activity).getSupportFragmentManager().getFragments()) {
-                if (fragment.isVisible()) {
-                    listFragments += (fragment.getClass().getName()+"\n");
+                Log.d("TAG2", fragment.isAdded() +" isAdded "+ !fragment.isHidden() +" isHidden "+ (fragment.getView() != null)
+                        +" view!=null "+ (fragment.getView().getWindowToken() != null) +" WindowToken!=null "+ (fragment.getView().getVisibility() == View.VISIBLE)+" visibility==VISIBLE ");
+                if (fragment.isAdded() && !fragment.isHidden() && fragment.getView() != null
+                        && fragment.getView().getVisibility() == View.VISIBLE) {
+                    listFragments += (fragment.getClass().getSimpleName()+"<br/>");
                 }
             }
         }

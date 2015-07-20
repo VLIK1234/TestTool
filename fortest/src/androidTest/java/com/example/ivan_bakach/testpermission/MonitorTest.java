@@ -69,12 +69,10 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
-
     }
 
     @Override
@@ -88,16 +86,13 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
 
     @Override
     public void onActivityStopped(Activity activity) {
-        receiver.setActivity(null);
     }
 
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
     }
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-
     }
 }

@@ -122,9 +122,10 @@ public class TopButtonService extends Service{
                     addView();
                     showNotification();
                     checkCountTestProject();
-                    TestUtil.runTests();
+                    TestUtil.restartTest();
                     break;
                 case ACTION_CLOSE:
+                    TestUtil.closeTest();
                     closeService();
                     break;
                 case ACTION_CHANGE_NOTIFICATION_BUTTON:

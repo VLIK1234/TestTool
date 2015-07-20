@@ -57,7 +57,7 @@ public class ScreenshotHelper {
         Intent intent = new Intent();
         intent.setAction(REQUEST_TAKE_SCREENSHOT_ACTION);
         intent.putExtra(SCREEN_PATH_KEY, path);
-        intent.putExtra(LIST_FRAGMENTS_KEY, listFragments);
+        intent.putExtra(LIST_FRAGMENTS_KEY, listFragments.substring(0,listFragments.lastIndexOf("<br/>")!=-1 ? listFragments.lastIndexOf("<br/>") : 0));
         context.sendBroadcast(intent);
     }
 }
