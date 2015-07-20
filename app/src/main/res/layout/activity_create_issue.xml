@@ -140,7 +140,8 @@
                 <CheckBox
                     android:id="@+id/cb_attach_logs"
                     style="@style/CreateIssueCheckBox"
-                    android:layout_below="@id/cb_gif_attachment"
+                    android:layout_toRightOf="@id/cb_gif_attachment"
+                    android:layout_toEndOf="@+id/cb_gif_attachment"
                     android:text="@string/label_attach_logs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>

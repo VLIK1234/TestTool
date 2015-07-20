@@ -10,27 +10,24 @@ import java.io.IOException;
  */
 public class LogManger {
 
+    public static final String AMTT_CACHE_DIRECTORY = "Amtt_cache";
     public static String sExceptionLog;
-    public static String sWarningLog;
     public static String sCommonLog;
+    public static final String LOGCAT_WRITE_IN_FILE = "logcat -f ";
+    public static final String EXCEPTION_FILTER = " *:e";
+    public static final String TEMPLATE_EXCEPION = "%s/log_exception.txt";
+    public static final String TEMPLATE_COMMON = "%s/log_common.txt";
 
     public static void writeMultipleLogs() {
-        String templateExcepion = "%s/log_exception.txt";
-        String templateWarning = "%s/log_warning.txt";
-        String templateCommon = "%s/log_common.txt";
-        File externalCache = new File(Environment.getExternalStorageDirectory(),"Amtt_cache");
+        File externalCache = new File(Environment.getExternalStorageDirectory(), AMTT_CACHE_DIRECTORY);
         externalCache.mkdirs();
-        sExceptionLog = String.format(templateExcepion, externalCache.getPath());
-        sWarningLog = String.format(templateWarning, externalCache.getPath());
-        sCommonLog = String.format(templateCommon, externalCache.getPath());
+        sExceptionLog = String.format(TEMPLATE_EXCEPION, externalCache.getPath());
+        sCommonLog = String.format(TEMPLATE_COMMON, externalCache.getPath());
         deleteFileIfExist(sExceptionLog);
-        deleteFileIfExist(sWarningLog);
         deleteFileIfExist(sCommonLog);
         try {
-            Runtime.getRuntime().exec("logcat -c");//clear log history
-            Runtime.getRuntime().exec("logcat -f " + sExceptionLog + " *:e");//write exception log
-            Runtime.getRuntime().exec("logcat -f " + sWarningLog + " *:w");//write exception and warning log
-            Runtime.getRuntime().exec("logcat -f " + sCommonLog);//write all log
+            Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sExceptionLog + EXCEPTION_FILTER);//write exception log
+            Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sCommonLog);//write all log
         } catch (IOException e) {
             e.printStackTrace();
         }

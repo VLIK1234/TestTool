@@ -67,6 +67,7 @@ import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.GifUtil;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.PreferenceUtil;
+import amtt.epam.com.amtt.util.TestUtil;
 import amtt.epam.com.amtt.util.Validator;
 
 
@@ -168,7 +169,7 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     private void setDefaultConfigs() {
-        if (mComponents.getSelectedItem() != null) {
+        if (mComponents!=null&&mComponents.getSelectedItem() != null) {
             String component = JiraContent.getInstance().getComponentIdByName((String) mComponents.getSelectedItem());
             ActiveUser.getInstance().setLastComponentsIds(component);
 
@@ -449,6 +450,7 @@ public class CreateIssueActivity extends BaseActivity
         mCreateIssueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TestUtil.restartTest();
                 if (!mTitleTextInput.validate()) {
                     mScrollView.smoothScrollTo(mTitlePoint[0], mTitlePoint[1]);
                     showKeyboard(mTitleTextInput.getEdit());
@@ -719,18 +721,14 @@ public class CreateIssueActivity extends BaseActivity
                     File externalCache = new File(Environment.getExternalStorageDirectory(), "Amtt_cache");
                     String template = externalCache.getPath() + "/%s";
                     String pathLogCommon = String.format(template, "log_common.txt");
-                    String pathLogWarning = String.format(template, "log_warning.txt");
                     String pathLogException = String.format(template, "log_exception.txt");
                     final File fileLogCommon = new File(pathLogCommon);
-                    final File fileLogWarning = new File(pathLogWarning);
                     final File fileLogException = new File(pathLogException);
                     final Attachment attachLogCommon = new Attachment(pathLogCommon);
-                    final Attachment attachLogWarning = new Attachment(pathLogWarning);
                     final Attachment attachLogException = new Attachment(pathLogException);
                     if (PreferenceUtil.getBoolean(getString(R.string.key_is_attach_logs))) {
-                        if (fileLogCommon.exists() && fileLogException.exists() && fileLogWarning.exists()) {
+                        if (fileLogCommon.exists() && fileLogException.exists()) {
                             screenArray.add(attachLogCommon);
-                            screenArray.add(attachLogWarning);
                             screenArray.add(attachLogException);
                         }
                     }

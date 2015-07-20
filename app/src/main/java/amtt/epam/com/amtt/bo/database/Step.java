@@ -27,6 +27,7 @@ public class Step extends DatabaseEntity<Step> {
 
     private int mStepNumber;
     private String mActivity;
+    private String mListFragments;
     private String mScreenPath;
     private String mPackageName;
     private String mOrientation;
@@ -40,8 +41,9 @@ public class Step extends DatabaseEntity<Step> {
         mStepNumber = stepNumber;
     }
 
-    public Step(ComponentName componentName, String screenPath) {
+    public Step(ComponentName componentName, String screenPath, String listFragments) {
         mScreenPath = screenPath;
+        mListFragments = listFragments;
         mOrientation = ActivityMetaUtil.getScreenOrientation(UIUtil.getOrientation());
         if (componentName != null) {
             mActivity = componentName.getClassName();
@@ -54,6 +56,7 @@ public class Step extends DatabaseEntity<Step> {
         super(cursor);
         mStepNumber = cursor.getInt(cursor.getColumnIndex(StepsTable._ID));
         mScreenPath = cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH));
+        mListFragments =  cursor.getString(cursor.getColumnIndex(StepsTable._LIST_FRAGMENTS));
         mActivity =  cursor.getString(cursor.getColumnIndex(StepsTable._ASSOCIATED_ACTIVITY));
         mPackageName = cursor.getString(cursor.getColumnIndex(StepsTable._PACKAGE_NAME));
         mOrientation =  cursor.getString(cursor.getColumnIndex(StepsTable._ORIENTATION));
@@ -83,6 +86,7 @@ public class Step extends DatabaseEntity<Step> {
         values.put(StepsTable._SCREEN_STATE, mScreenState.ordinal());
         if (isStepWithActivityInfo()) {
             values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity);
+            values.put(StepsTable._LIST_FRAGMENTS, mListFragments);
             values.put(StepsTable._PACKAGE_NAME, mPackageName);
         }
         return values;
@@ -90,6 +94,10 @@ public class Step extends DatabaseEntity<Step> {
 
     public String getActivity() {
         return mActivity;
+    }
+
+    public String getListFragments() {
+        return mListFragments;
     }
 
     public String getScreenshotPath() {

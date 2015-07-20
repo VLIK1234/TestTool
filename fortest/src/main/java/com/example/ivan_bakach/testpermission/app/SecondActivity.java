@@ -24,13 +24,13 @@ public class SecondActivity extends AppCompatActivity {
         mRuntest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getBaseContext(), "RuntimeException after 10 second", Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), "RuntimeException after 5 second", Toast.LENGTH_LONG).show();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         throw new RuntimeException("test exception");
                     }
-                }, 10000l);
+                }, 5000l);
             }
         });
     }
