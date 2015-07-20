@@ -145,7 +145,7 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 Intent intent = new Intent();
-                intent.setAction("TAKE_SCREENSHOT");
+                intent.setAction(getContext().getString(R.string.external_action_take_screenshot));
                 getContext().sendBroadcast(intent);
                 TopButtonService.sendActionChangeTopButtonVisibility(false);
                 mTopButtonListener.onTouch();
@@ -170,7 +170,7 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 Intent intent = new Intent();
-                intent.setAction("TAKE_SCREENSHOT");
+                intent.setAction(getContext().getString(R.string.external_action_take_screenshot));
                 getContext().sendBroadcast(intent);
                 TopButtonService.sendActionChangeTopButtonVisibility(false);
                 GlobalBroadcastReceiver.setStepWithoutActivityInfo(true);

@@ -46,13 +46,12 @@ public class ScreenshotHelper {
         try {
             fout = new FileOutputStream(imageFile);
             bitmap.compress(Bitmap.CompressFormat.PNG, QUALITY_COMPRESS_SCREENSHOT, fout);
-            fout.flush();
-            fout.close();
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            IOUtils.close(fout);
         }
 
         Intent intent = new Intent();

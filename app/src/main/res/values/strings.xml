@@ -156,5 +156,6 @@
     <string name="title_error_caught_notification">Application Crashed</string>
     <string name="text_caught_exception">Tap for create ticket</string>
     <string name="lable_list_fragments">"Visible fragments: "</string>
+    <string name="external_action_take_screenshot">TAKE_SCREENSHOT</string>
 
 </resources>
