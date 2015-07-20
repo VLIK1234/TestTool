@@ -67,7 +67,7 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
             public void run() {
                 if (activity!=null && activity instanceof FragmentActivity&&((FragmentActivity) activity).getSupportFragmentManager().getFragments()!=null) {
                     for(Fragment fragment : ((FragmentActivity) activity).getSupportFragmentManager().getFragments()) {
-                        if (fragment.isVisible()) {
+                        if (fragment.isVisible()&&fragment.getUserVisibleHint()&&fragment.getView()!=null&&fragment.getView().getParent()!=null&&!fragment.getView().getParent().isLayoutRequested()) {
                             listFragments += (fragment.getClass().getSimpleName()+"<br/>");
                         }
                     }
