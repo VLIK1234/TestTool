@@ -5,10 +5,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,21 +59,21 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
-    public Runnable setActivity(Activity activity){
+    public void setActivity(final Activity activity){
         mActivity = activity;
         listFragments = "";
-        Log.d("TAG2", (activity!=null) +" activity!=null "+ (activity instanceof FragmentActivity) +" instanceof "+ (((FragmentActivity) activity).getSupportFragmentManager().getFragments()!=null)
-                +" fragments!=null ");
-        if (activity!=null && activity instanceof FragmentActivity&&((FragmentActivity) activity).getSupportFragmentManager().getFragments()!=null) {
-            for(Fragment fragment : ((FragmentActivity) activity).getSupportFragmentManager().getFragments()) {
-                Log.d("TAG2", fragment.isAdded() +" isAdded "+ !fragment.isHidden() +" isHidden "+ (fragment.getView() != null)
-                        +" view!=null "+ (fragment.getView().getWindowToken() != null) +" WindowToken!=null "+ (fragment.getView().getVisibility() == View.VISIBLE)+" visibility==VISIBLE ");
-                if (fragment.isAdded() && !fragment.isHidden() && fragment.getView() != null
-                        && fragment.getView().getVisibility() == View.VISIBLE) {
-                    listFragments += (fragment.getClass().getSimpleName()+"<br/>");
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (activity!=null && activity instanceof FragmentActivity&&((FragmentActivity) activity).getSupportFragmentManager().getFragments()!=null) {
+                    for(Fragment fragment : ((FragmentActivity) activity).getSupportFragmentManager().getFragments()) {
+                        if (fragment.isVisible()) {
+                            listFragments += (fragment.getClass().getSimpleName()+"<br/>");
+                        }
+                    }
                 }
             }
-        }
+        }, 1000);
     }
 
     public boolean needCloseUnitTest() {
