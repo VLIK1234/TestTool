@@ -22,7 +22,7 @@ public class MultipleFragmentsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        RuntimeFragment runtimeFragment = new RuntimeFragment();
+        RuntimeFragment runtimeFragment = (RuntimeFragment)RuntimeFragment.newInstance();
         NullpointerFragment nullpointerFragment = new NullpointerFragment();
         InvisibleFragment invisibleFragment = new InvisibleFragment();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

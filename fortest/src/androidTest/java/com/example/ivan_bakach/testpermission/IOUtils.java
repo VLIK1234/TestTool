@@ -3,11 +3,11 @@ package com.example.ivan_bakach.testpermission;
 import android.util.Log;
 
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
-/**
- * Created by Artsiom_Kaliaha on 13.04.2015.
- */
 public class IOUtils {
 
     private static final String TAG = IOUtils.class.getSimpleName();
@@ -22,5 +22,16 @@ public class IOUtils {
                 }
             }
         }
+    }
+
+    public static FileOutputStream openFileOutput(String path, boolean isExists) throws FileNotFoundException {
+        FileOutputStream outputStream;
+        try {
+            outputStream = new FileOutputStream(path, isExists);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            outputStream = new FileOutputStream(path, false);
+        }
+        return outputStream;
     }
 }

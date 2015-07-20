@@ -38,4 +38,14 @@ public class RuntimeFragment extends Fragment {
         });
         return rootView;
     }
+
+    public static Fragment newInstance() {
+        RuntimeFragment runtimeFragment = new RuntimeFragment();
+        Bundle args = new Bundle();
+        args.putInt("int_key", 12345);
+        args.putString("String_key", "Hello");
+        args.putBoolean("boolean_key", false);
+        runtimeFragment.setArguments(args);
+        return runtimeFragment;
+    }
 }
