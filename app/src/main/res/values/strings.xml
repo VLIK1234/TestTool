@@ -152,5 +152,9 @@
     <string name="key_is_attach_logs">IS_ATTACH_LOGS</string>
     <string name="search_view_hint">Search</string>
     <string name="label_null_search_result">Nothing Found</string>
+    <string name="label_amtt_system_group_notification">Amtt_system</string>
+    <string name="title_error_caught_notification">Application Crashed</string>
+    <string name="text_caught_exception">Tap for create ticket</string>
+    <string name="lable_list_fragments">"Visible fragments: "</string>
 
 </resources>

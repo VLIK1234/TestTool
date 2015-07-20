@@ -5,6 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
+        applicationId "com.example.ivan_bakach.testpermission"
         minSdkVersion 14
         targetSdkVersion 22
         versionCode 1
@@ -15,6 +16,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    defaultConfig {
+        manifestPlaceholders = [ applicationTestid:getApplicationId()]
     }
     signingConfigs {
         debug {

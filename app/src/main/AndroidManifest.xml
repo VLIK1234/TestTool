@@ -79,12 +79,6 @@
             android:name=".ui.activities.AmttActivity"
             android:label="@string/title_activity_amtt" />
         <activity
-            android:name=".ui.activities.HelpDialogActivity"
-            android:excludeFromRecents="true"
-            android:label="@string/title_activity_help_dialog"
-            android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Panel" />
-        <activity
             android:name=".ui.activities.SettingActivity"
             android:label="@string/title_activity_settings"
             android:launchMode="singleInstance" />
@@ -111,8 +105,10 @@
             android:enabled="true"
             android:exported="true" >
             <intent-filter>
-                <action android:name="SHOW" />
+                <action android:name="REQUEST_TAKE_SCREENSHOT" />
                 <action android:name="LOG_FILE" />
+                <action android:name="EXCEPTION_ANSWER" />
+
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

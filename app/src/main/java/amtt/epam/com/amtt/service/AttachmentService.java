@@ -12,7 +12,7 @@ import java.util.List;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.helper.AttachNotificationHelper;
-import amtt.epam.com.amtt.observer.AmttFileObserver;
+import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.util.TestUtil;
 
@@ -86,8 +86,7 @@ public class AttachmentService extends Service {
                 public void resultOfDataLoading(Boolean result) {
                     AttachNotificationHelper.updateNotification(getBaseContext(),
                             AttachNotificationHelper.getFinalBuilder(getBaseContext(), issueKey, fileFullName.size()), notificationId);
-                    TestUtil.closeTest();
-                    AmttFileObserver.clearAttachments();
+                    FileUtil.deleteListFile(fileFullName);
                     stopSelf();
                 }
             });

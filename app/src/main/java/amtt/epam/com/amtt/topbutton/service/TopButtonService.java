@@ -5,24 +5,28 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.preference.ListPreference;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.io.File;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.helper.NotificationIdConstant;
 import amtt.epam.com.amtt.ui.activities.SettingActivity;
 import amtt.epam.com.amtt.database.util.StepUtil;
-import amtt.epam.com.amtt.observer.AmttFileObserver;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 import amtt.epam.com.amtt.util.TestUtil;
 
@@ -33,7 +37,6 @@ import amtt.epam.com.amtt.util.TestUtil;
 
 public class TopButtonService extends Service{
 
-    private static final String SCREENSHOTS_DIR_NAME = "Screenshots";
     private static final String TAG = "Log";
     public static final String ACTION_CLOSE = "amtt.epam.com.amtt.topbutton.service.CLOSE";
     public static final String ACTION_CHANGE_VISIBILITY_TOPBUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_VISIBILITY_TOPBUTTON";
@@ -45,10 +48,8 @@ public class TopButtonService extends Service{
     public static final String PATH_TO_SCREEENSHOT_KEY = "PATH_TO_SCREENSHOT";
     //don't use REQUEST_CODE = 0 - it's broke mActionNotificationCompat in notification for some device
     public static final int REQUEST_CODE = 1;
-    public static final int NOTIFICATION_ID = 7;
     //bellow field for cap code and will be delete after do work realization
     private static Context mContext;
-    private AmttFileObserver mFileObserver;
     private NotificationCompat.Action mActionNotificationCompat;
     private NotificationCompat.Builder mBuilderNotificationCompat;
     private static TopButtonView mTopButtonView;
@@ -107,10 +108,6 @@ public class TopButtonService extends Service{
         mYInitPosition = displayMetrics.heightPixels / 2;
         initLayoutParams();
         mTopButtonView = new TopButtonView(getBaseContext(), mLayoutParams);
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), SCREENSHOTS_DIR_NAME);
-        Log.d(TAG, file.getPath());
-        mFileObserver = new AmttFileObserver(file.getAbsolutePath());
-        mFileObserver.startWatching();
     }
 
     @Override
@@ -124,9 +121,10 @@ public class TopButtonService extends Service{
                 case ACTION_START:
                     addView();
                     showNotification();
+                    checkCountTestProject();
+                    TestUtil.runTests();
                     break;
                 case ACTION_CLOSE:
-                    mFileObserver.stopWatching();
                     closeService();
                     break;
                 case ACTION_CHANGE_NOTIFICATION_BUTTON:
@@ -190,7 +188,8 @@ public class TopButtonService extends Service{
                 .setContentTitle(getString(R.string.notification_title))
                 .setOngoing(true)
                 .setContentText(getString(R.string.notification_text))
-                .setContentIntent(PendingIntent.getActivity(getBaseContext(), NOTIFICATION_ID, new Intent(getBaseContext(), SettingActivity.class),PendingIntent.FLAG_CANCEL_CURRENT));
+                .setGroup(getString(R.string.label_amtt_system_group_notification))
+                .setContentIntent(PendingIntent.getActivity(getBaseContext(), NotificationIdConstant.MAIN_AMTT, new Intent(getBaseContext(), SettingActivity.class),PendingIntent.FLAG_CANCEL_CURRENT));
 
 
         mActionNotificationCompat = new NotificationCompat.Action(
@@ -203,15 +202,9 @@ public class TopButtonService extends Service{
                 getString(R.string.label_close),
                 PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE), PendingIntent.FLAG_CANCEL_CURRENT));
 
-        NotificationCompat.Action closeTest = new NotificationCompat.Action(
-                R.drawable.ic_close_test,
-                getString(R.string.label_close_test),
-                PendingIntent.getBroadcast(getBaseContext(), REQUEST_CODE, new Intent().setAction(TestUtil.CLOSE_TEST), PendingIntent.FLAG_CANCEL_CURRENT));
-
         mBuilderNotificationCompat.addAction(mActionNotificationCompat);
         mBuilderNotificationCompat.addAction(closeService);
-        mBuilderNotificationCompat.addAction(closeTest);
-        startForeground(NOTIFICATION_ID, mBuilderNotificationCompat.build());
+        startForeground(NotificationIdConstant.MAIN_AMTT, mBuilderNotificationCompat.build());
     }
 
     private void changeStateNotificationAction() {
@@ -221,12 +214,12 @@ public class TopButtonService extends Service{
             mTopButtonView.setVisibility(View.GONE);
             mActionNotificationCompat.icon = R.drawable.ic_stat_action_visibility;
             mActionNotificationCompat.title = getString(R.string.label_show);
-            notificationManager.notify(NOTIFICATION_ID, mBuilderNotificationCompat.build());
+            notificationManager.notify(NotificationIdConstant.MAIN_AMTT, mBuilderNotificationCompat.build());
         } else {
             mTopButtonView.setVisibility(View.VISIBLE);
             mActionNotificationCompat.icon = R.drawable.ic_stat_action_visibility_off;
             mActionNotificationCompat.title = getString(R.string.label_hide);
-            notificationManager.notify(NOTIFICATION_ID, mBuilderNotificationCompat.build());
+            notificationManager.notify(NotificationIdConstant.MAIN_AMTT, mBuilderNotificationCompat.build());
         }
     }
 
@@ -245,5 +238,14 @@ public class TopButtonService extends Service{
     private void stopRecord(){
         mTopButtonView.getButtonsBar().setIsRecordStarted(false);
         StepUtil.clearAllSteps();
+    }
+
+    private void checkCountTestProject() {
+        if (TestUtil.getTestedApps().length>1) {
+            Intent intent = new Intent(this, SettingActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            Toast.makeText(getBaseContext(), "Please choose tested project",Toast.LENGTH_LONG).show();
+        }
     }
 }

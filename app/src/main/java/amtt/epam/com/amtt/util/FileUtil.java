@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.util;
 import android.support.annotation.Nullable;
 
 import java.io.File;
+import java.util.List;
 
 import amtt.epam.com.amtt.http.MimeType;
 /**
@@ -45,4 +46,12 @@ public class FileUtil {
         return file.delete();
     }
 
+    public static boolean deleteListFile(List<String> listFile){
+        boolean resultDelete = false;
+
+        for (String file:listFile) {
+            resultDelete = delete(file);
+        }
+        return resultDelete;
+    }
 }

@@ -1,8 +1,10 @@
 package com.example.ivan_bakach.testpermission;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.test.InstrumentationTestRunner;
 import android.test.InstrumentationTestSuite;
+import android.util.Log;
 
 import junit.framework.TestSuite;
 
