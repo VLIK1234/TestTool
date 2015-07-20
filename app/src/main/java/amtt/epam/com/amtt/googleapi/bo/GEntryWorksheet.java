@@ -139,8 +139,9 @@ public class GEntryWorksheet extends GEntry<GEntryWorksheet> {
             fullDescription = getFullTestCaseDescription();
         }
         if(newSteps != null){
-            fullDescription.append(Html.fromHtml("</br>" + "</br>" + "<h5>" + "New steps : "
-                    + "<h5>" + "</br>" + newSteps));
+            fullDescription.append(Html.fromHtml("<br/>" + "<br/>" + "<h5>" + "New steps : "
+                    + "</h5>"));
+            fullDescription.append(newSteps);
         }
         return fullDescription;
     }
@@ -149,11 +150,11 @@ public class GEntryWorksheet extends GEntry<GEntryWorksheet> {
         Context context = AmttApplication.getContext();
         SpannableStringBuilder fullDescription = new SpannableStringBuilder();
         fullDescription.append(Html.fromHtml("<h5>" + context.getString(R.string.label_steps) + "</h5>"));
-        fullDescription.append(Html.fromHtml("</br>" + mTestStepsGSX + "</br>"));
-        fullDescription.append(Html.fromHtml("<h5>" + context.getString(R.string.label_description) + "</h5>"));
-        fullDescription.append(Html.fromHtml("</br>" + mTestCaseDescriptionGSX + "</br>"));
-        fullDescription.append(Html.fromHtml("<h5>" + context.getString(R.string.label_description) + "</h5>"));
-        fullDescription.append(Html.fromHtml("</br>" + mExpectedResultGSX + "</br>"));
+        fullDescription.append(Html.fromHtml(mTestStepsGSX));
+        fullDescription.append(Html.fromHtml("<br/>"+"<h5>" + context.getString(R.string.label_description) + "</h5>"));
+        fullDescription.append(Html.fromHtml(mTestCaseDescriptionGSX));
+        fullDescription.append(Html.fromHtml("<br/>"+"<h5>" + context.getString(R.string.label_expected_result) + "</h5>"));
+        fullDescription.append(Html.fromHtml(mExpectedResultGSX));
         return fullDescription;
     }
 

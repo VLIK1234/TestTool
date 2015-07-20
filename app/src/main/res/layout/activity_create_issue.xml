@@ -60,8 +60,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
-                android:layout_marginLeft="@dimen/material_vertical_size_divider"
-                android:layout_marginRight="@dimen/material_vertical_size_divider"
                 android:hint="@string/label_summary"
                 android:inputType="textMultiLine" />
 
@@ -173,8 +171,6 @@
                 android:id="@+id/environment_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/material_vertical_size_divider"
-                android:layout_marginRight="@dimen/material_vertical_size_divider"
                 android:layout_marginTop="@dimen/material_vertical_size_divider"
                 android:hint="@string/label_environment"
                 android:inputType="textMultiLine" />
@@ -193,8 +189,6 @@
                 android:id="@+id/description_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/material_vertical_size_divider"
-                android:layout_marginRight="@dimen/material_vertical_size_divider"
                 android:hint="@string/label_description"
                 android:inputType="textMultiLine" />
 
