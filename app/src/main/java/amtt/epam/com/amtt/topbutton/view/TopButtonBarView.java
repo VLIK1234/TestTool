@@ -41,6 +41,7 @@ import amtt.epam.com.amtt.util.UIUtil;
 @SuppressLint("ViewConstructor")
 public class TopButtonBarView extends FrameLayout {
 
+    public static final String EXTERANL_ACTION_TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
     private final WindowManager mWindowManager;
     private static boolean isRecordStarted;
     private static boolean isShowAction;
@@ -145,7 +146,7 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 Intent intent = new Intent();
-                intent.setAction(getContext().getString(R.string.external_action_take_screenshot));
+                intent.setAction(EXTERANL_ACTION_TAKE_SCREENSHOT);
                 getContext().sendBroadcast(intent);
                 TopButtonService.sendActionChangeTopButtonVisibility(false);
                 mTopButtonListener.onTouch();
@@ -170,7 +171,7 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 Intent intent = new Intent();
-                intent.setAction(getContext().getString(R.string.external_action_take_screenshot));
+                intent.setAction(EXTERANL_ACTION_TAKE_SCREENSHOT);
                 getContext().sendBroadcast(intent);
                 TopButtonService.sendActionChangeTopButtonVisibility(false);
                 GlobalBroadcastReceiver.setStepWithoutActivityInfo(true);
