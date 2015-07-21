@@ -35,13 +35,13 @@ import amtt.epam.com.amtt.util.IOUtils;
  */
 public class StepUtil {
 
-    public static void saveStep(ComponentName componentName, String mScreenPath, String listFragments) {
-        Step step = new Step(componentName, mScreenPath, listFragments);
+    public static void saveStep(String activityClassName, String packageName, String mScreenPath, String listFragments) {
+        Step step = new Step(activityClassName, packageName, mScreenPath, listFragments);
         DbObjectManager.INSTANCE.add(step, null);
     }
 
     public static void savePureScreenshot(String mScreenPath) {
-        Step step = new Step(null, mScreenPath, null);
+        Step step = new Step(null, null, mScreenPath, null);
         DbObjectManager.INSTANCE.add(step, null);
     }
 

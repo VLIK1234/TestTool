@@ -26,6 +26,8 @@ public class ScreenshotHelper {
     public static final String SCREENSHOT_DATETIME_FORMAT = "yyyy-MM-dd-HH-mm-ss";
     public static final String SCREEN_PATH_KEY = "screenPath";
     public static final int QUALITY_COMPRESS_SCREENSHOT = 90;
+    public static final String ACTIVITY_CLASS_NAME_KEY = "activityClassName";
+    public static final String PACKAGE_NAME_KEY = "packageName";
 
     public static void takeScreenshot(Context context, Activity activity, String listFragments) {
         long imageTime = System.currentTimeMillis();
@@ -57,7 +59,9 @@ public class ScreenshotHelper {
         Intent intent = new Intent();
         intent.setAction(REQUEST_TAKE_SCREENSHOT_ACTION);
         intent.putExtra(SCREEN_PATH_KEY, path);
-        intent.putExtra(LIST_FRAGMENTS_KEY, listFragments.substring(0,listFragments.lastIndexOf("<br/>")!=-1 ? listFragments.lastIndexOf("<br/>") : 0));
+        intent.putExtra(LIST_FRAGMENTS_KEY, listFragments.substring(0, listFragments.lastIndexOf("<br/>") != -1 ? listFragments.lastIndexOf("<br/>") : 0));
+        intent.putExtra(ACTIVITY_CLASS_NAME_KEY, activity.getClass().getName());
+        intent.putExtra(PACKAGE_NAME_KEY, activity.getPackageName());
         context.sendBroadcast(intent);
     }
 }

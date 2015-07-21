@@ -41,14 +41,12 @@ public class Step extends DatabaseEntity<Step> {
         mStepNumber = stepNumber;
     }
 
-    public Step(ComponentName componentName, String screenPath, String listFragments) {
+    public Step(String activityClassName, String packageName, String screenPath, String listFragments) {
         mScreenPath = screenPath;
         mListFragments = listFragments;
         mOrientation = ActivityMetaUtil.getScreenOrientation(UIUtil.getOrientation());
-        if (componentName != null) {
-            mActivity = componentName.getClassName();
-            mPackageName = componentName.getPackageName();
-        }
+        mActivity = activityClassName;
+        mPackageName = packageName;
         mScreenState = ScreenshotState.WRITTEN;
     }
 

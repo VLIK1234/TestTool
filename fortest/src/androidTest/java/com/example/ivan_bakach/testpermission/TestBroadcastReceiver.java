@@ -21,6 +21,8 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
     public static final String TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
     public static final String PING_ANSWER_VALUE = "Success answer";
     public static final String TAKE_SCREEN_FAIL_KEY = "failScreen";
+    public static final String ACTIVITY_CLASS_NAME_KEY = "activityClassName";
+    public static final String PACKAGE_NAME_KEY = "packageName";
     public static final String TAKE_SCREEN_FAIL_VALUE = "Activity don't visible launch app and try again.";
     public static final String LIST_FRAGMENTS_KEY = "listFragments";
     public static final String TAKE_ONLY_INFO = "TAKE_ONLY_INFO";
@@ -64,6 +66,8 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                     Intent intentTakeOnlyInfo = new Intent();
                     intentTakeOnlyInfo.setAction(REQUEST_TAKE_ONLY_INFO);
                     intentTakeOnlyInfo.putExtra(LIST_FRAGMENTS_KEY, sListFragments.substring(0, sListFragments.lastIndexOf("<br/>") != -1 ? sListFragments.lastIndexOf("<br/>") : 0));
+                    intentTakeOnlyInfo.putExtra(ACTIVITY_CLASS_NAME_KEY, mActivity.getClass().getName());
+                    intentTakeOnlyInfo.putExtra(PACKAGE_NAME_KEY, mActivity.getPackageName());
                     context.sendBroadcast(intentTakeOnlyInfo);
                     LogManger.writeArgumentsFromFragments(sCurrentArguments);
                 } else {

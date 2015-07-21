@@ -156,8 +156,6 @@ public class TopButtonBarView extends FrameLayout {
         mButtonStepWithoutScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_without_screen), R.drawable.background_step_without_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_added_step_without_screen), Toast.LENGTH_LONG).show();
-
                 Intent intent = new Intent();
                 intent.setAction(TAKE_ONLY_INFO);
                 getContext().sendBroadcast(intent);
