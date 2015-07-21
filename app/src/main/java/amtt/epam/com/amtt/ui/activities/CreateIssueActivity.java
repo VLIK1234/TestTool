@@ -807,7 +807,10 @@ public class CreateIssueActivity extends BaseActivity
     @Override
     public void onItemShow(int position) {
         Intent intent = null;
-        String filePath = mAdapter.getAttachmentFilePathList().get(position);
+        String filePath = "";
+        if (mAdapter!=null&&mAdapter.getAttachmentFilePathList()!=null&&mAdapter.getAttachmentFilePathList().size() > position) {
+            filePath = mAdapter.getAttachmentFilePathList().get(position);
+        }
 
         if (filePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
                 filePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
@@ -825,8 +828,11 @@ public class CreateIssueActivity extends BaseActivity
             intent.setAction(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.parse("file:///" + filePath), MimeType.IMAGE_GIF.getType());
         }
-        if (intent != null) {
-            startActivity(intent);
+
+        if("".equals(filePath)){
+            if (intent != null) {
+                startActivity(intent);
+            }
         }
     }
 

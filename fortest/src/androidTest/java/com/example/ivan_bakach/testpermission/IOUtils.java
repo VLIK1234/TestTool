@@ -34,4 +34,11 @@ public class IOUtils {
         }
         return outputStream;
     }
+
+    public static void deleteFileIfExist(String filePath) {
+        File myFile = new File(filePath);
+        if (myFile.exists()) {
+            myFile.delete();
+        }
+    }
 }

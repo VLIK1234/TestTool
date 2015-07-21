@@ -40,7 +40,7 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
                 Log.e(thread.getName(), ex.toString());
-                LogManger.writeArgumentsFromFragments(TestBroadcastReceiver.sCurrentArguments);
+                FragmentInfoHelper.writeArgumentsFromFragments(FragmentInfoHelper.sCurrentArguments);
                 Intent intent = new Intent();
                 intent.setAction(EXCEPTION_ANSWER_ACTION);
                 intent.putExtra(EXCEPTION_ANSWER_KEY, ex.getClass().getName());

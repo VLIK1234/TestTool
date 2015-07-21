@@ -59,6 +59,8 @@ public class TestUtil {
                 Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
             } catch (NullPointerException e) {
                 Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
+            } catch (ClassCastException e){
+                Log.e(TAG, "Failed to load meta-data, ClassCastException: " + e.getMessage());
             }
         }
         return res.toArray(new String[res.size()]);

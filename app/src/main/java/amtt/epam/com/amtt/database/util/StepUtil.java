@@ -130,9 +130,11 @@ public class StepUtil {
     public static void removeAllAttachFile(){
         File folderPath = new File(Environment.getExternalStorageDirectory(), "Amtt_cache");
         File[] allAttachFile = folderPath.listFiles();
-        for (File file : allAttachFile) {
-            if (file.exists()) {
-                FileUtil.delete(file.getPath());
+        if (allAttachFile!=null) {
+            for (File file : allAttachFile) {
+                if (file.exists()) {
+                    FileUtil.delete(file.getPath());
+                }
             }
         }
     }

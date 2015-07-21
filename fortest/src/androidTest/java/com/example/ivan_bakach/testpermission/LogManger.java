@@ -29,40 +29,12 @@ public class LogManger {
         sArgumentsFragments = String.format(TEMPLATE_ARGUMENTS_FRAGMENTS, EXTERNAL_CACHE.getPath());
         sExceptionLog = String.format(TEMPLATE_EXCEPION, EXTERNAL_CACHE.getPath());
         sCommonLog = String.format(TEMPLATE_COMMON, EXTERNAL_CACHE.getPath());
-        deleteFileIfExist(sArgumentsFragments);
-        deleteFileIfExist(sExceptionLog);
-        deleteFileIfExist(sCommonLog);
+        IOUtils.deleteFileIfExist(sArgumentsFragments);
+        IOUtils.deleteFileIfExist(sExceptionLog);
+        IOUtils.deleteFileIfExist(sCommonLog);
         try {
             Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sExceptionLog + EXCEPTION_FILTER);//write exception log
             Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sCommonLog);//write all log
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void deleteFileIfExist(String filePath) {
-        File myFile = new File(filePath);
-        if (myFile.exists()) {
-            myFile.delete();
-        }
-    }
-
-    public static String getArgumentsFromFragments(Bundle bundleArguments){
-        String intDateArguments = bundleArguments.toString().replace("Bundle", "");//clean
-        String[] argumentsArray = intDateArguments.split(",");
-        StringBuilder builder = new StringBuilder();
-        for (String item:argumentsArray) {
-            builder.append(item).append("\n");
-        }
-        return builder.toString();
-    }
-
-    public static void writeArgumentsFromFragments(String arguments){
-        try {
-            FileOutputStream argumentsFile = IOUtils.openFileOutput(sArgumentsFragments);
-            argumentsFile.write(arguments.getBytes());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

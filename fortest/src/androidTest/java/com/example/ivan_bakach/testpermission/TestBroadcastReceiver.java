@@ -4,10 +4,6 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 
 /**
  * Created by Ivan_Bakach on 29.06.2015.
@@ -27,10 +23,8 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
     public static final String LIST_FRAGMENTS_KEY = "listFragments";
     public static final String TAKE_ONLY_INFO = "TAKE_ONLY_INFO";
     public static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
-    private boolean closeUnitTest;
-    private Activity mActivity;
-    private static String sListFragments;
-    public static String sCurrentArguments;
+    private boolean mCloseUnitTest;
+    public Activity mActivity;
 
     TestBroadcastReceiver() {
 
@@ -45,15 +39,15 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                 context.sendBroadcast(in);
                 break;
             case CLOSE_TEST:
-                LogManger.deleteFileIfExist(LogManger.sArgumentsFragments);
-                LogManger.deleteFileIfExist(LogManger.sExceptionLog);
-                LogManger.deleteFileIfExist(LogManger.sCommonLog);
-                closeUnitTest = true;
+                IOUtils.deleteFileIfExist(LogManger.sArgumentsFragments);
+                IOUtils.deleteFileIfExist(LogManger.sExceptionLog);
+                IOUtils.deleteFileIfExist(LogManger.sCommonLog);
+                mCloseUnitTest = true;
                 break;
             case TAKE_SCREENSHOT:
                 if (mActivity != null) {
-                    ScreenshotHelper.takeScreenshot(context, mActivity, sListFragments);
-                    LogManger.writeArgumentsFromFragments(sCurrentArguments);
+                    ScreenshotHelper.takeScreenshot(context, mActivity, FragmentInfoHelper.sListFragments);
+                    FragmentInfoHelper.writeArgumentsFromFragments(FragmentInfoHelper.sCurrentArguments);
                 } else {
                     Intent failIntent = new Intent();
                     failIntent.setAction(ScreenshotHelper.REQUEST_TAKE_SCREENSHOT_ACTION);
@@ -65,11 +59,12 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                 if (mActivity != null) {
                     Intent intentTakeOnlyInfo = new Intent();
                     intentTakeOnlyInfo.setAction(REQUEST_TAKE_ONLY_INFO);
-                    intentTakeOnlyInfo.putExtra(LIST_FRAGMENTS_KEY, sListFragments.substring(0, sListFragments.lastIndexOf("<br/>") != -1 ? sListFragments.lastIndexOf("<br/>") : 0));
+                    intentTakeOnlyInfo.putExtra(LIST_FRAGMENTS_KEY,
+                            FragmentInfoHelper.sListFragments.substring(0, FragmentInfoHelper.sListFragments.lastIndexOf("<br/>") != -1 ? FragmentInfoHelper.sListFragments.lastIndexOf("<br/>") : 0));
                     intentTakeOnlyInfo.putExtra(ACTIVITY_CLASS_NAME_KEY, mActivity.getClass().getName());
                     intentTakeOnlyInfo.putExtra(PACKAGE_NAME_KEY, mActivity.getPackageName());
                     context.sendBroadcast(intentTakeOnlyInfo);
-                    LogManger.writeArgumentsFromFragments(sCurrentArguments);
+                    FragmentInfoHelper.writeArgumentsFromFragments(FragmentInfoHelper.sCurrentArguments);
                 } else {
                     Intent failIntent = new Intent();
                     failIntent.setAction(ScreenshotHelper.REQUEST_TAKE_SCREENSHOT_ACTION);
@@ -80,33 +75,16 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
-    public void setActivity(final Activity activity) {
+    public void setActivity(Activity activity) {
         mActivity = activity;
-        sListFragments = "";
-        sCurrentArguments = "";
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (activity != null && activity instanceof FragmentActivity && ((FragmentActivity) activity).getSupportFragmentManager().getFragments() != null) {
-                    for (Fragment fragment : ((FragmentActivity) activity).getSupportFragmentManager().getFragments()) {
-                        if (fragment.isVisible() && fragment.getUserVisibleHint() && fragment.getView() != null && fragment.getView().getParent() != null && !fragment.getView().getParent().isLayoutRequested()) {
-                            Bundle bundleArguments = fragment.getArguments();
-                            if (bundleArguments != null) {
-                                sCurrentArguments = fragment.getClass().getSimpleName() + "\n" + LogManger.getArgumentsFromFragments(bundleArguments);
-                            }
-                            sListFragments += (fragment.getClass().getSimpleName() + "<br/>");
-                        }
-                    }
-                }
-            }
-        }, 1000);
+        FragmentInfoHelper.getFragmentsInfo(activity);
     }
 
     public boolean needCloseUnitTest() {
-        return closeUnitTest;
+        return mCloseUnitTest;
     }
 
     public void setCloseUnitTest(boolean value) {
-        closeUnitTest = value;
+        mCloseUnitTest = value;
     }
 }

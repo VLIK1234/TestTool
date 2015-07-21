@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import java.io.File;
 
+import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.helper.NotificationIdConstant;
 import amtt.epam.com.amtt.ui.activities.SettingActivity;
@@ -49,7 +50,6 @@ public class TopButtonService extends Service{
     //don't use REQUEST_CODE = 0 - it's broke mActionNotificationCompat in notification for some device
     public static final int REQUEST_CODE = 1;
     //bellow field for cap code and will be delete after do work realization
-    private static Context mContext;
     private NotificationCompat.Action mActionNotificationCompat;
     private NotificationCompat.Builder mBuilderNotificationCompat;
     private static TopButtonView mTopButtonView;
@@ -69,16 +69,17 @@ public class TopButtonService extends Service{
     }
 
     private static void sendActionChangeNotificationButton() {
-        Intent intentHideView = new Intent(mContext, TopButtonService.class).setAction(TopButtonService.ACTION_CHANGE_NOTIFICATION_BUTTON);
+        Intent intentHideView = new Intent(AmttApplication.getContext(), TopButtonService.class).setAction(TopButtonService.ACTION_CHANGE_NOTIFICATION_BUTTON);
         intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        mContext.getApplicationContext().startService(intentHideView);
+        AmttApplication.getContext().startService(intentHideView);
     }
 
     public static void sendActionChangeTopButtonVisibility(boolean visible) {
-        Intent intentHideView = new Intent(mContext, TopButtonService.class).setAction(TopButtonService.ACTION_CHANGE_VISIBILITY_TOPBUTTON);
+        Intent intentHideView = new Intent(AmttApplication.getContext(), TopButtonService.class);
+        intentHideView.setAction(TopButtonService.ACTION_CHANGE_VISIBILITY_TOPBUTTON);
         intentHideView.putExtra(VISIBILITY_TOP_BUTTON, visible);
         intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        mContext.getApplicationContext().startService(intentHideView);
+        AmttApplication.getContext().startService(intentHideView);
     }
 
     public static void start(Context context) {
@@ -101,7 +102,6 @@ public class TopButtonService extends Service{
     @Override
     public void onCreate() {
         super.onCreate();
-        mContext = getBaseContext();
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
         mXInitPosition = displayMetrics.widthPixels / 2;
