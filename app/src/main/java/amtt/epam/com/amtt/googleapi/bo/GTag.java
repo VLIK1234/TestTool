@@ -49,6 +49,14 @@ public class GTag extends DatabaseEntity<GTag>{
         this.mName = name;
     }
 
+    public String getIdLinkTestCase() {
+        return mIdLinkTestCase;
+    }
+
+    public void setIdLinkTestCase(String idLinkTestCase) {
+        this.mIdLinkTestCase = idLinkTestCase;
+    }
+
     @Override
     public int getId() {
         return mId;

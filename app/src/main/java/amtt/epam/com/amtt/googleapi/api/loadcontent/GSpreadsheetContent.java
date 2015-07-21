@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.googleapi.api.loadcontent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.api.ContentConst;
@@ -8,6 +9,7 @@ import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
+import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
 import amtt.epam.com.amtt.util.ActiveUser;
 
@@ -21,6 +23,7 @@ public class GSpreadsheetContent {
     private GWorksheet mWorksheet;
     private GEntryWorksheet mLastTestCase;
     private String mLastTestcaseId;
+    private List<GTag> mTags;
 
     private static class XMLContentHolder {
         public static final GSpreadsheetContent INSTANCE = new GSpreadsheetContent();
@@ -153,4 +156,36 @@ public class GSpreadsheetContent {
     public void setLastTestcaseId(String lastTestcaseId) {
         this.mLastTestcaseId = lastTestcaseId;
     }
+
+    public List<GTag> getTags() {
+        return mTags;
+    }
+
+    public void setTags(List<GTag> tags) {
+        this.mTags = tags;
+    }
+
+    public void setTag(GTag tag) {
+        if (mTags == null) {
+            mTags = new ArrayList<>();
+        }
+        if (tag != null) {
+
+            mTags.add(tag);
+        }
+    }
+
+    public void setTag(String testCaseName, String testCaseIdLink) {
+        if (testCaseName != null && testCaseIdLink != null) {
+            GTag gTag;
+            String[] tags = testCaseName.split(" - ");
+            for (String tag : tags) {
+                gTag = new GTag();
+                gTag.setName(tag);
+                gTag.setIdLinkTestCase(testCaseIdLink);
+                setTag(gTag);
+            }
+        }
+    }
+
 }
