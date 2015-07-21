@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.googleapi.api.loadcontent;
 
 import java.util.List;
 
+import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
@@ -44,6 +45,10 @@ public class ContentFromDatabase {
         DbObjectManager.INSTANCE.query(new GWorksheet(), null, new String[]{WorksheetTable._SPREADSHEET_ID_LINK}, new String[]{spreadsheetIdLink}, result);
     }
 
+    public static void getWorksheet(String worksheetIdLink, IResult<List<GWorksheet>> result) {
+        DbObjectManager.INSTANCE.query(new GWorksheet(), null, new String[]{WorksheetTable._WORKSHEET_ID_LINK}, new String[]{worksheetIdLink}, result);
+    }
+
     public static void setTestCase(GEntryWorksheet testCase, IResult<Integer> result) {
         DbObjectManager.INSTANCE.add(testCase, result);
     }
@@ -55,5 +60,9 @@ public class ContentFromDatabase {
 
     public static void getTestCases(String worksheetIdLink, IResult<List<GEntryWorksheet>> result) {
         DbObjectManager.INSTANCE.query(new GEntryWorksheet(), null, new String[]{TestcaseTable._WORKSHEET_ID_LINK}, new String[]{worksheetIdLink}, result);
+    }
+
+    public static void updateWorksheet(GWorksheet worksheet, IResult<Integer> result) {
+        DbObjectManager.INSTANCE.update(worksheet, BaseColumns._ID + "=" + worksheet.getId(), null, result);
     }
 }

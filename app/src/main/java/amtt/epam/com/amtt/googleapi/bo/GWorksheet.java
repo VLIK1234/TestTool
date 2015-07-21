@@ -18,7 +18,7 @@ import amtt.epam.com.amtt.googleapi.database.table.WorksheetTable;
 public class GWorksheet extends GSheet<GWorksheet> {
 
     private int mId;
-    private String mLabels;
+    private String mSpreadsheetIdLink;
     private List<GEntryWorksheet> mEntry;
 
     public GWorksheet() {
@@ -30,11 +30,11 @@ public class GWorksheet extends GSheet<GWorksheet> {
         }
         mId = cursor.getInt(cursor.getColumnIndex(WorksheetTable._ID));
         mIdLink = cursor.getString(cursor.getColumnIndex(WorksheetTable._WORKSHEET_ID_LINK));
+        mSpreadsheetIdLink = cursor.getString(cursor.getColumnIndex(WorksheetTable._SPREADSHEET_ID_LINK));
         mUpdated = cursor.getString(cursor.getColumnIndex(WorksheetTable._UPDATED));
         mTitle = cursor.getString(cursor.getColumnIndex(WorksheetTable._TITLE));
         mOpenSearchTotalResults = Integer.parseInt(cursor.getString(cursor.getColumnIndex(WorksheetTable._TOTAL_RESULTS)));
         mOpenSearchStartIndex = Integer.parseInt(cursor.getString(cursor.getColumnIndex(WorksheetTable._START_INDEX)));
-        mLabels = cursor.getString(cursor.getColumnIndex(WorksheetTable._LABELS));
     }
 
     @Override
@@ -70,6 +70,14 @@ public class GWorksheet extends GSheet<GWorksheet> {
         mEntry.add(googleEntryWorksheet);
     }
 
+    public String getSpreadsheetIdLink() {
+        return mSpreadsheetIdLink;
+    }
+
+    public void setSpreadsheetIdLink(String spreadsheetIdLink) {
+        mSpreadsheetIdLink = spreadsheetIdLink;
+    }
+
     @Override
     public int getId() {
         return mId;
@@ -84,11 +92,11 @@ public class GWorksheet extends GSheet<GWorksheet> {
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         values.put(WorksheetTable._WORKSHEET_ID_LINK, mIdLink);
+        values.put(WorksheetTable._SPREADSHEET_ID_LINK, mSpreadsheetIdLink);
         values.put(WorksheetTable._UPDATED, mUpdated);
         values.put(WorksheetTable._TITLE, mTitle);
         values.put(WorksheetTable._TOTAL_RESULTS, mOpenSearchTotalResults);
         values.put(WorksheetTable._START_INDEX, mOpenSearchStartIndex);
-        values.put(WorksheetTable._LABELS, mLabels);
         return values;
     }
 

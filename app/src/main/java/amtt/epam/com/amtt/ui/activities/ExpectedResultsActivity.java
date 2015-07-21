@@ -28,12 +28,14 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 public class ExpectedResultsActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, ExpectedResultsAdapter.ViewHolder.ClickListener {
 
+    //region Variables
     private static final int MESSAGE_REFRESH = 100;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ExpectedResultsHandler mHandler;
     private ExpectedResultsAdapter mResultsAdapter;
     private RecyclerView mRecyclerView;
     private Boolean mIsShowDetail = false;
+    //endregion
 
     @Override
     public void onShowCard(int position) {
@@ -116,6 +118,7 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
                     }
                 }
                 mSwipeRefreshLayout.setRefreshing(false);
+
             }
         });
     }

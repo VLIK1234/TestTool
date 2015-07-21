@@ -12,6 +12,7 @@ import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
 import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.Logger;
 
 /**
  * @author Iryna Monchanka
@@ -21,11 +22,13 @@ import amtt.epam.com.amtt.util.ActiveUser;
 public class GSpreadsheetContent {
 
     //region Variables
+    private final String TAG = this.getClass().getSimpleName();
     private GSpreadsheet mSpreadsheet;
     private GWorksheet mWorksheet;
     private GEntryWorksheet mLastTestCase;
     private String mLastTestcaseId;
     private List<GTag> mTags;
+    private List<GWorksheet> mWorksheetsList;
     //endregion
 
     private static class XMLContentHolder {
@@ -37,16 +40,16 @@ public class GSpreadsheetContent {
     }
 
     //region Spreadsheet
+    public void setSpreadsheet(GSpreadsheet spreadsheet) {
+        this.mSpreadsheet = spreadsheet;
+    }
+
     public void getSpreadsheet(final GetContentCallback<GSpreadsheet> getContentCallback) {
         if (mSpreadsheet != null) {
             getContentCallback.resultOfDataLoading(mSpreadsheet);
         } else {
             getSpreadsheetSynchronously(getContentCallback);
         }
-    }
-
-    public void setSpreadsheet(GSpreadsheet spreadsheet) {
-        this.mSpreadsheet = spreadsheet;
     }
 
     private void getSpreadsheetSynchronously(final GetContentCallback<GSpreadsheet> getContentCallback) {
@@ -80,7 +83,39 @@ public class GSpreadsheetContent {
                 if (tag == ContentConst.SPREADSHEET_RESPONSE) {
                     if (contentCallback != null) {
                         if (result != null) {
-                            GSpreadsheetContent.getInstance().setSpreadsheet(result);
+                            setSpreadsheet(result);
+                            mWorksheetsList = new ArrayList<>();
+                            GWorksheet worksheet;
+                            for (int i = 0; i < result.getEntry().size(); i++) {
+                                worksheet = new GWorksheet();
+                                worksheet.setSpreadsheetIdLink(result.getIdLink());
+                                worksheet.setIdLink(result.getEntry().get(i).getListFeedLink().getHref());
+                                worksheet.setTitle(result.getEntry().get(i).getTitle());
+                                worksheet.setUpdated(result.getEntry().get(i).getUpdated());
+                                mWorksheetsList.add(worksheet);
+                            }
+                            ContentFromDatabase.setWorksheets(mWorksheetsList, new IResult<Integer>() {
+                                @Override
+                                public void onResult(Integer result) {
+                                    Logger.i(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + ", Worksheets " + String.valueOf(result));
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Logger.e(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + ", Worksheets saving error ", e);
+                                }
+                            });
+                            ContentFromDatabase.setSpreadsheet(result, new IResult<Integer>() {
+                                @Override
+                                public void onResult(Integer result) {
+                                    Logger.i(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + " added " + String.valueOf(result));
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Logger.e(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + " saving error ", e);
+                                }
+                            });
                             contentCallback.resultOfDataLoading(result);
                         } else {
                             contentCallback.resultOfDataLoading(null);
@@ -118,14 +153,24 @@ public class GSpreadsheetContent {
         }
     }
 
-    private void getWorksheetAsynchronously(String worksheetKey, final GetContentCallback<GWorksheet> getContentCallback) {
+    private void getWorksheetAsynchronously(final String worksheetKey, final GetContentCallback<GWorksheet> getContentCallback) {
         ContentFromBackend.getInstance().getWorksheetAsynchronously(worksheetKey, new ContentLoadingCallback<GWorksheet>() {
             @Override
             public void resultFromBackend(GWorksheet result, ContentConst tag, GetContentCallback contentCallback) {
                 if (tag == ContentConst.WORKSHEET_RESPONSE) {
                     if (contentCallback != null) {
                         if (result != null) {
-                            GSpreadsheetContent.getInstance().setWorksheet(result);
+                            setWorksheet(result);
+                            getWorksheetSynchronously(worksheetKey, new GetContentCallback<GWorksheet>() {
+                                @Override
+                                public void resultOfDataLoading(GWorksheet result) {
+                                    if(result != null){
+                                        result.setOpenSearchStartIndex(mWorksheet.getOpenSearchStartIndex());
+                                        result.setOpenSearchTotalResults(mWorksheet.getOpenSearchTotalResults());
+                                        updateWorksheet(result);
+                                    }
+                                }
+                            });
                             contentCallback.resultOfDataLoading(result);
                         } else {
                             contentCallback.resultOfDataLoading(null);
@@ -134,6 +179,53 @@ public class GSpreadsheetContent {
                 }
             }
         }, getContentCallback);
+    }
+
+    private void updateWorksheet(GWorksheet worksheet) {
+        ContentFromDatabase.updateWorksheet(worksheet, new IResult<Integer>() {
+            @Override
+            public void onResult(Integer result) {
+                Logger.i(TAG, "Worksheet " + String.valueOf(result) + " updated ");
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Logger.e(TAG, "Worksheet update error ", e);
+            }
+        });
+    }
+
+    private void getWorksheetSynchronously(final String worksheetKey, final GetContentCallback<GWorksheet> getContentCallback) {
+        ContentFromDatabase.getWorksheet(worksheetKey, new IResult<List<GWorksheet>>() {
+            @Override
+            public void onResult(List<GWorksheet> result) {
+                GWorksheet worksheet = null;
+                if (!result.isEmpty()) {
+                    worksheet = result.get(0);
+                }
+                getContentCallback.resultOfDataLoading(worksheet);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                getWorksheetAsynchronously(worksheetKey, getContentCallback);
+            }
+        });
+    }
+
+    public List<GWorksheet> getWorksheetsList() {
+        return mWorksheetsList;
+    }
+
+    public void setWorksheetsList(List<GWorksheet> worksheetsList) {
+        mWorksheetsList = worksheetsList;
+    }
+
+    public void setWorksheetsListItem(GWorksheet worksheet) {
+        if (mWorksheetsList == null) {
+            mWorksheetsList = new ArrayList<>();
+        }
+        mWorksheetsList.add(worksheet);
     }
     //endregion
 
