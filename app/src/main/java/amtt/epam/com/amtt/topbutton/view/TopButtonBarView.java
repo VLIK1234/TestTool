@@ -42,6 +42,7 @@ import amtt.epam.com.amtt.util.UIUtil;
 public class TopButtonBarView extends FrameLayout {
 
     public static final String EXTERANL_ACTION_TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
+    public static final String TAKE_ONLY_INFO = "TAKE_ONLY_INFO";
     private final WindowManager mWindowManager;
     private static boolean isRecordStarted;
     private static boolean isShowAction;
@@ -156,14 +157,10 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 Toast.makeText(getContext(), getContext().getString(R.string.label_added_step_without_screen), Toast.LENGTH_LONG).show();
-                ScheduledExecutorService worker =
-                        Executors.newSingleThreadScheduledExecutor();
-                Runnable task = new Runnable() {
-                    public void run() {
-                        StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), null, null);
-                    }
-                };
-                worker.schedule(task, 1, TimeUnit.SECONDS);
+
+                Intent intent = new Intent();
+                intent.setAction(TAKE_ONLY_INFO);
+                getContext().sendBroadcast(intent);
                 mTopButtonListener.onTouch();
             }
         });

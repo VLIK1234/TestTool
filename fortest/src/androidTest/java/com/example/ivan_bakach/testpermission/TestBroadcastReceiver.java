@@ -22,6 +22,9 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
     public static final String PING_ANSWER_VALUE = "Success answer";
     public static final String TAKE_SCREEN_FAIL_KEY = "failScreen";
     public static final String TAKE_SCREEN_FAIL_VALUE = "Activity don't visible launch app and try again.";
+    public static final String LIST_FRAGMENTS_KEY = "listFragments";
+    public static final String TAKE_ONLY_INFO = "TAKE_ONLY_INFO";
+    public static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
     private boolean closeUnitTest;
     private Activity mActivity;
     private static String sListFragments;
@@ -48,6 +51,20 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
             case TAKE_SCREENSHOT:
                 if (mActivity != null) {
                     ScreenshotHelper.takeScreenshot(context, mActivity, sListFragments);
+                    LogManger.writeArgumentsFromFragments(sCurrentArguments);
+                } else {
+                    Intent failIntent = new Intent();
+                    failIntent.setAction(ScreenshotHelper.REQUEST_TAKE_SCREENSHOT_ACTION);
+                    failIntent.putExtra(TAKE_SCREEN_FAIL_KEY, TAKE_SCREEN_FAIL_VALUE);
+                    context.sendBroadcast(failIntent);
+                }
+                break;
+            case TAKE_ONLY_INFO:
+                if (mActivity != null) {
+                    Intent intentTakeOnlyInfo = new Intent();
+                    intentTakeOnlyInfo.setAction(REQUEST_TAKE_ONLY_INFO);
+                    intentTakeOnlyInfo.putExtra(LIST_FRAGMENTS_KEY, sListFragments.substring(0, sListFragments.lastIndexOf("<br/>") != -1 ? sListFragments.lastIndexOf("<br/>") : 0));
+                    context.sendBroadcast(intentTakeOnlyInfo);
                     LogManger.writeArgumentsFromFragments(sCurrentArguments);
                 } else {
                     Intent failIntent = new Intent();

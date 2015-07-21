@@ -31,7 +31,8 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
     public static final String FILE_PATH_KEY = "filePath";
     public static final String EXCEPTION_ANSWER = "EXCEPTION_ANSWER";
     public static final String ANSWER_EXCEPTION_KEY = "answer";
-    public static String logFilePath = "";
+    public static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
+    public static String sLogFilePath = "";
     public static boolean isStepWithoutActivityInfo = false;
 
 
@@ -43,8 +44,8 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                 String filePath;
                 if (extras!=null) {
                     filePath = extras.getString(FILE_PATH_KEY);
-                    logFilePath = filePath;
-                    Toast.makeText(context, "Create log in file "+logFilePath, Toast.LENGTH_LONG).show();break;
+                    sLogFilePath = filePath;
+                    Toast.makeText(context, "Create log in file "+ sLogFilePath, Toast.LENGTH_LONG).show();break;
                 }break;
             case REQUEST_TAKE_SCREENSHOT:
                 Bundle extrasScreenshot = intent.getExtras();
@@ -83,6 +84,13 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     NotificationManager managerCompat = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
                     PreferenceUtil.putBoolean(context.getString(R.string.key_is_attach_logs), true);
                     managerCompat.notify(NotificationIdConstant.CAUGHT_EXCEPTION, builder.build());
+                    break;
+                }break;
+            case REQUEST_TAKE_ONLY_INFO:
+                Bundle extraInfo = intent.getExtras();
+                if (extraInfo!=null) {
+                    String listFragments = extraInfo.getString(LIST_FRAGMENTS_KEY);
+                    StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), null, listFragments);
                     break;
                 }break;
         }

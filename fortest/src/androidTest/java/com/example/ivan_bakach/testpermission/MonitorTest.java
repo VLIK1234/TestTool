@@ -54,6 +54,7 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
         filterReceiver.addAction(TestBroadcastReceiver.PING_ANSWER);
         filterReceiver.addAction(TestBroadcastReceiver.CLOSE_TEST);
         filterReceiver.addAction(TestBroadcastReceiver.TAKE_SCREENSHOT);
+        filterReceiver.addAction(TestBroadcastReceiver.TAKE_ONLY_INFO);
         context.registerReceiver(receiver, filterReceiver);
         receiver.setCloseUnitTest(false);
 
