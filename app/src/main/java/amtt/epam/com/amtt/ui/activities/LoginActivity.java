@@ -199,17 +199,9 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
                         }
                     }
                 });
-                GSpreadsheetContent.getInstance().getSpreadsheet(new GetContentCallback<GSpreadsheet>() {
-                    @Override
-                    public void resultOfDataLoading(GSpreadsheet result) {
-                        if (result != null) {
-                            Logger.d(TAG, "Loading spreadsheet finish");
-                        }
-                    }
-                });
             }
         };
-        worker.schedule(task, 2, TimeUnit.SECONDS);
+        worker.schedule(task, 1, TimeUnit.SECONDS);
         finish();
     }
 

@@ -17,13 +17,16 @@ import amtt.epam.com.amtt.util.ActiveUser;
  * @author Iryna Monchanka
  * @version on 7/6/2015
  */
+
 public class GSpreadsheetContent {
 
+    //region Variables
     private GSpreadsheet mSpreadsheet;
     private GWorksheet mWorksheet;
     private GEntryWorksheet mLastTestCase;
     private String mLastTestcaseId;
     private List<GTag> mTags;
+    //endregion
 
     private static class XMLContentHolder {
         public static final GSpreadsheetContent INSTANCE = new GSpreadsheetContent();
@@ -33,6 +36,7 @@ public class GSpreadsheetContent {
         return XMLContentHolder.INSTANCE;
     }
 
+    //region Spreadsheet
     public void getSpreadsheet(final GetContentCallback<GSpreadsheet> getContentCallback) {
         if (mSpreadsheet != null) {
             getContentCallback.resultOfDataLoading(mSpreadsheet);
@@ -43,31 +47,6 @@ public class GSpreadsheetContent {
 
     public void setSpreadsheet(GSpreadsheet spreadsheet) {
         this.mSpreadsheet = spreadsheet;
-    }
-
-    public void getWorksheet(final GetContentCallback<GWorksheet> getContentCallback) {
-        if (mWorksheet != null) {
-            getContentCallback.resultOfDataLoading(mWorksheet);
-        } else {
-            if (mSpreadsheet != null) {
-                getWorksheetAsynchronously(mSpreadsheet.getListWorksheets().get(8), getContentCallback);
-            } else {
-                getSpreadsheet(new GetContentCallback<GSpreadsheet>() {
-                    @Override
-                    public void resultOfDataLoading(GSpreadsheet result) {
-                        if (result != null) {
-                            getWorksheetAsynchronously(result.getListWorksheets().get(8), getContentCallback);
-                        }else{
-                            getContentCallback.resultOfDataLoading(mWorksheet);
-                        }
-                    }
-                });
-            }
-        }
-    }
-
-    public void setWorksheet(GWorksheet worksheet) {
-        this.mWorksheet = worksheet;
     }
 
     private void getSpreadsheetSynchronously(final GetContentCallback<GSpreadsheet> getContentCallback) {
@@ -111,6 +90,33 @@ public class GSpreadsheetContent {
             }
         }, getContentCallback);
     }
+    //endregion
+
+    //region Worksheet
+    public void setWorksheet(GWorksheet worksheet) {
+        this.mWorksheet = worksheet;
+    }
+
+    public void getWorksheet(final GetContentCallback<GWorksheet> getContentCallback) {
+        if (mWorksheet != null) {
+            getContentCallback.resultOfDataLoading(mWorksheet);
+        } else {
+            if (mSpreadsheet != null) {
+                getWorksheetAsynchronously(mSpreadsheet.getListWorksheets().get(8), getContentCallback);
+            } else {
+                getSpreadsheet(new GetContentCallback<GSpreadsheet>() {
+                    @Override
+                    public void resultOfDataLoading(GSpreadsheet result) {
+                        if (result != null) {
+                            getWorksheetAsynchronously(result.getListWorksheets().get(8), getContentCallback);
+                        }else{
+                            getContentCallback.resultOfDataLoading(mWorksheet);
+                        }
+                    }
+                });
+            }
+        }
+    }
 
     private void getWorksheetAsynchronously(String worksheetKey, final GetContentCallback<GWorksheet> getContentCallback) {
         ContentFromBackend.getInstance().getWorksheetAsynchronously(worksheetKey, new ContentLoadingCallback<GWorksheet>() {
@@ -129,7 +135,9 @@ public class GSpreadsheetContent {
             }
         }, getContentCallback);
     }
+    //endregion
 
+    //region TestCase
     public GEntryWorksheet getTestcaseByIdGSX(String idGSX) {
         GEntryWorksheet testcase = null;
         if (mWorksheet != null) {
@@ -156,7 +164,9 @@ public class GSpreadsheetContent {
     public void setLastTestcaseId(String lastTestcaseId) {
         this.mLastTestcaseId = lastTestcaseId;
     }
+    //endregion
 
+    //region Tags
     public List<GTag> getTags() {
         return mTags;
     }
@@ -170,7 +180,6 @@ public class GSpreadsheetContent {
             mTags = new ArrayList<>();
         }
         if (tag != null) {
-
             mTags.add(tag);
         }
     }
@@ -187,5 +196,6 @@ public class GSpreadsheetContent {
             }
         }
     }
+    //endregion
 
 }

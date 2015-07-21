@@ -116,19 +116,9 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         }
                     }
                 });
-                GSpreadsheetContent.getInstance().getSpreadsheet(new GetContentCallback<GSpreadsheet>() {
-                    @Override
-                    public void resultOfDataLoading(GSpreadsheet result) {
-                        if (result != null) {
-                            Logger.d(TAG, "Loading spreadsheet finish");
-                        }else{
-                            Logger.d(TAG, "Loading spreadsheet crashed");
-                        }
-                    }
-                });
             }
         };
-        worker.schedule(task, 2, TimeUnit.SECONDS);
+        worker.schedule(task, 1, TimeUnit.SECONDS);
         TopButtonService.start(this);
         finish();
     }
