@@ -126,6 +126,7 @@ public class TopButtonService extends Service{
                     break;
                 case ACTION_CLOSE:
                     TestUtil.closeTest();
+                    StepUtil.removeAllAttachFile();
                     closeService();
                     break;
                 case ACTION_CHANGE_NOTIFICATION_BUTTON:
@@ -211,7 +212,9 @@ public class TopButtonService extends Service{
     private void changeStateNotificationAction() {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (mTopButtonView.getVisibility() == View.VISIBLE) {
-            mTopButtonView.getButtonsBar().hide();
+            if (mTopButtonView.getButtonsBar()!=null) {
+                mTopButtonView.getButtonsBar().hide();
+            }
             mTopButtonView.setVisibility(View.GONE);
             mActionNotificationCompat.icon = R.drawable.ic_stat_action_visibility;
             mActionNotificationCompat.title = getString(R.string.label_show);

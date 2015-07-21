@@ -5,17 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Set;
 
 /**
  * Created by Ivan_Bakach on 29.06.2015.
@@ -32,7 +24,8 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
     public static final String TAKE_SCREEN_FAIL_VALUE = "Activity don't visible launch app and try again.";
     private boolean closeUnitTest;
     private Activity mActivity;
-    private String listFragments;
+    private static String sListFragments;
+    public static String sCurrentArguments;
 
     TestBroadcastReceiver() {
 
@@ -47,13 +40,15 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                 context.sendBroadcast(in);
                 break;
             case CLOSE_TEST:
+                LogManger.deleteFileIfExist(LogManger.sArgumentsFragments);
                 LogManger.deleteFileIfExist(LogManger.sExceptionLog);
                 LogManger.deleteFileIfExist(LogManger.sCommonLog);
                 closeUnitTest = true;
                 break;
             case TAKE_SCREENSHOT:
                 if (mActivity != null) {
-                    ScreenshotHelper.takeScreenshot(context, mActivity, listFragments);
+                    ScreenshotHelper.takeScreenshot(context, mActivity, sListFragments);
+                    LogManger.writeArgumentsFromFragments(sCurrentArguments);
                 } else {
                     Intent failIntent = new Intent();
                     failIntent.setAction(ScreenshotHelper.REQUEST_TAKE_SCREENSHOT_ACTION);
@@ -66,7 +61,8 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
 
     public void setActivity(final Activity activity) {
         mActivity = activity;
-        listFragments = "";
+        sListFragments = "";
+        sCurrentArguments = "";
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -75,23 +71,9 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                         if (fragment.isVisible() && fragment.getUserVisibleHint() && fragment.getView() != null && fragment.getView().getParent() != null && !fragment.getView().getParent().isLayoutRequested()) {
                             Bundle bundleArguments = fragment.getArguments();
                             if (bundleArguments != null) {
-                                StringBuilder builderArgumentsResult = new StringBuilder("\n"+fragment.getClass().getSimpleName());
-                                Set<String> setString = bundleArguments.keySet();
-                                Object[] keyArray = setString.toArray();
-                                for (Object key : keyArray) {
-                                    builderArgumentsResult.append(String.format("\n" + key + "=" + String.valueOf(bundleArguments.get(String.valueOf(key)))));
-                                }
-                                char separatorChar = File.separatorChar;
-                                try {
-                                    FileOutputStream argumentsFile = IOUtils.openFileOutput(Environment.getExternalStorageDirectory().getPath() + separatorChar + LogManger.AMTT_CACHE_DIRECTORY + separatorChar + "arguments_file.txt", true);
-                                    argumentsFile.write(builderArgumentsResult.toString().getBytes());
-                                } catch (FileNotFoundException e) {
-                                    e.printStackTrace();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                                sCurrentArguments = fragment.getClass().getSimpleName() + "\n" + LogManger.getArgumentsFromFragments(bundleArguments);
                             }
-                            listFragments += (fragment.getClass().getSimpleName() + "<br/>");
+                            sListFragments += (fragment.getClass().getSimpleName() + "<br/>");
                         }
                     }
                 }

@@ -4,11 +4,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -123,6 +125,16 @@ public class StepUtil {
             bitmaps.add(BitmapFactory.decodeFile(step.getScreenshotPath(), options));
         }
         return bitmaps;
+    }
+
+    public static void removeAllAttachFile(){
+        File folderPath = new File(Environment.getExternalStorageDirectory(), "Amtt_cache");
+        File[] allAttachFile = folderPath.listFiles();
+        for (File file : allAttachFile) {
+            if (file.exists()) {
+                FileUtil.delete(file.getPath());
+            }
+        }
     }
 
 }

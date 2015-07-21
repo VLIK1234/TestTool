@@ -1,8 +1,11 @@
 package com.example.ivan_bakach.testpermission;
 
+import android.os.Bundle;
 import android.os.Environment;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -11,18 +14,22 @@ import java.io.IOException;
 public class LogManger {
 
     public static final String AMTT_CACHE_DIRECTORY = "Amtt_cache";
+    public static String sArgumentsFragments;
     public static String sExceptionLog;
     public static String sCommonLog;
     public static final String LOGCAT_WRITE_IN_FILE = "logcat -f ";
     public static final String EXCEPTION_FILTER = " *:e";
     public static final String TEMPLATE_EXCEPION = "%s/log_exception.txt";
     public static final String TEMPLATE_COMMON = "%s/log_common.txt";
+    public static final String TEMPLATE_ARGUMENTS_FRAGMENTS = "%s/arguments_file.txt";
+    public static final File EXTERNAL_CACHE = new File(Environment.getExternalStorageDirectory(), AMTT_CACHE_DIRECTORY);
 
     public static void writeMultipleLogs() {
-        File externalCache = new File(Environment.getExternalStorageDirectory(), AMTT_CACHE_DIRECTORY);
-        externalCache.mkdirs();
-        sExceptionLog = String.format(TEMPLATE_EXCEPION, externalCache.getPath());
-        sCommonLog = String.format(TEMPLATE_COMMON, externalCache.getPath());
+        EXTERNAL_CACHE.mkdirs();
+        sArgumentsFragments = String.format(TEMPLATE_ARGUMENTS_FRAGMENTS, EXTERNAL_CACHE.getPath());
+        sExceptionLog = String.format(TEMPLATE_EXCEPION, EXTERNAL_CACHE.getPath());
+        sCommonLog = String.format(TEMPLATE_COMMON, EXTERNAL_CACHE.getPath());
+        deleteFileIfExist(sArgumentsFragments);
         deleteFileIfExist(sExceptionLog);
         deleteFileIfExist(sCommonLog);
         try {
@@ -39,4 +46,26 @@ public class LogManger {
             myFile.delete();
         }
     }
+
+    public static String getArgumentsFromFragments(Bundle bundleArguments){
+        String intDateArguments = bundleArguments.toString().replace("Bundle", "");//clean
+        String[] argumentsArray = intDateArguments.split(",");
+        StringBuilder builder = new StringBuilder();
+        for (String item:argumentsArray) {
+            builder.append(item).append("\n");
+        }
+        return builder.toString();
+    }
+
+    public static void writeArgumentsFromFragments(String arguments){
+        try {
+            FileOutputStream argumentsFile = IOUtils.openFileOutput(sArgumentsFragments);
+            argumentsFile.write(arguments.getBytes());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

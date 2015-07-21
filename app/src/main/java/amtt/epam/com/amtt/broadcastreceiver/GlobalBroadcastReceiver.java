@@ -59,11 +59,11 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                             StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), screenPath, listFragments);
                         }
                         TopButtonService.sendActionChangeTopButtonVisibility(true);
-                        Toast.makeText(context, "Create screenshot in "+screenPath, Toast.LENGTH_LONG).show();break;
+                        Toast.makeText(context, "Create screenshot in "+screenPath, Toast.LENGTH_SHORT).show();break;
                     }
                     else {
                         final String failScreen = extrasScreenshot.getString("failScreen");
-                        Toast.makeText(context, failScreen, Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, failScreen, Toast.LENGTH_SHORT).show();
                         TopButtonService.sendActionChangeTopButtonVisibility(true);
                     }
                 }break;

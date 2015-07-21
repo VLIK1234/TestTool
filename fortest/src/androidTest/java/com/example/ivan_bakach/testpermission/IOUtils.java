@@ -24,10 +24,10 @@ public class IOUtils {
         }
     }
 
-    public static FileOutputStream openFileOutput(String path, boolean isExists) throws FileNotFoundException {
+    public static FileOutputStream openFileOutput(String path) throws FileNotFoundException {
         FileOutputStream outputStream;
         try {
-            outputStream = new FileOutputStream(path, isExists);
+            outputStream = new FileOutputStream(path, new File(path).exists());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             outputStream = new FileOutputStream(path, false);

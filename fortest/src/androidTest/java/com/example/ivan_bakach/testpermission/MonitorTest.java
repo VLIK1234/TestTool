@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.test.InstrumentationTestCase;
 import android.util.Log;
 
@@ -37,6 +40,7 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
                 Log.e(thread.getName(), ex.toString());
+                LogManger.writeArgumentsFromFragments(TestBroadcastReceiver.sCurrentArguments);
                 Intent intent = new Intent();
                 intent.setAction(EXCEPTION_ANSWER_ACTION);
                 intent.putExtra(EXCEPTION_ANSWER_KEY, ex.getClass().getName());
@@ -82,6 +86,7 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
 
     @Override
     public void onActivityPaused(Activity activity) {
+        receiver.setActivity(null);
     }
 
     @Override
