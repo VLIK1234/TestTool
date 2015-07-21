@@ -5,8 +5,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import amtt.epam.com.amtt.common.CoreApplication;
-import amtt.epam.com.amtt.excel.processing.SpreadsheetProcessor;
-import amtt.epam.com.amtt.excel.processing.WorksheetProcessor;
+import amtt.epam.com.amtt.googleapi.processing.SpreadsheetProcessor;
+import amtt.epam.com.amtt.googleapi.processing.WorksheetProcessor;
 import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.processing.ComponentsProcessor;
 import amtt.epam.com.amtt.processing.PostCreateIssueProcessor;

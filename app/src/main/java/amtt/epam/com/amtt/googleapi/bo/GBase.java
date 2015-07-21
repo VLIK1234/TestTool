@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.excel.bo;
+package amtt.epam.com.amtt.googleapi.bo;
 
 import android.database.Cursor;
 
@@ -8,17 +8,17 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
  * @author Iryna Monchanka
  * @version on 7/1/2015
  */
-public class GoogleBase<T> extends DatabaseEntity<T> {
+public class GBase<T> extends DatabaseEntity<T> {
 
     protected String mIdLink;
     protected String mUpdated;
     protected String mTitle;
-    protected GoogleLink mSelfLink;
+    protected GLink mSelfLink;
 
-    public GoogleBase() {
+    public GBase() {
     }
 
-    public GoogleBase(String idLink, String updated, String title, GoogleLink selfLink) {
+    public GBase(String idLink, String updated, String title, GLink selfLink) {
         this.mIdLink = idLink;
         this.mUpdated = updated;
         this.mTitle = title;
@@ -49,11 +49,11 @@ public class GoogleBase<T> extends DatabaseEntity<T> {
         this.mTitle = title;
     }
 
-    public GoogleLink getSelfLink() {
+    public GLink getSelfLink() {
         return mSelfLink;
     }
 
-    public void setSelfLink(GoogleLink selfLink) {
+    public void setSelfLink(GLink selfLink) {
         this.mSelfLink = selfLink;
     }
 

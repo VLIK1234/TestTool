@@ -4,13 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
+import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -21,11 +22,11 @@ import amtt.epam.com.amtt.util.Logger;
 public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResultsAdapter.ViewHolder> {
 
     private final String TAG = this.getClass().getSimpleName();
-    private List<GoogleEntryWorksheet> mTestcases;
+    private List<GEntryWorksheet> mTestcases;
     private int mItemLayout;
     private ViewHolder.ClickListener mClickListener;
 
-    public ExpectedResultsAdapter(List<GoogleEntryWorksheet> testcases, int itemLayout, ViewHolder.ClickListener clickListener) {
+    public ExpectedResultsAdapter(List<GEntryWorksheet> testcases, int itemLayout, ViewHolder.ClickListener clickListener) {
         this.mTestcases = testcases;
         this.mItemLayout = itemLayout;
         this.mClickListener = clickListener;
@@ -42,10 +43,10 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
     }
 
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        GoogleEntryWorksheet testcase = mTestcases.get(i);
+        GEntryWorksheet testcase = mTestcases.get(i);
         Logger.d(TAG, testcase.getTestCaseNameGSX());
         viewHolder.mLabel.setText(testcase.getLabelGSX());
-        viewHolder.mTestcaseName.setText(testcase.getTestCaseNameGSX() + " [ " + testcase.getIdGSX() + " ]");
+        viewHolder.mTestcaseName.setText(testcase.getTestcaseNameAndId());
         viewHolder.mPriority.setText(testcase.getPriorityGSX());
         viewHolder.mSteps.setText(testcase.getTestStepsGSX());
     }
@@ -57,7 +58,7 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
 
     public ArrayList<String> getIdTestcaseList() {
         ArrayList<String> idTestcaseList = new ArrayList<>();
-        for (GoogleEntryWorksheet testcase : mTestcases) {
+        for (GEntryWorksheet testcase : mTestcases) {
             idTestcaseList.add(testcase.getIdGSX());
         }
         return idTestcaseList;
@@ -68,6 +69,7 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
         public TextView mTestcaseName;
         public TextView mPriority;
         public TextView mSteps;
+        public ImageButton mBugButton;
         private ClickListener mListener;
 
         public ViewHolder(View itemView) {
@@ -76,21 +78,28 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
             mTestcaseName = (TextView) itemView.findViewById(R.id.tv_testcase_name);
             mPriority = (TextView) itemView.findViewById(R.id.tv_priority);
             mSteps = (TextView) itemView.findViewById(R.id.tv_steps);
-            itemView.setOnClickListener(this);
+            mBugButton = (ImageButton) itemView.findViewById(R.id.btn_bug);
+            mBugButton.setOnClickListener(this);
+            itemView.findViewById(R.id.result_card).setOnClickListener(this);
         }
         public void setClickListener(ClickListener clickListener) {
             mListener = clickListener;
         }
+
         @Override
         public void onClick(View v) {
             if (mListener != null) {
-                if(v.getId()==R.id.result_card){
-                mListener.onItemSelected(getAdapterPosition());}
+                if (v.getId() == R.id.result_card) {
+                    mListener.onShowCard(getAdapterPosition());
+                } else if (v.getId() == R.id.btn_bug) {
+                    mListener.onShowCreationTicket(getAdapterPosition());
+                }
             }
         }
 
         public interface ClickListener {
-            void onItemSelected(int position);
+            void onShowCard(int position);
+            void onShowCreationTicket(int position);
         }
     }
 

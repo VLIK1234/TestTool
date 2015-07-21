@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-
         android:padding="@dimen/abc_action_bar_icon_vertical_padding_material"
         android:scrollbarStyle="outsideInset">
 
@@ -26,7 +25,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginTop="@dimen/abc_dialog_list_padding_vertical_material"
-                android:text="@string/label_name_activity"
                 android:textSize="@dimen/abc_text_size_subhead_material"/>
 
             <TextView
@@ -52,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_label"
                 android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
-                android:text="Steps"
+                android:text="@string/label_steps"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
@@ -77,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/divider"
                 android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
-                android:text="Description"
+                android:text="@string/label_description"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView
@@ -94,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_description"
                 android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
-                android:text="Expected results"
+                android:text="@string/label_expected_result"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
 
             <TextView

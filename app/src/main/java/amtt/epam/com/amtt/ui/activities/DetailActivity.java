@@ -2,15 +2,15 @@ package amtt.epam.com.amtt.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
-import amtt.epam.com.amtt.excel.bo.GoogleEntryWorksheet;
+import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
+import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.Constants;
 
 /**
  * @author Iryna Monchanka
@@ -19,14 +19,13 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 public class DetailActivity extends BaseActivity {
 
-    public static final String TESTCASE_ID = "testcase_key";
     private TextView mNameTextView;
     private TextView mLabelTextView;
     private TextView mPriorityTextView;
     private TextView mStepsTextView;
     private TextView mDescriptionTextView;
     private TextView mExpectedResultsTextView;
-    private GoogleEntryWorksheet mTestcase;
+    private GEntryWorksheet mTestcase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +40,16 @@ public class DetailActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-            TopButtonService.sendActionChangeTopButtonVisibility(true);
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
-    private void setTestcaseData(String testCaseId) {
-        if (testCaseId != null && !testCaseId.equals("")) {
-            mTestcase = XMLContent.getInstance().getTestcaseByIdGSX(testCaseId);
+    private void setTestcaseData() {
+        String testCaseId = GSpreadsheetContent.getInstance().getLastTestcaseId();
+        if (testCaseId != null && !testCaseId.equals(Constants.Symbols.EMPTY)) {
+            mTestcase = GSpreadsheetContent.getInstance().getTestcaseByIdGSX(testCaseId);
             if (mTestcase != null) {
                 if (mTestcase.getTestCaseNameGSX() != null) {
-                    mNameTextView.setText(mTestcase.getTestCaseNameGSX());
+                    mNameTextView.setText(mTestcase.getTestcaseNameAndId());
                 }
                 mLabelTextView.setText(mTestcase.getLabelGSX());
                 mPriorityTextView.setText(mTestcase.getPriorityGSX());
@@ -60,16 +60,6 @@ public class DetailActivity extends BaseActivity {
         }
     }
 
-    @Nullable
-    private String getTestcaseId() {
-        Bundle extra = getIntent().getExtras();
-        String testCaseId = null;
-        if (extra != null) {
-            testCaseId = extra.getString(TESTCASE_ID);
-        }
-        return testCaseId;
-    }
-
     private void initViews() {
         mNameTextView = (TextView) findViewById(R.id.tv_testcase_name);
         mLabelTextView = (TextView) findViewById(R.id.tv_label);
@@ -78,7 +68,7 @@ public class DetailActivity extends BaseActivity {
         mDescriptionTextView = (TextView) findViewById(R.id.tv_description);
         mExpectedResultsTextView = (TextView) findViewById(R.id.tv_expected_results);
         initBugButton();
-        setTestcaseData(getTestcaseId());
+        setTestcaseData();
     }
 
     private void initBugButton() {
@@ -87,7 +77,7 @@ public class DetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (mTestcase != null) {
-                    XMLContent.getInstance().setLastTestCase(mTestcase);
+                    GSpreadsheetContent.getInstance().setLastTestCase(mTestcase);
                     Intent loginIntent = new Intent(DetailActivity.this, CreateIssueActivity.class);
                     startActivity(loginIntent);
                     finish();

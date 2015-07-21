@@ -1,13 +1,13 @@
-package amtt.epam.com.amtt.excel;
+package amtt.epam.com.amtt.googleapi;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-import amtt.epam.com.amtt.excel.api.GoogleApiConst;
-import amtt.epam.com.amtt.excel.bo.GoogleAuthor;
-import amtt.epam.com.amtt.excel.bo.GoogleLink;
+import amtt.epam.com.amtt.googleapi.api.GoogleApiConst;
+import amtt.epam.com.amtt.googleapi.bo.GAuthor;
+import amtt.epam.com.amtt.googleapi.bo.GLink;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -48,8 +48,8 @@ public class XMLParser {
         return readInt(GoogleApiConst.TOTAL_RESULTS_TAG);
     }
 
-    public static GoogleAuthor loadAuthor() throws XmlPullParserException, IOException {
-        GoogleAuthor author = new GoogleAuthor();
+    public static GAuthor loadAuthor() throws XmlPullParserException, IOException {
+        GAuthor author = new GAuthor();
         xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.AUTHOR_TAG);
         xmlPullParser.nextTag();
         author.setName(readString(GoogleApiConst.NAME_TAG));
@@ -134,8 +134,8 @@ public class XMLParser {
         }
     }
 
-    public static GoogleLink loadGoogleLink() {
-        GoogleLink googleLink = new GoogleLink();
+    public static GLink loadGoogleLink() {
+        GLink gLink = new GLink();
         try {
             xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
 
@@ -144,36 +144,36 @@ public class XMLParser {
             if (tag.equals(GoogleApiConst.LINK_TAG)) {
                 switch (relType) {
                     case GoogleApiConst.FEED_ATTR:
-                        googleLink.setRel(relType);
-                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                        gLink.setRel(relType);
+                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                     case GoogleApiConst.POST_ATTR:
-                        googleLink.setRel(relType);
-                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                        gLink.setRel(relType);
+                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                     case GoogleApiConst.SELF_ATTR:
-                        googleLink.setRel(relType);
-                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                        gLink.setRel(relType);
+                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                     case GoogleApiConst.ALTERNATE_ATTR:
-                        googleLink.setRel(relType);
-                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                        gLink.setRel(relType);
+                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                     case GoogleApiConst.LISTFEED_ATTR:
-                        googleLink.setRel(relType);
-                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                        gLink.setRel(relType);
+                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                     case GoogleApiConst.CELLSFEED_ATTR:
-                        googleLink.setRel(relType);
-                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                        gLink.setRel(relType);
+                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                     case GoogleApiConst.VISUALISATION_API_ATTR:
-                        googleLink.setRel(relType);
-                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                        gLink.setRel(relType);
+                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                     case GoogleApiConst.EXPORTCSV_ATTR:
-                        googleLink.setRel(relType);
-                        googleLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                        gLink.setRel(relType);
+                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
                         break;
                 }
             }
@@ -183,6 +183,6 @@ public class XMLParser {
         } catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
         }
-        return googleLink;
+        return gLink;
     }
 }

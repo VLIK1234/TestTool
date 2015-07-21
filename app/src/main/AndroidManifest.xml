@@ -133,8 +133,8 @@
                 android:value=".ui.activities.ExpectedResultsActivity"/>
         </activity>
         <provider
-            android:name=".excel.database.contentprovider.GSContentProvider"
-            android:authorities="amtt.epam.com.amtt.excel.database.contentprovider"
+            android:name=".googleapi.database.contentprovider.GSContentProvider"
+            android:authorities="amtt.epam.com.amtt.googleapi.database.contentprovider"
             android:exported="false" />
         <activity
             android:name=".ui.activities.LogActivity"

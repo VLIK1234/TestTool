@@ -51,9 +51,7 @@ import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
-
-import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
-
+import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -169,7 +167,7 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     private void setDefaultConfigs() {
-        if (mComponents!=null&&mComponents.getSelectedItem() != null) {
+        if (mComponents != null && mComponents.getSelectedItem() != null) {
             String component = JiraContent.getInstance().getComponentIdByName((String) mComponents.getSelectedItem());
             ActiveUser.getInstance().setLastComponentsIds(component);
 
@@ -282,9 +280,17 @@ public class CreateIssueActivity extends BaseActivity
                             ArrayAdapter<String> mPrioritiesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, priorityNames);
                             mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                             prioritiesSpinner.setAdapter(mPrioritiesAdapter);
-                            String defaultPriority = JiraContent.getInstance().getPriorityNameById(DEFAULT_PRIORITY_ID);
-                            if (defaultPriority != null) {
-                                prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
+                            String defaultPriority;
+                            if (GSpreadsheetContent.getInstance().getLastTestcase() != null) {
+                                defaultPriority = GSpreadsheetContent.getInstance().getLastTestcase().getPriorityGSX();
+                                if (defaultPriority != null) {
+                                    prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
+                                }
+                            } else {
+                                defaultPriority = JiraContent.getInstance().getPriorityNameById(DEFAULT_PRIORITY_ID);
+                                if (defaultPriority != null) {
+                                    prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
+                                }
                             }
                             prioritiesSpinner.setEnabled(true);
                         }
@@ -418,13 +424,7 @@ public class CreateIssueActivity extends BaseActivity
 
     private void initDescriptionEditText() {
         mDescriptionTextInput = (TextInput) findViewById(R.id.description_input);
-        if (XMLContent.getInstance().getLastTestcase() == null) {
-            getDescription();
-        } else {
-            mDescriptionTextInput.setText(XMLContent.getInstance().getLastTestcase().getTestStepsGSX());
-            mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
-        }
-
+        getDescription();
     }
 
     private void initListStepButton() {
@@ -477,9 +477,9 @@ public class CreateIssueActivity extends BaseActivity
                                     TopButtonService.stopRecord(CreateIssueActivity.this);
                                     if (mCreateAnotherIssue) {
                                         mCreateAnotherCheckBox.setChecked(false);
-                                        mTitleTextInput.setText("");
+                                        mTitleTextInput.setText(Constants.Symbols.EMPTY);
                                         initAttachmentsView();
-                                        mDescriptionTextInput.setText("");
+                                        mDescriptionTextInput.setText(Constants.Symbols.EMPTY);
                                     } else {
                                         finish();
                                     }
@@ -500,8 +500,8 @@ public class CreateIssueActivity extends BaseActivity
             add(InputsUtil.getEmptyValidator());
             add(InputsUtil.getEndStartWhitespacesValidator());
         }});
-        if (XMLContent.getInstance().getLastTestcase() != null) {
-            mTitleTextInput.setText(XMLContent.getInstance().getLastTestcase().getTestCaseNameGSX());
+        if (GSpreadsheetContent.getInstance().getLastTestcase() != null) {
+            mTitleTextInput.setText(GSpreadsheetContent.getInstance().getLastTestcase().getTestcaseNameAndId());
         }
         mTitlePoint = new int[2];
         mTitleTextInput.getLocationOnScreen(mTitlePoint);

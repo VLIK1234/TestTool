@@ -1,24 +1,24 @@
-package amtt.epam.com.amtt.excel.bo;
+package amtt.epam.com.amtt.googleapi.bo;
 
 /**
  * @author Iryna Monchanka
  * @version on 7/1/2015
  */
-public class GoogleSheet<T> extends GoogleBase<T> {
+public class GSheet<T> extends GBase<T> {
 
-    protected GoogleLink mAlternateLink;
-    protected GoogleLink mFeedLink;
-    protected GoogleLink mPostLink;
-    protected GoogleAuthor mAuthor;
+    protected GLink mAlternateLink;
+    protected GLink mFeedLink;
+    protected GLink mPostLink;
+    protected GAuthor mAuthor;
     protected int mOpenSearchTotalResults;
     protected int mOpenSearchStartIndex;
 
-    public GoogleSheet() {
+    public GSheet() {
     }
 
-    public GoogleSheet(String idLink, String updated, String title, GoogleLink selfLink,
-                       GoogleLink alternateLink, GoogleLink feedLink, GoogleLink postLink,
-                       GoogleAuthor author, int openSearchTotalResults, int openSearchStartIndex) {
+    public GSheet(String idLink, String updated, String title, GLink selfLink,
+                  GLink alternateLink, GLink feedLink, GLink postLink,
+                  GAuthor author, int openSearchTotalResults, int openSearchStartIndex) {
         super(idLink, updated, title, selfLink);
         this.mAlternateLink = alternateLink;
         this.mFeedLink = feedLink;
@@ -28,35 +28,35 @@ public class GoogleSheet<T> extends GoogleBase<T> {
         this.mOpenSearchStartIndex = openSearchStartIndex;
     }
 
-    public GoogleLink getAlternateLink() {
+    public GLink getAlternateLink() {
         return mAlternateLink;
     }
 
-    public void setAlternateLink(GoogleLink alternateLink) {
+    public void setAlternateLink(GLink alternateLink) {
         this.mAlternateLink = alternateLink;
     }
 
-    public GoogleLink getFeedLink() {
+    public GLink getFeedLink() {
         return mFeedLink;
     }
 
-    public void setFeedLink(GoogleLink feedLink) {
+    public void setFeedLink(GLink feedLink) {
         this.mFeedLink = feedLink;
     }
 
-    public GoogleLink getPostLink() {
+    public GLink getPostLink() {
         return mPostLink;
     }
 
-    public void setPostLink(GoogleLink postLink) {
+    public void setPostLink(GLink postLink) {
         this.mPostLink = postLink;
     }
 
-    public GoogleAuthor getAuthor() {
+    public GAuthor getAuthor() {
         return mAuthor;
     }
 
-    public void setAuthor(GoogleAuthor author) {
+    public void setAuthor(GAuthor author) {
         this.mAuthor = author;
     }
 

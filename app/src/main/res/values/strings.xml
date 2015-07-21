@@ -74,6 +74,7 @@
     <string name="label_show_steps">Show recorded steps</string>
     <string name="label_start_record">Start record</string>
     <string name="label_step">"Step "</string>
+    <string name="label_steps">"Steps"</string>
     <string name="label_step_with_screen">Step with screen</string>
     <string name="label_step_without_screen">Step without screen</string>
     <string name="label_summary">Title</string>
@@ -98,7 +99,6 @@
 
     <string name="dialog_description">To make screenshot please use next combination button for your device - </string>
     <string name="check_box_do_not_show_again">Don\'t show again</string>
-    <string name="close">Close</string>
     <string name="dialog_are_you_sure">Are you sure?</string>
     <string name="dialog_exit">Do you want to close AMTT application?</string>
 

@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.excel.database.contentprovider;
+package amtt.epam.com.amtt.googleapi.database.contentprovider;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -7,7 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import amtt.epam.com.amtt.excel.database.DataBaseManager;
+import amtt.epam.com.amtt.googleapi.database.DataBaseManager;
 
 /**
  * @author Iryna Monchanka

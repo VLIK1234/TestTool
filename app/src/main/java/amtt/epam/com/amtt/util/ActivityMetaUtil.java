@@ -13,8 +13,10 @@ import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 
 /**
- * Created by Artsiom_Kaliaha on 12.05.2015.
+ @author Artsiom_Kaliaha
+ @version on 12.05.2015
  */
+
 public class ActivityMetaUtil {
 
     public static final String ORIENTATION_UNDEFINED = "ORIENTATION_UNDEFINED";

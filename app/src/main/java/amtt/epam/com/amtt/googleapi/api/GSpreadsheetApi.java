@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.excel.api;
+package amtt.epam.com.amtt.googleapi.api;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.common.Callback;
@@ -11,18 +11,18 @@ import amtt.epam.com.amtt.http.Request;
  * @version on 07.07.2015
  */
 
-public class GoogleSpreadsheetApi {
+public class GSpreadsheetApi {
 
-    private static final GoogleSpreadsheetApi INSTANCE;
+    private static final GSpreadsheetApi INSTANCE;
 
     static {
-        INSTANCE = new GoogleSpreadsheetApi();
+        INSTANCE = new GSpreadsheetApi();
     }
 
-    private GoogleSpreadsheetApi() {
+    private GSpreadsheetApi() {
     }
 
-    public static GoogleSpreadsheetApi get() {
+    public static GSpreadsheetApi get() {
         return INSTANCE;
     }
 

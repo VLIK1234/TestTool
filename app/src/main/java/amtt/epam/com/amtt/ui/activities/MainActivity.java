@@ -7,8 +7,8 @@ import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.api.GetContentCallback;
-import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
-import amtt.epam.com.amtt.excel.bo.GoogleSpreadsheet;
+import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
+import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.IOUtils;
@@ -116,9 +116,9 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         }
                     }
                 });
-                XMLContent.getInstance().getSpreadsheet(new GetContentCallback<GoogleSpreadsheet>() {
+                GSpreadsheetContent.getInstance().getSpreadsheet(new GetContentCallback<GSpreadsheet>() {
                     @Override
-                    public void resultOfDataLoading(GoogleSpreadsheet result) {
+                    public void resultOfDataLoading(GSpreadsheet result) {
                         if (result != null) {
                             Logger.d(TAG, "Loading spreadsheet finish");
                         }else{

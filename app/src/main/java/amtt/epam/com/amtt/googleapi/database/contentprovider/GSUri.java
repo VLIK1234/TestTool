@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.excel.database.contentprovider;
+package amtt.epam.com.amtt.googleapi.database.contentprovider;
 
 import android.content.ContentResolver;
 import android.content.UriMatcher;
@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import amtt.epam.com.amtt.excel.database.table.SpreadsheetTable;
-import amtt.epam.com.amtt.excel.database.table.TestcaseTable;
-import amtt.epam.com.amtt.excel.database.table.WorksheetTable;
+import amtt.epam.com.amtt.googleapi.database.table.SpreadsheetTable;
+import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
+import amtt.epam.com.amtt.googleapi.database.table.WorksheetTable;
 
 /**
  * @author Iryna Monchanka

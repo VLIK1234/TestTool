@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.excel.bo;
+package amtt.epam.com.amtt.googleapi.bo;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -7,23 +7,23 @@ import android.net.Uri;
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.excel.database.contentprovider.GSUri;
-import amtt.epam.com.amtt.excel.database.table.SpreadsheetTable;
+import amtt.epam.com.amtt.googleapi.database.contentprovider.GSUri;
+import amtt.epam.com.amtt.googleapi.database.table.SpreadsheetTable;
 
 /**
  * @author Iryna Monchanka
  * @version on 7/1/2015
  */
 
-public class GoogleSpreadsheet extends GoogleSheet<GoogleSpreadsheet> {
+public class GSpreadsheet extends GSheet<GSpreadsheet> {
 
     private int mId;
-    private List<GoogleEntrySpreadshet> mEntry;
+    private List<GEntrySpreadshet> mEntry;
 
-    public GoogleSpreadsheet() {
+    public GSpreadsheet() {
     }
 
-    public GoogleSpreadsheet(Cursor cursor) {
+    public GSpreadsheet(Cursor cursor) {
         if (cursor.getPosition() == -1) {
             cursor.moveToNext();
         }
@@ -36,32 +36,32 @@ public class GoogleSpreadsheet extends GoogleSheet<GoogleSpreadsheet> {
     }
 
     @Override
-    public GoogleSpreadsheet parse(Cursor cursor) {
+    public GSpreadsheet parse(Cursor cursor) {
         return null;
     }
 
-    public GoogleSpreadsheet(List<GoogleEntrySpreadshet> mEntry) {
+    public GSpreadsheet(List<GEntrySpreadshet> mEntry) {
         this.mEntry = mEntry;
     }
 
-    public GoogleSpreadsheet(String idLink, String updated, String title, GoogleLink selfLink,
-                             GoogleLink alternateLink, GoogleLink feedLink, GoogleLink postLink,
-                             GoogleAuthor author, int openSearchTotalResults, int openSearchStartIndex,
-                             List<GoogleEntrySpreadshet> entry) {
+    public GSpreadsheet(String idLink, String updated, String title, GLink selfLink,
+                        GLink alternateLink, GLink feedLink, GLink postLink,
+                        GAuthor author, int openSearchTotalResults, int openSearchStartIndex,
+                        List<GEntrySpreadshet> entry) {
         super(idLink, updated, title, selfLink, alternateLink, feedLink, postLink, author,
                 openSearchTotalResults, openSearchStartIndex);
         this.mEntry = entry;
     }
 
-    public List<GoogleEntrySpreadshet> getEntry() {
+    public List<GEntrySpreadshet> getEntry() {
         return mEntry;
     }
 
-    public void setEntry(List<GoogleEntrySpreadshet> entry) {
+    public void setEntry(List<GEntrySpreadshet> entry) {
         this.mEntry = entry;
     }
 
-    public void setEntryItem(GoogleEntrySpreadshet googleEntrySpreadshet) {
+    public void setEntryItem(GEntrySpreadshet googleEntrySpreadshet) {
         if (mEntry == null) {
             mEntry = new ArrayList<>();
         }

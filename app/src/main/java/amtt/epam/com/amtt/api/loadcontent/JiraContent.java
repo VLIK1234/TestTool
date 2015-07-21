@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import amtt.epam.com.amtt.api.ContentLoadingCallback;
 import amtt.epam.com.amtt.api.ContentConst;
+import amtt.epam.com.amtt.api.ContentLoadingCallback;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.bo.JComponentsResponse;
 import amtt.epam.com.amtt.bo.JCreateIssue;
@@ -26,6 +26,7 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -373,7 +374,12 @@ public class JiraContent{
             @Override
             public void onResult(List<DatabaseEntity> result) {
                 Spanned description = StepUtil.getStepInfo(result);
-                getContentCallback.resultOfDataLoading(description);
+                if (GSpreadsheetContent.getInstance().getLastTestcase() != null) {
+                    Spanned fullDescription = GSpreadsheetContent.getInstance().getLastTestcase().getFullTestCaseDescription(description);
+                    getContentCallback.resultOfDataLoading(fullDescription);
+                } else {
+                    getContentCallback.resultOfDataLoading(description);
+                }
             }
 
             @Override

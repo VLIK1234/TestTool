@@ -31,8 +31,8 @@ import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.util.StepUtil;
-import amtt.epam.com.amtt.excel.api.loadcontent.XMLContent;
-import amtt.epam.com.amtt.excel.bo.GoogleSpreadsheet;
+import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
+import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.exception.ExceptionType;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -199,9 +199,9 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
                         }
                     }
                 });
-                XMLContent.getInstance().getSpreadsheet(new GetContentCallback<GoogleSpreadsheet>() {
+                GSpreadsheetContent.getInstance().getSpreadsheet(new GetContentCallback<GSpreadsheet>() {
                     @Override
-                    public void resultOfDataLoading(GoogleSpreadsheet result) {
+                    public void resultOfDataLoading(GSpreadsheet result) {
                         if (result != null) {
                             Logger.d(TAG, "Loading spreadsheet finish");
                         }
