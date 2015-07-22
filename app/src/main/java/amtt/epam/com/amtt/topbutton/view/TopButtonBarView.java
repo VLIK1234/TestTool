@@ -110,7 +110,7 @@ public class TopButtonBarView extends FrameLayout {
                 ActiveUser.getInstance().setRecord(true);
                 hide();
                 StepUtil.clearAllSteps();
-                Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_SHORT).show();
                 mTopButtonListener.onTouch();
             }
         });
@@ -190,7 +190,7 @@ public class TopButtonBarView extends FrameLayout {
                 ActiveUser.getInstance().setRecord(false);
                 hide();
                 StepUtil.clearAllSteps();
-                Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_SHORT).show();
                 mTopButtonListener.onTouch();
             }
         });
