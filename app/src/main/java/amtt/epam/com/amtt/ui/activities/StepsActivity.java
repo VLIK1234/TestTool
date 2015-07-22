@@ -29,7 +29,7 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
 
     public static final int SPAN_COUNT = 3;
     private TextView emptyList;
-    private StepsAdapter adapter;
+    private StepsAdapter mAdapter;
     public RecyclerView recyclerView;
 
     @Override
@@ -54,8 +54,8 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
                     @Override
                     public void run() {
                         if (result != null) {
-                            adapter = new StepsAdapter((ArrayList) result, StepsActivity.this);
-                            recyclerView.setAdapter(adapter);
+                            mAdapter = new StepsAdapter((ArrayList) result, StepsActivity.this);
+                            recyclerView.setAdapter(mAdapter);
                             if (result.size() == 0) {
                                 recyclerView.setVisibility(View.GONE);
                                 emptyList.setVisibility(View.VISIBLE);
@@ -94,8 +94,8 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
 
     @Override
     public void onItemRemove(int position) {
-        adapter.removeItem(position);
-        if (adapter.getItemCount() == 0) {
+        mAdapter.removeItem(position);
+        if (mAdapter.getItemCount() == 0) {
             recyclerView.setVisibility(View.GONE);
             emptyList.setVisibility(View.VISIBLE);
         }
@@ -103,9 +103,9 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
 
     @Override
     public void onItemShow(int position) {
-        Intent preview = new Intent(StepsActivity.this, PaintActivity.class);
-        preview.putExtra(PaintActivity.STEP_ID_PATH, adapter.getScreenPath(position));
-        startActivity(preview);
+        Intent paintActivityIntent = new Intent(StepsActivity.this, PaintActivity.class);
+        paintActivityIntent.putExtra(PaintActivity.KEY_STEP_ID, mAdapter.getStepId(position));
+        startActivity(paintActivityIntent);
     }
 
 }

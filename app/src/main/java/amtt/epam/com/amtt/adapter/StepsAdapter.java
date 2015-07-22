@@ -27,12 +27,12 @@ import amtt.epam.com.amtt.database.util.StepUtil;
 
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> {
 
-    private ArrayList<Step> listStep = new ArrayList<>();
+    private ArrayList<Step> mStepList = new ArrayList<>();
     private ViewHolder.ClickListener clickListener;
     private final static int IMAGE_SIZE_RATIO = 3;
 
-    public StepsAdapter(ArrayList<Step> listStep, ViewHolder.ClickListener clickListener) {
-        this.listStep = listStep;
+    public StepsAdapter(ArrayList<Step> mStepList, ViewHolder.ClickListener clickListener) {
+        this.mStepList = mStepList;
         this.clickListener = clickListener;
     }
 
@@ -45,7 +45,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Step step = listStep.get(position);
+        Step step = mStepList.get(position);
         holder.step.setText(AmttApplication.getContext().getString(R.string.label_step) + (position + 1));
         if (step.getActivity() != null) {
             SpannableStringBuilder info = new SpannableStringBuilder();
@@ -62,18 +62,18 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return listStep == null ? 0 : listStep.size();
+        return mStepList == null ? 0 : mStepList.size();
     }
 
     public void removeItem(int position) {
-        DbObjectManager.INSTANCE.remove(listStep.get(position));
-        listStep.remove(position);
+        DbObjectManager.INSTANCE.remove(mStepList.get(position));
+        mStepList.remove(position);
         notifyItemRemoved(position);
         notifyDataSetChanged();
     }
 
-    public String getScreenPath(int position) {
-        return listStep.get(position).getScreenshotPath();
+    public int getStepId(int position) {
+        return mStepList.get(position).getId();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
