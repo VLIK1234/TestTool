@@ -46,7 +46,7 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                 break;
             case TAKE_SCREENSHOT:
                 if (mActivity != null) {
-                    ScreenshotHelper.takeScreenshot(context, mActivity, FragmentInfoHelper.sListFragments);
+                    ScreenshotHelper.takeScreenshot(context, mActivity, FragmentInfoHelper.getListFragments());
                     FragmentInfoHelper.writeArgumentsFromFragments(FragmentInfoHelper.sCurrentArguments);
                 } else {
                     Intent failIntent = new Intent();
@@ -60,7 +60,7 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                     Intent intentTakeOnlyInfo = new Intent();
                     intentTakeOnlyInfo.setAction(REQUEST_TAKE_ONLY_INFO);
                     intentTakeOnlyInfo.putExtra(LIST_FRAGMENTS_KEY,
-                            FragmentInfoHelper.sListFragments.substring(0, FragmentInfoHelper.sListFragments.lastIndexOf("<br/>") != -1 ? FragmentInfoHelper.sListFragments.lastIndexOf("<br/>") : 0));
+                            FragmentInfoHelper.getListFragments().substring(0, FragmentInfoHelper.getListFragments().lastIndexOf("<br/>") != -1 ? FragmentInfoHelper.getListFragments().lastIndexOf("<br/>") : 0));
                     intentTakeOnlyInfo.putExtra(ACTIVITY_CLASS_NAME_KEY, mActivity.getClass().getName());
                     intentTakeOnlyInfo.putExtra(PACKAGE_NAME_KEY, mActivity.getPackageName());
                     context.sendBroadcast(intentTakeOnlyInfo);
@@ -77,7 +77,7 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
 
     public void setActivity(Activity activity) {
         mActivity = activity;
-        FragmentInfoHelper.getFragmentsInfo(activity);
+        FragmentInfoHelper.initFragmentsInfo(activity);
     }
 
     public boolean needCloseUnitTest() {

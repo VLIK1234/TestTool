@@ -17,6 +17,7 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -829,7 +830,7 @@ public class CreateIssueActivity extends BaseActivity
             intent.setDataAndType(Uri.parse("file:///" + filePath), MimeType.IMAGE_GIF.getType());
         }
 
-        if("".equals(filePath)){
+        if(TextUtils.isEmpty(filePath)){
             if (intent != null) {
                 startActivity(intent);
             }

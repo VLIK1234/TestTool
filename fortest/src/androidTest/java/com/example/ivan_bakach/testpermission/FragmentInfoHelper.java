@@ -17,7 +17,7 @@ import java.io.IOException;
 public class FragmentInfoHelper {
     public static String sListFragments;
     public static String sCurrentArguments;
-    public static void getFragmentsInfo(final Activity activity){
+    public static void initFragmentsInfo(final Activity activity){
         sListFragments = "";
         sCurrentArguments = "";
         new Handler().postDelayed(new Runnable() {
@@ -56,5 +56,13 @@ public class FragmentInfoHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String getListFragments() {
+        return sListFragments;
+    }
+
+    public static void setListFragments(String listFragments) {
+        sListFragments = listFragments;
     }
 }
