@@ -7,6 +7,7 @@ import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
+import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
 import amtt.epam.com.amtt.googleapi.database.table.SpreadsheetTable;
 import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
@@ -65,4 +66,11 @@ public class ContentFromDatabase {
     public static void updateWorksheet(GWorksheet worksheet, IResult<Integer> result) {
         DbObjectManager.INSTANCE.update(worksheet, BaseColumns._ID + "=" + worksheet.getId(), null, result);
     }
+
+    public static void setTags(List<GTag> tags, IResult<Integer> result) {
+        List list = tags;
+        DbObjectManager.INSTANCE.add(list, result);
+    }
+
+
 }

@@ -76,6 +76,20 @@ public class GSpreadsheetContent {
         }
     }
 
+    private void setSpreadsheetSynchronously(GSpreadsheet result) {
+        ContentFromDatabase.setSpreadsheet(result, new IResult<Integer>() {
+            @Override
+            public void onResult(Integer result) {
+                Logger.i(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + " added " + String.valueOf(result));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Logger.e(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + " saving error ", e);
+            }
+        });
+    }
+
     private void getSpreadsheetAsynchronously(final GetContentCallback<GSpreadsheet> getContentCallback) {
         ContentFromBackend.getInstance().getSpreadsheetAsynchronously(new ContentLoadingCallback<GSpreadsheet>() {
             @Override
@@ -84,38 +98,7 @@ public class GSpreadsheetContent {
                     if (contentCallback != null) {
                         if (result != null) {
                             setSpreadsheet(result);
-                            mWorksheetsList = new ArrayList<>();
-                            GWorksheet worksheet;
-                            for (int i = 0; i < result.getEntry().size(); i++) {
-                                worksheet = new GWorksheet();
-                                worksheet.setSpreadsheetIdLink(result.getIdLink());
-                                worksheet.setIdLink(result.getEntry().get(i).getListFeedLink().getHref());
-                                worksheet.setTitle(result.getEntry().get(i).getTitle());
-                                worksheet.setUpdated(result.getEntry().get(i).getUpdated());
-                                mWorksheetsList.add(worksheet);
-                            }
-                            ContentFromDatabase.setWorksheets(mWorksheetsList, new IResult<Integer>() {
-                                @Override
-                                public void onResult(Integer result) {
-                                    Logger.i(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + ", Worksheets " + String.valueOf(result));
-                                }
-
-                                @Override
-                                public void onError(Exception e) {
-                                    Logger.e(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + ", Worksheets saving error ", e);
-                                }
-                            });
-                            ContentFromDatabase.setSpreadsheet(result, new IResult<Integer>() {
-                                @Override
-                                public void onResult(Integer result) {
-                                    Logger.i(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + " added " + String.valueOf(result));
-                                }
-
-                                @Override
-                                public void onError(Exception e) {
-                                    Logger.e(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + " saving error ", e);
-                                }
-                            });
+                            setSpreadsheetSynchronously(result);
                             contentCallback.resultOfDataLoading(result);
                         } else {
                             contentCallback.resultOfDataLoading(null);
@@ -132,45 +115,58 @@ public class GSpreadsheetContent {
         this.mWorksheet = worksheet;
     }
 
-    public void getWorksheet(final GetContentCallback<GWorksheet> getContentCallback) {
+    public void getWorksheet(final String linkWorksheet, final GetContentCallback<GWorksheet> getContentCallback) {
         if (mWorksheet != null) {
             getContentCallback.resultOfDataLoading(mWorksheet);
         } else {
-            if (mSpreadsheet != null) {
-                getWorksheetAsynchronously(mSpreadsheet.getListWorksheets().get(8), getContentCallback);
-            } else {
-                getSpreadsheet(new GetContentCallback<GSpreadsheet>() {
-                    @Override
-                    public void resultOfDataLoading(GSpreadsheet result) {
-                        if (result != null) {
-                            getWorksheetAsynchronously(result.getListWorksheets().get(8), getContentCallback);
-                        }else{
-                            getContentCallback.resultOfDataLoading(mWorksheet);
-                        }
-                    }
-                });
-            }
+            getWorksheetSynchronously(linkWorksheet, getContentCallback);
         }
     }
 
-    private void getWorksheetAsynchronously(final String worksheetKey, final GetContentCallback<GWorksheet> getContentCallback) {
-        ContentFromBackend.getInstance().getWorksheetAsynchronously(worksheetKey, new ContentLoadingCallback<GWorksheet>() {
+    private void setWorksheetSynchronously(final GWorksheet worksheet) {
+        ContentFromDatabase.setWorksheet(worksheet, new IResult<Integer>() {
+            @Override
+            public void onResult(Integer result) {
+                Logger.i(TAG, "Worksheet " + worksheet.getTitle() + " added " + String.valueOf(result));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Logger.e(TAG, "Worksheet " + worksheet.getTitle() + " saving error ", e);
+            }
+        });
+    }
+
+    private void getWorksheetSynchronously(final String linkWorksheet, final GetContentCallback<GWorksheet> getContentCallback) {
+        ContentFromDatabase.getWorksheet(linkWorksheet, new IResult<List<GWorksheet>>() {
+            @Override
+            public void onResult(List<GWorksheet> result) {
+                if (!result.isEmpty()) {
+                    GWorksheet worksheet = result.get(0);
+                    getContentCallback.resultOfDataLoading(worksheet);
+                } else {
+                    getWorksheetAsynchronously(linkWorksheet, getContentCallback);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                getWorksheetAsynchronously(linkWorksheet, getContentCallback);
+            }
+        });
+    }
+
+    private void getWorksheetAsynchronously(final String linkWorksheet, final GetContentCallback<GWorksheet> getContentCallback) {
+        ContentFromBackend.getInstance().getWorksheetAsynchronously(linkWorksheet, new ContentLoadingCallback<GWorksheet>() {
             @Override
             public void resultFromBackend(GWorksheet result, ContentConst tag, GetContentCallback contentCallback) {
                 if (tag == ContentConst.WORKSHEET_RESPONSE) {
                     if (contentCallback != null) {
                         if (result != null) {
+                            result.setSpreadsheetIdLink(mSpreadsheet.getIdLink());
                             setWorksheet(result);
-                            getWorksheetSynchronously(worksheetKey, new GetContentCallback<GWorksheet>() {
-                                @Override
-                                public void resultOfDataLoading(GWorksheet result) {
-                                    if(result != null){
-                                        result.setOpenSearchStartIndex(mWorksheet.getOpenSearchStartIndex());
-                                        result.setOpenSearchTotalResults(mWorksheet.getOpenSearchTotalResults());
-                                        updateWorksheet(result);
-                                    }
-                                }
-                            });
+                            setWorksheetSynchronously(result);
+                            setTestCasesSynchronously(result.getEntry(), result.getIdLink());
                             contentCallback.resultOfDataLoading(result);
                         } else {
                             contentCallback.resultOfDataLoading(null);
@@ -191,24 +187,6 @@ public class GSpreadsheetContent {
             @Override
             public void onError(Exception e) {
                 Logger.e(TAG, "Worksheet update error ", e);
-            }
-        });
-    }
-
-    private void getWorksheetSynchronously(final String worksheetKey, final GetContentCallback<GWorksheet> getContentCallback) {
-        ContentFromDatabase.getWorksheet(worksheetKey, new IResult<List<GWorksheet>>() {
-            @Override
-            public void onResult(List<GWorksheet> result) {
-                GWorksheet worksheet = null;
-                if (!result.isEmpty()) {
-                    worksheet = result.get(0);
-                }
-                getContentCallback.resultOfDataLoading(worksheet);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                getWorksheetAsynchronously(worksheetKey, getContentCallback);
             }
         });
     }
@@ -238,14 +216,14 @@ public class GSpreadsheetContent {
         return testcase;
     }
 
-    public GEntryWorksheet getLastTestcase(){
-        if(mLastTestcaseId != null){
+    public GEntryWorksheet getLastTestcase() {
+        if (mLastTestcaseId != null) {
             setLastTestCase(getTestcaseByIdGSX(mLastTestcaseId));
         }
         return mLastTestCase;
     }
 
-    public void setLastTestCase(GEntryWorksheet testCase){
+    public void setLastTestCase(GEntryWorksheet testCase) {
         this.mLastTestCase = testCase;
     }
 
@@ -255,6 +233,30 @@ public class GSpreadsheetContent {
 
     public void setLastTestcaseId(String lastTestcaseId) {
         this.mLastTestcaseId = lastTestcaseId;
+    }
+
+    private void setTestCasesSynchronously(List<GEntryWorksheet> testcases, String idLinkWorksheet) {
+        GEntryWorksheet testcase;
+        for (int i = 0; i < testcases.size(); i++) {
+            testcase = testcases.get(i);
+            testcase.setIdWorksheetLink(idLinkWorksheet);
+            setTestCaseSynchronously(testcase);
+            setTag(testcase.getTestCaseNameGSX(), testcase.getIdLink());
+        }
+    }
+
+    private void setTestCaseSynchronously(GEntryWorksheet testcase) {
+        ContentFromDatabase.setTestCase(testcase, new IResult<Integer>() {
+            @Override
+            public void onResult(Integer result) {
+                Logger.i(TAG, "TestCase added " + String.valueOf(result));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Logger.e(TAG, "TestCase saving error ", e);
+            }
+        });
     }
     //endregion
 
@@ -279,15 +281,31 @@ public class GSpreadsheetContent {
     public void setTag(String testCaseName, String testCaseIdLink) {
         if (testCaseName != null && testCaseIdLink != null) {
             GTag gTag;
+            List<GTag> mTags = new ArrayList<>();
             String[] tags = testCaseName.split(" - ");
             for (String tag : tags) {
                 gTag = new GTag();
                 gTag.setName(tag);
                 gTag.setIdLinkTestCase(testCaseIdLink);
-                setTag(gTag);
+                mTags.add(gTag);
             }
+            ContentFromDatabase.setTags(mTags, new IResult<Integer>() {
+                @Override
+                public void onResult(Integer result) {
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                }
+            });
         }
     }
     //endregion
+
+    public String getLinkWorksheet() {
+        return mSpreadsheet.getListWorksheets().get(8);
+    }
 
 }

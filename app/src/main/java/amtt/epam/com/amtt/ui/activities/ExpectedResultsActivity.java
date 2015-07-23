@@ -107,7 +107,7 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
     }
 
     private void refreshSteps() {
-        GSpreadsheetContent.getInstance().getWorksheet(new GetContentCallback<GWorksheet>() {
+        GSpreadsheetContent.getInstance().getWorksheet(GSpreadsheetContent.getInstance().getLinkWorksheet(), new GetContentCallback<GWorksheet>() {
             @Override
             public void resultOfDataLoading(GWorksheet result) {
                 if (result != null) {

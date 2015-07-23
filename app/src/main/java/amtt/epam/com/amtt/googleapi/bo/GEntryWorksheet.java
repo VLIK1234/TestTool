@@ -133,6 +133,14 @@ public class GEntryWorksheet extends GEntry<GEntryWorksheet> {
         return nameAndId;
     }
 
+    public String getIdWorksheetLink() {
+        return mIdWorksheetLink;
+    }
+
+    public void setIdWorksheetLink(String idWorksheetLink) {
+        this.mIdWorksheetLink = idWorksheetLink;
+    }
+
     public SpannableStringBuilder getFullTestCaseDescription(Spanned newSteps){
         SpannableStringBuilder fullDescription = new SpannableStringBuilder();
         if (getFullTestCaseDescription() != null) {
