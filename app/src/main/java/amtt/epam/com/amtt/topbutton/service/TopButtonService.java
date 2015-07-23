@@ -188,6 +188,7 @@ public class TopButtonService extends Service{
         mBuilderNotificationCompat = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(getString(R.string.notification_title))
+                .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setOngoing(true)
                 .setContentText(getString(R.string.notification_text))
                 .setGroup(getString(R.string.label_amtt_system_group_notification))
