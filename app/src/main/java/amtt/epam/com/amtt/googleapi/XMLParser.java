@@ -185,4 +185,16 @@ public class XMLParser {
         }
         return gLink;
     }
+
+    public static String loadPathGSX() throws IOException, XmlPullParserException {
+        return readString(GoogleApiConst.PATH_GSX_TAG);
+    }
+
+    public static String loadSummaryGSX() throws IOException, XmlPullParserException {
+        return readString(GoogleApiConst.SUMMARY_GSX_TAG);
+    }
+
+    public static String loadTestStatusGSX() throws IOException, XmlPullParserException {
+        return readString(GoogleApiConst.STATUS_GSX_TAG);
+    }
 }

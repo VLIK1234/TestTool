@@ -20,10 +20,8 @@ import amtt.epam.com.amtt.util.Constants;
 public class DetailActivity extends BaseActivity {
 
     private TextView mNameTextView;
-    private TextView mLabelTextView;
     private TextView mPriorityTextView;
     private TextView mStepsTextView;
-    private TextView mDescriptionTextView;
     private TextView mExpectedResultsTextView;
     private GEntryWorksheet mTestcase;
 
@@ -49,12 +47,10 @@ public class DetailActivity extends BaseActivity {
             mTestcase = GSpreadsheetContent.getInstance().getTestcaseByIdGSX(testCaseId);
             if (mTestcase != null) {
                 if (mTestcase.getTestCaseNameGSX() != null) {
-                    mNameTextView.setText(mTestcase.getTestcaseNameAndId());
+                    mNameTextView.setText(mTestcase.getTestCaseNameGSX());
                 }
-                mLabelTextView.setText(mTestcase.getLabelGSX());
                 mPriorityTextView.setText(mTestcase.getPriorityGSX());
                 mStepsTextView.setText(mTestcase.getTestStepsGSX());
-                mDescriptionTextView.setText(mTestcase.getTestCaseDescriptionGSX());
                 mExpectedResultsTextView.setText(mTestcase.getExpectedResultGSX());
             }
         }
@@ -62,10 +58,8 @@ public class DetailActivity extends BaseActivity {
 
     private void initViews() {
         mNameTextView = (TextView) findViewById(R.id.tv_testcase_name);
-        mLabelTextView = (TextView) findViewById(R.id.tv_label);
         mPriorityTextView = (TextView) findViewById(R.id.tv_priority);
         mStepsTextView = (TextView) findViewById(R.id.tv_steps);
-        mDescriptionTextView = (TextView) findViewById(R.id.tv_description);
         mExpectedResultsTextView = (TextView) findViewById(R.id.tv_expected_results);
         initBugButton();
         setTestcaseData();

@@ -500,7 +500,7 @@ public class CreateIssueActivity extends BaseActivity
             add(InputsUtil.getEndStartWhitespacesValidator());
         }});
         if (GSpreadsheetContent.getInstance().getLastTestcase() != null) {
-            mTitleTextInput.setText(GSpreadsheetContent.getInstance().getLastTestcase().getTestcaseNameAndId());
+            mTitleTextInput.setText(GSpreadsheetContent.getInstance().getLastTestcase().getTestCaseNameGSX());
         }
         mTitlePoint = new int[2];
         mTitleTextInput.getLocationOnScreen(mTitlePoint);

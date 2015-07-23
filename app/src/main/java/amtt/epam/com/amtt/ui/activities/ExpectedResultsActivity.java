@@ -20,6 +20,7 @@ import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.Logger;
 
 /**
  * @author Iryna Monchanka
@@ -30,6 +31,7 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
 
     //region Variables
     private static final int MESSAGE_REFRESH = 100;
+    private static final String TAG = ExpectedResultsActivity.class.getSimpleName();
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ExpectedResultsHandler mHandler;
     private ExpectedResultsAdapter mResultsAdapter;
@@ -107,18 +109,20 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
     }
 
     private void refreshSteps() {
-        GSpreadsheetContent.getInstance().getWorksheet(GSpreadsheetContent.getInstance().getLinkWorksheet(), new GetContentCallback<GWorksheet>() {
+        GSpreadsheetContent.getInstance().getAllTestCases(new GetContentCallback<List<GEntryWorksheet>>() {
             @Override
-            public void resultOfDataLoading(GWorksheet result) {
-                if (result != null) {
-                    List<GEntryWorksheet> entryWorksheetList = result.getEntry();
-                    if (entryWorksheetList != null && !entryWorksheetList.isEmpty()) {
-                        mResultsAdapter = new ExpectedResultsAdapter(entryWorksheetList, R.layout.adapter_expected_results, ExpectedResultsActivity.this);
-                        mRecyclerView.setAdapter(mResultsAdapter);
-                    }
+            public void resultOfDataLoading(final List<GEntryWorksheet> result) {
+                if (result != null && !result.isEmpty()) {
+                    ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            mResultsAdapter = new ExpectedResultsAdapter(result, R.layout.adapter_expected_results, ExpectedResultsActivity.this);
+                            mRecyclerView.setAdapter(mResultsAdapter);
+                        }
+                    });
+                } else {
+                    Logger.d(TAG, "List TestCases = null");
                 }
                 mSwipeRefreshLayout.setRefreshing(false);
-
             }
         });
     }

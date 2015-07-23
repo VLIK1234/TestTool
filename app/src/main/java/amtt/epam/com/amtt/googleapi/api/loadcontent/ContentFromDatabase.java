@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.googleapi.api.loadcontent;
 import java.util.List;
 
 import amtt.epam.com.amtt.database.constant.BaseColumns;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
@@ -59,8 +60,12 @@ public class ContentFromDatabase {
         DbObjectManager.INSTANCE.add(list, result);
     }
 
-    public static void getTestCases(String worksheetIdLink, IResult<List<GEntryWorksheet>> result) {
+    public static void getTestCasesByWorksheet(String worksheetIdLink, IResult<List<GEntryWorksheet>> result) {
         DbObjectManager.INSTANCE.query(new GEntryWorksheet(), null, new String[]{TestcaseTable._WORKSHEET_ID_LINK}, new String[]{worksheetIdLink}, result);
+    }
+
+    public static void getAllTestCases(IResult<List<DatabaseEntity>> result) {
+        DbObjectManager.INSTANCE.getAll(new GEntryWorksheet(), result);
     }
 
     public static void updateWorksheet(GWorksheet worksheet, IResult<Integer> result) {

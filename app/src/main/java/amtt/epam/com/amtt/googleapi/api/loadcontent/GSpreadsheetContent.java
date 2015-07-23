@@ -6,6 +6,7 @@ import java.util.List;
 import amtt.epam.com.amtt.api.ContentConst;
 import amtt.epam.com.amtt.api.ContentLoadingCallback;
 import amtt.epam.com.amtt.api.GetContentCallback;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
@@ -29,6 +30,7 @@ public class GSpreadsheetContent {
     private String mLastTestcaseId;
     private List<GTag> mTags;
     private List<GWorksheet> mWorksheetsList;
+    private List<GEntryWorksheet> mAllTestCasesList;
     //endregion
 
     private static class XMLContentHolder {
@@ -258,6 +260,56 @@ public class GSpreadsheetContent {
             }
         });
     }
+
+    public void getAllTestCases(final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
+        if (getAllTestCases() != null) {
+            getContentCallback.resultOfDataLoading(getAllTestCases());
+        } else {
+            ContentFromDatabase.getAllTestCases(new IResult<List<DatabaseEntity>>() {
+                @Override
+                public void onResult(List<DatabaseEntity> result) {
+                    if (result != null && !result.isEmpty()) {
+                        ArrayList<GEntryWorksheet> testcases = (ArrayList) result;
+                        getContentCallback.resultOfDataLoading(testcases);
+                    } else {
+                        getSpreadsheetAsynchronously(new GetContentCallback<GSpreadsheet>() {
+                            @Override
+                            public void resultOfDataLoading(GSpreadsheet result) {
+                                if (result != null) {
+                                    getWorksheet(getLinkWorksheet(), new GetContentCallback<GWorksheet>() {
+                                        @Override
+                                        public void resultOfDataLoading(GWorksheet result) {
+                                            if (result != null) {
+                                                getContentCallback.resultOfDataLoading(result.getEntry());
+                                            } else {
+                                                Logger.e(TAG, "Worksheet == null");
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    Logger.e(TAG, "Spreadsheet == null");
+                                }
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    getContentCallback.resultOfDataLoading(null);
+                    Logger.e(TAG, "TestCase loading error ", e);
+                }
+            });
+        }
+    }
+
+    public List<GEntryWorksheet> getAllTestCases() {
+        if (mAllTestCasesList != null) {
+            return mAllTestCasesList;
+        } else {
+            return null;
+        }
+    }
     //endregion
 
     //region Tags
@@ -305,7 +357,11 @@ public class GSpreadsheetContent {
     //endregion
 
     public String getLinkWorksheet() {
-        return mSpreadsheet.getListWorksheets().get(8);
+        if (mSpreadsheet != null && mSpreadsheet.getListWorksheets()!= null) {
+            return mSpreadsheet.getListWorksheets().get(0);
+        }else{
+            return null;
+        }
     }
 
 }

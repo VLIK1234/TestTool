@@ -103,7 +103,7 @@ public class GWorksheet extends GSheet<GWorksheet> {
     public GEntryWorksheet getEntryById(String id) {
         GEntryWorksheet entryWorksheet = null;
         for (GEntryWorksheet entry : mEntry) {
-            if (entry.getIdGSX().equals(id)) {
+            if (entry.getIdLink().equals(id)) {
                 entryWorksheet = entry;
             }
         }

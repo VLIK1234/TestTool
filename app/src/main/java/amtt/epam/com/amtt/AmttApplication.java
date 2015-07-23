@@ -6,7 +6,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import amtt.epam.com.amtt.common.CoreApplication;
 import amtt.epam.com.amtt.googleapi.processing.SpreadsheetProcessor;
-import amtt.epam.com.amtt.googleapi.processing.WorksheetProcessor;
+import amtt.epam.com.amtt.googleapi.processing.OldWorksheetProcessor;
 import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.processing.ComponentsProcessor;
 import amtt.epam.com.amtt.processing.PostCreateIssueProcessor;
@@ -47,7 +47,7 @@ public class AmttApplication extends CoreApplication {
         registerPlugin(new PriorityProcessor());
         registerPlugin(new PostCreateIssueProcessor());
         registerPlugin(new SpreadsheetProcessor());
-        registerPlugin(new WorksheetProcessor());
+        registerPlugin(new OldWorksheetProcessor());
     }
 
 }

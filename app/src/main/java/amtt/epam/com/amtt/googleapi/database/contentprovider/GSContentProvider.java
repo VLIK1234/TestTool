@@ -16,7 +16,7 @@ import amtt.epam.com.amtt.googleapi.database.DataBaseManager;
 
 public class GSContentProvider extends ContentProvider {
 
-    public static final String AUTHORITY = "amtt.epam.com.amtt.excel.database.contentprovider";
+    public static final String AUTHORITY = "amtt.epam.com.amtt.googleapi.database.contentprovider";
 
     private static DataBaseManager mDataBaseManager;
 
