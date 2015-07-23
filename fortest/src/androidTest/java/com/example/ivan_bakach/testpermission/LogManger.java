@@ -21,7 +21,7 @@ public class LogManger {
     public static final String EXCEPTION_FILTER = " *:e";
     public static final String TEMPLATE_EXCEPION = "%s/log_exception.txt";
     public static final String TEMPLATE_COMMON = "%s/log_common.txt";
-    public static final String TEMPLATE_ARGUMENTS_FRAGMENTS = "%s/arguments_file.txt";
+    public static final String TEMPLATE_ARGUMENTS_FRAGMENTS = "%s/log_arguments.txt";
     public static final File EXTERNAL_CACHE = new File(Environment.getExternalStorageDirectory(), AMTT_CACHE_DIRECTORY);
 
     public static void writeMultipleLogs() {

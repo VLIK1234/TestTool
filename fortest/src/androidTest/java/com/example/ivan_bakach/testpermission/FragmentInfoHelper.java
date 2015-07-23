@@ -51,6 +51,7 @@ public class FragmentInfoHelper {
         try {
             FileOutputStream argumentsFile = IOUtils.openFileOutput(LogManger.sArgumentsFragments);
             argumentsFile.write(arguments.getBytes());
+            argumentsFile.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
