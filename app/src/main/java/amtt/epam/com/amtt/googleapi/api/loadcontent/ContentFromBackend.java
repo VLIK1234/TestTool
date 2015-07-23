@@ -9,7 +9,7 @@ import amtt.epam.com.amtt.googleapi.api.GSpreadsheetApi;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
 import amtt.epam.com.amtt.googleapi.processing.SpreadsheetProcessor;
-import amtt.epam.com.amtt.googleapi.processing.OldWorksheetProcessor;
+import amtt.epam.com.amtt.googleapi.processing.WorksheetProcessor;
 
 /**
  * @author Iryna Monchanka
@@ -34,7 +34,7 @@ public class ContentFromBackend {
 
     public void getWorksheetAsynchronously(String worksheetKey, ContentLoadingCallback<GWorksheet> contentLoadingCallback,
                                            GetContentCallback<GWorksheet> spreadsheetContentCallback) {
-        GSpreadsheetApi.get().loadDocument(worksheetKey, OldWorksheetProcessor.NAME,
+        GSpreadsheetApi.get().loadDocument(worksheetKey, WorksheetProcessor.NAME,
                 getCallback(ContentConst.WORKSHEET_RESPONSE, contentLoadingCallback, spreadsheetContentCallback));
     }
 

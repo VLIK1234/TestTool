@@ -44,10 +44,12 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
 
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         GEntryWorksheet testcase = mTestcases.get(i);
-        Logger.d(TAG, testcase.getTestCaseNameGSX());
-        viewHolder.mTestcaseName.setText(testcase.getTestCaseNameGSX());
-        viewHolder.mPriority.setText(testcase.getPriorityGSX());
-        viewHolder.mSteps.setText(testcase.getTestStepsGSX());
+        if (testcase != null) {
+            Logger.d(TAG, testcase.getTestCaseNameGSX());
+            viewHolder.mTestcaseName.setText(testcase.getTestCaseNameGSX());
+            viewHolder.mPriority.setText(testcase.getPriorityGSX());
+            viewHolder.mSteps.setText(testcase.getTestStepsGSX());
+        }
     }
 
     @Override
