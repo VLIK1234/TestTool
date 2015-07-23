@@ -32,14 +32,13 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.http.MimeType;
-import amtt.epam.com.amtt.util.AttachmentManager;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
  * @author Iryna Monchanka
  * @version on 27.05.2015
  */
-public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ViewHolder> implements IResult<List<DatabaseEntity>> {
+public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -90,13 +89,15 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
                         .show();
                 return;
             }
-            switch (v.getId()) {
-                case R.id.iv_close:
-                    mListener.onItemRemove(getAdapterPosition());
-                    break;
-                case R.id.iv_screenImage:
-                    mListener.onItemShow(getAdapterPosition());
-                    break;
+            if (mListener != null) {
+                switch (v.getId()) {
+                    case R.id.iv_close:
+                        mListener.onItemRemove(getAdapterPosition());
+                        break;
+                    case R.id.iv_screenImage:
+                        mListener.onItemShow(getAdapterPosition());
+                        break;
+                }
             }
         }
 
@@ -134,10 +135,12 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     private int mRowLayout;
     private Context mContext;
     private ViewHolder.ClickListener mListener;
+    private IResult<List<DatabaseEntity>> mDbResultListener;
 
-    public AttachmentAdapter(Context context, List<Attachment> screenshots, int rowLayout, ViewHolder.ClickListener clickListener) {
+    public AttachmentAdapter(Context context, List<Attachment> screenshots, int rowLayout) {
         mContext = context;
-        mListener = clickListener;
+        mListener = (ViewHolder.ClickListener) context;
+        mDbResultListener = (IResult<List<DatabaseEntity>>) context;
         mAttachments = screenshots;
         mRowLayout = rowLayout;
         AmttApplication.getContext().getContentResolver().registerContentObserver(AmttUri.STEP.get(), true, new StepScreenshotObserver(new Handler(), this));
@@ -224,20 +227,9 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     }
 
     private void reloadData() {
-        DbObjectManager.INSTANCE.getAll(new Step(), this);
-    }
-
-    //Callbacks
-    //IResult
-    @Override
-    public void onResult(List<DatabaseEntity> result) {
-        mAttachments = AttachmentManager.getInstance().getAttachmentList(result);
-        notifyDataSetChanged();
-    }
-
-    @Override
-    public void onError(Exception e) {
-
+        if (mDbResultListener != null) {
+            DbObjectManager.INSTANCE.getAll(new Step(), mDbResultListener);
+        }
     }
 
 }

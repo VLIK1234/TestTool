@@ -47,7 +47,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         IResult<List<Step>>,
         ImageLoadingListener {
 
-    public static final String STEP_ID_PATH = "step_id_path";
+    public static final String KEY_STEP_ID = "key_step_id";
     public static final int HIDDEN_UI_FLAG = View.SYSTEM_UI_FLAG_LOW_PROFILE;
     public static final int HIDE_UI_DELAY = 4000;
     public static final int HIDE_UI = 0;
@@ -71,7 +71,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             initPaintView();
-            DbObjectManager.INSTANCE.query(new Step(), StepsTable.PROJECTION, new String[]{StepsTable._ID}, new String[]{String.valueOf(extra.getInt(STEP_ID_PATH))}, this);
+            DbObjectManager.INSTANCE.query(new Step(), StepsTable.PROJECTION, new String[]{StepsTable._ID}, new String[]{String.valueOf(extra.getInt(KEY_STEP_ID))}, this);
         } else {
             setErrorState();
         }
@@ -81,6 +81,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
     protected void onResume() {
         super.onResume();
         TopButtonService.sendActionChangeTopButtonVisibility(false);
+        mHandler.sendEmptyMessageDelayed(HIDE_UI, HIDE_UI_DELAY);
     }
 
     @Override
@@ -242,7 +243,6 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         mActionBar.setShowHideAnimationEnabled(true);
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mHandler = new Handler(this);
-        mHandler.sendEmptyMessageDelayed(HIDE_UI, HIDE_UI_DELAY);
     }
 
     private void setErrorState() {
