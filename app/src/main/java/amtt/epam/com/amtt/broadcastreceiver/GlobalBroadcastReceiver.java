@@ -49,13 +49,13 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
     public static boolean isStepWithoutActivityInfo = false;
 
     public static final String LIST_FRAGMENTS_KEY = "listFragments";
-    private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot13_%s.jpeg";
+    private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.png";
     public static final String SCREENSHOT_DATETIME_FORMAT = "yyyy-MM-dd-HH-mm-ss";
-    public static final String SCREEN_PATH_KEY = "screenPath";
     public static final int QUALITY_COMPRESS_SCREENSHOT = 90;
     public static final String ACTIVITY_CLASS_NAME_KEY = "activityClassName";
     public static final String PACKAGE_NAME_KEY = "packageName";
     public static final String AMTT_CACHE_DIRECTORY = "Amtt_cache";
+    public static final String SCREEN_KEY = "screen";
 
 
     @Override
@@ -76,7 +76,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     final String activtyClassName = extrasScreenshot.getString(ACTIVITY_CLASS_NAME_KEY);
                     final String packageName = extrasScreenshot.getString(PACKAGE_NAME_KEY);
 
-                    byte[] bytes = extrasScreenshot.getByteArray("image");
+                    byte[] bytes = extrasScreenshot.getByteArray(SCREEN_KEY);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     final String screenPath = writeBitmapInFile(bitmap);
                     if (screenPath!=null&&listFragments!=null) {

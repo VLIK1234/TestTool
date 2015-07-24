@@ -4,17 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Environment;
 import android.view.View;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by Ivan_Bakach on 14.07.2015.
@@ -27,6 +19,7 @@ public class ScreenshotHelper {
     public static final String ACTIVITY_CLASS_NAME_KEY = "activityClassName";
     public static final String PACKAGE_NAME_KEY = "packageName";
     public static final String BR_TAG = "<br/>";
+    public static final String SCREEN_KEY = "screen";
 
     public static void takeScreenshot(Context context, Activity activity, String listFragments) {
 // create bitmap screen capture
@@ -41,10 +34,8 @@ public class ScreenshotHelper {
 
         Intent intent = new Intent();
         intent.setAction(REQUEST_TAKE_SCREENSHOT_ACTION);
-//        intent.putExtra(SCREEN_PATH_KEY, path);
-//        Bitmap outBitmap  = scaleDownBitmap(bitmap, context);
         byte[] bytes = stream.toByteArray();
-        intent.putExtra("image", bytes);
+        intent.putExtra(SCREEN_KEY, bytes);
         intent.putExtra(LIST_FRAGMENTS_KEY, listFragments.substring(0, listFragments.lastIndexOf(BR_TAG) != -1 ? listFragments.lastIndexOf(BR_TAG) : 0));
         intent.putExtra(ACTIVITY_CLASS_NAME_KEY, activity.getClass().getName());
         intent.putExtra(PACKAGE_NAME_KEY, activity.getPackageName());
