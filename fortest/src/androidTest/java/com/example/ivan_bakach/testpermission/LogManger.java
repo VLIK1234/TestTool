@@ -1,9 +1,12 @@
 package com.example.ivan_bakach.testpermission;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -13,7 +16,6 @@ import java.io.IOException;
  */
 public class LogManger {
 
-    public static final String AMTT_CACHE_DIRECTORY = "Amtt_cache";
     public static String sArgumentsFragments;
     public static String sExceptionLog;
     public static String sCommonLog;
@@ -22,10 +24,9 @@ public class LogManger {
     public static final String TEMPLATE_EXCEPION = "%s/log_exception.txt";
     public static final String TEMPLATE_COMMON = "%s/log_common.txt";
     public static final String TEMPLATE_ARGUMENTS_FRAGMENTS = "%s/log_arguments.txt";
-    public static final File EXTERNAL_CACHE = new File(Environment.getExternalStorageDirectory(), AMTT_CACHE_DIRECTORY);
 
-    public static void writeMultipleLogs() {
-        EXTERNAL_CACHE.mkdirs();
+    public static void writeMultipleLogs(Context context) {
+        File EXTERNAL_CACHE = context.getFilesDir();
         sArgumentsFragments = String.format(TEMPLATE_ARGUMENTS_FRAGMENTS, EXTERNAL_CACHE.getPath());
         sExceptionLog = String.format(TEMPLATE_EXCEPION, EXTERNAL_CACHE.getPath());
         sCommonLog = String.format(TEMPLATE_COMMON, EXTERNAL_CACHE.getPath());

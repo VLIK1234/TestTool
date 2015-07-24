@@ -24,10 +24,10 @@ public class ScreenshotHelper {
     public static void takeScreenshot(Context context, Activity activity, String listFragments) {
 // create bitmap screen capture
         Bitmap bitmap;
-        View v1 = activity.getWindow().getDecorView().getRootView();
-        v1.setDrawingCacheEnabled(true);
-        bitmap = Bitmap.createBitmap(v1.getDrawingCache());
-        v1.setDrawingCacheEnabled(false);
+        View rootView = activity.getWindow().getDecorView().getRootView();
+        rootView.setDrawingCacheEnabled(true);
+        bitmap = Bitmap.createBitmap(rootView.getDrawingCache());
+        rootView.setDrawingCacheEnabled(false);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, QUALITY_COMPRESS_SCREENSHOT, stream);

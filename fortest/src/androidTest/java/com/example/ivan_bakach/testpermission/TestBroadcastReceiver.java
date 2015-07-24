@@ -5,6 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 /**
  * Created by Ivan_Bakach on 29.06.2015.
  */
@@ -13,7 +18,6 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
     public static final String PING_ANSWER = "PING_ANSWER";
     public static final String PING_REQUEST = "PING_REQUEST";
     public static final String CLOSE_TEST = "CLOSE_TEST";
-    public static final String CATEGORY = "android.intent.category.DEFAULT";
     public static final String TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
     public static final String PING_ANSWER_VALUE = "Success answer";
     public static final String TAKE_SCREEN_FAIL_KEY = "failScreen";
@@ -23,6 +27,7 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
     public static final String LIST_FRAGMENTS_KEY = "listFragments";
     public static final String TAKE_ONLY_INFO = "TAKE_ONLY_INFO";
     public static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
+    public static final String TAKE_LOGS = "TAKE_LOGS";
     private boolean mCloseUnitTest;
     public Activity mActivity;
 
@@ -43,6 +48,19 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                 IOUtils.deleteFileIfExist(LogManger.sExceptionLog);
                 IOUtils.deleteFileIfExist(LogManger.sCommonLog);
                 mCloseUnitTest = true;
+                break;
+            case TAKE_LOGS:
+                File logFile = new File(LogManger.sCommonLog);
+                byte[] bytesArray = null;
+                try {
+                    bytesArray = IOUtils.toByteArray(logFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Intent intentLogs = new Intent();
+                intentLogs.setAction("LOG_FILE");
+                intentLogs.putExtra("filePath", bytesArray);
+                context.sendBroadcast(intentLogs);
                 break;
             case TAKE_SCREENSHOT:
                 if (mActivity != null) {

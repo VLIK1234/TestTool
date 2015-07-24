@@ -110,6 +110,9 @@ public class TopButtonBarView extends FrameLayout {
                 ActiveUser.getInstance().setRecord(true);
                 hide();
                 StepUtil.clearAllSteps();
+//                Intent takeLogs = new Intent();
+//                takeLogs.setAction("TAKE_LOGS");
+//                getContext().sendBroadcast(takeLogs);
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_SHORT).show();
                 mTopButtonListener.onTouch();
             }

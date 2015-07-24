@@ -33,7 +33,7 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
 
     public void testMonitor() {
         final Context context = getInstrumentation().getTargetContext();
-        LogManger.writeMultipleLogs();
+        LogManger.writeMultipleLogs(getInstrumentation().getTargetContext());
         mApplication = (Application)getInstrumentation().getTargetContext().getApplicationContext();
         final Thread.UncaughtExceptionHandler exceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -50,17 +50,19 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
         });
         mApplication.registerActivityLifecycleCallbacks(this);
         IntentFilter filterReceiver = new IntentFilter();
-        filterReceiver.addCategory(TestBroadcastReceiver.CATEGORY);
+        filterReceiver.addCategory(Intent.CATEGORY_DEFAULT);
         filterReceiver.addAction(TestBroadcastReceiver.PING_ANSWER);
         filterReceiver.addAction(TestBroadcastReceiver.CLOSE_TEST);
         filterReceiver.addAction(TestBroadcastReceiver.TAKE_SCREENSHOT);
+        filterReceiver.addAction(TestBroadcastReceiver.TAKE_LOGS);
         filterReceiver.addAction(TestBroadcastReceiver.TAKE_ONLY_INFO);
         context.registerReceiver(receiver, filterReceiver);
         receiver.setCloseUnitTest(false);
 
         while (!receiver.needCloseUnitTest()) {
             try {
-                Thread.sleep(RECEIVER_TIMEOUT);
+                Thread.sleep(0);
+                Log.d("TAG", System.currentTimeMillis()+"");
                 if (receiver.needCloseUnitTest()) {
                     context.unregisterReceiver(receiver);
                     mApplication.unregisterActivityLifecycleCallbacks(this);

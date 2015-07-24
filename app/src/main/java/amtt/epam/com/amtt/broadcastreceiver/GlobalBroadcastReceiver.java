@@ -45,7 +45,6 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
     public static final String EXCEPTION_ANSWER = "EXCEPTION_ANSWER";
     public static final String ANSWER_EXCEPTION_KEY = "answer";
     public static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
-    public static String sLogFilePath = "";
     public static boolean isStepWithoutActivityInfo = false;
 
     public static final String LIST_FRAGMENTS_KEY = "listFragments";
@@ -63,11 +62,11 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
         switch (intent.getAction()) {
             case LOG_FILE:
                 Bundle extras = intent.getExtras();
-                String filePath;
+                byte[] bytesArray;
                 if (extras!=null) {
-                    filePath = extras.getString(FILE_PATH_KEY);
-                    sLogFilePath = filePath;
-                    Toast.makeText(context, "Create log in file "+ sLogFilePath, Toast.LENGTH_LONG).show();break;
+                    bytesArray = extras.getByteArray(FILE_PATH_KEY);
+
+                    Toast.makeText(context, "Create log in file " + bytesArray.length, Toast.LENGTH_LONG).show();break;
                 }break;
             case REQUEST_TAKE_SCREENSHOT:
                 Bundle extrasScreenshot = intent.getExtras();
