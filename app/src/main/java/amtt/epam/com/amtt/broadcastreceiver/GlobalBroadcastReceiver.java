@@ -1,13 +1,27 @@
 package amtt.epam.com.amtt.broadcastreceiver;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
+import android.view.View;
 import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.database.util.StepUtil;
@@ -15,6 +29,7 @@ import amtt.epam.com.amtt.helper.NotificationIdConstant;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.activities.CreateIssueActivity;
 import amtt.epam.com.amtt.util.ActivityMetaUtil;
+import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.PreferenceUtil;
 
 /**
@@ -26,16 +41,21 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
 
     public static final String LOG_FILE = "LOG_FILE";
     public static final String REQUEST_TAKE_SCREENSHOT = "REQUEST_TAKE_SCREENSHOT";
-    public static final String SCREEN_PATH_KEY = "screenPath";
-    public static final String LIST_FRAGMENTS_KEY = "listFragments";
-    public static final String ACTIVITY_CLASS_NAME_KEY = "activityClassName";
-    public static final String PACKAGE_NAME_KEY = "packageName";
     public static final String FILE_PATH_KEY = "filePath";
     public static final String EXCEPTION_ANSWER = "EXCEPTION_ANSWER";
     public static final String ANSWER_EXCEPTION_KEY = "answer";
     public static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
     public static String sLogFilePath = "";
     public static boolean isStepWithoutActivityInfo = false;
+
+    public static final String LIST_FRAGMENTS_KEY = "listFragments";
+    private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot13_%s.jpeg";
+    public static final String SCREENSHOT_DATETIME_FORMAT = "yyyy-MM-dd-HH-mm-ss";
+    public static final String SCREEN_PATH_KEY = "screenPath";
+    public static final int QUALITY_COMPRESS_SCREENSHOT = 90;
+    public static final String ACTIVITY_CLASS_NAME_KEY = "activityClassName";
+    public static final String PACKAGE_NAME_KEY = "packageName";
+    public static final String AMTT_CACHE_DIRECTORY = "Amtt_cache";
 
 
     @Override
@@ -52,10 +72,13 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
             case REQUEST_TAKE_SCREENSHOT:
                 Bundle extrasScreenshot = intent.getExtras();
                 if (extrasScreenshot!=null) {
-                    final String screenPath = extrasScreenshot.getString(SCREEN_PATH_KEY);
                     final String listFragments = extrasScreenshot.getString(LIST_FRAGMENTS_KEY);
                     final String activtyClassName = extrasScreenshot.getString(ACTIVITY_CLASS_NAME_KEY);
                     final String packageName = extrasScreenshot.getString(PACKAGE_NAME_KEY);
+
+                    byte[] bytes = extrasScreenshot.getByteArray("image");
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    final String screenPath = writeBitmapInFile(bitmap);
                     if (screenPath!=null&&listFragments!=null) {
                         if (isStepWithoutActivityInfo) {
                             isStepWithoutActivityInfo = false;
@@ -101,6 +124,30 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     break;
                 }break;
         }
+    }
+
+    public static String writeBitmapInFile(Bitmap bitmap){
+        long imageTime = System.currentTimeMillis();
+        String imageDate = new SimpleDateFormat(SCREENSHOT_DATETIME_FORMAT).format(new Date(imageTime));
+        String imageFileName = String.format(SCREENSHOT_FILE_NAME_TEMPLATE, imageDate);
+        String path = Environment.getExternalStorageDirectory().toString() + File.separatorChar + AMTT_CACHE_DIRECTORY + File.separatorChar + imageFileName;
+
+// create bitmap screen capture
+        OutputStream fout = null;
+        File imageFile = new File(path);
+        try {
+            fout = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.PNG, QUALITY_COMPRESS_SCREENSHOT, fout);
+            fout.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            IOUtils.close(fout);
+        }
+        return path;
+
     }
 
     public static void setStepWithoutActivityInfo(boolean stepWithoutActivityInfo) {
