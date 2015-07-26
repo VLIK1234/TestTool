@@ -1,5 +1,6 @@
 package com.example.ivan_bakach.testpermission;
 
+import android.os.Environment;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -15,8 +16,6 @@ import java.io.OutputStream;
 public class IOUtils {
 
     private static final String TAG = IOUtils.class.getSimpleName();
-    private static final int DEFAULT_BUFFER_SIZE = 1024 * 4;
-    private static final int EOF = -1;
 
     public static void close(Closeable... closeablesArray) {
         for (Closeable closeable : closeablesArray) {
@@ -48,14 +47,8 @@ public class IOUtils {
         }
     }
 
-    public static byte[] toByteArray(final InputStream input) throws IOException {
-        final ByteArrayOutputStream output = new ByteArrayOutputStream();
-        copy(input, output);
-        return output.toByteArray();
-    }
-
-    public static byte[] toByteArray(final File file) throws IOException {
-        FileInputStream fileInputStream=null;
+    public static byte[] toByteArray(File file) throws IOException {
+        FileInputStream fileInputStream = null;
         byte[] byteArray = new byte[(int) file.length()];
         try {
             fileInputStream = new FileInputStream(file);
@@ -68,29 +61,21 @@ public class IOUtils {
         }
         return byteArray;
     }
-    public static int copy(final InputStream input, final OutputStream output) throws IOException {
-        final long count = copyLarge(input, output);
-        if (count > Integer.MAX_VALUE) {
-            return -1;
+
+    public static File[] getAllFileInFolder(File folder){
+        return folder.listFiles();
+    }
+
+    public static boolean deleteFiles(File... listFile){
+        boolean delete = false;
+        File[] allAttachFile = listFile;
+        if (allAttachFile!=null) {
+            for (File file : allAttachFile) {
+                if (file.exists()) {
+                    delete = file.delete();
+                }
+            }
         }
-        return (int) count;
-    }
-
-    public static long copyLarge(final InputStream input, final OutputStream output) throws IOException {
-        return copy(input, output, DEFAULT_BUFFER_SIZE);
-    }
-
-    public static long copy(final InputStream input, final OutputStream output, final int bufferSize) throws IOException {
-        return copyLarge(input, output, new byte[bufferSize]);
-    }
-
-    public static long copyLarge(final InputStream input, final OutputStream output, final byte[] buffer) throws IOException {
-        long count = 0;
-        int n;
-        while (EOF != (n = input.read(buffer))) {
-            output.write(buffer, 0, n);
-            count += n;
-        }
-        return count;
+        return delete;
     }
 }

@@ -110,6 +110,10 @@ public class TopButtonBarView extends FrameLayout {
                 ActiveUser.getInstance().setRecord(true);
                 hide();
                 StepUtil.clearAllSteps();
+
+                Intent intentLogs = new Intent();
+                intentLogs.setAction("SEND_LOG_FILE");
+                getContext().sendOrderedBroadcast(intentLogs, null);
 //                Intent takeLogs = new Intent();
 //                takeLogs.setAction("TAKE_LOGS");
 //                getContext().sendBroadcast(takeLogs);

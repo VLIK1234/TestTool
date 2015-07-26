@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -28,6 +26,10 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
     public static final String TAKE_ONLY_INFO = "TAKE_ONLY_INFO";
     public static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
     public static final String TAKE_LOGS = "TAKE_LOGS";
+    public static final String FILE_NAME_KEY = "fileName";
+    public static final String BYTE_ARRAY_DATA_KEY = "byteArrayData";
+    public static final String SEND_LOG_FILE_ACTION = "SEND_LOG_FILE";
+    public static final String CAT_ALL_FILE_ACTION = "CAT_ALL_FILE";
     private boolean mCloseUnitTest;
     public Activity mActivity;
 
@@ -50,17 +52,23 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                 mCloseUnitTest = true;
                 break;
             case TAKE_LOGS:
-                File logFile = new File(LogManger.sCommonLog);
-                byte[] bytesArray = null;
-                try {
-                    bytesArray = IOUtils.toByteArray(logFile);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                File externalCacheDir = context.getCacheDir();
+                File logCacheDir = new File(externalCacheDir, LogManger.LOGS_CACHE_DIR);
+                File[] listFile = IOUtils.getAllFileInFolder(logCacheDir);
+                for (File file : listFile) {
+                    Intent intentLogs = new Intent();
+                    intentLogs.setAction(SEND_LOG_FILE_ACTION);
+                    intentLogs.putExtra(FILE_NAME_KEY, file.getName());
+                    try {
+                        intentLogs.putExtra(BYTE_ARRAY_DATA_KEY, IOUtils.toByteArray(file));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    context.sendOrderedBroadcast(intentLogs, null);
                 }
                 Intent intentLogs = new Intent();
-                intentLogs.setAction("LOG_FILE");
-                intentLogs.putExtra("filePath", bytesArray);
-                context.sendBroadcast(intentLogs);
+                intentLogs.setAction(CAT_ALL_FILE_ACTION);
+                context.sendOrderedBroadcast(intentLogs, null);
                 break;
             case TAKE_SCREENSHOT:
                 if (mActivity != null) {

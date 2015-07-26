@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.util;
 
+import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,6 +44,18 @@ public class IOUtils {
 
     public static File createNewFile(String path) {
         return new File(path);
+    }
+
+    public static void byteArrayToFile(byte[] byteArray, File file){
+        try {
+            FileOutputStream outputStream = new FileOutputStream(file);
+            BufferedOutputStream bos = new BufferedOutputStream(outputStream);
+            bos.write(byteArray);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

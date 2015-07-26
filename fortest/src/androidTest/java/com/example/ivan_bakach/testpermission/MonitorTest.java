@@ -61,8 +61,8 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
 
         while (!receiver.needCloseUnitTest()) {
             try {
-                Thread.sleep(0);
-                Log.d("TAG", System.currentTimeMillis()+"");
+                Thread.sleep(1000);
+//                Log.d("TAG", System.currentTimeMillis()+"");
                 if (receiver.needCloseUnitTest()) {
                     context.unregisterReceiver(receiver);
                     mApplication.unregisterActivityLifecycleCallbacks(this);
