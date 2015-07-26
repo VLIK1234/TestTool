@@ -9,8 +9,11 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ArrayAdapter;
+import android.widget.MultiAutoCompleteTextView;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.R;
@@ -18,6 +21,7 @@ import amtt.epam.com.amtt.adapter.ExpectedResultsAdapter;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
+import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.Logger;
@@ -27,15 +31,15 @@ import amtt.epam.com.amtt.util.Logger;
  * @version on 03.06.2015
  */
 
-public class ExpectedResultsActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, ExpectedResultsAdapter.ViewHolder.ClickListener {
+public class ExpectedResultsActivity extends BaseActivity implements ExpectedResultsAdapter.ViewHolder.ClickListener {
 
     //region Variables
-    private static final int MESSAGE_REFRESH = 100;
     private static final String TAG = ExpectedResultsActivity.class.getSimpleName();
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private ExpectedResultsHandler mHandler;
     private ExpectedResultsAdapter mResultsAdapter;
     private RecyclerView mRecyclerView;
+    private MultiAutoCompleteTextView mTagsAutocompleteTextView;
+    private ArrayAdapter adapter;
+
     private Boolean mIsShowDetail = false;
     //endregion
 
@@ -56,22 +60,6 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
         finish();
     }
 
-    public static class ExpectedResultsHandler extends Handler {
-
-        private final WeakReference<ExpectedResultsActivity> mActivity;
-
-        ExpectedResultsHandler(ExpectedResultsActivity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            ExpectedResultsActivity service = mActivity.get();
-            service.refreshSteps();
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,8 +68,6 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         initViews();
-        mHandler = new ExpectedResultsHandler(ExpectedResultsActivity.this);
-        mSwipeRefreshLayout.setOnRefreshListener(ExpectedResultsActivity.this);
         refreshSteps();
     }
 
@@ -94,21 +80,39 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
     }
 
     private void initViews() {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         mRecyclerView = (RecyclerView) findViewById(android.R.id.list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ExpectedResultsActivity.this);
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        initTagsAutocompleteTextView();
     }
 
-    @Override
-    public void onRefresh() {
-        mHandler.removeMessages(MESSAGE_REFRESH);
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_REFRESH), 750);
+    private void initTagsAutocompleteTextView() {
+        mTagsAutocompleteTextView = (MultiAutoCompleteTextView) findViewById(R.id.tv_tags);
+        GSpreadsheetContent.getInstance().getAllTags(new GetContentCallback<List<GTag>>() {
+            @Override
+            public void resultOfDataLoading(final List<GTag> result) {
+                if (result != null && !result.isEmpty()) {
+                    ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            ArrayList<String> tagsNames = new ArrayList<>();
+                            for (int i = 0; i < result.size(); i++) {
+                                tagsNames.add(result.get(i).getName());
+                            }
+                            adapter = new ArrayAdapter<>(ExpectedResultsActivity.this, R.layout.spinner_dropdown_item, tagsNames);
+                            mTagsAutocompleteTextView.setAdapter(adapter);
+                            mTagsAutocompleteTextView.setThreshold(3);
+                            mTagsAutocompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void refreshSteps() {
+        showProgress(true);
         GSpreadsheetContent.getInstance().getAllTestCases(new GetContentCallback<List<GEntryWorksheet>>() {
             @Override
             public void resultOfDataLoading(final List<GEntryWorksheet> result) {
@@ -117,12 +121,13 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
                         public void run() {
                             mResultsAdapter = new ExpectedResultsAdapter(result, R.layout.adapter_expected_results, ExpectedResultsActivity.this);
                             mRecyclerView.setAdapter(mResultsAdapter);
+                            showProgress(false);
                         }
                     });
                 } else {
                     Logger.d(TAG, "List TestCases = null");
+                    showProgress(false);
                 }
-                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
     }

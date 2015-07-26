@@ -77,5 +77,7 @@ public class ContentFromDatabase {
         DbObjectManager.INSTANCE.add(list, result);
     }
 
-
+    public static void getAllTags(IResult<List<DatabaseEntity>> result) {
+        DbObjectManager.INSTANCE.getAll(new GTag(), result);
+    }
 }

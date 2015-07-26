@@ -28,7 +28,7 @@ public class GSpreadsheetContent {
     private GWorksheet mWorksheet;
     private GEntryWorksheet mLastTestCase;
     private String mLastTestcaseId;
-    private List<GTag> mTags;
+    private List<GTag> mAllTags;
     private List<GWorksheet> mWorksheetsList;
     private List<GEntryWorksheet> mAllTestCasesList;
     //endregion
@@ -313,20 +313,41 @@ public class GSpreadsheetContent {
     //endregion
 
     //region Tags
-    public List<GTag> getTags() {
-        return mTags;
+    public void getAllTags(final GetContentCallback<List<GTag>> getContentCallback) {
+        if (mAllTags != null) {
+            getContentCallback.resultOfDataLoading(mAllTags);
+        } else {
+            ContentFromDatabase.getAllTags(new IResult<List<DatabaseEntity>>() {
+                @Override
+                public void onResult(List<DatabaseEntity> result) {
+                    if (result != null) {
+                        ArrayList<GTag> tags = (ArrayList) result;
+                        setTags(tags);
+                        getContentCallback.resultOfDataLoading(tags);
+                    } else {
+                        getContentCallback.resultOfDataLoading(null);
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    getContentCallback.resultOfDataLoading(null);
+                    Logger.e(TAG, e.getMessage(), e);
+                }
+            });
+        }
     }
 
     public void setTags(List<GTag> tags) {
-        this.mTags = tags;
+        this.mAllTags = tags;
     }
 
     public void setTag(GTag tag) {
-        if (mTags == null) {
-            mTags = new ArrayList<>();
+        if (mAllTags == null) {
+            mAllTags = new ArrayList<>();
         }
         if (tag != null) {
-            mTags.add(tag);
+            mAllTags.add(tag);
         }
     }
 
@@ -357,9 +378,9 @@ public class GSpreadsheetContent {
     //endregion
 
     public String getLinkWorksheet() {
-        if (mSpreadsheet != null && mSpreadsheet.getListWorksheets()!= null) {
+        if (mSpreadsheet != null && mSpreadsheet.getListWorksheets() != null) {
             return mSpreadsheet.getListWorksheets().get(0);
-        }else{
+        } else {
             return null;
         }
     }
