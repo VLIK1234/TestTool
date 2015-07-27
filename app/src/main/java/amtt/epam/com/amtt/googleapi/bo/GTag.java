@@ -31,7 +31,7 @@ public class GTag extends DatabaseEntity<GTag>{
     }
 
     @Override
-    public GTag parse(Cursor cursor) {
+    public static GTag parse(Cursor cursor) {
         return null;
     }
 

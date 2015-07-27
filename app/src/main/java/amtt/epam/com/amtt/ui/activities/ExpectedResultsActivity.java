@@ -160,7 +160,17 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             switch (loader.getId()) {
                 case TESTCASES_LOADER_ID:
                     if (data != null && data.getCount() > 0) {
-                        refreshSteps((ArrayList<GEntryWorksheet>) data);
+                        final List<GEntryWorksheet> listObject = new ArrayList<>();
+                        if (data.moveToFirst()) {
+                            do {
+                                try {
+                                    listObject.add(GEntryWorksheet.parse(data));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } while (data.moveToNext());
+                        }
+                        refreshSteps(listObject);
                     } else {
                         GSpreadsheetContent.getInstance().getAllTestCases(new GetContentCallback<List<GEntryWorksheet>>() {
                             @Override
@@ -176,7 +186,17 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                     break;
                 case TAGS_LOADER_ID:
                     if (data != null && data.getCount() > 0) {
-                        refreshTagsAdapter((ArrayList<GTag>) data);
+                        final List<GTag> listObject = new ArrayList<>();
+                        if (data.moveToFirst()) {
+                            do {
+                                try {
+                                    listObject.add(GTag.parse(data));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } while (data.moveToNext());
+                        }
+                        refreshTagsAdapter(listObject);
                     } else {
                         Logger.e(TAG, "Error loading tags");
                     }

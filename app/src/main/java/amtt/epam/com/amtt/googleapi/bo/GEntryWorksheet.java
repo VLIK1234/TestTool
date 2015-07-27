@@ -62,7 +62,7 @@ public class GEntryWorksheet extends GEntry<GEntryWorksheet> {
     }
 
     @Override
-    public GEntryWorksheet parse(Cursor cursor) {
+    public static GEntryWorksheet parse(Cursor cursor) {
         return null;
     }
 
