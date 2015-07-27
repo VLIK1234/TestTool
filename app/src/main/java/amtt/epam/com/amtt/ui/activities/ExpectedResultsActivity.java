@@ -88,6 +88,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     private void initTagsAutocompleteTextView() {
         mTagsAutocompleteTextView = (MultyAutocompleteProgressView) findViewById(R.id.tv_tags);
         showProgress(true);
+        mTagsAutocompleteTextView.showProgress(true);
         GSpreadsheetContent.getInstance().getAllTags(new GetContentCallback<List<GTag>>() {
             @Override
             public void resultOfDataLoading(final List<GTag> result) {
@@ -101,14 +102,16 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                                 }
                             }
                             mTagsAdapter = new ArrayAdapter<>(ExpectedResultsActivity.this, R.layout.spinner_dropdown_item, tagsNames);
-                            mTagsAutocompleteTextView.setAdapter(mTagsAdapter);
-                            mTagsAutocompleteTextView.setThreshold(3);
+                            mTagsAutocompleteTextView.setThreshold(1);
                             mTagsAutocompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+                            mTagsAutocompleteTextView.setAdapter(mTagsAdapter);
+                            mTagsAutocompleteTextView.showProgress(false);
                             refreshSteps();
                         }
                     });
                 }else{
                     Logger.e(TAG, "Tags not found");
+                    mTagsAutocompleteTextView.showProgress(false);
                     refreshSteps();
                 }
             }

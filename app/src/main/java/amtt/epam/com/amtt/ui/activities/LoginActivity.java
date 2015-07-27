@@ -141,7 +141,6 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
             @Override
             public void onResult(Integer result) {
                 ActiveUser.getInstance().setId(result);
-                finish();
             }
 
             @Override
@@ -212,7 +211,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
                 });
             }
         };
-        worker.schedule(task, 1, TimeUnit.SECONDS);
+        worker.schedule(task, 2, TimeUnit.SECONDS);
         finish();
     }
 

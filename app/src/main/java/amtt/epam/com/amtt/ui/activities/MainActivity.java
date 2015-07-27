@@ -130,7 +130,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                 });
             }
         };
-        worker.schedule(task, 1, TimeUnit.SECONDS);
+        worker.schedule(task, 2, TimeUnit.SECONDS);
         TopButtonService.start(this);
         finish();
     }
