@@ -14,6 +14,7 @@
     <string name="title_activity_paint">Notes</string>
     <string name="title_activity_preview">Preview</string>
     <string name="title_activity_detail">Detail</string>
+    <string name="title_activity_error_snackbar">Choose user</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
 

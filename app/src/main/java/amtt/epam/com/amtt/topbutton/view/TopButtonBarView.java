@@ -16,10 +16,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReceiver;
 import amtt.epam.com.amtt.database.util.StepUtil;
@@ -30,7 +26,6 @@ import amtt.epam.com.amtt.ui.activities.ExpectedResultsActivity;
 import amtt.epam.com.amtt.ui.activities.StepsActivity;
 import amtt.epam.com.amtt.ui.activities.UserInfoActivity;
 import amtt.epam.com.amtt.util.ActiveUser;
-import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
@@ -112,11 +107,8 @@ public class TopButtonBarView extends FrameLayout {
                 StepUtil.clearAllSteps();
 
                 Intent intentLogs = new Intent();
-                intentLogs.setAction("SEND_LOG_FILE");
+                intentLogs.setAction("TAKE_LOGS");
                 getContext().sendOrderedBroadcast(intentLogs, null);
-//                Intent takeLogs = new Intent();
-//                takeLogs.setAction("TAKE_LOGS");
-//                getContext().sendBroadcast(takeLogs);
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_SHORT).show();
                 mTopButtonListener.onTouch();
             }
@@ -127,7 +119,6 @@ public class TopButtonBarView extends FrameLayout {
                 Intent intentTicket = new Intent(getContext(), CreateIssueActivity.class);
                 intentTicket.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentTicket);
-                mTopButtonListener.onTouch();
             }
         });
         mButtonOpenUserInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), R.drawable.background_user_info, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {

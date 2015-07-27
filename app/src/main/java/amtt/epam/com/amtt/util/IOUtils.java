@@ -1,11 +1,15 @@
 package amtt.epam.com.amtt.util;
 
+import android.support.v4.content.AsyncTaskLoader;
+
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import amtt.epam.com.amtt.AmttApplication;
 
 /**
  * Created by Artsiom_Kaliaha on 13.04.2015.
@@ -46,16 +50,24 @@ public class IOUtils {
         return new File(path);
     }
 
-    public static void byteArrayToFile(byte[] byteArray, File file){
-        try {
-            FileOutputStream outputStream = new FileOutputStream(file);
-            BufferedOutputStream bos = new BufferedOutputStream(outputStream);
-            bos.write(byteArray);
-            bos.flush();
-            bos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void byteArrayToFile(final byte[] byteArray, final File file){
+
+        AsyncTaskLoader loader = new AsyncTaskLoader(AmttApplication.getContext()) {
+            @Override
+            public Object loadInBackground() {
+                try {
+                    FileOutputStream outputStream = new FileOutputStream(file);
+                    BufferedOutputStream bos = new BufferedOutputStream(outputStream);
+                    bos.write(byteArray);
+                    bos.flush();
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+        loader.loadInBackground();
     }
 
 }

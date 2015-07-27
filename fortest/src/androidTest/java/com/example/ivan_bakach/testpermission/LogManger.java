@@ -1,6 +1,8 @@
 package com.example.ivan_bakach.testpermission;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.Loader;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +23,11 @@ public class LogManger {
     public static final String TEMPLATE_COMMON = "%s/log_common.txt";
     public static final String TEMPLATE_ARGUMENTS_FRAGMENTS = "%s/log_arguments.txt";
 
+    public static final String FILE_NAME_KEY = "fileName";
+    public static final String BYTE_ARRAY_DATA_KEY = "byteArrayData";
+    public static final String SEND_LOG_FILE_ACTION = "SEND_LOG_FILE";
+    public static final String CAT_ALL_FILE_ACTION = "CAT_ALL_FILE";
+
     public static void writeMultipleLogs(Context context) {
         File externalCacheDir = context.getCacheDir();
         File logCacheDir = new File(externalCacheDir, LOGS_CACHE_DIR);
@@ -28,15 +35,33 @@ public class LogManger {
         sArgumentsFragments = String.format(TEMPLATE_ARGUMENTS_FRAGMENTS, logCacheDir.getPath());
         sExceptionLog = String.format(TEMPLATE_EXCEPION, logCacheDir.getPath());
         sCommonLog = String.format(TEMPLATE_COMMON, logCacheDir.getPath());
-        IOUtils.deleteFileIfExist(sArgumentsFragments);
-        IOUtils.deleteFileIfExist(sExceptionLog);
-        IOUtils.deleteFileIfExist(sCommonLog);
+        IOUtils.deleteFiles(logCacheDir.listFiles());
         try {
             Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sExceptionLog + ROTATE_LOG + EXCEPTION_FILTER);//write exception log
             Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sCommonLog + ROTATE_LOG);//write all log
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void transferLogsToAmtt(Context context){
+        File externalCacheDir = context.getCacheDir();
+        File logCacheDir = new File(externalCacheDir, LogManger.LOGS_CACHE_DIR);
+        File[] listFile = IOUtils.getAllFileInFolder(logCacheDir);
+        for (File file : listFile) {
+            Intent intentLogs = new Intent();
+            intentLogs.setAction(SEND_LOG_FILE_ACTION);
+            intentLogs.putExtra(FILE_NAME_KEY, file.getName());
+            try {
+                intentLogs.putExtra(BYTE_ARRAY_DATA_KEY, IOUtils.toByteArray(file));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            context.sendOrderedBroadcast(intentLogs, null);
+        }
+        Intent intentLogs = new Intent();
+        intentLogs.setAction(CAT_ALL_FILE_ACTION);
+        context.sendOrderedBroadcast(intentLogs, null);
     }
 
 }
