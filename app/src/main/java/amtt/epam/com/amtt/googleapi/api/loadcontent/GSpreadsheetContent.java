@@ -265,28 +265,8 @@ public class GSpreadsheetContent {
         if (getAllTestCases() != null) {
             getContentCallback.resultOfDataLoading(getAllTestCases());
         } else {
-            getTestCasesSynchronously(getContentCallback);
+            getTestCasesAsynchronously(getContentCallback);
         }
-    }
-
-    private void getTestCasesSynchronously(final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
-        ContentFromDatabase.getAllTestCases(new IResult<List<DatabaseEntity>>() {
-            @Override
-            public void onResult(List<DatabaseEntity> result) {
-                if (result != null && !result.isEmpty()) {
-                    mAllTestCasesList = (ArrayList) result;
-                    getContentCallback.resultOfDataLoading(mAllTestCasesList);
-                } else {
-                    getTestCasesAsynchronously(getContentCallback);
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                getTestCasesAsynchronously(getContentCallback);
-                Logger.e(TAG, "TestCase loading error ", e);
-            }
-        });
     }
 
     private void getTestCasesAsynchronously(final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
@@ -311,6 +291,7 @@ public class GSpreadsheetContent {
             }
         });
     }
+
     public List<GEntryWorksheet> getAllTestCases() {
         if (mAllTestCasesList != null && !mAllTestCasesList.isEmpty()) {
             return mAllTestCasesList;

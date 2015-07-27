@@ -30,6 +30,7 @@
 
     <string name="label_activity">"Activity: "</string>
     <string name="label_added_step_without_screen">Added step without screen</string>
+    <string name="label_add_spreadsheet_key">Add spreadsheet key</string>
     <string name="label_affects_versions">Affects Version/s</string>
     <string name="label_attachment">Attachment</string>
     <string name="label_button_main">Main button</string>

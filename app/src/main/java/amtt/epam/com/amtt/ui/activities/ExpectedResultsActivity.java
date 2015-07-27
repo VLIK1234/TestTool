@@ -1,6 +1,10 @@
 package amtt.epam.com.amtt.ui.activities;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,8 +24,10 @@ import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
+import amtt.epam.com.amtt.googleapi.database.contentprovider.GSUri;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.MultyAutocompleteProgressView;
+import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -29,15 +35,16 @@ import amtt.epam.com.amtt.util.Logger;
  * @version on 03.06.2015
  */
 
-public class ExpectedResultsActivity extends BaseActivity implements ExpectedResultsAdapter.ViewHolder.ClickListener {
+public class ExpectedResultsActivity extends BaseActivity implements ExpectedResultsAdapter.ViewHolder.ClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     //region Variables
+    private static final int TESTCASES_LOADER_ID = 1;
+    private static final int TAGS_LOADER_ID = 2;
     private static final String TAG = ExpectedResultsActivity.class.getSimpleName();
     private ExpectedResultsAdapter mResultsAdapter;
     private RecyclerView mRecyclerView;
     private MultyAutocompleteProgressView mTagsAutocompleteTextView;
     private ArrayAdapter mTagsAdapter;
-
     private Boolean mIsShowDetail = false;
     //endregion
 
@@ -82,40 +89,13 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        getLoaderManager().initLoader(TESTCASES_LOADER_ID, null, this);
         initTagsAutocompleteTextView();
     }
 
     private void initTagsAutocompleteTextView() {
         mTagsAutocompleteTextView = (MultyAutocompleteProgressView) findViewById(R.id.tv_tags);
-        showProgress(true);
-        mTagsAutocompleteTextView.showProgress(true);
-        GSpreadsheetContent.getInstance().getAllTags(new GetContentCallback<List<GTag>>() {
-            @Override
-            public void resultOfDataLoading(final List<GTag> result) {
-                if (result != null && !result.isEmpty()) {
-                    ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
-                        public void run() {
-                            ArrayList<String> tagsNames = new ArrayList<>();
-                            for (int i = 1; i < result.size(); i++) {
-                                if (result.get(i) != null) {
-                                    tagsNames.add(result.get(i).getName());
-                                }
-                            }
-                            mTagsAdapter = new ArrayAdapter<>(ExpectedResultsActivity.this, R.layout.spinner_dropdown_item, tagsNames);
-                            mTagsAutocompleteTextView.setThreshold(1);
-                            mTagsAutocompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-                            mTagsAutocompleteTextView.setAdapter(mTagsAdapter);
-                            mTagsAutocompleteTextView.showProgress(false);
-                            refreshSteps();
-                        }
-                    });
-                }else{
-                    Logger.e(TAG, "Tags not found");
-                    mTagsAutocompleteTextView.showProgress(false);
-                    refreshSteps();
-                }
-            }
-        });
+        getLoaderManager().initLoader(TAGS_LOADER_ID, null, this);
         mTagsAutocompleteTextView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -129,25 +109,86 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         });
     }
 
-    private void refreshSteps() {
+    private void refreshTagsAdapter(List<GTag> result) {
         showProgress(true);
-        GSpreadsheetContent.getInstance().getAllTestCases(new GetContentCallback<List<GEntryWorksheet>>() {
-            @Override
-            public void resultOfDataLoading(final List<GEntryWorksheet> result) {
-                if (result != null && !result.isEmpty()) {
-                    ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
-                        public void run() {
-                            mResultsAdapter = new ExpectedResultsAdapter(result, R.layout.adapter_expected_results, ExpectedResultsActivity.this);
-                            mRecyclerView.setAdapter(mResultsAdapter);
-                            showProgress(false);
-                        }
-                    });
-                } else {
-                    Logger.e(TAG, "List TestCases = null");
-                    showProgress(false);
+        mTagsAutocompleteTextView.showProgress(true);
+        if (result != null && !result.isEmpty()) {
+            ArrayList<String> tagsNames = new ArrayList<>();
+            for (int i = 1; i < result.size(); i++) {
+                if (result.get(i) != null) {
+                    tagsNames.add(result.get(i).getName());
                 }
             }
-        });
+            mTagsAdapter = new ArrayAdapter<>(ExpectedResultsActivity.this, R.layout.spinner_dropdown_item, tagsNames);
+            mTagsAutocompleteTextView.setThreshold(1);
+            mTagsAutocompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+            mTagsAutocompleteTextView.setAdapter(mTagsAdapter);
+            mTagsAutocompleteTextView.showProgress(false);
+        } else {
+            Logger.e(TAG, "Tags not found");
+            mTagsAutocompleteTextView.showProgress(false);
+        }
     }
 
+
+    private void refreshSteps(final List<GEntryWorksheet> result) {
+        showProgress(true);
+        if (result != null && !result.isEmpty()) {
+            mResultsAdapter = new ExpectedResultsAdapter(result, R.layout.adapter_expected_results, ExpectedResultsActivity.this);
+            mRecyclerView.setAdapter(mResultsAdapter);
+            showProgress(false);
+        } else {
+            Logger.e(TAG, "List TestCases = null");
+            showProgress(false);
+        }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        CursorLoader loader = null;
+        if (id == TESTCASES_LOADER_ID) {
+            loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TESTCASE.get(), null, null, null, null);
+        } else if (id == TAGS_LOADER_ID) {
+            loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, null, null, null);
+        }
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        try {
+            switch (loader.getId()) {
+                case TESTCASES_LOADER_ID:
+                    if (data != null && data.getCount() > 0) {
+                        refreshSteps((ArrayList<GEntryWorksheet>) data);
+                    } else {
+                        GSpreadsheetContent.getInstance().getAllTestCases(new GetContentCallback<List<GEntryWorksheet>>() {
+                            @Override
+                            public void resultOfDataLoading(List<GEntryWorksheet> result) {
+                                if (result != null && !result.isEmpty()) {
+                                    refreshSteps(result);
+                                } else {
+                                    Logger.e(TAG, "Error loading testcases");
+                                }
+                            }
+                        });
+                    }
+                    break;
+                case TAGS_LOADER_ID:
+                    if (data != null && data.getCount() > 0) {
+                        refreshTagsAdapter((ArrayList<GTag>) data);
+                    } else {
+                        Logger.e(TAG, "Error loading tags");
+                    }
+                    break;
+            }
+        } finally {
+            IOUtils.close(data);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Logger.d(TAG, "onLoaderReset");
+    }
 }
