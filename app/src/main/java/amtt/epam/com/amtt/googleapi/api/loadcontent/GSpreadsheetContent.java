@@ -265,46 +265,54 @@ public class GSpreadsheetContent {
         if (getAllTestCases() != null) {
             getContentCallback.resultOfDataLoading(getAllTestCases());
         } else {
-            ContentFromDatabase.getAllTestCases(new IResult<List<DatabaseEntity>>() {
-                @Override
-                public void onResult(List<DatabaseEntity> result) {
-                    if (result != null && !result.isEmpty()) {
-                        ArrayList<GEntryWorksheet> testcases = (ArrayList) result;
-                        getContentCallback.resultOfDataLoading(testcases);
-                    } else {
-                        getSpreadsheetAsynchronously(new GetContentCallback<GSpreadsheet>() {
-                            @Override
-                            public void resultOfDataLoading(GSpreadsheet result) {
-                                if (result != null) {
-                                    getWorksheet(getLinkWorksheet(), new GetContentCallback<GWorksheet>() {
-                                        @Override
-                                        public void resultOfDataLoading(GWorksheet result) {
-                                            if (result != null) {
-                                                getContentCallback.resultOfDataLoading(result.getEntry());
-                                            } else {
-                                                Logger.e(TAG, "Worksheet == null");
-                                            }
-                                        }
-                                    });
-                                } else {
-                                    Logger.e(TAG, "Spreadsheet == null");
-                                }
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    getContentCallback.resultOfDataLoading(null);
-                    Logger.e(TAG, "TestCase loading error ", e);
-                }
-            });
+            getTestCasesSynchronously(getContentCallback);
         }
     }
 
+    private void getTestCasesSynchronously(final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
+        ContentFromDatabase.getAllTestCases(new IResult<List<DatabaseEntity>>() {
+            @Override
+            public void onResult(List<DatabaseEntity> result) {
+                if (result != null && !result.isEmpty()) {
+                    mAllTestCasesList = (ArrayList) result;
+                    getContentCallback.resultOfDataLoading(mAllTestCasesList);
+                } else {
+                    getTestCasesAsynchronously(getContentCallback);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                getTestCasesAsynchronously(getContentCallback);
+                Logger.e(TAG, "TestCase loading error ", e);
+            }
+        });
+    }
+
+    private void getTestCasesAsynchronously(final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
+        getSpreadsheetAsynchronously(new GetContentCallback<GSpreadsheet>() {
+            @Override
+            public void resultOfDataLoading(GSpreadsheet result) {
+                if (result != null) {
+                    getWorksheet(getLinkWorksheet(), new GetContentCallback<GWorksheet>() {
+                        @Override
+                        public void resultOfDataLoading(GWorksheet result) {
+                            if (result != null) {
+                                mAllTestCasesList = result.getEntry();
+                                getContentCallback.resultOfDataLoading(result.getEntry());
+                            } else {
+                                Logger.e(TAG, "Worksheet == null");
+                            }
+                        }
+                    });
+                } else {
+                    Logger.e(TAG, "Spreadsheet == null");
+                }
+            }
+        });
+    }
     public List<GEntryWorksheet> getAllTestCases() {
-        if (mAllTestCasesList != null) {
+        if (mAllTestCasesList != null && !mAllTestCasesList.isEmpty()) {
             return mAllTestCasesList;
         } else {
             return null;

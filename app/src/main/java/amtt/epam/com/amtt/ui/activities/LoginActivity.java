@@ -32,6 +32,7 @@ import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
+import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.exception.ExceptionType;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
@@ -196,6 +197,16 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
                     public void resultOfDataLoading(HashMap<JProjects, String> result) {
                         if (result != null) {
                             Logger.d(TAG, "Loading projects finish");
+                        }
+                    }
+                });
+                GSpreadsheetContent.getInstance().getAllTestCases(new GetContentCallback<List<GEntryWorksheet>>() {
+                    @Override
+                    public void resultOfDataLoading(List<GEntryWorksheet> result) {
+                        if (result != null) {
+                            Logger.d(TAG, "Loading testcases finish");
+                        } else {
+                            Logger.d(TAG, "Loading testcases error");
                         }
                     }
                 });

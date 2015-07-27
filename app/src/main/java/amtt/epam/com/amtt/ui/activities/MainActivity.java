@@ -8,6 +8,7 @@ import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
+import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
@@ -25,6 +26,7 @@ import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -113,6 +115,16 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                     public void resultOfDataLoading(HashMap<JProjects, String> result) {
                         if (result != null) {
                             Logger.d(TAG, "Loading projects finish");
+                        }
+                    }
+                });
+                GSpreadsheetContent.getInstance().getAllTestCases(new GetContentCallback<List<GEntryWorksheet>>() {
+                    @Override
+                    public void resultOfDataLoading(List<GEntryWorksheet> result) {
+                        if (result != null) {
+                            Logger.d(TAG, "Loading testcases finish");
+                        } else {
+                            Logger.d(TAG, "Loading testcases error");
                         }
                     }
                 });
