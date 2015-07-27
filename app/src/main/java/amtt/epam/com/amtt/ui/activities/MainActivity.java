@@ -97,6 +97,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         ActiveUser.getInstance().setLastProjectKey(userInfo.getLastProjectKey());
         ActiveUser.getInstance().setLastAssigneeName(userInfo.getLastAssigneeName());
         ActiveUser.getInstance().setLastComponentsIds(userInfo.getLastComponentsIds());
+        ActiveUser.getInstance().setSpreadsheetLink(userInfo.getLastSpreadsheetUrl());
         Logger.e(TAG, "ID " + userInfo.getId());
         Logger.e(TAG, "LastProjectKey " + userInfo.getLastProjectKey());
         ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
@@ -106,7 +107,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                     @Override
                     public void resultOfDataLoading(HashMap<String, String> result) {
                         if (result != null) {
-                            Logger.d(TAG, "Loading priority finish");
+                            Logger.e(TAG, "Loading priority finish");
                         }
                     }
                 });
@@ -114,7 +115,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                     @Override
                     public void resultOfDataLoading(HashMap<JProjects, String> result) {
                         if (result != null) {
-                            Logger.d(TAG, "Loading projects finish");
+                            Logger.e(TAG, "Loading projects finish");
                         }
                     }
                 });
@@ -122,9 +123,9 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                     @Override
                     public void resultOfDataLoading(List<GEntryWorksheet> result) {
                         if (result != null) {
-                            Logger.d(TAG, "Loading testcases finish");
+                            Logger.e(TAG, "Loading testcases finish");
                         } else {
-                            Logger.d(TAG, "Loading testcases error");
+                            Logger.e(TAG, "Loading testcases error");
                         }
                     }
                 });

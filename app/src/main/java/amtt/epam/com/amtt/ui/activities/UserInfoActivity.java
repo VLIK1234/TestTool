@@ -178,6 +178,10 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
         ActiveUser.getInstance().setCredentials(user.getCredentials());
         ActiveUser.getInstance().setId(user.getId());
         ActiveUser.getInstance().setUserName(user.getName());
+        ActiveUser.getInstance().setLastProjectKey(user.getLastProjectKey());
+        ActiveUser.getInstance().setLastAssigneeName(user.getLastAssigneeName());
+        ActiveUser.getInstance().setLastComponentsIds(user.getLastComponentsIds());
+        ActiveUser.getInstance().setSpreadsheetLink(user.getLastSpreadsheetUrl());
         mNameTextView.setText(user.getName());
         mEmailAddressTextView.setText(user.getEmailAddress());
         mDisplayNameTextView.setText(user.getDisplayName());
