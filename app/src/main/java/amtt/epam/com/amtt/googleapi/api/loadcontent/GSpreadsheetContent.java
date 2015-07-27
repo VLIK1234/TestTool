@@ -329,7 +329,7 @@ public class GSpreadsheetContent {
                 @Override
                 public void onResult(List<DatabaseEntity> result) {
                     if (result != null) {
-                        ArrayList<GTag> tags = (ArrayList) result;
+                        List<GTag> tags = (List) result;
                         setTags(tags);
                         getContentCallback.resultOfDataLoading(tags);
                     } else {
@@ -373,12 +373,12 @@ public class GSpreadsheetContent {
             ContentFromDatabase.setTags(mTags, new IResult<Integer>() {
                 @Override
                 public void onResult(Integer result) {
-
+                    Logger.d(TAG, "Tags added " + String.valueOf(result));
                 }
 
                 @Override
                 public void onError(Exception e) {
-
+                    Logger.e(TAG, "Saving tags error", e);
                 }
             });
         }

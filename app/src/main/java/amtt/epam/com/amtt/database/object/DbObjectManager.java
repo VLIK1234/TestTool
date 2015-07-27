@@ -107,7 +107,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
     }
 
     @Override
-    public void getAll(DatabaseEntity object, IResult<List<DatabaseEntity>> result) {
+    public synchronized void getAll(DatabaseEntity object, IResult<List<DatabaseEntity>> result) {
         query(object, null, null, null, result);
     }
 

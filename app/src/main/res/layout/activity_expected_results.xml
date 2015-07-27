@@ -14,13 +14,12 @@
         android:paddingLeft="4dp"
         android:text="@string/label_tags" />
 
-    <MultiAutoCompleteTextView
+    <amtt.epam.com.amtt.ui.views.MultyAutocompleteProgressView
         android:id="@+id/tv_tags"
+        style="@style/Material.AutocompleteProgressView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_label_tags"
-        android:paddingLeft="16dp"
-        android:paddingTop="@dimen/abc_dialog_list_padding_vertical_material"
         android:textSize="@dimen/abc_text_size_medium_material" />
 
     <android.support.v7.widget.RecyclerView

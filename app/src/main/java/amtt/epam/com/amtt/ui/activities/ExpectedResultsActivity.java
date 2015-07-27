@@ -2,17 +2,15 @@ package amtt.epam.com.amtt.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.MultiAutoCompleteTextView;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +20,8 @@ import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
-import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.ui.views.MultyAutocompleteProgressView;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -37,8 +35,8 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     private static final String TAG = ExpectedResultsActivity.class.getSimpleName();
     private ExpectedResultsAdapter mResultsAdapter;
     private RecyclerView mRecyclerView;
-    private MultiAutoCompleteTextView mTagsAutocompleteTextView;
-    private ArrayAdapter adapter;
+    private MultyAutocompleteProgressView mTagsAutocompleteTextView;
+    private ArrayAdapter mTagsAdapter;
 
     private Boolean mIsShowDetail = false;
     //endregion
@@ -68,7 +66,6 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         initViews();
-        refreshSteps();
     }
 
     @Override
@@ -89,7 +86,8 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     }
 
     private void initTagsAutocompleteTextView() {
-        mTagsAutocompleteTextView = (MultiAutoCompleteTextView) findViewById(R.id.tv_tags);
+        mTagsAutocompleteTextView = (MultyAutocompleteProgressView) findViewById(R.id.tv_tags);
+        showProgress(true);
         GSpreadsheetContent.getInstance().getAllTags(new GetContentCallback<List<GTag>>() {
             @Override
             public void resultOfDataLoading(final List<GTag> result) {
@@ -97,16 +95,33 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                     ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
                         public void run() {
                             ArrayList<String> tagsNames = new ArrayList<>();
-                            for (int i = 0; i < result.size(); i++) {
-                                tagsNames.add(result.get(i).getName());
+                            for (int i = 1; i < result.size(); i++) {
+                                if (result.get(i) != null) {
+                                    tagsNames.add(result.get(i).getName());
+                                }
                             }
-                            adapter = new ArrayAdapter<>(ExpectedResultsActivity.this, R.layout.spinner_dropdown_item, tagsNames);
-                            mTagsAutocompleteTextView.setAdapter(adapter);
+                            mTagsAdapter = new ArrayAdapter<>(ExpectedResultsActivity.this, R.layout.spinner_dropdown_item, tagsNames);
+                            mTagsAutocompleteTextView.setAdapter(mTagsAdapter);
                             mTagsAutocompleteTextView.setThreshold(3);
                             mTagsAutocompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+                            refreshSteps();
                         }
                     });
+                }else{
+                    Logger.e(TAG, "Tags not found");
+                    refreshSteps();
                 }
+            }
+        });
+        mTagsAutocompleteTextView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }
@@ -125,7 +140,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                         }
                     });
                 } else {
-                    Logger.d(TAG, "List TestCases = null");
+                    Logger.e(TAG, "List TestCases = null");
                     showProgress(false);
                 }
             }
