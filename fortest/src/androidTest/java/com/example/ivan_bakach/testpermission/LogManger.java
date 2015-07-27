@@ -2,7 +2,6 @@ package com.example.ivan_bakach.testpermission;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.Loader;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +16,7 @@ public class LogManger {
     public static String sExceptionLog;
     public static String sCommonLog;
     public static final String LOGCAT_WRITE_IN_FILE = "logcat -f ";
-    public static final String ROTATE_LOG = " -r 512";
+    public static final String ROTATE_LOG = " -r 1000";
     public static final String EXCEPTION_FILTER = " *:e";
     public static final String TEMPLATE_EXCEPION = "%s/log_exception.txt";
     public static final String TEMPLATE_COMMON = "%s/log_common.txt";
@@ -27,6 +26,8 @@ public class LogManger {
     public static final String BYTE_ARRAY_DATA_KEY = "byteArrayData";
     public static final String SEND_LOG_FILE_ACTION = "SEND_LOG_FILE";
     public static final String CAT_ALL_FILE_ACTION = "CAT_ALL_FILE";
+    private static Process sProcessWriteCommonLog;
+    private static Process sProcessWriteExceptionLog;
 
     public static void writeMultipleLogs(Context context) {
         File externalCacheDir = context.getCacheDir();
@@ -37,10 +38,34 @@ public class LogManger {
         sCommonLog = String.format(TEMPLATE_COMMON, logCacheDir.getPath());
         IOUtils.deleteFiles(logCacheDir.listFiles());
         try {
-            Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sExceptionLog + ROTATE_LOG + EXCEPTION_FILTER);//write exception log
-            Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sCommonLog + ROTATE_LOG);//write all log
+            sProcessWriteCommonLog = Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sExceptionLog + ROTATE_LOG + EXCEPTION_FILTER);//write exception log
+            sProcessWriteExceptionLog = Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sCommonLog + ROTATE_LOG);//write all log
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void appendMultipleLogs(Context context) {
+        File externalCacheDir = context.getCacheDir();
+        File logCacheDir = new File(externalCacheDir, LOGS_CACHE_DIR);
+        logCacheDir.mkdir();
+        sArgumentsFragments = String.format(TEMPLATE_ARGUMENTS_FRAGMENTS, logCacheDir.getPath());
+        sExceptionLog = String.format(TEMPLATE_EXCEPION, logCacheDir.getPath());
+        sCommonLog = String.format(TEMPLATE_COMMON, logCacheDir.getPath());
+        try {
+            sProcessWriteCommonLog = Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sExceptionLog + ROTATE_LOG + EXCEPTION_FILTER);//write exception log
+            sProcessWriteExceptionLog = Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sCommonLog + ROTATE_LOG);//write all log
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void closeLogsWriter() {
+        if (sProcessWriteCommonLog!=null) {
+            sProcessWriteCommonLog.destroy();
+        }
+        if (sProcessWriteExceptionLog!=null) {
+            sProcessWriteExceptionLog.destroy();
         }
     }
 
@@ -59,9 +84,6 @@ public class LogManger {
             }
             context.sendOrderedBroadcast(intentLogs, null);
         }
-        Intent intentLogs = new Intent();
-        intentLogs.setAction(CAT_ALL_FILE_ACTION);
-        context.sendOrderedBroadcast(intentLogs, null);
     }
 
 }

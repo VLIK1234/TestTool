@@ -76,11 +76,6 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     break;
                 }
                 break;
-            case CAT_ALL_FILE:
-//                    Process processx = Runtime.getRuntime().exec("cat "+ FileUtil.getCacheAmttDir() + "log_common* > "+ FileUtil.getCacheAmttDir()+"log_common135.txt");
-                Log.d("TAG", "/bin/sh cat "+ FileUtil.getCacheAmttDir() + "log_common* > "+FileUtil.getCacheAmttDir()+"log_common135.txt");
-                Toast.makeText(context, "Cat all file", Toast.LENGTH_LONG).show();
-                break;
             case REQUEST_TAKE_SCREENSHOT:
                 Bundle extrasScreenshot = intent.getExtras();
                 if (extrasScreenshot != null) {

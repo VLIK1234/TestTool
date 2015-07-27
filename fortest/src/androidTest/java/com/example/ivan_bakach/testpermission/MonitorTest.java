@@ -40,8 +40,10 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
                 Log.e(thread.getName(), ex.toString());
+                LogManger.appendMultipleLogs(context);
                 FragmentInfoHelper.writeArgumentsFromFragments(FragmentInfoHelper.sCurrentArguments);
                 LogManger.transferLogsToAmtt(context);
+                LogManger.closeLogsWriter();
                 Intent intent = new Intent();
                 intent.setAction(EXCEPTION_ANSWER_ACTION);
                 intent.putExtra(EXCEPTION_ANSWER_KEY, ex.getClass().getName());
@@ -66,6 +68,7 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
                 if (receiver.needCloseUnitTest()) {
                     context.unregisterReceiver(receiver);
                     mApplication.unregisterActivityLifecycleCallbacks(this);
+                    LogManger.closeLogsWriter();
                     Assert.assertTrue(true);
                 }
             } catch (InterruptedException e) {

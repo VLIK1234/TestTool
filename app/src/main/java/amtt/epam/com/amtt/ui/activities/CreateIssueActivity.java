@@ -105,7 +105,6 @@ public class CreateIssueActivity extends BaseActivity
     private CheckBox mCreateAnotherCheckBox;
     private boolean mCreateAnotherIssue;
     private LayoutInflater mLayoutInflater;
-    private boolean mDoesTopButtonShouldBeShown;
 
     public static class AssigneeHandler extends Handler {
 
@@ -144,19 +143,16 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         setDefaultConfigs();
-        if (mDoesTopButtonShouldBeShown) {
-            TopButtonService.sendActionChangeTopButtonVisibility(true);
-        }
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         TopButtonService.sendActionChangeTopButtonVisibility(false);
-        mDoesTopButtonShouldBeShown = true;
     }
 
     @Override
@@ -810,7 +806,6 @@ public class CreateIssueActivity extends BaseActivity
 
     @Override
     public void onItemShow(int position) {
-        mDoesTopButtonShouldBeShown = false;
         Intent intent = null;
         String filePath = "";
         if (mAdapter!=null&&mAdapter.getAttachmentFilePathList()!=null&&mAdapter.getAttachmentFilePathList().size() > position) {
