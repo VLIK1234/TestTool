@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.MultiAutoCompleteTextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import amtt.epam.com.amtt.R;
@@ -25,6 +26,7 @@ import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.googleapi.database.contentprovider.GSUri;
+import amtt.epam.com.amtt.googleapi.database.table.TagsTable;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.MultyAutocompleteProgressView;
 import amtt.epam.com.amtt.util.IOUtils;
@@ -40,12 +42,15 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     //region Variables
     private static final int TESTCASES_LOADER_ID = 1;
     private static final int TAGS_LOADER_ID = 2;
+    private static final int TAGS_LOADER_BY_LINK_ID = 3;
     private static final String TAG = ExpectedResultsActivity.class.getSimpleName();
+    public static final String LINK = "Link";
     private ExpectedResultsAdapter mResultsAdapter;
     private RecyclerView mRecyclerView;
     private MultyAutocompleteProgressView mTagsAutocompleteTextView;
     private ArrayAdapter mTagsAdapter;
     private Boolean mIsShowDetail = false;
+    private HashMap<String, String> mTagsSelected;
     //endregion
 
     @Override
@@ -99,7 +104,16 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         mTagsAutocompleteTextView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String[] str = mTagsAutocompleteTextView.getText().toString().split(", ");
+                if(str.length == 1){
+                    Bundle bundle = new Bundle();
+                    bundle.putString(LINK, mTagsSelected.get(str[1]));
+                    getLoaderManager().initLoader(TAGS_LOADER_ID, bundle, ExpectedResultsActivity.this);
+                }
+                for (String aStr : str) {
 
+
+                }
             }
 
             @Override
@@ -117,6 +131,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             for (int i = 1; i < result.size(); i++) {
                 if (result.get(i) != null) {
                     tagsNames.add(result.get(i).getName());
+                    mTagsSelected.put(result.get(i).getName(), result.get(i).getIdLinkTestCase());
                 }
             }
             mTagsAdapter = new ArrayAdapter<>(ExpectedResultsActivity.this, R.layout.spinner_dropdown_item, tagsNames);
@@ -150,6 +165,9 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TESTCASE.get(), null, null, null, null);
         } else if (id == TAGS_LOADER_ID) {
             loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, null, null, null);
+        }else if(id == TAGS_LOADER_BY_LINK_ID){
+            loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, TagsTable._TESTCASE_ID_LINK + "=?",
+                    new String[]{String.valueOf(args.getString(LINK))}, null);
         }
         return loader;
     }
@@ -164,7 +182,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                         if (data.moveToFirst()) {
                             do {
                                 try {
-                                    listObject.add(GEntryWorksheet.parse(data));
+                                    listObject.add(new GEntryWorksheet().parse(data));
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -190,13 +208,31 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                         if (data.moveToFirst()) {
                             do {
                                 try {
-                                    listObject.add(GTag.parse(data));
+                                    listObject.add(new GTag().parse(data));
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             } while (data.moveToNext());
                         }
                         refreshTagsAdapter(listObject);
+                    } else {
+                        Logger.e(TAG, "Error loading tags");
+                    }
+                    break;
+                case TAGS_LOADER_BY_LINK_ID:
+                    if (data != null && data.getCount() > 0) {
+                        final List<GTag> listObject = new ArrayList<>();
+                        if (data.moveToFirst()) {
+                            do {
+                                try {
+                                    listObject.add(new GTag().parse(data));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } while (data.moveToNext());
+                        }
+                        refreshTagsAdapter(listObject);
+                        
                     } else {
                         Logger.e(TAG, "Error loading tags");
                     }

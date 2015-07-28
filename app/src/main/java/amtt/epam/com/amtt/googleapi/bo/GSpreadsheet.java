@@ -37,7 +37,7 @@ public class GSpreadsheet extends GSheet<GSpreadsheet> {
 
     @Override
     public GSpreadsheet parse(Cursor cursor) {
-        return null;
+        return new GSpreadsheet(cursor);
     }
 
     public GSpreadsheet(List<GEntrySpreadshet> mEntry) {

@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.ui.views;
 
 import android.content.Context;
+import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -67,5 +68,9 @@ public class MultyAutocompleteProgressView extends RelativeLayout {
 
     public void setOnItemSelectedListener(AdapterView.OnItemSelectedListener l) {
         mMACTextView.setOnItemSelectedListener(l);
+    }
+
+    public Editable getText(){
+        return mMACTextView.getText();
     }
 }

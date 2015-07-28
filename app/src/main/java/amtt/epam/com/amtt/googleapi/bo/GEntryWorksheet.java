@@ -8,6 +8,9 @@ import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.googleapi.database.contentprovider.GSUri;
@@ -62,8 +65,8 @@ public class GEntryWorksheet extends GEntry<GEntryWorksheet> {
     }
 
     @Override
-    public static GEntryWorksheet parse(Cursor cursor) {
-        return null;
+    public GEntryWorksheet parse(Cursor cursor) {
+        return new GEntryWorksheet(cursor);
     }
 
     public String getPriorityGSX() {
@@ -143,6 +146,23 @@ public class GEntryWorksheet extends GEntry<GEntryWorksheet> {
 
     public void setExpectedResultGSX(String expectedResultGSX) {
         this.mExpectedResultGSX = expectedResultGSX;
+    }
+
+    public List<GTag> getTags() {
+        if (mTestCaseNameGSX != null && mIdLink != null) {
+            GTag gTag;
+            List<GTag> mTags = new ArrayList<>();
+            String[] tags = mTestCaseNameGSX.split(" - ");
+            for (String tag : tags) {
+                gTag = new GTag();
+                gTag.setName(tag);
+                gTag.setIdLinkTestCase(mIdLink);
+                mTags.add(gTag);
+            }
+            return mTags;
+        } else {
+            return null;
+        }
     }
 
     @Override

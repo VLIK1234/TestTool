@@ -39,7 +39,7 @@ public class GWorksheet extends GSheet<GWorksheet> {
 
     @Override
     public GWorksheet parse(Cursor cursor) {
-        return null;
+        return new GWorksheet(cursor);
     }
 
     public GWorksheet(List<GEntryWorksheet> entry) {

@@ -31,8 +31,8 @@ public class GTag extends DatabaseEntity<GTag>{
     }
 
     @Override
-    public static GTag parse(Cursor cursor) {
-        return null;
+    public GTag parse(Cursor cursor) {
+        return new GTag(cursor);
     }
 
     public GTag(int id, String idLinkTestCase, String name) {
@@ -64,7 +64,7 @@ public class GTag extends DatabaseEntity<GTag>{
 
     @Override
     public Uri getUri() {
-        return GSUri.TESTCASE.get();
+        return GSUri.TAGS.get();
     }
 
     @Override
