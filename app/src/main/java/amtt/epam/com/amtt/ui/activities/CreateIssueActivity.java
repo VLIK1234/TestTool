@@ -127,9 +127,6 @@ public class CreateIssueActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
         TopButtonService.sendActionChangeTopButtonVisibility(false);
-        Intent intentLogs = new Intent();
-        intentLogs.setAction("TAKE_LOGS");
-        getBaseContext().sendBroadcast(intentLogs);
 
         PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(CreateIssueActivity.this);
         mHandler = new AssigneeHandler(this);
@@ -153,6 +150,9 @@ public class CreateIssueActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         TopButtonService.sendActionChangeTopButtonVisibility(false);
+        Intent intentLogs = new Intent();
+        intentLogs.setAction("TAKE_LOGS");
+        getBaseContext().sendBroadcast(intentLogs);
     }
 
     @Override
