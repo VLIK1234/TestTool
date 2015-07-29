@@ -24,6 +24,7 @@ import java.util.List;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.ExpectedResultsAdapter;
 import amtt.epam.com.amtt.api.GetContentCallback;
+import amtt.epam.com.amtt.googleapi.api.GoogleApiConst;
 import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
@@ -32,6 +33,7 @@ import amtt.epam.com.amtt.googleapi.database.table.TagsTable;
 import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.MultyAutocompleteProgressView;
+import amtt.epam.com.amtt.util.ConverterUtil;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -52,8 +54,6 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     private ExpectedResultsAdapter mResultsAdapter;
     private RecyclerView mRecyclerView;
     private MultyAutocompleteProgressView mTagsAutocompleteTextView;
-    private ArrayAdapter mTagsAdapter;
-    private Boolean mIsShowDetail = false;
     private List<GTag> mTags;
     private Bundle bundle;
     //endregion
@@ -61,8 +61,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     @Override
     public void onShowCard(int position) {
         Intent detail = new Intent(ExpectedResultsActivity.this, DetailActivity.class);
-        GSpreadsheetContent.getInstance().setLastTestcaseId(mResultsAdapter.getIdTestcaseList().get(position));
-        mIsShowDetail = true;
+        detail.putExtra(GoogleApiConst.LINK_TAG, mResultsAdapter.getIdTestcaseList().get(position));
         startActivity(detail);
         finish();
     }
@@ -70,7 +69,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     @Override
     public void onShowCreationTicket(int position) {
         Intent creationTicket = new Intent(ExpectedResultsActivity.this, CreateIssueActivity.class);
-        GSpreadsheetContent.getInstance().setLastTestcaseId(mResultsAdapter.getIdTestcaseList().get(position));
+        creationTicket.putExtra(GoogleApiConst.LINK_TAG, mResultsAdapter.getIdTestcaseList().get(position));
         startActivity(creationTicket);
         finish();
     }
@@ -88,9 +87,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (!mIsShowDetail) {
             TopButtonService.sendActionChangeTopButtonVisibility(true);
-        }
     }
 
     private void initViews() {
@@ -147,8 +144,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                     tagsNames.add(result.get(i).getName());
                 }
             }
-            mTagsAdapter = null;
-            mTagsAdapter = new ArrayAdapter<>(ExpectedResultsActivity.this, R.layout.spinner_dropdown_item, tagsNames);
+            ArrayAdapter<String> mTagsAdapter = new ArrayAdapter<>(ExpectedResultsActivity.this, R.layout.spinner_dropdown_item, tagsNames);
             mTagsAutocompleteTextView.setThreshold(1);
             mTagsAutocompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
             mTagsAutocompleteTextView.setAdapter(mTagsAdapter);
@@ -182,20 +178,30 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         } else if (id == TAGS_LOADER_ID) {
             loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, null, null, null);
         }else if(id == TAGS_LOADER_BY_LINK_ID){
-            if(args.getStringArrayList(LINK)!=null){
-            String[] stockArr = new String[args.getStringArrayList(LINK).size()];
-            stockArr = args.getStringArrayList(LINK).toArray(stockArr);
-            loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, TagsTable._TESTCASE_ID_LINK + "=? OR ?",
-                    stockArr, null);}
+            if (args.getStringArrayList(LINK) != null) {
+                String selection = getSelection(TagsTable._TESTCASE_ID_LINK, args.getStringArrayList(LINK));
+                loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, selection,
+                        ConverterUtil.arrayListToArray(args.getStringArrayList(LINK)), null);
+            }
         } else if (id == TESTCASES_LOADER_BY_LINK_ID) {
             if (args.getStringArrayList(LINK) != null) {
-                String[] stockArr = new String[args.getStringArrayList(LINK).size()];
-                stockArr = args.getStringArrayList(LINK).toArray(stockArr);
-                loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TESTCASE.get(), null, TestcaseTable._TESTCASE_ID_LINK + "=? OR ?",
-                        stockArr, null);
+                String selection = getSelection(TestcaseTable._TESTCASE_ID_LINK, args.getStringArrayList(LINK));
+                loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TESTCASE.get(), null, selection,
+                        ConverterUtil.arrayListToArray(args.getStringArrayList(LINK)), null);
             }
         }
         return loader;
+    }
+
+    @NonNull
+    private String getSelection(String columnName, ArrayList<String> args) {
+        String selection =  columnName + "=?";
+        if (args.size() > 1) {
+            for (int i = 0; i < args.size(); i++) {
+                selection = selection.concat(" OR ?");
+            }
+        }
+        return selection;
     }
 
     @Override

@@ -51,7 +51,9 @@ import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.googleapi.api.GoogleApiConst;
 import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
+import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -105,6 +107,7 @@ public class CreateIssueActivity extends BaseActivity
     private boolean mCreateAnotherIssue;
     private LayoutInflater mLayoutInflater;
     private boolean mDoesTopButtonShouldBeShown;
+    private GEntryWorksheet mTestcase;
 
     public static class AssigneeHandler extends Handler {
 
@@ -189,6 +192,10 @@ public class CreateIssueActivity extends BaseActivity
         initClearEnvironmentButton();
         initGifAttachmentControls();
         mScrollView = (ScrollView) findViewById(R.id.scroll_view);
+        Bundle extra = getIntent().getExtras();
+        if(extra!=null){
+            mTestcase = GSpreadsheetContent.getInstance().getTestcaseByIdGSX(extra.getString(GoogleApiConst.LINK_TAG));
+        }
     }
 
     private void initCreateAnotherCheckBox() {
@@ -280,8 +287,8 @@ public class CreateIssueActivity extends BaseActivity
                             mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                             prioritiesSpinner.setAdapter(mPrioritiesAdapter);
                             String defaultPriority;
-                            if (GSpreadsheetContent.getInstance().getLastTestcase() != null) {
-                                defaultPriority = GSpreadsheetContent.getInstance().getLastTestcase().getPriorityGSX();
+                            if (mTestcase!=null) {
+                                defaultPriority = mTestcase.getPriorityGSX();
                                 if (defaultPriority != null) {
                                     prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
                                 }
@@ -499,8 +506,8 @@ public class CreateIssueActivity extends BaseActivity
             add(InputsUtil.getEmptyValidator());
             add(InputsUtil.getEndStartWhitespacesValidator());
         }});
-        if (GSpreadsheetContent.getInstance().getLastTestcase() != null) {
-            mTitleTextInput.setText(GSpreadsheetContent.getInstance().getLastTestcase().getTestCaseNameGSX());
+        if (mTestcase != null) {
+            mTitleTextInput.setText(mTestcase.getTestCaseNameGSX());
         }
         mTitlePoint = new int[2];
         mTitleTextInput.getLocationOnScreen(mTitlePoint);
@@ -696,7 +703,12 @@ public class CreateIssueActivity extends BaseActivity
                         @Override
                         public void run() {
                             if (mDescriptionTextInput != null) {
-                                mDescriptionTextInput.setText(result);
+                                if (mTestcase != null) {
+                                    Spanned fullDescription = mTestcase.getFullTestCaseDescription(result);
+                                    mDescriptionTextInput.setText(fullDescription);
+                                } else {
+                                    mDescriptionTextInput.setText(result);
+                                }
                             }
                         }
                     });

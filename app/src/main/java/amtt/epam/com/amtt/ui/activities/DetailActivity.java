@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.googleapi.api.GoogleApiConst;
 import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -42,17 +43,13 @@ public class DetailActivity extends BaseActivity {
     }
 
     private void setTestcaseData() {
-        String testCaseId = GSpreadsheetContent.getInstance().getLastTestcaseId();
-        if (testCaseId != null && !testCaseId.equals(Constants.Symbols.EMPTY)) {
-            mTestcase = GSpreadsheetContent.getInstance().getTestcaseByIdGSX(testCaseId);
-            if (mTestcase != null) {
-                if (mTestcase.getTestCaseNameGSX() != null) {
-                    mNameTextView.setText(mTestcase.getTestCaseNameGSX());
-                }
-                mPriorityTextView.setText(mTestcase.getPriorityGSX());
-                mStepsTextView.setText(mTestcase.getTestStepsGSX());
-                mExpectedResultsTextView.setText(mTestcase.getExpectedResultGSX());
+        if (mTestcase != null) {
+            if (mTestcase.getTestCaseNameGSX() != null) {
+                mNameTextView.setText(mTestcase.getTestCaseNameGSX());
             }
+            mPriorityTextView.setText(mTestcase.getPriorityGSX());
+            mStepsTextView.setText(mTestcase.getTestStepsGSX());
+            mExpectedResultsTextView.setText(mTestcase.getExpectedResultGSX());
         }
     }
 
@@ -63,6 +60,10 @@ public class DetailActivity extends BaseActivity {
         mExpectedResultsTextView = (TextView) findViewById(R.id.tv_expected_results);
         initBugButton();
         setTestcaseData();
+        Bundle extra = getIntent().getExtras();
+        if (extra != null) {
+            mTestcase = GSpreadsheetContent.getInstance().getTestcaseByIdGSX(extra.getString(GoogleApiConst.LINK_TAG));
+        }
     }
 
     private void initBugButton() {
@@ -71,8 +72,8 @@ public class DetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (mTestcase != null) {
-                    GSpreadsheetContent.getInstance().setLastTestCase(mTestcase);
                     Intent loginIntent = new Intent(DetailActivity.this, CreateIssueActivity.class);
+                    loginIntent.putExtra(GoogleApiConst.LINK_TAG, mTestcase.getIdLink());
                     startActivity(loginIntent);
                     finish();
                 }

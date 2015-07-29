@@ -26,8 +26,6 @@ public class GSpreadsheetContent {
     private final String TAG = this.getClass().getSimpleName();
     private GSpreadsheet mSpreadsheet;
     private GWorksheet mWorksheet;
-    private GEntryWorksheet mLastTestCase;
-    private String mLastTestcaseId;
     private List<GTag> mAllTags;
     private List<GWorksheet> mWorksheetsList;
     private List<GEntryWorksheet> mAllTestCasesList;
@@ -216,25 +214,6 @@ public class GSpreadsheetContent {
             testcase = mWorksheet.getEntryById(idGSX);
         }
         return testcase;
-    }
-
-    public GEntryWorksheet getLastTestcase() {
-        if (mLastTestcaseId != null) {
-            setLastTestCase(getTestcaseByIdGSX(mLastTestcaseId));
-        }
-        return mLastTestCase;
-    }
-
-    public void setLastTestCase(GEntryWorksheet testCase) {
-        this.mLastTestCase = testCase;
-    }
-
-    public String getLastTestcaseId() {
-        return mLastTestcaseId;
-    }
-
-    public void setLastTestcaseId(String lastTestcaseId) {
-        this.mLastTestcaseId = lastTestcaseId;
     }
 
     private void setTestCasesSynchronously(List<GEntryWorksheet> testcases, String idLinkWorksheet) {

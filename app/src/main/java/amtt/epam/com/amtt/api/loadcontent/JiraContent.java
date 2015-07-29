@@ -458,12 +458,7 @@ public class JiraContent{
             @Override
             public void onResult(List<DatabaseEntity> result) {
                 Spanned description = StepUtil.getStepInfo(result);
-                if (GSpreadsheetContent.getInstance().getLastTestcase() != null) {
-                    Spanned fullDescription = GSpreadsheetContent.getInstance().getLastTestcase().getFullTestCaseDescription(description);
-                    getContentCallback.resultOfDataLoading(fullDescription);
-                } else {
-                    getContentCallback.resultOfDataLoading(description);
-                }
+                getContentCallback.resultOfDataLoading(description);
             }
 
             @Override
