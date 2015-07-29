@@ -19,13 +19,15 @@
 
     <string name="error">Error</string>
     <string name="error_title_auth">Authorization error</string>
+    <string name="error_title_request">Request error</string>
+    <string name="error_title_connection">Connection error</string>
     <string name="error_message_auth">Check your credentials</string>
     <string name="error_message_auth_forbidden">Visit jira.epam.com before using Amtt</string>
-    <string name="error_title_request">Request error</string>
     <string name="error_message_no_internet">You are offline</string>
     <string name="error_message_host">Unknown error</string>
     <string name="error_message_gateway">Server error</string>
     <string name="error_message_web_address">Wrong web address</string>
+    <string name="error_message_connection">Check whether your internet connection is stable</string>
     <string name="error_button_close">Close</string>
 
     <string name="label_activity">"Activity: "</string>
