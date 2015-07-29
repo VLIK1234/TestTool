@@ -585,7 +585,7 @@ public class CreateIssueActivity extends BaseActivity
 
     private void initGifAttachmentControls() {
         mGifCheckBox = (CheckBox) findViewById(R.id.cb_gif_attachment);
-        gifCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mGifCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!PreferenceUtil.getBoolean(getString(R.string.key_gif_info_dialog))) {
