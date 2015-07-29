@@ -1337,7 +1337,9 @@ public final class GifUtil {
     }
 
     public static void cancelGifCreating() {
-        mTask.cancel(true);
+        if (mTask != null) {
+            mTask.cancel(true);
+        }
     }
 
 }
