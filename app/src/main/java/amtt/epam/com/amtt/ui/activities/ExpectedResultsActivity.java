@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
@@ -16,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.MultiAutoCompleteTextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,6 +29,7 @@ import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.googleapi.database.contentprovider.GSUri;
 import amtt.epam.com.amtt.googleapi.database.table.TagsTable;
+import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.MultyAutocompleteProgressView;
 import amtt.epam.com.amtt.util.IOUtils;
@@ -43,6 +46,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     private static final int TESTCASES_LOADER_ID = 1;
     private static final int TAGS_LOADER_ID = 2;
     private static final int TAGS_LOADER_BY_LINK_ID = 3;
+    private static final int TESTCASES_LOADER_BY_LINK_ID = 4;
     private static final String TAG = ExpectedResultsActivity.class.getSimpleName();
     public static final String LINK = "Link";
     private ExpectedResultsAdapter mResultsAdapter;
@@ -50,7 +54,8 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     private MultyAutocompleteProgressView mTagsAutocompleteTextView;
     private ArrayAdapter mTagsAdapter;
     private Boolean mIsShowDetail = false;
-    private HashMap<String, String> mTagsSelected;
+    private List<GTag> mTags;
+    private Bundle bundle;
     //endregion
 
     @Override
@@ -94,46 +99,55 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        getLoaderManager().initLoader(TESTCASES_LOADER_ID, null, this);
+        getLoaderManager().initLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
         initTagsAutocompleteTextView();
     }
 
     private void initTagsAutocompleteTextView() {
         mTagsAutocompleteTextView = (MultyAutocompleteProgressView) findViewById(R.id.tv_tags);
-        getLoaderManager().initLoader(TAGS_LOADER_ID, null, this);
-        mTagsAutocompleteTextView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mTagsAutocompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mTagsAutocompleteTextView.showProgress(true);
+                showProgress(true);
                 String[] str = mTagsAutocompleteTextView.getText().toString().split(", ");
-                if(str.length == 1){
-                    Bundle bundle = new Bundle();
-                    bundle.putString(LINK, mTagsSelected.get(str[1]));
-                    getLoaderManager().initLoader(TAGS_LOADER_ID, bundle, ExpectedResultsActivity.this);
+                Logger.e(TAG, Arrays.toString(str));
+                bundle = new Bundle();
+                ArrayList<String> links = new ArrayList<>();
+                if (str.length == 1) {
+                    for (int i = 0; i < mTags.size(); i++) {
+                        if (mTags.get(i).getName().equals((String) parent.getItemAtPosition(position))) {
+                            links.add(mTags.get(i).getIdLinkTestCase());
+                            Logger.e(TAG, mTags.get(i).getIdLinkTestCase());
+                        }
+                    }
+                } else {
+                    for (String aStr : str) {
+                        for (int i = 0; i < mTags.size(); i++) {
+                            if (mTags.get(i).getName() == aStr && mTags.get(i).getIdLinkTestCase() == mTags.get(0).getIdLinkTestCase()) {
+                                links.add(mTags.get(i).getIdLinkTestCase());
+                            }
+                        }
+                    }
                 }
-                for (String aStr : str) {
-
-
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+                bundle.putStringArrayList(LINK, links);
+                getLoaderManager().initLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
             }
         });
     }
 
     private void refreshTagsAdapter(List<GTag> result) {
         showProgress(true);
+        Logger.e(TAG, "refreshTagsAdapter");
         mTagsAutocompleteTextView.showProgress(true);
         if (result != null && !result.isEmpty()) {
             ArrayList<String> tagsNames = new ArrayList<>();
             for (int i = 1; i < result.size(); i++) {
                 if (result.get(i) != null) {
                     tagsNames.add(result.get(i).getName());
-                    mTagsSelected.put(result.get(i).getName(), result.get(i).getIdLinkTestCase());
                 }
             }
+            mTagsAdapter = null;
             mTagsAdapter = new ArrayAdapter<>(ExpectedResultsActivity.this, R.layout.spinner_dropdown_item, tagsNames);
             mTagsAutocompleteTextView.setThreshold(1);
             mTagsAutocompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
@@ -148,7 +162,9 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
 
     private void refreshSteps(final List<GEntryWorksheet> result) {
         showProgress(true);
+        Logger.e(TAG, "refreshSteps");
         if (result != null && !result.isEmpty()) {
+            mResultsAdapter = null;
             mResultsAdapter = new ExpectedResultsAdapter(result, R.layout.adapter_expected_results, ExpectedResultsActivity.this);
             mRecyclerView.setAdapter(mResultsAdapter);
             showProgress(false);
@@ -166,8 +182,18 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         } else if (id == TAGS_LOADER_ID) {
             loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, null, null, null);
         }else if(id == TAGS_LOADER_BY_LINK_ID){
-            loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, TagsTable._TESTCASE_ID_LINK + "=?",
-                    new String[]{String.valueOf(args.getString(LINK))}, null);
+            if(args.getStringArrayList(LINK)!=null){
+            String[] stockArr = new String[args.getStringArrayList(LINK).size()];
+            stockArr = args.getStringArrayList(LINK).toArray(stockArr);
+            loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, TagsTable._TESTCASE_ID_LINK + "=? OR ?",
+                    stockArr, null);}
+        } else if (id == TESTCASES_LOADER_BY_LINK_ID) {
+            if (args.getStringArrayList(LINK) != null) {
+                String[] stockArr = new String[args.getStringArrayList(LINK).size()];
+                stockArr = args.getStringArrayList(LINK).toArray(stockArr);
+                loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TESTCASE.get(), null, TestcaseTable._TESTCASE_ID_LINK + "=? OR ?",
+                        stockArr, null);
+            }
         }
         return loader;
     }
@@ -178,17 +204,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             switch (loader.getId()) {
                 case TESTCASES_LOADER_ID:
                     if (data != null && data.getCount() > 0) {
-                        final List<GEntryWorksheet> listObject = new ArrayList<>();
-                        if (data.moveToFirst()) {
-                            do {
-                                try {
-                                    listObject.add(new GEntryWorksheet().parse(data));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            } while (data.moveToNext());
-                        }
-                        refreshSteps(listObject);
+                        refreshSteps(getTestcasesFromCursor(data));
                     } else {
                         GSpreadsheetContent.getInstance().getAllTestCases(new GetContentCallback<List<GEntryWorksheet>>() {
                             @Override
@@ -201,46 +217,65 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                             }
                         });
                     }
+                    getLoaderManager().initLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
                     break;
                 case TAGS_LOADER_ID:
                     if (data != null && data.getCount() > 0) {
-                        final List<GTag> listObject = new ArrayList<>();
-                        if (data.moveToFirst()) {
-                            do {
-                                try {
-                                    listObject.add(new GTag().parse(data));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            } while (data.moveToNext());
-                        }
-                        refreshTagsAdapter(listObject);
+                        mTags = getTagsFromCursor(data);
+                        refreshTagsAdapter(getTagsFromCursor(data));
                     } else {
                         Logger.e(TAG, "Error loading tags");
+                        mTagsAutocompleteTextView.showProgress(false);
                     }
                     break;
                 case TAGS_LOADER_BY_LINK_ID:
                     if (data != null && data.getCount() > 0) {
-                        final List<GTag> listObject = new ArrayList<>();
-                        if (data.moveToFirst()) {
-                            do {
-                                try {
-                                    listObject.add(new GTag().parse(data));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            } while (data.moveToNext());
-                        }
-                        refreshTagsAdapter(listObject);
-                        
+                        refreshTagsAdapter(getTagsFromCursor(data));
                     } else {
                         Logger.e(TAG, "Error loading tags");
+                        mTagsAutocompleteTextView.showProgress(false);
                     }
+                    getLoaderManager().initLoader(TESTCASES_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+                    break;
+                case TESTCASES_LOADER_BY_LINK_ID:
+                    refreshSteps(getTestcasesFromCursor(data));
                     break;
             }
         } finally {
             IOUtils.close(data);
         }
+    }
+
+    @NonNull
+    private List<GTag> getTagsFromCursor(Cursor data) {
+        final List<GTag> listObject = new ArrayList<>();
+        if (data.moveToFirst()) {
+            do {
+                try {
+                    listObject.add(new GTag().parse(data));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } while (data.moveToNext());
+        }
+        return listObject;
+    }
+
+    private List<GEntryWorksheet> getTestcasesFromCursor(Cursor data) {
+        List<GEntryWorksheet> listObject = null;
+        if (data != null && data.getCount() > 0) {
+            listObject = new ArrayList<>();
+            if (data.moveToFirst()) {
+                do {
+                    try {
+                        listObject.add(new GEntryWorksheet().parse(data));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } while (data.moveToNext());
+            }
+        }
+        return listObject;
     }
 
     @Override

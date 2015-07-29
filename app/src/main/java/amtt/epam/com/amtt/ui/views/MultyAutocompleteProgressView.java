@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -66,11 +67,15 @@ public class MultyAutocompleteProgressView extends RelativeLayout {
         mMACTextView.setTokenizer(t);
     }
 
-    public void setOnItemSelectedListener(AdapterView.OnItemSelectedListener l) {
-        mMACTextView.setOnItemSelectedListener(l);
+    public void setOnItemClickListener(AdapterView.OnItemClickListener l) {
+        mMACTextView.setOnItemClickListener(l);
     }
 
     public Editable getText(){
         return mMACTextView.getText();
+    }
+
+    public ListAdapter getAdapter() {
+        return mMACTextView.getAdapter();
     }
 }
