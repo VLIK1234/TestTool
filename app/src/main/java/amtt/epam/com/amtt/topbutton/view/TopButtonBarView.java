@@ -24,6 +24,7 @@ import amtt.epam.com.amtt.ui.activities.AskExitActivity;
 import amtt.epam.com.amtt.ui.activities.CreateIssueActivity;
 import amtt.epam.com.amtt.ui.activities.ExpectedResultsActivity;
 import amtt.epam.com.amtt.ui.activities.StepsActivity;
+import amtt.epam.com.amtt.ui.activities.TakeStepActivity;
 import amtt.epam.com.amtt.ui.activities.UserInfoActivity;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.UIUtil;
@@ -47,9 +48,7 @@ public class TopButtonBarView extends FrameLayout {
     private TopUnitView mButtonCreateTicket;
     private TopUnitView mButtonOpenUserInfo;
     private TopUnitView mButtonExpectedResult;
-    private TopUnitView mButtonStepWithScreen;
-    private TopUnitView mButtonStepWithoutScreen;
-    private TopUnitView mButtonStepWithoutActivityInfo;
+    private TopUnitView mButtonStep;
     private TopUnitView mButtonStopRecord;
     private TopUnitView mButtonShowSteps;
     private TopUnitView mButtonCloseApp;
@@ -141,33 +140,12 @@ public class TopButtonBarView extends FrameLayout {
                 mTopButtonListener.onTouch();
             }
         });
-        mButtonStepWithScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_with_screen), R.drawable.background_step_with_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
+        mButtonStep = new TopUnitView(getContext(), getContext().getString(R.string.label_step_button), R.drawable.background_step_with_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                Intent intent = new Intent();
-                intent.setAction(EXTERANL_ACTION_TAKE_SCREENSHOT);
-                getContext().sendBroadcast(intent);
-                TopButtonService.sendActionChangeTopButtonVisibility(false);
-                mTopButtonListener.onTouch();
-            }
-        });
-        mButtonStepWithoutScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_without_screen), R.drawable.background_step_without_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
-            @Override
-            public void onTouch() {
-                Intent intent = new Intent();
-                intent.setAction(TAKE_ONLY_INFO);
-                getContext().sendBroadcast(intent);
-                mTopButtonListener.onTouch();
-            }
-        });
-        mButtonStepWithoutActivityInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_added_step_without_activity_info), R.drawable.background_step_without_activity, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
-            @Override
-            public void onTouch() {
-                Intent intent = new Intent();
-                intent.setAction(EXTERANL_ACTION_TAKE_SCREENSHOT);
-                getContext().sendBroadcast(intent);
-                TopButtonService.sendActionChangeTopButtonVisibility(false);
-                GlobalBroadcastReceiver.setStepWithoutActivityInfo(true);
+                Intent intent = new Intent(getContext(), TakeStepActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(intent);
                 mTopButtonListener.onTouch();
             }
         });
@@ -215,9 +193,7 @@ public class TopButtonBarView extends FrameLayout {
 
     private void setRecordButtons() {
         mButtonsBar.removeAllViews();
-        mButtonsBar.addView(mButtonStepWithoutActivityInfo);
-        mButtonsBar.addView(mButtonStepWithScreen);
-        mButtonsBar.addView(mButtonStepWithoutScreen);
+        mButtonsBar.addView(mButtonStep);
         mButtonsBar.addView(mButtonExpectedResult);
         mButtonsBar.addView(mButtonShowSteps);
         mButtonsBar.addView(mButtonCreateTicket);

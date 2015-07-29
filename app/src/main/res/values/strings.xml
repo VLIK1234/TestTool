@@ -14,7 +14,7 @@
     <string name="title_activity_paint">Notes</string>
     <string name="title_activity_preview">Preview</string>
     <string name="title_activity_detail">Detail</string>
-    <string name="title_activity_error_snackbar">Choose user</string>
+    <string name="title_activity_take_step">Take step</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
 
@@ -76,7 +76,7 @@
     <string name="label_start_record">Start record</string>
     <string name="label_step">"Step "</string>
     <string name="label_steps">"Steps"</string>
-    <string name="label_step_with_screen">Step with screen</string>
+    <string name="label_step_button">Take step</string>
     <string name="label_step_without_screen">Step without screen</string>
     <string name="label_summary">Title</string>
     <string name="label_tags">Tags</string>
@@ -157,5 +157,11 @@
     <string name="title_error_caught_notification">Application Crashed</string>
     <string name="text_caught_exception">Tap for create ticket</string>
     <string name="lable_list_fragments">"Visible fragments: "</string>
+    <string name="checkbox_activity_info_key">checkbox_activity_info_key</string>
+    <string name="checkbox_screen_key">checkbox_screen_key</string>
+    <string name="take_step_dialog_error_message">Choose at least one variant!</string>
+    <string name="take_step_dialog_positive_button">Take</string>
+    <string name="take_step_dialog_message">Choose at least one variant</string>
+    <string name="take_step_dialog_title">Take step</string>
 
 </resources>

@@ -85,8 +85,12 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     final String packageName = extrasScreenshot.getString(PACKAGE_NAME_KEY);
 
                     byte[] bytes = extrasScreenshot.getByteArray(SCREEN_KEY);
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    final String screenPath = ScreenshotHelper.writeBitmapInFile(bitmap);
+                    String screenPath = null;
+                    Bitmap bitmap;
+                    if (bytes!=null) {
+                        bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        screenPath = ScreenshotHelper.writeBitmapInFile(bitmap);
+                    }
                     if (screenPath != null && listFragments != null) {
                         if (isStepWithoutActivityInfo) {
                             isStepWithoutActivityInfo = false;

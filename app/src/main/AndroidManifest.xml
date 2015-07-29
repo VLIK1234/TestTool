@@ -147,6 +147,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.MainActivity"/>
         </activity>
+
+        <activity
+            android:name=".ui.activities.TakeStepActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Panel"
+            android:label="@string/title_activity_take_step" />
     </application>
 
 </manifest>
