@@ -722,20 +722,20 @@ public class CreateIssueActivity extends BaseActivity
                     String template = externalCache.getPath() + "/%s";
                     String pathLogCommon = String.format(template, "log_common.txt");
                     String pathLogException = String.format(template, "log_exception.txt");
-//                    String pathLogArguments = String.format(template, "log_arguments.txt");
+                    String pathLogArguments = String.format(template, "log_arguments.txt");
                     final File fileLogCommon = new File(pathLogCommon);
                     final File fileLogException = new File(pathLogException);
-//                    final File fileLogArguments = new File(pathLogArguments);
+                    final File fileLogArguments = new File(pathLogArguments);
                     final Attachment attachLogCommon = new Attachment(pathLogCommon);
                     final Attachment attachLogException = new Attachment(pathLogException);
-//                    final Attachment attachLogArguments = new Attachment(pathLogArguments);
+                    final Attachment attachLogArguments = new Attachment(pathLogArguments);
                     if (PreferenceUtil.getBoolean(getString(R.string.key_is_attach_logs))) {
                         if (fileLogCommon.exists() && fileLogException.exists()) {
                             screenArray.add(attachLogCommon);
                             screenArray.add(attachLogException);
-//                            if (fileLogArguments.exists()) {
-//                                screenArray.add(attachLogArguments);
-//                            }
+                            if (fileLogArguments.exists()) {
+                                screenArray.add(attachLogArguments);
+                            }
                         }
                     }
                     mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment);

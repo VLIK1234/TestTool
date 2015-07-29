@@ -38,7 +38,7 @@ public class FragmentInfoHelper {
         }, 1000);
     }
     public static String getArgumentsFromFragments(Bundle bundleArguments){
-        String intDateArguments = bundleArguments.toString().replace("Bundle", "");//clean
+        String intDateArguments = bundleArguments.toString().replaceAll("[}{\\[\\]]|Bundle", "");//clean
         String[] argumentsArray = intDateArguments.split(",");
         StringBuilder builder = new StringBuilder();
         for (String item:argumentsArray) {

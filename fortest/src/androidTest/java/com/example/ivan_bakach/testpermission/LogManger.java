@@ -25,7 +25,6 @@ public class LogManger {
     public static final String FILE_NAME_KEY = "fileName";
     public static final String BYTE_ARRAY_DATA_KEY = "byteArrayData";
     public static final String SEND_LOG_FILE_ACTION = "SEND_LOG_FILE";
-    public static final String CAT_ALL_FILE_ACTION = "CAT_ALL_FILE";
     private static Process sProcessWriteCommonLog;
     private static Process sProcessWriteExceptionLog;
 
@@ -37,21 +36,6 @@ public class LogManger {
         sExceptionLog = String.format(TEMPLATE_EXCEPION, logCacheDir.getPath());
         sCommonLog = String.format(TEMPLATE_COMMON, logCacheDir.getPath());
         IOUtils.deleteFiles(logCacheDir.listFiles());
-        try {
-            sProcessWriteCommonLog = Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sExceptionLog + ROTATE_LOG + EXCEPTION_FILTER);//write exception log
-            sProcessWriteExceptionLog = Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sCommonLog + ROTATE_LOG);//write all log
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void appendMultipleLogs(Context context) {
-        File externalCacheDir = context.getCacheDir();
-        File logCacheDir = new File(externalCacheDir, LOGS_CACHE_DIR);
-        logCacheDir.mkdir();
-        sArgumentsFragments = String.format(TEMPLATE_ARGUMENTS_FRAGMENTS, logCacheDir.getPath());
-        sExceptionLog = String.format(TEMPLATE_EXCEPION, logCacheDir.getPath());
-        sCommonLog = String.format(TEMPLATE_COMMON, logCacheDir.getPath());
         try {
             sProcessWriteCommonLog = Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sExceptionLog + ROTATE_LOG + EXCEPTION_FILTER);//write exception log
             sProcessWriteExceptionLog = Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sCommonLog + ROTATE_LOG);//write all log
