@@ -22,8 +22,8 @@ import amtt.epam.com.amtt.util.Validatable;
 import amtt.epam.com.amtt.util.Validator;
 
 /**
- @author Iryna Monchanka
- @version on 5/20/2015
+ * @author Iryna Monchanka
+ * @version on 5/20/2015
  */
 
 public class AutocompleteProgressView extends RelativeLayout implements TextEditable, Validatable {
@@ -72,14 +72,20 @@ public class AutocompleteProgressView extends RelativeLayout implements TextEdit
         mACTextView.showDropDown();
     }
 
+    public void dismissDropDown() {
+        mACTextView.dismissDropDown();
+    }
+
+    public void setText(CharSequence text) {
+        mACTextView.setText(text, TextView.BufferType.NORMAL);
+
+    }
+
     @Override
     public Editable getText() {
         return mACTextView.getText();
     }
 
-    public void setText(CharSequence text) {
-        mACTextView.setText(text, TextView.BufferType.NORMAL);
-    }
     @Override
     public void setValidators(List<Validator> validators) {
         mValidators = validators;

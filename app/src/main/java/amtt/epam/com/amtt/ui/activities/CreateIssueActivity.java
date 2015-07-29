@@ -105,6 +105,7 @@ public class CreateIssueActivity extends BaseActivity
     private boolean mCreateAnotherIssue;
     private LayoutInflater mLayoutInflater;
     private boolean mDoesTopButtonShouldBeShown;
+    private boolean mIsAssignableSelected;
 
     public static class AssigneeHandler extends Handler {
 
@@ -520,18 +521,29 @@ public class CreateIssueActivity extends BaseActivity
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 2 && before <= count) {
-                    if (InputsUtil.getWhitespacesValidator().validate(mAssignableAutocompleteView)) {
-                        Toast.makeText(CreateIssueActivity.this, getString(R.string.label_tester) + getString(R.string.label_no_whitespaces), Toast.LENGTH_LONG).show();
-                    } else {
-                        mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
-                        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
-                        mAssignableUserName = s.toString();
+                if (count == 1) {
+                    if (s.length() > 2) {
+                        if (!mIsAssignableSelected) {
+                            if (InputsUtil.getWhitespacesValidator().validate(mAssignableAutocompleteView)) {
+                                Toast.makeText(CreateIssueActivity.this, getString(R.string.label_tester) + getString(R.string.label_no_whitespaces), Toast.LENGTH_LONG).show();
+                            } else {
+                                mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
+                                mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
+                                mAssignableUserName = s.toString();
+                            }
+                        }
                     }
+                } else if (count == 0) {
+                    mAssignableAutocompleteView.dismissDropDown();
+                    mAssignableAutocompleteView.setAdapter(null);
+                    mIsAssignableSelected = false;
+                } else {
+                    mIsAssignableSelected = true;
                 }
             }
         });
         if (ActiveUser.getInstance().getLastAssignee() != null) {
+            mIsAssignableSelected = true;
             mAssignableAutocompleteView.setText(ActiveUser.getInstance().getLastAssignee());
         }
         initAssignSelfButton();
