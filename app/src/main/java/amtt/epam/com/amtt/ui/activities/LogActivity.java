@@ -77,12 +77,7 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
     @Override
     protected void onResume() {
         super.onResume();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                TopButtonService.sendActionChangeTopButtonVisibility(false);
-            }
-        }, 500);
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
     }
 
     public void showLog(String filePath) {

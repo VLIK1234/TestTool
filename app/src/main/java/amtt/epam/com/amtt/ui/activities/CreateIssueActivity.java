@@ -143,8 +143,8 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         setDefaultConfigs();
         TopButtonService.sendActionChangeTopButtonVisibility(true);
     }

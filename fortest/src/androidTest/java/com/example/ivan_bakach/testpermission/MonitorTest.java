@@ -34,21 +34,20 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
     public void testMonitor() {
         final Context context = getInstrumentation().getTargetContext();
         LogManger.writeMultipleLogs(getInstrumentation().getTargetContext());
+        LogManger.transferLogsToAmtt(context);
         mApplication = (Application)getInstrumentation().getTargetContext().getApplicationContext();
         final Thread.UncaughtExceptionHandler exceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
                 Log.e(thread.getName(), ex.toString());
-                LogManger.appendMultipleLogs(context);
                 FragmentInfoHelper.writeArgumentsFromFragments(FragmentInfoHelper.sCurrentArguments);
-                LogManger.transferLogsToAmtt(context);
-                LogManger.closeLogsWriter();
                 Intent intent = new Intent();
                 intent.setAction(EXCEPTION_ANSWER_ACTION);
                 intent.putExtra(EXCEPTION_ANSWER_KEY, ex.getClass().getName());
                 getInstrumentation().getContext().sendBroadcast(intent);
                 exceptionHandler.uncaughtException(thread, ex);
+                LogManger.closeLogsWriter();
             }
         });
         mApplication.registerActivityLifecycleCallbacks(this);

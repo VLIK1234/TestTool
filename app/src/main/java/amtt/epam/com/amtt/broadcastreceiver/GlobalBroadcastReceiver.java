@@ -36,6 +36,7 @@ import amtt.epam.com.amtt.ui.activities.CreateIssueActivity;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.PreferenceUtil;
+import amtt.epam.com.amtt.util.TestUtil;
 
 /**
  * @author Ivan_Bakach
@@ -119,6 +120,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     NotificationManager managerCompat = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     PreferenceUtil.putBoolean(context.getString(R.string.key_is_attach_logs), true);
                     managerCompat.notify(NotificationIdConstant.CAUGHT_EXCEPTION, builder.build());
+                    TestUtil.restartTest();
                     break;
                 }
                 break;
