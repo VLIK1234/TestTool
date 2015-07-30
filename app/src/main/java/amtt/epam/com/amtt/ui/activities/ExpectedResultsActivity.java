@@ -95,8 +95,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                 }
             }
             if (links.isEmpty()) {
-                getLoaderManager().restartLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
-                getLoaderManager().restartLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
+                startAllTestcasesLoader();
             } else {
                 bundle.putStringArrayList(LINK, links);
                 startTagsByLinkLoader();
@@ -144,7 +143,6 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         startAllTestcasesLoader();
-        startAllTagsLoader();
         initTagsAutocompleteTextView();
     }
 
@@ -314,18 +312,19 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                 case TESTCASES_LOADER_ID:
                     if (data != null && data.getCount() > 0) {
                         refreshSteps(getTestcasesFromCursor(data));
+                        startAllTagsLoader();
                     } else {
                         GSpreadsheetContent.getInstance().getAllTestCases(new GetContentCallback<List<GEntryWorksheet>>() {
                             @Override
                             public void resultOfDataLoading(List<GEntryWorksheet> result) {
                                 if (result != null && !result.isEmpty()) {
                                     refreshSteps(result);
+                                    startAllTagsLoader();
                                 } else {
                                     Logger.e(TAG, "Error loading testcases");
                                 }
                             }
                         });
-                        startAllTagsLoader();
                     }
                     break;
                 case TAGS_LOADER_ID:

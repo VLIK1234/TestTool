@@ -98,7 +98,7 @@ public class GEntryWorksheet extends GEntry<GEntryWorksheet> {
         if (getFullTestCaseDescription() != null) {
             fullDescription = getFullTestCaseDescription();
         }
-        if(newSteps != null){
+        if(newSteps != null && newSteps.length()>0){
             fullDescription.append(Html.fromHtml("<br/>" + "<br/>" + "<h5>" + "New steps : "
                     + "</h5>"));
             fullDescription.append(newSteps);

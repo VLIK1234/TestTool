@@ -134,11 +134,6 @@ public class CreateIssueActivity extends BaseActivity
         checkIntent();
         PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(CreateIssueActivity.this);
         mHandler = new AssigneeHandler(this);
-        mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
-        mRequestsQueue.add(ContentConst.ATTACHMENT_RESPONSE);
-        initAttachmentsView();
-        initAttachLogsCheckBox();
-        initDescriptionEditText();
     }
 
     @Override
@@ -197,18 +192,32 @@ public class CreateIssueActivity extends BaseActivity
 
     private void checkIntent() {
         Bundle extra = getIntent().getExtras();
-        if(extra!=null){
+        if (extra != null) {
             GSpreadsheetContent.getInstance().getTestcaseByIdLink(extra.getString(GoogleApiConst.LINK_TAG), new GetContentCallback<GEntryWorksheet>() {
                 @Override
-                public void resultOfDataLoading(GEntryWorksheet result) {
-                    if(result!=null){
-                        mTestcase = result;
-                    }
-                    initViews();
+                public void resultOfDataLoading(final GEntryWorksheet result) {
+                    CreateIssueActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            if (result != null) {
+                                mTestcase = result;
+                            }
+                            initViews();
+                            mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
+                            mRequestsQueue.add(ContentConst.ATTACHMENT_RESPONSE);
+                            initAttachmentsView();
+                            initAttachLogsCheckBox();
+                            initDescriptionEditText();
+                        }
+                    });
                 }
             });
-        }else{
+        } else {
             initViews();
+            mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
+            mRequestsQueue.add(ContentConst.ATTACHMENT_RESPONSE);
+            initAttachmentsView();
+            initAttachLogsCheckBox();
+            initDescriptionEditText();
         }
     }
 
