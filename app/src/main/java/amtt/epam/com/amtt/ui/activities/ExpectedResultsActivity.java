@@ -11,6 +11,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -35,6 +37,7 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.MultyAutocompleteProgressView;
 import amtt.epam.com.amtt.util.ConverterUtil;
 import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -87,7 +90,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     @Override
     protected void onDestroy() {
         super.onDestroy();
-            TopButtonService.sendActionChangeTopButtonVisibility(true);
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     private void initViews() {
@@ -109,6 +112,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                 showProgress(true);
                 String[] str = mTagsAutocompleteTextView.getText().toString().split(", ");
                 Logger.e(TAG, Arrays.toString(str));
+                bundle=null;
                 bundle = new Bundle();
                 ArrayList<String> links = new ArrayList<>();
                 if (str.length == 1) {
@@ -118,17 +122,37 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                             Logger.e(TAG, mTags.get(i).getIdLinkTestCase());
                         }
                     }
-                } else {
+                    bundle.putStringArrayList(LINK, links);
+                    getLoaderManager().initLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+                } else if (str.length > 1){
                     for (String aStr : str) {
                         for (int i = 0; i < mTags.size(); i++) {
-                            if (mTags.get(i).getName() == aStr && mTags.get(i).getIdLinkTestCase() == mTags.get(0).getIdLinkTestCase()) {
+                            if (aStr.equals(mTags.get(i).getName())) {
                                 links.add(mTags.get(i).getIdLinkTestCase());
                             }
                         }
                     }
+                    bundle.putStringArrayList(LINK, links);
+                    getLoaderManager().restartLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
                 }
-                bundle.putStringArrayList(LINK, links);
-                getLoaderManager().initLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+            }
+        });
+        mTagsAutocompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (InputsUtil.hasComma(String.valueOf(s))) {
+                   // getLoaderManager().initLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
+                }
             }
         });
     }
@@ -149,9 +173,11 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             mTagsAutocompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
             mTagsAutocompleteTextView.setAdapter(mTagsAdapter);
             mTagsAutocompleteTextView.showProgress(false);
+            showProgress(false);
         } else {
             Logger.e(TAG, "Tags not found");
             mTagsAutocompleteTextView.showProgress(false);
+            showProgress(false);
         }
     }
 
@@ -198,7 +224,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         String selection =  columnName + "=?";
         if (args.size() > 1) {
             for (int i = 0; i < args.size(); i++) {
-                selection = selection.concat(" OR ?");
+                selection = selection.concat(" OR "+ columnName + "=?");
             }
         }
         return selection;
@@ -241,7 +267,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                         Logger.e(TAG, "Error loading tags");
                         mTagsAutocompleteTextView.showProgress(false);
                     }
-                    getLoaderManager().initLoader(TESTCASES_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+                    getLoaderManager().restartLoader(TESTCASES_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
                     break;
                 case TESTCASES_LOADER_BY_LINK_ID:
                     refreshSteps(getTestcasesFromCursor(data));

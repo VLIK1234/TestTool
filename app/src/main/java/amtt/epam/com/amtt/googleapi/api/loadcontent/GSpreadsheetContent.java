@@ -6,13 +6,11 @@ import java.util.List;
 import amtt.epam.com.amtt.api.ContentConst;
 import amtt.epam.com.amtt.api.ContentLoadingCallback;
 import amtt.epam.com.amtt.api.GetContentCallback;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
-import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -25,10 +23,6 @@ public class GSpreadsheetContent {
     //region Variables
     private final String TAG = this.getClass().getSimpleName();
     private GSpreadsheet mSpreadsheet;
-    private GWorksheet mWorksheet;
-    private List<GTag> mAllTags;
-    private List<GWorksheet> mWorksheetsList;
-    private List<GEntryWorksheet> mAllTestCasesList;
     //endregion
 
     private static class XMLContentHolder {
@@ -42,38 +36,6 @@ public class GSpreadsheetContent {
     //region Spreadsheet
     public void setSpreadsheet(GSpreadsheet spreadsheet) {
         this.mSpreadsheet = spreadsheet;
-    }
-
-    public void getSpreadsheet(final GetContentCallback<GSpreadsheet> getContentCallback) {
-        if (mSpreadsheet != null) {
-            getContentCallback.resultOfDataLoading(mSpreadsheet);
-        } else {
-            getSpreadsheetSynchronously(getContentCallback);
-        }
-    }
-
-    private void getSpreadsheetSynchronously(final GetContentCallback<GSpreadsheet> getContentCallback) {
-        if (ActiveUser.getInstance().getSpreadsheetLink() != null) {
-            ContentFromDatabase.getSpreadsheet(ActiveUser.getInstance().getSpreadsheetLink(), new IResult<List<GSpreadsheet>>() {
-                @Override
-                public void onResult(List<GSpreadsheet> result) {
-                    if (result != null && !result.isEmpty()) {
-                        GSpreadsheet spreadsheet = result.get(0);
-                        setSpreadsheet(spreadsheet);
-                        getContentCallback.resultOfDataLoading(mSpreadsheet);
-                    } else {
-                        getSpreadsheetAsynchronously(getContentCallback);
-                    }
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    getSpreadsheetAsynchronously(getContentCallback);
-                }
-            });
-        } else {
-            getSpreadsheetAsynchronously(getContentCallback);
-        }
     }
 
     private void setSpreadsheetSynchronously(GSpreadsheet result) {
@@ -111,16 +73,8 @@ public class GSpreadsheetContent {
     //endregion
 
     //region Worksheet
-    public void setWorksheet(GWorksheet worksheet) {
-        this.mWorksheet = worksheet;
-    }
-
     public void getWorksheet(final String linkWorksheet, final GetContentCallback<GWorksheet> getContentCallback) {
-        if (mWorksheet != null) {
-            getContentCallback.resultOfDataLoading(mWorksheet);
-        } else {
-            getWorksheetSynchronously(linkWorksheet, getContentCallback);
-        }
+        getWorksheetAsynchronously(linkWorksheet, getContentCallback);
     }
 
     private void setWorksheetSynchronously(final GWorksheet worksheet) {
@@ -137,25 +91,6 @@ public class GSpreadsheetContent {
         });
     }
 
-    private void getWorksheetSynchronously(final String linkWorksheet, final GetContentCallback<GWorksheet> getContentCallback) {
-        ContentFromDatabase.getWorksheet(linkWorksheet, new IResult<List<GWorksheet>>() {
-            @Override
-            public void onResult(List<GWorksheet> result) {
-                if (!result.isEmpty()) {
-                    GWorksheet worksheet = result.get(0);
-                    getContentCallback.resultOfDataLoading(worksheet);
-                } else {
-                    getWorksheetAsynchronously(linkWorksheet, getContentCallback);
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                getWorksheetAsynchronously(linkWorksheet, getContentCallback);
-            }
-        });
-    }
-
     private void getWorksheetAsynchronously(final String linkWorksheet, final GetContentCallback<GWorksheet> getContentCallback) {
         ContentFromBackend.getInstance().getWorksheetAsynchronously(linkWorksheet, new ContentLoadingCallback<GWorksheet>() {
             @Override
@@ -163,8 +98,6 @@ public class GSpreadsheetContent {
                 if (tag == ContentConst.WORKSHEET_RESPONSE) {
                     if (contentCallback != null) {
                         if (result != null) {
-                            result.setSpreadsheetIdLink(mSpreadsheet.getIdLink());
-                            setWorksheet(result);
                             setWorksheetSynchronously(result);
                             setTestCasesSynchronously(result.getEntry(), result.getIdLink());
                             contentCallback.resultOfDataLoading(result);
@@ -176,44 +109,26 @@ public class GSpreadsheetContent {
             }
         }, getContentCallback);
     }
+    //endregion
 
-    private void updateWorksheet(GWorksheet worksheet) {
-        ContentFromDatabase.updateWorksheet(worksheet, new IResult<Integer>() {
+    //region TestCase
+    public void getTestcaseByIdLink(String idLink, final GetContentCallback<GEntryWorksheet> getContentCallback) {
+        ContentFromDatabase.getTestcaseByIdLink(idLink, new IResult<List<GEntryWorksheet>>() {
             @Override
-            public void onResult(Integer result) {
-                Logger.i(TAG, "Worksheet " + String.valueOf(result) + " updated ");
+            public void onResult(List<GEntryWorksheet> result) {
+                if (result != null && !result.isEmpty()) {
+                    getContentCallback.resultOfDataLoading(result.get(0));
+                }else {
+                    getContentCallback.resultOfDataLoading(null);
+                }
             }
 
             @Override
             public void onError(Exception e) {
-                Logger.e(TAG, "Worksheet update error ", e);
+                getContentCallback.resultOfDataLoading(null);
+                Logger.e(TAG, e.getMessage(), e);
             }
         });
-    }
-
-    public List<GWorksheet> getWorksheetsList() {
-        return mWorksheetsList;
-    }
-
-    public void setWorksheetsList(List<GWorksheet> worksheetsList) {
-        mWorksheetsList = worksheetsList;
-    }
-
-    public void setWorksheetsListItem(GWorksheet worksheet) {
-        if (mWorksheetsList == null) {
-            mWorksheetsList = new ArrayList<>();
-        }
-        mWorksheetsList.add(worksheet);
-    }
-    //endregion
-
-    //region TestCase
-    public GEntryWorksheet getTestcaseByIdGSX(String idGSX) {
-        GEntryWorksheet testcase = null;
-        if (mWorksheet != null) {
-            testcase = mWorksheet.getEntryById(idGSX);
-        }
-        return testcase;
     }
 
     private void setTestCasesSynchronously(List<GEntryWorksheet> testcases, String idLinkWorksheet) {
@@ -241,11 +156,7 @@ public class GSpreadsheetContent {
     }
 
     public void getAllTestCases(final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
-        if (getAllTestCases() != null) {
-            getContentCallback.resultOfDataLoading(getAllTestCases());
-        } else {
             getTestCasesAsynchronously(getContentCallback);
-        }
     }
 
     private void getTestCasesAsynchronously(final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
@@ -257,7 +168,6 @@ public class GSpreadsheetContent {
                         @Override
                         public void resultOfDataLoading(GWorksheet result) {
                             if (result != null) {
-                                mAllTestCasesList = result.getEntry();
                                 getContentCallback.resultOfDataLoading(result.getEntry());
                             } else {
                                 Logger.e(TAG, "Worksheet == null");
@@ -270,55 +180,9 @@ public class GSpreadsheetContent {
             }
         });
     }
-
-    public List<GEntryWorksheet> getAllTestCases() {
-        if (mAllTestCasesList != null && !mAllTestCasesList.isEmpty()) {
-            return mAllTestCasesList;
-        } else {
-            return null;
-        }
-    }
     //endregion
 
     //region Tags
-    public void getAllTags(final GetContentCallback<List<GTag>> getContentCallback) {
-        if (mAllTags != null) {
-            getContentCallback.resultOfDataLoading(mAllTags);
-        } else {
-            ContentFromDatabase.getAllTags(new IResult<List<DatabaseEntity>>() {
-                @Override
-                public void onResult(List<DatabaseEntity> result) {
-                    if (result != null) {
-                        List<GTag> tags = (List) result;
-                        setTags(tags);
-                        getContentCallback.resultOfDataLoading(tags);
-                    } else {
-                        getContentCallback.resultOfDataLoading(null);
-                    }
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    getContentCallback.resultOfDataLoading(null);
-                    Logger.e(TAG, e.getMessage(), e);
-                }
-            });
-        }
-    }
-
-    public void setTags(List<GTag> tags) {
-        this.mAllTags = tags;
-    }
-
-    public void setTag(GTag tag) {
-        if (mAllTags == null) {
-            mAllTags = new ArrayList<>();
-        }
-        if (tag != null) {
-            mAllTags.add(tag);
-        }
-    }
-
     public void setTag(String testCaseName, String testCaseIdLink) {
         if (testCaseName != null && testCaseIdLink != null) {
             GTag gTag;

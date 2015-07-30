@@ -130,12 +130,11 @@ public class CreateIssueActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
         TopButtonService.sendActionChangeTopButtonVisibility(false);
+        checkIntent();
         PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(CreateIssueActivity.this);
         mHandler = new AssigneeHandler(this);
-        initViews();
         mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
         mRequestsQueue.add(ContentConst.ATTACHMENT_RESPONSE);
-        showProgressIfNeed();
         initAttachmentsView();
         initAttachLogsCheckBox();
         initDescriptionEditText();
@@ -182,6 +181,7 @@ public class CreateIssueActivity extends BaseActivity
         mRequestsQueue.add(ContentConst.PROJECTS_RESPONSE);
         mRequestsQueue.add(ContentConst.PRIORITIES_RESPONSE);
         initCreateIssueButton();
+        showProgressIfNeed();
         initProjectNamesSpinner();
         initSummaryEditText();
         initEnvironmentEditText();
@@ -192,9 +192,22 @@ public class CreateIssueActivity extends BaseActivity
         initClearEnvironmentButton();
         initGifAttachmentControls();
         mScrollView = (ScrollView) findViewById(R.id.scroll_view);
+    }
+
+    private void checkIntent() {
         Bundle extra = getIntent().getExtras();
         if(extra!=null){
-            mTestcase = GSpreadsheetContent.getInstance().getTestcaseByIdGSX(extra.getString(GoogleApiConst.LINK_TAG));
+            GSpreadsheetContent.getInstance().getTestcaseByIdLink(extra.getString(GoogleApiConst.LINK_TAG), new GetContentCallback<GEntryWorksheet>() {
+                @Override
+                public void resultOfDataLoading(GEntryWorksheet result) {
+                    if(result!=null){
+                        mTestcase = result;
+                    }
+                    initViews();
+                }
+            });
+        }else{
+            initViews();
         }
     }
 
