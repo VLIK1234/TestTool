@@ -895,6 +895,7 @@ public class CreateIssueActivity extends BaseActivity
         if (mGifProgress != null && mAdapter != null) {
             mGifProgress.setVisibility(View.GONE);
             mAdapter.addItem(0, new Attachment(GifUtil.FILE_PATH));
+            Toast.makeText(CreateIssueActivity.this, R.string.label_gif_created, Toast.LENGTH_SHORT).show();
         }
     }
 
