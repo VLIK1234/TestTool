@@ -128,6 +128,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         getLoaderManager().initLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
         getLoaderManager().initLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
+        getLoaderManager().initLoader(TAGS_LOADER_BY_LINK_ID, null, ExpectedResultsActivity.this);
         initTagsAutocompleteTextView();
     }
 
@@ -151,7 +152,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                         }
                     }
                     bundle.putStringArrayList(LINK, links);
-                    getLoaderManager().initLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+                    getLoaderManager().restartLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
                 } else if (str.length > 1 && mTags!=null){
                     for (String aStr : str) {
                         for (int i = 0; i < mTags.size(); i++) {
@@ -251,7 +252,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TESTCASE.get(), null, null, null, null);
         } else if (id == TAGS_LOADER_ID) {
             loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, null, null, null);
-        }else if(id == TAGS_LOADER_BY_LINK_ID){
+        }else if(id == TAGS_LOADER_BY_LINK_ID && args!=null){
             if (args.getStringArrayList(LINK) != null) {
                 String selection = getSelection(TagsTable._TESTCASE_ID_LINK, args.getStringArrayList(LINK));
                 loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, selection,
@@ -280,7 +281,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        try {
+        try {if(loader!=null) {
             switch (loader.getId()) {
                 case TESTCASES_LOADER_ID:
                     if (data != null && data.getCount() > 0) {
@@ -321,7 +322,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                     refreshSteps(getTestcasesFromCursor(data));
                     break;
             }
-        } finally {
+        }} finally {
             IOUtils.close(data);
         }
     }
