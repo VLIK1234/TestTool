@@ -6,9 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.test.InstrumentationTestCase;
 import android.util.Log;
 
@@ -63,7 +60,7 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
 
         while (!receiver.needCloseUnitTest()) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(RECEIVER_TIMEOUT);
                 if (receiver.needCloseUnitTest()) {
                     context.unregisterReceiver(receiver);
                     mApplication.unregisterActivityLifecycleCallbacks(this);

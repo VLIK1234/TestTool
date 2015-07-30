@@ -28,9 +28,9 @@ public class FragmentInfoHelper {
                         if (fragment.isVisible() && fragment.getUserVisibleHint() && fragment.getView() != null && fragment.getView().getParent() != null && !fragment.getView().getParent().isLayoutRequested()) {
                             Bundle bundleArguments = fragment.getArguments();
                             if (bundleArguments != null) {
-                                sCurrentArguments = fragment.getClass().getSimpleName() + "\n" + FragmentInfoHelper.getArgumentsFromFragments(bundleArguments);
+                                sCurrentArguments = fragment.getClass().getSimpleName() + ":\n" + FragmentInfoHelper.getArgumentsFromFragments(bundleArguments);
                             }
-                            sListFragments += (fragment.getClass().getSimpleName() + "<br/>");
+                            sListFragments += (fragment.getClass().getSimpleName() + ScreenshotHelper.BR_TAG);
                         }
                     }
                 }
@@ -38,7 +38,7 @@ public class FragmentInfoHelper {
         }, 1000);
     }
     public static String getArgumentsFromFragments(Bundle bundleArguments){
-        String intDateArguments = bundleArguments.toString().replaceAll("[}{\\[\\]]|Bundle", "");//clean
+        String intDateArguments = bundleArguments.toString().trim().replaceAll("[}{\\[\\]]|Bundle", "");//clean
         String[] argumentsArray = intDateArguments.split(",");
         StringBuilder builder = new StringBuilder();
         for (String item:argumentsArray) {
@@ -61,9 +61,5 @@ public class FragmentInfoHelper {
 
     public static String getListFragments() {
         return sListFragments;
-    }
-
-    public static void setListFragments(String listFragments) {
-        sListFragments = listFragments;
     }
 }

@@ -5,9 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import java.io.File;
-import java.io.IOException;
-
 /**
  * Created by Ivan_Bakach on 29.06.2015.
  */
@@ -66,7 +63,8 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                     Intent intentTakeOnlyInfo = new Intent();
                     intentTakeOnlyInfo.setAction(REQUEST_TAKE_ONLY_INFO);
                     intentTakeOnlyInfo.putExtra(LIST_FRAGMENTS_KEY,
-                            FragmentInfoHelper.getListFragments().substring(0, FragmentInfoHelper.getListFragments().lastIndexOf("<br/>") != -1 ? FragmentInfoHelper.getListFragments().lastIndexOf("<br/>") : 0));
+                            FragmentInfoHelper.getListFragments().substring(0, FragmentInfoHelper.getListFragments().lastIndexOf(ScreenshotHelper.BR_TAG) != -1
+                                    ? FragmentInfoHelper.getListFragments().lastIndexOf(ScreenshotHelper.BR_TAG) : 0));
                     intentTakeOnlyInfo.putExtra(ACTIVITY_CLASS_NAME_KEY, mActivity.getClass().getName());
                     intentTakeOnlyInfo.putExtra(PACKAGE_NAME_KEY, mActivity.getPackageName());
                     context.sendBroadcast(intentTakeOnlyInfo);
