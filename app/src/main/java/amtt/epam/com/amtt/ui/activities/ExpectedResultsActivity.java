@@ -131,8 +131,8 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
