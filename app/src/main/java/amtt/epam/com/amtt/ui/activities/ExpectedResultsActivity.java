@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,9 +20,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.MultiAutoCompleteTextView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import amtt.epam.com.amtt.R;
@@ -52,6 +56,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     private static final int TAGS_LOADER_ID = 2;
     private static final int TAGS_LOADER_BY_LINK_ID = 3;
     private static final int TESTCASES_LOADER_BY_LINK_ID = 4;
+    private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final String TAG = ExpectedResultsActivity.class.getSimpleName();
     public static final String LINK = "Link";
     private ExpectedResultsAdapter mResultsAdapter;
@@ -59,7 +64,28 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     private MultyAutocompleteProgressView mTagsAutocompleteTextView;
     private List<GTag> mTags;
     private Bundle bundle;
+    private TagsHandler mHandler;
     //endregion
+
+    public static class TagsHandler extends Handler {
+
+        private final WeakReference<ExpectedResultsActivity> mActivity;
+
+        TagsHandler(ExpectedResultsActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            ExpectedResultsActivity service = mActivity.get();
+            service.setTags(msg.obj.toString());
+        }
+    }
+
+    private void setTags(String text) {
+
+    }
 
     @Override
     public void onShowCard(int position) {
@@ -81,6 +107,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expected_results);
+        mHandler = new TagsHandler(this);
         TopButtonService.sendActionChangeTopButtonVisibility(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(false);
@@ -100,6 +127,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         getLoaderManager().initLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
+        getLoaderManager().initLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
         initTagsAutocompleteTextView();
     }
 
@@ -140,19 +168,35 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         mTagsAutocompleteTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                if (before > count) {
+                    mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
+                    mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
+                    String[] str = s.toString().split(", ");
+                    bundle=null;
+                    bundle = new Bundle();
+                    ArrayList<String> links = new ArrayList<>();
+                    for (String aStr : str) {
+                        for (int i = 0; i < mTags.size(); i++) {
+                            if (aStr.equals(mTags.get(i).getName())) {
+                                links.add(mTags.get(i).getIdLinkTestCase());
+                            }
+                        }
+                    }
+                    if(links.isEmpty()){
+                        getLoaderManager().restartLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
+                        getLoaderManager().restartLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
+                    }else{
+                    bundle.putStringArrayList(LINK, links);
+                    getLoaderManager().restartLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);}
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (InputsUtil.hasComma(String.valueOf(s))) {
-                   // getLoaderManager().initLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
-                }
             }
         });
     }
@@ -162,12 +206,13 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         Logger.e(TAG, "refreshTagsAdapter");
         mTagsAutocompleteTextView.showProgress(true);
         if (result != null && !result.isEmpty()) {
-            ArrayList<String> tagsNames = new ArrayList<>();
+            HashSet<String> namesTags = new HashSet<>();
             for (int i = 1; i < result.size(); i++) {
                 if (result.get(i) != null) {
-                    tagsNames.add(result.get(i).getName());
+                    namesTags.add(result.get(i).getName());
                 }
             }
+            List<String> tagsNames = new ArrayList<String>(namesTags);
             ArrayAdapter<String> mTagsAdapter = new ArrayAdapter<>(ExpectedResultsActivity.this, R.layout.spinner_dropdown_item, tagsNames);
             mTagsAutocompleteTextView.setThreshold(1);
             mTagsAutocompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
@@ -248,8 +293,8 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                                 }
                             }
                         });
+                        getLoaderManager().restartLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
                     }
-                    getLoaderManager().initLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
                     break;
                 case TAGS_LOADER_ID:
                     if (data != null && data.getCount() > 0) {
