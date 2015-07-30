@@ -26,7 +26,7 @@ import amtt.epam.com.amtt.database.table.UsersTable;
 
 public class DataBaseManager extends SQLiteOpenHelper {
 
-    private static final Integer DATA_BASE_VERSION = 10;
+    private static final Integer DATA_BASE_VERSION = 12;
     private static final String DATA_BASE_NAME = "amtt.db";
     private static final List<Class> sTables;
 

@@ -30,7 +30,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.setting);
         projectName = (ListPreference) findPreference(getActivity().getString(R.string.key_test_project));
-        checkBoxPreference = (CheckBoxPreference) findPreference(getActivity().getBaseContext().getString(R.string.key_dialog_hide));
         switchPreference = (SwitchPreference) findPreference(getActivity().getBaseContext().getString(R.string.key_topbutton_show));
         PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(this);
     }
@@ -56,18 +55,17 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.key_dialog_hide))) {
-        } else if (key.equals(getString(R.string.key_topbutton_show))) {
+        if (key.equals(getString(R.string.key_topbutton_show))) {
             TopButtonService.sendActionChangeTopButtonVisibility(sharedPreferences.getBoolean(getString(R.string.key_topbutton_show), true));
         } else if (key.equals(getString(R.string.key_test_project))) {
             ListPreference projectName = (ListPreference) findPreference(getActivity().getString(R.string.key_test_project));
             projectName.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    TestUtil.restartTest();
                     return true;
                 }
             });
+            TestUtil.restartTest();
             projectName.setSummary(projectName.getEntry());
         }
     }

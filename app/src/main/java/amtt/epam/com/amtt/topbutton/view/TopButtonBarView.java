@@ -16,10 +16,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReceiver;
 import amtt.epam.com.amtt.database.util.StepUtil;
@@ -28,9 +24,9 @@ import amtt.epam.com.amtt.ui.activities.AskExitActivity;
 import amtt.epam.com.amtt.ui.activities.CreateIssueActivity;
 import amtt.epam.com.amtt.ui.activities.ExpectedResultsActivity;
 import amtt.epam.com.amtt.ui.activities.StepsActivity;
+import amtt.epam.com.amtt.ui.activities.TakeStepActivity;
 import amtt.epam.com.amtt.ui.activities.UserInfoActivity;
 import amtt.epam.com.amtt.util.ActiveUser;
-import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
@@ -42,6 +38,7 @@ import amtt.epam.com.amtt.util.UIUtil;
 public class TopButtonBarView extends FrameLayout {
 
     public static final String EXTERANL_ACTION_TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
+    public static final String TAKE_ONLY_INFO = "TAKE_ONLY_INFO";
     private final WindowManager mWindowManager;
     private static boolean isRecordStarted;
     private static boolean isShowAction;
@@ -51,9 +48,7 @@ public class TopButtonBarView extends FrameLayout {
     private TopUnitView mButtonCreateTicket;
     private TopUnitView mButtonOpenUserInfo;
     private TopUnitView mButtonExpectedResult;
-    private TopUnitView mButtonStepWithScreen;
-    private TopUnitView mButtonStepWithoutScreen;
-    private TopUnitView mButtonStepWithoutActivityInfo;
+    private TopUnitView mButtonStep;
     private TopUnitView mButtonStopRecord;
     private TopUnitView mButtonShowSteps;
     private TopUnitView mButtonCloseApp;
@@ -109,6 +104,10 @@ public class TopButtonBarView extends FrameLayout {
                 ActiveUser.getInstance().setRecord(true);
                 hide();
                 StepUtil.clearAllSteps();
+
+                Intent intentLogs = new Intent();
+                intentLogs.setAction("TAKE_LOGS");
+                getContext().sendOrderedBroadcast(intentLogs, null);
                 Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_SHORT).show();
                 mTopButtonListener.onTouch();
             }
@@ -119,7 +118,6 @@ public class TopButtonBarView extends FrameLayout {
                 Intent intentTicket = new Intent(getContext(), CreateIssueActivity.class);
                 intentTicket.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentTicket);
-                mTopButtonListener.onTouch();
             }
         });
         mButtonOpenUserInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), R.drawable.background_user_info, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
@@ -142,39 +140,12 @@ public class TopButtonBarView extends FrameLayout {
                 mTopButtonListener.onTouch();
             }
         });
-        mButtonStepWithScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_with_screen), R.drawable.background_step_with_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
+        mButtonStep = new TopUnitView(getContext(), getContext().getString(R.string.label_step_button), R.drawable.background_step_with_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                Intent intent = new Intent();
-                intent.setAction(EXTERANL_ACTION_TAKE_SCREENSHOT);
-                getContext().sendBroadcast(intent);
-                TopButtonService.sendActionChangeTopButtonVisibility(false);
-                mTopButtonListener.onTouch();
-            }
-        });
-        mButtonStepWithoutScreen = new TopUnitView(getContext(), getContext().getString(R.string.label_step_without_screen), R.drawable.background_step_without_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
-            @Override
-            public void onTouch() {
-                Toast.makeText(getContext(), getContext().getString(R.string.label_added_step_without_screen), Toast.LENGTH_SHORT).show();
-                ScheduledExecutorService worker =
-                        Executors.newSingleThreadScheduledExecutor();
-                Runnable task = new Runnable() {
-                    public void run() {
-                        StepUtil.saveStep(ActivityMetaUtil.getTopActivityComponent(), null, null);
-                    }
-                };
-                worker.schedule(task, 1, TimeUnit.SECONDS);
-                mTopButtonListener.onTouch();
-            }
-        });
-        mButtonStepWithoutActivityInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_added_step_without_activity_info), R.drawable.background_step_without_activity, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
-            @Override
-            public void onTouch() {
-                Intent intent = new Intent();
-                intent.setAction(EXTERANL_ACTION_TAKE_SCREENSHOT);
-                getContext().sendBroadcast(intent);
-                TopButtonService.sendActionChangeTopButtonVisibility(false);
-                GlobalBroadcastReceiver.setStepWithoutActivityInfo(true);
+                Intent intent = new Intent(getContext(), TakeStepActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(intent);
                 mTopButtonListener.onTouch();
             }
         });
@@ -222,9 +193,7 @@ public class TopButtonBarView extends FrameLayout {
 
     private void setRecordButtons() {
         mButtonsBar.removeAllViews();
-        mButtonsBar.addView(mButtonStepWithoutActivityInfo);
-        mButtonsBar.addView(mButtonStepWithScreen);
-        mButtonsBar.addView(mButtonStepWithoutScreen);
+        mButtonsBar.addView(mButtonStep);
         mButtonsBar.addView(mButtonExpectedResult);
         mButtonsBar.addView(mButtonShowSteps);
         mButtonsBar.addView(mButtonCreateTicket);

@@ -12,7 +12,7 @@
         android:name="${applicationTestid}.TestRunner"
         android:functionalTest="false"
         android:handleProfiling="false"
-        android:label="Tests for com.example.ivan_bakach.testpermission"
+        android:label="Tests"
         android:targetPackage="${applicationTestid}"
         tools:replace="android:targetPackage, android:label">
         <meta-data

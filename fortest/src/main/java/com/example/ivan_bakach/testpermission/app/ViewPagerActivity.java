@@ -9,16 +9,16 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
 //import com.example.ivan_bakach.injectlibrary.FragmentInfoManger;
-import com.example.ivan_bakach.testpermission.FirstFragment;
+import com.example.ivan_bakach.testpermission.fragment.FirstPageFragment;
 import com.example.ivan_bakach.testpermission.R;
-import com.example.ivan_bakach.testpermission.SecondFragment;
+import com.example.ivan_bakach.testpermission.fragment.SecondPageFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class PermissionTestClientActivity extends FragmentActivity {
+public class ViewPagerActivity extends FragmentActivity {
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
@@ -39,7 +39,7 @@ public class PermissionTestClientActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_screen_slide);
+        setContentView(R.layout.activity_view_pager);
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
         supportFragmentManager = getSupportFragmentManager();
@@ -74,7 +74,7 @@ public class PermissionTestClientActivity extends FragmentActivity {
     }
 
     public static String printListFragment(List<Fragment> list) {
-        String result = PermissionTestClientActivity.class.getSimpleName()+ " ";
+        String result = ViewPagerActivity.class.getSimpleName()+ " ";
         for (Fragment fragment:list) {
             result+=(fragment.getClass().getSimpleName()+" ");
         }
@@ -98,7 +98,7 @@ public class PermissionTestClientActivity extends FragmentActivity {
      */
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         Fragment[] arrayFragmnet = new Fragment[]{
-            new FirstFragment(), new SecondFragment()
+            new FirstPageFragment(), new SecondPageFragment()
         };
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);

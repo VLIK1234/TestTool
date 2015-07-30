@@ -17,6 +17,7 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,7 +106,6 @@ public class CreateIssueActivity extends BaseActivity
     private CheckBox mCreateAnotherCheckBox;
     private boolean mCreateAnotherIssue;
     private LayoutInflater mLayoutInflater;
-    private boolean mDoesTopButtonShouldBeShown;
     private boolean mIsAssignableSelected;
 
     public static class AssigneeHandler extends Handler {
@@ -129,6 +129,7 @@ public class CreateIssueActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
         TopButtonService.sendActionChangeTopButtonVisibility(false);
+
         PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(CreateIssueActivity.this);
         mHandler = new AssigneeHandler(this);
         initViews();
@@ -141,19 +142,19 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         setDefaultConfigs();
-        if (mDoesTopButtonShouldBeShown) {
-            TopButtonService.sendActionChangeTopButtonVisibility(true);
-        }
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         TopButtonService.sendActionChangeTopButtonVisibility(false);
-        mDoesTopButtonShouldBeShown = true;
+        Intent intentLogs = new Intent();
+        intentLogs.setAction("TAKE_LOGS");
+        getBaseContext().sendBroadcast(intentLogs);
     }
 
     @Override
@@ -734,14 +735,20 @@ public class CreateIssueActivity extends BaseActivity
                     String template = externalCache.getPath() + "/%s";
                     String pathLogCommon = String.format(template, "log_common.txt");
                     String pathLogException = String.format(template, "log_exception.txt");
+                    String pathLogArguments = String.format(template, "log_arguments.txt");
                     final File fileLogCommon = new File(pathLogCommon);
                     final File fileLogException = new File(pathLogException);
+                    final File fileLogArguments = new File(pathLogArguments);
                     final Attachment attachLogCommon = new Attachment(pathLogCommon);
                     final Attachment attachLogException = new Attachment(pathLogException);
+                    final Attachment attachLogArguments = new Attachment(pathLogArguments);
                     if (PreferenceUtil.getBoolean(getString(R.string.key_is_attach_logs))) {
                         if (fileLogCommon.exists() && fileLogException.exists()) {
                             screenArray.add(attachLogCommon);
                             screenArray.add(attachLogException);
+                            if (fileLogArguments.exists()) {
+                                screenArray.add(attachLogArguments);
+                            }
                         }
                     }
                     mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment);
@@ -816,9 +823,11 @@ public class CreateIssueActivity extends BaseActivity
 
     @Override
     public void onItemShow(int position) {
-        mDoesTopButtonShouldBeShown = false;
         Intent intent = null;
-        String filePath = mAdapter.getAttachmentFilePathList().get(position);
+        String filePath = "";
+        if (mAdapter!=null&&mAdapter.getAttachmentFilePathList()!=null&&mAdapter.getAttachmentFilePathList().size() > position) {
+            filePath = mAdapter.getAttachmentFilePathList().get(position);
+        }
 
         if (filePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
                 filePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
@@ -832,12 +841,15 @@ public class CreateIssueActivity extends BaseActivity
             intent.putExtra(LogActivity.FILE_PATH, filePath);
             startActivity(intent);
         } else if (filePath.contains(MimeType.IMAGE_GIF.getFileExtension())) {
-            intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.parse("file:///" + filePath), MimeType.IMAGE_GIF.getType());
-        }
-        if (intent != null) {
+            intent = new Intent(CreateIssueActivity.this, GifPlayerActivity.class);
+            intent.putExtra(GifPlayerActivity.GIF_IMAGE_KEY, filePath);
             startActivity(intent);
+        }
+
+        if(TextUtils.isEmpty(filePath)){
+            if (intent != null) {
+                startActivity(intent);
+            }
         }
     }
 

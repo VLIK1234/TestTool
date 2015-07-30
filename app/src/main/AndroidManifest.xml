@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <!--
@@ -106,8 +105,9 @@
             android:exported="true" >
             <intent-filter>
                 <action android:name="REQUEST_TAKE_SCREENSHOT" />
-                <action android:name="LOG_FILE" />
+                <action android:name="SEND_LOG_FILE" />
                 <action android:name="EXCEPTION_ANSWER" />
+                <action android:name="REQUEST_TAKE_ONLY_INFO" />
 
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -145,6 +145,17 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.MainActivity"/>
+        </activity>
+
+        <activity
+            android:name=".ui.activities.TakeStepActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Panel"
+            android:label="@string/title_activity_take_step" />
+
+        <activity
+            android:name=".ui.activities.GifPlayerActivity"
+            android:label="@string/title_activity_gif_player" >
         </activity>
     </application>
 

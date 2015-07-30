@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.bo.database;
 
-import android.content.ComponentName;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
@@ -8,7 +7,6 @@ import android.net.Uri;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.StepsTable;
-import amtt.epam.com.amtt.util.ActivityMetaUtil;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
@@ -26,6 +24,8 @@ public class Step extends DatabaseEntity<Step> {
     }
 
     private int mStepNumber;
+
+    private String mTitle;
     private String mActivity;
     private String mListFragments;
     private String mScreenPath;
@@ -41,14 +41,13 @@ public class Step extends DatabaseEntity<Step> {
         mStepNumber = stepNumber;
     }
 
-    public Step(ComponentName componentName, String screenPath, String listFragments) {
+    public Step(String title, String activityClassName, String packageName, String screenPath, String listFragments) {
         mScreenPath = screenPath;
         mListFragments = listFragments;
-        mOrientation = ActivityMetaUtil.getScreenOrientation(UIUtil.getOrientation());
-        if (componentName != null) {
-            mActivity = componentName.getClassName();
-            mPackageName = componentName.getPackageName();
-        }
+        mOrientation = UIUtil.getScreenOrientation(UIUtil.getOrientation());
+        mTitle = title;
+        mActivity = activityClassName;
+        mPackageName = packageName;
         mScreenState = ScreenshotState.WRITTEN;
     }
 
@@ -57,6 +56,7 @@ public class Step extends DatabaseEntity<Step> {
         mStepNumber = cursor.getInt(cursor.getColumnIndex(StepsTable._ID));
         mScreenPath = cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH));
         mListFragments =  cursor.getString(cursor.getColumnIndex(StepsTable._LIST_FRAGMENTS));
+        mTitle = cursor.getString(cursor.getColumnIndex(StepsTable._TITLE));
         mActivity =  cursor.getString(cursor.getColumnIndex(StepsTable._ASSOCIATED_ACTIVITY));
         mPackageName = cursor.getString(cursor.getColumnIndex(StepsTable._PACKAGE_NAME));
         mOrientation =  cursor.getString(cursor.getColumnIndex(StepsTable._ORIENTATION));
@@ -85,11 +85,16 @@ public class Step extends DatabaseEntity<Step> {
         values.put(StepsTable._ORIENTATION, mOrientation);
         values.put(StepsTable._SCREEN_STATE, mScreenState.ordinal());
         if (isStepWithActivityInfo()) {
+            values.put(StepsTable._TITLE, mTitle);
             values.put(StepsTable._ASSOCIATED_ACTIVITY, mActivity);
             values.put(StepsTable._LIST_FRAGMENTS, mListFragments);
             values.put(StepsTable._PACKAGE_NAME, mPackageName);
         }
         return values;
+    }
+
+    public String getTitle() {
+        return mTitle;
     }
 
     public String getActivity() {

@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.ivan_bakach.testpermission">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
         android:name="com.example.ivan_bakach.testpermission.CoreApplication"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +10,7 @@
         android:allowBackup="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity"
+            android:name=".app.ViewPagerActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             <intent-filter>
@@ -20,22 +19,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.ivan_bakach.testpermission.app.SecondActivity"
+            android:name=".app.MultipleFragmentsActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:parentActivityName="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity">
+            android:parentActivityName=".app.ViewPagerActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity" />
+                android:value=".app.ViewPagerActivity" />
         </activity>
         <activity
-            android:name="com.example.ivan_bakach.testpermission.app.ThirdActivity"
+            android:name=".app.ActivityWithoutFragments"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
-            android:parentActivityName="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity">
+            android:parentActivityName=".app.ViewPagerActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity" />
+                android:value=".app.ViewPagerActivity" />
         </activity>
         <meta-data
             android:name="my_api_key"
