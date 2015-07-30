@@ -53,6 +53,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
     public static final String FILE_NAME_KEY = "fileName";
     public static final String BYTE_ARRAY_DATA_KEY = "byteArrayData";
     public static final String CAT_ALL_FILE = "CAT_ALL_FILE";
+    public static final String TITLE_KEY = "title";
     public static boolean isStepWithoutActivityInfo = false;
 
     public static final String LIST_FRAGMENTS_KEY = "listFragments";
@@ -83,6 +84,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     final String listFragments = extrasScreenshot.getString(LIST_FRAGMENTS_KEY);
                     final String activtyClassName = extrasScreenshot.getString(ACTIVITY_CLASS_NAME_KEY);
                     final String packageName = extrasScreenshot.getString(PACKAGE_NAME_KEY);
+                    final String title = extrasScreenshot.getString(TITLE_KEY);
 
                     byte[] bytes = extrasScreenshot.getByteArray(SCREEN_KEY);
                     String screenPath = null;
@@ -96,7 +98,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                             isStepWithoutActivityInfo = false;
                             StepUtil.savePureScreenshot(screenPath);
                         } else {
-                            StepUtil.saveStep(activtyClassName, packageName, screenPath, listFragments);
+                            StepUtil.saveStep(title, activtyClassName, packageName, screenPath, listFragments);
                         }
                         TopButtonService.sendActionChangeTopButtonVisibility(true);
                         Toast.makeText(context, "Create screenshot in " + screenPath, Toast.LENGTH_SHORT).show();
@@ -134,7 +136,8 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     final String listFragments = extraInfo.getString(LIST_FRAGMENTS_KEY);
                     final String activtyClassName = extraInfo.getString(ACTIVITY_CLASS_NAME_KEY);
                     final String packageName = extraInfo.getString(PACKAGE_NAME_KEY);
-                    StepUtil.saveStep(activtyClassName, packageName, null, listFragments);
+                    final String title = extraInfo.getString(TITLE_KEY);
+                    StepUtil.saveStep(title, activtyClassName, packageName, null, listFragments);
                     Toast.makeText(context, context.getString(R.string.label_added_step_without_screen), Toast.LENGTH_LONG).show();
                     break;
                 }

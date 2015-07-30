@@ -29,6 +29,7 @@
     <string name="error_message_web_address">Wrong web address</string>
     <string name="error_button_close">Close</string>
 
+    <string name="label_title">"Title: "</string>
     <string name="label_activity">"Activity: "</string>
     <string name="label_added_step_without_screen">Added step without screen</string>
     <string name="label_affects_versions">Affects Version/s</string>

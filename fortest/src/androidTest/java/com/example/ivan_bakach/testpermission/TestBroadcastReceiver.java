@@ -23,6 +23,7 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
     public static final String TAKE_ONLY_INFO = "TAKE_ONLY_INFO";
     public static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
     public static final String TAKE_LOGS = "TAKE_LOGS";
+    public static final String TITLE_KEY = "title";
     private boolean mCloseUnitTest;
     public Activity mActivity;
 
@@ -65,6 +66,7 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                     intentTakeOnlyInfo.putExtra(LIST_FRAGMENTS_KEY,
                             FragmentInfoHelper.getListFragments().substring(0, FragmentInfoHelper.getListFragments().lastIndexOf(ScreenshotHelper.BR_TAG) != -1
                                     ? FragmentInfoHelper.getListFragments().lastIndexOf(ScreenshotHelper.BR_TAG) : 0));
+                    intentTakeOnlyInfo.putExtra(TITLE_KEY, FragmentInfoHelper.getActivityTitle(mActivity));
                     intentTakeOnlyInfo.putExtra(ACTIVITY_CLASS_NAME_KEY, mActivity.getClass().getName());
                     intentTakeOnlyInfo.putExtra(PACKAGE_NAME_KEY, mActivity.getPackageName());
                     context.sendBroadcast(intentTakeOnlyInfo);

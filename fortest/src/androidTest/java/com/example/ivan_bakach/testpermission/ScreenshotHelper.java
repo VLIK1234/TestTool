@@ -14,10 +14,7 @@ import java.io.ByteArrayOutputStream;
 public class ScreenshotHelper {
 
     public static final String REQUEST_TAKE_SCREENSHOT_ACTION = "REQUEST_TAKE_SCREENSHOT";
-    public static final String LIST_FRAGMENTS_KEY = "listFragments";
     public static final int QUALITY_COMPRESS_SCREENSHOT = 90;
-    public static final String ACTIVITY_CLASS_NAME_KEY = "activityClassName";
-    public static final String PACKAGE_NAME_KEY = "packageName";
     public static final String BR_TAG = "<br/>";
     public static final String SCREEN_KEY = "screen";
 
@@ -36,9 +33,10 @@ public class ScreenshotHelper {
         intent.setAction(REQUEST_TAKE_SCREENSHOT_ACTION);
         byte[] bytes = stream.toByteArray();
         intent.putExtra(SCREEN_KEY, bytes);
-        intent.putExtra(LIST_FRAGMENTS_KEY, listFragments.substring(0, listFragments.lastIndexOf(BR_TAG) != -1 ? listFragments.lastIndexOf(BR_TAG) : 0));
-        intent.putExtra(ACTIVITY_CLASS_NAME_KEY, activity.getClass().getName());
-        intent.putExtra(PACKAGE_NAME_KEY, activity.getPackageName());
+        intent.putExtra(TestBroadcastReceiver.LIST_FRAGMENTS_KEY, listFragments.substring(0, listFragments.lastIndexOf(BR_TAG) != -1 ? listFragments.lastIndexOf(BR_TAG) : 0));
+        intent.putExtra(TestBroadcastReceiver.TITLE_KEY, FragmentInfoHelper.getActivityTitle(activity));
+        intent.putExtra(TestBroadcastReceiver.ACTIVITY_CLASS_NAME_KEY, activity.getClass().getName());
+        intent.putExtra(TestBroadcastReceiver.PACKAGE_NAME_KEY, activity.getPackageName());
         context.sendBroadcast(intent);
     }
 }

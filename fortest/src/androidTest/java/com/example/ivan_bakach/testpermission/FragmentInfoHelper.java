@@ -59,6 +59,10 @@ public class FragmentInfoHelper {
         }
     }
 
+    public static CharSequence getActivityTitle(Activity activity){
+        return activity !=null ? activity.getTitle() : null;
+    }
+
     public static String getListFragments() {
         return sListFragments;
     }
