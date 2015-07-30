@@ -23,6 +23,7 @@ public class InputsUtil {
     private static final String mNoWhitespaceAfterAndBefore = "(\\S)+.+(\\S)";
     private static final String mHaveWhitespaces = ".*(\\s)+.*";
     private static final String mHasAtSymbol = ".*@.*";
+    private static final String mHasComma = ".*"+","+".*";
 
     private static final Validator sEmptyValidator;
     private static final Validator sWhitespacesValidator;
@@ -178,6 +179,12 @@ public class InputsUtil {
         mPattern = Pattern.compile(mHaveWhitespaces);
         mMatcher = mPattern.matcher(string.toLowerCase());
         Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": not passed.");
+        return mMatcher.matches();
+    }
+
+    public static Boolean hasComma(String text){
+        mPattern = Pattern.compile(mHasComma);
+        mMatcher = mPattern.matcher(text);
         return mMatcher.matches();
     }
 

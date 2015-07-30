@@ -41,14 +41,6 @@
                     android:textSize="@dimen/abc_text_size_subhead_material"/>
 
                 <TextView
-                    android:id="@+id/tv_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tv_testcase_name"
-                    android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
-                    android:textSize="@dimen/abc_text_size_caption_material"/>
-
-                <TextView
                     android:id="@+id/tv_priority"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -44,11 +44,12 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
 
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         GEntryWorksheet testcase = mTestcases.get(i);
-        Logger.d(TAG, testcase.getTestCaseNameGSX());
-        viewHolder.mLabel.setText(testcase.getLabelGSX());
-        viewHolder.mTestcaseName.setText(testcase.getTestcaseNameAndId());
-        viewHolder.mPriority.setText(testcase.getPriorityGSX());
-        viewHolder.mSteps.setText(testcase.getTestStepsGSX());
+        if (testcase != null) {
+            Logger.d(TAG, testcase.getTestCaseNameGSX());
+            viewHolder.mTestcaseName.setText(testcase.getTestCaseNameGSX());
+            viewHolder.mPriority.setText(testcase.getPriorityGSX());
+            viewHolder.mSteps.setText(testcase.getTestStepsGSX());
+        }
     }
 
     @Override
@@ -59,13 +60,12 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
     public ArrayList<String> getIdTestcaseList() {
         ArrayList<String> idTestcaseList = new ArrayList<>();
         for (GEntryWorksheet testcase : mTestcases) {
-            idTestcaseList.add(testcase.getIdGSX());
+            idTestcaseList.add(testcase.getIdLink());
         }
         return idTestcaseList;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView mLabel;
         public TextView mTestcaseName;
         public TextView mPriority;
         public TextView mSteps;
@@ -74,7 +74,6 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mLabel = (TextView) itemView.findViewById(R.id.tv_label);
             mTestcaseName = (TextView) itemView.findViewById(R.id.tv_testcase_name);
             mPriority = (TextView) itemView.findViewById(R.id.tv_priority);
             mSteps = (TextView) itemView.findViewById(R.id.tv_steps);

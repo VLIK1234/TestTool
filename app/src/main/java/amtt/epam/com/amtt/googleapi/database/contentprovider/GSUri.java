@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import amtt.epam.com.amtt.googleapi.database.table.SpreadsheetTable;
+import amtt.epam.com.amtt.googleapi.database.table.TagsTable;
 import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
 import amtt.epam.com.amtt.googleapi.database.table.WorksheetTable;
 
@@ -22,7 +23,8 @@ public enum GSUri {
 
     SPREADSHEET(SpreadsheetTable.TABLE_NAME, 1, 2),
     WORKSHEET(WorksheetTable.TABLE_NAME, 3, 4),
-    TESTCASE(TestcaseTable.TABLE_NAME, 5, 6);
+    TESTCASE(TestcaseTable.TABLE_NAME, 5, 6),
+    TAGS(TagsTable.TABLE_NAME, 7, 8);
 
     private static final UriMatcher sUriMatcher;
     private static final Map<Integer, String> sContentType;
@@ -44,6 +46,8 @@ public enum GSUri {
         sUriMatcher.addURI(GSContentProvider.AUTHORITY, WORKSHEET.getTableName() + "/#", GSUri.WORKSHEET.getItemOrdinal());
         sUriMatcher.addURI(GSContentProvider.AUTHORITY, TESTCASE.getTableName(), GSUri.TESTCASE.getOrdinal());
         sUriMatcher.addURI(GSContentProvider.AUTHORITY, TESTCASE.getTableName() + "/#", GSUri.TESTCASE.getItemOrdinal());
+        sUriMatcher.addURI(GSContentProvider.AUTHORITY, TAGS.getTableName(), GSUri.TAGS.getOrdinal());
+        sUriMatcher.addURI(GSContentProvider.AUTHORITY, TAGS.getTableName() + "/#", GSUri.TAGS.getItemOrdinal());
 
         sContentType = new HashMap<>();
         sContentType.put(GSUri.SPREADSHEET.getOrdinal(), GSUri.SPREADSHEET.getType());
@@ -52,11 +56,14 @@ public enum GSUri {
         sContentType.put(GSUri.WORKSHEET.getItemOrdinal(), GSUri.WORKSHEET.getItemType());
         sContentType.put(GSUri.TESTCASE.getOrdinal(), GSUri.TESTCASE.getType());
         sContentType.put(GSUri.TESTCASE.getItemOrdinal(), GSUri.TESTCASE.getItemType());
+        sContentType.put(GSUri.TAGS.getOrdinal(), GSUri.TAGS.getType());
+        sContentType.put(GSUri.TAGS.getItemOrdinal(), GSUri.TAGS.getItemType());
 
         sProjections = new HashMap<>();
         sProjections.put(GSUri.SPREADSHEET, SpreadsheetTable.PROJECTION);
         sProjections.put(GSUri.WORKSHEET, WorksheetTable.PROJECTION);
         sProjections.put(GSUri.TESTCASE, TestcaseTable.PROJECTION);
+        sProjections.put(GSUri.TAGS, TestcaseTable.PROJECTION);
 
         sValues = Arrays.asList(GSUri.values());
     }

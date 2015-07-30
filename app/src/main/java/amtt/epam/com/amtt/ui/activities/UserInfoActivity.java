@@ -12,6 +12,8 @@ import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -60,6 +62,7 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     private UserInfoHandler mHandler;
     private Boolean isNeedShowingTopButton = true;
     private Boolean isNewUser = false;
+    private Button mAddSpreadsheetButton;
 
     public static class UserInfoHandler extends Handler {
 
@@ -170,6 +173,13 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
         mJiraUrlTextView = (TextView) findViewById(R.id.tv_jira_url);
         mUserImageImageView = (ImageView) findViewById(R.id.tv_avatar);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        mAddSpreadsheetButton = (Button) findViewById(R.id.btn_add_spreadsheet);
+        mAddSpreadsheetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     public void setActiveUser(JUserInfo user) {
@@ -178,6 +188,10 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
         ActiveUser.getInstance().setCredentials(user.getCredentials());
         ActiveUser.getInstance().setId(user.getId());
         ActiveUser.getInstance().setUserName(user.getName());
+        ActiveUser.getInstance().setLastProjectKey(user.getLastProjectKey());
+        ActiveUser.getInstance().setLastAssigneeName(user.getLastAssigneeName());
+        ActiveUser.getInstance().setLastComponentsIds(user.getLastComponentsIds());
+        ActiveUser.getInstance().setSpreadsheetLink(user.getLastSpreadsheetUrl());
         mNameTextView.setText(user.getName());
         mEmailAddressTextView.setText(user.getEmailAddress());
         mDisplayNameTextView.setText(user.getDisplayName());

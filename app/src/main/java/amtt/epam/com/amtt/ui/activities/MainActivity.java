@@ -8,6 +8,7 @@ import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
+import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
@@ -25,6 +26,7 @@ import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -95,6 +97,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         ActiveUser.getInstance().setLastProjectKey(userInfo.getLastProjectKey());
         ActiveUser.getInstance().setLastAssigneeName(userInfo.getLastAssigneeName());
         ActiveUser.getInstance().setLastComponentsIds(userInfo.getLastComponentsIds());
+        ActiveUser.getInstance().setSpreadsheetLink(userInfo.getLastSpreadsheetUrl());
         Logger.e(TAG, "ID " + userInfo.getId());
         Logger.e(TAG, "LastProjectKey " + userInfo.getLastProjectKey());
         ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
@@ -104,7 +107,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                     @Override
                     public void resultOfDataLoading(HashMap<String, String> result) {
                         if (result != null) {
-                            Logger.d(TAG, "Loading priority finish");
+                            Logger.e(TAG, "Loading priority finish");
                         }
                     }
                 });
@@ -112,17 +115,17 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                     @Override
                     public void resultOfDataLoading(HashMap<JProjects, String> result) {
                         if (result != null) {
-                            Logger.d(TAG, "Loading projects finish");
+                            Logger.e(TAG, "Loading projects finish");
                         }
                     }
                 });
-                GSpreadsheetContent.getInstance().getSpreadsheet(new GetContentCallback<GSpreadsheet>() {
+                GSpreadsheetContent.getInstance().getAllTestCases(new GetContentCallback<List<GEntryWorksheet>>() {
                     @Override
-                    public void resultOfDataLoading(GSpreadsheet result) {
+                    public void resultOfDataLoading(List<GEntryWorksheet> result) {
                         if (result != null) {
-                            Logger.d(TAG, "Loading spreadsheet finish");
-                        }else{
-                            Logger.d(TAG, "Loading spreadsheet crashed");
+                            Logger.e(TAG, "Loading testcases finish");
+                        } else {
+                            Logger.e(TAG, "Loading testcases error");
                         }
                     }
                 });

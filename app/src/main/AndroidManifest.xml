@@ -134,7 +134,7 @@
         <provider
             android:name=".googleapi.database.contentprovider.GSContentProvider"
             android:authorities="amtt.epam.com.amtt.googleapi.database.contentprovider"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".ui.activities.LogActivity"
             android:launchMode="standard"

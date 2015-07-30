@@ -16,11 +16,11 @@ import amtt.epam.com.amtt.util.Logger;
 
 /**
  * @author Iryna Monchanka
- * @version on 23.07.2015
+ * @version on 07.07.2015
  */
-public class WorksheetProcessor implements Processor<GWorksheet, HttpEntity> {
+public class OldWorksheetProcessor implements Processor<GWorksheet, HttpEntity> {
 
-    public static final String NAME = WorksheetProcessor.class.getName();
+    public static final String NAME = OldWorksheetProcessor.class.getName();
 
     @Override
     public GWorksheet process(HttpEntity httpEntity) throws Exception {
@@ -59,12 +59,19 @@ public class WorksheetProcessor implements Processor<GWorksheet, HttpEntity> {
                     entryWorksheet.setTitle(XMLParser.loadTitle());
                     entryWorksheet.setContent(XMLParser.loadContent());
                     entryWorksheet.setSelfLink(XMLParser.loadGoogleLink());
-                    entryWorksheet.setPathGSX(XMLParser.loadPathGSX());
+                   // entryWorksheet.setIdGSX(XMLParser.loadIdGSX());
                     entryWorksheet.setPriorityGSX(XMLParser.loadPriorityGSX());
-                    entryWorksheet.setTestCaseNameGSX(XMLParser.loadSummaryGSX());
+                    XMLParser.skipTag();//device
+                    entryWorksheet.setTestCaseNameGSX(XMLParser.loadTestCaseNameGSX());
+                   // entryWorksheet.setTestCaseDescriptionGSX(XMLParser.loadTestCaseDescriptionGSX());
                     entryWorksheet.setTestStepsGSX(XMLParser.loadTestStepsGSX());
+                   // entryWorksheet.setLabelGSX(XMLParser.loadLabelGSX());
                     entryWorksheet.setExpectedResultGSX(XMLParser.loadExpectedResultsGSX());
-                    entryWorksheet.setStatusGSX(XMLParser.loadTestStatusGSX());
+                    XMLParser.skipTag();//gsx:automationstatus
+                    XMLParser.skipTag();//gsx:testresult
+                    XMLParser.skipTag();//gsx:testresult
+                    XMLParser.skipTag();//gsx:testresult
+                    XMLParser.skipTag();//gsx:testresult
                     if (entryWorksheet.getTestCaseNameGSX() != null && !entryWorksheet.getTestCaseNameGSX().equals(Constants.Symbols.EMPTY)) {
                         worksheet.setEntryItem(entryWorksheet);
                     }

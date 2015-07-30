@@ -13,6 +13,7 @@ import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.database.constant.SqlQueryConstants;
 import amtt.epam.com.amtt.database.table.Table;
 import amtt.epam.com.amtt.googleapi.database.table.SpreadsheetTable;
+import amtt.epam.com.amtt.googleapi.database.table.TagsTable;
 import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
 import amtt.epam.com.amtt.googleapi.database.table.WorksheetTable;
 
@@ -23,7 +24,7 @@ import amtt.epam.com.amtt.googleapi.database.table.WorksheetTable;
 
 public class DataBaseManager extends SQLiteOpenHelper {
 
-    private static final Integer DATA_BASE_VERSION = 1;
+    private static final Integer DATA_BASE_VERSION = 4;
     private static final String DATA_BASE_NAME = "testcase.db";
     private static final List<Class> sTables;
 
@@ -32,6 +33,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
         sTables.add(SpreadsheetTable.class);
         sTables.add(WorksheetTable.class);
         sTables.add(TestcaseTable.class);
+        sTables.add(TagsTable.class);
     }
 
     public DataBaseManager(Context context) {
