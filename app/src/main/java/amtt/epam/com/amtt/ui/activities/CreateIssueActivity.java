@@ -98,6 +98,7 @@ public class CreateIssueActivity extends BaseActivity
     private Queue<ContentConst> mRequestsQueue = new LinkedList<>();
     private Button mCreateIssueButton;
     private ProgressBar mGifProgress;
+    private CheckBox mGifCheckBox;
     private List<Step> mSteps;
     private ScrollView mScrollView;
     private int[] mTitlePoint;
@@ -595,8 +596,8 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     private void initGifAttachmentControls() {
-        CheckBox gifCheckBox = (CheckBox) findViewById(R.id.cb_gif_attachment);
-        gifCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mGifCheckBox = (CheckBox) findViewById(R.id.cb_gif_attachment);
+        mGifCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!PreferenceUtil.getBoolean(getString(R.string.key_gif_info_dialog))) {
@@ -745,6 +746,10 @@ public class CreateIssueActivity extends BaseActivity
                     }
                     mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment);
                     mRecyclerView.setAdapter(mAdapter);
+
+                    if (mSteps.size() == 0) {
+                        mGifCheckBox.setEnabled(false);
+                    }
                 }
                 mRequestsQueue.remove(ContentConst.ATTACHMENT_RESPONSE);
                 showProgressIfNeed();
