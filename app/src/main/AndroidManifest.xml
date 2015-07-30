@@ -152,6 +152,11 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Panel"
             android:label="@string/title_activity_take_step" />
+
+        <activity
+            android:name=".ui.activities.GifPlayerActivity"
+            android:label="@string/title_activity_gif_player" >
+        </activity>
     </application>
 
 </manifest>

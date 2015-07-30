@@ -164,5 +164,7 @@
     <string name="take_step_dialog_positive_button">Take</string>
     <string name="take_step_dialog_message">Choose at least one variant</string>
     <string name="take_step_dialog_title">Take step</string>
+    <string name="title_activity_gif_player">Gif player</string>
+    <string name="label_error_gif_message">Can\'t play gif image.</string>
 
 </resources>
