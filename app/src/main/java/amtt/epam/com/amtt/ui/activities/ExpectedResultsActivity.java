@@ -143,7 +143,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                 bundle=null;
                 bundle = new Bundle();
                 ArrayList<String> links = new ArrayList<>();
-                if (str.length == 1) {
+                if (str.length == 1 && mTags!=null) {
                     for (int i = 0; i < mTags.size(); i++) {
                         if (mTags.get(i).getName().equals((String) parent.getItemAtPosition(position))) {
                             links.add(mTags.get(i).getIdLinkTestCase());
@@ -152,7 +152,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                     }
                     bundle.putStringArrayList(LINK, links);
                     getLoaderManager().initLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
-                } else if (str.length > 1){
+                } else if (str.length > 1 && mTags!=null){
                     for (String aStr : str) {
                         for (int i = 0; i < mTags.size(); i++) {
                             if (aStr.equals(mTags.get(i).getName())) {
@@ -176,22 +176,25 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                     mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
                     mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
                     String[] str = s.toString().split(", ");
-                    bundle=null;
+                    bundle = null;
                     bundle = new Bundle();
                     ArrayList<String> links = new ArrayList<>();
-                    for (String aStr : str) {
-                        for (int i = 0; i < mTags.size(); i++) {
-                            if (aStr.equals(mTags.get(i).getName())) {
-                                links.add(mTags.get(i).getIdLinkTestCase());
+                    if (mTags != null) {
+                        for (String aStr : str) {
+                            for (int i = 0; i < mTags.size(); i++) {
+                                if (aStr.equals(mTags.get(i).getName())) {
+                                    links.add(mTags.get(i).getIdLinkTestCase());
+                                }
                             }
                         }
+                        if (links.isEmpty()) {
+                            getLoaderManager().restartLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
+                            getLoaderManager().restartLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
+                        } else {
+                            bundle.putStringArrayList(LINK, links);
+                            getLoaderManager().restartLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+                        }
                     }
-                    if(links.isEmpty()){
-                        getLoaderManager().restartLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
-                        getLoaderManager().restartLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
-                    }else{
-                    bundle.putStringArrayList(LINK, links);
-                    getLoaderManager().restartLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);}
                 }
             }
 
