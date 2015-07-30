@@ -152,7 +152,11 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                         }
                     }
                     bundle.putStringArrayList(LINK, links);
-                    getLoaderManager().restartLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+                    if (getLoaderManager().getLoader(TAGS_LOADER_BY_LINK_ID)!=null) {
+                        getLoaderManager().restartLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+                    } else{
+                        getLoaderManager().initLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+                    }
                 } else if (str.length > 1 && mTags!=null){
                     for (String aStr : str) {
                         for (int i = 0; i < mTags.size(); i++) {
@@ -162,7 +166,11 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                         }
                     }
                     bundle.putStringArrayList(LINK, links);
-                    getLoaderManager().restartLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+                    if (getLoaderManager().getLoader(TAGS_LOADER_BY_LINK_ID)!=null) {
+                        getLoaderManager().restartLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+                    } else{
+                        getLoaderManager().initLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+                    }
                 }
             }
         });
