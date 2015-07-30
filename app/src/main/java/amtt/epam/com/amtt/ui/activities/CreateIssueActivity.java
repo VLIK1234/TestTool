@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -109,7 +108,6 @@ public class CreateIssueActivity extends BaseActivity
     private boolean mCreateAnotherIssue;
     private LayoutInflater mLayoutInflater;
     private boolean mIsAssignableSelected;
-    private boolean mDoesTopButtonShouldBeShown;
     private GEntryWorksheet mTestcase;
 
     public static class AssigneeHandler extends Handler {
@@ -133,7 +131,6 @@ public class CreateIssueActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
         TopButtonService.sendActionChangeTopButtonVisibility(false);
-
         checkIntent();
         PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(CreateIssueActivity.this);
         mHandler = new AssigneeHandler(this);

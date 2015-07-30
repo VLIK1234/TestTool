@@ -23,7 +23,6 @@ import android.widget.MultiAutoCompleteTextView;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -41,7 +40,6 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.MultyAutocompleteProgressView;
 import amtt.epam.com.amtt.util.ConverterUtil;
 import amtt.epam.com.amtt.util.IOUtils;
-import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -84,7 +82,26 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     }
 
     private void setTags(String text) {
-
+        String[] str = text.split(", ");
+        bundle = null;
+        bundle = new Bundle();
+        ArrayList<String> links = new ArrayList<>();
+        if (mTags != null) {
+            for (String aStr : str) {
+                for (int i = 0; i < mTags.size(); i++) {
+                    if (aStr.equals(mTags.get(i).getName())) {
+                        links.add(mTags.get(i).getIdLinkTestCase());
+                    }
+                }
+            }
+            if (links.isEmpty()) {
+                getLoaderManager().restartLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
+                getLoaderManager().restartLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
+            } else {
+                bundle.putStringArrayList(LINK, links);
+                startTagsByLinkLoader();
+            }
+        }
     }
 
     @Override
@@ -126,9 +143,8 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        getLoaderManager().initLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
-        getLoaderManager().initLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
-        getLoaderManager().initLoader(TAGS_LOADER_BY_LINK_ID, null, ExpectedResultsActivity.this);
+        startAllTestcasesLoader();
+        startAllTagsLoader();
         initTagsAutocompleteTextView();
     }
 
@@ -141,10 +157,10 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                 showProgress(true);
                 String[] str = mTagsAutocompleteTextView.getText().toString().split(", ");
                 Logger.e(TAG, Arrays.toString(str));
-                bundle=null;
+                bundle = null;
                 bundle = new Bundle();
                 ArrayList<String> links = new ArrayList<>();
-                if (str.length == 1 && mTags!=null) {
+                if (str.length == 1 && mTags != null) {
                     for (int i = 0; i < mTags.size(); i++) {
                         if (mTags.get(i).getName().equals((String) parent.getItemAtPosition(position))) {
                             links.add(mTags.get(i).getIdLinkTestCase());
@@ -152,12 +168,8 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                         }
                     }
                     bundle.putStringArrayList(LINK, links);
-                    if (getLoaderManager().getLoader(TAGS_LOADER_BY_LINK_ID)!=null) {
-                        getLoaderManager().restartLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
-                    } else{
-                        getLoaderManager().initLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
-                    }
-                } else if (str.length > 1 && mTags!=null){
+                    startTagsByLinkLoader();
+                } else if (str.length > 1 && mTags != null) {
                     for (String aStr : str) {
                         for (int i = 0; i < mTags.size(); i++) {
                             if (aStr.equals(mTags.get(i).getName())) {
@@ -166,11 +178,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                         }
                     }
                     bundle.putStringArrayList(LINK, links);
-                    if (getLoaderManager().getLoader(TAGS_LOADER_BY_LINK_ID)!=null) {
-                        getLoaderManager().restartLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
-                    } else{
-                        getLoaderManager().initLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
-                    }
+                    startTagsByLinkLoader();
                 }
             }
         });
@@ -184,26 +192,6 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                 if (before > count) {
                     mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
                     mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
-                    String[] str = s.toString().split(", ");
-                    bundle = null;
-                    bundle = new Bundle();
-                    ArrayList<String> links = new ArrayList<>();
-                    if (mTags != null) {
-                        for (String aStr : str) {
-                            for (int i = 0; i < mTags.size(); i++) {
-                                if (aStr.equals(mTags.get(i).getName())) {
-                                    links.add(mTags.get(i).getIdLinkTestCase());
-                                }
-                            }
-                        }
-                        if (links.isEmpty()) {
-                            getLoaderManager().restartLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
-                            getLoaderManager().restartLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
-                        } else {
-                            bundle.putStringArrayList(LINK, links);
-                            getLoaderManager().restartLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
-                        }
-                    }
                 }
             }
 
@@ -211,6 +199,38 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             public void afterTextChanged(Editable s) {
             }
         });
+    }
+
+    private void startTagsByLinkLoader() {
+        if (getLoaderManager().getLoader(TAGS_LOADER_BY_LINK_ID) != null) {
+            getLoaderManager().restartLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+        } else {
+            getLoaderManager().initLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+        }
+    }
+
+    private void startTestcasesByLinkLoader() {
+        if (getLoaderManager().getLoader(TESTCASES_LOADER_BY_LINK_ID) != null) {
+            getLoaderManager().restartLoader(TESTCASES_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+        } else {
+            getLoaderManager().initLoader(TESTCASES_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+        }
+    }
+
+    private void startAllTagsLoader() {
+        if (getLoaderManager().getLoader(TAGS_LOADER_ID) != null) {
+            getLoaderManager().restartLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
+        } else {
+            getLoaderManager().initLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
+        }
+    }
+
+    private void startAllTestcasesLoader() {
+        if (getLoaderManager().getLoader(TESTCASES_LOADER_ID) != null) {
+            getLoaderManager().restartLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
+        } else {
+            getLoaderManager().initLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
+        }
     }
 
     private void refreshTagsAdapter(List<GTag> result) {
@@ -305,7 +325,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                                 }
                             }
                         });
-                        getLoaderManager().restartLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
+                        startAllTagsLoader();
                     }
                     break;
                 case TAGS_LOADER_ID:
@@ -324,7 +344,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                         Logger.e(TAG, "Error loading tags");
                         mTagsAutocompleteTextView.showProgress(false);
                     }
-                    getLoaderManager().restartLoader(TESTCASES_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
+                    startTestcasesByLinkLoader();
                     break;
                 case TESTCASES_LOADER_BY_LINK_ID:
                     refreshSteps(getTestcasesFromCursor(data));
