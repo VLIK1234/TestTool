@@ -269,7 +269,9 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         if (result != null && !result.isEmpty()) {
             mResultsAdapter = null;
             mResultsAdapter = new ExpectedResultsAdapter(result, R.layout.adapter_expected_results, ExpectedResultsActivity.this);
-            mRecyclerView.setAdapter(mResultsAdapter);
+            if (mRecyclerView != null) {
+                mRecyclerView.setAdapter(mResultsAdapter);
+            }
             showProgress(false);
         } else {
             Logger.e(TAG, "List TestCases = null");

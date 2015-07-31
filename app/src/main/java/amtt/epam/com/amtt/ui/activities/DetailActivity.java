@@ -37,8 +37,8 @@ public class DetailActivity extends BaseActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
