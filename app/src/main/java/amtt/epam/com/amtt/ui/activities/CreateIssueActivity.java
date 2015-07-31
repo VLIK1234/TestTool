@@ -479,7 +479,6 @@ public class CreateIssueActivity extends BaseActivity
         mCreateIssueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TestUtil.restartTest();
                 if (!mTitleTextInput.validate()) {
                     mScrollView.smoothScrollTo(mTitlePoint[0], mTitlePoint[1]);
                     showKeyboard(mTitleTextInput.getEdit());

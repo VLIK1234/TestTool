@@ -227,11 +227,11 @@ public class TopButtonService extends Service{
 
     private void setTopButtonVisible(boolean visible) {
         if (visible) {
-            if (mTopButtonView.getVisibility() == View.GONE) {
+            if (mTopButtonView!=null&&mTopButtonView.getVisibility() == View.GONE) {
                 changeStateNotificationAction();
             }
         }else {
-            if (mTopButtonView.getVisibility() == View.VISIBLE) {
+            if (mTopButtonView!=null&&mTopButtonView.getVisibility() == View.VISIBLE) {
                 changeStateNotificationAction();
             }
         }

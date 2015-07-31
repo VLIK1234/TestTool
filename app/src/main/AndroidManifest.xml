@@ -126,6 +126,7 @@
 
             android:name=".ui.activities.DetailActivity"
             android:label="@string/title_activity_detail"
+            android:noHistory="true"
             android:parentActivityName=".ui.activities.ExpectedResultsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
