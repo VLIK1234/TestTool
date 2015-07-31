@@ -75,7 +75,7 @@
                 android:id="@+id/spin_priority"
                 style="@style/Base.Widget.AppCompat.Spinner.Underlined.Custom"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:hint="@string/label_priority" />
             <!-- *******PRIORITY END*************************************************-->
 
