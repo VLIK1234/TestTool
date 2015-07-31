@@ -590,7 +590,7 @@ public class CreateIssueActivity extends BaseActivity
 
     private void initAttachmentsView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.listScreens);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CreateIssueActivity.this);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CreateIssueActivity.this);
         linearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
