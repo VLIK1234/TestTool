@@ -136,6 +136,18 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Logger.e(TAG, "onDestroy");
+    }
+
+    @Override
+    protected void onStop(){
+super.onStop();
+        Logger.e(TAG, "onStop()");
+    }
+
     private void initViews() {
         mRecyclerView = (RecyclerView) findViewById(android.R.id.list);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ExpectedResultsActivity.this);

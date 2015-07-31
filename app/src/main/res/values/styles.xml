@@ -69,7 +69,6 @@
         <item name="android:layout_marginRight">8dp</item>
         <item name="android:layout_height">140dp</item>
         <item name="android:background">@drawable/dotted_border</item>
-        <item name="android:scrollbars">horizontal</item>
     </style>
 
     <style name="Material.SpinnerItem">

@@ -66,6 +66,7 @@ import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.GifUtil;
 import amtt.epam.com.amtt.util.InputsUtil;
+import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.TestUtil;
 import amtt.epam.com.amtt.util.Validator;
@@ -82,6 +83,7 @@ public class CreateIssueActivity extends BaseActivity
     private static final String DEFAULT_PRIORITY_ID = "3";
     public static final String BUG = "Bug";
     public static final String TASK = "Task";
+    public static final String TAG = CreateIssueActivity.class.getSimpleName();
     private AutocompleteProgressView mAssignableAutocompleteView;
 
     private TextInput mDescriptionTextInput;
@@ -129,6 +131,7 @@ public class CreateIssueActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Logger.e(TAG, "onCreate");
         setContentView(R.layout.activity_create_issue);
         TopButtonService.sendActionChangeTopButtonVisibility(false);
         checkIntent();
@@ -204,9 +207,9 @@ public class CreateIssueActivity extends BaseActivity
                             initViews();
                             mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
                             mRequestsQueue.add(ContentConst.ATTACHMENT_RESPONSE);
-                            initAttachmentsView();
                             initAttachLogsCheckBox();
                             initDescriptionEditText();
+                            initAttachmentsView();
                         }
                     });
                 }
@@ -215,9 +218,9 @@ public class CreateIssueActivity extends BaseActivity
             initViews();
             mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
             mRequestsQueue.add(ContentConst.ATTACHMENT_RESPONSE);
-            initAttachmentsView();
             initAttachLogsCheckBox();
             initDescriptionEditText();
+            initAttachmentsView();
         }
     }
 
