@@ -27,6 +27,11 @@ public class GifPlayerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gif_player);
         TopButtonService.sendActionChangeTopButtonVisibility(false);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+        }
+
         WebView webView = (WebView) findViewById(R.id.wv_web_player);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);

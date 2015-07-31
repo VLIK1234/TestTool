@@ -138,7 +138,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
 
     private void initViews() {
         mRecyclerView = (RecyclerView) findViewById(android.R.id.list);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ExpectedResultsActivity.this);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ExpectedResultsActivity.this);
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());

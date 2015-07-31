@@ -155,7 +155,11 @@
 
         <activity
             android:name=".ui.activities.GifPlayerActivity"
-            android:label="@string/title_activity_gif_player" >
+            android:label="@string/title_activity_gif_player"
+            android:parentActivityName=".ui.activities.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.MainActivity"/>
         </activity>
     </application>
 
