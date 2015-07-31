@@ -204,24 +204,23 @@ public class CreateIssueActivity extends BaseActivity
                             if (result != null) {
                                 mTestcase = result;
                             }
-                            initViews();
-                            mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
-                            mRequestsQueue.add(ContentConst.ATTACHMENT_RESPONSE);
-                            initAttachLogsCheckBox();
-                            initDescriptionEditText();
-                            initAttachmentsView();
+                            proceed();
                         }
                     });
                 }
             });
         } else {
-            initViews();
-            mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
-            mRequestsQueue.add(ContentConst.ATTACHMENT_RESPONSE);
-            initAttachLogsCheckBox();
-            initDescriptionEditText();
-            initAttachmentsView();
+            proceed();
         }
+    }
+
+    private void proceed() {
+        initViews();
+        initAttachLogsCheckBox();
+        initDescriptionEditText();
+        initAttachmentsView();
+        mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
+        mRequestsQueue.add(ContentConst.ATTACHMENT_RESPONSE);
     }
 
     private void initCreateAnotherCheckBox() {
