@@ -60,7 +60,6 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     private ImageView mUserImageImageView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private UserInfoHandler mHandler;
-    private Boolean isNeedShowingTopButton = true;
     private Boolean isNewUser = false;
     private Button mAddSpreadsheetButton;
 
@@ -92,14 +91,12 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (isNeedShowingTopButton) {
-            if (isNewUser) {
-                TopButtonService.start(getBaseContext());
-            } else {
-                TopButtonService.sendActionChangeTopButtonVisibility(true);
-            }
+    protected void onPause() {
+        super.onPause();
+        if (isNewUser) {
+            TopButtonService.start(getBaseContext());
+        } else {
+            TopButtonService.sendActionChangeTopButtonVisibility(true);
         }
     }
 
@@ -114,7 +111,6 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
         switch (item.getItemId()) {
             case R.id.action_add: {
                 TopButtonService.close(getBaseContext());
-                isNeedShowingTopButton = false;
                 startActivityForResult(new Intent(this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
             }
             return true;
@@ -151,7 +147,6 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
                         getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
                     } else {
                         startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
-                        isNeedShowingTopButton = false;
                     }
                     break;
             }

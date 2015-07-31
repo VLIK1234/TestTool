@@ -35,29 +35,30 @@ public class TestUtil {
 
     public static String[] getTestedApps() {
         ArrayList<String> res = new ArrayList<>();
-        List<PackageInfo> packs = AmttApplication.getContext().getPackageManager().getInstalledPackages(PackageManager.GET_ACTIVITIES);
+        List<PackageInfo> packs = AmttApplication.getContext().getPackageManager().getInstalledPackages(PackageManager.GET_INSTRUMENTATION);
         for (PackageInfo packageInfo : packs) {
             try {
                 InstrumentationInfo info = TestUtil.getInstrumentationInfo(packageInfo.packageName);
                 if (info != null) {
                     ComponentName componentName = new ComponentName(info.packageName, info.name);
                     InstrumentationInfo instrumentationInfo = AmttApplication.getContext().getPackageManager().getInstrumentationInfo(componentName, PackageManager.GET_META_DATA);
-                    Log.d(TAG +" win", instrumentationInfo.name + " "+1);
-                    if (instrumentationInfo != null) {
-                        if (!res.contains(packageInfo.packageName)) {
-                            res.add(packageInfo.packageName);
-                            Log.d(TAG + " win", packageInfo.packageName + " " + 2);
-                        }
+                    Log.d(TAG, instrumentationInfo.name + " "+1);
+                    if (!res.contains(packageInfo.packageName)) {
+                        res.add(packageInfo.packageName);
+                        Log.d(TAG, packageInfo.packageName + " " + 2);
                     }
-                    Bundle bundle = instrumentationInfo.metaData;
-                    if (bundle != null) {
-                        Log.d(TAG, instrumentationInfo.name + " ");
-                        Log.d(TAG, "BUNDLE "+bundle.toString());
-                        String myApiKey = bundle.getString(AMTT_TEST_KEY);
-                        if (AMTT_APP_VALUE.equals(myApiKey)) {
-                            res.add(instrumentationInfo.targetPackage);
-                        }
-                    }
+
+                    /*Don't use in real life
+                    * P.S. On real device.*/
+//                    Bundle bundle = instrumentationInfo.metaData;
+//                    if (bundle != null) {
+//                        Log.d(TAG, instrumentationInfo.name + " ");
+//                        Log.d(TAG, "BUNDLE "+bundle.toString());
+//                        String myApiKey = bundle.getString(AMTT_TEST_KEY);
+//                        if (AMTT_APP_VALUE.equals(myApiKey)) {
+//                            res.add(instrumentationInfo.targetPackage);
+//                        }
+//                    }
                 }
             } catch (PackageManager.NameNotFoundException e) {
                 Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());

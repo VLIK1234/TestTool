@@ -24,6 +24,7 @@ import amtt.epam.com.amtt.util.Validator;
  */
 public class TextInput extends TextInputLayout implements TextEditable, Validatable {
 
+    public static final int RATIO_LOLIPOP_PADDING = 3;
     private EditText mText;
     private CharSequence mLastErrorText;
     private CharSequence mHint;
@@ -81,8 +82,14 @@ public class TextInput extends TextInputLayout implements TextEditable, Validata
 
             }
         });
-
-        Divider mDivider = new Divider(2, mText.getTotalPaddingLeft(), mText.getTotalPaddingRight(), mDividerColors, 0);
+        Divider mDivider;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            mDivider = new Divider(2, mText.getTotalPaddingLeft(), mText.getTotalPaddingRight(), mDividerColors, 0);
+        }else{
+            mDivider = new Divider(2, mText.getTotalPaddingLeft()*RATIO_LOLIPOP_PADDING, mText.getTotalPaddingRight()*RATIO_LOLIPOP_PADDING, mDividerColors, 0);
+            mText.setPadding(mText.getTotalPaddingLeft()*RATIO_LOLIPOP_PADDING,mText.getTotalPaddingLeft()*RATIO_LOLIPOP_PADDING,
+                    mText.getTotalPaddingLeft()*RATIO_LOLIPOP_PADDING,mText.getTotalPaddingLeft()*RATIO_LOLIPOP_PADDING);
+        }
         mDivider.setInEditMode(isInEditMode());
         mDivider.setAnimEnable(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
