@@ -205,6 +205,8 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         } else {
             getLoaderManager().initLoader(TAGS_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
         }
+        mTagsAutocompleteTextView.showProgress(true);
+        showProgress(true);
     }
 
     private void startTestcasesByLinkLoader() {
@@ -213,6 +215,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         } else {
             getLoaderManager().initLoader(TESTCASES_LOADER_BY_LINK_ID, bundle, ExpectedResultsActivity.this);
         }
+        showProgress(true);
     }
 
     private void startAllTagsLoader() {
@@ -221,6 +224,8 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         } else {
             getLoaderManager().initLoader(TAGS_LOADER_ID, null, ExpectedResultsActivity.this);
         }
+        mTagsAutocompleteTextView.showProgress(true);
+        showProgress(true);
     }
 
     private void startAllTestcasesLoader() {
@@ -229,6 +234,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         } else {
             getLoaderManager().initLoader(TESTCASES_LOADER_ID, null, ExpectedResultsActivity.this);
         }
+        showProgress(true);
     }
 
     private void refreshTagsAdapter(List<GTag> result) {
