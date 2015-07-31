@@ -44,10 +44,10 @@ public class TestUtil {
                     InstrumentationInfo instrumentationInfo = AmttApplication.getContext().getPackageManager().getInstrumentationInfo(componentName, PackageManager.GET_META_DATA);
                     Log.d(TAG +" win", instrumentationInfo.name + " "+1);
                     if (instrumentationInfo != null) {
-                        if (!res.contains(instrumentationInfo.packageName)) {
+                        if (!res.contains(packageInfo.packageName)) {
                             res.add(packageInfo.packageName);
+                            Log.d(TAG + " win", packageInfo.packageName + " " + 2);
                         }
-                        Log.d(TAG + " win", packageInfo.packageName + " " + 2);
                     }
                     Bundle bundle = instrumentationInfo.metaData;
                     if (bundle != null) {
