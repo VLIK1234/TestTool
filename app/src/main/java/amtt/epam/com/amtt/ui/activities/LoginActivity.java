@@ -73,7 +73,9 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
 
         if (isNewUserAdditionFromUserInfo()) {
             JiraApi.get().signOut();
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
         }
     }
 

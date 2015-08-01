@@ -240,8 +240,10 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         mDecorView = getWindow().getDecorView();
         mDecorView.setOnSystemUiVisibilityChangeListener(this);
         mActionBar = getSupportActionBar();
-        mActionBar.setShowHideAnimationEnabled(true);
-        mActionBar.setDisplayHomeAsUpEnabled(true);
+        if (mActionBar != null) {
+            mActionBar.setShowHideAnimationEnabled(true);
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+        }
         mHandler = new Handler(this);
     }
 

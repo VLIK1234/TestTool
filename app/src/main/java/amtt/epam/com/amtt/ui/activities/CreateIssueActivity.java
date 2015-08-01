@@ -51,8 +51,6 @@ import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
-import amtt.epam.com.amtt.googleapi.api.GoogleApiConst;
-import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
@@ -66,6 +64,7 @@ import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.GifUtil;
 import amtt.epam.com.amtt.util.InputsUtil;
+import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.Validator;
 
@@ -108,7 +107,7 @@ public class CreateIssueActivity extends BaseActivity
     private boolean mCreateAnotherIssue;
     private LayoutInflater mLayoutInflater;
     private boolean mIsAssignableSelected;
-    private GEntryWorksheet mTestcase;
+    private Bundle mBundle;
 
     public static class AssigneeHandler extends Handler {
 
@@ -131,7 +130,13 @@ public class CreateIssueActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
         TopButtonService.sendActionChangeTopButtonVisibility(false);
-        checkIntent();
+        mBundle = getIntent().getExtras();
+        initViews();
+        mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
+        mRequestsQueue.add(ContentConst.ATTACHMENT_RESPONSE);
+        initAttachLogsCheckBox();
+        initDescriptionEditText();
+        initAttachmentsView();
         PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(CreateIssueActivity.this);
         mHandler = new AssigneeHandler(this);
     }
@@ -188,36 +193,6 @@ public class CreateIssueActivity extends BaseActivity
         initClearEnvironmentButton();
         initGifAttachmentControls();
         mScrollView = (ScrollView) findViewById(R.id.scroll_view);
-    }
-
-    private void checkIntent() {
-        Bundle extra = getIntent().getExtras();
-        if (extra != null) {
-            GSpreadsheetContent.getInstance().getTestcaseByIdLink(extra.getString(GoogleApiConst.LINK_TAG), new GetContentCallback<GEntryWorksheet>() {
-                @Override
-                public void resultOfDataLoading(final GEntryWorksheet result) {
-                    CreateIssueActivity.this.runOnUiThread(new Runnable() {
-                        public void run() {
-                            if (result != null) {
-                                mTestcase = result;
-                            }
-                            proceed();
-                        }
-                    });
-                }
-            });
-        } else {
-            proceed();
-        }
-    }
-
-    private void proceed() {
-        initViews();
-        initAttachLogsCheckBox();
-        initDescriptionEditText();
-        initAttachmentsView();
-        mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
-        mRequestsQueue.add(ContentConst.ATTACHMENT_RESPONSE);
     }
 
     private void initCreateAnotherCheckBox() {
@@ -309,8 +284,8 @@ public class CreateIssueActivity extends BaseActivity
                             mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                             prioritiesSpinner.setAdapter(mPrioritiesAdapter);
                             String defaultPriority;
-                            if (mTestcase!=null) {
-                                defaultPriority = mTestcase.getPriorityGSX();
+                            if (mBundle != null && mBundle.getString(ExpectedResultsActivity.PRIORITY) != null) {
+                                defaultPriority = mBundle.getString(ExpectedResultsActivity.PRIORITY);
                                 if (defaultPriority != null) {
                                     prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
                                 }
@@ -527,8 +502,8 @@ public class CreateIssueActivity extends BaseActivity
             add(InputsUtil.getEmptyValidator());
             add(InputsUtil.getEndStartWhitespacesValidator());
         }});
-        if (mTestcase != null) {
-            mTitleTextInput.setText(mTestcase.getTestCaseNameGSX());
+        if (mBundle != null && mBundle.getString(ExpectedResultsActivity.NAME) != null) {
+            mTitleTextInput.setText(mBundle.getString(ExpectedResultsActivity.NAME));
         }
         mTitlePoint = new int[2];
         mTitleTextInput.getLocationOnScreen(mTitlePoint);
@@ -713,7 +688,7 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     private void loadAttachments() {
-        DbObjectManager.INSTANCE.getAll(new Step(), this);
+        DbObjectManager.INSTANCE.getAll(new Step(), CreateIssueActivity.this);
     }
 
     private void removeStepFromDatabase(int position) {
@@ -735,9 +710,12 @@ public class CreateIssueActivity extends BaseActivity
                         @Override
                         public void run() {
                             if (mDescriptionTextInput != null) {
-                                if (mTestcase != null) {
-                                    Spanned fullDescription = mTestcase.getFullTestCaseDescription(result);
-                                    mDescriptionTextInput.setText(fullDescription);
+                                if (mBundle != null && mBundle.getString(ExpectedResultsActivity.STEPS) != null
+                                        && mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT) != null) {
+                                    GEntryWorksheet testcase = new GEntryWorksheet();
+                                    testcase.setTestStepsGSX(mBundle.getString(ExpectedResultsActivity.STEPS));
+                                    testcase.setExpectedResultGSX(mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT));
+                                    mDescriptionTextInput.setText(testcase.getFullTestCaseDescription(result));
                                 } else {
                                     mDescriptionTextInput.setText(result);
                                 }
@@ -782,8 +760,9 @@ public class CreateIssueActivity extends BaseActivity
                         }
                     }
                     mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment);
-                    mRecyclerView.setAdapter(mAdapter);
-
+                    if (mRecyclerView != null) {
+                        mRecyclerView.setAdapter(mAdapter);
+                    }
                     if (mSteps.size() == 0) {
                         mGifCheckBox.setEnabled(false);
                     }
@@ -796,7 +775,7 @@ public class CreateIssueActivity extends BaseActivity
 
     @Override
     public void onError(Exception e) {
-
+        Logger.e(TAG, e.getMessage(), e);
     }
 
     //Recycler

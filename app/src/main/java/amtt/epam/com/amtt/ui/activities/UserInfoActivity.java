@@ -82,7 +82,9 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         setContentView(R.layout.activity_user_info);
         initViews();
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, UserInfoActivity.this);

@@ -28,7 +28,6 @@ import java.util.List;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.ExpectedResultsAdapter;
 import amtt.epam.com.amtt.api.GetContentCallback;
-import amtt.epam.com.amtt.googleapi.api.GoogleApiConst;
 import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
@@ -56,7 +55,10 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final String TAG = ExpectedResultsActivity.class.getSimpleName();
     public static final String LINK = "Link";
-
+    public static final String PRIORITY = "PRIORITY";
+    public static final String NAME = "NAME";
+    public static final String STEPS = "STEPS";
+    public static final String EXPECTED_RESULT = "EXPECTED_RESULT";
     private ExpectedResultsAdapter mResultsAdapter;
     private RecyclerView mRecyclerView;
     private MultyAutocompleteProgressView mTagsAutocompleteTextView;
@@ -104,19 +106,34 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     }
 
     @Override
-    public void onShowCard(int position) {
-        Intent detail = new Intent(ExpectedResultsActivity.this, DetailActivity.class);
-        detail.putExtra(GoogleApiConst.LINK_TAG, mResultsAdapter.getIdTestcaseList().get(position));
-        startActivity(detail);
-        finish();
+    public void onShowCard(final int position) {
+        getExtras(position, DetailActivity.class);
     }
 
     @Override
     public void onShowCreationTicket(int position) {
-        Intent creationTicket = new Intent(ExpectedResultsActivity.this, CreateIssueActivity.class);
-        creationTicket.putExtra(GoogleApiConst.LINK_TAG, mResultsAdapter.getIdTestcaseList().get(position));
-        startActivity(creationTicket);
-        finish();
+        getExtras(position, CreateIssueActivity.class);
+    }
+
+    private void getExtras(int position, final Class<?> activity) {
+        GSpreadsheetContent.getInstance().getTestcaseByIdLink(mResultsAdapter.getIdTestcaseList().get(position), new GetContentCallback<GEntryWorksheet>() {
+            @Override
+            public void resultOfDataLoading(final GEntryWorksheet result) {
+                ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        if (result != null) {
+                            Intent intent = new Intent(ExpectedResultsActivity.this, activity);
+                            intent.putExtra(NAME, result.getTestCaseNameGSX());
+                            intent.putExtra(PRIORITY, result.getPriorityGSX());
+                            intent.putExtra(STEPS, result.getTestStepsGSX());
+                            intent.putExtra(EXPECTED_RESULT, result.getExpectedResultGSX());
+                            startActivity(intent);
+                            finish();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -125,8 +142,10 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         setContentView(R.layout.activity_expected_results);
         mHandler = new TagsHandler(this);
         TopButtonService.sendActionChangeTopButtonVisibility(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+        }
         initViews();
     }
 
@@ -195,6 +214,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             public void afterTextChanged(Editable s) {
             }
         });
+        hideKeyboard();
     }
 
     private void startTagsByLinkLoader() {
