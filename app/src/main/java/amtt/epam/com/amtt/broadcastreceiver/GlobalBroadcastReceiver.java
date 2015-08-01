@@ -8,24 +8,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.*;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.lang.Process;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.zip.Inflater;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.database.util.StepUtil;

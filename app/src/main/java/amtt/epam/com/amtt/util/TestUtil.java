@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.pm.InstrumentationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -17,8 +15,10 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.ui.activities.SettingActivity;
 
 /**
- * Created by Ivan_Bakach on 06.07.2015.
+ @author Ivan_Bakach
+ @version on 06.07.2015
  */
+
 public class TestUtil {
 
     public static final String CLOSE_TEST = "CLOSE_TEST";
@@ -42,10 +42,10 @@ public class TestUtil {
                 if (info != null) {
                     ComponentName componentName = new ComponentName(info.packageName, info.name);
                     InstrumentationInfo instrumentationInfo = AmttApplication.getContext().getPackageManager().getInstrumentationInfo(componentName, PackageManager.GET_META_DATA);
-                    Log.d(TAG, instrumentationInfo.name + " "+1);
+                    Logger.d(TAG, instrumentationInfo.name + " "+1);
                     if (!res.contains(packageInfo.packageName)) {
                         res.add(packageInfo.packageName);
-                        Log.d(TAG, packageInfo.packageName + " " + 2);
+                        Logger.d(TAG, packageInfo.packageName + " " + 2);
                     }
 
                     /*Don't use in real life
@@ -61,11 +61,11 @@ public class TestUtil {
 //                    }
                 }
             } catch (PackageManager.NameNotFoundException e) {
-                Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
+                Logger.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
             } catch (NullPointerException e) {
-                Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
+                Logger.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
             } catch (ClassCastException e){
-                Log.e(TAG, "Failed to load meta-data, ClassCastException: " + e.getMessage());
+                Logger.e(TAG, "Failed to load meta-data, ClassCastException: " + e.getMessage());
             }
         }
         return res.toArray(new String[res.size()]);

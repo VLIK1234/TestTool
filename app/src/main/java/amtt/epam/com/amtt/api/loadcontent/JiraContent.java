@@ -106,7 +106,7 @@ public class JiraContent{
                             ContentFromDatabase.setPriorities(mPriorityResponse, new IResult<Integer>() {
                                 @Override
                                 public void onResult(Integer result) {
-                                    Logger.i(TAG, "Priority " + String.valueOf(result));
+                                    Logger.d(TAG, "Priority " + String.valueOf(result));
                                 }
 
                                 @Override
@@ -141,7 +141,7 @@ public class JiraContent{
             @Override
             public void onError(Exception e) {
                 getPriorities(getContentCallback);
-                Logger.e(TAG, e.getMessage());
+                Logger.e(TAG, e.getMessage(), e);
             }
         });
     }
@@ -203,7 +203,7 @@ public class JiraContent{
                                 ContentFromDatabase.setIssueTypes(result.getProjects().get(finalI), new IResult<Integer>() {
                                     @Override
                                     public void onResult(Integer result) {
-                                        Logger.i(TAG, "Project " + finalI + ", IssueTypes " + String.valueOf(result));
+                                        Logger.d(TAG, "Project " + finalI + ", IssueTypes " + String.valueOf(result));
                                     }
 
                                     @Override
@@ -215,7 +215,7 @@ public class JiraContent{
                             ContentFromDatabase.setProjects(result, new IResult<Integer>() {
                                 @Override
                                 public void onResult(Integer result) {
-                                    Logger.i(TAG, "Projects " + String.valueOf(result));
+                                    Logger.d(TAG, "Projects " + String.valueOf(result));
                                 }
 
                                 @Override
@@ -250,7 +250,7 @@ public class JiraContent{
             @Override
             public void onError(Exception e) {
                 getProjectsResponse(getContentCallback);
-                Logger.e(TAG, e.getMessage());
+                Logger.e(TAG, e.getMessage(), e);
             }
         });
     }
@@ -290,7 +290,7 @@ public class JiraContent{
 
             @Override
             public void onError(Exception e) {
-                Logger.e(TAG, e.getMessage());
+                Logger.e(TAG, e.getMessage(), e);
                 getContentCallback.resultOfDataLoading(mIssueTypesNames);
             }
         });

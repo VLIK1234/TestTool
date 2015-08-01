@@ -22,7 +22,6 @@ import android.widget.MultiAutoCompleteTextView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -57,6 +56,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final String TAG = ExpectedResultsActivity.class.getSimpleName();
     public static final String LINK = "Link";
+
     private ExpectedResultsAdapter mResultsAdapter;
     private RecyclerView mRecyclerView;
     private MultyAutocompleteProgressView mTagsAutocompleteTextView;
@@ -136,18 +136,6 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Logger.e(TAG, "onDestroy");
-    }
-
-    @Override
-    protected void onStop(){
-super.onStop();
-        Logger.e(TAG, "onStop()");
-    }
-
     private void initViews() {
         mRecyclerView = (RecyclerView) findViewById(android.R.id.list);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ExpectedResultsActivity.this);
@@ -166,7 +154,6 @@ super.onStop();
                 mTagsAutocompleteTextView.showProgress(true);
                 showProgress(true);
                 String[] str = mTagsAutocompleteTextView.getText().toString().split(", ");
-                Logger.e(TAG, Arrays.toString(str));
                 bundle = null;
                 bundle = new Bundle();
                 ArrayList<String> links = new ArrayList<>();
@@ -174,7 +161,6 @@ super.onStop();
                     for (int i = 0; i < mTags.size(); i++) {
                         if (mTags.get(i).getName().equals((String) parent.getItemAtPosition(position))) {
                             links.add(mTags.get(i).getIdLinkTestCase());
-                            Logger.e(TAG, mTags.get(i).getIdLinkTestCase());
                         }
                     }
                     bundle.putStringArrayList(LINK, links);
@@ -251,7 +237,6 @@ super.onStop();
 
     private void refreshTagsAdapter(List<GTag> result) {
         showProgress(true);
-        Logger.e(TAG, "refreshTagsAdapter");
         mTagsAutocompleteTextView.showProgress(true);
         if (result != null && !result.isEmpty()) {
             HashSet<String> namesTags = new HashSet<>();
@@ -268,7 +253,7 @@ super.onStop();
             mTagsAutocompleteTextView.showProgress(false);
             showProgress(false);
         } else {
-            Logger.e(TAG, "Tags not found");
+            Logger.d(TAG, "Tags not found");
             mTagsAutocompleteTextView.showProgress(false);
             showProgress(false);
         }
@@ -277,7 +262,6 @@ super.onStop();
 
     private void refreshSteps(final List<GEntryWorksheet> result) {
         showProgress(true);
-        Logger.e(TAG, "refreshSteps");
         if (result != null && !result.isEmpty()) {
             mResultsAdapter = null;
             mResultsAdapter = new ExpectedResultsAdapter(result, R.layout.adapter_expected_results, ExpectedResultsActivity.this);
@@ -286,7 +270,7 @@ super.onStop();
             }
             showProgress(false);
         } else {
-            Logger.e(TAG, "List TestCases = null");
+            Logger.d(TAG, "List TestCases = null");
             showProgress(false);
         }
     }
@@ -341,7 +325,7 @@ super.onStop();
                                     refreshSteps(result);
                                     startAllTagsLoader();
                                 } else {
-                                    Logger.e(TAG, "Error loading testcases");
+                                    Logger.d(TAG, "Error loading testcases");
                                 }
                             }
                         });
@@ -352,7 +336,7 @@ super.onStop();
                         mTags = getTagsFromCursor(data);
                         refreshTagsAdapter(getTagsFromCursor(data));
                     } else {
-                        Logger.e(TAG, "Error loading tags");
+                        Logger.d(TAG, "Error loading tags");
                         mTagsAutocompleteTextView.showProgress(false);
                     }
                     break;
@@ -360,7 +344,7 @@ super.onStop();
                     if (data != null && data.getCount() > 0) {
                         refreshTagsAdapter(getTagsFromCursor(data));
                     } else {
-                        Logger.e(TAG, "Error loading tags");
+                        Logger.d(TAG, "Tags not found");
                         mTagsAutocompleteTextView.showProgress(false);
                     }
                     startTestcasesByLinkLoader();

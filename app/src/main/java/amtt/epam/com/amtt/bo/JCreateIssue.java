@@ -52,9 +52,9 @@ public class JCreateIssue {
         String jsonString = null;
         try {
             jsonString = mGsonSerializeProcessor.process(mBData);
-            Logger.e(TAG, jsonString);
+            Logger.d(TAG, jsonString);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.e(TAG, e.getMessage(), e);
         }
         return jsonString;
     }

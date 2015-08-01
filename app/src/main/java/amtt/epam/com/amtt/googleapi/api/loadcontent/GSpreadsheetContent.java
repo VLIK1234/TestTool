@@ -42,7 +42,7 @@ public class GSpreadsheetContent {
         ContentFromDatabase.setSpreadsheet(result, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
-                Logger.i(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + " added " + String.valueOf(result));
+                Logger.d(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + " added " + String.valueOf(result));
             }
 
             @Override
@@ -81,7 +81,7 @@ public class GSpreadsheetContent {
         ContentFromDatabase.setWorksheet(worksheet, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
-                Logger.i(TAG, "Worksheet " + worksheet.getTitle() + " added " + String.valueOf(result));
+                Logger.d(TAG, "Worksheet " + worksheet.getTitle() + " added " + String.valueOf(result));
             }
 
             @Override
@@ -145,7 +145,7 @@ public class GSpreadsheetContent {
         ContentFromDatabase.setTestCase(testcase, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
-                Logger.i(TAG, "TestCase added " + String.valueOf(result));
+                Logger.d(TAG, "TestCase added " + String.valueOf(result));
             }
 
             @Override
@@ -170,12 +170,12 @@ public class GSpreadsheetContent {
                             if (result != null) {
                                 getContentCallback.resultOfDataLoading(result.getEntry());
                             } else {
-                                Logger.e(TAG, "Worksheet == null");
+                                Logger.d(TAG, "Worksheet == null");
                             }
                         }
                     });
                 } else {
-                    Logger.e(TAG, "Spreadsheet == null");
+                    Logger.d(TAG, "Spreadsheet == null");
                 }
             }
         });

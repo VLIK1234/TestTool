@@ -24,7 +24,7 @@ public class IOUtils {
                 try {
                     closeable.close();
                 } catch (IOException e) {
-                    Logger.e(TAG, e.getMessage());
+                    Logger.e(TAG, e.getMessage(), e);
                 }
             }
         }
