@@ -8,13 +8,11 @@ import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import java.util.List;
 
-import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.TextEditable;
 import amtt.epam.com.amtt.util.ThemeUtil;
@@ -26,6 +24,7 @@ import amtt.epam.com.amtt.util.Validator;
  */
 public class TextInput extends TextInputLayout implements TextEditable, Validatable {
 
+    public static final double RATIO_FOR_PADDING = 3.2;
     private EditText mText;
     private CharSequence mLastErrorText;
     private CharSequence mHint;
@@ -83,14 +82,13 @@ public class TextInput extends TextInputLayout implements TextEditable, Validata
 
             }
         });
-        DisplayMetrics metrics = AmttApplication.getContext().getResources().getDisplayMetrics();
         Divider mDivider;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mDivider = new Divider(2, mText.getTotalPaddingLeft(), mText.getTotalPaddingRight(), mDividerColors, 0);
         }else{
-            mDivider = new Divider(2, (int)(mText.getTotalPaddingLeft()*metrics.scaledDensity), (int)(mText.getTotalPaddingRight()*metrics.scaledDensity), mDividerColors, 0);
-            mText.setPadding((int)(mText.getTotalPaddingLeft()*metrics.scaledDensity),(int)(mText.getTotalPaddingLeft()*metrics.scaledDensity),
-                    (int)(mText.getTotalPaddingLeft()*metrics.scaledDensity),(int)(mText.getTotalPaddingLeft()*metrics.scaledDensity));
+            mDivider = new Divider(2, (int)(mText.getTotalPaddingLeft()* RATIO_FOR_PADDING), (int)(mText.getTotalPaddingRight()*RATIO_FOR_PADDING), mDividerColors, 0);
+            mText.setPadding((int)(mText.getTotalPaddingLeft()*RATIO_FOR_PADDING),(int)(mText.getTotalPaddingLeft()*RATIO_FOR_PADDING),
+                    (int)(mText.getTotalPaddingLeft()*RATIO_FOR_PADDING),(int)(mText.getTotalPaddingLeft()*RATIO_FOR_PADDING));
         }
         mDivider.setInEditMode(isInEditMode());
         mDivider.setAnimEnable(true);
