@@ -7,9 +7,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.api.GetContentCallback;
-import amtt.epam.com.amtt.googleapi.api.GoogleApiConst;
-import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
@@ -36,7 +33,6 @@ public class DetailActivity extends BaseActivity {
         }
         TopButtonService.sendActionChangeTopButtonVisibility(false);
         initViews();
-        checkIntent();
     }
 
     @Override
@@ -46,6 +42,7 @@ public class DetailActivity extends BaseActivity {
     }
 
     private void setTestcaseData() {
+        checkIntent();
         if (mTestcase != null) {
             if (mTestcase.getTestCaseNameGSX() != null) {
                 mNameTextView.setText(mTestcase.getTestCaseNameGSX());
