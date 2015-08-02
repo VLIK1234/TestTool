@@ -97,6 +97,10 @@ public class StepUtil {
         ArrayList<Step> list = (ArrayList) listStep;
         SpannableStringBuilder builder = new SpannableStringBuilder();
         Context context = AmttApplication.getContext();
+        if (list.size()>0) {
+            builder.append(Html.fromHtml("<br/>" + "<br/>" + "<h5>" + "New steps : "
+                    + "</h5>"));
+        }
         for (int i = 0; i < list.size(); i++) {
             Step step = list.get(i);
             builder.append(Html.fromHtml("<h5>" + context.getString(R.string.label_step) + String.valueOf(i + 1) + "</h5>"));

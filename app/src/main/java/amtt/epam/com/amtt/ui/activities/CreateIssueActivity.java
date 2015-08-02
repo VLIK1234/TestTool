@@ -51,6 +51,7 @@ import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
@@ -702,31 +703,58 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     private void getDescription() {
-        JiraContent.getInstance().getDescription(new GetContentCallback<Spanned>() {
-            @Override
-            public void resultOfDataLoading(final Spanned result) {
-                if (result != null) {
+        if (mDescriptionTextInput != null) {
+            if (mBundle != null && mBundle.getString(ExpectedResultsActivity.STEPS) != null
+                    && mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT) != null) {
+                GEntryWorksheet testcase = new GEntryWorksheet();
+                testcase.setTestStepsGSX(mBundle.getString(ExpectedResultsActivity.STEPS));
+                testcase.setExpectedResultGSX(mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT));
+                mDescriptionTextInput.setText(testcase.getFullTestCaseDescription());
+            }
+            DbObjectManager.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
+                @Override
+                public void onResult(final List<DatabaseEntity> result) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (mDescriptionTextInput != null) {
-                                if (mBundle != null && mBundle.getString(ExpectedResultsActivity.STEPS) != null
-                                        && mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT) != null) {
-                                    GEntryWorksheet testcase = new GEntryWorksheet();
-                                    testcase.setTestStepsGSX(mBundle.getString(ExpectedResultsActivity.STEPS));
-                                    testcase.setExpectedResultGSX(mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT));
-                                    mDescriptionTextInput.setText(testcase.getFullTestCaseDescription(result));
-                                } else {
-                                    mDescriptionTextInput.setText(result);
-                                }
-                            }
+                            mDescriptionTextInput.setText(mDescriptionTextInput.getText().append(StepUtil.getStepInfo(result)));
                         }
                     });
+
+
                 }
-                mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
-                showProgressIfNeed();
-            }
-        });
+
+                @Override
+                public void onError(Exception e) {
+
+                }
+            });
+        }
+//        JiraContent.getInstance().getDescription(new GetContentCallback<Spanned>() {
+//            @Override
+//            public void resultOfDataLoading(final Spanned result) {
+//                if (result != null) {
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if (mDescriptionTextInput != null) {
+//                                if (mBundle != null && mBundle.getString(ExpectedResultsActivity.STEPS) != null
+//                                        && mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT) != null) {
+//                                    GEntryWorksheet testcase = new GEntryWorksheet();
+//                                    testcase.setTestStepsGSX(mBundle.getString(ExpectedResultsActivity.STEPS));
+//                                    testcase.setExpectedResultGSX(mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT));
+//                                    mDescriptionTextInput.setText(testcase.getFullTestCaseDescription(result));
+//                                } else {
+//                                    mDescriptionTextInput.setText(result);
+//                                }
+//                            }
+//                        }
+//                    });
+//                }
+//                mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
+//                showProgressIfNeed();
+//            }
+//        });
     }
 
     //Callbacks
