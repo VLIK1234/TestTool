@@ -8,8 +8,10 @@ import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 
 /**
- * Created by Artyom on 03.07.2015.
+ @author Artsiom_Kaliaha
+ @version on 03.07.2015
  */
+
 public class RadioGroupLine extends RadioGroup {
 
     public interface OnLineCheckedChangeListener {

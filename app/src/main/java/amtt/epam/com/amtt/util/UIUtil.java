@@ -16,10 +16,10 @@ import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 
 public final class UIUtil {
 
-    public static final String ORIENTATION_UNDEFINED = "ORIENTATION_UNDEFINED";
-    public static final String ORIENTATION_LANDSCAPE = "ORIENTATION_LANDSCAPE";
-    public static final String ORIENTATION_PORTRAIT = "ORIENTATION_PORTRAIT";
-    private static Map<Integer, String> sScreenOrientation= new HashMap<>();
+    private static final String ORIENTATION_UNDEFINED = "ORIENTATION_UNDEFINED";
+    private static final String ORIENTATION_LANDSCAPE = "ORIENTATION_LANDSCAPE";
+    private static final String ORIENTATION_PORTRAIT = "ORIENTATION_PORTRAIT";
+    private static final Map<Integer, String> sScreenOrientation= new HashMap<>();
 
     static {
         sScreenOrientation.put(Configuration.ORIENTATION_UNDEFINED, ORIENTATION_UNDEFINED);

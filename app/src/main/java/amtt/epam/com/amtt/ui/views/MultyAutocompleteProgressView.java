@@ -55,10 +55,6 @@ public class MultyAutocompleteProgressView extends RelativeLayout {
         mMACTextView.addTextChangedListener(watcher);
     }
 
-    public void showDropDown() {
-        mMACTextView.showDropDown();
-    }
-
     public void setText(CharSequence text) {
         mMACTextView.setText(text, TextView.BufferType.NORMAL);
     }

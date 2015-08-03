@@ -12,27 +12,28 @@ import android.util.Log;
 import junit.framework.Assert;
 
 /**
- * Created by Ivan_Bakach on 29.06.2015.
+ @author Ivan_Bakach
+ @version on 29.06.2015
  */
+
 public class MonitorTest extends InstrumentationTestCase implements Application.ActivityLifecycleCallbacks{
 
-    public static final String EXCEPTION_ANSWER_ACTION = "EXCEPTION_ANSWER";
-    public static final String EXCEPTION_ANSWER_KEY = "answer";
-    public static final int RECEIVER_TIMEOUT = 1000;
-    public Application mApplication;
+    private static final String EXCEPTION_ANSWER_ACTION = "EXCEPTION_ANSWER";
+    private static final String EXCEPTION_ANSWER_KEY = "answer";
+    private static final int RECEIVER_TIMEOUT = 1000;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
     }
 
-    TestBroadcastReceiver receiver = new TestBroadcastReceiver();
+    private final TestBroadcastReceiver receiver = new TestBroadcastReceiver();
 
     public void testMonitor() {
         final Context context = getInstrumentation().getTargetContext();
         LogManger.writeMultipleLogs(getInstrumentation().getTargetContext());
         LogManger.transferLogsToAmtt(context);
-        mApplication = (Application)getInstrumentation().getTargetContext().getApplicationContext();
+        Application application = (Application) getInstrumentation().getTargetContext().getApplicationContext();
         final Thread.UncaughtExceptionHandler exceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
@@ -47,7 +48,7 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
                 LogManger.closeLogsWriter();
             }
         });
-        mApplication.registerActivityLifecycleCallbacks(this);
+        application.registerActivityLifecycleCallbacks(this);
         IntentFilter filterReceiver = new IntentFilter();
         filterReceiver.addCategory(Intent.CATEGORY_DEFAULT);
         filterReceiver.addAction(TestBroadcastReceiver.PING_ANSWER);
@@ -63,7 +64,7 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
                 Thread.sleep(RECEIVER_TIMEOUT);
                 if (receiver.needCloseUnitTest()) {
                     context.unregisterReceiver(receiver);
-                    mApplication.unregisterActivityLifecycleCallbacks(this);
+                    application.unregisterActivityLifecycleCallbacks(this);
                     LogManger.closeLogsWriter();
                     Assert.assertTrue(true);
                 }

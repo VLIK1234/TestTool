@@ -12,8 +12,10 @@ import amtt.epam.com.amtt.os.Task;
 import amtt.epam.com.amtt.processing.Processor;
 
 /**
- * Created by Artsiom_Kaliaha on 18.06.2015.
+ @author Artsiom_Kaliaha
+ @version on 18.06.2015
  */
+
 public abstract class CoreApplication extends Application {
 
     public static final String NO_PROCESSOR = "NO_PROCESSOR";

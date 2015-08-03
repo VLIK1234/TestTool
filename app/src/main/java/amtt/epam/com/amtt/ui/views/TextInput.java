@@ -20,11 +20,13 @@ import amtt.epam.com.amtt.util.Validatable;
 import amtt.epam.com.amtt.util.Validator;
 
 /**
- * Created by Artsiom_Kaliaha on 12.06.2015.
+ @author Artsiom_Kaliaha
+ @version on 12.06.2015
  */
+
 public class TextInput extends TextInputLayout implements TextEditable, Validatable {
 
-    public static final double RATIO_FOR_PADDING = 3.2;
+    private static final double RATIO_FOR_PADDING = 3.2;
     private EditText mText;
     private CharSequence mLastErrorText;
     private CharSequence mHint;

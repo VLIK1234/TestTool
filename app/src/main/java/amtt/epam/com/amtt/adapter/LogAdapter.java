@@ -12,18 +12,20 @@ import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
 
 /**
- * Created by Ivan_Bakach on 10.07.2015.
+ @author Ivan_Bakach
+ @version on 10.07.2015
  */
+
 public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
 
-    public static final String ERROR_TAG = "E/";
-    public static final String FATAL_TAG = "F/";
-    public static final String WARNING_TAG = "W/";
-    public static final String INFO_TAG = "I/";
-    public static final int ERROR_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.holo_red_light);
-    public static final int WARNING_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.holo_orange_light);
-    public static final int INFO_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.holo_green_light);
-    public static final int DEBUG_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.black);
+    private static final String ERROR_TAG = "E/";
+    private static final String FATAL_TAG = "F/";
+    private static final String WARNING_TAG = "W/";
+    private static final String INFO_TAG = "I/";
+    private static final int ERROR_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.holo_red_light);
+    private static final int WARNING_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.holo_orange_light);
+    private static final int INFO_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.holo_green_light);
+    private static final int DEBUG_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.black);
     private ArrayList<CharSequence> mListLog = new ArrayList<>();
 
     public LogAdapter(ArrayList<CharSequence> listLog) {
@@ -48,7 +50,7 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
         return mListLog == null ? 0 : mListLog.size();
     }
 
-    public void setColorTextView(TextView textView, CharSequence logLine){
+    private void setColorTextView(TextView textView, CharSequence logLine){
         if (logLine.toString().contains(ERROR_TAG)) {
             textView.setTextColor(ERROR_COLOR);
         } else if (logLine.toString().contains(FATAL_TAG)) {
@@ -63,7 +65,7 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView logLine;
+        public final TextView logLine;
 
         public ViewHolder(View itemView) {
             super(itemView);

@@ -51,7 +51,7 @@ public class Step extends DatabaseEntity<Step> {
         mScreenState = ScreenshotState.WRITTEN;
     }
 
-    public Step(Cursor cursor) {
+    private Step(Cursor cursor) {
         super(cursor);
         mStepNumber = cursor.getInt(cursor.getColumnIndex(StepsTable._ID));
         mScreenPath = cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH));

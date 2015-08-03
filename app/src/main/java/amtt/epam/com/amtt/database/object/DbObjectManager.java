@@ -26,8 +26,8 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
     * Use this method for updates. Exception won't be thrown, all the conflicts will be replaced.
     * */
 
-    public static final String SIGN_SELECTION = "=?";
-    public static final String SIGN_AND = " AND ";
+    private static final String SIGN_SELECTION = "=?";
+    private static final String SIGN_AND = " AND ";
 
 
     @Override
@@ -36,7 +36,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         return Integer.valueOf(insertedItemUri.getLastPathSegment());
     }
 
-    public int add(List<DatabaseEntity> objects) {
+    private int add(List<DatabaseEntity> objects) {
         ContentValues[] contentValues = new ContentValues[objects.size()];
         for (int i = 0; i < objects.size(); i++) {
             contentValues[i] = objects.get(i).getContentValues();

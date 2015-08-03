@@ -3,18 +3,20 @@ package amtt.epam.com.amtt.bo.issue;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Irina Monchenko on 30.03.2015.
+ @author Iryna Monchanka
+ @version on 30.03.2015
  */
+
 public class JAvatarUrls {
 
     @SerializedName("48x48")
-    private String mAvatarUrl;
+    private final String mAvatarUrl;
     @SerializedName("24x24")
-    private String mAvatarSmallUrl;
+    private final String mAvatarSmallUrl;
     @SerializedName("16x16")
-    private String mAvatarXSmallUrl;
+    private final String mAvatarXSmallUrl;
     @SerializedName("32x32")
-    private String mAvatarMediumUrl;
+    private final String mAvatarMediumUrl;
 
     public JAvatarUrls(String avatarUrl, String avatarSmallUrl, String avatarXSmallUrl, String avatarMediumUrl) {
         this.mAvatarUrl = avatarUrl;

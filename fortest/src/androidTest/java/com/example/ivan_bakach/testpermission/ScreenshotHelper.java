@@ -9,14 +9,16 @@ import android.view.View;
 import java.io.ByteArrayOutputStream;
 
 /**
- * Created by Ivan_Bakach on 14.07.2015.
+ @author Ivan_Bakach
+ @version on 14.07.2015
  */
+
 public class ScreenshotHelper {
 
     public static final String REQUEST_TAKE_SCREENSHOT_ACTION = "REQUEST_TAKE_SCREENSHOT";
-    public static final int QUALITY_COMPRESS_SCREENSHOT = 90;
+    private static final int QUALITY_COMPRESS_SCREENSHOT = 90;
     public static final String BR_TAG = "<br/>";
-    public static final String SCREEN_KEY = "screen";
+    private static final String SCREEN_KEY = "screen";
 
     public static void takeScreenshot(Context context, Activity activity, String listFragments) {
 // create bitmap screen capture

@@ -12,8 +12,10 @@ import com.example.ivan_bakach.testpermission.R;
 import com.example.ivan_bakach.testpermission.app.MultipleFragmentsActivity;
 
 /**
- * Created by Ivan_Bakach on 03.06.2015.
+ @author Ivan_Bakach
+ @version on 03.06.2015
  */
+
 public class FirstPageFragment extends Fragment {
 
     @Override

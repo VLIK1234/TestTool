@@ -7,24 +7,26 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by Ivan_Bakach on 09.07.2015.
+ @author Ivan_Bakach
+ @version on 09.07.2015
  */
+
 public class LogManger {
 
-    public static final String LOGS_CACHE_DIR = "logs";
+    private static final String LOGS_CACHE_DIR = "logs";
     public static String sArgumentsFragments;
     public static String sExceptionLog;
     public static String sCommonLog;
-    public static final String LOGCAT_WRITE_IN_FILE = "logcat -f ";
-    public static final String ROTATE_LOG = " -r 1000";
-    public static final String EXCEPTION_FILTER = " *:e";
-    public static final String TEMPLATE_EXCEPION = "%s/log_exception.txt";
-    public static final String TEMPLATE_COMMON = "%s/log_common.txt";
-    public static final String TEMPLATE_ARGUMENTS_FRAGMENTS = "%s/log_arguments.txt";
+    private static final String LOGCAT_WRITE_IN_FILE = "logcat -f ";
+    private static final String ROTATE_LOG = " -r 1000";
+    private static final String EXCEPTION_FILTER = " *:e";
+    private static final String TEMPLATE_EXCEPION = "%s/log_exception.txt";
+    private static final String TEMPLATE_COMMON = "%s/log_common.txt";
+    private static final String TEMPLATE_ARGUMENTS_FRAGMENTS = "%s/log_arguments.txt";
 
-    public static final String FILE_NAME_KEY = "fileName";
-    public static final String BYTE_ARRAY_DATA_KEY = "byteArrayData";
-    public static final String SEND_LOG_FILE_ACTION = "SEND_LOG_FILE";
+    private static final String FILE_NAME_KEY = "fileName";
+    private static final String BYTE_ARRAY_DATA_KEY = "byteArrayData";
+    private static final String SEND_LOG_FILE_ACTION = "SEND_LOG_FILE";
     private static Process sProcessWriteCommonLog;
     private static Process sProcessWriteExceptionLog;
 

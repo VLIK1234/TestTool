@@ -28,7 +28,7 @@ import amtt.epam.com.amtt.database.util.StepUtil;
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> {
 
     private ArrayList<Step> mStepList = new ArrayList<>();
-    private ViewHolder.ClickListener clickListener;
+    private final ViewHolder.ClickListener clickListener;
     private final static int IMAGE_SIZE_RATIO = 3;
 
     public StepsAdapter(ArrayList<Step> mStepList, ViewHolder.ClickListener clickListener) {
@@ -77,11 +77,11 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public ImageView screenshotView;
-        public ImageView removeButton;
-        public TextView activityInfo;
-        public TextView step;
-        private ClickListener listener;
+        public final ImageView screenshotView;
+        public final ImageView removeButton;
+        public final TextView activityInfo;
+        public final TextView step;
+        private final ClickListener listener;
 
         public ViewHolder(View itemView, ClickListener listener) {
             super(itemView);

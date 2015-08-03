@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">TestPermissionClient</string>
 
-    <string name="hello_world">I am CLIENT!!!</string>
     <string name="action_settings">Settings</string>
 </resources>

@@ -22,8 +22,8 @@ import amtt.epam.com.amtt.util.PreferenceUtil;
  */
 public class TakeStepActivity extends AppCompatActivity {
 
-    public static final String EXTERNAL_ACTION_TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
-    public static final String TAKE_ONLY_INFO = "TAKE_ONLY_INFO";
+    private static final String EXTERNAL_ACTION_TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
+    private static final String TAKE_ONLY_INFO = "TAKE_ONLY_INFO";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

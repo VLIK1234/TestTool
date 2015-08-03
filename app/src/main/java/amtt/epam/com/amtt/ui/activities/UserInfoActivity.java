@@ -60,7 +60,7 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     private ImageView mUserImageImageView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private UserInfoHandler mHandler;
-    private Boolean isNewUser = false;
+    private final Boolean isNewUser = false;
     private Button mAddSpreadsheetButton;
 
     public static class UserInfoHandler extends Handler {
@@ -167,7 +167,7 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
         }
     }
 
-    public void initViews() {
+    private void initViews() {
         mNameTextView = (TextView) findViewById(R.id.tv_user_name);
         mEmailAddressTextView = (TextView) findViewById(R.id.tv_email);
         mDisplayNameTextView = (TextView) findViewById(R.id.tv_fullname);
@@ -185,7 +185,7 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
         });
     }
 
-    public void setActiveUser(JUserInfo user) {
+    private void setActiveUser(JUserInfo user) {
         ActiveUser.getInstance().clearActiveUser();
         ActiveUser.getInstance().setUrl(user.getUrl());
         ActiveUser.getInstance().setCredentials(user.getCredentials());

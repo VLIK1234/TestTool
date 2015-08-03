@@ -1,11 +1,9 @@
 package amtt.epam.com.amtt.database.util;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.text.Editable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -45,12 +43,8 @@ public class StepUtil {
         DbObjectManager.INSTANCE.add(step, null);
     }
 
-    public static void cleanSteps() {
-        DbObjectManager.INSTANCE.removeAll(new Step());
-    }
-
     public static void clearAllSteps() {
-        cleanSteps();
+        DbObjectManager.INSTANCE.removeAll(new Step());
     }
 
     public static void applyNotesToScreenshot(final Bitmap drawingCache, final String screenshotPath, final Step step) {

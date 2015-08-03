@@ -11,8 +11,10 @@ import com.example.ivan_bakach.testpermission.fragment.NullpointerFragment;
 import com.example.ivan_bakach.testpermission.fragment.RuntimeFragment;
 
 /**
- * Created by Ivan_Bakach on 04.06.2015.
+ @author Ivan_Bakach
+ @version on 04.06.2015
  */
+
 public class MultipleFragmentsActivity extends AppCompatActivity {
 
     @Override

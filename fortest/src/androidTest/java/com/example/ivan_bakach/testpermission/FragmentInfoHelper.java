@@ -15,8 +15,10 @@ import java.io.IOException;
  * @version on 21.07.2015
  */
 public class FragmentInfoHelper {
-    public static String sListFragments;
+
+    private static String sListFragments;
     public static String sCurrentArguments;
+
     public static void initFragmentsInfo(final Activity activity){
         sListFragments = "";
         sCurrentArguments = "";
@@ -37,7 +39,7 @@ public class FragmentInfoHelper {
             }
         }, 1000);
     }
-    public static String getArgumentsFromFragments(Bundle bundleArguments){
+    private static String getArgumentsFromFragments(Bundle bundleArguments){
         String intDateArguments = bundleArguments.toString().trim().replaceAll("[}{\\[\\]]|Bundle", "");//clean
         String[] argumentsArray = intDateArguments.split(",");
         StringBuilder builder = new StringBuilder();

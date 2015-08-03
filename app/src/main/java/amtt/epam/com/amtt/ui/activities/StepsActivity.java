@@ -23,14 +23,16 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
- * Created by Ivan_Bakach on 10.06.2015.
+ @author Ivan_Bakach
+ @version on 10.06.2015
  */
+
 public class StepsActivity extends AppCompatActivity implements StepsAdapter.ViewHolder.ClickListener {
 
-    public static final int SPAN_COUNT = 3;
+    private static final int SPAN_COUNT = 3;
     private TextView emptyList;
     private StepsAdapter mAdapter;
-    public RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +86,7 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
         TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
-    public RecyclerView.LayoutManager getLayoutManger() {
+    private RecyclerView.LayoutManager getLayoutManger() {
         if (UIUtil.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
             return new LinearLayoutManager(getBaseContext());
         } else {

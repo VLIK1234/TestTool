@@ -25,23 +25,23 @@ public class Divider extends Drawable implements Animatable {
     private boolean mRunning = false;
     private long mStartTime;
     private float mAnimProgress;
-    private int mAnimDuration;
+    private final int mAnimDuration;
 
-    private Paint mPaint;
+    private final Paint mPaint;
     private ColorStateList mColorStateList;
-    private int mHeight;
+    private final int mHeight;
     private int mPrevColor;
     private int mCurColor;
 
     private boolean mEnable = true;
     private PathEffect mPathEffect;
-    private Path mPath;
+    private final Path mPath;
 
     private boolean mInEditMode = false;
     private boolean mAnimEnable = true;
 
-    private int mPaddingLeft;
-    private int mPaddingRight;
+    private final int mPaddingLeft;
+    private final int mPaddingRight;
 
     public Divider(int height, int paddingLeft, int paddingRight, ColorStateList colorStateList, int animDuration){
         mHeight = height;
@@ -79,7 +79,7 @@ public class Divider extends Drawable implements Animatable {
         mAnimEnable = b;
     }
 
-    public void setColor(ColorStateList colorStateList){
+    private void setColor(ColorStateList colorStateList){
         mColorStateList = colorStateList;
         onStateChange(getState());
     }

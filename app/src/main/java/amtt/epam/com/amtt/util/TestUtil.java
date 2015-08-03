@@ -21,12 +21,10 @@ import amtt.epam.com.amtt.ui.activities.SettingActivity;
 
 public class TestUtil {
 
-    public static final String CLOSE_TEST = "CLOSE_TEST";
-    public static final String AMTT_TEST_KEY = "amtt_test_key";
-    public static final String AMTT_APP_VALUE = "amtt_app";
-    public static final String TAG = "TAG";
+    private static final String CLOSE_TEST = "CLOSE_TEST";
+    private static final String TAG = "TAG";
 
-    public static InstrumentationInfo getInstrumentationInfo(final String packageName) {
+    private static InstrumentationInfo getInstrumentationInfo(final String packageName) {
         final List<InstrumentationInfo> list =
                 AmttApplication.getContext().getPackageManager()
                         .queryInstrumentation(packageName, 0);
@@ -71,7 +69,7 @@ public class TestUtil {
         return res.toArray(new String[res.size()]);
     }
 
-    public static void runTests() {
+    private static void runTests() {
         final String pn = PreferenceUtil.getString(AmttApplication.getContext().getString(R.string.key_test_project));
         final InstrumentationInfo info = getInstrumentationInfo(pn);
         if (info != null) {

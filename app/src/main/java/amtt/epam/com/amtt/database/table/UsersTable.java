@@ -31,7 +31,7 @@ public class UsersTable extends Table {
     public static final String _LAST_COMPONENTS_IDS = "_last_components_ids";
     public static final String _LAST_SPREADSHEET_URL = "_last_spreadsheet_url";
 
-    private static MultiValueMap<String, String> sColumnsMap;
+    private static final MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
             _ID,

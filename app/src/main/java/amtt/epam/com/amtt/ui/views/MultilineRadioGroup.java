@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Artyom on 03.07.2015.
+ @author Artyom
+ @version on 03.07.2015
  */
+
 public class MultilineRadioGroup extends RadioGroup {
 
     public interface OnEntireGroupCheckedChangeListener {

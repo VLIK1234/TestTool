@@ -5,8 +5,10 @@ import android.database.Cursor;
 import android.net.Uri;
 
 /**
- * Created by Ivan_Bakach on 25.05.2015.
+ @author Ivan_Bakach
+ @version on 25.05.2015
  */
+
 public interface IDatabaseEntityMethod<B> {
 
     B parse(Cursor cursor);

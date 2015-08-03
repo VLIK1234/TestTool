@@ -19,22 +19,8 @@ import java.util.List;
 
 
 public class ViewPagerActivity extends FragmentActivity {
-    /**
-     * The number of pages (wizard steps) to show in this demo.
-     */
-    private static final int NUM_PAGES = 5;
 
-    /**
-     * The pager widget, which handles animation and allows swiping horizontally to access previous
-     * and next wizard steps.
-     */
     private ViewPager mPager;
-
-    /**
-     * The pager adapter, which provides the pages to the view pager widget.
-     */
-    private PagerAdapter mPagerAdapter;
-    public FragmentManager supportFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +28,12 @@ public class ViewPagerActivity extends FragmentActivity {
         setContentView(R.layout.activity_view_pager);
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
-        supportFragmentManager = getSupportFragmentManager();
-        mPagerAdapter = new ScreenSlidePagerAdapter(supportFragmentManager);
-        mPager.setAdapter(mPagerAdapter);
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        /*
+      The pager adapter, which provides the pages to the view pager widget.
+     */
+        PagerAdapter pagerAdapter = new ScreenSlidePagerAdapter(supportFragmentManager);
+        mPager.setAdapter(pagerAdapter);
     }
 
     @Override
@@ -52,34 +41,14 @@ public class ViewPagerActivity extends FragmentActivity {
         super.onResume();
     }
 
-    public static List<WeakReference<Fragment>> fragList = new ArrayList<WeakReference<Fragment>>();
-    int i = 0;
+    private static final List<WeakReference<Fragment>> fragList = new ArrayList<WeakReference<Fragment>>();
+
     @Override
     public void onAttachFragment(Fragment fragment) {
 //        FragmentInfoManger.INSTANSE.setInfoArrayList(this,fragment);
         fragList.add(new WeakReference(fragment));
     }
 
-    public static List<Fragment> getActiveFragments() {
-        ArrayList<Fragment> ret = new ArrayList<Fragment>();
-        for(WeakReference<Fragment> ref : fragList) {
-            Fragment f = ref.get();
-            if(f != null) {
-                if(f.isVisible()) {
-                    ret.add(f);
-                }
-            }
-        }
-        return ret;
-    }
-
-    public static String printListFragment(List<Fragment> list) {
-        String result = ViewPagerActivity.class.getSimpleName()+ " ";
-        for (Fragment fragment:list) {
-            result+=(fragment.getClass().getSimpleName()+" ");
-        }
-        return result;
-    }
     @Override
     public void onBackPressed() {
         if (mPager.getCurrentItem() == 0) {
@@ -97,7 +66,7 @@ public class ViewPagerActivity extends FragmentActivity {
      * sequence.
      */
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        Fragment[] arrayFragmnet = new Fragment[]{
+        final Fragment[] arrayFragmnet = new Fragment[]{
             new FirstPageFragment(), new SecondPageFragment()
         };
         public ScreenSlidePagerAdapter(FragmentManager fm) {

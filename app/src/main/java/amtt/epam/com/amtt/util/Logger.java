@@ -7,17 +7,9 @@ package amtt.epam.com.amtt.util;
 
 public class Logger {
 
-    private static final String TAG = Logger.class.getSimpleName();
-    private static final String ENCODING_UTF_8 = "UTF-8";
-    private static final String PROTOCOL_VERSION = "ProtocolVersion : ";
-    private static final String METHOD = "Method : ";
-    private static final String URI = "Uri : ";
-    private static final String BODY = "Body : ";
-    private static final String STATUS_CODE = "StatusCode : ";
-    private static final String REASON_PHRASE = "ReasonPhrase : ";
     private static boolean IS_SHOW_LOGS = true;
 
-    public Logger() {
+    private Logger() {
     }
 
     public static void d(String tag, String message) {

@@ -30,7 +30,7 @@ public final class ActivityInfoTable extends Table {
     public static final String _PROCESS_NAME = "_process_name";
     public static final String _PACKAGE_NAME = "_package_name";
 
-    private static MultiValueMap<String, String> sColumnsMap;
+    private final static MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
             _ACTIVITY_NAME,

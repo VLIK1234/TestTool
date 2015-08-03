@@ -5,7 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import amtt.epam.com.amtt.bo.issue.JAvatarUrls;
 
 /**
- * Created by Iryna_Monchanka on 3/31/2015.
+ @author Iryna Monchanka
+ @version on 3/31/2015
  */
 
 public class JFieldsItemAllowedValues {

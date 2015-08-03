@@ -14,7 +14,6 @@ import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.helper.AttachNotificationHelper;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.Logger;
-import amtt.epam.com.amtt.util.TestUtil;
 
 /**
  * @author Iryna Monchanka

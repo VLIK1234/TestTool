@@ -15,7 +15,6 @@ import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.googleapi.database.contentprovider.GSUri;
 import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
-import amtt.epam.com.amtt.util.Constants;
 
 /**
  * @author Iryna Monchanka

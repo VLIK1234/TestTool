@@ -3,10 +3,11 @@ package com.example.ivan_bakach.testpermission;
 import android.app.Application;
 
 /**
- * Created by Ivan_Bakach on 02.06.2015.
+ @author Ivan_Bakach
+ @version on 02.06.2015
  */
-public class CoreApplication extends Application {
 
+public class CoreApplication extends Application {
 
     @Override
     public void onCreate() {

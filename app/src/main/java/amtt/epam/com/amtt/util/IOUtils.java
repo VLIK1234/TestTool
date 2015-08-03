@@ -12,8 +12,10 @@ import java.io.IOException;
 import amtt.epam.com.amtt.AmttApplication;
 
 /**
- * Created by Artsiom_Kaliaha on 13.04.2015.
+ @author Artsiom_Kaliaha
+ @version on 13.04.2015
  */
+
 public class IOUtils {
 
     private static final String TAG = IOUtils.class.getSimpleName();
@@ -39,15 +41,11 @@ public class IOUtils {
             if (!createIfNotExists) {
                 throw e;
             }
-            File file = createNewFile(path);
+            File file = new File(path);
             outputStream = new FileOutputStream(file);
         }
 
         return outputStream;
-    }
-
-    public static File createNewFile(String path) {
-        return new File(path);
     }
 
     public static void byteArrayToFile(final byte[] byteArray, final File file){

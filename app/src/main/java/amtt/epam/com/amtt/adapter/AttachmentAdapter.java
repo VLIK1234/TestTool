@@ -50,12 +50,12 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
         }
 
-        public ImageView mScreenshotImage;
-        public TextView mScreenshotName;
-        public ImageView mScreenshotClose;
-        public ProgressBar mProgress;
+        public final ImageView mScreenshotImage;
+        public final TextView mScreenshotName;
+        public final ImageView mScreenshotClose;
+        public final ProgressBar mProgress;
         private ScreenshotState mScreenshotState;
-        private Context mContext;
+        private final Context mContext;
         private ClickListener mListener;
 
         public ViewHolder(Context context, View itemView) {
@@ -105,7 +105,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
     private static class StepScreenshotObserver extends ContentObserver {
 
-        private AttachmentAdapter mAdapter;
+        private final AttachmentAdapter mAdapter;
 
         public StepScreenshotObserver(Handler handler, AttachmentAdapter attachmentAdapter) {
             super(handler);
@@ -131,11 +131,11 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
     private final String TAG = this.getClass().getSimpleName();
 
-    private List<Attachment> mAttachments;
-    private int mRowLayout;
-    private Context mContext;
-    private ViewHolder.ClickListener mListener;
-    private IResult<List<DatabaseEntity>> mDbResultListener;
+    private final List<Attachment> mAttachments;
+    private final int mRowLayout;
+    private final Context mContext;
+    private final ViewHolder.ClickListener mListener;
+    private final IResult<List<DatabaseEntity>> mDbResultListener;
 
     public AttachmentAdapter(Context context, List<Attachment> screenshots, int rowLayout) {
         mContext = context;

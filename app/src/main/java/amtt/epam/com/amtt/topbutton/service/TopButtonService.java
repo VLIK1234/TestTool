@@ -33,17 +33,16 @@ import amtt.epam.com.amtt.util.TestUtil;
 
 public class TopButtonService extends Service{
 
-    private static final String TAG = "Log";
-    public static final String ACTION_CLOSE = "amtt.epam.com.amtt.topbutton.service.CLOSE";
+    private static final String ACTION_CLOSE = "amtt.epam.com.amtt.topbutton.service.CLOSE";
     public static final String ACTION_CHANGE_VISIBILITY_TOPBUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_VISIBILITY_TOPBUTTON";
     public static final String ACTION_CHANGE_NOTIFICATION_BUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_NOTIFICATION_BUTTON";
-    public static final String ACTION_SHOW_SCREEN = "amtt.epam.com.amtt.topbutton.service.SHOW_SCREEN";
-    public static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.START";
-    public static final String ACTION_STOP_RECORD = "amtt.epam.com.amtt.topbutton.service.STOP_RECORD";
+    private static final String ACTION_SHOW_SCREEN = "amtt.epam.com.amtt.topbutton.service.SHOW_SCREEN";
+    private static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.START";
+    private static final String ACTION_STOP_RECORD = "amtt.epam.com.amtt.topbutton.service.STOP_RECORD";
     public static final String VISIBILITY_TOP_BUTTON = "amtt.epam.com.amtt.topbutton.service.VISIBILITY_TOP_BUTTON";
-    public static final String PATH_TO_SCREEENSHOT_KEY = "PATH_TO_SCREENSHOT";
+    private static final String PATH_TO_SCREEENSHOT_KEY = "PATH_TO_SCREENSHOT";
     //don't use REQUEST_CODE = 0 - it's broke mActionNotificationCompat in notification for some device
-    public static final int REQUEST_CODE = 1;
+    private static final int REQUEST_CODE = 1;
     //bellow field for cap code and will be delete after do work realization
     private NotificationCompat.Action mActionNotificationCompat;
     private NotificationCompat.Builder mBuilderNotificationCompat;
@@ -54,7 +53,7 @@ public class TopButtonService extends Service{
     private int mXInitPosition;
     private int mYInitPosition;
 
-    public void showScreenInGallery(String pathToScreenshot) {
+    private void showScreenInGallery(String pathToScreenshot) {
         Intent intent = new Intent();
         intent.setAction(android.content.Intent.ACTION_VIEW);
         File file = new File(pathToScreenshot);

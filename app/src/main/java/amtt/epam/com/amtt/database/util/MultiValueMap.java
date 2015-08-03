@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class MultiValueMap<K, V> {
 
-    private Map<K, List<V>> mMap = new LinkedHashMap<>();
+    private final Map<K, List<V>> mMap = new LinkedHashMap<>();
 
     public List<V> put(K key, V value) {
         if (mMap.get(key) == null) {

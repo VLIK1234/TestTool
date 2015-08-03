@@ -20,7 +20,7 @@ import amtt.epam.com.amtt.util.Logger;
  */
 public class OldWorksheetProcessor implements Processor<GWorksheet, HttpEntity> {
 
-    public static final String NAME = OldWorksheetProcessor.class.getName();
+    private static final String NAME = OldWorksheetProcessor.class.getName();
 
     @Override
     public GWorksheet process(HttpEntity httpEntity) throws Exception {

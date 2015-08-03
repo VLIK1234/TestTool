@@ -181,11 +181,4 @@ public class InputsUtil {
         Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": not passed.");
         return mMatcher.matches();
     }
-
-    public static Boolean hasComma(String text){
-        mPattern = Pattern.compile(mHasComma);
-        mMatcher = mPattern.matcher(text);
-        return mMatcher.matches();
-    }
-
 }

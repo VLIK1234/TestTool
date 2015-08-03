@@ -54,7 +54,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     private static final int TESTCASES_LOADER_BY_LINK_ID = 4;
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final String TAG = ExpectedResultsActivity.class.getSimpleName();
-    public static final String LINK = "Link";
+    private static final String LINK = "Link";
     public static final String PRIORITY = "PRIORITY";
     public static final String NAME = "NAME";
     public static final String STEPS = "STEPS";

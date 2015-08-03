@@ -22,7 +22,7 @@ public class StepsTable extends Table {
     public static final String _PACKAGE_NAME = "_package_name";
     public static final String _ORIENTATION = "_orientation";
 
-    private static MultiValueMap<String, String> sColumnsMap;
+    private static final MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
             _ID,

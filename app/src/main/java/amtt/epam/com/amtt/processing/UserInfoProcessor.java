@@ -8,10 +8,11 @@ import java.io.IOException;
 
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 
-
 /**
- * Created by Irina Monchenko on 01.04.2015.
+ @author Iryna Monchanka
+ @version on 01.04.2015
  */
+
 public class UserInfoProcessor implements Processor<JUserInfo, HttpEntity> {
 
     public static final String NAME = UserInfoProcessor.class.getName();

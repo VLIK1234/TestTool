@@ -22,9 +22,9 @@ import amtt.epam.com.amtt.util.Logger;
 public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResultsAdapter.ViewHolder> {
 
     private final String TAG = this.getClass().getSimpleName();
-    private List<GEntryWorksheet> mTestcases;
-    private int mItemLayout;
-    private ViewHolder.ClickListener mClickListener;
+    private final List<GEntryWorksheet> mTestcases;
+    private final int mItemLayout;
+    private final ViewHolder.ClickListener mClickListener;
 
     public ExpectedResultsAdapter(List<GEntryWorksheet> testcases, int itemLayout, ViewHolder.ClickListener clickListener) {
         this.mTestcases = testcases;
@@ -66,10 +66,10 @@ public class ExpectedResultsAdapter extends RecyclerView.Adapter<ExpectedResults
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView mTestcaseName;
-        public TextView mPriority;
-        public TextView mSteps;
-        public ImageButton mBugButton;
+        public final TextView mTestcaseName;
+        public final TextView mPriority;
+        public final TextView mSteps;
+        public final ImageButton mBugButton;
         private ClickListener mListener;
 
         public ViewHolder(View itemView) {

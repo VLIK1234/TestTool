@@ -1,7 +1,6 @@
 package amtt.epam.com.amtt.helper;
 
 import android.graphics.Bitmap;
-import android.os.Environment;
 import android.support.v4.content.AsyncTaskLoader;
 
 import java.io.File;
@@ -21,12 +20,10 @@ import amtt.epam.com.amtt.util.IOUtils;
  * @version on 22.07.2015
  */
 public class ScreenshotHelper {
-    public static final String AMTT_CACHE_DIRECTORY = "Amtt_cache";
-    private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.png";
-    public static final String SCREENSHOT_DATETIME_FORMAT = "yyyy-MM-dd-HH-mm-ss";
-    public static final int QUALITY_COMPRESS_SCREENSHOT = 90;
-    public static String sPath;
 
+    private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.png";
+    private static final String SCREENSHOT_DATETIME_FORMAT = "yyyy-MM-dd-HH-mm-ss";
+    private static final int QUALITY_COMPRESS_SCREENSHOT = 90;
 
     public static String writeBitmapInFile(final Bitmap bitmap) {
         long imageTime = System.currentTimeMillis();

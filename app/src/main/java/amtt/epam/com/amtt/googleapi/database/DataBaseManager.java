@@ -89,38 +89,6 @@ public class DataBaseManager extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor joinQuery(String[] tablesName, String[] projection, String[] connectionColumns) {
-        StringBuilder rawQueryBuilder = new StringBuilder();
-        rawQueryBuilder.append(SqlQueryConstants.SELECT);
-
-        for (int i = 0; i < projection.length; i++) {
-            rawQueryBuilder.append(projection[i]);
-            if (i != projection.length - 1) {
-                rawQueryBuilder.append(SqlQueryConstants.COMMA);
-            }
-        }
-
-        final String firstTable = tablesName[0];
-        final String secondTable = tablesName[1];
-        rawQueryBuilder.append(SqlQueryConstants.FROM).append(firstTable)
-                .append(SqlQueryConstants.JOIN).append(secondTable)
-                .append(SqlQueryConstants.ON).append(firstTable).append(SqlQueryConstants.DOT).append(connectionColumns[0])
-                .append(SqlQueryConstants.EQUALS)
-                .append(secondTable).append(SqlQueryConstants.DOT).append(connectionColumns[1]);
-
-        Cursor cursor;
-        SQLiteDatabase database = getReadableDatabase();
-
-        try {
-            database.beginTransaction();
-            cursor = getReadableDatabase().rawQuery(rawQueryBuilder.toString(), null);
-            database.setTransactionSuccessful();
-        } finally {
-            database.endTransaction();
-        }
-        return cursor;
-    }
-
     public long insert(String tableName, ContentValues values) {
         long id;
         SQLiteDatabase database = getWritableDatabase();

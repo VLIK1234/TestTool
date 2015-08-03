@@ -15,7 +15,7 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 public class AttachmentManager {
 
     private static AttachmentManager mInstance;
-    private ArrayList<Attachment> attachmentArrayList = new ArrayList<>();
+    private final ArrayList<Attachment> attachmentArrayList = new ArrayList<>();
 
     private AttachmentManager() {
     }

@@ -31,13 +31,14 @@ public enum ExceptionType {
     HOST(R.string.error_title_request, R.string.error_message_host),
     BAD_GATEWAY(R.string.error_title_request, R.string.error_message_gateway),
     NOT_FOUND(R.string.error_title_request, R.string.error_message_web_address),
-    INTERNET_CONNECTION_VARIATION(R.string.error_title_connection, R.string.error_message_connection);
+    INTERNET_CONNECTION_VARIATION(R.string.error_title_connection, R.string.error_message_connection),
+    SSL_EXCEPTION(R.string.error_title_connection, R.string.error_message_connection);
 
-    private static Map<String, ExceptionType> sExceptionsMap;
-    private static Map<Integer, ExceptionType> sStatusCodeMap;
+    private final static Map<String, ExceptionType> sExceptionsMap;
+    private final static Map<Integer, ExceptionType> sStatusCodeMap;
 
-    private int mTitle;
-    private int mMessage;
+    private final int mTitle;
+    private final int mMessage;
 
     static {
         sExceptionsMap = new HashMap<>();
@@ -50,6 +51,7 @@ public enum ExceptionType {
         sExceptionsMap.put(ConnectTimeoutException.class.getName(), NO_INTERNET);
         sExceptionsMap.put(HttpHostConnectException.class.getName(), HOST);
         sExceptionsMap.put(SocketTimeoutException.class.getName(), INTERNET_CONNECTION_VARIATION);
+        sExceptionsMap.put(javax.net.ssl.SSLPeerUnverifiedException.class.getName(), SSL_EXCEPTION);
 
         sStatusCodeMap = new HashMap<>();
         sStatusCodeMap.put(HttpStatus.SC_UNAUTHORIZED, AUTH);

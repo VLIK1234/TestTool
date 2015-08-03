@@ -16,8 +16,10 @@ import amtt.epam.com.amtt.database.util.StepUtil;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 /**
- * Created by Artsiom_Kaliaha on 08.07.2015.
+ @author Artsiom_Kaliaha
+ @version on 08.07.2015
  */
+
 public final class GifUtil {
 
     public interface ProgressListener {

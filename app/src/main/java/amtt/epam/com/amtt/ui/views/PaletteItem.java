@@ -9,8 +9,10 @@ import android.widget.RadioButton;
 import amtt.epam.com.amtt.R;
 
 /**
- * Created by Artsiom_Kaliaha on 01.07.2015.
+ @author Artsiom_Kaliaha
+ @version on 01.07.2015
  */
+
 public class PaletteItem extends RadioButton {
 
     private int mColor;

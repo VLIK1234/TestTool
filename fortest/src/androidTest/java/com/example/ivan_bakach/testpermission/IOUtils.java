@@ -27,7 +27,7 @@ public class IOUtils {
     }
 
     public static byte[] toByteArray(File file) throws IOException {
-        FileInputStream fileInputStream = null;
+        FileInputStream fileInputStream;
         byte[] byteArray = new byte[(int) file.length()];
         try {
             fileInputStream = new FileInputStream(file);

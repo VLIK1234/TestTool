@@ -1,6 +1,5 @@
 package amtt.epam.com.amtt.ui.fragments;
 
-import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -22,8 +21,8 @@ import amtt.epam.com.amtt.util.TestUtil;
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static CheckBoxPreference checkBoxPreference;
-    public static SwitchPreference switchPreference;
-    public ListPreference projectName;
+    private static SwitchPreference switchPreference;
+    private ListPreference projectName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,7 +46,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         PreferenceUtil.getPref().unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    public void initListValue() {
+    private void initListValue() {
         String[] array = TestUtil.getTestedApps();
         projectName.setEntries(array);
         projectName.setEntryValues(array);

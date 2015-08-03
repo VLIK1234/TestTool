@@ -19,7 +19,7 @@ public class ProjectTable extends Table {
     public static final String _NAME = "_name";
     public static final String _ID_USER = "_id_user";
 
-    private static MultiValueMap<String, String> sColumnsMap;
+    private final static MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
             _ID,

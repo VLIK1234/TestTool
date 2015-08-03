@@ -34,16 +34,16 @@ public enum AmttUri {
 
 
     private static final UriMatcher sUriMatcher;
-    private static Map<Integer, String> sContentType;
-    private static Map<AmttUri, String[]> sProjections;
-    private static List<AmttUri> sValues;
+    private final static Map<Integer, String> sContentType;
+    private final static Map<AmttUri, String[]> sProjections;
+    private final static List<AmttUri> sValues;
 
-    private Uri mUri;
-    private String mContentType;
-    private String mContentItemType;
-    private int mOrdinal;
-    private int mItemOrdinal;
-    private String mTableName;
+    private final Uri mUri;
+    private final String mContentType;
+    private final String mContentItemType;
+    private final int mOrdinal;
+    private final int mItemOrdinal;
+    private final String mTableName;
 
     static {
         sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);

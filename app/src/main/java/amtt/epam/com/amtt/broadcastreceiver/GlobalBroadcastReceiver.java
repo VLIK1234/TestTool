@@ -31,21 +31,20 @@ import amtt.epam.com.amtt.util.TestUtil;
 
 public class GlobalBroadcastReceiver extends BroadcastReceiver {
 
-    public static final String SEND_LOG_FILE = "SEND_LOG_FILE";
-    public static final String REQUEST_TAKE_SCREENSHOT = "REQUEST_TAKE_SCREENSHOT";
-    public static final String EXCEPTION_ANSWER = "EXCEPTION_ANSWER";
-    public static final String ANSWER_EXCEPTION_KEY = "answer";
-    public static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
-    public static final String FILE_NAME_KEY = "fileName";
-    public static final String BYTE_ARRAY_DATA_KEY = "byteArrayData";
-    public static final String CAT_ALL_FILE = "CAT_ALL_FILE";
-    public static final String TITLE_KEY = "title";
-    public static boolean isStepWithoutActivityInfo = false;
+    private static final String SEND_LOG_FILE = "SEND_LOG_FILE";
+    private static final String REQUEST_TAKE_SCREENSHOT = "REQUEST_TAKE_SCREENSHOT";
+    private static final String EXCEPTION_ANSWER = "EXCEPTION_ANSWER";
+    private static final String ANSWER_EXCEPTION_KEY = "answer";
+    private static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
+    private static final String FILE_NAME_KEY = "fileName";
+    private static final String BYTE_ARRAY_DATA_KEY = "byteArrayData";
+    private static final String TITLE_KEY = "title";
+    private static boolean isStepWithoutActivityInfo = false;
 
-    public static final String LIST_FRAGMENTS_KEY = "listFragments";
-    public static final String ACTIVITY_CLASS_NAME_KEY = "activityClassName";
-    public static final String PACKAGE_NAME_KEY = "packageName";
-    public static final String SCREEN_KEY = "screen";
+    private static final String LIST_FRAGMENTS_KEY = "listFragments";
+    private static final String ACTIVITY_CLASS_NAME_KEY = "activityClassName";
+    private static final String PACKAGE_NAME_KEY = "packageName";
+    private static final String SCREEN_KEY = "screen";
 
 
     @Override
@@ -54,7 +53,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
             case SEND_LOG_FILE:
                 Bundle extras = intent.getExtras();
                 byte[] bytesArray;
-                String fileName = null;
+                String fileName;
                 if (extras != null) {
                     fileName = extras.getString(FILE_NAME_KEY);
                     bytesArray = extras.getByteArray(BYTE_ARRAY_DATA_KEY);

@@ -19,8 +19,10 @@ import java.util.List;
 import amtt.epam.com.amtt.R;
 
 /**
- * Created by Artsiom_Kaliaha on 25.06.2015.
+ @author Artsiom_Kaliaha
+ @version on 25.06.2015
  */
+
 public class PaintView extends ImageView {
 
     private static final class DrawnPath {
@@ -60,10 +62,10 @@ public class PaintView extends ImageView {
 
     }
 
-    public static final int OUT_OF_SCREEN_COORDINATE = -999;
+    private static final int OUT_OF_SCREEN_COORDINATE = -999;
     public static final int DEFAULT_OPACITY = 255;
     public static final int DEFAULT_BRUSH_THICKNESS = 20;
-    public static final int DEFAULT_ERASER_THICKNESS = 100;
+    private static final int DEFAULT_ERASER_THICKNESS = 100;
 
     private Canvas mCacheCanvas;
     private Bitmap mCacheCanvasBitmap;

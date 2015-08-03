@@ -26,8 +26,8 @@ import amtt.epam.com.amtt.util.UIUtil;
 @SuppressLint("ViewConstructor")
 public class TopUnitView extends LinearLayout {
 
-    private amtt.epam.com.amtt.topbutton.view.OnTouchListener mTouchAction;
-    private int mBackgroundIconId;
+    private final amtt.epam.com.amtt.topbutton.view.OnTouchListener mTouchAction;
+    private final int mBackgroundIconId;
     private CardView mCardView;
 
     public TopUnitView(Context context, String title, int backgroundIconId, amtt.epam.com.amtt.topbutton.view.OnTouchListener touchAction) {

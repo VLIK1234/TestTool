@@ -38,8 +38,10 @@ import amtt.epam.com.amtt.ui.views.PaintView;
 import amtt.epam.com.amtt.ui.views.PaletteItem;
 
 /**
- * Created by Artsiom_Kaliaha on 09.06.2015.
+ @author Artsiom_Kaliaha
+ @version on 09.06.2015
  */
+
 public class PaintActivity extends BaseActivity implements OnSeekBarChangeListener,
         Handler.Callback,
         OnSystemUiVisibilityChangeListener,
@@ -48,10 +50,10 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         ImageLoadingListener {
 
     public static final String KEY_STEP_ID = "key_step_id";
-    public static final int HIDDEN_UI_FLAG = View.SYSTEM_UI_FLAG_LOW_PROFILE;
-    public static final int HIDE_UI_DELAY = 4000;
-    public static final int HIDE_UI = 0;
-    public static final int SHOW_UI = 1;
+    private static final int HIDDEN_UI_FLAG = View.SYSTEM_UI_FLAG_LOW_PROFILE;
+    private static final int HIDE_UI_DELAY = 4000;
+    private static final int HIDE_UI = 0;
+    private static final int SHOW_UI = 1;
 
     private Step mStep;
     private PaintView mPaintView;

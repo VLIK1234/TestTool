@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReceiver;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.activities.AskExitActivity;
@@ -37,8 +36,6 @@ import amtt.epam.com.amtt.util.UIUtil;
 @SuppressLint("ViewConstructor")
 public class TopButtonBarView extends FrameLayout {
 
-    public static final String EXTERANL_ACTION_TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
-    public static final String TAKE_ONLY_INFO = "TAKE_ONLY_INFO";
     private final WindowManager mWindowManager;
     private static boolean isRecordStarted;
     private static boolean isShowAction;
@@ -52,9 +49,9 @@ public class TopButtonBarView extends FrameLayout {
     private TopUnitView mButtonStopRecord;
     private TopUnitView mButtonShowSteps;
     private TopUnitView mButtonCloseApp;
-    private int mMainButtonHeight;
-    private int mMainButtonWidth;
-    private amtt.epam.com.amtt.topbutton.view.OnTouchListener mTopButtonListener;
+    private final int mMainButtonHeight;
+    private final int mMainButtonWidth;
+    private final amtt.epam.com.amtt.topbutton.view.OnTouchListener mTopButtonListener;
 
     static {
         isRecordStarted = false;

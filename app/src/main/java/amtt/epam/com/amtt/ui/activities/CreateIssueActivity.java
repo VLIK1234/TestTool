@@ -15,7 +15,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -79,9 +78,9 @@ public class CreateIssueActivity extends BaseActivity
     private static final int PAINT_ACTIVITY_REQUEST_CODE = 0;
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final String DEFAULT_PRIORITY_ID = "3";
-    public static final String BUG = "Bug";
-    public static final String TASK = "Task";
-    public static final String TAG = CreateIssueActivity.class.getSimpleName();
+    private static final String BUG = "Bug";
+    private static final String TASK = "Task";
+    private static final String TAG = CreateIssueActivity.class.getSimpleName();
     private AutocompleteProgressView mAssignableAutocompleteView;
 
     private TextInput mDescriptionTextInput;
@@ -94,10 +93,10 @@ public class CreateIssueActivity extends BaseActivity
     private String mVersionName;
     private AssigneeHandler mHandler;
     private AttachmentAdapter mAdapter;
-    public Spinner mProjectNamesSpinner;
+    private Spinner mProjectNamesSpinner;
     private RecyclerView mRecyclerView;
     private Spinner mComponents;
-    private Queue<ContentConst> mRequestsQueue = new LinkedList<>();
+    private final Queue<ContentConst> mRequestsQueue = new LinkedList<>();
     private Button mCreateIssueButton;
     private ProgressBar mGifProgress;
     private CheckBox mGifCheckBox;
@@ -678,7 +677,7 @@ public class CreateIssueActivity extends BaseActivity
         });
     }
 
-    public void showProgressIfNeed() {
+    private void showProgressIfNeed() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

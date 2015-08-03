@@ -17,8 +17,8 @@ import amtt.epam.com.amtt.util.Logger;
 public class JCreateIssue {
 
     private final String TAG = this.getClass().getSimpleName();
-    private JCreatingIssueRequest mBData = new JCreatingIssueRequest();
-    private GsonSerializeProcessor<JCreatingIssueRequest> mGsonSerializeProcessor = new GsonSerializeProcessor<>();
+    private final JCreatingIssueRequest mBData = new JCreatingIssueRequest();
+    private final GsonSerializeProcessor<JCreatingIssueRequest> mGsonSerializeProcessor = new GsonSerializeProcessor<>();
 
     public JCreateIssue(String keyProject, String issueTypeId, String summary, String description,
                         String priorityId, String versionsId, String environment, String userAssigneName, String componentIds) {

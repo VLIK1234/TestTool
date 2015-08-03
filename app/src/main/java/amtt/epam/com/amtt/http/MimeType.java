@@ -12,8 +12,8 @@ public enum MimeType {
     IMAGE_PNG(MediaType.IMAGE_TYPE, "png"),
     IMAGE_GIF(MediaType.IMAGE_TYPE, "gif");
 
-    String mCompoundType;
-    String mFileExtension;
+    final String mCompoundType;
+    final String mFileExtension;
 
     MimeType(String type, String subType, String fileExtension) {
         mCompoundType = type + "/" + subType;

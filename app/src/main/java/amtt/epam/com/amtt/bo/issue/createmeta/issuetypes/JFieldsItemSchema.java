@@ -3,8 +3,10 @@ package amtt.epam.com.amtt.bo.issue.createmeta.issuetypes;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Iryna_Monchanka on 3/31/2015.
+ @author Iryna Monchanka
+ @version on 3/31/2015
  */
+
 public class JFieldsItemSchema {
 
     @SerializedName("items")

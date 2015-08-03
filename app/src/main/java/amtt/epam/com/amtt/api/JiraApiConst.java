@@ -16,7 +16,7 @@ public final class JiraApiConst {
     private static final String REST_PATH = "rest";
     private static final String API_PATH = "api";
     private static final String SLASH = "/";
-    public static final String REST_API_PATH = SLASH + REST_PATH + SLASH + API_PATH + SLASH + DEFAULT_API_VERSION + SLASH;
+    private static final String REST_API_PATH = SLASH + REST_PATH + SLASH + API_PATH + SLASH + DEFAULT_API_VERSION + SLASH;
     private static final String QUESTION = "?";
     private static final String EQUAL = "=";
     private static final String AND = "&";
@@ -42,7 +42,7 @@ public final class JiraApiConst {
     public static final String LOGIN_PATH = SLASH + REST_PATH + SLASH + AUTH_TAG + SLASH + API_VERSION_LATEST + SLASH + SESSION_TAG;
     public static final String ISSUE_PATH = REST_API_PATH + ISSUE_TAG + SLASH;
     public static final String USER_PROJECTS_PATH = ISSUE_PATH + CREATEMETA_TAG;
-    public static final String USER_PATH = REST_API_PATH + USER_TAG;
+    private static final String USER_PATH = REST_API_PATH + USER_TAG;
     public static final String USER_INFO_PATH = USER_PATH + QUESTION + USER_NAME_TAG + EQUAL;
     public static final String USERS_ASSIGNABLE_PATH = USER_PATH + SLASH + ASSIGNABLE_TAG + SLASH + MULTI_PROJECT_SEARCH_TAG + QUESTION + PROJECT_KEYS_TAG + EQUAL;
     public static final String USERS_ASSIGNABLE_PATH_UN = AND + USER_NAME_TAG + EQUAL;

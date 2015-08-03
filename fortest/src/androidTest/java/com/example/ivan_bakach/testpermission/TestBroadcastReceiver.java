@@ -6,22 +6,24 @@ import android.content.Context;
 import android.content.Intent;
 
 /**
- * Created by Ivan_Bakach on 29.06.2015.
+ @author Ivan_Bakach
+ @version on 29.06.2015
  */
+
 public class TestBroadcastReceiver extends BroadcastReceiver {
 
     public static final String PING_ANSWER = "PING_ANSWER";
-    public static final String PING_REQUEST = "PING_REQUEST";
+    private static final String PING_REQUEST = "PING_REQUEST";
     public static final String CLOSE_TEST = "CLOSE_TEST";
     public static final String TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
-    public static final String PING_ANSWER_VALUE = "Success answer";
-    public static final String TAKE_SCREEN_FAIL_KEY = "failScreen";
+    private static final String PING_ANSWER_VALUE = "Success answer";
+    private static final String TAKE_SCREEN_FAIL_KEY = "failScreen";
     public static final String ACTIVITY_CLASS_NAME_KEY = "activityClassName";
     public static final String PACKAGE_NAME_KEY = "packageName";
-    public static final String TAKE_SCREEN_FAIL_VALUE = "Activity don't visible launch app and try again.";
+    private static final String TAKE_SCREEN_FAIL_VALUE = "Activity don't visible launch app and try again.";
     public static final String LIST_FRAGMENTS_KEY = "listFragments";
     public static final String TAKE_ONLY_INFO = "TAKE_ONLY_INFO";
-    public static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
+    private static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
     public static final String TAKE_LOGS = "TAKE_LOGS";
     public static final String TITLE_KEY = "title";
     private boolean mCloseUnitTest;

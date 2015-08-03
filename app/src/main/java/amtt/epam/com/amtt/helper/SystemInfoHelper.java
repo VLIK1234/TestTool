@@ -24,8 +24,8 @@ import amtt.epam.com.amtt.util.RootUtil;
 
 public class SystemInfoHelper {
 
-    public static final String API_SDK = "API SDK=";
-    public static final String DPI = "dpi";
+    private static final String API_SDK = "API SDK=";
+    private static final String DPI = "dpi";
 
     public static Spanned getDeviceOsInfo() {
         SpannableStringBuilder builder = new SpannableStringBuilder();
@@ -38,11 +38,7 @@ public class SystemInfoHelper {
 
     }
 
-    public static String getIntenetStatus() {
-        return isOnline() ? "Connection active" : "Connection non active";
-    }
-
-    public static String getInfoSizeDisplay() {
+    private static String getInfoSizeDisplay() {
         WindowManager wm = (WindowManager) AmttApplication.getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point size = new Point();
@@ -70,7 +66,7 @@ public class SystemInfoHelper {
         return size.x + " x " + size.y + infoDensity.toString();
     }
 
-    public static String getSystemVersionName() {
+    private static String getSystemVersionName() {
         StringBuilder versionName = new StringBuilder();
         versionName.append("Android ").append(Build.VERSION.RELEASE);
 
@@ -91,13 +87,5 @@ public class SystemInfoHelper {
         }
         versionName.append(API_SDK).append(fieldValue);
         return versionName.toString();
-    }
-
-
-    public static boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) AmttApplication.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 }
