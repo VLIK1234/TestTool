@@ -92,7 +92,7 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
 
     @Override
     public void onActivityStopped(Activity activity) {
-        if (activity.getLocalClassName().equals(receiver.mActivity.getLocalClassName())) {
+        if (activity!=null&&receiver.mActivity!=null&&activity.getLocalClassName().equals(receiver.mActivity.getLocalClassName())) {
             receiver.setActivity(null);
         }
     }

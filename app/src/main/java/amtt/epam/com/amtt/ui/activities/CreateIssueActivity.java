@@ -679,13 +679,18 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     public void showProgressIfNeed() {
-        if (!mRequestsQueue.isEmpty()) {
-            showProgress(true);
-            mCreateIssueButton.setEnabled(false);
-        } else {
-            showProgress(false);
-            mCreateIssueButton.setEnabled(true);
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (!mRequestsQueue.isEmpty()) {
+                    showProgress(true);
+                    mCreateIssueButton.setEnabled(false);
+                } else {
+                    showProgress(false);
+                    mCreateIssueButton.setEnabled(true);
+                }
+            }
+        });
     }
 
     private void loadAttachments() {
@@ -730,6 +735,8 @@ public class CreateIssueActivity extends BaseActivity
                 }
             });
         }
+        mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
+        showProgressIfNeed();
 //        JiraContent.getInstance().getDescription(new GetContentCallback<Spanned>() {
 //            @Override
 //            public void resultOfDataLoading(final Spanned result) {
@@ -751,8 +758,6 @@ public class CreateIssueActivity extends BaseActivity
 //                        }
 //                    });
 //                }
-//                mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
-//                showProgressIfNeed();
 //            }
 //        });
     }
