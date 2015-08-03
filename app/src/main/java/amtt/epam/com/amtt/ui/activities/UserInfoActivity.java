@@ -93,6 +93,12 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         if (isNewUser) {
