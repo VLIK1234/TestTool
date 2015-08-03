@@ -123,7 +123,6 @@
                 android:value=".ui.activities.MainActivity"/>
         </activity>
         <activity
-
             android:name=".ui.activities.DetailActivity"
             android:label="@string/title_activity_detail"
             android:noHistory="true"
@@ -150,7 +149,8 @@
 
         <activity
             android:name=".ui.activities.TakeStepActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="sensor"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/DialogActivity"
             android:label="@string/title_activity_take_step" />
 
