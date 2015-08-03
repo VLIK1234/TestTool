@@ -79,8 +79,8 @@ public class StepUtil {
         }).start();
     }
 
-    public static void checkUser(String userName, IResult<List<JUserInfo>> result) {
-        DbObjectManager.INSTANCE.query(new JUserInfo(), null, new String[]{UsersTable._USER_NAME}, new String[]{userName}, result);
+    public static void checkUser(String userName, String url, IResult<List<JUserInfo>> result) {
+        DbObjectManager.INSTANCE.query(new JUserInfo(), null, new String[]{UsersTable._USER_NAME, UsersTable._URL}, new String[]{userName, url}, result);
     }
 
     public static Spanned getStepInfo(Step step) {

@@ -12,13 +12,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
-        android:text="Activity info"/>
+        style="@android:style/Theme.DeviceDefault.Dialog"
+        android:text="@string/label_cb_activity_info"/>
 
     <CheckBox
         android:id="@+id/cb_take_screen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
-        android:text="Screen"/>
+        style="@android:style/Theme.DeviceDefault.Dialog"
+        android:text="@string/label_cb_screen"/>
 
 </LinearLayout>

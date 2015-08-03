@@ -478,24 +478,26 @@ public class JiraContent{
 
     public void setDefaultConfig(final String lastProjectKey, final String lastAssignee, final String lastComponentsIds) {
         if (lastProjectKey != null) {
-            StepUtil.checkUser(ActiveUser.getInstance().getUserName(), new IResult<List<JUserInfo>>() {
+            StepUtil.checkUser(ActiveUser.getInstance().getUserName(), ActiveUser.getInstance().getUrl(), new IResult<List<JUserInfo>>() {
                 @Override
                 public void onResult(List<JUserInfo> result) {
-                    if (result.size() != 0) {
-                        JUserInfo user = result.get(0);
-                        user.setLastProjectKey(lastProjectKey);
-                        user.setLastAssigneeName(lastAssignee);
-                        user.setLastComponentsIds(lastComponentsIds);
-                        ContentFromDatabase.updateUser(user, new IResult<Integer>() {
-                            @Override
-                            public void onResult(Integer res) {
-                            }
+                    for (JUserInfo userInfo : result) {
+                        if (userInfo.getDisplayName().equals(ActiveUser.getInstance().getUserName())&&userInfo.getUrl().equals(ActiveUser.getInstance().getUrl())) {
+                            JUserInfo user = result.get(0);
+                            user.setLastProjectKey(lastProjectKey);
+                            user.setLastAssigneeName(lastAssignee);
+                            user.setLastComponentsIds(lastComponentsIds);
+                            ContentFromDatabase.updateUser(user, new IResult<Integer>() {
+                                @Override
+                                public void onResult(Integer res) {
+                                }
 
-                            @Override
-                            public void onError(Exception e) {
+                                @Override
+                                public void onError(Exception e) {
 
-                            }
-                        });
+                                }
+                            });
+                        }
                     }
                 }
 

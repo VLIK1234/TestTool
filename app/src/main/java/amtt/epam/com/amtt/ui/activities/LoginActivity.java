@@ -157,10 +157,15 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         }
         showProgress(true);
         mLoginButton.setEnabled(false);
-        StepUtil.checkUser(mUserNameTextInput.getText().toString(), new IResult<List<JUserInfo>>() {
+        StepUtil.checkUser(mUserNameTextInput.getText().toString(), mUrlTextInput.getText().toString(), new IResult<List<JUserInfo>>() {
             @Override
             public void onResult(List<JUserInfo> result) {
-                mIsUserInDatabase = result.size() > 0;
+                for (JUserInfo user : result) {
+                    if (user.getDisplayName().equals(mUserNameTextInput.getText().toString())&&
+                            user.getUrl().equals(mUrlTextInput.getText().toString())) {
+                        mIsUserInDatabase = true;
+                    }
+                }
                 ActiveUser.getInstance().clearActiveUser();
                 sendAuthRequest();
             }
