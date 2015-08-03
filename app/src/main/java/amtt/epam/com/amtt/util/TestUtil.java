@@ -77,7 +77,11 @@ public class TestUtil {
         if (info != null) {
             final ComponentName cn = new ComponentName(info.packageName,
                     info.name);
-            AmttApplication.getContext().startInstrumentation(cn, null, null);
+            try{
+                AmttApplication.getContext().startInstrumentation(cn, null, null);
+            }catch (SecurityException e){
+                Toast.makeText(AmttApplication.getContext(), R.string.error_message_signature_run_test, Toast.LENGTH_LONG).show();
+            }
         } else {
             Toast.makeText(AmttApplication.getContext(),
                     "Cannot find instrumentation for " + pn, Toast.LENGTH_SHORT)

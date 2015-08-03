@@ -170,5 +170,6 @@
     <string name="title_activity_gif_player">Gif player</string>
     <string name="label_error_gif_message">Can\'t play gif image.</string>
     <string name="label_gif_created">Gif has been successfully created</string>
+    <string name="error_message_signature_run_test">Please reinstall unit test with same signature as test app.</string>
 
 </resources>
