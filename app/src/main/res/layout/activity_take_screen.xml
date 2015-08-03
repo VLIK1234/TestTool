@@ -12,12 +12,14 @@
         android:id="@+id/cb_take_activity_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="@dimen/abc_button_padding_horizontal_material"
         android:text="@string/label_take_activity_info"/>
 
     <CheckBox
         android:id="@+id/cb_take_screen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="@dimen/abc_button_padding_horizontal_material"
         android:text="@string/label_take_screen"/>
 
 </LinearLayout>

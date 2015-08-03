@@ -39,7 +39,13 @@ public class TakeStepActivity extends AppCompatActivity {
                 .setTitle(getString(R.string.take_step_dialog_title))
                 .setMessage(getString(R.string.take_step_dialog_message))
                 .setView(rootLayout)
-                .setNegativeButton(getString(android.R.string.cancel), null)
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        TopButtonService.sendActionChangeTopButtonVisibility(true);
+                        dialog.dismiss();
+                    }
+                })
                 .setPositiveButton(getString(R.string.take_step_dialog_positive_button), null)
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
@@ -78,14 +84,6 @@ public class TakeStepActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(getBaseContext(), getString(R.string.take_step_dialog_error_message), Toast.LENGTH_SHORT).show();
                         }
-                    }
-                });
-                Button closeButton = takeStepDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-                closeButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        TopButtonService.sendActionChangeTopButtonVisibility(true);
-                        takeStepDialog.dismiss();
                     }
                 });
             }
