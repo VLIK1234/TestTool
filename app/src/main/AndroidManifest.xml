@@ -85,7 +85,7 @@
             android:name=".ui.activities.AskExitActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Panel" />
+            android:theme="@style/DialogActivity" />
 
 
         <activity
@@ -151,7 +151,7 @@
         <activity
             android:name=".ui.activities.TakeStepActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Panel"
+            android:theme="@style/DialogActivity"
             android:label="@string/title_activity_take_step" />
 
         <activity

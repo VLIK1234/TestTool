@@ -1,10 +1,10 @@
 package amtt.epam.com.amtt.ui.activities;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -20,8 +20,9 @@ import amtt.epam.com.amtt.util.PreferenceUtil;
  * @author Ivan_Bakach
  * @version on 29.07.2015
  */
-public class TakeStepActivity extends Activity {
-    public static final String EXTERANL_ACTION_TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
+public class TakeStepActivity extends AppCompatActivity {
+
+    public static final String EXTERNAL_ACTION_TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
     public static final String TAKE_ONLY_INFO = "TAKE_ONLY_INFO";
 
     @Override
@@ -56,11 +57,11 @@ public class TakeStepActivity extends Activity {
                     public void onClick(View v) {
                         if (!takeActivityInfo.isChecked() && takeScreen.isChecked()) {
                             Intent intent = new Intent();
-                            intent.setAction(EXTERANL_ACTION_TAKE_SCREENSHOT);
+                            intent.setAction(EXTERNAL_ACTION_TAKE_SCREENSHOT);
                             sendBroadcast(intent);
                             TopButtonService.sendActionChangeTopButtonVisibility(false);
                             GlobalBroadcastReceiver.setStepWithoutActivityInfo(true);
-                            saveCheckboxValue(takeActivityInfo.isChecked(),takeScreen.isChecked());
+                            saveCheckboxValue(takeActivityInfo.isChecked(), takeScreen.isChecked());
                             takeStepDialog.dismiss();
                         } else if (takeActivityInfo.isChecked() && !takeScreen.isChecked()) {
                             Intent intent = new Intent();
@@ -70,12 +71,12 @@ public class TakeStepActivity extends Activity {
                             takeStepDialog.dismiss();
                         } else if (takeActivityInfo.isChecked() && takeScreen.isChecked()) {
                             Intent intent = new Intent();
-                            intent.setAction(EXTERANL_ACTION_TAKE_SCREENSHOT);
+                            intent.setAction(EXTERNAL_ACTION_TAKE_SCREENSHOT);
                             sendBroadcast(intent);
                             saveCheckboxValue(takeActivityInfo.isChecked(), takeScreen.isChecked());
                             takeStepDialog.dismiss();
                         } else {
-                            Toast.makeText(getBaseContext(),getString(R.string.take_step_dialog_error_message), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(), getString(R.string.take_step_dialog_error_message), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -92,7 +93,7 @@ public class TakeStepActivity extends Activity {
         takeStepDialog.show();
     }
 
-    private void saveCheckboxValue(boolean activityInfoIsChecked, boolean screenIsChecked){
+    private void saveCheckboxValue(boolean activityInfoIsChecked, boolean screenIsChecked) {
         PreferenceUtil.putBoolean(getString(R.string.checkbox_activity_info_key), activityInfoIsChecked);
         PreferenceUtil.putBoolean(getString(R.string.checkbox_screen_key), screenIsChecked);
     }

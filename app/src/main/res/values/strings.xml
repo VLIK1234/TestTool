@@ -173,5 +173,7 @@
     <string name="error_message_signature_run_test">Please reinstall unit test with same signature as test app.</string>
     <string name="label_cb_activity_info">Activity info</string>
     <string name="label_cb_screen">Screen</string>
+    <string name="label_take_activity_info">Activity info</string>
+    <string name="label_take_screen">Screen</string>
 
 </resources>
