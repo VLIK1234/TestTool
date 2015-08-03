@@ -482,7 +482,7 @@ public class JiraContent{
                 @Override
                 public void onResult(List<JUserInfo> result) {
                     for (JUserInfo userInfo : result) {
-                        if (userInfo.getDisplayName().equals(ActiveUser.getInstance().getUserName())&&userInfo.getUrl().equals(ActiveUser.getInstance().getUrl())) {
+                        if (userInfo.getName().equals(ActiveUser.getInstance().getUserName())&&userInfo.getUrl().equals(ActiveUser.getInstance().getUrl())) {
                             JUserInfo user = result.get(0);
                             user.setLastProjectKey(lastProjectKey);
                             user.setLastAssigneeName(lastAssignee);

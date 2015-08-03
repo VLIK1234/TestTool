@@ -161,7 +161,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
             @Override
             public void onResult(List<JUserInfo> result) {
                 for (JUserInfo user : result) {
-                    if (user.getDisplayName().equals(mUserNameTextInput.getText().toString())&&
+                    if (user.getName().equals(mUserNameTextInput.getText().toString())&&
                             user.getUrl().equals(mUrlTextInput.getText().toString())) {
                         mIsUserInDatabase = true;
                     }
