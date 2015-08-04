@@ -96,6 +96,7 @@ public class TopButtonService extends Service{
     @Override
     public void onCreate() {
         super.onCreate();
+        showNotification();
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
         mXInitPosition = displayMetrics.widthPixels / 2;
@@ -114,7 +115,6 @@ public class TopButtonService extends Service{
             switch (action) {
                 case ACTION_START:
                     addView();
-                    showNotification();
                     checkCountTestProject();
                     TestUtil.restartTest();
                     break;
