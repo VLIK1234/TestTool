@@ -25,7 +25,7 @@ public class FragmentInfoHelper {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (activity != null && activity instanceof FragmentActivity && ((FragmentActivity) activity).getSupportFragmentManager().getFragments() != null) {
+                if (activity != null && activity instanceof FragmentActivity && ((FragmentActivity) activity).getSupportFragmentManager()!=null&&((FragmentActivity) activity).getSupportFragmentManager().getFragments() != null) {
                     for (Fragment fragment : ((FragmentActivity) activity).getSupportFragmentManager().getFragments()) {
                         if (fragment!=null&&fragment.isVisible() && fragment.getUserVisibleHint() && fragment.getView() != null && fragment.getView().getParent() != null && !fragment.getView().getParent().isLayoutRequested()) {
                             Bundle bundleArguments = fragment.getArguments();

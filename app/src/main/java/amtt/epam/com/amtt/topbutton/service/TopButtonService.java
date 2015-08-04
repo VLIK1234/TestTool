@@ -34,12 +34,12 @@ import amtt.epam.com.amtt.util.TestUtil;
 public class TopButtonService extends Service{
 
     private static final String ACTION_CLOSE = "amtt.epam.com.amtt.topbutton.service.CLOSE";
-    public static final String ACTION_CHANGE_VISIBILITY_TOPBUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_VISIBILITY_TOPBUTTON";
-    public static final String ACTION_CHANGE_NOTIFICATION_BUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_NOTIFICATION_BUTTON";
+    private static final String ACTION_CHANGE_VISIBILITY_TOPBUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_VISIBILITY_TOPBUTTON";
+    private static final String ACTION_CHANGE_NOTIFICATION_BUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_NOTIFICATION_BUTTON";
     private static final String ACTION_SHOW_SCREEN = "amtt.epam.com.amtt.topbutton.service.SHOW_SCREEN";
     private static final String ACTION_START = "amtt.epam.com.amtt.topbutton.service.START";
     private static final String ACTION_STOP_RECORD = "amtt.epam.com.amtt.topbutton.service.STOP_RECORD";
-    public static final String VISIBILITY_TOP_BUTTON = "amtt.epam.com.amtt.topbutton.service.VISIBILITY_TOP_BUTTON";
+    private static final String VISIBILITY_TOP_BUTTON = "amtt.epam.com.amtt.topbutton.service.VISIBILITY_TOP_BUTTON";
     private static final String PATH_TO_SCREEENSHOT_KEY = "PATH_TO_SCREENSHOT";
     //don't use REQUEST_CODE = 0 - it's broke mActionNotificationCompat in notification for some device
     private static final int REQUEST_CODE = 1;
