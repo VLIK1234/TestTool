@@ -1,15 +1,11 @@
 package amtt.epam.com.amtt.ui.activities;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
@@ -52,6 +48,7 @@ import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
+import amtt.epam.com.amtt.helper.DialogHelper;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -575,23 +572,17 @@ public class CreateIssueActivity extends BaseActivity
         clearEnvironmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(CreateIssueActivity.this)
-                        .setTitle(R.string.label_clear_environment)
-                        .setMessage(R.string.message_clear_environment)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mEnvironmentTextInput.setText(Constants.Symbols.EMPTY);
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .create()
-                        .show();
+                DialogHelper.getClearEnvironmentDialog(CreateIssueActivity.this, new DialogHelper.IDialogButtonClick() {
+                    @Override
+                    public void positiveButtonClick() {
+                        mEnvironmentTextInput.setText(Constants.Symbols.EMPTY);
+                    }
+
+                    @Override
+                    public void negativeButtonClick() {
+
+                    }
+                }).show();
             }
         });
     }
@@ -602,24 +593,7 @@ public class CreateIssueActivity extends BaseActivity
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!PreferenceUtil.getBoolean(getString(R.string.key_gif_info_dialog))) {
-                    new AlertDialog.Builder(CreateIssueActivity.this)
-                            .setTitle(R.string.title_gif_info)
-                            .setMessage(R.string.message_gif_info)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    PreferenceUtil.putBoolean(getString(R.string.key_gif_info_dialog), true);
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                                @Override
-                                public void onCancel(DialogInterface dialog) {
-                                    PreferenceUtil.putBoolean(getString(R.string.key_gif_info_dialog), true);
-                                }
-                            })
-                            .create()
-                            .show();
+                    DialogHelper.getGifInfoDialog(CreateIssueActivity.this).show();
                 }
 
                 int stepsArraySize = mSteps.size();
@@ -736,29 +710,6 @@ public class CreateIssueActivity extends BaseActivity
         }
         mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
         showProgressIfNeed();
-//        JiraContent.getInstance().getDescription(new GetContentCallback<Spanned>() {
-//            @Override
-//            public void resultOfDataLoading(final Spanned result) {
-//                if (result != null) {
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if (mDescriptionTextInput != null) {
-//                                if (mBundle != null && mBundle.getString(ExpectedResultsActivity.STEPS) != null
-//                                        && mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT) != null) {
-//                                    GEntryWorksheet testcase = new GEntryWorksheet();
-//                                    testcase.setTestStepsGSX(mBundle.getString(ExpectedResultsActivity.STEPS));
-//                                    testcase.setExpectedResultGSX(mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT));
-//                                    mDescriptionTextInput.setText(testcase.getFullTestCaseDescription(result));
-//                                } else {
-//                                    mDescriptionTextInput.setText(result);
-//                                }
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        });
     }
 
     //Callbacks
@@ -771,7 +722,7 @@ public class CreateIssueActivity extends BaseActivity
                 if (result != null) {
                     mSteps = (List) result;
                     List<Attachment> screenArray = AttachmentManager.getInstance().getAttachmentList(result);
-                    File externalCache = new File(Environment.getExternalStorageDirectory(), "Amtt_cache");
+                    File externalCache = new File(FileUtil.getCacheAmttDir());
                     String template = externalCache.getPath() + "/%s";
                     String pathLogCommon = String.format(template, "log_common.txt");
                     String pathLogException = String.format(template, "log_exception.txt");
@@ -813,44 +764,36 @@ public class CreateIssueActivity extends BaseActivity
     //Recycler
     @Override
     public void onItemRemove(final int position) {
-        if (mLayoutInflater == null) {
-            mLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
         if (FileUtil.isPicture(mAdapter.getAttachments().get(position).getFilePath())) {
             if (!PreferenceUtil.getBoolean(getString(R.string.key_step_deletion_dialog))) {
-                View dialogView = mLayoutInflater.inflate(R.layout.dialog_step_deletion, null);
-                CheckBox doNotShowAgain = (CheckBox) dialogView.findViewById(R.id.cb_do_not_show_again);
-                doNotShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                DialogHelper.getStepDeletionDialog(this, new DialogHelper.IDialogButtonClick() {
                     @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        PreferenceUtil.putBoolean(getString(R.string.key_step_deletion_dialog), isChecked);
+                    public void positiveButtonClick() {
+                        removeStepFromDatabase(position);
                     }
-                });
 
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.title_step_deletion)
-                        .setMessage(R.string.message_step_deletion)
-                        .setView(dialogView)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                removeStepFromDatabase(position);
-                                dialog.dismiss();
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .create()
-                        .show();
+                    @Override
+                    public void negativeButtonClick() {
+
+                    }
+                }).show();
+
             } else {
                 removeStepFromDatabase(position);
             }
         } else if (FileUtil.isText(mAdapter.getAttachments().get(position).getFilePath())) {
-            removeStepFromDatabase(position);
+            DialogHelper.getAreYouSureDialog(this, getString(R.string.title_delete_log_dialiog), getString(R.string.label_message_delete_log_dialiog), new DialogHelper.IDialogButtonClick(){
+                @Override
+                public void positiveButtonClick() {
+                    mAdapter.getAttachments().remove(position);
+                    mAdapter.notifyItemRemoved(position);
+                }
+
+                @Override
+                public void negativeButtonClick() {
+
+                }
+            }).show();
         }
 
     }
@@ -916,17 +859,22 @@ public class CreateIssueActivity extends BaseActivity
 
     @Override
     public void onSavingError() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.title_gif_isnt_saved)
-                .setMessage(R.string.message_gif_isnt_saved)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .create()
-                .show();
+        DialogHelper.getIsntSaveGifDialog(this).show();
     }
 
+    @Override
+    public void onBackPressed() {
+        DialogHelper.getAreYouSureDialog(this,getString(R.string.title_exit_dialog), getString(R.string.label_message_exit_dialog), new DialogHelper.IDialogButtonClick(){
+
+            @Override
+            public void positiveButtonClick() {
+                finish();
+            }
+
+            @Override
+            public void negativeButtonClick() {
+
+            }
+        }).show();
+    }
 }

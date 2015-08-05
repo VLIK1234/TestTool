@@ -158,5 +158,9 @@
     <string name="label_take_activity_info">Activity info</string>
     <string name="label_take_screen">Screen</string>
     <string name="label_search">Search</string>
+    <string name="title_exit_dialog">Exit dialog</string>
+    <string name="label_message_exit_dialog">If you are exit you are losing your last unsaved change. Are you sure?</string>
+    <string name="title_delete_log_dialiog">Delete log attachment</string>
+    <string name="label_message_delete_log_dialiog">Log will be delete from attachment. Are you sure?</string>
 
 </resources>
