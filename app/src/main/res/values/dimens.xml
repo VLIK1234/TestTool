@@ -35,4 +35,5 @@
     <dimen name="search_button_width">48dp</dimen>
 
     <dimen name="fab_content_size">48dp</dimen>
+    <dimen name="margin_activity_detail">16dp</dimen>
 </resources>
