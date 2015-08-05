@@ -32,6 +32,15 @@
         <item name="android:textColor">@color/primary_text</item>
     </style>
 
+    <style name="Material.MultyAutocompleteProgressView">
+        <item name="android:dropDownItemStyle">@style/Material.DropDownItem</item>
+        <item name="android:spinnerStyle">@style/Base.Widget.AppCompat.Spinner.Underlined.Custom
+        </item>
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
+        <item name="android:inputType">textAutoComplete</item>
+        <item name="android:textColor">@color/primary_text</item>
+    </style>
+
     <style name="Material.DropDownItem">
         <item name="android:height">@dimen/material_menu_item_vertical_height</item>
         <item name="android:layout_height">@dimen/material_menu_item_vertical_height</item>

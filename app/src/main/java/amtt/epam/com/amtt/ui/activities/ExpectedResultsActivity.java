@@ -154,6 +154,12 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
+    }
+
     private void initViews() {
         mRecyclerView = (RecyclerView) findViewById(android.R.id.list);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ExpectedResultsActivity.this);
@@ -169,6 +175,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         mTagsAutocompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                hideKeyboard();
                 mTagsAutocompleteTextView.showProgress(true);
                 showProgress(true);
                 String[] str = mTagsAutocompleteTextView.getText().toString().split(", ");
@@ -213,7 +220,6 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             public void afterTextChanged(Editable s) {
             }
         });
-        hideKeyboard();
     }
 
     private void startTagsByLinkLoader() {
@@ -255,6 +261,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     }
 
     private void refreshTagsAdapter(List<GTag> result) {
+        hideKeyboard();
         showProgress(true);
         mTagsAutocompleteTextView.showProgress(true);
         if (result != null && !result.isEmpty()) {
