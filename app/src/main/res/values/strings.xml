@@ -175,5 +175,7 @@
     <string name="label_cb_screen">Screen</string>
     <string name="label_take_activity_info">Activity info</string>
     <string name="label_take_screen">Screen</string>
+    <string name="title_gif_cant_be_created">Gif cant\'t be crated</string>
+    <string name="message_gif_cant_be_created">The number of images is too large. Remove few steps and try again.</string>
 
 </resources>

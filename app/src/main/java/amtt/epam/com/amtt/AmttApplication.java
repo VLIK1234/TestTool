@@ -31,7 +31,7 @@ public class AmttApplication extends CoreApplication {
                 .debuggable(true)
                 .build());
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).memoryCacheSize(1024 * 1024 * 4).build();
         ImageLoader.getInstance().init(config);
     }
 
