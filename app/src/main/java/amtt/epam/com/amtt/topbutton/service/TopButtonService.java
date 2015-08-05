@@ -115,8 +115,8 @@ public class TopButtonService extends Service{
             switch (action) {
                 case ACTION_START:
                     addView();
-                    checkCountTestProject();
                     TestUtil.restartTest();
+                    checkCountTestProject();
                     break;
                 case ACTION_CLOSE:
                     TestUtil.closeTest();
@@ -246,7 +246,7 @@ public class TopButtonService extends Service{
             Intent intent = new Intent(this, SettingActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            Toast.makeText(getBaseContext(), "Please choose tested project",Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "You have many project. Please choose right tested project",Toast.LENGTH_LONG).show();
         }
     }
 }

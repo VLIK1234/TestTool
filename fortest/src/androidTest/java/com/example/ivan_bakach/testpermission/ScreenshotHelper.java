@@ -37,7 +37,7 @@ public class ScreenshotHelper {
         intent.putExtra(SCREEN_KEY, bytes);
         intent.putExtra(TestBroadcastReceiver.LIST_FRAGMENTS_KEY, listFragments.substring(0, listFragments.lastIndexOf(BR_TAG) != -1 ? listFragments.lastIndexOf(BR_TAG) : 0));
         intent.putExtra(TestBroadcastReceiver.TITLE_KEY, FragmentInfoHelper.getActivityTitle(activity));
-        intent.putExtra(TestBroadcastReceiver.ACTIVITY_CLASS_NAME_KEY, activity.getClass().getName());
+        intent.putExtra(TestBroadcastReceiver.ACTIVITY_CLASS_NAME_KEY, activity.getComponentName().getShortClassName());
         intent.putExtra(TestBroadcastReceiver.PACKAGE_NAME_KEY, activity.getPackageName());
         context.sendBroadcast(intent);
     }

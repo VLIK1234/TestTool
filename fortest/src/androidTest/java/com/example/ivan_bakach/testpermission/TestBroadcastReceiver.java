@@ -69,7 +69,7 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                             FragmentInfoHelper.getListFragments().substring(0, FragmentInfoHelper.getListFragments().lastIndexOf(ScreenshotHelper.BR_TAG) != -1
                                     ? FragmentInfoHelper.getListFragments().lastIndexOf(ScreenshotHelper.BR_TAG) : 0));
                     intentTakeOnlyInfo.putExtra(TITLE_KEY, FragmentInfoHelper.getActivityTitle(mActivity));
-                    intentTakeOnlyInfo.putExtra(ACTIVITY_CLASS_NAME_KEY, mActivity.getClass().getName());
+                    intentTakeOnlyInfo.putExtra(ACTIVITY_CLASS_NAME_KEY, mActivity.getComponentName().getShortClassName());
                     intentTakeOnlyInfo.putExtra(PACKAGE_NAME_KEY, mActivity.getPackageName());
                     context.sendBroadcast(intentTakeOnlyInfo);
                     FragmentInfoHelper.writeArgumentsFromFragments(FragmentInfoHelper.sCurrentArguments);
