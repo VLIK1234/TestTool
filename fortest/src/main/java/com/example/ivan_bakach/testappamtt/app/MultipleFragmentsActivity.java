@@ -1,14 +1,14 @@
-package com.example.ivan_bakach.testpermission.app;
+package com.example.ivan_bakach.testappamtt.app;
 
 import  android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.ivan_bakach.testpermission.R;
-import com.example.ivan_bakach.testpermission.fragment.InvisibleFragment;
-import com.example.ivan_bakach.testpermission.fragment.NullpointerFragment;
-import com.example.ivan_bakach.testpermission.fragment.RuntimeFragment;
+import com.example.ivan_bakach.testappamtt.R;
+import com.example.ivan_bakach.testappamtt.fragment.InvisibleFragment;
+import com.example.ivan_bakach.testappamtt.fragment.NullpointerFragment;
+import com.example.ivan_bakach.testappamtt.fragment.RuntimeFragment;
 
 /**
  @author Ivan_Bakach

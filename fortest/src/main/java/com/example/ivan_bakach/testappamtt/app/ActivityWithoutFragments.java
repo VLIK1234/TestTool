@@ -1,11 +1,11 @@
-package com.example.ivan_bakach.testpermission.app;
+package com.example.ivan_bakach.testappamtt.app;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.ivan_bakach.testpermission.R;
+import com.example.ivan_bakach.testappamtt.R;
 
 /**
  @author Ivan_Bakach

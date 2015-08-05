@@ -1,4 +1,4 @@
-package com.example.ivan_bakach.testpermission.fragment;
+package com.example.ivan_bakach.testappamtt.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.ivan_bakach.testpermission.R;
-import com.example.ivan_bakach.testpermission.app.MultipleFragmentsActivity;
+import com.example.ivan_bakach.testappamtt.R;
+import com.example.ivan_bakach.testappamtt.app.MultipleFragmentsActivity;
 
 /**
  @author Ivan_Bakach

@@ -1,4 +1,4 @@
-package com.example.ivan_bakach.testpermission;
+package com.example.ivan_bakach.testappamtt;
 
 import android.content.Context;
 import android.content.Intent;
