@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.bo.database.Step;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
@@ -28,7 +27,7 @@ public final class GifUtil {
 
         void onGifCreated();
 
-        void onSavingError();
+        void onSavingError(Throwable throwable);
 
     }
 
@@ -1270,10 +1269,10 @@ public final class GifUtil {
 
         private List<Bitmap> mBitmaps;
         private ProgressListener mListener;
-        private Exception mException;
+        private Throwable mThrowable;
 
-        public GifTask(final List<Step> stepList, ProgressListener listener) {
-            mBitmaps = StepUtil.getStepBitmaps(stepList);
+        public GifTask(final List<Bitmap> bitmaps, ProgressListener listener) {
+            mBitmaps = bitmaps;
             mListener = listener;
         }
 
@@ -1284,32 +1283,34 @@ public final class GifUtil {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
-            GifEncoder encoder = new GifEncoder();
-            encoder.setFrameRate(ONE_FRAME_PER_SECOND);
-            encoder.setRepeat(REPEAT_AD_INFINITUM);
-
-            encoder.start(byteArrayStream);
-            for (int i = 0; i < mBitmaps.size(); i++) {
-                if (isCancelled()) {
-                    return null;
-                }
-                encoder.addFrame(mBitmaps.get(i));
-                onProgressUpdate(i + 1);
-            }
-            encoder.finish();
-
-            FileOutputStream outputStream = null;
             try {
-                outputStream = IOUtils.openFileOutput(FILE_PATH, true);
-                if (isCancelled()) {
-                    return null;
+                ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
+                GifEncoder encoder = new GifEncoder();
+                encoder.setFrameRate(ONE_FRAME_PER_SECOND);
+                encoder.setRepeat(REPEAT_AD_INFINITUM);
+
+                encoder.start(byteArrayStream);
+                for (int i = 0; i < mBitmaps.size(); i++) {
+                    if (isCancelled()) {
+                        return null;
+                    }
+                    encoder.addFrame(mBitmaps.get(i));
+                    onProgressUpdate(i + 1);
                 }
-                outputStream.write(byteArrayStream.toByteArray());
-            } catch (IOException e) {
-                mException = e;
-            } finally {
-                IOUtils.close(outputStream);
+                encoder.finish();
+
+                FileOutputStream outputStream = null;
+                try {
+                    outputStream = IOUtils.openFileOutput(FILE_PATH, true);
+                    if (isCancelled()) {
+                        return null;
+                    }
+                    outputStream.write(byteArrayStream.toByteArray());
+                } finally {
+                    IOUtils.close(outputStream);
+                }
+            } catch (Throwable throwable) {
+                mThrowable = throwable;
             }
             return null;
         }
@@ -1317,10 +1318,10 @@ public final class GifUtil {
         @Override
         protected void onPostExecute(Void aVoid) {
             for (Bitmap bitmap : mBitmaps) {
-                bitmap = null;
+                bitmap.recycle();
             }
-            if (mException != null) {
-                mListener.onSavingError();
+            if (mThrowable != null) {
+                mListener.onSavingError(mThrowable);
                 return;
             }
             mListener.onGifCreated();
@@ -1330,11 +1331,18 @@ public final class GifUtil {
 
     public static final int REPEAT_AD_INFINITUM = 0;
     public static final float ONE_FRAME_PER_SECOND = 1;
-    public static final String FILE_PATH = AmttApplication.getContext().getExternalFilesDir(null) + "/StepsSequence.gif";
+    public static final String FILE_PATH = StepUtil.CACHE_FOLDER + "/StepsSequence.gif";
     private static GifTask mTask;
 
     public static void createGif(ProgressListener listener, final List<Step> stepList) {
-        mTask = new GifTask(stepList, listener);
+        List<Bitmap> bitmaps;
+        try {
+            bitmaps = StepUtil.getStepBitmaps(stepList);
+        } catch (Throwable throwable) {
+            listener.onSavingError(throwable);
+            return;
+        }
+        mTask = new GifTask(bitmaps, listener);
         mTask.execute();
     }
 

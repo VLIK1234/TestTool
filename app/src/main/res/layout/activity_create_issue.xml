@@ -121,7 +121,6 @@
                     android:id="@+id/cb_gif_attachment"
                     style="@style/CreateIssueCheckBox"
                     android:text="@string/label_attach_gif"
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 

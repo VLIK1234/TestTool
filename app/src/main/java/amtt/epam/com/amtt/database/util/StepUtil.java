@@ -33,6 +33,8 @@ import amtt.epam.com.amtt.util.IOUtils;
  */
 public class StepUtil {
 
+    public static final String CACHE_FOLDER = Environment.getExternalStorageDirectory() + "/Amtt_cache";
+
     public static void saveStep(String title, String activityClassName, String packageName, String mScreenPath, String listFragments) {
         Step step = new Step(title, activityClassName, packageName, mScreenPath, listFragments);
         DbObjectManager.INSTANCE.add(step, null);
@@ -81,7 +83,7 @@ public class StepUtil {
         Context context = AmttApplication.getContext();
         return Html.fromHtml(
                 "<b>" + context.getString(R.string.label_title) + "</b>" + "<small>" + step.getTitle() + "</small>" + "<br />" +
-                "<b>" + context.getString(R.string.label_activity) + "</b>" + "<small>" + step.getActivity() + "</small>" + "<br />" +
+                        "<b>" + context.getString(R.string.label_activity) + "</b>" + "<small>" + step.getActivity() + "</small>" + "<br />" +
                         "<b>" + context.getString(R.string.lable_list_fragments) + "</b>" + "<small>" + step.getListFragments() + "</small>" + "<br />" +
                         "<b>" + context.getString(R.string.label_screen_orientation) + "</b>" + "<small>" + step.getOrientation() + "</small>" + "<br />" +
                         "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>");
@@ -91,7 +93,7 @@ public class StepUtil {
         ArrayList<Step> list = (ArrayList) listStep;
         SpannableStringBuilder builder = new SpannableStringBuilder();
         Context context = AmttApplication.getContext();
-        if (list.size()>0) {
+        if (list.size() > 0) {
             builder.append(Html.fromHtml("<br/>" + "<br/>" + "<h5>" + "New steps : "
                     + "</h5>"));
         }
@@ -112,24 +114,20 @@ public class StepUtil {
         return builder;
     }
 
-    public static List<Bitmap> getStepBitmaps(List<Step> stepsList) {
+    public static List<Bitmap> getStepBitmaps(List<Step> stepsList) throws Throwable {
         List<Bitmap> bitmaps = new ArrayList<>();
         for (Step step : stepsList) {
             BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(step.getScreenshotPath(), options);
-            options.inJustDecodeBounds = false;
-            options.outHeight /= 32;
-            options.outWidth /= 32;
-            bitmaps.add(BitmapFactory.decodeFile(step.getScreenshotPath(), options));
+            options.inSampleSize = 3;
+            bitmaps.add(BitmapFactory.decodeFile(step.getScreenshotPath()));
         }
         return bitmaps;
     }
 
-    public static void removeAllAttachFile(){
-        File folderPath = new File(Environment.getExternalStorageDirectory(), "Amtt_cache");
+    public static void removeAllAttachFile() {
+        File folderPath = new File(CACHE_FOLDER);
         File[] allAttachFile = folderPath.listFiles();
-        if (allAttachFile!=null) {
+        if (allAttachFile != null) {
             for (File file : allAttachFile) {
                 if (file.exists()) {
                     FileUtil.delete(file.getPath());

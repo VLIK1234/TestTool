@@ -162,5 +162,7 @@
     <string name="label_message_exit_dialog">If you are exit you are losing your last unsaved change. Are you sure?</string>
     <string name="title_delete_log_dialiog">Delete log attachment</string>
     <string name="label_message_delete_log_dialiog">Log will be delete from attachment. Are you sure?</string>
+    <string name="title_gif_cant_be_created">Gif cant\'t be crated</string>
+    <string name="message_gif_cant_be_created">The number of images is too large. Remove few steps and try again.</string>
 
 </resources>

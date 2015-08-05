@@ -1,11 +1,13 @@
 package amtt.epam.com.amtt.ui.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -769,6 +772,7 @@ public class CreateIssueActivity extends BaseActivity
                 DialogHelper.getStepDeletionDialog(this, new DialogHelper.IDialogButtonClick() {
                     @Override
                     public void positiveButtonClick() {
+                        mGifCheckBox.setEnabled(true);
                         removeStepFromDatabase(position);
                     }
 
@@ -809,7 +813,7 @@ public class CreateIssueActivity extends BaseActivity
     public void onItemShow(int position) {
         Intent intent = null;
         String filePath = "";
-        if (mAdapter!=null&&mAdapter.getAttachmentFilePathList()!=null&&mAdapter.getAttachmentFilePathList().size() > position) {
+        if (mAdapter != null && mAdapter.getAttachmentFilePathList() != null && mAdapter.getAttachmentFilePathList().size() > position) {
             filePath = mAdapter.getAttachmentFilePathList().get(position);
         }
 
@@ -830,7 +834,7 @@ public class CreateIssueActivity extends BaseActivity
             startActivity(intent);
         }
 
-        if(TextUtils.isEmpty(filePath)){
+        if (TextUtils.isEmpty(filePath)) {
             if (intent != null) {
                 startActivity(intent);
             }
@@ -858,8 +862,26 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     @Override
-    public void onSavingError() {
-        DialogHelper.getIsntSaveGifDialog(this).show();
+
+    public void onSavingError(Throwable throwable) {
+        mGifProgress.setVisibility(View.GONE);
+        mGifCheckBox.setChecked(false);
+        mGifCheckBox.setEnabled(false);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        if (throwable instanceof IOException) {
+            dialogBuilder.setTitle(R.string.title_gif_isnt_saved).setMessage(R.string.message_gif_isnt_saved);
+        } else if (throwable instanceof OutOfMemoryError) {
+            dialogBuilder.setTitle(R.string.title_gif_cant_be_created).setMessage(R.string.message_gif_cant_be_created);
+        }
+
+        dialogBuilder.create().show();
     }
 
     @Override
