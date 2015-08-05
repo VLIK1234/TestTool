@@ -128,7 +128,6 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                             intent.putExtra(STEPS, result.getTestStepsGSX());
                             intent.putExtra(EXPECTED_RESULT, result.getExpectedResultGSX());
                             startActivity(intent);
-                            finish();
                         }
                     }
                 });
