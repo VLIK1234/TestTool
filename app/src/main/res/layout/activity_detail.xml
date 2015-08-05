@@ -86,6 +86,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
         android:contentDescription="@null"
         android:src="@drawable/button_main"
         app:backgroundTint="@color/primary"
