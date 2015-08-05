@@ -159,16 +159,16 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     public void onBindViewHolder(final ViewHolder viewHolder, int i) {
         if (mAttachments != null && mAttachments.size() != 0) {
             Attachment attachment = mAttachments.get(i);
-            viewHolder.mScreenshotState = attachment.mScreenshotState;
-            Logger.d(TAG, attachment.mFileName);
-            viewHolder.mScreenshotName.setText(attachment.mFileName);
-            if (attachment.mFilePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
-                    attachment.mFilePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
-                    attachment.mFilePath.contains(MimeType.IMAGE_JPEG.getFileExtension()) ||
-                    attachment.mFilePath.contains(MimeType.IMAGE_GIF.getFileExtension())) {
-                if (attachment.mScreenshotState == ScreenshotState.WRITTEN) {
+            viewHolder.mScreenshotState = attachment.getScreenshotState();
+            Logger.d(TAG, attachment.getFileName());
+            viewHolder.mScreenshotName.setText(attachment.getFileName());
+            if (attachment.getFilePath().contains(MimeType.IMAGE_PNG.getFileExtension()) ||
+                    attachment.getFilePath().contains(MimeType.IMAGE_JPG.getFileExtension()) ||
+                    attachment.getFilePath().contains(MimeType.IMAGE_JPEG.getFileExtension()) ||
+                    attachment.getFilePath().contains(MimeType.IMAGE_GIF.getFileExtension())) {
+                if (attachment.getScreenshotState() == ScreenshotState.WRITTEN) {
                     if (viewHolder.mScreenshotImage.getDrawable() == null) {
-                        ImageLoader.getInstance().displayImage("file:///" + attachment.mFilePath, viewHolder.mScreenshotImage, new ImageLoadingListener() {
+                        ImageLoader.getInstance().displayImage("file:///" + attachment.getFilePath(), viewHolder.mScreenshotImage, new ImageLoadingListener() {
                             @Override
                             public void onLoadingStarted(String imageUri, View view) {
                                 viewHolder.mProgress.setVisibility(View.VISIBLE);
@@ -193,7 +193,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
                 } else {
                     viewHolder.mProgress.setVisibility(View.VISIBLE);
                 }
-            } else if (attachment.mFilePath.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
+            } else if (attachment.getFilePath().contains(MimeType.TEXT_PLAIN.getFileExtension())) {
                 viewHolder.mScreenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
             }
             viewHolder.mScreenshotClose.setEnabled(true);
@@ -213,7 +213,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     public ArrayList<String> getAttachmentFilePathList() {
         ArrayList<String> filePathList = new ArrayList<>();
         for (Attachment attachment : mAttachments) {
-            filePathList.add(attachment.mFilePath);
+            filePathList.add(attachment.getFilePath());
         }
         return filePathList;
     }
@@ -223,7 +223,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     }
 
     public int getStepId(int position) {
-        return mAttachments.get(position).mStepId;
+        return mAttachments.get(position).getStepId();
     }
 
     private void reloadData() {

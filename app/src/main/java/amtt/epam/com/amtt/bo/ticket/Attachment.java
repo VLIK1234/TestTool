@@ -11,10 +11,11 @@ import amtt.epam.com.amtt.util.FileUtil;
 
 public class Attachment {
 
-    public final int mStepId;
-    public final String mFileName;
-    public final String mFilePath;
-    public final ScreenshotState mScreenshotState;
+
+    private final int mStepId;
+    private final String mFileName;
+    private final String mFilePath;
+    private final ScreenshotState mScreenshotState;
 
     public Attachment(Step step) {
         mStepId = step.getId();
@@ -29,5 +30,19 @@ public class Attachment {
         mFileName = FileUtil.getFileName(mFilePath);
         mScreenshotState = ScreenshotState.WRITTEN;
     }
+    public int getStepId() {
+        return mStepId;
+    }
 
+    public String getFileName() {
+        return mFileName;
+    }
+
+    public String getFilePath() {
+        return mFilePath;
+    }
+
+    public ScreenshotState getScreenshotState() {
+        return mScreenshotState;
+    }
 }

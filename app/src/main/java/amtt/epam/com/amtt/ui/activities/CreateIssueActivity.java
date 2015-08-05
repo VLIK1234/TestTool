@@ -698,8 +698,8 @@ public class CreateIssueActivity extends BaseActivity
 
     private void removeStepFromDatabase(int position) {
         Attachment attachment = mAdapter.getAttachments().get(position);
-        int stepId = attachment.mStepId;
-        FileUtil.delete(attachment.mFilePath);
+        int stepId = attachment.getStepId();
+        FileUtil.delete(attachment.getFilePath());
         DbObjectManager.INSTANCE.remove(new Step(stepId));
         mAdapter.getAttachments().remove(position);
         mAdapter.notifyItemRemoved(position);
@@ -816,7 +816,7 @@ public class CreateIssueActivity extends BaseActivity
         if (mLayoutInflater == null) {
             mLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
-        if (FileUtil.isPicture(mAdapter.getAttachments().get(position).mFilePath)) {
+        if (FileUtil.isPicture(mAdapter.getAttachments().get(position).getFilePath())) {
             if (!PreferenceUtil.getBoolean(getString(R.string.key_step_deletion_dialog))) {
                 View dialogView = mLayoutInflater.inflate(R.layout.dialog_step_deletion, null);
                 CheckBox doNotShowAgain = (CheckBox) dialogView.findViewById(R.id.cb_do_not_show_again);
@@ -849,7 +849,7 @@ public class CreateIssueActivity extends BaseActivity
             } else {
                 removeStepFromDatabase(position);
             }
-        } else if (FileUtil.isText(mAdapter.getAttachments().get(position).mFilePath)) {
+        } else if (FileUtil.isText(mAdapter.getAttachments().get(position).getFilePath())) {
             removeStepFromDatabase(position);
         }
 
