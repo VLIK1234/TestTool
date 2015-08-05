@@ -1,4 +1,4 @@
-package com.example.ivan_bakach.testpermission.fragment;
+package com.example.ivan_bakach.testappamtt.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.ivan_bakach.testpermission.R;
+import com.example.ivan_bakach.testappamtt.R;
 
 /**
  * @author Ivan_Bakach

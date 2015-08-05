@@ -1,4 +1,4 @@
-package com.example.ivan_bakach.testpermission.app;
+package com.example.ivan_bakach.testappamtt.app;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,9 +9,9 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
 //import com.example.ivan_bakach.injectlibrary.FragmentInfoManger;
-import com.example.ivan_bakach.testpermission.fragment.FirstPageFragment;
-import com.example.ivan_bakach.testpermission.R;
-import com.example.ivan_bakach.testpermission.fragment.SecondPageFragment;
+import com.example.ivan_bakach.testappamtt.fragment.FirstPageFragment;
+import com.example.ivan_bakach.testappamtt.R;
+import com.example.ivan_bakach.testappamtt.fragment.SecondPageFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

@@ -14,8 +14,8 @@ import amtt.epam.com.amtt.http.MimeType;
 
 public class FileUtil {
 
-    private static final String AMTT_CACHE_DIRECTORY = "Amtt_cache";
-    private static String cacheAmttDir = Environment.getExternalStorageDirectory().toString() + File.separatorChar + AMTT_CACHE_DIRECTORY + File.separatorChar;
+    private static final String AMTT_CACHE_DIRECTORY = "amtt_cache";
+    private static String sCacheAmttDir = Environment.getExternalStorageDirectory().toString() + File.separatorChar + AMTT_CACHE_DIRECTORY + File.separatorChar;
 
     public static String getFileName(@Nullable String filePath) {
         if (filePath == null) {
@@ -63,6 +63,8 @@ public class FileUtil {
     }
 
     public static String getCacheAmttDir() {
-        return cacheAmttDir;
+        File amttCache = new File(sCacheAmttDir);
+        amttCache.mkdir();
+        return sCacheAmttDir;
     }
 }

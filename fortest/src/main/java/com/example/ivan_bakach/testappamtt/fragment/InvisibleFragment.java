@@ -1,4 +1,4 @@
-package com.example.ivan_bakach.testpermission.fragment;
+package com.example.ivan_bakach.testappamtt.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ivan_bakach.testpermission.R;
+import com.example.ivan_bakach.testappamtt.R;
 
 /**
  * @author Ivan_Bakach
