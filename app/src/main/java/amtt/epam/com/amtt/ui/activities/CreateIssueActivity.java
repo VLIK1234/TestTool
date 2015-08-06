@@ -879,6 +879,8 @@ public class CreateIssueActivity extends BaseActivity
             dialogBuilder.setTitle(R.string.title_gif_isnt_saved).setMessage(R.string.message_gif_isnt_saved);
         } else if (throwable instanceof OutOfMemoryError) {
             dialogBuilder.setTitle(R.string.title_gif_cant_be_created).setMessage(R.string.message_gif_cant_be_created);
+        } else {
+            dialogBuilder.setTitle(R.string.title_gif_error).setMessage(R.string.message_gif_error);
         }
 
         dialogBuilder.create().show();
