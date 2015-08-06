@@ -142,10 +142,10 @@
             android:noHistory="true"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_log"
-            android:parentActivityName=".ui.activities.MainActivity">
+            android:parentActivityName=".ui.activities.CreateIssueActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.MainActivity"/>
+                android:value=".ui.activities.CreateIssueActivity"/>
         </activity>
 
         <activity
