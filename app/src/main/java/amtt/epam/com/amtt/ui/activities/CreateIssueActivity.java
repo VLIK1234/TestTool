@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -843,13 +844,18 @@ public class CreateIssueActivity extends BaseActivity
 
     //Gif processing
     @Override
-    public void onProgress(int progress) {
-        if (mGifProgress != null) {
-            if (mGifProgress.isIndeterminate()) {
-                mGifProgress.setIndeterminate(false);
+    public void onProgress(final int progress) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mGifProgress != null) {
+                    if (mGifProgress.isIndeterminate()) {
+                        mGifProgress.setIndeterminate(false);
+                    }
+                    mGifProgress.setProgress(progress);
+                }
             }
-            mGifProgress.setProgress(progress);
-        }
+        });
     }
 
     @Override

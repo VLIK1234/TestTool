@@ -117,7 +117,7 @@ public class StepUtil {
         for (Step step : stepsList) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 3;
-            bitmaps.add(BitmapFactory.decodeFile(step.getScreenshotPath()));
+            bitmaps.add(BitmapFactory.decodeFile(step.getScreenshotPath(), options));
         }
         return bitmaps;
     }
