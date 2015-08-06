@@ -178,6 +178,8 @@ public class TopButtonService extends Service{
             mTopButtonView = null;
         }
         stopSelf();
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.cancelAll();
     }
 
     private void showNotification() {
