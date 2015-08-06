@@ -31,8 +31,8 @@ public class TestUtil {
         return (!list.isEmpty()) ? list.get(0) : null;
     }
 
-    public static String[] getTestedApps() {
-        ArrayList<String> res = new ArrayList<>();
+    public static String[][] getTestedApps() {
+        ArrayList<PackageInfo> res = new ArrayList<>();
         List<PackageInfo> packs = AmttApplication.getContext().getPackageManager().getInstalledPackages(PackageManager.GET_INSTRUMENTATION);
         for (PackageInfo packageInfo : packs) {
             try {
@@ -40,13 +40,12 @@ public class TestUtil {
                 if (info != null) {
                     ComponentName componentName = new ComponentName(info.packageName, info.name);
                     InstrumentationInfo instrumentationInfo = AmttApplication.getContext().getPackageManager().getInstrumentationInfo(componentName, PackageManager.GET_META_DATA);
-                    Logger.d(TAG, instrumentationInfo.name + " "+1);
+                    Logger.d(TAG, instrumentationInfo.name + " " + 1);
                     if (!res.contains(packageInfo.packageName)) {
-                        res.add(packageInfo.packageName);
+                        res.add(packageInfo);
                         Logger.d(TAG, packageInfo.packageName + " " + 2);
                     }
-
-                    /*Don't use in real life
+                    /*Not used in real life
                     * P.S. On real device.*/
 //                    Bundle bundle = instrumentationInfo.metaData;
 //                    if (bundle != null) {
@@ -66,7 +65,16 @@ public class TestUtil {
                 Logger.e(TAG, "Failed to load meta-data, ClassCastException: " + e.getMessage());
             }
         }
-        return res.toArray(new String[res.size()]);
+        String[] arrayEntries = new String[res.size()];
+        String[] arrayEntriesValues = new String[res.size()];
+        for (int i=0; i<res.size();i++) {
+            arrayEntries[i]=res.get(i).applicationInfo.loadLabel(AmttApplication.getContext().getPackageManager()).toString();
+            arrayEntriesValues[i]=res.get(i).packageName;
+        }
+        String[][] resultArrays = new String[2][];
+        resultArrays[0]=arrayEntries;
+        resultArrays[1]=arrayEntriesValues;
+        return resultArrays;
     }
 
     private static void runTests() {
