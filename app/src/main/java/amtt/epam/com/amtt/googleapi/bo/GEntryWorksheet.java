@@ -24,6 +24,7 @@ public class GEntryWorksheet extends GEntry<GEntryWorksheet> {
 
     private int mId;
     private String mIdWorksheetLink;
+    private String mIdSpreadsheetLink;
     private String mPriorityGSX;
     // private String mDeviceGSX;
     private String mTestCaseNameGSX;
@@ -61,6 +62,7 @@ public class GEntryWorksheet extends GEntry<GEntryWorksheet> {
         mExpectedResultGSX = cursor.getString(cursor.getColumnIndex(TestcaseTable._EXPECTED_RESULTS));
         mPathGSX = cursor.getString(cursor.getColumnIndex(TestcaseTable._PATH));
         mStatusGSX = cursor.getString(cursor.getColumnIndex(TestcaseTable._STATUS));
+        mIdSpreadsheetLink = cursor.getString(cursor.getColumnIndex(TestcaseTable._SPREADSHEET_ID_LINK));
     }
 
     @Override
@@ -147,6 +149,14 @@ public class GEntryWorksheet extends GEntry<GEntryWorksheet> {
         this.mExpectedResultGSX = expectedResultGSX;
     }
 
+    public String getIdSpreadsheetLink() {
+        return mIdSpreadsheetLink;
+    }
+
+    public void setIdSpreadsheetLink(String idSpreadsheetLink) {
+        mIdSpreadsheetLink = idSpreadsheetLink;
+    }
+
     public List<GTag> getTags() {
         if (mTestCaseNameGSX != null && mIdLink != null) {
             GTag gTag;
@@ -187,6 +197,7 @@ public class GEntryWorksheet extends GEntry<GEntryWorksheet> {
         values.put(TestcaseTable._EXPECTED_RESULTS, mExpectedResultGSX);
         values.put(TestcaseTable._PATH, mPathGSX);
         values.put(TestcaseTable._STATUS, mStatusGSX);
+        values.put(TestcaseTable._SPREADSHEET_ID_LINK, mIdSpreadsheetLink);
         return values;
     }
 }

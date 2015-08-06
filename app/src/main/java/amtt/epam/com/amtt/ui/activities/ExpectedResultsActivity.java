@@ -15,6 +15,8 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -36,6 +38,7 @@ import amtt.epam.com.amtt.googleapi.database.table.TagsTable;
 import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.MultyAutocompleteProgressView;
+import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.ConverterUtil;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.Logger;
@@ -53,6 +56,9 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     private static final int TAGS_LOADER_BY_LINK_ID = 3;
     private static final int TESTCASES_LOADER_BY_LINK_ID = 4;
     private static final int MESSAGE_TEXT_CHANGED = 100;
+    private static final int SPREADSHEET_ACTIVITY_REQUEST_CODE = 55;
+    private static final int NEW_SPREADSHEET_ACTIVITY_REQUEST_CODE = 66;
+    private static final int SINGLE_USER_CURSOR_LOADER_ID = 77;
     private static final String TAG = ExpectedResultsActivity.class.getSimpleName();
     private static final String LINK = "Link";
     public static final String PRIORITY = "PRIORITY";
@@ -83,58 +89,6 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         }
     }
 
-    private void setTags(String text) {
-        String[] str = text.split(", ");
-        bundle = null;
-        bundle = new Bundle();
-        ArrayList<String> links = new ArrayList<>();
-        if (mTags != null) {
-            for (String aStr : str) {
-                for (int i = 0; i < mTags.size(); i++) {
-                    if (aStr.equals(mTags.get(i).getName())) {
-                        links.add(mTags.get(i).getIdLinkTestCase());
-                    }
-                }
-            }
-            if (links.isEmpty()) {
-                startAllTestcasesLoader();
-            } else {
-                bundle.putStringArrayList(LINK, links);
-                startTagsByLinkLoader();
-            }
-        }
-    }
-
-    @Override
-    public void onShowCard(final int position) {
-        getExtras(position, DetailActivity.class);
-    }
-
-    @Override
-    public void onShowCreationTicket(int position) {
-        getExtras(position, CreateIssueActivity.class);
-    }
-
-    private void getExtras(int position, final Class<?> activity) {
-        GSpreadsheetContent.getInstance().getTestcaseByIdLink(mResultsAdapter.getIdTestcaseList().get(position), new GetContentCallback<GEntryWorksheet>() {
-            @Override
-            public void resultOfDataLoading(final GEntryWorksheet result) {
-                ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
-                    public void run() {
-                        if (result != null) {
-                            Intent intent = new Intent(ExpectedResultsActivity.this, activity);
-                            intent.putExtra(NAME, result.getTestCaseNameGSX());
-                            intent.putExtra(PRIORITY, result.getPriorityGSX());
-                            intent.putExtra(STEPS, result.getTestStepsGSX());
-                            intent.putExtra(EXPECTED_RESULT, result.getExpectedResultGSX());
-                            startActivity(intent);
-                        }
-                    }
-                });
-            }
-        });
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,7 +97,6 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         TopButtonService.sendActionChangeTopButtonVisibility(false);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(false);
         }
         initViews();
     }
@@ -158,6 +111,96 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     protected void onResume() {
         super.onResume();
         TopButtonService.sendActionChangeTopButtonVisibility(false);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_expected_result, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add: {
+                startActivityForResult(new Intent(ExpectedResultsActivity.this, NewSpreadsheetActivity.class), NEW_SPREADSHEET_ACTIVITY_REQUEST_CODE);
+            }
+            return true;
+            case R.id.action_list: {
+                startActivityForResult(new Intent(ExpectedResultsActivity.this, SpreadsheetActivity.class), SPREADSHEET_ACTIVITY_REQUEST_CODE);
+            }
+            return true;
+            case android.R.id.home: {
+                TopButtonService.start(this);
+                finish();
+            }
+            return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case SPREADSHEET_ACTIVITY_REQUEST_CODE:
+                    if (data != null) {
+                        Bundle args = new Bundle();
+                        long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
+                        args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
+                        getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, ExpectedResultsActivity.this);
+                    }
+                    break;
+                case NEW_SPREADSHEET_ACTIVITY_REQUEST_CODE:
+                {
+                    startAllTestcasesLoader();
+                }
+            }
+        } else if (resultCode == RESULT_CANCELED) {
+        }
+    }
+
+    @Override
+    public void onShowCard(final int position) {
+        getExtras(position, DetailActivity.class);
+    }
+
+    @Override
+    public void onShowCreationTicket(int position) {
+        getExtras(position, CreateIssueActivity.class);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        CursorLoader loader = null;
+        if (id == TESTCASES_LOADER_ID) {
+            if (ActiveUser.getInstance().getSpreadsheetLink() != null && !ActiveUser.getInstance().getSpreadsheetLink().equals("")) {
+                loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TESTCASE.get(), null, TestcaseTable._SPREADSHEET_ID_LINK + "=?", new String[]{ActiveUser.getInstance().getSpreadsheetLink()}, null);
+            }else{
+                showProgress(false);
+            }
+        } else if (id == TAGS_LOADER_ID) {
+            if (ActiveUser.getInstance().getSpreadsheetLink() != null && !ActiveUser.getInstance().getSpreadsheetLink().equals("")) {
+                loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, TagsTable._SPREADSHEET_ID_LINK + "=?", new String[]{ActiveUser.getInstance().getSpreadsheetLink()}, null);
+            }else{
+                showProgress(false);
+            }
+        } else if (id == TAGS_LOADER_BY_LINK_ID && args != null) {
+            if (args.getStringArrayList(LINK) != null) {
+                String selection = getSelection(TagsTable._TESTCASE_ID_LINK, args.getStringArrayList(LINK));
+                loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, selection,
+                        ConverterUtil.arrayListToArray(args.getStringArrayList(LINK)), null);
+            }
+        } else if (id == TESTCASES_LOADER_BY_LINK_ID) {
+            if (args.getStringArrayList(LINK) != null) {
+                String selection = getSelection(TestcaseTable._TESTCASE_ID_LINK, args.getStringArrayList(LINK));
+                loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TESTCASE.get(), null, selection,
+                        ConverterUtil.arrayListToArray(args.getStringArrayList(LINK)), null);
+            }
+        }
+        return loader;
     }
 
     private void initViews() {
@@ -218,6 +261,109 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
 
             @Override
             public void afterTextChanged(Editable s) {
+            }
+        });
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        try {
+            if (loader != null) {
+                switch (loader.getId()) {
+                    case TESTCASES_LOADER_ID:
+                        if (data != null && data.getCount() > 0) {
+                            refreshSteps(getTestcasesFromCursor(data));
+                            startAllTagsLoader();
+                        } else {
+                            if (ActiveUser.getInstance().getSpreadsheetLink() != null && !ActiveUser.getInstance().getSpreadsheetLink().equals("")) {
+                                GSpreadsheetContent.getInstance().getAllTestCases(ActiveUser.getInstance().getSpreadsheetLink(), new GetContentCallback<List<GEntryWorksheet>>() {
+                                    @Override
+                                    public void resultOfDataLoading(List<GEntryWorksheet> result) {
+                                        if (result != null && !result.isEmpty()) {
+                                            refreshSteps(result);
+                                            startAllTagsLoader();
+                                        } else {
+                                            Logger.d(TAG, "Error loading testcases");
+                                        }
+                                    }
+                                });
+                            } else {
+                                showProgress(false);
+                                Logger.d(TAG, "Error loading testcases");
+                            }
+                        }
+                        break;
+                    case TAGS_LOADER_ID:
+                        if (data != null && data.getCount() > 0) {
+                            mTags = getTagsFromCursor(data);
+                            refreshTagsAdapter(getTagsFromCursor(data));
+                        } else {
+                            Logger.d(TAG, "Error loading tags");
+                            mTagsAutocompleteTextView.showProgress(false);
+                        }
+                        break;
+                    case TAGS_LOADER_BY_LINK_ID:
+                        if (data != null && data.getCount() > 0) {
+                            refreshTagsAdapter(getTagsFromCursor(data));
+                        } else {
+                            Logger.d(TAG, "Tags not found");
+                            mTagsAutocompleteTextView.showProgress(false);
+                        }
+                        startTestcasesByLinkLoader();
+                        break;
+                    case TESTCASES_LOADER_BY_LINK_ID:
+                        refreshSteps(getTestcasesFromCursor(data));
+                        break;
+                }
+            }
+        } finally {
+            IOUtils.close(data);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Logger.d(TAG, "onLoaderReset");
+    }
+
+    private void setTags(String text) {
+        String[] str = text.split(", ");
+        bundle = null;
+        bundle = new Bundle();
+        ArrayList<String> links = new ArrayList<>();
+        if (mTags != null) {
+            for (String aStr : str) {
+                for (int i = 0; i < mTags.size(); i++) {
+                    if (aStr.equals(mTags.get(i).getName())) {
+                        links.add(mTags.get(i).getIdLinkTestCase());
+                    }
+                }
+            }
+            if (links.isEmpty()) {
+                startAllTestcasesLoader();
+            } else {
+                bundle.putStringArrayList(LINK, links);
+                startTagsByLinkLoader();
+            }
+        }
+    }
+
+    private void getExtras(int position, final Class<?> activity) {
+        GSpreadsheetContent.getInstance().getTestcaseByIdLink(mResultsAdapter.getIdTestcaseList().get(position), new GetContentCallback<GEntryWorksheet>() {
+            @Override
+            public void resultOfDataLoading(final GEntryWorksheet result) {
+                ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        if (result != null) {
+                            Intent intent = new Intent(ExpectedResultsActivity.this, activity);
+                            intent.putExtra(NAME, result.getTestCaseNameGSX());
+                            intent.putExtra(PRIORITY, result.getPriorityGSX());
+                            intent.putExtra(STEPS, result.getTestStepsGSX());
+                            intent.putExtra(EXPECTED_RESULT, result.getExpectedResultGSX());
+                            startActivity(intent);
+                        }
+                    }
+                });
             }
         });
     }
@@ -285,7 +431,6 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         }
     }
 
-
     private void refreshSteps(final List<GEntryWorksheet> result) {
         showProgress(true);
         if (result != null && !result.isEmpty()) {
@@ -301,87 +446,15 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         }
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        CursorLoader loader = null;
-        if (id == TESTCASES_LOADER_ID) {
-            loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TESTCASE.get(), null, null, null, null);
-        } else if (id == TAGS_LOADER_ID) {
-            loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, null, null, null);
-        }else if(id == TAGS_LOADER_BY_LINK_ID && args!=null){
-            if (args.getStringArrayList(LINK) != null) {
-                String selection = getSelection(TagsTable._TESTCASE_ID_LINK, args.getStringArrayList(LINK));
-                loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TAGS.get(), null, selection,
-                        ConverterUtil.arrayListToArray(args.getStringArrayList(LINK)), null);
-            }
-        } else if (id == TESTCASES_LOADER_BY_LINK_ID) {
-            if (args.getStringArrayList(LINK) != null) {
-                String selection = getSelection(TestcaseTable._TESTCASE_ID_LINK, args.getStringArrayList(LINK));
-                loader = new CursorLoader(ExpectedResultsActivity.this, GSUri.TESTCASE.get(), null, selection,
-                        ConverterUtil.arrayListToArray(args.getStringArrayList(LINK)), null);
-            }
-        }
-        return loader;
-    }
-
     @NonNull
     private String getSelection(String columnName, ArrayList<String> args) {
-        String selection =  columnName + "=?";
+        String selection = columnName + "=?";
         if (args.size() > 1) {
             for (int i = 0; i < args.size(); i++) {
-                selection = selection.concat(" OR "+ columnName + "=?");
+                selection = selection.concat(" OR " + columnName + "=?");
             }
         }
         return selection;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        try {if(loader!=null) {
-            switch (loader.getId()) {
-                case TESTCASES_LOADER_ID:
-                    if (data != null && data.getCount() > 0) {
-                        refreshSteps(getTestcasesFromCursor(data));
-                        startAllTagsLoader();
-                    } else {
-                        GSpreadsheetContent.getInstance().getAllTestCases(new GetContentCallback<List<GEntryWorksheet>>() {
-                            @Override
-                            public void resultOfDataLoading(List<GEntryWorksheet> result) {
-                                if (result != null && !result.isEmpty()) {
-                                    refreshSteps(result);
-                                    startAllTagsLoader();
-                                } else {
-                                    Logger.d(TAG, "Error loading testcases");
-                                }
-                            }
-                        });
-                    }
-                    break;
-                case TAGS_LOADER_ID:
-                    if (data != null && data.getCount() > 0) {
-                        mTags = getTagsFromCursor(data);
-                        refreshTagsAdapter(getTagsFromCursor(data));
-                    } else {
-                        Logger.d(TAG, "Error loading tags");
-                        mTagsAutocompleteTextView.showProgress(false);
-                    }
-                    break;
-                case TAGS_LOADER_BY_LINK_ID:
-                    if (data != null && data.getCount() > 0) {
-                        refreshTagsAdapter(getTagsFromCursor(data));
-                    } else {
-                        Logger.d(TAG, "Tags not found");
-                        mTagsAutocompleteTextView.showProgress(false);
-                    }
-                    startTestcasesByLinkLoader();
-                    break;
-                case TESTCASES_LOADER_BY_LINK_ID:
-                    refreshSteps(getTestcasesFromCursor(data));
-                    break;
-            }
-        }} finally {
-            IOUtils.close(data);
-        }
     }
 
     @NonNull
@@ -414,10 +487,5 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             }
         }
         return listObject;
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        Logger.d(TAG, "onLoaderReset");
     }
 }

@@ -16,6 +16,7 @@ public class GTag extends DatabaseEntity<GTag>{
 
     private int mId;
     private String mIdLinkTestCase;
+    private String mIdLinkSpreadsheet;
     private String mName;
 
     public GTag() {
@@ -28,6 +29,7 @@ public class GTag extends DatabaseEntity<GTag>{
         mId = cursor.getInt(cursor.getColumnIndex(TagsTable._ID));
         mIdLinkTestCase = cursor.getString(cursor.getColumnIndex(TagsTable._TESTCASE_ID_LINK));
         mName = cursor.getString(cursor.getColumnIndex(TagsTable._NAME));
+        mIdLinkSpreadsheet = cursor.getString(cursor.getColumnIndex(TagsTable._SPREADSHEET_ID_LINK));
     }
 
     @Override
@@ -57,6 +59,14 @@ public class GTag extends DatabaseEntity<GTag>{
         this.mIdLinkTestCase = idLinkTestCase;
     }
 
+    public String getIdLinkSpreadsheet() {
+        return mIdLinkSpreadsheet;
+    }
+
+    public void setIdLinkSpreadsheet(String idLinkSpreadsheet) {
+        mIdLinkSpreadsheet = idLinkSpreadsheet;
+    }
+
     @Override
     public int getId() {
         return mId;
@@ -72,6 +82,7 @@ public class GTag extends DatabaseEntity<GTag>{
         ContentValues values = new ContentValues();
         values.put(TagsTable._TESTCASE_ID_LINK, mIdLinkTestCase);
         values.put(TagsTable._NAME, mName);
+        values.put(TagsTable._SPREADSHEET_ID_LINK, mIdLinkSpreadsheet);
         return values;
     }
 }

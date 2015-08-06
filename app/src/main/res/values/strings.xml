@@ -30,7 +30,6 @@
     <string name="error_message_connection">Check whether your internet connection is stable</string>
     <string name="error_button_close">Close</string>
 
-    <string name="label_title">"Title: "</string>
     <string name="label_activity">"Activity: "</string>
     <string name="label_added_step_without_screen">Added step without screen</string>
     <string name="label_add_spreadsheet_key">Add spreadsheet key</string>
@@ -39,6 +38,7 @@
     <string name="label_button_main">Main button</string>
     <string name="label_cancel_record">Cancel record</string>
     <string name="label_clear_environment">Clear environment</string>
+    <string name="label_clear_notes">Clear notes</string>
     <string name="label_close">Close</string>
     <string name="label_components">Component/s</string>
     <string name="label_create">Create</string>
@@ -52,13 +52,14 @@
     <string name="label_hide">Hide</string>
     <string name="label_issue_type">Issue Type</string>
     <string name="label_jira_url">JIRA Url</string>
+    <string name="label_last_spreadsheet">Last spreadsheet</string>
     <string name="label_list_step">Show list step</string>
     <string name="label_list_users">List users</string>
+    <string name="label_list_spreadsheets">List spreadsheets</string>
     <string name="label_locale">Locale</string>
     <string name="label_login">Log In</string>
     <string name="label_new_user">Add new QA</string>
-    <string name="label_palette">Palette</string>
-    <string name="label_clear_notes">Clear notes</string>
+    <string name="label_new_spreadsheet">Add new spreadsheet</string>
     <string name="label_undo">Undo</string>
     <string name="label_redo">Redo</string>
     <string name="label_no_email">" nor email and symbol @"</string>
@@ -66,6 +67,7 @@
     <string name="label_no_whitespace_margins">" cannot begin and end to whitespace"</string>
     <string name="label_open_amtt">Open Amtt</string>
     <string name="label_package_name">"Package name: "</string>
+    <string name="label_palette">Palette</string>
     <string name="label_password">Password</string>
     <string name="label_priority">Priority</string>
     <string name="label_project">Project</string>
@@ -73,7 +75,6 @@
     <string name="label_screen_orientation">"Screen orientation: "</string>
     <string name="label_show">Show</string>
     <string name="label_show_steps">Show recorded steps</string>
-    <string name="label_last_spreadsheet">Last spreadsheet</string>
     <string name="label_start_record">Start record</string>
     <string name="label_step">"Step "</string>
     <string name="label_steps">"Steps"</string>
@@ -82,6 +83,7 @@
     <string name="label_tags">Tags</string>
     <string name="label_tester">Assignee</string>
     <string name="label_time_zone">Time zone</string>
+    <string name="label_title">"Title: "</string>
     <string name="label_url">URL</string>
     <string name="label_user_name">Username</string>
 
@@ -169,5 +171,6 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_new_spreadsheet">NewSpreadsheetActivity</string>
 
 </resources>

@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="amtt.epam.com.amtt.ui.activities.ExpectedResultsActivity">
+
+    <item
+        android:id="@+id/action_add"
+        android:icon="@drawable/ic_action_action_note_add"
+        android:title="@string/label_new_spreadsheet"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_list"
+        android:icon="@drawable/ic_action_action_list"
+        android:title="@string/label_list_spreadsheets"
+        app:showAsAction="ifRoom" />
+</menu>

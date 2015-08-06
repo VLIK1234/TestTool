@@ -118,16 +118,18 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         }
                     }
                 });
-                GSpreadsheetContent.getInstance().getAllTestCases(new GetContentCallback<List<GEntryWorksheet>>() {
-                    @Override
-                    public void resultOfDataLoading(List<GEntryWorksheet> result) {
-                        if (result != null) {
-                            Logger.d(TAG, "Loading testcases finish");
-                        } else {
-                            Logger.d(TAG, "Loading testcases error");
+                if (ActiveUser.getInstance().getSpreadsheetLink() != null && !ActiveUser.getInstance().getSpreadsheetLink().equals("")) {
+                    GSpreadsheetContent.getInstance().getAllTestCases(ActiveUser.getInstance().getSpreadsheetLink(), new GetContentCallback<List<GEntryWorksheet>>() {
+                        @Override
+                        public void resultOfDataLoading(List<GEntryWorksheet> result) {
+                            if (result != null) {
+                                Logger.d(TAG, "Loading testcases finish");
+                            } else {
+                                Logger.d(TAG, "Loading testcases error");
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         };
         worker.schedule(task, 2, TimeUnit.SECONDS);

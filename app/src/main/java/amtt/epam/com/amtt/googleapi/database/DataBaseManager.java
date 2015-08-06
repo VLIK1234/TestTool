@@ -24,7 +24,7 @@ import amtt.epam.com.amtt.googleapi.database.table.WorksheetTable;
 
 public class DataBaseManager extends SQLiteOpenHelper {
 
-    private static final Integer DATA_BASE_VERSION = 4;
+    private static final Integer DATA_BASE_VERSION = 5;
     private static final String DATA_BASE_NAME = "testcase.db";
     private static final List<Class> sTables;
 

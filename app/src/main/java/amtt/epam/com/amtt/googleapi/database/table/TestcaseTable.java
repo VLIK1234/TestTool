@@ -17,6 +17,7 @@ public class TestcaseTable extends Table {
 
     public static final String _TESTCASE_ID_LINK = "_testcase_id_link";
     public static final String _WORKSHEET_ID_LINK = "_worksheet_id_link";
+    public static final String _SPREADSHEET_ID_LINK = "_spreadsheet_id_link";
     public static final String _UPDATED = "_updated";
     public static final String _TITLE = "_title";
     public static final String _PATH = "_path";
@@ -39,7 +40,8 @@ public class TestcaseTable extends Table {
             _STEPS,
             _EXPECTED_RESULTS,
             _PATH,
-            _STATUS
+            _STATUS,
+            _SPREADSHEET_ID_LINK
     };
 
     static {
@@ -55,7 +57,7 @@ public class TestcaseTable extends Table {
             add(_EXPECTED_RESULTS);
             add(_PATH);
             add(_STATUS);
-
+            add( _SPREADSHEET_ID_LINK);
         }});
         sColumnsMap.put(BaseColumns.TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);

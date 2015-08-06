@@ -26,9 +26,9 @@ public class ContentFromBackend {
         return ContentFromBackendHolder.INSTANCE;
     }
 
-    public void getSpreadsheetAsynchronously(ContentLoadingCallback<GSpreadsheet> contentLoadingCallback,
+    public void getSpreadsheetAsynchronously(String idLink, ContentLoadingCallback<GSpreadsheet> contentLoadingCallback,
                                           GetContentCallback getContentCallback) {
-        GSpreadsheetApi.get().loadDocument(GoogleApiConst.SPREADSHEET_PATH, SpreadsheetProcessor.NAME,
+        GSpreadsheetApi.get().loadDocument(idLink, SpreadsheetProcessor.NAME,
                 getCallback(ContentConst.SPREADSHEET_RESPONSE, contentLoadingCallback, getContentCallback));
     }
 

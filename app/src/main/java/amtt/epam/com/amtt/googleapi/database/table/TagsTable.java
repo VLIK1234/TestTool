@@ -17,13 +17,15 @@ public class TagsTable extends Table {
 
     public static final String _TESTCASE_ID_LINK = "_testcase_id_link";
     public static final String _NAME = "_name";
+    public static final String _SPREADSHEET_ID_LINK = "_spreadsheet_id_link";
 
     private static final MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
             _ID,
             _TESTCASE_ID_LINK,
-            _NAME
+            _NAME,
+            _SPREADSHEET_ID_LINK
     };
 
     static {
@@ -31,6 +33,7 @@ public class TagsTable extends Table {
         sColumnsMap.put(BaseColumns.TYPE_TEXT, new ArrayList<String>() {{
             add(_TESTCASE_ID_LINK);
             add(_NAME);
+            add( _SPREADSHEET_ID_LINK);
         }});
         sColumnsMap.put(BaseColumns.TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);

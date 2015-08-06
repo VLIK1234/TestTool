@@ -8,6 +8,7 @@ import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
+import amtt.epam.com.amtt.googleapi.database.table.SpreadsheetTable;
 import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
 
 /**
@@ -21,12 +22,24 @@ public class ContentFromDatabase {
         DbObjectManager.INSTANCE.add(spreadsheet, result);
     }
 
+    public static void getSpreadsheet(String spreadsheetIdLink, IResult<List<GSpreadsheet>> result) {
+        DbObjectManager.INSTANCE.query(new GSpreadsheet(), null, new String[]{SpreadsheetTable._SPREADSHEET_ID_LINK}, new String[]{spreadsheetIdLink}, result);
+    }
+
     public static void setWorksheet(GWorksheet worksheet, IResult<Integer> result) {
         DbObjectManager.INSTANCE.add(worksheet, result);
     }
 
     public static void setTestCase(GEntryWorksheet testCase, IResult<Integer> result) {
         DbObjectManager.INSTANCE.add(testCase, result);
+    }
+
+    public static void getTestCasesByLinkSpreadsheet(String idLinkSpreadsheet, IResult<List<GEntryWorksheet>> result) {
+        DbObjectManager.INSTANCE.query(new GEntryWorksheet(), null, new String[]{TestcaseTable._SPREADSHEET_ID_LINK}, new String[]{idLinkSpreadsheet}, result);
+    }
+
+    public static void getTestCasesByLinks(String idLink, String idLinkSpreadsheet, IResult<List<GEntryWorksheet>> result) {
+        DbObjectManager.INSTANCE.query(new GEntryWorksheet(), null, new String[]{TestcaseTable._SPREADSHEET_ID_LINK, TestcaseTable._TESTCASE_ID_LINK}, new String[]{idLinkSpreadsheet, idLink}, result);
     }
 
     public static void setTags(List<GTag> tags, IResult<Integer> result) {
