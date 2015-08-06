@@ -46,10 +46,9 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_REFRESH = 100;
-
     private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
     private static final int LOGIN_ACTIVITY_REQUEST_CODE = 2;
-
+    private static final int SPREADSHEET_ACTIVITY_REQUEST_CODE = 3;
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 2;
     private TextView mNameTextView;
     private TextView mEmailAddressTextView;
@@ -60,8 +59,6 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     private ImageView mUserImageImageView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private UserInfoHandler mHandler;
-    private final Boolean isNewUser = false;
-    private Button mAddSpreadsheetButton;
 
     public static class UserInfoHandler extends Handler {
 
@@ -101,11 +98,7 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     @Override
     protected void onPause() {
         super.onPause();
-        if (isNewUser) {
-            TopButtonService.start(getBaseContext());
-        } else {
             TopButtonService.sendActionChangeTopButtonVisibility(true);
-        }
     }
 
     @Override
@@ -119,11 +112,11 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
         switch (item.getItemId()) {
             case R.id.action_add: {
                 TopButtonService.close(getBaseContext());
-                startActivityForResult(new Intent(this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
+                startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
             }
             return true;
             case R.id.action_list: {
-                startActivityForResult(new Intent(this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
+                startActivityForResult(new Intent(UserInfoActivity.this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
             }
             return true;
             case android.R.id.home: {
@@ -157,6 +150,17 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
                         startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
                     }
                     break;
+
+                case SPREADSHEET_ACTIVITY_REQUEST_CODE:
+                    if (data != null) {
+                        Bundle args = new Bundle();
+                        long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
+                        args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
+                        getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
+                    } else {
+                       // startActivityForResult(new Intent(UserInfoActivity.this, SpreadsheetActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
+                    }
+                    break;
             }
         } else if (resultCode == RESULT_CANCELED) {
             switch (requestCode) {
@@ -176,11 +180,11 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
         mJiraUrlTextView = (TextView) findViewById(R.id.tv_jira_url);
         mUserImageImageView = (ImageView) findViewById(R.id.tv_avatar);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        mAddSpreadsheetButton = (Button) findViewById(R.id.btn_add_spreadsheet);
-        mAddSpreadsheetButton.setOnClickListener(new View.OnClickListener() {
+        Button addSpreadsheetButton = (Button) findViewById(R.id.btn_add_spreadsheet);
+        addSpreadsheetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivityForResult(new Intent(UserInfoActivity.this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
             }
         });
     }

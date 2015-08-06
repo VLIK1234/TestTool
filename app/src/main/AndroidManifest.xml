@@ -45,9 +45,8 @@
 
         <activity
             android:name=".ui.activities.CreateIssueActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_create_issue" />
-
+            android:label="@string/title_activity_create_issue"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name=".contentprovider.AmttContentProvider"
@@ -59,10 +58,10 @@
             android:label="@string/title_activity_steps"
             android:launchMode="singleTask"
             android:noHistory="false"
-            android:parentActivityName=".ui.activities.MainActivity">
+            android:parentActivityName=".ui.activities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.MainActivity"/>
+                android:value=".ui.activities.MainActivity" />
         </activity>
         <activity
             android:name=".ui.activities.LoginActivity"
@@ -86,14 +85,11 @@
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:theme="@style/DialogActivity" />
-
-
         <activity
             android:name=".ui.activities.PaintActivity"
             android:label="@string/title_activity_paint"
             android:screenOrientation="portrait"
-            android:theme="@style/MaterialTransparentActionBar"/>
-
+            android:theme="@style/MaterialTransparentActionBar" />
 
         <service
             android:name=".service.AttachmentService"
@@ -109,7 +105,6 @@
                 <action android:name="EXCEPTION_ANSWER" />
                 <action android:name="REQUEST_TAKE_ONLY_INFO" />
 
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
@@ -117,50 +112,58 @@
         <activity
             android:name=".ui.activities.ExpectedResultsActivity"
             android:label="@string/title_activity_expected_results"
-            android:parentActivityName=".ui.activities.MainActivity">
+            android:parentActivityName=".ui.activities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.MainActivity"/>
+                android:value=".ui.activities.MainActivity" />
         </activity>
         <activity
             android:name=".ui.activities.DetailActivity"
             android:label="@string/title_activity_detail"
             android:noHistory="true"
-            android:parentActivityName=".ui.activities.ExpectedResultsActivity">
+            android:parentActivityName=".ui.activities.ExpectedResultsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.ExpectedResultsActivity"/>
+                android:value=".ui.activities.ExpectedResultsActivity" />
         </activity>
+
         <provider
             android:name=".googleapi.database.contentprovider.GSContentProvider"
             android:authorities="amtt.epam.com.amtt.googleapi.database.contentprovider"
             android:exported="true" />
+
         <activity
             android:name=".ui.activities.LogActivity"
-            android:launchMode="standard"
-            android:noHistory="true"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_log"
-            android:parentActivityName=".ui.activities.MainActivity">
+            android:launchMode="standard"
+            android:noHistory="true"
+            android:parentActivityName=".ui.activities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.MainActivity"/>
+                android:value=".ui.activities.MainActivity" />
         </activity>
-
         <activity
             android:name=".ui.activities.TakeStepActivity"
-            android:screenOrientation="sensor"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/DialogActivity"
-            android:label="@string/title_activity_take_step" />
-
+            android:label="@string/title_activity_take_step"
+            android:screenOrientation="sensor"
+            android:theme="@style/DialogActivity" />
         <activity
             android:name=".ui.activities.GifPlayerActivity"
             android:label="@string/title_activity_gif_player"
-            android:parentActivityName=".ui.activities.MainActivity">
+            android:parentActivityName=".ui.activities.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.MainActivity"/>
+                android:value=".ui.activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.activities.SpreadsheetActivity"
+            android:label="@string/title_activity_spreadsheet"
+            android:parentActivityName=".ui.activities.UserInfoActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="amtt.epam.com.amtt.ui.activities.UserInfoActivity" />
         </activity>
     </application>
 

@@ -73,6 +73,7 @@
     <string name="label_screen_orientation">"Screen orientation: "</string>
     <string name="label_show">Show</string>
     <string name="label_show_steps">Show recorded steps</string>
+    <string name="label_last_spreadsheet">Last spreadsheet</string>
     <string name="label_start_record">Start record</string>
     <string name="label_step">"Step "</string>
     <string name="label_steps">"Steps"</string>
@@ -164,5 +165,9 @@
     <string name="label_message_delete_log_dialiog">Log will be delete from attachment. Are you sure?</string>
     <string name="title_gif_cant_be_created">Gif cant\'t be crated</string>
     <string name="message_gif_cant_be_created">The number of images is too large. Remove few steps and try again.</string>
+    <string name="title_activity_spreadsheet">SpreadsheetActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
