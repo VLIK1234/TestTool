@@ -11,6 +11,7 @@ import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
+import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -192,15 +193,22 @@ public class GSpreadsheetContent {
     }
 
     public void getAllTestCases(String idSpreadsheetLink, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
-            getAllTestCasesAsynchronously(idSpreadsheetLink, getContentCallback);
+            getAllTestCasesSynchronously(idSpreadsheetLink, getContentCallback);
     }
 
-    private void getAllTestCasesAsynchronously(String idSpreadsheetLink, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
+    private void getAllTestCasesSynchronously(String idSpreadsheetLink, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
         ContentFromDatabase.getTestCasesByLinkSpreadsheet(idSpreadsheetLink, new IResult<List<GEntryWorksheet>>() {
             @Override
             public void onResult(List<GEntryWorksheet> result) {
                 if (result != null && !result.isEmpty()) {
                     getContentCallback.resultOfDataLoading(result);
+                } else {
+                    getSpreadsheetAsynchronously(ActiveUser.getInstance().getSpreadsheetLink(), new GetContentCallback<GSpreadsheet>() {
+                        @Override
+                        public void resultOfDataLoading(GSpreadsheet result) {
+
+                        }
+                    });
                 }
             }
 
@@ -209,26 +217,6 @@ public class GSpreadsheetContent {
                 Logger.e(TAG, e.getMessage(), e);
             }
         });
-
-   /*     getSpreadsheetAsynchronously(idSpreadsheetLink, new GetContentCallback<GSpreadsheet>() {
-            @Override
-            public void resultOfDataLoading(GSpreadsheet result) {
-                if (result != null) {
-                    getWorksheet(getLinkWorksheet(), new GetContentCallback<GWorksheet>() {
-                        @Override
-                        public void resultOfDataLoading(GWorksheet result) {
-                            if (result != null) {
-                                getContentCallback.resultOfDataLoading(result.getEntry());
-                            } else {
-                                Logger.d(TAG, "Worksheet == null");
-                            }
-                        }
-                    });
-                } else {
-                    Logger.d(TAG, "Spreadsheet == null");
-                }
-            }
-        });*/
     }
     //endregion
 
