@@ -524,7 +524,7 @@ public class CreateIssueActivity extends BaseActivity
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (count == 1) {
+                if (count > 0) {
                     if (s.length() > 2) {
                         if (!mIsAssignableSelected) {
                             if (InputsUtil.getWhitespacesValidator().validate(mAssignableAutocompleteView)) {
