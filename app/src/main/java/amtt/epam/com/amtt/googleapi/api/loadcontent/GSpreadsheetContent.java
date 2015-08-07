@@ -44,8 +44,8 @@ public class GSpreadsheetContent {
         ContentFromDatabase.setSpreadsheet(result, new IResult<Integer>() {
             @Override
             public void onResult(Integer res) {
-                Logger.d(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + " added " + String.valueOf(res));
                 setWorksheets(result);
+                Logger.d(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + " added " + String.valueOf(res));
             }
 
             @Override
@@ -206,37 +206,27 @@ public class GSpreadsheetContent {
     }
 
     private void getAllTestCasesSynchronously(final String idSpreadsheetLink, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
-        ContentFromDatabase.getTestCasesByLinkSpreadsheet(idSpreadsheetLink, new IResult<List<GEntryWorksheet>>() {
-            @Override
-            public void onResult(List<GEntryWorksheet> result) {
-                if (result != null && !result.isEmpty()) {
-                    getContentCallback.resultOfDataLoading(result);
-                } else {
-                    getAllTestCasesAsynchronously(idSpreadsheetLink, getContentCallback);
+        if (idSpreadsheetLink != null && !idSpreadsheetLink.equals("")) {
+            ContentFromDatabase.getTestCasesByLinkSpreadsheet(idSpreadsheetLink, new IResult<List<GEntryWorksheet>>() {
+                @Override
+                public void onResult(List<GEntryWorksheet> result) {
+                    if (result != null && !result.isEmpty()) {
+                        getContentCallback.resultOfDataLoading(result);
+                    } else {
+                        getContentCallback.resultOfDataLoading(null);
+                    }
                 }
-            }
 
-            @Override
-            public void onError(Exception e) {
-                Logger.e(TAG, e.getMessage(), e);
-                getAllTestCasesAsynchronously(idSpreadsheetLink, getContentCallback);
-            }
-        });
-    }
-
-    private void getAllTestCasesAsynchronously(final String idSpreadsheetLink, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
-        getSpreadsheetAsynchronously(idSpreadsheetLink, new GetContentCallback<GSpreadsheet>() {
-            @Override
-            public void resultOfDataLoading(GSpreadsheet result) {
-                if (result != null && result.getEntry() != null && !result.getEntry().isEmpty()) {
-                    //TODO if testcases in worksheets null or empty?? recursion
-                    getAllTestCasesSynchronously(idSpreadsheetLink, getContentCallback);
-                } else {
-                    Logger.e(TAG, "Spreadsheet or Worksheets invalide");
+                @Override
+                public void onError(Exception e) {
+                    Logger.e(TAG, e.getMessage(), e);
                     getContentCallback.resultOfDataLoading(null);
                 }
-            }
-        });
+            });
+        } else {
+            getContentCallback.resultOfDataLoading(null);
+            Logger.d(TAG, "Spreadsheet link invalide");
+        }
     }
 
     public void getTestcasesByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {

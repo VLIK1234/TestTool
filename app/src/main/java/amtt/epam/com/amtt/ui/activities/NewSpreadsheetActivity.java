@@ -57,6 +57,7 @@ public class NewSpreadsheetActivity extends BaseActivity {
                                 public void run() {
                                     if (result != null) {
                                         mAddSpreadsheet.setEnabled(true);
+                                        ActiveUser.getInstance().setSpreadsheetLink(mIdLink);
                                     } else {
                                         Toast.makeText(NewSpreadsheetActivity.this, "Invalide key", Toast.LENGTH_LONG).show();
                                         mAddSpreadsheet.setEnabled(false);
@@ -73,7 +74,6 @@ public class NewSpreadsheetActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (mIdLink != null) {
-                    ActiveUser.getInstance().setSpreadsheetLink(mIdLink);
                     StepUtil.checkUser(ActiveUser.getInstance().getUserName(), ActiveUser.getInstance().getUrl(), new IResult<List<JUserInfo>>() {
                         @Override
                         public void onResult(List<JUserInfo> result) {
