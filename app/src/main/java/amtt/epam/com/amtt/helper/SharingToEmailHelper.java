@@ -19,12 +19,12 @@ import java.util.regex.Pattern;
  */
 public class SharingToEmailHelper {
 
-    public static void senAttachmentImage(Activity activity, ArrayList<String> listUri){
+    public static void senAttachmentImage(Activity activity, String message, ArrayList<String> listUri){
         Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         emailIntent.setType("*/*");
         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{getCurrentUsersEmail(activity)});
         emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Attachment from amtt");
-        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Amtt tool generated atachment");
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message);
         emailIntent.putExtra(Intent.EXTRA_STREAM, convertListFileToListUri(listUri));
         activity.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
     }

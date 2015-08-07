@@ -204,7 +204,8 @@ public class CreateIssueActivity extends BaseActivity
             @Override
             public void onClick(View v) {
                 if (mAdapter.getAttachmentFilePathList().size()> 0) {
-                    SharingToEmailHelper.senAttachmentImage(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
+                    SharingToEmailHelper.senAttachmentImage(CreateIssueActivity.this, mEnvironmentTextInput.getText().toString(),
+                            mAdapter.getAttachmentFilePathList());
                 }else{
                     Toast.makeText(getBaseContext(), R.string.error_message_share_attachment, Toast.LENGTH_SHORT).show();
                 }
