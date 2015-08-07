@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.googleapi.api.loadcontent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.database.object.DbObjectManager;
@@ -9,6 +10,7 @@ import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
 import amtt.epam.com.amtt.googleapi.database.table.SpreadsheetTable;
+import amtt.epam.com.amtt.googleapi.database.table.TagsTable;
 import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
 
 /**
@@ -47,8 +49,36 @@ public class ContentFromDatabase {
         DbObjectManager.INSTANCE.add(list, result);
     }
 
+    public static void getTagsByIdLinkSpreadsheet(String idLinkSpreadsheet, IResult<List<GTag>> result) {
+        DbObjectManager.INSTANCE.query(new GTag(), null, new String[]{TagsTable._SPREADSHEET_ID_LINK}, new String[]{idLinkSpreadsheet}, result);
+    }
+
     public static void getTestcaseByIdLink(String idLink, IResult<List<GEntryWorksheet>> result) {
         DbObjectManager.INSTANCE.query(new GEntryWorksheet(), null, new String[]{TestcaseTable._TESTCASE_ID_LINK}, new String[]{idLink}, result);
+    }
+
+    public static void getTestcasesByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, IResult<List<GEntryWorksheet>> result) {
+        String[] selection = new String[testcasesIdLinks.size()];
+        String[] selectionArgs = new String[testcasesIdLinks.size()];
+        for(int i = 0; i<testcasesIdLinks.size();i++){
+            selection[i] = TestcaseTable._TESTCASE_ID_LINK;
+            selectionArgs[i] = testcasesIdLinks.get(i);
+        }
+        selection[testcasesIdLinks.size()] = TestcaseTable._SPREADSHEET_ID_LINK;
+        selectionArgs[testcasesIdLinks.size()] = spreadsheetLink;
+        DbObjectManager.INSTANCE.query(new GEntryWorksheet(), null, selection, selectionArgs, result);
+    }
+
+    public static void getTagsByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, IResult<List<GTag>> result) {
+        String[] selection = new String[testcasesIdLinks.size()];
+        String[] selectionArgs = new String[testcasesIdLinks.size()];
+        for(int i = 0; i<testcasesIdLinks.size();i++){
+            selection[i] = TagsTable._TESTCASE_ID_LINK;
+            selectionArgs[i] = testcasesIdLinks.get(i);
+        }
+        selection[testcasesIdLinks.size()] = TagsTable._SPREADSHEET_ID_LINK;
+        selectionArgs[testcasesIdLinks.size()] = spreadsheetLink;
+        DbObjectManager.INSTANCE.query(new GTag(), null, selection, selectionArgs, result);
     }
 
 }

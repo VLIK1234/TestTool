@@ -24,6 +24,7 @@ public class GSpreadsheetContent {
     //region Variables
     private final String TAG = this.getClass().getSimpleName();
     private GSpreadsheet mSpreadsheet;
+
     //endregion
 
     private static class XMLContentHolder {
@@ -145,6 +146,14 @@ public class GSpreadsheetContent {
             }
         }, getContentCallback);
     }
+
+    public String getLinkWorksheet() {
+        if (mSpreadsheet != null && mSpreadsheet.getListWorksheets() != null) {
+            return mSpreadsheet.getListWorksheets().get(0);
+        } else {
+            return null;
+        }
+    }
     //endregion
 
     //region TestCase
@@ -154,7 +163,7 @@ public class GSpreadsheetContent {
             public void onResult(List<GEntryWorksheet> result) {
                 if (result != null && !result.isEmpty()) {
                     getContentCallback.resultOfDataLoading(result.get(0));
-                }else {
+                } else {
                     getContentCallback.resultOfDataLoading(null);
                 }
             }
@@ -196,27 +205,63 @@ public class GSpreadsheetContent {
             getAllTestCasesSynchronously(idSpreadsheetLink, getContentCallback);
     }
 
-    private void getAllTestCasesSynchronously(String idSpreadsheetLink, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
+    private void getAllTestCasesSynchronously(final String idSpreadsheetLink, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
         ContentFromDatabase.getTestCasesByLinkSpreadsheet(idSpreadsheetLink, new IResult<List<GEntryWorksheet>>() {
             @Override
             public void onResult(List<GEntryWorksheet> result) {
                 if (result != null && !result.isEmpty()) {
                     getContentCallback.resultOfDataLoading(result);
                 } else {
-                    getSpreadsheetAsynchronously(ActiveUser.getInstance().getSpreadsheetLink(), new GetContentCallback<GSpreadsheet>() {
-                        @Override
-                        public void resultOfDataLoading(GSpreadsheet result) {
-
-                        }
-                    });
+                    getAllTestCasesAsynchronously(idSpreadsheetLink, getContentCallback);
                 }
             }
 
             @Override
             public void onError(Exception e) {
                 Logger.e(TAG, e.getMessage(), e);
+                getAllTestCasesAsynchronously(idSpreadsheetLink, getContentCallback);
             }
         });
+    }
+
+    private void getAllTestCasesAsynchronously(final String idSpreadsheetLink, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
+        getSpreadsheetAsynchronously(idSpreadsheetLink, new GetContentCallback<GSpreadsheet>() {
+            @Override
+            public void resultOfDataLoading(GSpreadsheet result) {
+                if (result != null && result.getEntry() != null && !result.getEntry().isEmpty()) {
+                    //TODO if testcases in worksheets null or empty?? recursion
+                    getAllTestCasesSynchronously(idSpreadsheetLink, getContentCallback);
+                } else {
+                    Logger.e(TAG, "Spreadsheet or Worksheets invalide");
+                    getContentCallback.resultOfDataLoading(null);
+                }
+            }
+        });
+    }
+
+    public void getTestcasesByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
+        if (spreadsheetLink != null && !spreadsheetLink.equals("") && testcasesIdLinks != null && !testcasesIdLinks.isEmpty()) {
+            ContentFromDatabase.getTestcasesByIdLinksTestcases(spreadsheetLink, testcasesIdLinks, new IResult<List<GEntryWorksheet>>() {
+                @Override
+                public void onResult(List<GEntryWorksheet> result) {
+                    if (result != null && result.isEmpty()) {
+                        getContentCallback.resultOfDataLoading(result);
+                    } else {
+                        Logger.d(TAG, "testcases not found");
+                        getContentCallback.resultOfDataLoading(null);
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    getContentCallback.resultOfDataLoading(null);
+                    Logger.e(TAG, e.getMessage(), e);
+                }
+            });
+        } else {
+            Logger.d(TAG, "testcases not found, spreadsheetLink or testcasesIdLinks invalide");
+            getContentCallback.resultOfDataLoading(null);
+        }
     }
     //endregion
 
@@ -246,14 +291,55 @@ public class GSpreadsheetContent {
             });
         }
     }
-    //endregion
 
-    public String getLinkWorksheet() {
-        if (mSpreadsheet != null && mSpreadsheet.getListWorksheets() != null) {
-            return mSpreadsheet.getListWorksheets().get(0);
+    public void getAllTags(String spreadsheetIdLink, final GetContentCallback<List<GTag>> getContentCallback) {
+        if (spreadsheetIdLink != null && !spreadsheetIdLink.equals("")) {
+            ContentFromDatabase.getTagsByIdLinkSpreadsheet(spreadsheetIdLink, new IResult<List<GTag>>() {
+                @Override
+                public void onResult(List<GTag> result) {
+                    if (result != null) {
+                        getContentCallback.resultOfDataLoading(result);
+                    } else {
+                        getContentCallback.resultOfDataLoading(null);
+                        Logger.d(TAG, "Tags not found in db");
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Logger.e(TAG, e.getMessage(), e);
+                    getContentCallback.resultOfDataLoading(null);
+                }
+            });
         } else {
-            return null;
+            getContentCallback.resultOfDataLoading(null);
+            Logger.d(TAG, "SpreadsheetLink invalide");
         }
     }
 
+    public void getTagsByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, final GetContentCallback<List<GTag>> getContentCallback) {
+        if (spreadsheetLink != null && !spreadsheetLink.equals("") && testcasesIdLinks != null && !testcasesIdLinks.isEmpty()) {
+            ContentFromDatabase.getTagsByIdLinksTestcases(spreadsheetLink, testcasesIdLinks, new IResult<List<GTag>>() {
+                @Override
+                public void onResult(List<GTag> result) {
+                    if (result != null) {
+                        getContentCallback.resultOfDataLoading(result);
+                    } else {
+                        Logger.d(TAG, "tags not found");
+                        getContentCallback.resultOfDataLoading(null);
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    getContentCallback.resultOfDataLoading(null);
+                    Logger.e(TAG, e.getMessage(), e);
+                }
+            });
+        } else {
+            Logger.d(TAG, "tags not found, spreadsheetLink or testcasesIdLinks invalide");
+            getContentCallback.resultOfDataLoading(null);
+        }
+    }
+    //endregion
 }
