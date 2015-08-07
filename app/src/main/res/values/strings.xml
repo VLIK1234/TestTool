@@ -166,5 +166,7 @@
     <string name="label_message_delete_log_dialiog">Log will be delete from attachment. Are you sure?</string>
     <string name="title_gif_cant_be_created">Gif cant\'t be crated</string>
     <string name="message_gif_cant_be_created">The number of images is too large. Remove few steps and try again.</string>
+    <string name="label_share_attachment">Share attachment to email</string>
+    <string name="error_message_share_attachment">Don\'t have attachment for sharing.</string>
 
 </resources>

@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -53,6 +52,7 @@ import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.helper.DialogHelper;
+import amtt.epam.com.amtt.helper.SharingToEmailHelper;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -109,6 +109,7 @@ public class CreateIssueActivity extends BaseActivity
     private LayoutInflater mLayoutInflater;
     private boolean mIsAssignableSelected;
     private Bundle mBundle;
+    private Button mShareButton;
 
     public static class AssigneeHandler extends Handler {
 
@@ -194,6 +195,21 @@ public class CreateIssueActivity extends BaseActivity
         initClearEnvironmentButton();
         initGifAttachmentControls();
         mScrollView = (ScrollView) findViewById(R.id.scroll_view);
+        initShareAttachmentButton();
+    }
+
+    private void initShareAttachmentButton(){
+        mShareButton = (Button) findViewById(R.id.bt_share_attachmnet);
+        mShareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mAdapter.getAttachmentFilePathList().size()> 0) {
+                    SharingToEmailHelper.senAttachmentImage(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
+                }else{
+                    Toast.makeText(getBaseContext(), R.string.error_message_share_attachment, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void initCreateAnotherCheckBox() {
