@@ -11,7 +11,6 @@ import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
-import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.Logger;
 
 /**

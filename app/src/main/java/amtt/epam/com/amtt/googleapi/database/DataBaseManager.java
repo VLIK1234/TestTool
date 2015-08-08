@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.database.constant.BaseColumns;
-import amtt.epam.com.amtt.database.constant.SqlQueryConstants;
 import amtt.epam.com.amtt.database.table.Table;
 import amtt.epam.com.amtt.googleapi.database.table.SpreadsheetTable;
 import amtt.epam.com.amtt.googleapi.database.table.TagsTable;

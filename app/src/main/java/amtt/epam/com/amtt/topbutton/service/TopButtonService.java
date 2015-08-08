@@ -178,6 +178,8 @@ public class TopButtonService extends Service{
             mTopButtonView = null;
         }
         stopSelf();
+        NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        manager.cancelAll();
     }
 
     private void showNotification() {
@@ -242,7 +244,7 @@ public class TopButtonService extends Service{
     }
 
     private void checkCountTestProject() {
-        if (TestUtil.getTestedApps().length>1) {
+        if (TestUtil.getTestedApps()[0].length>1) {
             Intent intent = new Intent(this, SettingActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);

@@ -15,6 +15,7 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 public class AskExitActivity  extends Activity {
 
+    boolean mIsDismiss = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,21 +26,22 @@ public class AskExitActivity  extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         TopButtonService.sendActionChangeTopButtonVisibility(true);
-                        finish();
                     }
                 })
                 .setPositiveButton(getResources().getString(R.string.label_close), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         TopButtonService.close(getBaseContext());
-                        finish();
+                        mIsDismiss = false;
                     }
                 })
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         finish();
-                        TopButtonService.sendActionChangeTopButtonVisibility(true);
+                        if (mIsDismiss) {
+                            TopButtonService.sendActionChangeTopButtonVisibility(true);
+                        }
                     }
                 })
                 .show();

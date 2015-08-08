@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.ui.fragments;
 
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -8,6 +9,9 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 
+import java.util.ArrayList;
+
+import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.PreferenceUtil;
@@ -47,9 +51,13 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     private void initListValue() {
-        String[] array = TestUtil.getTestedApps();
-        projectName.setEntries(array);
-        projectName.setEntryValues(array);
+        String[][] testedApps = TestUtil.getTestedApps();
+        try{
+            projectName.setEntries(testedApps[0]);
+            projectName.setEntryValues(testedApps[1]);
+        }catch (IllegalStateException e){
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -122,7 +122,9 @@
     <string name="cancel">Cancel</string>
     <string name="label_attach_gif">Attach gif image</string>
     <string name="title_gif_isnt_saved">Gif image isn\'t saved!</string>
+    <string name="title_gif_error">Gif image isn\'t created!</string>
     <string name="message_gif_isnt_saved">Something went wrong while saving gif file.</string>
+    <string name="message_gif_error">Something went wrong while creating gif.</string>
     <string name="key_gif_info_dialog">gif_info_dialog</string>
     <string name="title_gif_info">Please, be patient!</string>
     <string name="message_gif_info">The amount of time that is spent for generating gif file depends on the number of screenshots and their resolution, e.g if there is two screenshots operation doesn\'t take more than five minutes.</string>
@@ -172,5 +174,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_new_spreadsheet">NewSpreadsheetActivity</string>
+    <string name="label_share_attachment">Share attachment to email</string>
+    <string name="error_message_share_attachment">Don\'t have attachment for sharing.</string>
 
 </resources>

@@ -111,6 +111,7 @@
                 android:layout_marginTop="12dp"
                 android:scrollbars="horizontal"
                 tools:context=".ui.activities.CreateIssueActivity"/>
+
             <RelativeLayout
                 style="@style/CreateIssueRelativeContainer"
                 android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
@@ -121,6 +122,7 @@
                     android:id="@+id/cb_gif_attachment"
                     style="@style/CreateIssueCheckBox"
                     android:text="@string/label_attach_gif"
+                    android:visibility="visible"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -145,6 +147,15 @@
                     android:layout_height="wrap_content"/>
 
             </RelativeLayout>
+
+            <Button
+                android:id="@+id/bt_share_attachmnet"
+                style="@style/Material.CreateIssueButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_gravity="end"
+                android:text="@string/label_share_attachment"/>
             <!-- *******ATTACHMENT END*************************************************-->
 
             <!-- *******AFFECTS VERSIONS BEGIN****************************************-->

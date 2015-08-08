@@ -33,8 +33,6 @@ import amtt.epam.com.amtt.util.IOUtils;
  */
 public class StepUtil {
 
-    public static final String CACHE_FOLDER = Environment.getExternalStorageDirectory() + "/Amtt_cache";
-
     public static void saveStep(String title, String activityClassName, String packageName, String mScreenPath, String listFragments) {
         Step step = new Step(title, activityClassName, packageName, mScreenPath, listFragments);
         DbObjectManager.INSTANCE.add(step, null);
@@ -119,13 +117,13 @@ public class StepUtil {
         for (Step step : stepsList) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 3;
-            bitmaps.add(BitmapFactory.decodeFile(step.getScreenshotPath()));
+            bitmaps.add(BitmapFactory.decodeFile(step.getScreenshotPath(), options));
         }
         return bitmaps;
     }
 
     public static void removeAllAttachFile() {
-        File folderPath = new File(CACHE_FOLDER);
+        File folderPath = new File(FileUtil.getCacheAmttDir());
         File[] allAttachFile = folderPath.listFiles();
         if (allAttachFile != null) {
             for (File file : allAttachFile) {

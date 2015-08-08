@@ -127,9 +127,9 @@ public class GEntryWorksheet extends GEntry<GEntryWorksheet> {
         Context context = AmttApplication.getContext();
         SpannableStringBuilder fullDescription = new SpannableStringBuilder();
         fullDescription.append(Html.fromHtml("<h5>" + context.getString(R.string.label_steps) + "</h5>"));
-        fullDescription.append(Html.fromHtml(mTestStepsGSX));
+        fullDescription.append(Html.fromHtml(mTestStepsGSX.replaceAll("\n","<br/>")));
         fullDescription.append(Html.fromHtml("<br/>"+"<h5>" + context.getString(R.string.label_expected_result) + "</h5>"));
-        fullDescription.append(Html.fromHtml(mExpectedResultGSX));
+        fullDescription.append(Html.fromHtml(mExpectedResultGSX.replaceAll("\n","<br/>")));
         return fullDescription;
     }
 

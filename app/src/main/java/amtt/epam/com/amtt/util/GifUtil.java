@@ -1331,7 +1331,7 @@ public final class GifUtil {
 
     public static final int REPEAT_AD_INFINITUM = 0;
     public static final float ONE_FRAME_PER_SECOND = 1;
-    public static final String FILE_PATH = StepUtil.CACHE_FOLDER + "/StepsSequence.gif";
+    public static final String FILE_PATH = FileUtil.getCacheAmttDir() + "StepsSequence.gif";
     private static GifTask mTask;
 
     public static void createGif(ProgressListener listener, final List<Step> stepList) {

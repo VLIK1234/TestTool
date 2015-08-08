@@ -52,6 +52,7 @@ import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.util.StepUtil;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.helper.DialogHelper;
+import amtt.epam.com.amtt.helper.SharingToEmailHelper;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -108,6 +109,7 @@ public class CreateIssueActivity extends BaseActivity
     private LayoutInflater mLayoutInflater;
     private boolean mIsAssignableSelected;
     private Bundle mBundle;
+    private Button mShareButton;
 
     public static class AssigneeHandler extends Handler {
 
@@ -193,6 +195,22 @@ public class CreateIssueActivity extends BaseActivity
         initClearEnvironmentButton();
         initGifAttachmentControls();
         mScrollView = (ScrollView) findViewById(R.id.scroll_view);
+        initShareAttachmentButton();
+    }
+
+    private void initShareAttachmentButton(){
+        mShareButton = (Button) findViewById(R.id.bt_share_attachmnet);
+        mShareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mAdapter.getAttachmentFilePathList().size()> 0) {
+                    SharingToEmailHelper.senAttachmentImage(CreateIssueActivity.this, mEnvironmentTextInput.getText().toString(),
+                            mAdapter.getAttachmentFilePathList());
+                }else{
+                    Toast.makeText(getBaseContext(), R.string.error_message_share_attachment, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void initCreateAnotherCheckBox() {
@@ -523,7 +541,7 @@ public class CreateIssueActivity extends BaseActivity
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (count == 1) {
+                if (count > 0) {
                     if (s.length() > 2) {
                         if (!mIsAssignableSelected) {
                             if (InputsUtil.getWhitespacesValidator().validate(mAssignableAutocompleteView)) {
@@ -843,13 +861,18 @@ public class CreateIssueActivity extends BaseActivity
 
     //Gif processing
     @Override
-    public void onProgress(int progress) {
-        if (mGifProgress != null) {
-            if (mGifProgress.isIndeterminate()) {
-                mGifProgress.setIndeterminate(false);
+    public void onProgress(final int progress) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mGifProgress != null) {
+                    if (mGifProgress.isIndeterminate()) {
+                        mGifProgress.setIndeterminate(false);
+                    }
+                    mGifProgress.setProgress(progress);
+                }
             }
-            mGifProgress.setProgress(progress);
-        }
+        });
     }
 
     @Override
@@ -879,6 +902,8 @@ public class CreateIssueActivity extends BaseActivity
             dialogBuilder.setTitle(R.string.title_gif_isnt_saved).setMessage(R.string.message_gif_isnt_saved);
         } else if (throwable instanceof OutOfMemoryError) {
             dialogBuilder.setTitle(R.string.title_gif_cant_be_created).setMessage(R.string.message_gif_cant_be_created);
+        } else {
+            dialogBuilder.setTitle(R.string.title_gif_error).setMessage(R.string.message_gif_error);
         }
 
         dialogBuilder.create().show();
