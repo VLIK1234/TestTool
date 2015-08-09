@@ -23,7 +23,6 @@ public class GSpreadsheetContent {
     //region Variables
     private final String TAG = this.getClass().getSimpleName();
     private GSpreadsheet mSpreadsheet;
-
     //endregion
 
     private static class XMLContentHolder {
@@ -134,6 +133,7 @@ public class GSpreadsheetContent {
                 if (tag == ContentConst.WORKSHEET_RESPONSE) {
                     if (contentCallback != null) {
                         if (result != null) {
+                            result.setSpreadsheetIdLink(mSpreadsheet.getIdLink());
                             setWorksheetSynchronously(result);
                             setTestCasesSynchronously(result.getEntry(), result.getIdLink(), result.getSpreadsheetIdLink());
                             contentCallback.resultOfDataLoading(result);

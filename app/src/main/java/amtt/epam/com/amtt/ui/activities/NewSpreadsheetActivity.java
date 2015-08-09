@@ -56,8 +56,8 @@ public class NewSpreadsheetActivity extends BaseActivity {
                             NewSpreadsheetActivity.this.runOnUiThread(new Runnable() {
                                 public void run() {
                                     if (result != null) {
-                                        mAddSpreadsheet.setEnabled(true);
                                         ActiveUser.getInstance().setSpreadsheetLink(mIdLink);
+                                        mAddSpreadsheet.setEnabled(true);
                                     } else {
                                         Toast.makeText(NewSpreadsheetActivity.this, "Invalide key", Toast.LENGTH_LONG).show();
                                         mAddSpreadsheet.setEnabled(false);
