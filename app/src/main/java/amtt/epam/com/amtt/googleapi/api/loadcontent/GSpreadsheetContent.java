@@ -6,6 +6,7 @@ import java.util.List;
 import amtt.epam.com.amtt.api.ContentConst;
 import amtt.epam.com.amtt.api.ContentLoadingCallback;
 import amtt.epam.com.amtt.api.GetContentCallback;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
@@ -68,6 +69,23 @@ public class GSpreadsheetContent {
             public void onError(Exception e) {
                 Logger.e(TAG, e.getMessage(), e);
                 getSpreadsheetAsynchronously(idLink, getContentCallback);
+            }
+        });
+    }
+
+    public void getAllSpreadsheets(final GetContentCallback<Integer> getContentCallback) {
+        ContentFromDatabase.getAllSpreadsheets(new IResult<List<DatabaseEntity>>() {
+            @Override
+            public void onResult(List<DatabaseEntity> result) {
+                if (result != null) {
+                    getContentCallback.resultOfDataLoading(result.size());
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Logger.e(TAG, e.getMessage(), e);
+                getContentCallback.resultOfDataLoading(-1);
             }
         });
     }

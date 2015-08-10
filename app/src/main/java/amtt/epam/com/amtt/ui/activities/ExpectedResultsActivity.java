@@ -45,7 +45,6 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     private static final int SPREADSHEET_ACTIVITY_REQUEST_CODE = 55;
     private static final int NEW_SPREADSHEET_ACTIVITY_REQUEST_CODE = 66;
     private static final String TAG = ExpectedResultsActivity.class.getSimpleName();
-    private static final String LINK = "Link";
     public static final String PRIORITY = "PRIORITY";
     public static final String NAME = "NAME";
     public static final String STEPS = "STEPS";
@@ -82,7 +81,20 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        initViews();
+        if (ActiveUser.getInstance().getSpreadsheetLink() != null) {
+            initViews();
+        } else {
+            GSpreadsheetContent.getInstance().getAllSpreadsheets(new GetContentCallback<Integer>() {
+                @Override
+                public void resultOfDataLoading(Integer result) {
+                    if (result > 0) {
+                        startActivityForResult(new Intent(ExpectedResultsActivity.this, SpreadsheetActivity.class), SPREADSHEET_ACTIVITY_REQUEST_CODE);
+                    } else {
+                        startActivityForResult(new Intent(ExpectedResultsActivity.this, SpreadsheetActivity.class), SPREADSHEET_ACTIVITY_REQUEST_CODE);
+                    }
+                }
+            });
+        }
     }
 
     @Override

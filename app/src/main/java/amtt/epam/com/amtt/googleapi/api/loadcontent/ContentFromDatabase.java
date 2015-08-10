@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
@@ -30,6 +31,10 @@ public class ContentFromDatabase {
 
     public static void getSpreadsheet(String spreadsheetIdLink, IResult<List<GSpreadsheet>> result) {
         DbObjectManager.INSTANCE.query(new GSpreadsheet(), null, new String[]{SpreadsheetTable._SPREADSHEET_ID_LINK}, new String[]{spreadsheetIdLink}, result);
+    }
+
+    public static void getAllSpreadsheets(IResult<List<DatabaseEntity>> result) {
+        DbObjectManager.INSTANCE.getAll(new GSpreadsheet(), result);
     }
 
     public static void setWorksheet(GWorksheet worksheet, IResult<Integer> result) {
