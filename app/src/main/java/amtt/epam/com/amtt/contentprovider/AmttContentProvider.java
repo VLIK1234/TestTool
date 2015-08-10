@@ -8,10 +8,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import amtt.epam.com.amtt.database.DataBaseManager;
-import amtt.epam.com.amtt.database.table.ActivityInfoTable;
-import amtt.epam.com.amtt.database.table.StepsTable;
-import amtt.epam.com.amtt.database.table.StepsWithMetaTable;
-
 /**
  @author Artsiom_Kaliaha
  @version on 23.03.2015
@@ -30,19 +26,9 @@ public class AmttContentProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        AmttUri matchedUri = AmttUri.match(uri);
         Cursor cursor;
-        //if step should be retrieved, join query is executed
-        if (matchedUri == AmttUri.STEP_WITH_META) {
-            String[] tablesName = {StepsTable.TABLE_NAME, ActivityInfoTable.TABLE_NAME};
-            cursor = getDataBaseManager().joinQuery(tablesName,
-                    StepsWithMetaTable.PROJECTION,
-                    new String[]{StepsTable._ASSOCIATED_ACTIVITY, ActivityInfoTable._ACTIVITY_NAME});
-        } else {
-            String tableName = uri.getLastPathSegment();
-            cursor = getDataBaseManager().query(tableName, projection, selection, selectionArgs, sortOrder);
-        }
-
+        String tableName = uri.getLastPathSegment();
+        cursor = getDataBaseManager().query(tableName, projection, selection, selectionArgs, sortOrder);
         return cursor;
     }
 
