@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
@@ -79,6 +80,10 @@ public class AutocompleteProgressView extends RelativeLayout implements TextEdit
     public void setText(CharSequence text) {
         mACTextView.setText(text, TextView.BufferType.NORMAL);
 
+    }
+
+    public void setOnItemClickListener(AdapterView.OnItemClickListener l) {
+        mACTextView.setOnItemClickListener(l);
     }
 
     @Override

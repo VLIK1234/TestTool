@@ -529,6 +529,12 @@ public class CreateIssueActivity extends BaseActivity
 
     private void initAssigneeAutocompleteView() {
         mAssignableAutocompleteView = (AutocompleteProgressView) findViewById(R.id.atv_assignable_users);
+        mAssignableAutocompleteView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mIsAssignableSelected = true;
+            }
+        });
         mAssignableAutocompleteView.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -541,6 +547,7 @@ public class CreateIssueActivity extends BaseActivity
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mIsAssignableSelected = false;
                 if (count > 0) {
                     if (s.length() > 2) {
                         if (!mIsAssignableSelected) {
@@ -556,9 +563,6 @@ public class CreateIssueActivity extends BaseActivity
                 } else if (count == 0) {
                     mAssignableAutocompleteView.dismissDropDown();
                     mAssignableAutocompleteView.setAdapter(null);
-                    mIsAssignableSelected = false;
-                } else {
-                    mIsAssignableSelected = true;
                 }
             }
         });
@@ -648,28 +652,30 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     private void setAssignableNames(String s) {
-        mAssignableAutocompleteView.setEnabled(false);
-        mAssignableAutocompleteView.showProgress(true);
-        JiraContent.getInstance().getUsersAssignable(s, new GetContentCallback<List<String>>() {
-            @Override
-            public void resultOfDataLoading(List<String> result) {
-                if (result != null) {
-                    ArrayAdapter<String> assignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
-                    mAssignableAutocompleteView.setThreshold(1);
-                    mAssignableAutocompleteView.setAdapter(assignableUsersAdapter);
-                    if (assignableUsersAdapter.getCount() > 0) {
-                        if (!mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
-                            mAssignableAutocompleteView.showDropDown();
-                        } else {
-                            ActiveUser.getInstance().setLastAssigneeName(mAssignableAutocompleteView.getText().toString());
+        if (!mIsAssignableSelected) {
+            mAssignableAutocompleteView.setEnabled(false);
+            mAssignableAutocompleteView.showProgress(true);
+            JiraContent.getInstance().getUsersAssignable(s, new GetContentCallback<List<String>>() {
+                @Override
+                public void resultOfDataLoading(List<String> result) {
+                    if (result != null) {
+                        ArrayAdapter<String> assignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
+                        mAssignableAutocompleteView.setThreshold(1);
+                        mAssignableAutocompleteView.setAdapter(assignableUsersAdapter);
+                        if (assignableUsersAdapter.getCount() > 0) {
+                            if (!mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
+                                mAssignableAutocompleteView.showDropDown();
+                            } else {
+                                ActiveUser.getInstance().setLastAssigneeName(mAssignableAutocompleteView.getText().toString());
+                            }
                         }
-                    }
 
+                    }
+                    mAssignableAutocompleteView.showProgress(false);
+                    mAssignableAutocompleteView.setEnabled(true);
                 }
-                mAssignableAutocompleteView.showProgress(false);
-                mAssignableAutocompleteView.setEnabled(true);
-            }
-        });
+            });
+        }
     }
 
     private void showProgressIfNeed() {
