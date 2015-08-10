@@ -31,8 +31,6 @@ public enum AmttUri {
 
     private static final UriMatcher sUriMatcher;
     private final static Map<Integer, String> sContentType;
-    private final static Map<AmttUri, String[]> sProjections;
-    private final static List<AmttUri> sValues;
 
     private final Uri mUri;
     private final String mContentType;
@@ -65,15 +63,6 @@ public enum AmttUri {
         sContentType.put(AmttUri.PROJECT.getItemOrdinal(), AmttUri.PROJECT.getItemType());
         sContentType.put(AmttUri.ISSUETYPE.getOrdinal(), AmttUri.ISSUETYPE.getType());
         sContentType.put(AmttUri.ISSUETYPE.getItemOrdinal(), AmttUri.ISSUETYPE.getItemType());
-
-        sProjections = new HashMap<>();
-        sProjections.put(AmttUri.STEP, StepsTable.PROJECTION);
-        sProjections.put(AmttUri.USER, UsersTable.PROJECTION);
-        sProjections.put(AmttUri.PRIORITY, PriorityTable.PROJECTION);
-        sProjections.put(AmttUri.PROJECT, ProjectTable.PROJECTION);
-        sProjections.put(AmttUri.ISSUETYPE, IssuetypeTable.PROJECTION);
-
-        sValues = Arrays.asList(AmttUri.values());
     }
 
     AmttUri(String tableName, int ordinal, int itemOrdinal) {
