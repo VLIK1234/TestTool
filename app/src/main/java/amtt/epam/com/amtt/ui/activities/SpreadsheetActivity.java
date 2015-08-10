@@ -53,6 +53,12 @@ public class SpreadsheetActivity extends BaseActivity implements LoaderManager.L
         TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
+    }
+
     //Callback
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
