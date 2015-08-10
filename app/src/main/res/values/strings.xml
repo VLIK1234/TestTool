@@ -16,7 +16,7 @@
 
     <string name="empty_list_view">There is no saved steps =(</string>
 
-    <string name="error">Error</string>
+    <string name="create_ticket_error">It seems assignee %s doesn\'t exist or something else went wrong=(</string>
     <string name="error_title_auth">Authorization error</string>
     <string name="error_title_request">Request error</string>
     <string name="error_title_connection">Connection error</string>

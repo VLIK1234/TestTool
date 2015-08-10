@@ -108,6 +108,7 @@ public class CreateIssueActivity extends BaseActivity
     private boolean mCreateAnotherIssue;
     private LayoutInflater mLayoutInflater;
     private boolean mIsAssignableSelected;
+    private boolean mIsSelfSigned;
     private Bundle mBundle;
     private Button mShareButton;
 
@@ -198,15 +199,15 @@ public class CreateIssueActivity extends BaseActivity
         initShareAttachmentButton();
     }
 
-    private void initShareAttachmentButton(){
+    private void initShareAttachmentButton() {
         mShareButton = (Button) findViewById(R.id.bt_share_attachmnet);
         mShareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mAdapter.getAttachmentFilePathList().size()> 0) {
+                if (mAdapter.getAttachmentFilePathList().size() > 0) {
                     SharingToEmailHelper.senAttachmentImage(CreateIssueActivity.this, mEnvironmentTextInput.getText().toString(),
                             mAdapter.getAttachmentFilePathList());
-                }else{
+                } else {
                     Toast.makeText(getBaseContext(), R.string.error_message_share_attachment, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -495,6 +496,13 @@ public class CreateIssueActivity extends BaseActivity
                                     AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
                                     Toast.makeText(CreateIssueActivity.this, R.string.ticket_created, Toast.LENGTH_LONG).show();
                                     TopButtonService.stopRecord(CreateIssueActivity.this);
+
+                                    //case for code below: user selected assignee & after erased it
+                                    ActiveUser activeUser = ActiveUser.getInstance();
+                                    if (!activeUser.getLastAssignee().equals(mAssignableUserName)) {
+                                        activeUser.setLastAssigneeName(null);
+                                    }
+
                                     if (mCreateAnotherIssue) {
                                         mCreateAnotherCheckBox.setChecked(false);
                                         mTitleTextInput.setText(Constants.Symbols.EMPTY);
@@ -504,7 +512,7 @@ public class CreateIssueActivity extends BaseActivity
                                         finish();
                                     }
                                 } else {
-                                    Toast.makeText(CreateIssueActivity.this, R.string.error, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(CreateIssueActivity.this, getString(R.string.create_ticket_error, mAssignableUserName), Toast.LENGTH_LONG).show();
                                 }
                                 showProgress(false);
                             }
@@ -532,6 +540,7 @@ public class CreateIssueActivity extends BaseActivity
         mAssignableAutocompleteView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ActiveUser.getInstance().setLastAssigneeName(mAssignableUserName);
                 mIsAssignableSelected = true;
             }
         });
@@ -548,27 +557,27 @@ public class CreateIssueActivity extends BaseActivity
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mIsAssignableSelected = false;
-                if (count > 0) {
-                    if (s.length() > 2) {
-                        if (!mIsAssignableSelected) {
+                if (!mIsSelfSigned) {
+                    if (count > 0) {
+                        if (s.length() > 2) {
                             if (InputsUtil.getWhitespacesValidator().validate(mAssignableAutocompleteView)) {
                                 Toast.makeText(CreateIssueActivity.this, getString(R.string.label_tester) + getString(R.string.label_no_whitespaces), Toast.LENGTH_LONG).show();
                             } else {
                                 mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
                                 mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
-                                mAssignableUserName = s.toString();
                             }
                         }
+                    } else if (count == 0) {
+                        mAssignableAutocompleteView.dismissDropDown();
+                        mAssignableAutocompleteView.setAdapter(null);
                     }
-                } else if (count == 0) {
-                    mAssignableAutocompleteView.dismissDropDown();
-                    mAssignableAutocompleteView.setAdapter(null);
+                    mAssignableUserName = s.toString();
                 }
             }
         });
         if (ActiveUser.getInstance().getLastAssignee() != null) {
             mIsAssignableSelected = true;
-            mAssignableAutocompleteView.setText(mAssignableUserName = ActiveUser.getInstance().getLastAssignee());
+            mAssignableAutocompleteView.setText(ActiveUser.getInstance().getLastAssignee());
         }
         initAssignSelfButton();
     }
@@ -578,7 +587,11 @@ public class CreateIssueActivity extends BaseActivity
         mAssignSelfButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAssignableAutocompleteView.setText(ActiveUser.getInstance().getUserName());
+                mIsSelfSigned = true;
+                ActiveUser activeUser = ActiveUser.getInstance();
+                String userName = activeUser.getUserName();
+                mAssignableAutocompleteView.setText(userName);
+                activeUser.setLastAssigneeName(userName);
             }
         });
     }
@@ -662,14 +675,9 @@ public class CreateIssueActivity extends BaseActivity
                         ArrayAdapter<String> assignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
                         mAssignableAutocompleteView.setThreshold(1);
                         mAssignableAutocompleteView.setAdapter(assignableUsersAdapter);
-                        if (assignableUsersAdapter.getCount() > 0) {
-                            if (!mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
-                                mAssignableAutocompleteView.showDropDown();
-                            } else {
-                                ActiveUser.getInstance().setLastAssigneeName(mAssignableAutocompleteView.getText().toString());
-                            }
+                        if (assignableUsersAdapter.getCount() > 0 && !mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
+                            mAssignableAutocompleteView.showDropDown();
                         }
-
                     }
                     mAssignableAutocompleteView.showProgress(false);
                     mAssignableAutocompleteView.setEnabled(true);
@@ -810,7 +818,7 @@ public class CreateIssueActivity extends BaseActivity
                 removeStepFromDatabase(position);
             }
         } else if (FileUtil.isText(mAdapter.getAttachments().get(position).getFilePath())) {
-            DialogHelper.getAreYouSureDialog(this, getString(R.string.title_delete_log_dialiog), getString(R.string.label_message_delete_log_dialiog), new DialogHelper.IDialogButtonClick(){
+            DialogHelper.getAreYouSureDialog(this, getString(R.string.title_delete_log_dialiog), getString(R.string.label_message_delete_log_dialiog), new DialogHelper.IDialogButtonClick() {
                 @Override
                 public void positiveButtonClick() {
                     mAdapter.getAttachments().remove(position);
@@ -917,7 +925,7 @@ public class CreateIssueActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        DialogHelper.getAreYouSureDialog(this,getString(R.string.title_exit_dialog), getString(R.string.label_message_exit_dialog), new DialogHelper.IDialogButtonClick(){
+        DialogHelper.getAreYouSureDialog(this, getString(R.string.title_exit_dialog), getString(R.string.label_message_exit_dialog), new DialogHelper.IDialogButtonClick() {
 
             @Override
             public void positiveButtonClick() {
