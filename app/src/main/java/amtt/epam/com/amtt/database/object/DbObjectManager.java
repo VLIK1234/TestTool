@@ -158,4 +158,37 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
             }
         }).start();
     }
+
+    public <T extends DatabaseEntity> void queryDefault(final T entity, final String[] projection,
+                                                        final String mSelection, final String[] mSelectionArgs, final IResult<List<T>> result) {
+        final Handler handler = new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (mSelectionArgs != null && mSelection != null) {
+                    Cursor cursor = AmttApplication.getContext().getContentResolver().query(entity.getUri(), projection, mSelection, mSelectionArgs, null);
+                    final List<T> listObject = new ArrayList<>();
+                    if (cursor != null) {
+                        if (cursor.moveToFirst()) {
+                            do {
+                                try {
+                                    listObject.add((T) entity.parse(cursor));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } while (cursor.moveToNext());
+                        }
+                    }
+                    IOUtils.close(cursor);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            result.onResult(listObject);
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
+
 }

@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.googleapi.api.loadcontent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import amtt.epam.com.amtt.database.object.DbObjectManager;
@@ -12,6 +13,7 @@ import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
 import amtt.epam.com.amtt.googleapi.database.table.SpreadsheetTable;
 import amtt.epam.com.amtt.googleapi.database.table.TagsTable;
 import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
+import amtt.epam.com.amtt.util.Logger;
 
 /**
  * @author Iryna Monchanka
@@ -19,6 +21,8 @@ import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
  */
 
 public class ContentFromDatabase {
+
+    private static final String TAG = ContentFromDatabase.class.getSimpleName();
 
     public static void setSpreadsheet(GSpreadsheet spreadsheet, IResult<Integer> result) {
         DbObjectManager.INSTANCE.add(spreadsheet, result);
@@ -57,28 +61,39 @@ public class ContentFromDatabase {
         DbObjectManager.INSTANCE.query(new GEntryWorksheet(), null, new String[]{TestcaseTable._TESTCASE_ID_LINK}, new String[]{idLink}, result);
     }
 
-    public static void getTestcasesByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, IResult<List<GEntryWorksheet>> result) {
-        String[] selection = new String[testcasesIdLinks.size()];
-        String[] selectionArgs = new String[testcasesIdLinks.size()];
-        for(int i = 0; i<testcasesIdLinks.size();i++){
-            selection[i] = TestcaseTable._TESTCASE_ID_LINK;
-            selectionArgs[i] = testcasesIdLinks.get(i);
+    public static synchronized void getTestcasesByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, IResult<List<GEntryWorksheet>> result) {
+        String selection = TestcaseTable._SPREADSHEET_ID_LINK + "=? AND " + TestcaseTable._TESTCASE_ID_LINK + " IN (";
+        String[] selectionArgs = new String[testcasesIdLinks.size() + 1];
+        selectionArgs[0] = spreadsheetLink;
+        for (int i = 0; i < testcasesIdLinks.size(); i++) {
+            selection = selection.concat("?");
+            selectionArgs[i + 1] = testcasesIdLinks.get(i);
+            if ((i+1) < testcasesIdLinks.size()) {
+                selection = selection.concat(", ");
+            }
         }
-        selection[testcasesIdLinks.size()] = TestcaseTable._SPREADSHEET_ID_LINK;
+        selection = selection.concat(")");
+        Logger.e(TAG, selection);
         selectionArgs[testcasesIdLinks.size()] = spreadsheetLink;
-        DbObjectManager.INSTANCE.query(new GEntryWorksheet(), null, selection, selectionArgs, result);
+        Logger.e(TAG, Arrays.toString(selectionArgs));
+        DbObjectManager.INSTANCE.queryDefault(new GEntryWorksheet(), null, selection, selectionArgs, result);
     }
 
-    public static void getTagsByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, IResult<List<GTag>> result) {
-        String[] selection = new String[testcasesIdLinks.size()];
-        String[] selectionArgs = new String[testcasesIdLinks.size()];
-        for(int i = 0; i<testcasesIdLinks.size();i++){
-            selection[i] = TagsTable._TESTCASE_ID_LINK;
-            selectionArgs[i] = testcasesIdLinks.get(i);
+    public static synchronized void getTagsByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, IResult<List<GTag>> result) {
+        String selection = TagsTable._TESTCASE_ID_LINK + "=?";
+        String[] selectionArgs = new String[testcasesIdLinks.size() + 1];
+        selectionArgs[0] = testcasesIdLinks.get(0);
+        if (testcasesIdLinks.size() > 1) {
+            for (int i = 1; i < testcasesIdLinks.size(); i++) {
+                selection = selection.concat(" OR " + TagsTable._TESTCASE_ID_LINK + "=?");
+                selectionArgs[i] = testcasesIdLinks.get(i);
+            }
         }
-        selection[testcasesIdLinks.size()] = TagsTable._SPREADSHEET_ID_LINK;
+        selection = selection.concat(" AND " + TagsTable._SPREADSHEET_ID_LINK + "=?");
+        Logger.e(TAG, selection);
         selectionArgs[testcasesIdLinks.size()] = spreadsheetLink;
-        DbObjectManager.INSTANCE.query(new GTag(), null, selection, selectionArgs, result);
+        Logger.e(TAG, Arrays.toString(selectionArgs));
+        DbObjectManager.INSTANCE.queryDefault(new GTag(), null, selection, selectionArgs, result);
     }
 
 }

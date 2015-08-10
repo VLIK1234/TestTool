@@ -54,7 +54,6 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     private RecyclerView mRecyclerView;
     private MultyAutocompleteProgressView mTagsAutocompleteTextView;
     private List<GTag> mTags;
-    private Bundle bundle;
     private TagsHandler mHandler;
     //endregion
 
@@ -170,11 +169,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 hideKeyboard();
-                mTagsAutocompleteTextView.showProgress(true);
-                showProgress(true);
                 String[] str = mTagsAutocompleteTextView.getText().toString().split(", ");
-                bundle = null;
-                bundle = new Bundle();
                 ArrayList<String> links = new ArrayList<>();
                 if (str.length == 1 && mTags != null) {
                     for (int i = 0; i < mTags.size(); i++) {
@@ -182,8 +177,8 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                             links.add(mTags.get(i).getIdLinkTestCase());
                         }
                     }
-                    bundle.putStringArrayList(LINK, links);
-                    getTagsByLinksTestcases();
+                    getTagsByLinksTestcases(links);
+                    getTestcasesByLinksTestcases(links);
                 } else if (str.length > 1 && mTags != null) {
                     for (String aStr : str) {
                         for (int i = 0; i < mTags.size(); i++) {
@@ -192,8 +187,8 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                             }
                         }
                     }
-                    bundle.putStringArrayList(LINK, links);
-                    getTagsByLinksTestcases();
+                    getTagsByLinksTestcases(links);
+                    getTestcasesByLinksTestcases(links);
                 }
             }
         });
@@ -218,8 +213,6 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
 
     private void setTags(String text) {
         String[] str = text.split(", ");
-        bundle = null;
-        bundle = new Bundle();
         ArrayList<String> links = new ArrayList<>();
         if (mTags != null) {
             for (String aStr : str) {
@@ -232,9 +225,10 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             if (links.isEmpty()) {
                 getAllTestcases();
             } else {
-                bundle.putStringArrayList(LINK, links);
-                getTagsByLinksTestcases();
+                getTagsByLinksTestcases(links);
             }
+        } else {
+            getAllTestcases();
         }
     }
 
@@ -258,11 +252,11 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         });
     }
 
-    private void getTagsByLinksTestcases() {
-        if (bundle.getStringArrayList(LINK) != null && ActiveUser.getInstance().getSpreadsheetLink() != null) {
+    private void getTagsByLinksTestcases(final ArrayList<String> links) {
+        if (links != null && ActiveUser.getInstance().getSpreadsheetLink() != null) {
             mTagsAutocompleteTextView.showProgress(true);
             showProgress(true);
-            GSpreadsheetContent.getInstance().getTagsByIdLinksTestcases(ActiveUser.getInstance().getSpreadsheetLink(), bundle.getStringArrayList(LINK), new GetContentCallback<List<GTag>>() {
+            GSpreadsheetContent.getInstance().getTagsByIdLinksTestcases(ActiveUser.getInstance().getSpreadsheetLink(), links, new GetContentCallback<List<GTag>>() {
                 @Override
                 public void resultOfDataLoading(List<GTag> result) {
                     if (result != null && !result.isEmpty()) {
@@ -272,16 +266,15 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                         mTagsAutocompleteTextView.showProgress(false);
                         showProgress(false);
                     }
-                    getTestcasesByLinksTestcases();
                 }
             });
         }
     }
 
-    private void getTestcasesByLinksTestcases() {
-        if (bundle.getStringArrayList(LINK) != null && ActiveUser.getInstance().getSpreadsheetLink() != null) {
+    private void getTestcasesByLinksTestcases(ArrayList<String> links) {
+        if (links != null && ActiveUser.getInstance().getSpreadsheetLink() != null) {
             showProgress(true);
-            GSpreadsheetContent.getInstance().getTestcasesByIdLinksTestcases(ActiveUser.getInstance().getSpreadsheetLink(), bundle.getStringArrayList(LINK), new GetContentCallback<List<GEntryWorksheet>>() {
+            GSpreadsheetContent.getInstance().getTestcasesByIdLinksTestcases(ActiveUser.getInstance().getSpreadsheetLink(), links, new GetContentCallback<List<GEntryWorksheet>>() {
                 @Override
                 public void resultOfDataLoading(List<GEntryWorksheet> result) {
                     if (result != null && !result.isEmpty()) {
