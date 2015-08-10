@@ -564,7 +564,7 @@ public class CreateIssueActivity extends BaseActivity
         });
         if (ActiveUser.getInstance().getLastAssignee() != null) {
             mIsAssignableSelected = true;
-            mAssignableAutocompleteView.setText(ActiveUser.getInstance().getLastAssignee());
+            mAssignableAutocompleteView.setText(mAssignableUserName = ActiveUser.getInstance().getLastAssignee());
         }
         initAssignSelfButton();
     }
