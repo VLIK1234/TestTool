@@ -81,20 +81,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        if (ActiveUser.getInstance().getSpreadsheetLink() != null) {
-            initViews();
-        } else {
-            GSpreadsheetContent.getInstance().getAllSpreadsheets(new GetContentCallback<Integer>() {
-                @Override
-                public void resultOfDataLoading(Integer result) {
-                    if (result > 0) {
-                        startActivityForResult(new Intent(ExpectedResultsActivity.this, SpreadsheetActivity.class), SPREADSHEET_ACTIVITY_REQUEST_CODE);
-                    } else {
-                        startActivityForResult(new Intent(ExpectedResultsActivity.this, SpreadsheetActivity.class), SPREADSHEET_ACTIVITY_REQUEST_CODE);
-                    }
-                }
-            });
-        }
+        initViews();
     }
 
     @Override
@@ -149,6 +136,8 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                 case NEW_SPREADSHEET_ACTIVITY_REQUEST_CODE: {
                     getAllTestcases();
                 }
+                break;
+                default:
             }
         } else if (resultCode == RESULT_CANCELED) {
 
@@ -171,8 +160,22 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        getAllTestcases();
         initTagsAutocompleteTextView();
+        if (ActiveUser.getInstance().getSpreadsheetLink() != null) {
+            getAllTestcases();
+        } else {
+            GSpreadsheetContent.getInstance().getAllSpreadsheets(new GetContentCallback<Integer>() {
+                @Override
+                public void resultOfDataLoading(Integer result) {
+                    if (result > 0) {
+                        startActivityForResult(new Intent(ExpectedResultsActivity.this, SpreadsheetActivity.class), SPREADSHEET_ACTIVITY_REQUEST_CODE);
+                    } else {
+                        startActivityForResult(new Intent(ExpectedResultsActivity.this, NewSpreadsheetActivity.class), NEW_SPREADSHEET_ACTIVITY_REQUEST_CODE);
+                    }
+                }
+            });
+        }
+
     }
 
     private void initTagsAutocompleteTextView() {

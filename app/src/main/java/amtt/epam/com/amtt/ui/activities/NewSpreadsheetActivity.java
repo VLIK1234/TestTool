@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -63,6 +64,7 @@ public class NewSpreadsheetActivity extends BaseActivity {
             public void onClick(View v) {
                 String key = mSpreadsheetKeyTextInput.getText().toString();
                 if (!key.equals("")) {
+                    showProgress(true);
                     mIdLink = GoogleApiConst.SPREADSHEET_PATH + key + GoogleApiConst.PATH_POSTFIX;
                     GSpreadsheetContent.getInstance().getSpreadsheet(mIdLink, new GetContentCallback<GSpreadsheet>() {
                         @Override
@@ -76,6 +78,7 @@ public class NewSpreadsheetActivity extends BaseActivity {
                                         Toast.makeText(NewSpreadsheetActivity.this, "Invalide key", Toast.LENGTH_LONG).show();
                                         mAddSpreadsheet.setEnabled(false);
                                     }
+                                    showProgress(false);
                                 }
                             });
                         }
@@ -88,6 +91,7 @@ public class NewSpreadsheetActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (mIdLink != null) {
+                    showProgress(true);
                     StepUtil.checkUser(ActiveUser.getInstance().getUserName(), ActiveUser.getInstance().getUrl(), new IResult<List<JUserInfo>>() {
                         @Override
                         public void onResult(List<JUserInfo> result) {
@@ -101,9 +105,15 @@ public class NewSpreadsheetActivity extends BaseActivity {
                                             NewSpreadsheetActivity.this.runOnUiThread(new Runnable() {
                                                 public void run() {
                                                     if (res >= 0) {
-                                                        Intent intent = new Intent();
-                                                        setResult(RESULT_OK, intent);
-                                                        finish();
+                                                        new Handler().postDelayed(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                Intent intent = new Intent();
+                                                                setResult(RESULT_OK, intent);
+                                                                showProgress(false);
+                                                                finish();
+                                                            }
+                                                        }, 1000);
                                                     } else {
                                                         Logger.e(TAG, "Error update user");
                                                     }
