@@ -61,7 +61,7 @@ public class ContentFromDatabase {
         DbObjectManager.INSTANCE.query(new GEntryWorksheet(), null, new String[]{TestcaseTable._TESTCASE_ID_LINK}, new String[]{idLink}, result);
     }
 
-    public static synchronized void getTestcasesByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, IResult<List<GEntryWorksheet>> result) {
+    public static void getTestcasesByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, IResult<List<GEntryWorksheet>> result) {
         String selection = TestcaseTable._SPREADSHEET_ID_LINK + "=? AND " + TestcaseTable._TESTCASE_ID_LINK + " IN (";
         String[] selectionArgs = new String[testcasesIdLinks.size() + 1];
         selectionArgs[0] = spreadsheetLink;
@@ -74,24 +74,23 @@ public class ContentFromDatabase {
         }
         selection = selection.concat(")");
         Logger.e(TAG, selection);
-        selectionArgs[testcasesIdLinks.size()] = spreadsheetLink;
         Logger.e(TAG, Arrays.toString(selectionArgs));
         DbObjectManager.INSTANCE.queryDefault(new GEntryWorksheet(), null, selection, selectionArgs, result);
     }
 
-    public static synchronized void getTagsByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, IResult<List<GTag>> result) {
-        String selection = TagsTable._TESTCASE_ID_LINK + "=?";
+    public static void getTagsByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, IResult<List<GTag>> result) {
+        String selection = TagsTable._SPREADSHEET_ID_LINK + "=? AND " + TagsTable._TESTCASE_ID_LINK + " IN (";
         String[] selectionArgs = new String[testcasesIdLinks.size() + 1];
-        selectionArgs[0] = testcasesIdLinks.get(0);
-        if (testcasesIdLinks.size() > 1) {
-            for (int i = 1; i < testcasesIdLinks.size(); i++) {
-                selection = selection.concat(" OR " + TagsTable._TESTCASE_ID_LINK + "=?");
-                selectionArgs[i] = testcasesIdLinks.get(i);
+        selectionArgs[0] = spreadsheetLink;
+        for (int i = 0; i < testcasesIdLinks.size(); i++) {
+            selection = selection.concat("?");
+            selectionArgs[i + 1] = testcasesIdLinks.get(i);
+            if ((i+1) < testcasesIdLinks.size()) {
+                selection = selection.concat(", ");
             }
         }
-        selection = selection.concat(" AND " + TagsTable._SPREADSHEET_ID_LINK + "=?");
+        selection = selection.concat(")");
         Logger.e(TAG, selection);
-        selectionArgs[testcasesIdLinks.size()] = spreadsheetLink;
         Logger.e(TAG, Arrays.toString(selectionArgs));
         DbObjectManager.INSTANCE.queryDefault(new GTag(), null, selection, selectionArgs, result);
     }

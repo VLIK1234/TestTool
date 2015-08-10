@@ -159,7 +159,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         }).start();
     }
 
-    public <T extends DatabaseEntity> void queryDefault(final T entity, final String[] projection,
+    public synchronized <T extends DatabaseEntity> void queryDefault(final T entity, final String[] projection,
                                                         final String mSelection, final String[] mSelectionArgs, final IResult<List<T>> result) {
         final Handler handler = new Handler();
         new Thread(new Runnable() {

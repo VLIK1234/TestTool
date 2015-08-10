@@ -233,7 +233,7 @@ public class GSpreadsheetContent {
             ContentFromDatabase.getTestcasesByIdLinksTestcases(spreadsheetLink, testcasesIdLinks, new IResult<List<GEntryWorksheet>>() {
                 @Override
                 public void onResult(List<GEntryWorksheet> result) {
-                    if (result != null && result.isEmpty()) {
+                    if (result != null && !result.isEmpty()) {
                         getContentCallback.resultOfDataLoading(result);
                     } else {
                         Logger.d(TAG, "testcases not found");
