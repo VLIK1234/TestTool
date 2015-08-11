@@ -1,4 +1,6 @@
-package com.example.ivan_bakach.testappamtt;
+package com.epam.amtt.test;
+
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,15 +10,21 @@ import java.io.IOException;
 
 public class IOUtils {
 
+    private static final String TAG = IOUtils.class.getSimpleName();
+
     public static FileOutputStream openFileOutput(String path) throws FileNotFoundException {
-        FileOutputStream outputStream;
-        try {
-            outputStream = new FileOutputStream(path, new File(path).exists());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            outputStream = new FileOutputStream(path, false);
+        if (path != null) {
+            FileOutputStream outputStream;
+            try {
+                outputStream = new FileOutputStream(path, new File(path).exists());
+            } catch (FileNotFoundException e) {
+                Log.e(TAG, e.getMessage(), e);
+                outputStream = new FileOutputStream(path, false);
+            }
+            return outputStream;
+        } else {
+            return null;
         }
-        return outputStream;
     }
 
     public static void deleteFileIfExist(String filePath) {
@@ -27,16 +35,19 @@ public class IOUtils {
     }
 
     public static byte[] toByteArray(File file) throws IOException {
-        FileInputStream fileInputStream;
+        FileInputStream fileInputStream = null;
         byte[] byteArray = new byte[(int) file.length()];
         try {
             fileInputStream = new FileInputStream(file);
             fileInputStream.read(byteArray);
-            fileInputStream.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
+        }finally {
+            if (fileInputStream != null) {
+                fileInputStream.close();
+            }
         }
         return byteArray;
     }

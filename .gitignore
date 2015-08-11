@@ -5,3 +5,6 @@
 /build
 /app/app.iml
 amtt.iml
+amtttestslib/amtttestslib.iml
+amtttestslib/proguard-rules.pro
+amtttestslib/build/

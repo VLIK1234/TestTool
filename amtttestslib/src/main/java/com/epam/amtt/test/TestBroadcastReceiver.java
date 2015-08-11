@@ -1,4 +1,4 @@
-package com.example.ivan_bakach.testappamtt;
+package com.epam.amtt.test;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -42,13 +42,13 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                 context.sendBroadcast(in);
                 break;
             case CLOSE_TEST:
-                IOUtils.deleteFileIfExist(LogManger.sArgumentsFragments);
-                IOUtils.deleteFileIfExist(LogManger.sExceptionLog);
-                IOUtils.deleteFileIfExist(LogManger.sCommonLog);
+                IOUtils.deleteFileIfExist(LogManager.sArgumentsFragments);
+                IOUtils.deleteFileIfExist(LogManager.sExceptionLog);
+                IOUtils.deleteFileIfExist(LogManager.sCommonLog);
                 mCloseUnitTest = true;
                 break;
             case TAKE_LOGS:
-                LogManger.transferLogsToAmtt(context);
+                LogManager.transferLogsToAmtt(context);
                 break;
             case TAKE_SCREENSHOT:
                 if (mActivity != null) {

@@ -6,6 +6,8 @@ import android.test.InstrumentationTestSuite;
 
 import junit.framework.TestSuite;
 
+import com.epam.amtt.test.MonitorTest;
+
 /**
  @author Ivan_Bakach
  @version on 07.07.2015
