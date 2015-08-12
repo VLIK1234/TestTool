@@ -844,7 +844,7 @@ public class CreateIssueActivity extends BaseActivity
     @Override
     public void onItemShow(int position) {
         Intent intent = null;
-        String filePath = "";
+        String filePath = Constants.Symbols.EMPTY;
         if (mAdapter != null && mAdapter.getAttachmentFilePathList() != null && mAdapter.getAttachmentFilePathList().size() > position) {
             filePath = mAdapter.getAttachmentFilePathList().get(position);
         }

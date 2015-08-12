@@ -12,6 +12,7 @@ import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Logger;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -118,7 +119,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         }
                     }
                 });
-                if (ActiveUser.getInstance().getSpreadsheetLink() != null && !ActiveUser.getInstance().getSpreadsheetLink().equals("")) {
+                if (!InputsUtil.isEmpty(ActiveUser.getInstance().getSpreadsheetLink())) {
                     GSpreadsheetContent.getInstance().getAllTestCases(ActiveUser.getInstance().getSpreadsheetLink(), new GetContentCallback<List<GEntryWorksheet>>() {
                         @Override
                         public void resultOfDataLoading(List<GEntryWorksheet> result) {

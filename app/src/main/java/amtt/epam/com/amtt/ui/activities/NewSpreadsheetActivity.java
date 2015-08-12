@@ -21,6 +21,7 @@ import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.TextInput;
 import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -63,7 +64,7 @@ public class NewSpreadsheetActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 String key = mSpreadsheetKeyTextInput.getText().toString();
-                if (!key.equals("")) {
+                if (!InputsUtil.isEmpty(key)) {
                     showProgress(true);
                     mIdLink = GoogleApiConst.SPREADSHEET_PATH + key + GoogleApiConst.PATH_POSTFIX;
                     GSpreadsheetContent.getInstance().getSpreadsheet(mIdLink, new GetContentCallback<GSpreadsheet>() {

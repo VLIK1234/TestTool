@@ -181,4 +181,8 @@ public class InputsUtil {
         Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": not passed.");
         return mMatcher.matches();
     }
+
+    public static Boolean isEmpty(String string) {
+        return string == null || string.equals(Constants.Symbols.EMPTY);
+    }
 }

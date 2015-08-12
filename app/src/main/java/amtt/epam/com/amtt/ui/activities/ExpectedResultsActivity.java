@@ -31,6 +31,7 @@ import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.MultyAutocompleteProgressView;
 import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -335,7 +336,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     }
 
     private void getAllTestcases() {
-        if (ActiveUser.getInstance().getSpreadsheetLink() != null && !ActiveUser.getInstance().getSpreadsheetLink().equals("")) {
+        if (!InputsUtil.isEmpty(ActiveUser.getInstance().getSpreadsheetLink())) {
             showProgress(true);
             GSpreadsheetContent.getInstance().getAllTestCases(ActiveUser.getInstance().getSpreadsheetLink(), new GetContentCallback<List<GEntryWorksheet>>() {
                 @Override

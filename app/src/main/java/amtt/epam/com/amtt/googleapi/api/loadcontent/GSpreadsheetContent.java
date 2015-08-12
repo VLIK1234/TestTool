@@ -12,6 +12,7 @@ import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
+import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -223,7 +224,7 @@ public class GSpreadsheetContent {
     }
 
     private void getAllTestCasesSynchronously(final String idSpreadsheetLink, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
-        if (idSpreadsheetLink != null && !idSpreadsheetLink.equals("")) {
+        if (!InputsUtil.isEmpty(idSpreadsheetLink)) {
             ContentFromDatabase.getTestCasesByLinkSpreadsheet(idSpreadsheetLink, new IResult<List<GEntryWorksheet>>() {
                 @Override
                 public void onResult(List<GEntryWorksheet> result) {
@@ -247,7 +248,7 @@ public class GSpreadsheetContent {
     }
 
     public void getTestcasesByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
-        if (spreadsheetLink != null && !spreadsheetLink.equals("") && testcasesIdLinks != null && !testcasesIdLinks.isEmpty()) {
+        if (!InputsUtil.isEmpty(spreadsheetLink) && testcasesIdLinks != null && !testcasesIdLinks.isEmpty()) {
             ContentFromDatabase.getTestcasesByIdLinksTestcases(spreadsheetLink, testcasesIdLinks, new IResult<List<GEntryWorksheet>>() {
                 @Override
                 public void onResult(List<GEntryWorksheet> result) {
@@ -300,7 +301,7 @@ public class GSpreadsheetContent {
     }
 
     public void getAllTags(String spreadsheetIdLink, final GetContentCallback<List<GTag>> getContentCallback) {
-        if (spreadsheetIdLink != null && !spreadsheetIdLink.equals("")) {
+        if (!InputsUtil.isEmpty(spreadsheetIdLink)) {
             ContentFromDatabase.getTagsByIdLinkSpreadsheet(spreadsheetIdLink, new IResult<List<GTag>>() {
                 @Override
                 public void onResult(List<GTag> result) {
@@ -325,7 +326,7 @@ public class GSpreadsheetContent {
     }
 
     public void getTagsByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, final GetContentCallback<List<GTag>> getContentCallback) {
-        if (spreadsheetLink != null && !spreadsheetLink.equals("") && testcasesIdLinks != null && !testcasesIdLinks.isEmpty()) {
+        if (!InputsUtil.isEmpty(spreadsheetLink) && testcasesIdLinks != null && !testcasesIdLinks.isEmpty()) {
             ContentFromDatabase.getTagsByIdLinksTestcases(spreadsheetLink, testcasesIdLinks, new IResult<List<GTag>>() {
                 @Override
                 public void onResult(List<GTag> result) {

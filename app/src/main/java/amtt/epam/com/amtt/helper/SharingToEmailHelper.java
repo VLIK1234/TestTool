@@ -13,6 +13,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import amtt.epam.com.amtt.util.Constants;
+
 /**
  * @author IvanBakach
  * @version on 07.08.2015
@@ -30,7 +32,7 @@ public class SharingToEmailHelper {
     }
 
     private static String getCurrentUsersEmail(Context context){
-        String possibleEmail = "";
+        String possibleEmail = Constants.Symbols.EMPTY;
         Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
         Account[] accounts = AccountManager.get(context).getAccounts();
         for (Account account : accounts) {
