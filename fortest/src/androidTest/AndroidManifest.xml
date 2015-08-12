@@ -9,7 +9,7 @@
     </application>
 
     <instrumentation
-        android:name="${applicationTestid}.TestRunner"
+        android:name="com.epam.amtt.test.TestRunner"
         android:functionalTest="false"
         android:handleProfiling="false"
         android:label="Tests"

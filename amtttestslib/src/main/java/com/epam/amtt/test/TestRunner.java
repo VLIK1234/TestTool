@@ -1,12 +1,9 @@
-package com.example.ivan_bakach.testappamtt;
+package com.epam.amtt.test;
 
-import android.os.Bundle;
 import android.test.InstrumentationTestRunner;
 import android.test.InstrumentationTestSuite;
 
 import junit.framework.TestSuite;
-
-import com.epam.amtt.test.MonitorTest;
 
 /**
  @author Ivan_Bakach
@@ -24,10 +21,5 @@ public class TestRunner extends InstrumentationTestRunner {
     @Override
     public ClassLoader getLoader() {
         return TestRunner.class.getClassLoader();
-    }
-
-    @Override
-    public void finish(int resultCode, Bundle results) {
-        super.finish(resultCode, results);
     }
 }
