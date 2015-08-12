@@ -3,9 +3,6 @@
 
     <application android:allowBackup="true"
                  android:label="@string/app_name">
-        <meta-data
-            android:name="my_api_key"
-            android:value="com.example.ivan_bakach.testappamtt.app.PermissionTestClientActivity" />
     </application>
 
 </manifest>
