@@ -190,7 +190,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         Runnable task = new Runnable() {
             public void run() {
                 TopButtonService.start(getBaseContext());
-                JiraContent.getInstance().getPrioritiesNames(new GetContentCallback<HashMap<String, String>>() {
+                JiraContent.getInstance().getPrioritiesNames(ActiveUser.getInstance().getUrl(), new GetContentCallback<HashMap<String, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<String, String> result) {
                         if (result != null) {
@@ -198,7 +198,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
                         }
                     }
                 });
-                JiraContent.getInstance().getProjectsNames(new GetContentCallback<HashMap<JProjects, String>>() {
+                JiraContent.getInstance().getProjectsNames(ActiveUser.getInstance().getId(), new GetContentCallback<HashMap<JProjects, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<JProjects, String> result) {
                         if (result != null) {

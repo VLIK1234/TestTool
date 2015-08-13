@@ -103,7 +103,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
             public void run() {
-                JiraContent.getInstance().getPrioritiesNames(new GetContentCallback<HashMap<String, String>>() {
+                JiraContent.getInstance().getPrioritiesNames(ActiveUser.getInstance().getUrl(), new GetContentCallback<HashMap<String, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<String, String> result) {
                         if (result != null) {
@@ -111,7 +111,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         }
                     }
                 });
-                JiraContent.getInstance().getProjectsNames(new GetContentCallback<HashMap<JProjects, String>>() {
+                JiraContent.getInstance().getProjectsNames(ActiveUser.getInstance().getId(), new GetContentCallback<HashMap<JProjects, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<JProjects, String> result) {
                         if (result != null) {

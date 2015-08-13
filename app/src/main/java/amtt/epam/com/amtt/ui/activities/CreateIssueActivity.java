@@ -177,7 +177,7 @@ public class CreateIssueActivity extends BaseActivity
             String component = JiraContent.getInstance().getComponentIdByName((String) mComponents.getSelectedItem());
             ActiveUser.getInstance().setLastComponentsIds(component);
         }
-        JiraContent.getInstance().setDefaultConfig(ActiveUser.getInstance().getLastProjectKey(),
+        JiraContent.getInstance().setDefaultConfig(ActiveUser.getInstance().getUserName(), ActiveUser.getInstance().getUrl(), ActiveUser.getInstance().getLastProjectKey(),
                 ActiveUser.getInstance().getLastAssignee(), ActiveUser.getInstance().getLastComponentsIds());
     }
 
@@ -238,7 +238,7 @@ public class CreateIssueActivity extends BaseActivity
     private void initProjectNamesSpinner() {
         mProjectNamesSpinner = (Spinner) findViewById(R.id.spin_projects_name);
         mProjectNamesSpinner.setEnabled(false);
-        JiraContent.getInstance().getProjectsNames(new GetContentCallback<HashMap<JProjects, String>>() {
+        JiraContent.getInstance().getProjectsNames(ActiveUser.getInstance().getId(), new GetContentCallback<HashMap<JProjects, String>>() {
             @Override
             public void resultOfDataLoading(final HashMap<JProjects, String> result) {
                 if (result != null) {
@@ -276,6 +276,7 @@ public class CreateIssueActivity extends BaseActivity
                     @Override
                     public void resultOfDataLoading(String result) {
                         if (result != null) {
+                            ActiveUser.getInstance().setLastProjectKey(result);
                             reinitRelatedViews(result);
                         }
                     }
@@ -291,7 +292,7 @@ public class CreateIssueActivity extends BaseActivity
     private void initPrioritiesSpinner() {
         final Spinner prioritiesSpinner = (Spinner) findViewById(R.id.spin_priority);
         prioritiesSpinner.setEnabled(false);
-        JiraContent.getInstance().getPrioritiesNames(new GetContentCallback<HashMap<String, String>>() {
+        JiraContent.getInstance().getPrioritiesNames(ActiveUser.getInstance().getUrl(), new GetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(final HashMap<String, String> result) {
                 if (result != null) {
