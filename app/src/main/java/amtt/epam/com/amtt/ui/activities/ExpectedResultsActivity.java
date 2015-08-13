@@ -55,6 +55,8 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     private MultyAutocompleteProgressView mTagsAutocompleteTextView;
     private List<GTag> mTags;
     private TagsHandler mHandler;
+    private ActiveUser mUser = ActiveUser.getInstance();
+    private GSpreadsheetContent mSpreadsheetContent = GSpreadsheetContent.getInstance();
     //endregion
 
     public static class TagsHandler extends Handler {
@@ -162,10 +164,10 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         initTagsAutocompleteTextView();
-        if (ActiveUser.getInstance().getSpreadsheetLink() != null) {
+        if (mUser.getSpreadsheetLink() != null) {
             getAllTestcases();
         } else {
-            GSpreadsheetContent.getInstance().getAllSpreadsheets(new GetContentCallback<Integer>() {
+            mSpreadsheetContent.getAllSpreadsheets(new GetContentCallback<Integer>() {
                 @Override
                 public void resultOfDataLoading(Integer result) {
                     if (result > 0) {
@@ -247,7 +249,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     }
 
     private void getExtras(int position, final Class<?> activity) {
-        GSpreadsheetContent.getInstance().getTestcaseByIdLink(mResultsAdapter.getIdTestcaseList().get(position), new GetContentCallback<GEntryWorksheet>() {
+        mSpreadsheetContent.getTestcaseByIdLink(mResultsAdapter.getIdTestcaseList().get(position), new GetContentCallback<GEntryWorksheet>() {
             @Override
             public void resultOfDataLoading(final GEntryWorksheet result) {
                 ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
@@ -267,10 +269,10 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     }
 
     private void getTagsByLinksTestcases(final ArrayList<String> links) {
-        if (links != null && ActiveUser.getInstance().getSpreadsheetLink() != null) {
+        if (links != null && mUser.getSpreadsheetLink() != null) {
             mTagsAutocompleteTextView.showProgress(true);
             showProgress(true);
-            GSpreadsheetContent.getInstance().getTagsByIdLinksTestcases(ActiveUser.getInstance().getSpreadsheetLink(), links, new GetContentCallback<List<GTag>>() {
+            mSpreadsheetContent.getTagsByIdLinksTestcases(mUser.getSpreadsheetLink(), links, new GetContentCallback<List<GTag>>() {
                 @Override
                 public void resultOfDataLoading(final List<GTag> result) {
                     ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
@@ -291,9 +293,9 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     }
 
     private void getTestcasesByLinksTestcases(ArrayList<String> links) {
-        if (links != null && ActiveUser.getInstance().getSpreadsheetLink() != null) {
+        if (links != null && mUser.getSpreadsheetLink() != null) {
             showProgress(true);
-            GSpreadsheetContent.getInstance().getTestcasesByIdLinksTestcases(ActiveUser.getInstance().getSpreadsheetLink(), links, new GetContentCallback<List<GEntryWorksheet>>() {
+            mSpreadsheetContent.getTestcasesByIdLinksTestcases(mUser.getSpreadsheetLink(), links, new GetContentCallback<List<GEntryWorksheet>>() {
                 @Override
                 public void resultOfDataLoading(final List<GEntryWorksheet> result) {
                     ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
@@ -311,10 +313,10 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     }
 
     private void getAllTags() {
-        if (ActiveUser.getInstance().getSpreadsheetLink() != null) {
+        if (mUser.getSpreadsheetLink() != null) {
             mTagsAutocompleteTextView.showProgress(true);
             showProgress(true);
-            GSpreadsheetContent.getInstance().getAllTags(ActiveUser.getInstance().getSpreadsheetLink(), new GetContentCallback<List<GTag>>() {
+            mSpreadsheetContent.getAllTags(mUser.getSpreadsheetLink(), new GetContentCallback<List<GTag>>() {
                 @Override
                 public void resultOfDataLoading(final List<GTag> result) {
                     ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
@@ -336,9 +338,9 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     }
 
     private void getAllTestcases() {
-        if (!InputsUtil.isEmpty(ActiveUser.getInstance().getSpreadsheetLink())) {
+        if (!InputsUtil.isEmpty(mUser.getSpreadsheetLink())) {
             showProgress(true);
-            GSpreadsheetContent.getInstance().getAllTestCases(ActiveUser.getInstance().getSpreadsheetLink(), new GetContentCallback<List<GEntryWorksheet>>() {
+            mSpreadsheetContent.getAllTestCases(mUser.getSpreadsheetLink(), new GetContentCallback<List<GEntryWorksheet>>() {
                 @Override
                 public void resultOfDataLoading(final List<GEntryWorksheet> result) {
                     ExpectedResultsActivity.this.runOnUiThread(new Runnable() {

@@ -10,8 +10,8 @@ import amtt.epam.com.amtt.api.JiraApiConst;
  */
 
 public class ActiveUser {
-    private static final ActiveUser INSTANCE = new ActiveUser();
 
+    private static final ActiveUser INSTANCE = new ActiveUser();
     private String mUserName;
     private String mUrl;
     private int mId;

@@ -23,8 +23,8 @@ android {
         applicationId "amtt.epam.com.amtt"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 27
-        versionName "0.1.14 DEV"
+        versionCode 30
+        versionName "0.1.15"
     }
 
     packagingOptions {

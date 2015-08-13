@@ -51,19 +51,18 @@ import amtt.epam.com.amtt.ui.views.TextInput;
  */
 public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, LoaderCallbacks<Cursor> {
 
+    private final String TAG = this.getClass().getSimpleName();
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
-
     private TextInput mUserNameTextInput;
     private TextInput mPasswordTextInput;
     private TextInput mUrlTextInput;
-
-    private final String TAG = this.getClass().getSimpleName();
     private Button mLoginButton;
     private String mRequestUrl;
     private boolean mIsUserInDatabase;
+    private ActiveUser mUser = ActiveUser.getInstance();
+    private JiraContent mJira = JiraContent.getInstance();
 
     @Override
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -141,7 +140,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         DbObjectManager.INSTANCE.add(user, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
-                ActiveUser.getInstance().setId(result);
+                mUser.setId(result);
             }
 
             @Override
@@ -166,7 +165,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
                         mIsUserInDatabase = true;
                     }
                 }
-                ActiveUser.getInstance().clearActiveUser();
+                mUser.clearActiveUser();
                 sendAuthRequest();
             }
 
@@ -178,19 +177,18 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     }
 
     private void setActiveUser() {
-        ActiveUser.getInstance().clearActiveUser();
-        final ActiveUser activeUser = ActiveUser.getInstance();
+        mUser.clearActiveUser();
         final String userName = mUserNameTextInput.getText().toString();
         final String password = mPasswordTextInput.getText().toString();
-        activeUser.setCredentials(userName, password, mRequestUrl);
-        activeUser.setUserName(userName);
-        activeUser.setUrl(mUrlTextInput.getText().toString());
+        mUser.setCredentials(userName, password, mRequestUrl);
+        mUser.setUserName(userName);
+        mUser.setUrl(mUrlTextInput.getText().toString());
         ScheduledExecutorService worker =
                 Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
             public void run() {
                 TopButtonService.start(getBaseContext());
-                JiraContent.getInstance().getPrioritiesNames(ActiveUser.getInstance().getUrl(), new GetContentCallback<HashMap<String, String>>() {
+                mJira.getPrioritiesNames(mUser.getUrl(), new GetContentCallback<HashMap<String, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<String, String> result) {
                         if (result != null) {
@@ -198,7 +196,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
                         }
                     }
                 });
-                JiraContent.getInstance().getProjectsNames(ActiveUser.getInstance().getId(), new GetContentCallback<HashMap<JProjects, String>>() {
+                mJira.getProjectsNames(mUser.getId(), new GetContentCallback<HashMap<JProjects, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<JProjects, String> result) {
                         if (result != null) {
@@ -213,7 +211,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     }
 
     private boolean isNewUserAdditionFromUserInfo() {
-        return ActiveUser.getInstance().getUrl() != null;
+        return mUser.getUrl() != null;
     }
 
     //Callbacks
@@ -229,7 +227,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         if (user != null && !mIsUserInDatabase) {
             user.setUrl(mUrlTextInput.getText().toString());
             setActiveUser();
-            user.setCredentials(ActiveUser.getInstance().getCredentials());
+            user.setCredentials(mUser.getCredentials());
             insertUserToDatabase(user);
             Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
         } else {

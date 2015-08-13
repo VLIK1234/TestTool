@@ -459,7 +459,7 @@ public class JiraContent{
         mLastProject = null;
     }
 
-    public void setDefaultConfig(final String userName, final String userUrl, final String lastProjectKey, final String lastAssignee, final String lastComponentsIds) {
+    public void setDefaultConfig(final int userId, final String userName, final String userUrl, final String lastProjectKey, final String lastAssignee, final String lastComponentsIds) {
         if (lastProjectKey != null) {
             StepUtil.checkUser(userName, userUrl, new IResult<List<JUserInfo>>() {
                 @Override
@@ -470,7 +470,7 @@ public class JiraContent{
                             user.setLastProjectKey(lastProjectKey);
                             user.setLastAssigneeName(lastAssignee);
                             user.setLastComponentsIds(lastComponentsIds);
-                            ContentFromDatabase.updateUser(user, new IResult<Integer>() {
+                            ContentFromDatabase.updateUser(userId, user, new IResult<Integer>() {
                                 @Override
                                 public void onResult(Integer res) {
                                 }

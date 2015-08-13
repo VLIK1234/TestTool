@@ -57,6 +57,8 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     private ImageView mUserImageImageView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private UserInfoHandler mHandler;
+    private ActiveUser mUser = ActiveUser.getInstance();
+    private JiraContent mJira = JiraContent.getInstance();
 
     public static class UserInfoHandler extends Handler {
 
@@ -171,15 +173,15 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     }
 
     private void setActiveUser(JUserInfo user) {
-        ActiveUser.getInstance().clearActiveUser();
-        ActiveUser.getInstance().setUrl(user.getUrl());
-        ActiveUser.getInstance().setCredentials(user.getCredentials());
-        ActiveUser.getInstance().setId(user.getId());
-        ActiveUser.getInstance().setUserName(user.getName());
-        ActiveUser.getInstance().setLastProjectKey(user.getLastProjectKey());
-        ActiveUser.getInstance().setLastAssigneeName(user.getLastAssigneeName());
-        ActiveUser.getInstance().setLastComponentsIds(user.getLastComponentsIds());
-        ActiveUser.getInstance().setSpreadsheetLink(user.getLastSpreadsheetUrl());
+        mUser.clearActiveUser();
+        mUser.setUrl(user.getUrl());
+        mUser.setCredentials(user.getCredentials());
+        mUser.setId(user.getId());
+        mUser.setUserName(user.getName());
+        mUser.setLastProjectKey(user.getLastProjectKey());
+        mUser.setLastAssigneeName(user.getLastAssigneeName());
+        mUser.setLastComponentsIds(user.getLastComponentsIds());
+        mUser.setSpreadsheetLink(user.getLastSpreadsheetUrl());
         mNameTextView.setText(user.getName());
         mEmailAddressTextView.setText(user.getEmailAddress());
         mDisplayNameTextView.setText(user.getDisplayName());
@@ -188,11 +190,11 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
         mJiraUrlTextView.setText(user.getUrl());
         mSpreadsheetUrlTextView.setText(user.getLastSpreadsheetUrl());
         ImageLoader.getInstance().displayImage(user.getAvatarUrls().getAvatarUrl(), mUserImageImageView);
-        JiraContent.getInstance().clearData();
+        mJira.clearData();
     }
 
     private void refreshUserInfo() {
-        String requestSuffix = JiraApiConst.USER_INFO_PATH + ActiveUser.getInstance().getUserName();
+        String requestSuffix = JiraApiConst.USER_INFO_PATH + mUser.getUserName();
         JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, null, null, null, this);
     }
 
@@ -205,7 +207,7 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
 
     @Override
     public void onLoadExecuted(JUserInfo user) {
-        user.setUrl(ActiveUser.getInstance().getUrl());
+        user.setUrl(mUser.getUrl());
         setActiveUser(user);
         mSwipeRefreshLayout.setRefreshing(false);
     }
@@ -226,7 +228,7 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
                     AmttUri.USER.get(),
                     null,
                     UsersTable._ID + "=?",
-                    new String[]{String.valueOf(ActiveUser.getInstance().getId())},
+                    new String[]{String.valueOf(mUser.getId())},
                     null);
         } else if (id == SINGLE_USER_CURSOR_LOADER_ID) {
             loader = new CursorLoader(UserInfoActivity.this,

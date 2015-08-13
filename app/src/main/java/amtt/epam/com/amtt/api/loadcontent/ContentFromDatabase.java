@@ -50,8 +50,8 @@ public class ContentFromDatabase {
         DbObjectManager.INSTANCE.add(list, result);
     }
 
-    public static void updateUser(JUserInfo user, IResult<Integer> result) {
-        DbObjectManager.INSTANCE.update(user, BaseColumns._ID + "=" + ActiveUser.getInstance().getId(), null, result);
+    public static void updateUser(int userId, JUserInfo user, IResult<Integer> result) {
+        DbObjectManager.INSTANCE.update(user, BaseColumns._ID + "=" + userId, null, result);
     }
 
 }

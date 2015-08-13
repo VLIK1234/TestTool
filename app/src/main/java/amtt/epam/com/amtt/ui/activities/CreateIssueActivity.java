@@ -15,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -70,11 +69,8 @@ import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.Validator;
 
 
-public class CreateIssueActivity extends BaseActivity
-        implements AttachmentAdapter.ViewHolder.ClickListener,
-        IResult<List<DatabaseEntity>>,
-        SharedPreferences.OnSharedPreferenceChangeListener,
-        GifUtil.ProgressListener {
+public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, IResult<List<DatabaseEntity>>,
+                                                                    SharedPreferences.OnSharedPreferenceChangeListener, GifUtil.ProgressListener {
 
     private static final int PAINT_ACTIVITY_REQUEST_CODE = 0;
     private static final int MESSAGE_TEXT_CHANGED = 100;
@@ -82,12 +78,11 @@ public class CreateIssueActivity extends BaseActivity
     private static final String BUG = "Bug";
     private static final String TASK = "Task";
     private static final String TAG = CreateIssueActivity.class.getSimpleName();
+    private final Queue<ContentConst> mRequestsQueue = new LinkedList<>();
     private AutocompleteProgressView mAssignableAutocompleteView;
-
     private TextInput mDescriptionTextInput;
     private TextInput mEnvironmentTextInput;
     private TextInput mTitleTextInput;
-
     private String mAssignableUserName = null;
     private String mIssueTypeName;
     private String mPriorityName;
@@ -97,7 +92,6 @@ public class CreateIssueActivity extends BaseActivity
     private Spinner mProjectNamesSpinner;
     private RecyclerView mRecyclerView;
     private Spinner mComponents;
-    private final Queue<ContentConst> mRequestsQueue = new LinkedList<>();
     private Button mCreateIssueButton;
     private ProgressBar mGifProgress;
     private CheckBox mGifCheckBox;
@@ -106,11 +100,12 @@ public class CreateIssueActivity extends BaseActivity
     private int[] mTitlePoint;
     private CheckBox mCreateAnotherCheckBox;
     private boolean mCreateAnotherIssue;
-    private LayoutInflater mLayoutInflater;
     private boolean mIsAssignableSelected;
     private boolean mIsSelfSigned;
     private Bundle mBundle;
-    private Button mShareButton;
+    private ActiveUser mUser = ActiveUser.getInstance();
+    private JiraContent mJira = JiraContent.getInstance();
+    private AttachmentManager mAttachmentManager = AttachmentManager.getInstance();
 
     public static class AssigneeHandler extends Handler {
 
@@ -174,11 +169,10 @@ public class CreateIssueActivity extends BaseActivity
 
     private void setDefaultConfigs() {
         if (mComponents != null && mComponents.getSelectedItem() != null) {
-            String component = JiraContent.getInstance().getComponentIdByName((String) mComponents.getSelectedItem());
-            ActiveUser.getInstance().setLastComponentsIds(component);
+            String component = mJira.getComponentIdByName((String) mComponents.getSelectedItem());
+            mUser.setLastComponentsIds(component);
         }
-        JiraContent.getInstance().setDefaultConfig(ActiveUser.getInstance().getUserName(), ActiveUser.getInstance().getUrl(), ActiveUser.getInstance().getLastProjectKey(),
-                ActiveUser.getInstance().getLastAssignee(), ActiveUser.getInstance().getLastComponentsIds());
+        mJira.setDefaultConfig(mUser.getId(), mUser.getUserName(), mUser.getUrl(), mUser.getLastProjectKey(), mUser.getLastAssignee(), mUser.getLastComponentsIds());
     }
 
     private void initViews() {
@@ -200,13 +194,13 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     private void initShareAttachmentButton() {
-        mShareButton = (Button) findViewById(R.id.bt_share_attachmnet);
-        mShareButton.setOnClickListener(new View.OnClickListener() {
+        Button shareButton = (Button) findViewById(R.id.bt_share_attachmnet);
+        shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mAdapter.getAttachmentFilePathList().size() > 0) {
                     SharingToEmailHelper.senAttachmentImage(CreateIssueActivity.this, mEnvironmentTextInput.getText().toString(),
-                            mAdapter.getAttachmentFilePathList());
+                                                                mAdapter.getAttachmentFilePathList());
                 } else {
                     Toast.makeText(getBaseContext(), R.string.error_message_share_attachment, Toast.LENGTH_SHORT).show();
                 }
@@ -238,7 +232,7 @@ public class CreateIssueActivity extends BaseActivity
     private void initProjectNamesSpinner() {
         mProjectNamesSpinner = (Spinner) findViewById(R.id.spin_projects_name);
         mProjectNamesSpinner.setEnabled(false);
-        JiraContent.getInstance().getProjectsNames(ActiveUser.getInstance().getId(), new GetContentCallback<HashMap<JProjects, String>>() {
+        mJira.getProjectsNames(mUser.getId(), new GetContentCallback<HashMap<JProjects, String>>() {
             @Override
             public void resultOfDataLoading(final HashMap<JProjects, String> result) {
                 if (result != null) {
@@ -249,8 +243,8 @@ public class CreateIssueActivity extends BaseActivity
                             final ArrayAdapter<String> projectsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, projectNames);
                             projectsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                             mProjectNamesSpinner.setAdapter(projectsAdapter);
-                            if (ActiveUser.getInstance().getLastProjectKey() != null) {
-                                JiraContent.getInstance().getProjectNameByKey(ActiveUser.getInstance().getLastProjectKey(), new GetContentCallback<String>() {
+                            if (mUser.getLastProjectKey() != null) {
+                                mJira.getProjectNameByKey(mUser.getLastProjectKey(), new GetContentCallback<String>() {
                                     @Override
                                     public void resultOfDataLoading(String result) {
                                         if (result != null) {
@@ -272,11 +266,11 @@ public class CreateIssueActivity extends BaseActivity
         mProjectNamesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                JiraContent.getInstance().getProjectKeyByName((String) parent.getItemAtPosition(position), new GetContentCallback<String>() {
+                mJira.getProjectKeyByName((String) parent.getItemAtPosition(position), new GetContentCallback<String>() {
                     @Override
                     public void resultOfDataLoading(String result) {
                         if (result != null) {
-                            ActiveUser.getInstance().setLastProjectKey(result);
+                            mUser.setLastProjectKey(result);
                             reinitRelatedViews(result);
                         }
                     }
@@ -292,7 +286,7 @@ public class CreateIssueActivity extends BaseActivity
     private void initPrioritiesSpinner() {
         final Spinner prioritiesSpinner = (Spinner) findViewById(R.id.spin_priority);
         prioritiesSpinner.setEnabled(false);
-        JiraContent.getInstance().getPrioritiesNames(ActiveUser.getInstance().getUrl(), new GetContentCallback<HashMap<String, String>>() {
+        mJira.getPrioritiesNames(mUser.getUrl(), new GetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(final HashMap<String, String> result) {
                 if (result != null) {
@@ -310,7 +304,7 @@ public class CreateIssueActivity extends BaseActivity
                                     prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
                                 }
                             } else {
-                                defaultPriority = JiraContent.getInstance().getPriorityNameById(DEFAULT_PRIORITY_ID);
+                                defaultPriority = mJira.getPriorityNameById(DEFAULT_PRIORITY_ID);
                                 if (defaultPriority != null) {
                                     prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
                                 }
@@ -339,7 +333,7 @@ public class CreateIssueActivity extends BaseActivity
         final Spinner versionsSpinner = (Spinner) findViewById(R.id.spin_affects_versions);
         final TextView affectTextView = (TextView) findViewById(R.id.tv_affects_versions);
         versionsSpinner.setEnabled(false);
-        JiraContent.getInstance().getVersionsNames(projectKey, new GetContentCallback<HashMap<String, String>>() {
+        mJira.getVersionsNames(projectKey, new GetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
                 if (result != null && result.size() > 0) {
@@ -375,7 +369,7 @@ public class CreateIssueActivity extends BaseActivity
         final TextView componentsTextView = (TextView) findViewById(R.id.tv_components);
         mComponents = (Spinner) findViewById(R.id.spin_components);
         mComponents.setEnabled(false);
-        JiraContent.getInstance().getComponentsNames(projectKey, new GetContentCallback<HashMap<String, String>>() {
+        mJira.getComponentsNames(projectKey, new GetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
                 if (result != null && result.size() > 0) {
@@ -387,8 +381,8 @@ public class CreateIssueActivity extends BaseActivity
                     mComponents.setAdapter(componentsAdapter);
                     mComponents.setVisibility(View.VISIBLE);
                     mComponents.setEnabled(true);
-                    if (ActiveUser.getInstance().getLastComponentsIds() != null) {
-                        mComponents.setSelection(componentsAdapter.getPosition(JiraContent.getInstance().getComponentNameById(ActiveUser.getInstance().getLastComponentsIds())));
+                    if (mUser.getLastComponentsIds() != null) {
+                        mComponents.setSelection(componentsAdapter.getPosition(mJira.getComponentNameById(mUser.getLastComponentsIds())));
                     } else {
                         mComponents.setSelection(0);
                     }
@@ -405,7 +399,7 @@ public class CreateIssueActivity extends BaseActivity
     private void initIssueTypesSpinner() {
         final Spinner issueTypesSpinner = (Spinner) findViewById(R.id.spin_issue_name);
         issueTypesSpinner.setEnabled(false);
-        JiraContent.getInstance().getIssueTypesNames(new GetContentCallback<List<String>>() {
+        mJira.getIssueTypesNames(new GetContentCallback<List<String>>() {
             @Override
             public void resultOfDataLoading(final List<String> result) {
                 if (result != null) {
@@ -414,7 +408,7 @@ public class CreateIssueActivity extends BaseActivity
                             ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
                             issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                             issueTypesSpinner.setAdapter(issueTypesAdapter);
-                            if (ActiveUser.getInstance().getRecord()) {
+                            if (mUser.getRecord()) {
                                 if (issueTypesAdapter.getPosition(BUG) != -1) {
                                     issueTypesSpinner.setSelection(issueTypesAdapter.getPosition(BUG));
                                 }
@@ -423,7 +417,6 @@ public class CreateIssueActivity extends BaseActivity
                                     issueTypesSpinner.setSelection(issueTypesAdapter.getPosition(TASK));
                                 }
                             }
-
                             issueTypesSpinner.setEnabled(true);
                             hideKeyboard();
                         }
@@ -485,20 +478,20 @@ public class CreateIssueActivity extends BaseActivity
                 showProgress(true);
                 if (mComponents.getSelectedItem() != null) {
                     String components = (String) mComponents.getSelectedItem();
-                    ActiveUser.getInstance().setLastComponentsIds(JiraContent.getInstance().getComponentIdByName(components));
+                    mUser.setLastComponentsIds(mJira.getComponentIdByName(components));
 
                 }
-                JiraContent.getInstance().createIssue(mIssueTypeName, mPriorityName, mVersionName, mTitleTextInput.getText().toString(),
+                mJira.createIssue(mIssueTypeName, mPriorityName, mVersionName, mTitleTextInput.getText().toString(),
                         mDescriptionTextInput.getText().toString(), mEnvironmentTextInput.getText().toString(),
-                        mAssignableUserName, ActiveUser.getInstance().getLastComponentsIds(), new GetContentCallback<JCreateIssueResponse>() {
+                        mAssignableUserName, mUser.getLastComponentsIds(), new GetContentCallback<JCreateIssueResponse>() {
                             @Override
                             public void resultOfDataLoading(JCreateIssueResponse result) {
                                 if (result != null) {
                                     AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
                                     Toast.makeText(CreateIssueActivity.this, R.string.ticket_created, Toast.LENGTH_LONG).show();
                                     TopButtonService.stopRecord(CreateIssueActivity.this);
-                                    if (mAssignableUserName!=null && !mAssignableUserName.equals("") && !ActiveUser.getInstance().getLastAssignee().equals(mAssignableUserName)) {
-                                        ActiveUser.getInstance().setLastAssigneeName(mAssignableUserName);
+                                    if (mAssignableUserName != null && !mAssignableUserName.equals("") && !mUser.getLastAssignee().equals(mAssignableUserName)) {
+                                        mUser.setLastAssigneeName(mAssignableUserName);
                                     }
 
                                     if (mCreateAnotherIssue) {
@@ -538,7 +531,7 @@ public class CreateIssueActivity extends BaseActivity
         mAssignableAutocompleteView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ActiveUser.getInstance().setLastAssigneeName(mAssignableUserName);
+                mUser.setLastAssigneeName(mAssignableUserName);
                 mIsAssignableSelected = true;
             }
         });
@@ -573,9 +566,9 @@ public class CreateIssueActivity extends BaseActivity
                 }
             }
         });
-        if (ActiveUser.getInstance().getLastAssignee() != null) {
+        if (mUser.getLastAssignee() != null) {
             mIsAssignableSelected = true;
-            mAssignableAutocompleteView.setText(ActiveUser.getInstance().getLastAssignee());
+            mAssignableAutocompleteView.setText(mUser.getLastAssignee());
         }
         initAssignSelfButton();
     }
@@ -586,10 +579,9 @@ public class CreateIssueActivity extends BaseActivity
             @Override
             public void onClick(View v) {
                 mIsSelfSigned = true;
-                ActiveUser activeUser = ActiveUser.getInstance();
-                String userName = activeUser.getUserName();
+                String userName = mUser.getUserName();
                 mAssignableAutocompleteView.setText(userName);
-                activeUser.setLastAssigneeName(userName);
+                mUser.setLastAssigneeName(userName);
             }
         });
     }
@@ -666,7 +658,7 @@ public class CreateIssueActivity extends BaseActivity
         if (!mIsAssignableSelected) {
             mAssignableAutocompleteView.setEnabled(false);
             mAssignableAutocompleteView.showProgress(true);
-            JiraContent.getInstance().getUsersAssignable(s, new GetContentCallback<List<String>>() {
+            mJira.getUsersAssignable(s, new GetContentCallback<List<String>>() {
                 @Override
                 public void resultOfDataLoading(List<String> result) {
                     if (result != null) {
@@ -754,7 +746,7 @@ public class CreateIssueActivity extends BaseActivity
             public void run() {
                 if (result != null) {
                     mSteps = (List) result;
-                    List<Attachment> screenArray = AttachmentManager.getInstance().getAttachmentList(result);
+                    List<Attachment> screenArray = mAttachmentManager.getAttachmentList(result);
                     File externalCache = new File(FileUtil.getCacheAmttDir());
                     String template = externalCache.getPath() + "/%s";
                     String pathLogCommon = String.format(template, "log_common.txt");

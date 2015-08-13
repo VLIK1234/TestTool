@@ -36,6 +36,9 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 2;
     private final String TAG = this.getClass().getSimpleName();
+    private ActiveUser mUser = ActiveUser.getInstance();
+    private JiraContent mJira = JiraContent.getInstance();
+    private GSpreadsheetContent mSpreadsheetContent = GSpreadsheetContent.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,22 +91,22 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     }
 
     private void setActiveUser(Cursor data) {
-        ActiveUser.getInstance().clearActiveUser();
+        mUser.clearActiveUser();
         JUserInfo userInfo = new JUserInfo(data);
-        ActiveUser.getInstance().setUrl(userInfo.getUrl());
-        ActiveUser.getInstance().setCredentials(userInfo.getCredentials());
-        ActiveUser.getInstance().setId(userInfo.getId());
-        ActiveUser.getInstance().setUserName(userInfo.getName());
-        ActiveUser.getInstance().setLastProjectKey(userInfo.getLastProjectKey());
-        ActiveUser.getInstance().setLastAssigneeName(userInfo.getLastAssigneeName());
-        ActiveUser.getInstance().setLastComponentsIds(userInfo.getLastComponentsIds());
-        ActiveUser.getInstance().setSpreadsheetLink(userInfo.getLastSpreadsheetUrl());
+        mUser.setUrl(userInfo.getUrl());
+        mUser.setCredentials(userInfo.getCredentials());
+        mUser.setId(userInfo.getId());
+        mUser.setUserName(userInfo.getName());
+        mUser.setLastProjectKey(userInfo.getLastProjectKey());
+        mUser.setLastAssigneeName(userInfo.getLastAssigneeName());
+        mUser.setLastComponentsIds(userInfo.getLastComponentsIds());
+        mUser.setSpreadsheetLink(userInfo.getLastSpreadsheetUrl());
         Logger.d(TAG, "ID " + userInfo.getId());
         Logger.d(TAG, "LastProjectKey " + userInfo.getLastProjectKey());
         ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
             public void run() {
-                JiraContent.getInstance().getPrioritiesNames(ActiveUser.getInstance().getUrl(), new GetContentCallback<HashMap<String, String>>() {
+                mJira.getPrioritiesNames(mUser.getUrl(), new GetContentCallback<HashMap<String, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<String, String> result) {
                         if (result != null) {
@@ -111,7 +114,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         }
                     }
                 });
-                JiraContent.getInstance().getProjectsNames(ActiveUser.getInstance().getId(), new GetContentCallback<HashMap<JProjects, String>>() {
+                mJira.getProjectsNames(mUser.getId(), new GetContentCallback<HashMap<JProjects, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<JProjects, String> result) {
                         if (result != null) {
@@ -119,8 +122,8 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         }
                     }
                 });
-                if (!InputsUtil.isEmpty(ActiveUser.getInstance().getSpreadsheetLink())) {
-                    GSpreadsheetContent.getInstance().getAllTestCases(ActiveUser.getInstance().getSpreadsheetLink(), new GetContentCallback<List<GEntryWorksheet>>() {
+                if (!InputsUtil.isEmpty(mUser.getSpreadsheetLink())) {
+                    mSpreadsheetContent.getAllTestCases(mUser.getSpreadsheetLink(), new GetContentCallback<List<GEntryWorksheet>>() {
                         @Override
                         public void resultOfDataLoading(List<GEntryWorksheet> result) {
                             if (result != null) {

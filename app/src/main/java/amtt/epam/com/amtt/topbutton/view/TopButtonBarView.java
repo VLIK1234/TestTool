@@ -36,9 +36,12 @@ import amtt.epam.com.amtt.util.UIUtil;
 @SuppressLint("ViewConstructor")
 public class TopButtonBarView extends FrameLayout {
 
-    private final WindowManager mWindowManager;
     private static boolean isRecordStarted;
     private static boolean isShowAction;
+    private final WindowManager mWindowManager;
+    private final int mMainButtonHeight;
+    private final int mMainButtonWidth;
+    private final amtt.epam.com.amtt.topbutton.view.OnTouchListener mTopButtonListener;
     private WindowManager.LayoutParams mLayout;
     private LinearLayout mButtonsBar;
     private TopUnitView mButtonStartRecord;
@@ -49,9 +52,7 @@ public class TopButtonBarView extends FrameLayout {
     private TopUnitView mButtonStopRecord;
     private TopUnitView mButtonShowSteps;
     private TopUnitView mButtonCloseApp;
-    private final int mMainButtonHeight;
-    private final int mMainButtonWidth;
-    private final amtt.epam.com.amtt.topbutton.view.OnTouchListener mTopButtonListener;
+    private ActiveUser mUser = ActiveUser.getInstance();
 
     static {
         isRecordStarted = false;
@@ -98,7 +99,7 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 isRecordStarted = true;
-                ActiveUser.getInstance().setRecord(true);
+                mUser.setRecord(true);
                 hide();
                 StepUtil.clearAllSteps();
 
@@ -160,7 +161,7 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 isRecordStarted = false;
-                ActiveUser.getInstance().setRecord(false);
+                mUser.setRecord(false);
                 hide();
                 StepUtil.clearAllSteps();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_SHORT).show();
@@ -263,7 +264,7 @@ public class TopButtonBarView extends FrameLayout {
 
     public void setIsRecordStarted(boolean isRecordStarted) {
         TopButtonBarView.isRecordStarted = isRecordStarted;
-        ActiveUser.getInstance().setRecord(isRecordStarted);
+        mUser.setRecord(isRecordStarted);
     }
 
     public void move(int x, int y) {

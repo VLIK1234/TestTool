@@ -35,6 +35,8 @@ public class NewSpreadsheetActivity extends BaseActivity {
     private TextInput mSpreadsheetKeyTextInput;
     private Button mAddSpreadsheet;
     private String mIdLink;
+    private ActiveUser mUser = ActiveUser.getInstance();
+    private GSpreadsheetContent mSpreadsheetContent = GSpreadsheetContent.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +69,13 @@ public class NewSpreadsheetActivity extends BaseActivity {
                 if (!InputsUtil.isEmpty(key)) {
                     showProgress(true);
                     mIdLink = GoogleApiConst.SPREADSHEET_PATH + key + GoogleApiConst.PATH_POSTFIX;
-                    GSpreadsheetContent.getInstance().getSpreadsheet(mIdLink, new GetContentCallback<GSpreadsheet>() {
+                    mSpreadsheetContent.getSpreadsheet(mIdLink, new GetContentCallback<GSpreadsheet>() {
                         @Override
                         public void resultOfDataLoading(final GSpreadsheet result) {
                             NewSpreadsheetActivity.this.runOnUiThread(new Runnable() {
                                 public void run() {
                                     if (result != null) {
-                                        ActiveUser.getInstance().setSpreadsheetLink(mIdLink);
+                                        mUser.setSpreadsheetLink(mIdLink);
                                         mAddSpreadsheet.setEnabled(true);
                                     } else {
                                         Toast.makeText(NewSpreadsheetActivity.this, "Invalide key", Toast.LENGTH_LONG).show();
@@ -93,14 +95,14 @@ public class NewSpreadsheetActivity extends BaseActivity {
             public void onClick(View v) {
                 if (mIdLink != null) {
                     showProgress(true);
-                    StepUtil.checkUser(ActiveUser.getInstance().getUserName(), ActiveUser.getInstance().getUrl(), new IResult<List<JUserInfo>>() {
+                    StepUtil.checkUser(mUser.getUserName(), mUser.getUrl(), new IResult<List<JUserInfo>>() {
                         @Override
                         public void onResult(List<JUserInfo> result) {
                             for (JUserInfo userInfo : result) {
-                                if (userInfo.getName().equals(ActiveUser.getInstance().getUserName()) && userInfo.getUrl().equals(ActiveUser.getInstance().getUrl())) {
+                                if (userInfo.getName().equals(mUser.getUserName()) && userInfo.getUrl().equals(mUser.getUrl())) {
                                     JUserInfo user = result.get(0);
-                                    user.setLastSpreadsheetUrl(ActiveUser.getInstance().getSpreadsheetLink());
-                                    ContentFromDatabase.updateUser(user, new IResult<Integer>() {
+                                    user.setLastSpreadsheetUrl(mUser.getSpreadsheetLink());
+                                    ContentFromDatabase.updateUser(mUser.getId(), user, new IResult<Integer>() {
                                         @Override
                                         public void onResult(final Integer res) {
                                             NewSpreadsheetActivity.this.runOnUiThread(new Runnable() {
