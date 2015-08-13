@@ -736,7 +736,7 @@ public class CreateIssueActivity extends BaseActivity
 
                 @Override
                 public void onError(Exception e) {
-
+                    Logger.e(TAG, e.getMessage(), e);
                 }
             });
         }

@@ -36,6 +36,7 @@ import amtt.epam.com.amtt.ui.views.MultilineRadioGroup;
 import amtt.epam.com.amtt.ui.views.MultilineRadioGroup.OnEntireGroupCheckedChangeListener;
 import amtt.epam.com.amtt.ui.views.PaintView;
 import amtt.epam.com.amtt.ui.views.PaletteItem;
+import amtt.epam.com.amtt.util.Logger;
 
 /**
  @author Artsiom_Kaliaha
@@ -49,6 +50,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         IResult<List<Step>>,
         ImageLoadingListener {
 
+    private static final String TAG = PaintActivity.class.getSimpleName();
     public static final String KEY_STEP_ID = "key_step_id";
     private static final int HIDDEN_UI_FLAG = View.SYSTEM_UI_FLAG_LOW_PROFILE;
     private static final int HIDE_UI_DELAY = 4000;
@@ -319,6 +321,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
 
     @Override
     public void onError(Exception e) {
+        Logger.e(TAG, e.getMessage(), e);
         setErrorState();
     }
 

@@ -36,7 +36,7 @@ public class ContentFromBackend {
         return ContentFromBackendHolder.INSTANCE;
     }
 
-    public void getProjectsAsynchronously(final ContentLoadingCallback<JProjectsResponse> contentLoadingCallback,
+    public void getProjects(final ContentLoadingCallback<JProjectsResponse> contentLoadingCallback,
                                           final GetContentCallback getContentCallback) {
         JiraApi.get().searchData(JiraApiConst.USER_PROJECTS_PATH,
                 ProjectsProcessor.NAME,
@@ -46,7 +46,7 @@ public class ContentFromBackend {
                 getCallback(ContentConst.PROJECTS_RESPONSE, contentLoadingCallback, getContentCallback));
     }
 
-    public void getVersionsAsynchronously(String projectsKey,
+    public void getVersions(String projectsKey,
                                           final ContentLoadingCallback<JVersionsResponse> contentLoadingCallback,
                                           final GetContentCallback getContentCallback) {
         String path = JiraApiConst.PROJECT_VERSIONS_PATH + projectsKey + JiraApiConst.PROJECT_VERSIONS_PATH_V;
@@ -58,7 +58,7 @@ public class ContentFromBackend {
                 getCallback(ContentConst.VERSIONS_RESPONSE, contentLoadingCallback, getContentCallback));
     }
 
-    public void getComponentsAsynchronously(String projectsKey,
+    public void getComponents(String projectsKey,
                                           final ContentLoadingCallback<JComponentsResponse> contentLoadingCallback,
                                           final GetContentCallback getContentCallback) {
         String path = JiraApiConst.PROJECT_COMPONENTS_PATH + projectsKey + JiraApiConst.PROJECT_COMPONENTS_PATH_C;
@@ -70,7 +70,7 @@ public class ContentFromBackend {
                 getCallback(ContentConst.COMPONENTS_RESPONSE, contentLoadingCallback, getContentCallback));
     }
 
-    public void getUsersAssignableAsynchronously(String projectKey,
+    public void getUsersAssignable(String projectKey,
                                                  String userName,
                                                  final ContentLoadingCallback<JUserAssignableResponse> contentLoadingCallback,
                                                  final GetContentCallback getContentCallback) {
@@ -83,7 +83,7 @@ public class ContentFromBackend {
                 getCallback(ContentConst.USERS_ASSIGNABLE_RESPONSE, contentLoadingCallback, getContentCallback));
     }
 
-    public void getPriorityAsynchronously(final ContentLoadingCallback<JPriorityResponse> contentLoadingCallback,
+    public void getPriority(final ContentLoadingCallback<JPriorityResponse> contentLoadingCallback,
                                           final GetContentCallback getContentCallback) {
         String path = JiraApiConst.PROJECT_PRIORITY_PATH;
         JiraApi.get().searchData(path,
@@ -97,7 +97,7 @@ public class ContentFromBackend {
     }
 
 
-    public void createIssueAsynchronously(String issueJson,
+    public void createIssue(String issueJson,
                                           final ContentLoadingCallback<JCreateIssueResponse> contentLoadingCallback,
                                           final GetContentCallback getContentCallback) {
         JiraApi.get().createIssue(issueJson,
@@ -105,7 +105,7 @@ public class ContentFromBackend {
                 getCallback(ContentConst.CREATE_ISSUE_RESPONSE, contentLoadingCallback, getContentCallback));
     }
 
-    public void sendAttachmentAsynchronously(String issueKey,
+    public void sendAttachment(String issueKey,
                                              List<String> fullFileName,
                                              final ContentLoadingCallback<Boolean> contentLoadingCallback,
                                              final GetContentCallback getContentCallback) {

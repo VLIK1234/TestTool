@@ -17,9 +17,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    defaultConfig {
-        manifestPlaceholders = [ applicationTestid:getApplicationId()]
-    }
+
     signingConfigs {
         debug {
             storeFile file("debug.keystore")

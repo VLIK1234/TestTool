@@ -40,7 +40,7 @@ public class GSpreadsheetContent {
         this.mSpreadsheet = spreadsheet;
     }
 
-    private void setSpreadsheetSynchronously(final GSpreadsheet result) {
+    private void setSpreadsheetInDB(final GSpreadsheet result) {
         ContentFromDatabase.setSpreadsheet(result, new IResult<Integer>() {
             @Override
             public void onResult(Integer res) {
@@ -62,14 +62,14 @@ public class GSpreadsheetContent {
                 if (result != null && !result.isEmpty()) {
                     getContentCallback.resultOfDataLoading(result.get(0));
                 } else {
-                    getSpreadsheetAsynchronously(idLink, getContentCallback);
+                    getSpreadsheetFromBackend(idLink, getContentCallback);
                 }
             }
 
             @Override
             public void onError(Exception e) {
                 Logger.e(TAG, e.getMessage(), e);
-                getSpreadsheetAsynchronously(idLink, getContentCallback);
+                getSpreadsheetFromBackend(idLink, getContentCallback);
             }
         });
     }
@@ -91,15 +91,15 @@ public class GSpreadsheetContent {
         });
     }
 
-    private void getSpreadsheetAsynchronously(String idLink, final GetContentCallback<GSpreadsheet> getContentCallback) {
-        ContentFromBackend.getInstance().getSpreadsheetAsynchronously(idLink, new ContentLoadingCallback<GSpreadsheet>() {
+    private void getSpreadsheetFromBackend(String idLink, final GetContentCallback<GSpreadsheet> getContentCallback) {
+        ContentFromBackend.getInstance().getSpreadsheet(idLink, new ContentLoadingCallback<GSpreadsheet>() {
             @Override
             public void resultFromBackend(GSpreadsheet result, ContentConst tag, GetContentCallback contentCallback) {
                 if (tag == ContentConst.SPREADSHEET_RESPONSE) {
                     if (contentCallback != null) {
                         if (result != null) {
                             setSpreadsheet(result);
-                            setSpreadsheetSynchronously(result);
+                            setSpreadsheetInDB(result);
                             contentCallback.resultOfDataLoading(result);
                         } else {
                             contentCallback.resultOfDataLoading(null);
@@ -113,10 +113,10 @@ public class GSpreadsheetContent {
 
     //region Worksheet
     public void getWorksheet(final String linkWorksheet, final GetContentCallback<GWorksheet> getContentCallback) {
-        getWorksheetAsynchronously(linkWorksheet, getContentCallback);
+        getWorksheetFromBackend(linkWorksheet, getContentCallback);
     }
 
-    private void setWorksheetSynchronously(final GWorksheet worksheet) {
+    private void setWorksheetFromDB(final GWorksheet worksheet) {
         ContentFromDatabase.setWorksheet(worksheet, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
@@ -133,7 +133,7 @@ public class GSpreadsheetContent {
     private void setWorksheets(GSpreadsheet spreadsheet) {
         if (spreadsheet != null && spreadsheet.getEntry() != null && !spreadsheet.getEntry().isEmpty()) {
             for (int i = 0; i < spreadsheet.getEntry().size(); i++) {
-                getWorksheetAsynchronously(spreadsheet.getEntry().get(i).getListFeedLink().getHref(), new GetContentCallback<GWorksheet>() {
+                getWorksheetFromBackend(spreadsheet.getEntry().get(i).getListFeedLink().getHref(), new GetContentCallback<GWorksheet>() {
                     @Override
                     public void resultOfDataLoading(GWorksheet result) {
                         if (result != null && result.getTitle() != null) {
@@ -145,16 +145,16 @@ public class GSpreadsheetContent {
         }
     }
 
-    private void getWorksheetAsynchronously(final String linkWorksheet, final GetContentCallback<GWorksheet> getContentCallback) {
-        ContentFromBackend.getInstance().getWorksheetAsynchronously(linkWorksheet, new ContentLoadingCallback<GWorksheet>() {
+    private void getWorksheetFromBackend(final String linkWorksheet, final GetContentCallback<GWorksheet> getContentCallback) {
+        ContentFromBackend.getInstance().getWorksheet(linkWorksheet, new ContentLoadingCallback<GWorksheet>() {
             @Override
             public void resultFromBackend(GWorksheet result, ContentConst tag, GetContentCallback contentCallback) {
                 if (tag == ContentConst.WORKSHEET_RESPONSE) {
                     if (contentCallback != null) {
                         if (result != null) {
                             result.setSpreadsheetIdLink(mSpreadsheet.getIdLink());
-                            setWorksheetSynchronously(result);
-                            setTestCasesSynchronously(result.getEntry(), result.getIdLink(), result.getSpreadsheetIdLink());
+                            setWorksheetFromDB(result);
+                            setTestCasesInDB(result.getEntry(), result.getIdLink(), result.getSpreadsheetIdLink());
                             contentCallback.resultOfDataLoading(result);
                         } else {
                             contentCallback.resultOfDataLoading(null);
@@ -194,18 +194,18 @@ public class GSpreadsheetContent {
         });
     }
 
-    private void setTestCasesSynchronously(List<GEntryWorksheet> testcases, String idLinkWorksheet, String idLinkSpreadsheet) {
+    private void setTestCasesInDB(List<GEntryWorksheet> testcases, String idLinkWorksheet, String idLinkSpreadsheet) {
         GEntryWorksheet testcase;
         for (int i = 0; i < testcases.size(); i++) {
             testcase = testcases.get(i);
             testcase.setIdWorksheetLink(idLinkWorksheet);
             testcase.setIdSpreadsheetLink(idLinkSpreadsheet);
-            setTestCaseSynchronously(testcase);
+            setTestCaseInDB(testcase);
             setTag(testcase.getTestCaseNameGSX(), testcase.getIdLink(), testcase.getIdSpreadsheetLink());
         }
     }
 
-    private void setTestCaseSynchronously(GEntryWorksheet testcase) {
+    private void setTestCaseInDB(GEntryWorksheet testcase) {
         ContentFromDatabase.setTestCase(testcase, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
@@ -220,10 +220,10 @@ public class GSpreadsheetContent {
     }
 
     public void getAllTestCases(String idSpreadsheetLink, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
-            getAllTestCasesSynchronously(idSpreadsheetLink, getContentCallback);
+            getAllTestCasesInDB(idSpreadsheetLink, getContentCallback);
     }
 
-    private void getAllTestCasesSynchronously(final String idSpreadsheetLink, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
+    private void getAllTestCasesInDB(final String idSpreadsheetLink, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
         if (!InputsUtil.isEmpty(idSpreadsheetLink)) {
             ContentFromDatabase.getTestCasesByLinkSpreadsheet(idSpreadsheetLink, new IResult<List<GEntryWorksheet>>() {
                 @Override
@@ -340,8 +340,8 @@ public class GSpreadsheetContent {
 
                 @Override
                 public void onError(Exception e) {
-                    getContentCallback.resultOfDataLoading(null);
                     Logger.e(TAG, e.getMessage(), e);
+                    getContentCallback.resultOfDataLoading(null);
                 }
             });
         } else {

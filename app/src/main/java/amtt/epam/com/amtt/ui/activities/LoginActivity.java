@@ -146,6 +146,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
 
             @Override
             public void onError(Exception e) {
+                Logger.e(TAG, e.getMessage(), e);
             }
         });
     }
@@ -171,7 +172,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
 
             @Override
             public void onError(Exception e) {
-
+                Logger.e(TAG, e.getMessage(), e);
             }
         });
     }
@@ -239,6 +240,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
 
     @Override
     public void onLoadError(Exception e) {
+        Logger.e(TAG, e.getMessage(), e);
         DialogUtils.createDialog(LoginActivity.this, ExceptionType.valueOf(e)).show();
         showProgress(false);
         mLoginButton.setEnabled(true);

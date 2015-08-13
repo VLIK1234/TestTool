@@ -20,6 +20,7 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
@@ -29,6 +30,7 @@ import amtt.epam.com.amtt.util.UIUtil;
 
 public class StepsActivity extends AppCompatActivity implements StepsAdapter.ViewHolder.ClickListener {
 
+    private static final String TAG = StepsActivity.class.getSimpleName();
     private static final int SPAN_COUNT = 3;
     private TextView emptyList;
     private StepsAdapter mAdapter;
@@ -69,7 +71,7 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
 
             @Override
             public void onError(Exception e) {
-
+                Logger.e(TAG, e.getMessage(), e);
             }
         });
     }

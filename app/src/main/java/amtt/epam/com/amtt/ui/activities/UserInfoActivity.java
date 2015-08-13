@@ -212,6 +212,7 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
 
     @Override
     public void onLoadError(Exception e) {
+        Logger.e(TAG, e.getMessage(), e);
         DialogUtils.createDialog(this, ExceptionType.valueOf(e)).show();
         mSwipeRefreshLayout.setRefreshing(false);
     }

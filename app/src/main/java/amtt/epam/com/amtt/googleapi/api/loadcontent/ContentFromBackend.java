@@ -25,14 +25,14 @@ public class ContentFromBackend {
         return ContentFromBackendHolder.INSTANCE;
     }
 
-    public void getSpreadsheetAsynchronously(String idLink, ContentLoadingCallback<GSpreadsheet> contentLoadingCallback,
-                                          GetContentCallback getContentCallback) {
+    public void getSpreadsheet(String idLink, ContentLoadingCallback<GSpreadsheet> contentLoadingCallback,
+                               GetContentCallback getContentCallback) {
         GSpreadsheetApi.get().loadDocument(idLink, SpreadsheetProcessor.NAME,
                 getCallback(ContentConst.SPREADSHEET_RESPONSE, contentLoadingCallback, getContentCallback));
     }
 
-    public void getWorksheetAsynchronously(String worksheetKey, ContentLoadingCallback<GWorksheet> contentLoadingCallback,
-                                           GetContentCallback<GWorksheet> spreadsheetContentCallback) {
+    public void getWorksheet(String worksheetKey, ContentLoadingCallback<GWorksheet> contentLoadingCallback,
+                             GetContentCallback<GWorksheet> spreadsheetContentCallback) {
         GSpreadsheetApi.get().loadDocument(worksheetKey, WorksheetProcessor.NAME,
                 getCallback(ContentConst.WORKSHEET_RESPONSE, contentLoadingCallback, spreadsheetContentCallback));
     }

@@ -62,7 +62,7 @@ public class JiraContent{
         if (mProjectPrioritiesNames != null) {
             getContentCallback.resultOfDataLoading(mProjectPrioritiesNames);
         } else {
-            getPrioritiesSynchronously(getContentCallback);
+            getPrioritiesFromDB(getContentCallback);
         }
     }
 
@@ -91,7 +91,7 @@ public class JiraContent{
     }
 
     private void getPriorities(final GetContentCallback<HashMap<String, String>> getContentCallback) {
-        ContentFromBackend.getInstance().getPriorityAsynchronously(new ContentLoadingCallback<JPriorityResponse>() {
+        ContentFromBackend.getInstance().getPriority(new ContentLoadingCallback<JPriorityResponse>() {
             @Override
             public void resultFromBackend(JPriorityResponse result, ContentConst tag, GetContentCallback getContentCallback) {
                 if (tag == ContentConst.PRIORITIES_RESPONSE) {
@@ -123,7 +123,7 @@ public class JiraContent{
         }, getContentCallback);
     }
 
-    private void getPrioritiesSynchronously(final GetContentCallback<HashMap<String, String>> getContentCallback) {
+    private void getPrioritiesFromDB(final GetContentCallback<HashMap<String, String>> getContentCallback) {
         ContentFromDatabase.getPriorities(ActiveUser.getInstance().getUrl(), new IResult<List<JPriority>>() {
             @Override
             public void onResult(List<JPriority> result) {
@@ -185,7 +185,7 @@ public class JiraContent{
     }
 
     private void getProjectsResponse(GetContentCallback<HashMap<JProjects, String>> getContentCallback) {
-        ContentFromBackend.getInstance().getProjectsAsynchronously(new ContentLoadingCallback<JProjectsResponse>() {
+        ContentFromBackend.getInstance().getProjects(new ContentLoadingCallback<JProjectsResponse>() {
             @Override
             public void resultFromBackend(JProjectsResponse result, ContentConst tag, GetContentCallback getContentCallback) {
                 if (tag == ContentConst.PROJECTS_RESPONSE) {
@@ -239,17 +239,17 @@ public class JiraContent{
                 if (result.isEmpty()) {
                     getProjectsResponse(getContentCallback);
                 } else {
-                    JProjectsResponse pro = new JProjectsResponse();
-                    pro.setProjects(new ArrayList<>(result));
-                    mProjectsNames = pro.getProjectsNames();
+                    JProjectsResponse projectsResponse = new JProjectsResponse();
+                    projectsResponse.setProjects(new ArrayList<>(result));
+                    mProjectsNames = projectsResponse.getProjectsNames();
                     getContentCallback.resultOfDataLoading(mProjectsNames);
                 }
             }
 
             @Override
             public void onError(Exception e) {
-                getProjectsResponse(getContentCallback);
                 Logger.e(TAG, e.getMessage(), e);
+                getProjectsResponse(getContentCallback);
             }
         });
     }
@@ -266,7 +266,7 @@ public class JiraContent{
                 Logger.d(TAG, "mLastProject.getIssueTypesNames()");
                 getContentCallback.resultOfDataLoading(mIssueTypesNames);
             } else {
-                getIssueTypesSynchronously(getContentCallback);
+                getIssueTypesFromDB(getContentCallback);
             }
         }
     }
@@ -275,7 +275,7 @@ public class JiraContent{
         return mLastProject.getIssueTypeByName(issueName).getJiraId();
     }
 
-    private void getIssueTypesSynchronously(final GetContentCallback<List<String>> getContentCallback) {
+    private void getIssueTypesFromDB(final GetContentCallback<List<String>> getContentCallback) {
         ContentFromDatabase.getIssueTypes(mLastProject.getKey(), new IResult<List<JIssueTypes>>() {
             @Override
             public void onResult(List<JIssueTypes> result) {
@@ -322,7 +322,7 @@ public class JiraContent{
 
     private void getVersionsResponse(String projectsKey,
                                      GetContentCallback<HashMap<String, String>> getContentCallback) {
-        ContentFromBackend.getInstance().getVersionsAsynchronously(projectsKey, new ContentLoadingCallback<JVersionsResponse>() {
+        ContentFromBackend.getInstance().getVersions(projectsKey, new ContentLoadingCallback<JVersionsResponse>() {
             @Override
             public void resultFromBackend(JVersionsResponse result, ContentConst tag, GetContentCallback getContentCallback) {
                 if (result != null) {
@@ -375,7 +375,7 @@ public class JiraContent{
 
     private void getComponentsResponse(String projectsKey,
                                        GetContentCallback<HashMap<String, String>> getContentCallback) {
-        ContentFromBackend.getInstance().getComponentsAsynchronously(projectsKey, new ContentLoadingCallback<JComponentsResponse>() {
+        ContentFromBackend.getInstance().getComponents(projectsKey, new ContentLoadingCallback<JComponentsResponse>() {
             @Override
             public void resultFromBackend(JComponentsResponse result, ContentConst tag, GetContentCallback getContentCallback) {
                 if (result != null) {
@@ -395,7 +395,7 @@ public class JiraContent{
 
     public void getUsersAssignable(String userName,
                                    final GetContentCallback<List<String>> getContentCallback) {
-        ContentFromBackend.getInstance().getUsersAssignableAsynchronously(mLastProject.getKey(), userName, new ContentLoadingCallback<JUserAssignableResponse>() {
+        ContentFromBackend.getInstance().getUsersAssignable(mLastProject.getKey(), userName, new ContentLoadingCallback<JUserAssignableResponse>() {
             @Override
             public void resultFromBackend(JUserAssignableResponse result, ContentConst tag, GetContentCallback getContentCallback) {
                 if (result != null) {
@@ -424,7 +424,7 @@ public class JiraContent{
         }
         String issueJson = new JCreateIssue(mProjectKey, issueTypeId, description, summary, priorityId, versionId,
                 environment, userAssigneName, componentsIds).getResultJson();
-        ContentFromBackend.getInstance().createIssueAsynchronously(issueJson, new ContentLoadingCallback<JCreateIssueResponse>() {
+        ContentFromBackend.getInstance().createIssue(issueJson, new ContentLoadingCallback<JCreateIssueResponse>() {
             @Override
             public void resultFromBackend(JCreateIssueResponse result, ContentConst tag, GetContentCallback getContentCallback) {
                 if (result != null) {
@@ -437,9 +437,8 @@ public class JiraContent{
     }
 
     @SuppressWarnings("unchecked")
-    public void sendAttachment(String issueKey, List<String> fullFileName,
-                            final GetContentCallback<Boolean> getContentCallback) {
-        ContentFromBackend.getInstance().sendAttachmentAsynchronously(issueKey, fullFileName, new ContentLoadingCallback<Boolean>() {
+    public void sendAttachment(String issueKey, List<String> fullFileName, final GetContentCallback<Boolean> getContentCallback) {
+        ContentFromBackend.getInstance().sendAttachment(issueKey, fullFileName, new ContentLoadingCallback<Boolean>() {
             @Override
             public void resultFromBackend(Boolean result, ContentConst tag, GetContentCallback getContentCallback) {
                 getContentCallback.resultOfDataLoading(result);
@@ -462,7 +461,7 @@ public class JiraContent{
 
             @Override
             public void onError(Exception e) {
-
+                Logger.e(TAG, e.getMessage(), e);
             }
         });
     }
@@ -493,7 +492,7 @@ public class JiraContent{
 
                                 @Override
                                 public void onError(Exception e) {
-
+                                    Logger.e(TAG, e.getMessage(), e);
                                 }
                             });
                         }
@@ -502,7 +501,7 @@ public class JiraContent{
 
                 @Override
                 public void onError(Exception e) {
-
+                    Logger.e(TAG, e.getMessage(), e);
                 }
             });
         }
