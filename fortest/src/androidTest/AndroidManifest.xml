@@ -5,20 +5,14 @@
 
     <application>
         <uses-library android:name="android.test.runner" />
-
     </application>
 
     <instrumentation
-        android:name="${applicationTestid}.TestRunner"
+        android:name="com.epam.amtt.test.TestRunner"
         android:functionalTest="false"
         android:handleProfiling="false"
         android:label="Tests"
         android:targetPackage="${applicationTestid}"
         tools:replace="android:targetPackage, android:label">
-        <meta-data
-            android:name="amtt_test_key"
-            android:value="amtt_app" />
     </instrumentation>
-
-
 </manifest>

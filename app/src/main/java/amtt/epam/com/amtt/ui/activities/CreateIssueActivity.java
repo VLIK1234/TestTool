@@ -496,11 +496,8 @@ public class CreateIssueActivity extends BaseActivity
                                     AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
                                     Toast.makeText(CreateIssueActivity.this, R.string.ticket_created, Toast.LENGTH_LONG).show();
                                     TopButtonService.stopRecord(CreateIssueActivity.this);
-
-                                    //case for code below: user selected assignee & after erased it
-                                    ActiveUser activeUser = ActiveUser.getInstance();
-                                    if (!activeUser.getLastAssignee().equals(mAssignableUserName)) {
-                                        activeUser.setLastAssigneeName(null);
+                                    if (mAssignableUserName!=null && !mAssignableUserName.equals("") && !ActiveUser.getInstance().getLastAssignee().equals(mAssignableUserName)) {
+                                        ActiveUser.getInstance().setLastAssigneeName(mAssignableUserName);
                                     }
 
                                     if (mCreateAnotherIssue) {

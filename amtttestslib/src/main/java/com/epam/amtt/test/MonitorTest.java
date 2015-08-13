@@ -1,4 +1,4 @@
-package com.example.ivan_bakach.testappamtt;
+package com.epam.amtt.test;
 
 import android.app.Activity;
 import android.app.Application;
@@ -31,8 +31,8 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
 
     public void testMonitor() {
         final Context context = getInstrumentation().getTargetContext();
-        LogManger.writeMultipleLogs(getInstrumentation().getTargetContext());
-        LogManger.transferLogsToAmtt(context);
+        LogManager.writeMultipleLogs(getInstrumentation().getTargetContext());
+        LogManager.transferLogsToAmtt(context);
         Application application = (Application) getInstrumentation().getTargetContext().getApplicationContext();
         final Thread.UncaughtExceptionHandler exceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -45,7 +45,7 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
                 intent.putExtra(EXCEPTION_ANSWER_KEY, ex.getClass().getName());
                 getInstrumentation().getContext().sendBroadcast(intent);
                 exceptionHandler.uncaughtException(thread, ex);
-                LogManger.closeLogsWriter();
+                LogManager.closeLogsWriter();
             }
         });
         application.registerActivityLifecycleCallbacks(this);
@@ -65,7 +65,7 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
                 if (receiver.needCloseUnitTest()) {
                     context.unregisterReceiver(receiver);
                     application.unregisterActivityLifecycleCallbacks(this);
-                    LogManger.closeLogsWriter();
+                    LogManager.closeLogsWriter();
                     Assert.assertTrue(true);
                 }
             } catch (InterruptedException e) {

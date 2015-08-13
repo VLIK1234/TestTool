@@ -1,10 +1,11 @@
-package com.example.ivan_bakach.testappamtt;
+package com.epam.amtt.test;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,6 +17,7 @@ import java.io.IOException;
  */
 public class FragmentInfoHelper {
 
+    private static final String TAG = FragmentInfoHelper.class.getSimpleName();
     private static String sListFragments;
     public static String sCurrentArguments;
 
@@ -49,17 +51,26 @@ public class FragmentInfoHelper {
         return builder.toString();
     }
 
-    public static void writeArgumentsFromFragments(String arguments){
+    public static void writeArgumentsFromFragments(String arguments) {
+        FileOutputStream argumentsFile = null;
         try {
-            FileOutputStream argumentsFile = IOUtils.openFileOutput(LogManger.sArgumentsFragments);
+            argumentsFile = IOUtils.openFileOutput(LogManager.sArgumentsFragments);
             argumentsFile.write(arguments.getBytes());
-            argumentsFile.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
+        } finally {
+            if (argumentsFile != null) {
+                try {
+                    argumentsFile.close();
+                } catch (IOException e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
+            }
         }
     }
+
 
     public static CharSequence getActivityTitle(Activity activity){
         return activity !=null ? activity.getTitle() : null;

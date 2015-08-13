@@ -36,9 +36,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.ivan_bakach.testappamtt.app.ViewPagerActivity" />
         </activity>
-        <meta-data
-            android:name="my_api_key"
-            android:value="com.example.ivan_bakach.testappamtt.app.PermissionTestClientActivity" />
     </application>
 
 </manifest>
