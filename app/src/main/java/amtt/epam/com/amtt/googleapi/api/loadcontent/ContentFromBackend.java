@@ -25,13 +25,13 @@ public class ContentFromBackend {
         return ContentFromBackendHolder.INSTANCE;
     }
 
-    public void getSpreadsheet(String idLink, ContentLoadingCallback<GSpreadsheet> contentLoadingCallback,
-                               GetContentCallback getContentCallback) {
+    public void getSpreadsheet(String idLink, ContentLoadingCallback<GSpreadsheet, GSpreadsheet> contentLoadingCallback,
+                               GetContentCallback<GSpreadsheet> getContentCallback) {
         GSpreadsheetApi.get().loadDocument(idLink, SpreadsheetProcessor.NAME,
                 getCallback(ContentConst.SPREADSHEET_RESPONSE, contentLoadingCallback, getContentCallback));
     }
 
-    public void getWorksheet(String worksheetKey, ContentLoadingCallback<GWorksheet> contentLoadingCallback,
+    public void getWorksheet(String worksheetKey, ContentLoadingCallback<GWorksheet, GWorksheet> contentLoadingCallback,
                              GetContentCallback<GWorksheet> spreadsheetContentCallback) {
         GSpreadsheetApi.get().loadDocument(worksheetKey, WorksheetProcessor.NAME,
                 getCallback(ContentConst.WORKSHEET_RESPONSE, contentLoadingCallback, spreadsheetContentCallback));
@@ -40,7 +40,7 @@ public class ContentFromBackend {
     private <Result> Callback getCallback(final ContentConst requestType,
                                           final Result successResult,
                                           final Result errorResult,
-                                          final ContentLoadingCallback<Result> contentLoadingCallback,
+                                          final ContentLoadingCallback contentLoadingCallback,
                                           final GetContentCallback getContentCallback) {
         return new Callback<Result>() {
             @Override
@@ -60,7 +60,7 @@ public class ContentFromBackend {
     }
 
     private <Result> Callback getCallback(final ContentConst requestType,
-                                          final ContentLoadingCallback<Result> contentLoadingCallback,
+                                          final ContentLoadingCallback contentLoadingCallback,
                                           final GetContentCallback getContentCallback) {
         return new Callback<Result>() {
             @Override

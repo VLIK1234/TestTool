@@ -92,9 +92,9 @@ public class GSpreadsheetContent {
     }
 
     private void getSpreadsheetFromBackend(String idLink, final GetContentCallback<GSpreadsheet> getContentCallback) {
-        ContentFromBackend.getInstance().getSpreadsheet(idLink, new ContentLoadingCallback<GSpreadsheet>() {
+        ContentFromBackend.getInstance().getSpreadsheet(idLink, new ContentLoadingCallback<GSpreadsheet, GSpreadsheet>() {
             @Override
-            public void resultFromBackend(GSpreadsheet result, ContentConst tag, GetContentCallback contentCallback) {
+            public void resultFromBackend(GSpreadsheet result, ContentConst tag, GetContentCallback<GSpreadsheet> contentCallback) {
                 if (tag == ContentConst.SPREADSHEET_RESPONSE) {
                     if (contentCallback != null) {
                         if (result != null) {
@@ -146,9 +146,9 @@ public class GSpreadsheetContent {
     }
 
     private void getWorksheetFromBackend(final String linkWorksheet, final GetContentCallback<GWorksheet> getContentCallback) {
-        ContentFromBackend.getInstance().getWorksheet(linkWorksheet, new ContentLoadingCallback<GWorksheet>() {
+        ContentFromBackend.getInstance().getWorksheet(linkWorksheet, new ContentLoadingCallback<GWorksheet, GWorksheet>() {
             @Override
-            public void resultFromBackend(GWorksheet result, ContentConst tag, GetContentCallback contentCallback) {
+            public void resultFromBackend(GWorksheet result, ContentConst tag, GetContentCallback<GWorksheet> contentCallback) {
                 if (tag == ContentConst.WORKSHEET_RESPONSE) {
                     if (contentCallback != null) {
                         if (result != null) {

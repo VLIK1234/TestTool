@@ -90,9 +90,9 @@ public class JiraContent{
     }
 
     private void getPriorities(final String userUrl, final GetContentCallback<HashMap<String, String>> getContentCallback) {
-        ContentFromBackend.getInstance().getPriority(new ContentLoadingCallback<JPriorityResponse>() {
+        ContentFromBackend.getInstance().getPriority(new ContentLoadingCallback<JPriorityResponse, HashMap<String, String>>() {
             @Override
-            public void resultFromBackend(JPriorityResponse result, ContentConst tag, GetContentCallback contentCallback) {
+            public void resultFromBackend(JPriorityResponse result, ContentConst tag, GetContentCallback<HashMap<String, String>> contentCallback) {
                 if (result != null) {
                     mPriorityResponse = result;
                     setPrioritiesNames(mPriorityResponse.getPriorityNames());
@@ -179,9 +179,9 @@ public class JiraContent{
     }
 
     private void getProjectsFromBackend(final int userId, GetContentCallback<HashMap<JProjects, String>> getContentCallback) {
-        ContentFromBackend.getInstance().getProjects(new ContentLoadingCallback<JProjectsResponse>() {
+        ContentFromBackend.getInstance().getProjects(new ContentLoadingCallback<JProjectsResponse, HashMap<JProjects, String>>() {
             @Override
-            public void resultFromBackend(JProjectsResponse result, ContentConst tag, GetContentCallback contentCallback) {
+            public void resultFromBackend(JProjectsResponse result, ContentConst tag, GetContentCallback<HashMap<JProjects, String>> contentCallback) {
                 if (result != null) {
                     for (int i = 0; i < result.getProjects().size(); i++) {
                         final int finalI = i;
@@ -310,9 +310,9 @@ public class JiraContent{
     }
 
     private void getVersionsFromBackend(String projectsKey, GetContentCallback<HashMap<String, String>> getContentCallback) {
-        ContentFromBackend.getInstance().getVersions(projectsKey, new ContentLoadingCallback<JVersionsResponse>() {
+        ContentFromBackend.getInstance().getVersions(projectsKey, new ContentLoadingCallback<JVersionsResponse, HashMap<String, String>>() {
             @Override
-            public void resultFromBackend(JVersionsResponse result, ContentConst tag, GetContentCallback contentCallback) {
+            public void resultFromBackend(JVersionsResponse result, ContentConst tag, GetContentCallback<HashMap<String, String>> contentCallback) {
                 if (result != null) {
                     contentCallback.resultOfDataLoading(mProjectVersionsNames);
                 } else {
@@ -361,9 +361,9 @@ public class JiraContent{
     }
 
     private void getComponentsFromBackend(String projectsKey, GetContentCallback<HashMap<String, String>> getContentCallback) {
-        ContentFromBackend.getInstance().getComponents(projectsKey, new ContentLoadingCallback<JComponentsResponse>() {
+        ContentFromBackend.getInstance().getComponents(projectsKey, new ContentLoadingCallback<JComponentsResponse, HashMap<String, String>>() {
             @Override
-            public void resultFromBackend(JComponentsResponse result, ContentConst tag, GetContentCallback contentCallback) {
+            public void resultFromBackend(JComponentsResponse result, ContentConst tag, GetContentCallback<HashMap<String, String>> contentCallback) {
                 if (result != null) {
                     contentCallback.resultOfDataLoading(mProjectComponentsNames);
                 } else {
@@ -380,9 +380,9 @@ public class JiraContent{
     }
 
     public void getUsersAssignable(String userName, final GetContentCallback<List<String>> getContentCallback) {
-        ContentFromBackend.getInstance().getUsersAssignable(mLastProject.getKey(), userName, new ContentLoadingCallback<JUserAssignableResponse>() {
+        ContentFromBackend.getInstance().getUsersAssignable(mLastProject.getKey(), userName, new ContentLoadingCallback<JUserAssignableResponse, List<String>>() {
             @Override
-            public void resultFromBackend(JUserAssignableResponse result, ContentConst tag, GetContentCallback contentCallback) {
+            public void resultFromBackend(JUserAssignableResponse result, ContentConst tag, GetContentCallback<List<String>> contentCallback) {
                 if (result != null) {
                     contentCallback.resultOfDataLoading(mUsersAssignableNames);
                 } else {
@@ -409,9 +409,9 @@ public class JiraContent{
         }
         String issueJson = new JCreateIssue(mProjectKey, issueTypeId, description, summary, priorityId, versionId,
                 environment, userAssigneName, componentsIds).getResultJson();
-        ContentFromBackend.getInstance().createIssue(issueJson, new ContentLoadingCallback<JCreateIssueResponse>() {
+        ContentFromBackend.getInstance().createIssue(issueJson, new ContentLoadingCallback<JCreateIssueResponse, JCreateIssueResponse>() {
             @Override
-            public void resultFromBackend(JCreateIssueResponse result, ContentConst tag, GetContentCallback contentCallback) {
+            public void resultFromBackend(JCreateIssueResponse result, ContentConst tag, GetContentCallback<JCreateIssueResponse> contentCallback) {
                 if (result != null) {
                     mRecentIssueKey = result.getKey();
                     Logger.d(TAG, mRecentIssueKey);
@@ -423,9 +423,9 @@ public class JiraContent{
 
     @SuppressWarnings("unchecked")
     public void sendAttachment(String issueKey, List<String> fullFileName, final GetContentCallback<Boolean> getContentCallback) {
-        ContentFromBackend.getInstance().sendAttachment(issueKey, fullFileName, new ContentLoadingCallback<Boolean>() {
+        ContentFromBackend.getInstance().sendAttachment(issueKey, fullFileName, new ContentLoadingCallback<Boolean, Boolean>() {
             @Override
-            public void resultFromBackend(Boolean result, ContentConst tag, GetContentCallback contentCallback) {
+            public void resultFromBackend(Boolean result, ContentConst tag, GetContentCallback<Boolean> contentCallback) {
                 contentCallback.resultOfDataLoading(result);
             }
         }, getContentCallback);

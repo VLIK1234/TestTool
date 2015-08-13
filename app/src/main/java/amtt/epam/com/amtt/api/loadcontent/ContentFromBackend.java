@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.api.loadcontent;
 
+import java.util.HashMap;
 import java.util.List;
 
 import amtt.epam.com.amtt.api.ContentLoadingCallback;
@@ -13,6 +14,7 @@ import amtt.epam.com.amtt.bo.JPriorityResponse;
 import amtt.epam.com.amtt.bo.JProjectsResponse;
 import amtt.epam.com.amtt.bo.JUserAssignableResponse;
 import amtt.epam.com.amtt.bo.JVersionsResponse;
+import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.processing.ComponentsProcessor;
 import amtt.epam.com.amtt.processing.PostCreateIssueProcessor;
@@ -36,8 +38,8 @@ public class ContentFromBackend {
         return ContentFromBackendHolder.INSTANCE;
     }
 
-    public void getProjects(final ContentLoadingCallback<JProjectsResponse> contentLoadingCallback,
-                                          final GetContentCallback getContentCallback) {
+    public void getProjects(final ContentLoadingCallback<JProjectsResponse, HashMap<JProjects, String>> contentLoadingCallback,
+                                          final GetContentCallback<HashMap<JProjects, String>> getContentCallback) {
         JiraApi.get().searchData(JiraApiConst.USER_PROJECTS_PATH,
                 ProjectsProcessor.NAME,
                 null,
@@ -47,8 +49,8 @@ public class ContentFromBackend {
     }
 
     public void getVersions(String projectsKey,
-                                          final ContentLoadingCallback<JVersionsResponse> contentLoadingCallback,
-                                          final GetContentCallback getContentCallback) {
+                                          final ContentLoadingCallback<JVersionsResponse, HashMap<String, String>> contentLoadingCallback,
+                                          final GetContentCallback<HashMap<String, String>> getContentCallback) {
         String path = JiraApiConst.PROJECT_VERSIONS_PATH + projectsKey + JiraApiConst.PROJECT_VERSIONS_PATH_V;
         JiraApi.get().searchData(path,
                 VersionsProcessor.NAME,
@@ -59,8 +61,8 @@ public class ContentFromBackend {
     }
 
     public void getComponents(String projectsKey,
-                                          final ContentLoadingCallback<JComponentsResponse> contentLoadingCallback,
-                                          final GetContentCallback getContentCallback) {
+                                          final ContentLoadingCallback<JComponentsResponse, HashMap<String, String>> contentLoadingCallback,
+                                          final GetContentCallback<HashMap<String, String>> getContentCallback) {
         String path = JiraApiConst.PROJECT_COMPONENTS_PATH + projectsKey + JiraApiConst.PROJECT_COMPONENTS_PATH_C;
         JiraApi.get().searchData(path,
                 ComponentsProcessor.NAME,
@@ -72,8 +74,8 @@ public class ContentFromBackend {
 
     public void getUsersAssignable(String projectKey,
                                                  String userName,
-                                                 final ContentLoadingCallback<JUserAssignableResponse> contentLoadingCallback,
-                                                 final GetContentCallback getContentCallback) {
+                                                 final ContentLoadingCallback<JUserAssignableResponse, List<String>> contentLoadingCallback,
+                                                 final GetContentCallback<List<String>> getContentCallback) {
         String path = JiraApiConst.USERS_ASSIGNABLE_PATH + projectKey + JiraApiConst.USERS_ASSIGNABLE_PATH_UN + userName + JiraApiConst.USERS_ASSIGNABLE_PATH_MR;
         JiraApi.get().searchData(path,
                 UsersAssignableProcessor.NAME,
@@ -83,7 +85,7 @@ public class ContentFromBackend {
                 getCallback(ContentConst.USERS_ASSIGNABLE_RESPONSE, contentLoadingCallback, getContentCallback));
     }
 
-    public void getPriority(final ContentLoadingCallback<JPriorityResponse> contentLoadingCallback,
+    public void getPriority(final ContentLoadingCallback<JPriorityResponse, HashMap<String, String>> contentLoadingCallback,
                                           final GetContentCallback getContentCallback) {
         String path = JiraApiConst.PROJECT_PRIORITY_PATH;
         JiraApi.get().searchData(path,
@@ -98,8 +100,8 @@ public class ContentFromBackend {
 
 
     public void createIssue(String issueJson,
-                                          final ContentLoadingCallback<JCreateIssueResponse> contentLoadingCallback,
-                                          final GetContentCallback getContentCallback) {
+                                          final ContentLoadingCallback<JCreateIssueResponse, JCreateIssueResponse> contentLoadingCallback,
+                                          final GetContentCallback<JCreateIssueResponse> getContentCallback) {
         JiraApi.get().createIssue(issueJson,
                 PostCreateIssueProcessor.NAME,
                 getCallback(ContentConst.CREATE_ISSUE_RESPONSE, contentLoadingCallback, getContentCallback));
@@ -107,8 +109,8 @@ public class ContentFromBackend {
 
     public void sendAttachment(String issueKey,
                                              List<String> fullFileName,
-                                             final ContentLoadingCallback<Boolean> contentLoadingCallback,
-                                             final GetContentCallback getContentCallback) {
+                                             final ContentLoadingCallback<Boolean, Boolean> contentLoadingCallback,
+                                             final GetContentCallback<Boolean> getContentCallback) {
         JiraApi.get().createAttachment(issueKey,
                 fullFileName,
                 getCallback(ContentConst.SEND_ATTACHMENT, true, false, contentLoadingCallback, getContentCallback));
@@ -117,7 +119,7 @@ public class ContentFromBackend {
     private <Result> Callback getCallback(final ContentConst requestType,
                                           final Result successResult,
                                           final Result errorResult,
-                                          final ContentLoadingCallback<Result> contentLoadingCallback,
+                                          final ContentLoadingCallback contentLoadingCallback,
                                           final GetContentCallback getContentCallback) {
         return new Callback<Result>() {
             @Override
@@ -138,7 +140,7 @@ public class ContentFromBackend {
     }
 
     private <Result> Callback getCallback(final ContentConst requestType,
-                                          final ContentLoadingCallback<Result> contentLoadingCallback,
+                                          final ContentLoadingCallback contentLoadingCallback,
                                           final GetContentCallback getContentCallback) {
         return new Callback<Result>() {
             @Override
