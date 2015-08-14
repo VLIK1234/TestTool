@@ -142,9 +142,9 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                 break;
                 default:
             }
-        } else if (resultCode == RESULT_CANCELED) {
+        }/* else if (resultCode == RESULT_CANCELED) {
 
-        }
+        }*/
     }
 
     @Override
@@ -190,7 +190,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                 ArrayList<String> links = new ArrayList<>();
                 if (str.length == 1 && mTags != null) {
                     for (int i = 0; i < mTags.size(); i++) {
-                        if (mTags.get(i).getName().equals((String) parent.getItemAtPosition(position))) {
+                        if (mTags.get(i).getName().equals(parent.getItemAtPosition(position))) {
                             links.add(mTags.get(i).getIdLinkTestCase());
                         }
                     }
@@ -370,7 +370,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                     namesTags.add(result.get(i).getName());
                 }
             }
-            List<String> tagsNames = new ArrayList<String>(namesTags);
+            List<String> tagsNames = new ArrayList<>(namesTags);
             ArrayAdapter<String> mTagsAdapter = new ArrayAdapter<>(ExpectedResultsActivity.this, R.layout.spinner_dropdown_item, tagsNames);
             mTagsAutocompleteTextView.setThreshold(1);
             mTagsAutocompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());

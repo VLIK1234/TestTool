@@ -36,7 +36,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         return Integer.valueOf(insertedItemUri.getLastPathSegment());
     }
 
-    private int add(List<DatabaseEntity> objects) {
+    private <Entity extends DatabaseEntity> int add(List<Entity> objects) {
         ContentValues[] contentValues = new ContentValues[objects.size()];
         for (int i = 0; i < objects.size(); i++) {
             contentValues[i] = objects.get(i).getContentValues();
@@ -45,7 +45,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
                 contentValues);
     }
 
-    public synchronized void add(final DatabaseEntity object, final IResult<Integer> result) {
+    public synchronized <Entity extends DatabaseEntity> void add(final Entity object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -57,7 +57,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         }).start();
     }
 
-    public synchronized void add(final List<DatabaseEntity> object, final IResult<Integer> result) {
+    public synchronized <Entity extends DatabaseEntity> void add(final List<Entity> object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -74,7 +74,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         return AmttApplication.getContext().getContentResolver().update(object.getUri(), object.getContentValues(), selection, selectionArgs);
     }
 
-    public synchronized void update(final DatabaseEntity object, final String selection, final String[] selectionArgs, final IResult<Integer> result) {
+    public synchronized <Entity extends DatabaseEntity> void update(final Entity object, final String selection, final String[] selectionArgs, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -107,12 +107,16 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
     }
 
     @Override
-    public synchronized void getAll(DatabaseEntity object, IResult<List<DatabaseEntity>> result) {
+    public void getAll(DatabaseEntity object, IResult<List<DatabaseEntity>> result) {
         query(object, null, null, null, result);
     }
 
-    public <T extends DatabaseEntity> void query(final T entity, final String[] projection,
-                                                 final String[] mSelection, final String[] mSelectionArgs, final IResult<List<T>> result) {
+    public synchronized <Entity extends DatabaseEntity> void getAllObjects(Entity object, IResult<List<DatabaseEntity>> result) {
+        getAll(object, result);
+    }
+
+    public <Entity extends DatabaseEntity> void query(final Entity entity, final String[] projection,
+                                                 final String[] mSelection, final String[] mSelectionArgs, final IResult<List<Entity>> result) {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
             @Override
@@ -136,12 +140,12 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
                 }
 
                 Cursor cursor = AmttApplication.getContext().getContentResolver().query(entity.getUri(), projection, selectionString, mSelectionArgs, null);
-                final List<T> listObject = new ArrayList<>();
+                final List<Entity> listObject = new ArrayList<>();
                 if (cursor != null) {
                     if (cursor.moveToFirst()) {
                         do {
                             try {
-                                listObject.add((T) entity.parse(cursor));
+                                listObject.add((Entity) entity.parse(cursor));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -159,20 +163,20 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         }).start();
     }
 
-    public synchronized <T extends DatabaseEntity> void queryDefault(final T entity, final String[] projection,
-                                                        final String mSelection, final String[] mSelectionArgs, final IResult<List<T>> result) {
+    public synchronized <Entity extends DatabaseEntity> void queryDefault(final Entity entity, final String[] projection,
+                                                        final String mSelection, final String[] mSelectionArgs, final IResult<List<Entity>> result) {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 if (mSelectionArgs != null && mSelection != null) {
                     Cursor cursor = AmttApplication.getContext().getContentResolver().query(entity.getUri(), projection, mSelection, mSelectionArgs, null);
-                    final List<T> listObject = new ArrayList<>();
+                    final List<Entity> listObject = new ArrayList<>();
                     if (cursor != null) {
                         if (cursor.moveToFirst()) {
                             do {
                                 try {
-                                    listObject.add((T) entity.parse(cursor));
+                                    listObject.add((Entity) entity.parse(cursor));
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

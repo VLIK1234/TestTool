@@ -27,10 +27,10 @@ public class AttachmentManager {
         return mInstance;
     }
 
-    public ArrayList<Attachment> getAttachmentList(List<DatabaseEntity> result) {
+    public <Entity extends DatabaseEntity>ArrayList<Attachment> getAttachmentList(List<Entity> result) {
         attachmentArrayList.clear();
         if (result != null) {
-            ArrayList<Step> listStep = (ArrayList) result;
+            ArrayList<Step> listStep = (ArrayList<Step>) result;
             for (Step step : listStep) {
                 if (step.getScreenshotPath() != null) {
                     attachmentArrayList.add(new Attachment(step));

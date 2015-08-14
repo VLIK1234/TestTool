@@ -7,6 +7,6 @@ package amtt.epam.com.amtt.api;
 
 public interface ContentLoadingCallback<Content, ContentCallback> {
 
-    void resultFromBackend(Content content, ContentConst tag, GetContentCallback<ContentCallback> getContentCallback);
+    void resultFromBackend(Content content, GetContentCallback<ContentCallback> getContentCallback);
 
 }

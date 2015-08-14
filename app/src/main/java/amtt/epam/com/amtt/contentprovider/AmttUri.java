@@ -4,9 +4,7 @@ import android.content.ContentResolver;
 import android.content.UriMatcher;
 import android.net.Uri;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import amtt.epam.com.amtt.database.table.IssuetypeTable;
@@ -78,23 +76,23 @@ public enum AmttUri {
         return mUri;
     }
 
-    public String getType() {
+    private String getType() {
         return mContentType;
     }
 
-    public String getItemType() {
+    private String getItemType() {
         return mContentItemType;
     }
 
-    public int getOrdinal() {
+    private int getOrdinal() {
         return mOrdinal;
     }
 
-    public int getItemOrdinal() {
+    private int getItemOrdinal() {
         return mItemOrdinal;
     }
 
-    public String getTableName() {
+    private String getTableName() {
         return mTableName;
     }
 

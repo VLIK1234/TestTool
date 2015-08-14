@@ -14,7 +14,6 @@ import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.IssuetypeTable;
 import amtt.epam.com.amtt.database.table.PriorityTable;
 import amtt.epam.com.amtt.database.table.ProjectTable;
-import amtt.epam.com.amtt.util.ActiveUser;
 
 /**
  * @author Iryna Monchanka
@@ -36,18 +35,15 @@ public class ContentFromDatabase {
     }
 
     public static void setPriorities(JPriorityResponse priorities, IResult<Integer> result){
-        List list = priorities.getPriorities();
-        DbObjectManager.INSTANCE.add(list, result);
+        DbObjectManager.INSTANCE.add(priorities.getPriorities(), result);
     }
 
     public static void setProjects(JProjectsResponse projects, IResult<Integer> result){
-        List list = projects.getProjects();
-        DbObjectManager.INSTANCE.add(list, result);
+        DbObjectManager.INSTANCE.add(projects.getProjects(), result);
     }
 
     public static void setIssueTypes(JProjects project, IResult<Integer> result){
-        List list = project.getIssueTypes();
-        DbObjectManager.INSTANCE.add(list, result);
+        DbObjectManager.INSTANCE.add(project.getIssueTypes(), result);
     }
 
     public static void updateUser(int userId, JUserInfo user, IResult<Integer> result) {

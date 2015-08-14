@@ -54,8 +54,7 @@ public class ContentFromDatabase {
     }
 
     public static void setTags(List<GTag> tags, IResult<Integer> result) {
-        List list = tags;
-        DbObjectManager.INSTANCE.add(list, result);
+        DbObjectManager.INSTANCE.add(tags, result);
     }
 
     public static void getTagsByIdLinkSpreadsheet(String idLinkSpreadsheet, IResult<List<GTag>> result) {

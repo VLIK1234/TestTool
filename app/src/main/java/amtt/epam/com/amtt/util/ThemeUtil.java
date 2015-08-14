@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.util;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.TypedValue;
 

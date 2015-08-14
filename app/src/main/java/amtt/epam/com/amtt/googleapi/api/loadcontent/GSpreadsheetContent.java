@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.googleapi.api.loadcontent;
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.api.ContentConst;
 import amtt.epam.com.amtt.api.ContentLoadingCallback;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
@@ -94,17 +93,13 @@ public class GSpreadsheetContent {
     private void getSpreadsheetFromBackend(String idLink, final GetContentCallback<GSpreadsheet> getContentCallback) {
         ContentFromBackend.getInstance().getSpreadsheet(idLink, new ContentLoadingCallback<GSpreadsheet, GSpreadsheet>() {
             @Override
-            public void resultFromBackend(GSpreadsheet result, ContentConst tag, GetContentCallback<GSpreadsheet> contentCallback) {
-                if (tag == ContentConst.SPREADSHEET_RESPONSE) {
-                    if (contentCallback != null) {
-                        if (result != null) {
-                            setSpreadsheet(result);
-                            setSpreadsheetInDB(result);
-                            contentCallback.resultOfDataLoading(result);
-                        } else {
-                            contentCallback.resultOfDataLoading(null);
-                        }
-                    }
+            public void resultFromBackend(GSpreadsheet result, GetContentCallback<GSpreadsheet> contentCallback) {
+                if (result != null) {
+                    setSpreadsheet(result);
+                    setSpreadsheetInDB(result);
+                    contentCallback.resultOfDataLoading(result);
+                } else {
+                    contentCallback.resultOfDataLoading(null);
                 }
             }
         }, getContentCallback);
@@ -112,10 +107,6 @@ public class GSpreadsheetContent {
     //endregion
 
     //region Worksheet
-    public void getWorksheet(final String linkWorksheet, final GetContentCallback<GWorksheet> getContentCallback) {
-        getWorksheetFromBackend(linkWorksheet, getContentCallback);
-    }
-
     private void setWorksheetFromDB(final GWorksheet worksheet) {
         ContentFromDatabase.setWorksheet(worksheet, new IResult<Integer>() {
             @Override
@@ -148,29 +139,17 @@ public class GSpreadsheetContent {
     private void getWorksheetFromBackend(final String linkWorksheet, final GetContentCallback<GWorksheet> getContentCallback) {
         ContentFromBackend.getInstance().getWorksheet(linkWorksheet, new ContentLoadingCallback<GWorksheet, GWorksheet>() {
             @Override
-            public void resultFromBackend(GWorksheet result, ContentConst tag, GetContentCallback<GWorksheet> contentCallback) {
-                if (tag == ContentConst.WORKSHEET_RESPONSE) {
-                    if (contentCallback != null) {
-                        if (result != null) {
-                            result.setSpreadsheetIdLink(mSpreadsheet.getIdLink());
-                            setWorksheetFromDB(result);
-                            setTestCasesInDB(result.getEntry(), result.getIdLink(), result.getSpreadsheetIdLink());
-                            contentCallback.resultOfDataLoading(result);
-                        } else {
-                            contentCallback.resultOfDataLoading(null);
-                        }
-                    }
+            public void resultFromBackend(GWorksheet result, GetContentCallback<GWorksheet> contentCallback) {
+                if (result != null) {
+                    result.setSpreadsheetIdLink(mSpreadsheet.getIdLink());
+                    setWorksheetFromDB(result);
+                    setTestCasesInDB(result.getEntry(), result.getIdLink(), result.getSpreadsheetIdLink());
+                    contentCallback.resultOfDataLoading(result);
+                } else {
+                    contentCallback.resultOfDataLoading(null);
                 }
             }
         }, getContentCallback);
-    }
-
-    public String getLinkWorksheet() {
-        if (mSpreadsheet != null && mSpreadsheet.getListWorksheets() != null) {
-            return mSpreadsheet.getListWorksheets().get(0);
-        } else {
-            return null;
-        }
     }
     //endregion
 

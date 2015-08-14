@@ -880,7 +880,6 @@ public final class GifUtil {
          * added.
          *
          * @param iter int number of iterations.
-         * @return
          */
         public void setRepeat(int iter) {
             if (iter >= 0) {
@@ -998,7 +997,6 @@ public final class GifUtil {
          * greater than 20 do not yield significant improvements in speed.
          *
          * @param quality int greater than 0.
-         * @return
          */
         public void setQuality(int quality) {
             if (quality < 1)

@@ -2,8 +2,6 @@ package amtt.epam.com.amtt.helper;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.text.Html;
 import android.text.SpannableStringBuilder;

@@ -1,9 +1,5 @@
 package amtt.epam.com.amtt.util;
 
-import android.annotation.SuppressLint;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * Created on 4/27/2015.
  *

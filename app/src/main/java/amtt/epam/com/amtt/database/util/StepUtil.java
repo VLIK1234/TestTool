@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.database.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;

@@ -17,10 +17,6 @@
         <item name="colorPrimary">@color/primaryTranslucent</item>
     </style>
 
-    <style name="Material.Drawable"></style>
-
-    <style name="Material.Widget"></style>
-
     <style name="Material.AutocompleteProgressView">
         <item name="android:layout_marginLeft">8dp</item>
         <item name="android:layout_marginRight">8dp</item>
@@ -34,8 +30,7 @@
 
     <style name="Material.MultyAutocompleteProgressView">
         <item name="android:dropDownItemStyle">@style/Material.DropDownItem</item>
-        <item name="android:spinnerStyle">@style/Base.Widget.AppCompat.Spinner.Underlined.Custom
-        </item>
+        <item name="android:spinnerStyle">@style/Base.Widget.AppCompat.Spinner.Underlined.Custom</item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
         <item name="android:inputType">textAutoComplete</item>
         <item name="android:textColor">@color/primary_text</item>

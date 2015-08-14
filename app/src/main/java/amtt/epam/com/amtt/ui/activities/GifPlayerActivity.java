@@ -35,9 +35,8 @@ public class GifPlayerActivity extends AppCompatActivity {
         webView.getSettings().setUseWideViewPort(true);
         TextView errorMessage = (TextView) findViewById(R.id.tv_error_message);
         Bundle extra = getIntent().getExtras();
-        if (extra != null) {
-            String gifFilePath = extra.getString(GIF_IMAGE_KEY);
-            File gifFile = new File(gifFilePath);
+        if (extra != null && extra.getString(GIF_IMAGE_KEY) != null) {
+            File gifFile = new File(extra.getString(GIF_IMAGE_KEY));
             setTitle(gifFile.getName());
             webView.loadUrl(gifFile.toURI().toString());
         } else {

@@ -21,8 +21,10 @@ public class MultipleFragmentsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activtiy_multiple_fragments_activity);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+        }
         FragmentManager fragmentManager = getSupportFragmentManager();
         RuntimeFragment runtimeFragment = (RuntimeFragment)RuntimeFragment.newInstance();
         NullpointerFragment nullpointerFragment = new NullpointerFragment();

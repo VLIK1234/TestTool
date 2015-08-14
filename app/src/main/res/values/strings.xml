@@ -20,7 +20,6 @@
     <string name="error_title_auth">Authorization error</string>
     <string name="error_title_request">Request error</string>
     <string name="error_title_connection">Connection error</string>
-    <string name="error_title_ssl">Connection ssl error</string>
     <string name="error_message_auth">Check your credentials</string>
     <string name="error_message_auth_forbidden">Visit jira.epam.com before using Amtt</string>
     <string name="error_message_no_internet">You are offline</string>
@@ -170,8 +169,6 @@
     <string name="title_gif_cant_be_created">Gif cant\'t be crated</string>
     <string name="message_gif_cant_be_created">The number of images is too large. Remove few steps and try again.</string>
     <string name="title_activity_spreadsheet">SpreadsheetActivity</string>
-
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_new_spreadsheet">NewSpreadsheetActivity</string>
     <string name="label_share_attachment">Share attachment to email</string>

@@ -1,17 +1,10 @@
 package amtt.epam.com.amtt.ui.fragments;
 
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.SwitchPreference;
-
-import java.util.ArrayList;
-
-import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.PreferenceUtil;
@@ -24,8 +17,6 @@ import amtt.epam.com.amtt.util.TestUtil;
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    public static CheckBoxPreference checkBoxPreference;
-    private static SwitchPreference switchPreference;
     private ListPreference projectName;
 
     @Override
@@ -33,7 +24,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.setting);
         projectName = (ListPreference) findPreference(getActivity().getString(R.string.key_test_project));
-        switchPreference = (SwitchPreference) findPreference(getActivity().getBaseContext().getString(R.string.key_topbutton_show));
         PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(this);
     }
 
