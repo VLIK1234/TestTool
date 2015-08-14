@@ -188,14 +188,16 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
         mTimeZoneTextView.setText(user.getTimeZone());
         mLocaleTextView.setText(user.getLocale());
         mJiraUrlTextView.setText(user.getUrl());
-        mSpreadsheetUrlTextView.setText(user.getLastSpreadsheetUrl());
+        if (user.getLastSpreadsheetUrl() != null) {
+            mSpreadsheetUrlTextView.setText(user.getLastSpreadsheetUrl());
+        }
         ImageLoader.getInstance().displayImage(user.getAvatarUrls().getAvatarUrl(), mUserImageImageView);
         mJira.clearData();
     }
 
     private void refreshUserInfo() {
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUser.getUserName();
-        JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, null, null, null, this);
+        JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, this);
     }
 
     //Callback
@@ -223,20 +225,13 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader loader = null;
+        String selection = UsersTable._ID + "=?";
         if (id == CURSOR_LOADER_ID) {
-            loader = new CursorLoader(this,
-                    AmttUri.USER.get(),
-                    null,
-                    UsersTable._ID + "=?",
-                    new String[]{String.valueOf(mUser.getId())},
-                    null);
+            loader = new CursorLoader(UserInfoActivity.this, AmttUri.USER.get(), null, selection,
+                    new String[]{String.valueOf(mUser.getId())}, null);
         } else if (id == SINGLE_USER_CURSOR_LOADER_ID) {
-            loader = new CursorLoader(UserInfoActivity.this,
-                    AmttUri.USER.get(),
-                    null,
-                    UsersTable._ID + "=?",
-                    new String[]{String.valueOf(args.getLong(AmttActivity.KEY_USER_ID))},
-                    null);
+            loader = new CursorLoader(UserInfoActivity.this, AmttUri.USER.get(), null, selection,
+                    new String[]{String.valueOf(args.getLong(AmttActivity.KEY_USER_ID))}, null);
         }
         return loader;
     }

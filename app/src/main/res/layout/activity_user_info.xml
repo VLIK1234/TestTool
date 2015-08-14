@@ -219,17 +219,6 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <Button
-        android:id="@+id/btn_add_spreadsheet"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/material_vertical_button_height_size"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginRight="@dimen/abc_action_bar_icon_vertical_padding_material"
-        android:layout_marginTop="@dimen/abc_dialog_list_padding_vertical_material"
-        android:text="@string/label_add_spreadsheet_key"
-        android:textSize="@dimen/abc_text_size_button_material"/>
-
     <ProgressBar
         android:id="@android:id/progress"
         android:layout_width="wrap_content"

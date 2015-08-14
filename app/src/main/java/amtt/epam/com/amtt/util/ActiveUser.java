@@ -29,10 +29,6 @@ public class ActiveUser {
         return INSTANCE;
     }
 
-    public String makeTempCredentials(final String userName, final String password) {
-        return JiraApiConst.BASIC_AUTH + Base64.encodeToString((userName + Constants.Symbols.COLON + password).getBytes(), Base64.NO_WRAP);
-    }
-
     public String getUserName() {
         return mUserName;
     }
@@ -108,7 +104,9 @@ public class ActiveUser {
     }
 
     public void setSpreadsheetLink(String spreadsheetLink) {
-        this.mSpreadsheetLink = spreadsheetLink;
+        if (spreadsheetLink != null) {
+            this.mSpreadsheetLink = spreadsheetLink;
+        }
     }
 
     public void clearActiveUser() {

@@ -64,21 +64,12 @@ public class JiraApi {
         execute(requestBuilder, processorName, callback);
     }
 
-    public void searchData(String requestSuffix, String processorName, String userName, String password, String url, Callback callback) {
-        String credentials;
-        if (userName != null && password != null) {
-            //this code is used when new user is added and we need to getClient all the info about a user and authorize him/her in one request
-            credentials = mUser.makeTempCredentials(userName, password);
-        } else {
-            credentials = mUser.getCredentials();
-            url = mUser.getUrl();
-        }
+    public void searchData(String requestSuffix, String processorName, Callback callback) {
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, credentials);
-
+        headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         Request.Builder requestBuilder = new Request.Builder()
                 .setType(Type.GET)
-                .setUrl(url + requestSuffix)
+                .setUrl(mUser.getUrl() + requestSuffix)
                 .setHeaders(headers);
         execute(requestBuilder, processorName, callback);
     }
@@ -87,7 +78,6 @@ public class JiraApi {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
-
         Request.Builder requestBuilder = new Request.Builder()
                 .setType(Type.POST)
                 .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
