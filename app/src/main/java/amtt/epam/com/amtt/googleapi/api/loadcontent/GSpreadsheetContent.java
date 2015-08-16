@@ -11,6 +11,7 @@ import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -44,12 +45,12 @@ public class GSpreadsheetContent {
             @Override
             public void onResult(Integer res) {
                 setWorksheets(result);
-                Logger.d(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + " added " + String.valueOf(res));
+                Logger.d(TAG, mSpreadsheet.getTitle() + Constants.Logs.S_SHEET_ADDED + String.valueOf(res));
             }
 
             @Override
             public void onError(Exception e) {
-                Logger.e(TAG, "Spreadsheet " + mSpreadsheet.getTitle() + " saving error ", e);
+                Logger.e(TAG, mSpreadsheet.getTitle() + Constants.Logs.S_SHEET_ERR, e);
             }
         });
     }
@@ -111,12 +112,12 @@ public class GSpreadsheetContent {
         ContentFromDatabase.setWorksheet(worksheet, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
-                Logger.d(TAG, "Worksheet " + worksheet.getTitle() + " added " + String.valueOf(result));
+                Logger.d(TAG, worksheet.getTitle() + Constants.Logs.W_SHEET_ADDED + String.valueOf(result));
             }
 
             @Override
             public void onError(Exception e) {
-                Logger.e(TAG, "Worksheet " + worksheet.getTitle() + " saving error ", e);
+                Logger.e(TAG, worksheet.getTitle() + Constants.Logs.W_SHEET_ERR, e);
             }
         });
     }
@@ -188,12 +189,12 @@ public class GSpreadsheetContent {
         ContentFromDatabase.setTestCase(testcase, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
-                Logger.d(TAG, "TestCase added " + String.valueOf(result));
+                Logger.d(TAG, Constants.Logs.TC_ADDED + String.valueOf(result));
             }
 
             @Override
             public void onError(Exception e) {
-                Logger.e(TAG, "TestCase saving error ", e);
+                Logger.e(TAG, Constants.Logs.TC_ERR, e);
             }
         });
     }
@@ -222,7 +223,7 @@ public class GSpreadsheetContent {
             });
         } else {
             getContentCallback.resultOfDataLoading(null);
-            Logger.d(TAG, "Spreadsheet link invalide");
+            Logger.d(TAG, Constants.Logs.S_SHEET_LINK_ERR);
         }
     }
 
@@ -234,7 +235,7 @@ public class GSpreadsheetContent {
                     if (result != null && !result.isEmpty()) {
                         getContentCallback.resultOfDataLoading(result);
                     } else {
-                        Logger.d(TAG, "testcases not found");
+                        Logger.d(TAG, Constants.Logs.TC_NOT_FOUND);
                         getContentCallback.resultOfDataLoading(null);
                     }
                 }
@@ -257,7 +258,7 @@ public class GSpreadsheetContent {
         if (testCaseName != null && testCaseIdLink != null) {
             GTag gTag;
             List<GTag> mTags = new ArrayList<>();
-            String[] tags = testCaseName.split(" - ");
+            String[] tags = testCaseName.split(Constants.Symbols.TAG_DIVIDER);
             for (String tag : tags) {
                 gTag = new GTag();
                 gTag.setName(tag);
@@ -268,12 +269,12 @@ public class GSpreadsheetContent {
             ContentFromDatabase.setTags(mTags, new IResult<Integer>() {
                 @Override
                 public void onResult(Integer result) {
-                    Logger.d(TAG, "Tags added " + String.valueOf(result));
+                    Logger.d(TAG, Constants.Logs.TAGS_ADDED + String.valueOf(result));
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    Logger.e(TAG, "Saving tags error", e);
+                    Logger.e(TAG, Constants.Logs.TAGS_ERR, e);
                 }
             });
         }
@@ -288,7 +289,7 @@ public class GSpreadsheetContent {
                         getContentCallback.resultOfDataLoading(result);
                     } else {
                         getContentCallback.resultOfDataLoading(null);
-                        Logger.d(TAG, "Tags not found in db");
+                        Logger.d(TAG, Constants.Logs.TAGS_NOT_FOUND);
                     }
                 }
 
@@ -300,7 +301,7 @@ public class GSpreadsheetContent {
             });
         } else {
             getContentCallback.resultOfDataLoading(null);
-            Logger.d(TAG, "SpreadsheetLink invalide");
+            Logger.d(TAG, Constants.Logs.S_SHEET_LINK_ERR);
         }
     }
 
@@ -312,7 +313,7 @@ public class GSpreadsheetContent {
                     if (result != null) {
                         getContentCallback.resultOfDataLoading(result);
                     } else {
-                        Logger.d(TAG, "tags not found");
+                        Logger.d(TAG, Constants.Logs.TAGS_NOT_FOUND);
                         getContentCallback.resultOfDataLoading(null);
                     }
                 }
@@ -324,7 +325,6 @@ public class GSpreadsheetContent {
                 }
             });
         } else {
-            Logger.d(TAG, "tags not found, spreadsheetLink or testcasesIdLinks invalide");
             getContentCallback.resultOfDataLoading(null);
         }
     }

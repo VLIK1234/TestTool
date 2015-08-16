@@ -31,6 +31,7 @@ import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.MultyAutocompleteProgressView;
 import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -186,7 +187,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         mTagsAutocompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String[] str = mTagsAutocompleteTextView.getText().toString().split(", ");
+                String[] str = mTagsAutocompleteTextView.getText().toString().split(Constants.Symbols.COMMA);
                 ArrayList<String> links = new ArrayList<>();
                 if (str.length == 1 && mTags != null) {
                     for (int i = 0; i < mTags.size(); i++) {
@@ -228,7 +229,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
     }
 
     private void setTags(String text) {
-        String[] str = text.split(", ");
+        String[] str = text.split(Constants.Symbols.COMMA);
         ArrayList<String> links = new ArrayList<>();
         if (mTags != null) {
             for (String aStr : str) {
@@ -281,7 +282,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
                                 getTestcasesByLinksTestcases(links);
                                 refreshTagsAdapter(result);
                             } else {
-                                Logger.d(TAG, "Tags not found");
+                                Logger.d(TAG, Constants.Logs.TAGS_NOT_FOUND);
                                 mTagsAutocompleteTextView.showProgress(false);
                                 showProgress(false);
                             }
@@ -378,7 +379,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             mTagsAutocompleteTextView.showProgress(false);
             showProgress(false);
         } else {
-            Logger.d(TAG, "Tags not found");
+            Logger.d(TAG, Constants.Logs.TAGS_NOT_FOUND);
             mTagsAutocompleteTextView.showProgress(false);
             showProgress(false);
         }
