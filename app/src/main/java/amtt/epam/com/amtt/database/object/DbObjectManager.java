@@ -31,9 +31,13 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
 
 
     @Override
-    public Integer add(DatabaseEntity object) {
+    public <Entity extends DatabaseEntity> Integer add(Entity object) {
         Uri insertedItemUri = AmttApplication.getContext().getContentResolver().insert(object.getUri(), object.getContentValues());
-        return Integer.valueOf(insertedItemUri.getLastPathSegment());
+        if (insertedItemUri != null) {
+            return Integer.valueOf(insertedItemUri.getLastPathSegment());
+        }else{
+            return -1;
+        }
     }
 
     private <Entity extends DatabaseEntity> int add(List<Entity> objects) {
@@ -70,11 +74,12 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
     }
 
     @Override
-    public Integer update(DatabaseEntity object, String selection, String[] selectionArgs) {
+    public <Entity extends DatabaseEntity> Integer update(Entity object, String selection, String[] selectionArgs) {
         return AmttApplication.getContext().getContentResolver().update(object.getUri(), object.getContentValues(), selection, selectionArgs);
     }
 
-    public synchronized <Entity extends DatabaseEntity> void update(final Entity object, final String selection, final String[] selectionArgs, final IResult<Integer> result) {
+    public synchronized <Entity extends DatabaseEntity> void update(final Entity object, final String selection,
+                                                                    final String[] selectionArgs, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -87,36 +92,39 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
     }
 
     @Override
-    public void remove(final DatabaseEntity object) {
+    public <Entity extends DatabaseEntity> void remove(final Entity object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                AmttApplication.getContext().getContentResolver().delete(object.getUri(), BaseColumns._ID + "=?", new String[]{String.valueOf(object.getId())});
+                int outcome = AmttApplication.getContext().getContentResolver().delete(object.getUri(), BaseColumns._ID + "=?",
+                                                                                        new String[]{String.valueOf(object.getId())});
+                if (result != null) {
+                    result.onResult(outcome);
+                }
             }
         }).start();
     }
 
     @Override
-    public void removeAll(final DatabaseEntity objectPrototype) {
+    public <Entity extends DatabaseEntity> void removeAll(final Entity objectPrototype, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                AmttApplication.getContext().getContentResolver().delete(objectPrototype.getUri(), null, null);
+                int outcome = AmttApplication.getContext().getContentResolver().delete(objectPrototype.getUri(), null, null);
+                if (result != null) {
+                    result.onResult(outcome);
+                }
             }
         }).start();
     }
 
     @Override
-    public void getAll(DatabaseEntity object, IResult<List<DatabaseEntity>> result) {
+    public <Entity extends DatabaseEntity> void getAll(Entity object, IResult<List<Entity>> result) {
         query(object, null, null, null, result);
     }
 
-    public synchronized <Entity extends DatabaseEntity> void getAllObjects(Entity object, IResult<List<DatabaseEntity>> result) {
-        getAll(object, result);
-    }
-
-    public <Entity extends DatabaseEntity> void query(final Entity entity, final String[] projection,
-                                                 final String[] mSelection, final String[] mSelectionArgs, final IResult<List<Entity>> result) {
+    public <Entity extends DatabaseEntity> void query(final Entity entity, final String[] projection, final String[] mSelection,
+                                                      final String[] mSelectionArgs, final IResult<List<Entity>> result) {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
             @Override
@@ -139,7 +147,8 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
                     }
                 }
 
-                Cursor cursor = AmttApplication.getContext().getContentResolver().query(entity.getUri(), projection, selectionString, mSelectionArgs, null);
+                Cursor cursor = AmttApplication.getContext().getContentResolver().query(entity.getUri(), projection,
+                                                                                        selectionString, mSelectionArgs, null);
                 final List<Entity> listObject = new ArrayList<>();
                 if (cursor != null) {
                     if (cursor.moveToFirst()) {

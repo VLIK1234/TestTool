@@ -24,45 +24,46 @@ import amtt.epam.com.amtt.util.Logger;
 public class ContentFromDatabase {
 
     private static final String TAG = ContentFromDatabase.class.getSimpleName();
+    private static DbObjectManager mManager = DbObjectManager.INSTANCE;
 
     public static void setSpreadsheet(GSpreadsheet spreadsheet, IResult<Integer> result) {
-        DbObjectManager.INSTANCE.add(spreadsheet, result);
+        mManager.add(spreadsheet, result);
     }
 
     public static void getSpreadsheet(String spreadsheetIdLink, IResult<List<GSpreadsheet>> result) {
-        DbObjectManager.INSTANCE.query(new GSpreadsheet(), null, new String[]{SpreadsheetTable._SPREADSHEET_ID_LINK}, new String[]{spreadsheetIdLink}, result);
+        mManager.query(new GSpreadsheet(), null, new String[]{SpreadsheetTable._SPREADSHEET_ID_LINK}, new String[]{spreadsheetIdLink}, result);
     }
 
     public static void getAllSpreadsheets(IResult<List<DatabaseEntity>> result) {
-        DbObjectManager.INSTANCE.getAll(new GSpreadsheet(), result);
+        mManager.getAll(new GSpreadsheet(), result);
     }
 
     public static void setWorksheet(GWorksheet worksheet, IResult<Integer> result) {
-        DbObjectManager.INSTANCE.add(worksheet, result);
+        mManager.add(worksheet, result);
     }
 
     public static void setTestCase(GEntryWorksheet testCase, IResult<Integer> result) {
-        DbObjectManager.INSTANCE.add(testCase, result);
+        mManager.add(testCase, result);
     }
 
     public static void getTestCasesByLinkSpreadsheet(String idLinkSpreadsheet, IResult<List<GEntryWorksheet>> result) {
-        DbObjectManager.INSTANCE.query(new GEntryWorksheet(), null, new String[]{TestcaseTable._SPREADSHEET_ID_LINK}, new String[]{idLinkSpreadsheet}, result);
+        mManager.query(new GEntryWorksheet(), null, new String[]{TestcaseTable._SPREADSHEET_ID_LINK}, new String[]{idLinkSpreadsheet}, result);
     }
 
     public static void getTestCasesByLinks(String idLink, String idLinkSpreadsheet, IResult<List<GEntryWorksheet>> result) {
-        DbObjectManager.INSTANCE.query(new GEntryWorksheet(), null, new String[]{TestcaseTable._SPREADSHEET_ID_LINK, TestcaseTable._TESTCASE_ID_LINK}, new String[]{idLinkSpreadsheet, idLink}, result);
+        mManager.query(new GEntryWorksheet(), null, new String[]{TestcaseTable._SPREADSHEET_ID_LINK, TestcaseTable._TESTCASE_ID_LINK}, new String[]{idLinkSpreadsheet, idLink}, result);
     }
 
     public static void setTags(List<GTag> tags, IResult<Integer> result) {
-        DbObjectManager.INSTANCE.add(tags, result);
+        mManager.add(tags, result);
     }
 
     public static void getTagsByIdLinkSpreadsheet(String idLinkSpreadsheet, IResult<List<GTag>> result) {
-        DbObjectManager.INSTANCE.query(new GTag(), null, new String[]{TagsTable._SPREADSHEET_ID_LINK}, new String[]{idLinkSpreadsheet}, result);
+        mManager.query(new GTag(), null, new String[]{TagsTable._SPREADSHEET_ID_LINK}, new String[]{idLinkSpreadsheet}, result);
     }
 
     public static void getTestcaseByIdLink(String idLink, IResult<List<GEntryWorksheet>> result) {
-        DbObjectManager.INSTANCE.query(new GEntryWorksheet(), null, new String[]{TestcaseTable._TESTCASE_ID_LINK}, new String[]{idLink}, result);
+        mManager.query(new GEntryWorksheet(), null, new String[]{TestcaseTable._TESTCASE_ID_LINK}, new String[]{idLink}, result);
     }
 
     public static void getTestcasesByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, IResult<List<GEntryWorksheet>> result) {
@@ -79,7 +80,7 @@ public class ContentFromDatabase {
         selection = selection.concat(")");
         Logger.e(TAG, selection);
         Logger.e(TAG, Arrays.toString(selectionArgs));
-        DbObjectManager.INSTANCE.queryDefault(new GEntryWorksheet(), null, selection, selectionArgs, result);
+        mManager.queryDefault(new GEntryWorksheet(), null, selection, selectionArgs, result);
     }
 
     public static void getTagsByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, IResult<List<GTag>> result) {
@@ -96,7 +97,7 @@ public class ContentFromDatabase {
         selection = selection.concat(")");
         Logger.e(TAG, selection);
         Logger.e(TAG, Arrays.toString(selectionArgs));
-        DbObjectManager.INSTANCE.queryDefault(new GTag(), null, selection, selectionArgs, result);
+        mManager.queryDefault(new GTag(), null, selection, selectionArgs, result);
     }
 
 }

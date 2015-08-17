@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.activities.AskExitActivity;
 import amtt.epam.com.amtt.ui.activities.CreateIssueActivity;
@@ -101,7 +101,7 @@ public class TopButtonBarView extends FrameLayout {
                 isRecordStarted = true;
                 mUser.setRecord(true);
                 hide();
-                StepUtil.clearAllSteps();
+                LocalContent.removeAllSteps();
 
                 Intent intentLogs = new Intent();
                 intentLogs.setAction("TAKE_LOGS");
@@ -163,7 +163,7 @@ public class TopButtonBarView extends FrameLayout {
                 isRecordStarted = false;
                 mUser.setRecord(false);
                 hide();
-                StepUtil.clearAllSteps();
+                LocalContent.removeAllSteps();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_SHORT).show();
                 mTopButtonListener.onTouch();
             }

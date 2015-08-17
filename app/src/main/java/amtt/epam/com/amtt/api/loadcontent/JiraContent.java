@@ -19,7 +19,7 @@ import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.project.JPriority;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.database.object.IResult;
-import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
@@ -439,19 +439,18 @@ public class JiraContent{
 
     public void setDefaultConfig(final int userId, final String userName, final String userUrl, final String lastProjectKey, final String lastAssignee, final String lastComponentsIds) {
         if (lastProjectKey != null) {
-            StepUtil.checkUser(userName, userUrl, new IResult<List<JUserInfo>>() {
+            LocalContent.checkUser(userName, userUrl, new IResult<List<JUserInfo>>() {
                 @Override
                 public void onResult(List<JUserInfo> result) {
                     for (JUserInfo userInfo : result) {
-                        if (userInfo.getName().equals(userName)&&userInfo.getUrl().equals(userUrl)) {
+                        if (userInfo.getName().equals(userName) && userInfo.getUrl().equals(userUrl)) {
                             JUserInfo user = result.get(0);
                             user.setLastProjectKey(lastProjectKey);
                             user.setLastAssigneeName(lastAssignee);
                             user.setLastComponentsIds(lastComponentsIds);
-                            ContentFromDatabase.updateUser(userId, user, new IResult<Integer>() {
+                            LocalContent.updateUser(userId, user, new IResult<Integer>() {
                                 @Override
-                                public void onResult(Integer res) {
-                                }
+                                public void onResult(Integer res) {}
 
                                 @Override
                                 public void onError(Exception e) {

@@ -24,13 +24,12 @@ import java.util.List;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.bo.database.Step.ScreenshotState;
+import amtt.epam.com.amtt.api.GetContentCallback;
+import amtt.epam.com.amtt.bo.ticket.Step;
+import amtt.epam.com.amtt.bo.ticket.Step.ScreenshotState;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.database.object.DbObjectManager;
-import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -135,12 +134,10 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     private final int mRowLayout;
     private final Context mContext;
     private final ViewHolder.ClickListener mListener;
-    private final IResult<List<DatabaseEntity>> mDbResultListener;
 
     public AttachmentAdapter(Context context, List<Attachment> screenshots, int rowLayout) {
         mContext = context;
         mListener = (ViewHolder.ClickListener) context;
-        mDbResultListener = (IResult<List<DatabaseEntity>>) context;
         mAttachments = screenshots;
         mRowLayout = rowLayout;
         AmttApplication.getContext().getContentResolver().registerContentObserver(AmttUri.STEP.get(), true, new StepScreenshotObserver(new Handler(), this));
@@ -175,9 +172,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
                             }
 
                             @Override
-                            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                            }
+                            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {}
 
                             @Override
                             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
@@ -185,9 +180,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
                             }
 
                             @Override
-                            public void onLoadingCancelled(String imageUri, View view) {
-
-                            }
+                            public void onLoadingCancelled(String imageUri, View view) {}
                         });
                     }
                 } else {
@@ -227,9 +220,15 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     }
 
     private void reloadData() {
-        if (mDbResultListener != null) {
-            DbObjectManager.INSTANCE.getAll(new Step(), mDbResultListener);
-        }
+        LocalContent.getAllSteps(new GetContentCallback<List<Step>>() {
+            @Override
+            public void resultOfDataLoading(List<Step> result) {
+                if (result != null && !result.isEmpty()){
+                  // mAttachments = result;
+                }
+            }
+        });
+
     }
 
 }

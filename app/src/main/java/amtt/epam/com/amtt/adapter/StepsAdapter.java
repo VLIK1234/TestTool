@@ -16,9 +16,8 @@ import java.util.ArrayList;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.database.object.DbObjectManager;
-import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.bo.ticket.Step;
+import amtt.epam.com.amtt.database.util.LocalContent;
 
 /**
  * @author Ivan_Bakach
@@ -49,7 +48,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
         holder.step.setText(AmttApplication.getContext().getString(R.string.label_step) + (position + 1));
         if (step.getActivity() != null) {
             SpannableStringBuilder info = new SpannableStringBuilder();
-            info.append(StepUtil.getStepInfo(step));
+            info.append(LocalContent.getStepInfo(step));
             holder.activityInfo.setVisibility(View.VISIBLE);
             holder.activityInfo.setText(info);
         }
@@ -65,11 +64,12 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
         return mStepList == null ? 0 : mStepList.size();
     }
 
-    public void removeItem(int position) {
-        DbObjectManager.INSTANCE.remove(mStepList.get(position));
+    public Step removeItem(int position) {
+        Step step = mStepList.get(position);
         mStepList.remove(position);
         notifyItemRemoved(position);
         notifyDataSetChanged();
+        return step;
     }
 
     public int getStepId(int position) {

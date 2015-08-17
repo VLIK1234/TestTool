@@ -14,7 +14,7 @@ import android.widget.Toast;
 import java.io.File;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.helper.NotificationIdConstant;
 import amtt.epam.com.amtt.helper.ScreenshotHelper;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -81,9 +81,9 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     if (screenPath != null && listFragments != null) {
                         if (isStepWithoutActivityInfo) {
                             isStepWithoutActivityInfo = false;
-                            StepUtil.savePureScreenshot(screenPath);
+                            LocalContent.saveOnlyScreenshot(screenPath);
                         } else {
-                            StepUtil.saveStep(title, activtyClassName, packageName, screenPath, listFragments);
+                            LocalContent.saveStep(title, activtyClassName, packageName, screenPath, listFragments);
                         }
                         TopButtonService.sendActionChangeTopButtonVisibility(true);
                         Toast.makeText(context, "Create screenshot in " + screenPath, Toast.LENGTH_SHORT).show();
@@ -122,7 +122,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     final String activtyClassName = extraInfo.getString(ACTIVITY_CLASS_NAME_KEY);
                     final String packageName = extraInfo.getString(PACKAGE_NAME_KEY);
                     final String title = extraInfo.getString(TITLE_KEY);
-                    StepUtil.saveStep(title, activtyClassName, packageName, null, listFragments);
+                    LocalContent.saveStep(title, activtyClassName, packageName, null, listFragments);
                     Toast.makeText(context, context.getString(R.string.label_added_step_without_screen), Toast.LENGTH_LONG).show();
                     break;
                 }

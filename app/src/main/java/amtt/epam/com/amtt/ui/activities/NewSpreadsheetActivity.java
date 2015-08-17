@@ -11,10 +11,9 @@ import java.util.List;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.GetContentCallback;
-import amtt.epam.com.amtt.api.loadcontent.ContentFromDatabase;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.database.object.IResult;
-import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.googleapi.api.GoogleApiConst;
 import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
@@ -95,14 +94,14 @@ public class NewSpreadsheetActivity extends BaseActivity {
             public void onClick(View v) {
                 if (mIdLink != null) {
                     showProgress(true);
-                    StepUtil.checkUser(mUser.getUserName(), mUser.getUrl(), new IResult<List<JUserInfo>>() {
+                    LocalContent.checkUser(mUser.getUserName(), mUser.getUrl(), new IResult<List<JUserInfo>>() {
                         @Override
                         public void onResult(List<JUserInfo> result) {
                             for (JUserInfo userInfo : result) {
                                 if (userInfo.getName().equals(mUser.getUserName()) && userInfo.getUrl().equals(mUser.getUrl())) {
                                     JUserInfo user = result.get(0);
                                     user.setLastSpreadsheetUrl(mUser.getSpreadsheetLink());
-                                    ContentFromDatabase.updateUser(mUser.getId(), user, new IResult<Integer>() {
+                                    LocalContent.updateUser(mUser.getId(), user, new IResult<Integer>() {
                                         @Override
                                         public void onResult(final Integer res) {
                                             NewSpreadsheetActivity.this.runOnUiThread(new Runnable() {

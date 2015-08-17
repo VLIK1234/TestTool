@@ -1,7 +1,6 @@
 package amtt.epam.com.amtt.bo.ticket;
 
-import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.bo.database.Step.ScreenshotState;
+import amtt.epam.com.amtt.bo.ticket.Step.ScreenshotState;
 import amtt.epam.com.amtt.util.FileUtil;
 
 /**

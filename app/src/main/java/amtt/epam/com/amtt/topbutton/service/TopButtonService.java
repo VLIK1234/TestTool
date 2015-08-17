@@ -22,7 +22,7 @@ import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.helper.NotificationIdConstant;
 import amtt.epam.com.amtt.ui.activities.SettingActivity;
-import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 import amtt.epam.com.amtt.util.TestUtil;
 
@@ -120,7 +120,7 @@ public class TopButtonService extends Service{
                     break;
                 case ACTION_CLOSE:
                     TestUtil.closeTest();
-                    StepUtil.removeAllAttachFile();
+                    LocalContent.removeAllAttachFile();
                     closeService();
                     break;
                 case ACTION_CHANGE_NOTIFICATION_BUTTON:
@@ -168,7 +168,7 @@ public class TopButtonService extends Service{
 
     private void closeService() {
         if (mTopButtonView != null && isViewAdd) {
-            StepUtil.clearAllSteps();
+            LocalContent.removeAllSteps();
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancelAll();
             isViewAdd = false;
@@ -240,7 +240,7 @@ public class TopButtonService extends Service{
 
     private void stopRecord(){
         mTopButtonView.getButtonsBar().setIsRecordStarted(false);
-        StepUtil.clearAllSteps();
+        LocalContent.removeAllSteps();
     }
 
     private void checkCountTestProject() {

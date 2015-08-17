@@ -1,4 +1,4 @@
-package amtt.epam.com.amtt.bo.database;
+package amtt.epam.com.amtt.bo.ticket;
 
 import android.content.ContentValues;
 import android.database.Cursor;

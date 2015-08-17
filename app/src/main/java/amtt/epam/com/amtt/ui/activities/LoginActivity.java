@@ -30,7 +30,8 @@ import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.database.util.ContentFromDatabase;
+import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.exception.ExceptionType;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -135,7 +136,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
-        DbObjectManager.INSTANCE.add(user, new IResult<Integer>() {
+        ContentFromDatabase.setUser(user, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
                 mUser.setId(result);
@@ -154,11 +155,11 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         }
         showProgress(true);
         mLoginButton.setEnabled(false);
-        StepUtil.checkUser(mUserNameTextInput.getText().toString(), mUrlTextInput.getText().toString(), new IResult<List<JUserInfo>>() {
+        LocalContent.checkUser(mUserNameTextInput.getText().toString(), mUrlTextInput.getText().toString(), new IResult<List<JUserInfo>>() {
             @Override
             public void onResult(List<JUserInfo> result) {
                 for (JUserInfo user : result) {
-                    if (user.getName().equals(mUserNameTextInput.getText().toString())&&
+                    if (user.getName().equals(mUserNameTextInput.getText().toString()) &&
                             user.getUrl().equals(mUrlTextInput.getText().toString())) {
                         mIsUserInDatabase = true;
                     }

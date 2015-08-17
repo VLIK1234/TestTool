@@ -15,9 +15,9 @@ import amtt.epam.com.amtt.util.Logger;
  * @version on 02.07.2015
  */
 
-public class XMLParser {
+public class XmlParsing {
 
-    private static final String TAG = XMLParser.class.getSimpleName();
+    private static final String TAG = XmlParsing.class.getSimpleName();
     private static XmlPullParser xmlPullParser;
 
     public static XmlPullParser getXmlPullParser() {
@@ -25,7 +25,7 @@ public class XMLParser {
     }
 
     public static void setXmlPullParser(XmlPullParser xmlPullParser) {
-        XMLParser.xmlPullParser = xmlPullParser;
+        XmlParsing.xmlPullParser = xmlPullParser;
     }
 
     public static int loadRowCount() throws IOException, XmlPullParserException {

@@ -15,46 +15,68 @@ import java.util.List;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.bo.database.Step;
+import amtt.epam.com.amtt.api.GetContentCallback;
+import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
-import amtt.epam.com.amtt.database.table.StepsTable;
-import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.util.Logger;
 
 /**
  * @author Artsiom_Kaliaha
  * @version on 16.05.2015
  */
-public class StepUtil {
+public class LocalContent {
+
+    private static final String TAG =  LocalContent.class.getSimpleName();
 
     public static void saveStep(String title, String activityClassName, String packageName, String mScreenPath, String listFragments) {
         Step step = new Step(title, activityClassName, packageName, mScreenPath, listFragments);
-        DbObjectManager.INSTANCE.add(step, null);
+        ContentFromDatabase.setStep(step, null);
     }
 
-    public static void savePureScreenshot(String mScreenPath) {
+    public static void saveOnlyScreenshot(String mScreenPath) {
         Step step = new Step(null, null, null, mScreenPath, null);
-        DbObjectManager.INSTANCE.add(step, null);
+        ContentFromDatabase.setStep(step, null);
     }
 
-    public static void clearAllSteps() {
-        DbObjectManager.INSTANCE.removeAll(new Step());
+    public static void getAllSteps(final GetContentCallback<List<Step>> contentCallback){
+        ContentFromDatabase.getAllSteps(new IResult<List<Step>>() {
+            @Override
+            public void onResult(List<Step> result) {
+                if (result!=null && !result.isEmpty()){
+                    contentCallback.resultOfDataLoading(result);
+                }else{
+                    contentCallback.resultOfDataLoading(null);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Logger.e(TAG, e.getMessage(), e);
+                contentCallback.resultOfDataLoading(null);
+            }
+        });
+    }
+
+    public static void removeStep(Step step){
+        ContentFromDatabase.removeStep(step, null);
+    }
+
+    public static void removeAllSteps() {
+        ContentFromDatabase.removeAllSteps(null);
     }
 
     public static void applyNotesToScreenshot(final Bitmap drawingCache, final String screenshotPath, final Step step) {
         step.setScreenshotState(Step.ScreenshotState.IS_BEING_WRITTEN);
-        DbObjectManager.INSTANCE.update(step, StepsTable._ID + "=?", new String[]{String.valueOf(step.getId())});
+        ContentFromDatabase.updateStep(step, null);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals(MimeType.IMAGE_PNG.getFileExtension()) ?
                         Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
-
                 FileOutputStream outputStream = null;
                 try {
                     outputStream = IOUtils.openFileOutput(screenshotPath, true);
@@ -67,13 +89,9 @@ public class StepUtil {
                 }
 
                 step.setScreenshotState(Step.ScreenshotState.WRITTEN);
-                DbObjectManager.INSTANCE.update(step, StepsTable._ID + "=?", new String[]{String.valueOf(step.getId())});
+                ContentFromDatabase.updateStep(step, null);
             }
         }).start();
-    }
-
-    public static void checkUser(String userName, String url, IResult<List<JUserInfo>> result) {
-        DbObjectManager.INSTANCE.query(new JUserInfo(), null, new String[]{UsersTable._USER_NAME, UsersTable._URL}, new String[]{userName, url}, result);
     }
 
     public static Spanned getStepInfo(Step step) {
@@ -86,8 +104,8 @@ public class StepUtil {
                         "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>");
     }
 
-    public static Spanned getStepInfo(List<DatabaseEntity> listStep) {
-        ArrayList<Step> list = (ArrayList) listStep;
+    public static Spanned getStepInfo(List<Step> listStep) {
+        ArrayList<Step> list = (ArrayList<Step>) listStep;
         SpannableStringBuilder builder = new SpannableStringBuilder();
         Context context = AmttApplication.getContext();
         if (list.size() > 0) {
@@ -133,4 +151,11 @@ public class StepUtil {
         }
     }
 
+    public static void checkUser(String userName, String url, IResult<List<JUserInfo>> result) {
+        ContentFromDatabase.getUserByNameAndUrl(userName, url, result);
+    }
+
+    public static void updateUser(int userId, JUserInfo user, IResult<Integer> result) {
+        ContentFromDatabase.updateUser(userId, user, result);
+    }
 }

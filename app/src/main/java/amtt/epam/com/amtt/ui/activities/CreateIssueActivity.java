@@ -42,13 +42,11 @@ import amtt.epam.com.amtt.api.ContentConst;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
-import amtt.epam.com.amtt.bo.database.Step;
+import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
-import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.helper.DialogHelper;
 import amtt.epam.com.amtt.helper.SharingToEmailHelper;
@@ -69,8 +67,8 @@ import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.Validator;
 
 
-public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, IResult<List<DatabaseEntity>>,
-                                                                    SharedPreferences.OnSharedPreferenceChangeListener, GifUtil.ProgressListener {
+public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener,
+                                                        SharedPreferences.OnSharedPreferenceChangeListener, GifUtil.ProgressListener {
 
     private static final int PAINT_ACTIVITY_REQUEST_CODE = 0;
     private static final int MESSAGE_TEXT_CHANGED = 100;
@@ -200,7 +198,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             public void onClick(View v) {
                 if (mAdapter.getAttachmentFilePathList().size() > 0) {
                     SharingToEmailHelper.senAttachmentImage(CreateIssueActivity.this, mEnvironmentTextInput.getText().toString(),
-                                                                mAdapter.getAttachmentFilePathList());
+                            mAdapter.getAttachmentFilePathList());
                 } else {
                     Toast.makeText(getBaseContext(), R.string.error_message_share_attachment, Toast.LENGTH_SHORT).show();
                 }
@@ -278,8 +276,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
+            public void onNothingSelected(AdapterView<?> arg0) {}
         });
     }
 
@@ -324,8 +321,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
+            public void onNothingSelected(AdapterView<?> arg0) {}
         });
     }
 
@@ -360,8 +356,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
+            public void onNothingSelected(AdapterView<?> arg0) {}
         });
     }
 
@@ -433,8 +428,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
+            public void onNothingSelected(AdapterView<?> arg0) {}
         });
     }
 
@@ -479,7 +473,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 if (mComponents.getSelectedItem() != null) {
                     String components = (String) mComponents.getSelectedItem();
                     mUser.setLastComponentsIds(mJira.getComponentIdByName(components));
-
                 }
                 mJira.createIssue(mIssueTypeName, mPriorityName, mVersionName, mTitleTextInput.getText().toString(),
                         mDescriptionTextInput.getText().toString(), mEnvironmentTextInput.getText().toString(),
@@ -493,7 +486,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                                     if (mAssignableUserName != null && !mAssignableUserName.equals("") && !mUser.getLastAssignee().equals(mAssignableUserName)) {
                                         mUser.setLastAssigneeName(mAssignableUserName);
                                     }
-
                                     if (mCreateAnotherIssue) {
                                         mCreateAnotherCheckBox.setChecked(false);
                                         mTitleTextInput.setText(Constants.Symbols.EMPTY);
@@ -537,13 +529,10 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         });
         mAssignableAutocompleteView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) {}
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -607,9 +596,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     }
 
                     @Override
-                    public void negativeButtonClick() {
-
-                    }
+                    public void negativeButtonClick() {}
                 }).show();
             }
         });
@@ -623,7 +610,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 if (!PreferenceUtil.getBoolean(getString(R.string.key_gif_info_dialog))) {
                     DialogHelper.getGifInfoDialog(CreateIssueActivity.this).show();
                 }
-
                 int stepsArraySize = mSteps.size();
                 if (isChecked && stepsArraySize != 0) {
                     mGifProgress.setMax(stepsArraySize);
@@ -692,14 +678,39 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void loadAttachments() {
-        DbObjectManager.INSTANCE.getAll(new Step(), CreateIssueActivity.this);
+        LocalContent.getAllSteps(new GetContentCallback<List<Step>>() {
+                                     @Override
+                                     public void resultOfDataLoading(final List<Step> result) {
+                                         runOnUiThread(new Runnable() {
+                                             @Override
+                                             public void run() {
+                                                 if (result != null) {
+                                                     mSteps = result;
+                                                     List<Attachment> screenArray = mAttachmentManager.stepsToAttachments(result);
+                                                     mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment);
+                                                     if (mRecyclerView != null) {
+                                                         mRecyclerView.setAdapter(mAdapter);
+                                                     }
+                                                     if (mSteps.size() == 0) {
+                                                         mGifCheckBox.setEnabled(false);
+                                                     }
+                                                 }
+                                                 mRequestsQueue.remove(ContentConst.ATTACHMENT_RESPONSE);
+                                                 showProgressIfNeed();
+                                             }
+                                         });
+                                     }
+                                 }
+
+
+        );
     }
 
     private void removeStepFromDatabase(int position) {
         Attachment attachment = mAdapter.getAttachments().get(position);
         int stepId = attachment.getStepId();
         FileUtil.delete(attachment.getFilePath());
-        DbObjectManager.INSTANCE.remove(new Step(stepId));
+        LocalContent.removeStep(new Step(stepId));
         mAdapter.getAttachments().remove(position);
         mAdapter.notifyItemRemoved(position);
         getDescription();
@@ -707,83 +718,29 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     private void getDescription() {
         if (mDescriptionTextInput != null) {
-            if (mBundle != null && mBundle.getString(ExpectedResultsActivity.STEPS) != null
-                    && mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT) != null) {
+            if (mBundle != null && mBundle.getString(ExpectedResultsActivity.STEPS) != null &&
+                    mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT) != null) {
                 GEntryWorksheet testcase = new GEntryWorksheet();
                 testcase.setTestStepsGSX(mBundle.getString(ExpectedResultsActivity.STEPS));
                 testcase.setExpectedResultGSX(mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT));
                 mDescriptionTextInput.setText(testcase.getFullTestCaseDescription());
             }
-            DbObjectManager.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
-                @Override
-                public void onResult(final List<DatabaseEntity> result) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDescriptionTextInput.setText(mDescriptionTextInput.getText().append(StepUtil.getStepInfo(result)));
-                        }
-                    });
-
-
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    Logger.e(TAG, e.getMessage(), e);
-                }
-            });
+            LocalContent.getAllSteps(new GetContentCallback<List<Step>>() {
+                                         @Override
+                                         public void resultOfDataLoading(final List<Step> result) {
+                                             if (result != null) {
+                                                 CreateIssueActivity.this.runOnUiThread(new Runnable() {
+                                                     public void run() {
+                                                         mDescriptionTextInput.setText(mDescriptionTextInput.getText().append(LocalContent.getStepInfo(result)));
+                                                     }
+                                                 });
+                                             }
+                                         }
+                                     }
+            );
         }
         mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
         showProgressIfNeed();
-    }
-
-    //Callbacks
-    //IResult for attachments
-    @Override
-    public void onResult(final List<DatabaseEntity> result) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (result != null) {
-                    mSteps = (List) result;
-                    List<Attachment> screenArray = mAttachmentManager.getAttachmentList(result);
-                    File externalCache = new File(FileUtil.getCacheAmttDir());
-                    String template = externalCache.getPath() + "/%s";
-                    String pathLogCommon = String.format(template, "log_common.txt");
-                    String pathLogException = String.format(template, "log_exception.txt");
-                    String pathLogArguments = String.format(template, "log_arguments.txt");
-                    final File fileLogCommon = new File(pathLogCommon);
-                    final File fileLogException = new File(pathLogException);
-                    final File fileLogArguments = new File(pathLogArguments);
-                    final Attachment attachLogCommon = new Attachment(pathLogCommon);
-                    final Attachment attachLogException = new Attachment(pathLogException);
-                    final Attachment attachLogArguments = new Attachment(pathLogArguments);
-                    if (PreferenceUtil.getBoolean(getString(R.string.key_is_attach_logs))) {
-                        if (fileLogCommon.exists() && fileLogException.exists()) {
-                            screenArray.add(attachLogCommon);
-                            screenArray.add(attachLogException);
-                            if (fileLogArguments.exists()) {
-                                screenArray.add(attachLogArguments);
-                            }
-                        }
-                    }
-                    mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment);
-                    if (mRecyclerView != null) {
-                        mRecyclerView.setAdapter(mAdapter);
-                    }
-                    if (mSteps.size() == 0) {
-                        mGifCheckBox.setEnabled(false);
-                    }
-                }
-                mRequestsQueue.remove(ContentConst.ATTACHMENT_RESPONSE);
-                showProgressIfNeed();
-            }
-        });
-    }
-
-    @Override
-    public void onError(Exception e) {
-        Logger.e(TAG, e.getMessage(), e);
     }
 
     //Recycler
@@ -799,11 +756,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     }
 
                     @Override
-                    public void negativeButtonClick() {
-
-                    }
+                    public void negativeButtonClick() {}
                 }).show();
-
             } else {
                 removeStepFromDatabase(position);
             }
@@ -816,12 +770,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 }
 
                 @Override
-                public void negativeButtonClick() {
-
-                }
+                public void negativeButtonClick() {}
             }).show();
         }
-
     }
 
     @Override
@@ -838,7 +789,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         if (mAdapter != null && mAdapter.getAttachmentFilePathList() != null && mAdapter.getAttachmentFilePathList().size() > position) {
             filePath = mAdapter.getAttachmentFilePathList().get(position);
         }
-
         if (filePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
                 filePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
                 filePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
@@ -855,7 +805,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             intent.putExtra(GifPlayerActivity.GIF_IMAGE_KEY, filePath);
             startActivity(intent);
         }
-
         if (TextUtils.isEmpty(filePath)) {
             if (intent != null) {
                 startActivity(intent);
@@ -889,7 +838,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     @Override
-
     public void onSavingError(Throwable throwable) {
         mGifProgress.setVisibility(View.GONE);
         mGifCheckBox.setChecked(false);
@@ -901,7 +849,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                         dialog.dismiss();
                     }
                 });
-
         if (throwable instanceof IOException) {
             dialogBuilder.setTitle(R.string.title_gif_isnt_saved).setMessage(R.string.message_gif_isnt_saved);
         } else if (throwable instanceof OutOfMemoryError) {
@@ -909,7 +856,6 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
         } else {
             dialogBuilder.setTitle(R.string.title_gif_error).setMessage(R.string.message_gif_error);
         }
-
         dialogBuilder.create().show();
     }
 
@@ -923,9 +869,7 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             }
 
             @Override
-            public void negativeButtonClick() {
-
-            }
+            public void negativeButtonClick() {}
         }).show();
     }
 }

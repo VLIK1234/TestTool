@@ -6,7 +6,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.InputStream;
 
-import amtt.epam.com.amtt.googleapi.XMLParser;
+import amtt.epam.com.amtt.googleapi.XmlParsing;
 import amtt.epam.com.amtt.googleapi.api.GoogleApiConst;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
@@ -35,40 +35,40 @@ public class WorksheetProcessor implements Processor<GWorksheet, HttpEntity> {
             xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.FEED_TAG);
             xmlPullParser.nextTag();
             while (xmlPullParser.getDepth() != 0) {
-                XMLParser.setXmlPullParser(xmlPullParser);
-                worksheet.setIdLink(XMLParser.loadIdLink());
-                worksheet.setUpdated(XMLParser.loadUpdated());
-                XMLParser.skipTag();//category
-                worksheet.setTitle(XMLParser.loadTitle());
-                worksheet.setAlternateLink(XMLParser.loadGoogleLink());
-                worksheet.setFeedLink(XMLParser.loadGoogleLink());
-                worksheet.setPostLink(XMLParser.loadGoogleLink());
-                worksheet.setSelfLink(XMLParser.loadGoogleLink());
-                worksheet.setAuthor(XMLParser.loadAuthor());
-                worksheet.setOpenSearchTotalResults(XMLParser.loadTotalResults());
-                worksheet.setOpenSearchStartIndex(XMLParser.loadStartIndex());
+                XmlParsing.setXmlPullParser(xmlPullParser);
+                worksheet.setIdLink(XmlParsing.loadIdLink());
+                worksheet.setUpdated(XmlParsing.loadUpdated());
+                XmlParsing.skipTag();//category
+                worksheet.setTitle(XmlParsing.loadTitle());
+                worksheet.setAlternateLink(XmlParsing.loadGoogleLink());
+                worksheet.setFeedLink(XmlParsing.loadGoogleLink());
+                worksheet.setPostLink(XmlParsing.loadGoogleLink());
+                worksheet.setSelfLink(XmlParsing.loadGoogleLink());
+                worksheet.setAuthor(XmlParsing.loadAuthor());
+                worksheet.setOpenSearchTotalResults(XmlParsing.loadTotalResults());
+                worksheet.setOpenSearchStartIndex(XmlParsing.loadStartIndex());
                 for (int i = 0; i < worksheet.getOpenSearchTotalResults(); i++) {
                     GEntryWorksheet entryWorksheet = new GEntryWorksheet();
-                    xmlPullParser = XMLParser.getXmlPullParser();
+                    xmlPullParser = XmlParsing.getXmlPullParser();
                     xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.ENTRY_TAG);
                     xmlPullParser.nextTag();
-                    XMLParser.setXmlPullParser(xmlPullParser);
-                    entryWorksheet.setIdLink(XMLParser.loadIdLink());
-                    entryWorksheet.setUpdated(XMLParser.loadUpdated());
-                    XMLParser.skipTag();
-                    entryWorksheet.setTitle(XMLParser.loadTitle());
-                    entryWorksheet.setContent(XMLParser.loadContent());
-                    entryWorksheet.setSelfLink(XMLParser.loadGoogleLink());
-                    entryWorksheet.setPathGSX(XMLParser.loadPathGSX());
-                    entryWorksheet.setPriorityGSX(XMLParser.loadPriorityGSX());
-                    entryWorksheet.setTestCaseNameGSX(XMLParser.loadSummaryGSX());
-                    entryWorksheet.setTestStepsGSX(XMLParser.loadTestStepsGSX());
-                    entryWorksheet.setExpectedResultGSX(XMLParser.loadExpectedResultsGSX());
-                    entryWorksheet.setStatusGSX(XMLParser.loadTestStatusGSX());
+                    XmlParsing.setXmlPullParser(xmlPullParser);
+                    entryWorksheet.setIdLink(XmlParsing.loadIdLink());
+                    entryWorksheet.setUpdated(XmlParsing.loadUpdated());
+                    XmlParsing.skipTag();
+                    entryWorksheet.setTitle(XmlParsing.loadTitle());
+                    entryWorksheet.setContent(XmlParsing.loadContent());
+                    entryWorksheet.setSelfLink(XmlParsing.loadGoogleLink());
+                    entryWorksheet.setPathGSX(XmlParsing.loadPathGSX());
+                    entryWorksheet.setPriorityGSX(XmlParsing.loadPriorityGSX());
+                    entryWorksheet.setTestCaseNameGSX(XmlParsing.loadSummaryGSX());
+                    entryWorksheet.setTestStepsGSX(XmlParsing.loadTestStepsGSX());
+                    entryWorksheet.setExpectedResultGSX(XmlParsing.loadExpectedResultsGSX());
+                    entryWorksheet.setStatusGSX(XmlParsing.loadTestStatusGSX());
                     if (entryWorksheet.getTestCaseNameGSX() != null && !entryWorksheet.getTestCaseNameGSX().equals(Constants.Symbols.EMPTY)) {
                         worksheet.setEntryItem(entryWorksheet);
                     }
-                    xmlPullParser = XMLParser.getXmlPullParser();
+                    xmlPullParser = XmlParsing.getXmlPullParser();
                     xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.ENTRY_TAG);
                     xmlPullParser.nextTag();
                 }

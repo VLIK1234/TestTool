@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
-import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.bo.ticket.Step;
+import amtt.epam.com.amtt.database.util.LocalContent;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
 
 /**
@@ -1335,7 +1335,7 @@ public final class GifUtil {
     public static void createGif(ProgressListener listener, final List<Step> stepList) {
         List<Bitmap> bitmaps;
         try {
-            bitmaps = StepUtil.getStepBitmaps(stepList);
+            bitmaps = LocalContent.getStepBitmaps(stepList);
         } catch (Throwable throwable) {
             listener.onSavingError(throwable);
             return;

@@ -12,6 +12,7 @@ public final class Constants {
         public static final String EMPTY = "";
         public static final String TAG_DIVIDER = " - ";
         public static final String COMMA = ", ";
+        public static final String EQUAL = "=";
     }
 
     public final class Logs{

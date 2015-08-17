@@ -26,11 +26,10 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import java.util.List;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.database.object.DbObjectManager;
+import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.database.object.IResult;
-import amtt.epam.com.amtt.database.table.StepsTable;
-import amtt.epam.com.amtt.database.util.StepUtil;
+import amtt.epam.com.amtt.database.util.ContentFromDatabase;
+import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.MultilineRadioGroup;
 import amtt.epam.com.amtt.ui.views.MultilineRadioGroup.OnEntireGroupCheckedChangeListener;
@@ -43,12 +42,9 @@ import amtt.epam.com.amtt.util.Logger;
  @version on 09.06.2015
  */
 
-public class PaintActivity extends BaseActivity implements OnSeekBarChangeListener,
-        Handler.Callback,
-        OnSystemUiVisibilityChangeListener,
-        OnEntireGroupCheckedChangeListener,
-        IResult<List<Step>>,
-        ImageLoadingListener {
+public class PaintActivity extends BaseActivity
+                            implements OnSeekBarChangeListener, Handler.Callback, OnSystemUiVisibilityChangeListener,
+                            OnEntireGroupCheckedChangeListener, ImageLoadingListener {
 
     private static final String TAG = PaintActivity.class.getSimpleName();
     public static final String KEY_STEP_ID = "key_step_id";
@@ -75,7 +71,19 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             initPaintView();
-            DbObjectManager.INSTANCE.query(new Step(), StepsTable.PROJECTION, new String[]{StepsTable._ID}, new String[]{String.valueOf(extra.getInt(KEY_STEP_ID))}, this);
+            ContentFromDatabase.getStepById(extra.getInt(KEY_STEP_ID), new IResult<List<Step>>() {
+                @Override
+                public void onResult(List<Step> result) {
+                    mStep = result.get(0);
+                    ImageLoader.getInstance().displayImage("file:///" + mStep.getScreenshotPath(), mPaintView, PaintActivity.this);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Logger.e(TAG, e.getMessage(), e);
+                    setErrorState();
+                }
+            });
         } else {
             setErrorState();
         }
@@ -217,7 +225,7 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            StepUtil.applyNotesToScreenshot(Bitmap.createBitmap(mPaintView.getDrawingCache()), mStep.getScreenshotPath(), mStep);
+                            LocalContent.applyNotesToScreenshot(Bitmap.createBitmap(mPaintView.getDrawingCache()), mStep.getScreenshotPath(), mStep);
                             setResult(RESULT_OK);
                             finish();
                         }
@@ -272,14 +280,10 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
     }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-
-    }
+    public void onStartTrackingTouch(SeekBar seekBar) {}
 
     @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
-
-    }
+    public void onStopTrackingTouch(SeekBar seekBar) {}
 
     //Handler
     @Override
@@ -312,19 +316,6 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
         mPaintView.setBrushColor(paletteItem.getColor());
     }
 
-    //Database
-    @Override
-    public void onResult(List<Step> result) {
-        mStep = result.get(0);
-        ImageLoader.getInstance().displayImage("file:///" + mStep.getScreenshotPath(), mPaintView, this);
-    }
-
-    @Override
-    public void onError(Exception e) {
-        Logger.e(TAG, e.getMessage(), e);
-        setErrorState();
-    }
-
     //ImageLoader
     @Override
     public void onLoadingStarted(String imageUri, View view) {
@@ -342,8 +333,6 @@ public class PaintActivity extends BaseActivity implements OnSeekBarChangeListen
     }
 
     @Override
-    public void onLoadingCancelled(String imageUri, View view) {
-
-    }
+    public void onLoadingCancelled(String imageUri, View view) {}
 
 }
