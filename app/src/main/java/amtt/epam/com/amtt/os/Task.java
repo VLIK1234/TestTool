@@ -35,9 +35,8 @@ public class Task<Param, Progress, Result> extends AsyncTask<Param, Void, Result
         }
     }
 
-    @SafeVarargs
     @Override
-    protected final Result doInBackground(Param... params) {
+    protected Result doInBackground(Param... params) {
         Result result = null;
         try {
             Progress progress = mDataSource.getData(mParam);
