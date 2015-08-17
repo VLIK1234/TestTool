@@ -27,7 +27,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -45,7 +44,6 @@ import amtt.epam.com.amtt.bo.JCreateIssueResponse;
 import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
-import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.helper.DialogHelper;
@@ -62,12 +60,11 @@ import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.GifUtil;
 import amtt.epam.com.amtt.util.InputsUtil;
-import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.Validator;
 
 
-public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener,
+public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, AttachmentAdapter.ViewHolder.DataChangedListener,
                                                         SharedPreferences.OnSharedPreferenceChangeListener, GifUtil.ProgressListener {
 
     private static final int PAINT_ACTIVITY_REQUEST_CODE = 0;
@@ -276,7 +273,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0) {}
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
         });
     }
 
@@ -356,7 +354,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0) {}
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
         });
     }
 
@@ -428,7 +427,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0) {}
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
         });
     }
 
@@ -678,32 +678,42 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     }
 
     private void loadAttachments() {
+        loadSteps();
+    }
+
+    private void loadSteps() {
         LocalContent.getAllSteps(new GetContentCallback<List<Step>>() {
                                      @Override
                                      public void resultOfDataLoading(final List<Step> result) {
-                                         runOnUiThread(new Runnable() {
-                                             @Override
-                                             public void run() {
-                                                 if (result != null) {
+                                         if (result != null) {
+                                             runOnUiThread(new Runnable() {
+                                                 @Override
+                                                 public void run() {
+
                                                      mSteps = result;
                                                      List<Attachment> screenArray = mAttachmentManager.stepsToAttachments(result);
-                                                     mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment);
+                                                     mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment, CreateIssueActivity.this);
                                                      if (mRecyclerView != null) {
                                                          mRecyclerView.setAdapter(mAdapter);
                                                      }
                                                      if (mSteps.size() == 0) {
                                                          mGifCheckBox.setEnabled(false);
                                                      }
+
                                                  }
-                                                 mRequestsQueue.remove(ContentConst.ATTACHMENT_RESPONSE);
-                                                 showProgressIfNeed();
-                                             }
-                                         });
+                                             });
+                                         }
+                                         mRequestsQueue.remove(ContentConst.ATTACHMENT_RESPONSE);
+                                         showProgressIfNeed();
                                      }
                                  }
-
-
         );
+    }
+
+
+    @Override
+    public void onReloadData() {
+        loadSteps();
     }
 
     private void removeStepFromDatabase(int position) {

@@ -24,12 +24,9 @@ import java.util.List;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.api.GetContentCallback;
-import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.bo.ticket.Step.ScreenshotState;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -49,6 +46,10 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
         }
 
+        public interface DataChangedListener{
+            void onReloadData();
+        }
+
         public final ImageView mScreenshotImage;
         public final TextView mScreenshotName;
         public final ImageView mScreenshotClose;
@@ -56,6 +57,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         private ScreenshotState mScreenshotState;
         private final Context mContext;
         private ClickListener mListener;
+        private DataChangedListener mDataChangedListener;
 
         public ViewHolder(Context context, View itemView) {
             super(itemView);
@@ -70,6 +72,10 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
         public void setClickListener(ClickListener clickListener) {
             mListener = clickListener;
+        }
+
+        public void setDataChangedListener(DataChangedListener dataChangedListener) {
+            mDataChangedListener = dataChangedListener;
         }
 
         @Override
@@ -123,7 +129,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
         @Override
         public void onChange(boolean selfChange, Uri uri) {
-            mAdapter.reloadData();
+            mAdapter.mDataChangedListener.onReloadData();
         }
 
     }
@@ -134,9 +140,11 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     private final int mRowLayout;
     private final Context mContext;
     private final ViewHolder.ClickListener mListener;
+    private final ViewHolder.DataChangedListener mDataChangedListener;
 
-    public AttachmentAdapter(Context context, List<Attachment> screenshots, int rowLayout) {
+    public AttachmentAdapter(Context context, List<Attachment> screenshots, int rowLayout, ViewHolder.DataChangedListener dataChangedListener) {
         mContext = context;
+        mDataChangedListener = dataChangedListener;
         mListener = (ViewHolder.ClickListener) context;
         mAttachments = screenshots;
         mRowLayout = rowLayout;
@@ -149,6 +157,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(mRowLayout, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder(mContext, v);
         viewHolder.setClickListener(mListener);
+        viewHolder.setDataChangedListener(mDataChangedListener);
         return viewHolder;
     }
 
@@ -218,17 +227,4 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     public int getStepId(int position) {
         return mAttachments.get(position).getStepId();
     }
-
-    private void reloadData() {
-        LocalContent.getAllSteps(new GetContentCallback<List<Step>>() {
-            @Override
-            public void resultOfDataLoading(List<Step> result) {
-                if (result != null && !result.isEmpty()){
-                  // mAttachments = result;
-                }
-            }
-        });
-
-    }
-
 }

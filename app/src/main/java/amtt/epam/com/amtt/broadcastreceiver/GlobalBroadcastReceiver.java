@@ -34,7 +34,6 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
     private static final String SEND_LOG_FILE = "SEND_LOG_FILE";
     private static final String REQUEST_TAKE_SCREENSHOT = "REQUEST_TAKE_SCREENSHOT";
     private static final String EXCEPTION_ANSWER = "EXCEPTION_ANSWER";
-    private static final String ANSWER_EXCEPTION_KEY = "answer";
     private static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
     private static final String FILE_NAME_KEY = "fileName";
     private static final String BYTE_ARRAY_DATA_KEY = "byteArrayData";
@@ -98,7 +97,6 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
             case EXCEPTION_ANSWER:
                 Bundle extraAnswear = intent.getExtras();
                 if (extraAnswear != null) {
-                    String answer = extraAnswear.getString(ANSWER_EXCEPTION_KEY);
                     Toast.makeText(context, "Application crashed go to notification for make ticket", Toast.LENGTH_LONG).show();
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                             .setSmallIcon(R.drawable.button_main)
