@@ -48,60 +48,13 @@ public class ThreadManager {
         threadLoader.load(callback, params, dataSource, processor);
     }
 
-    private static <ProcessingResult, DataSourceResult, Params> void executeInAsyncTask(final Callback<ProcessingResult> callback, Params params, final DataSource<DataSourceResult, Params> dataSource, final Processor<ProcessingResult, DataSourceResult> processor) {
-        new Task<Params, DataSourceResult, ProcessingResult>(dataSource, params, processor, callback) {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                callback.onLoadStart();
-            }
-
-            @Override
-            protected void onPostExecute(ProcessingResult processingResult) {
-                super.onPostExecute(processingResult);
-                callback.onLoadExecuted(processingResult);
-            }
-
-            @Override
-            protected ProcessingResult doInBackground(Params... params) {
-                DataSourceResult dataSourceResult = null;
-                try {
-                    dataSourceResult = dataSource.getData(params[0]);
-                    return processor.process(dataSourceResult);
-                } catch (Exception e) {
-                    callback.onLoadError(e);
-                    return null;
-                }
-            }
-        }.execute();
+    private static <ProcessingResult, DataSourceResult, Params> void executeInAsyncTask(final Callback<ProcessingResult> callback, final Params params, final DataSource<DataSourceResult, Params> dataSource, final Processor<ProcessingResult, DataSourceResult> processor) {
+        new Task<>(dataSource, params, processor, callback).execute();
     }
 
     private static <ProcessingResult, DataSourceResult, Params> void executeInThread(final Callback<ProcessingResult> callback, final Params params, final DataSource<DataSourceResult, Params> dataSource, final Processor<ProcessingResult, DataSourceResult> processor) {
         final Handler handler = new Handler();
         callback.onLoadStart();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    final DataSourceResult result = dataSource.getData(params);
-                    final ProcessingResult processingResult = processor.process(result);
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onLoadExecuted(processingResult);
-                        }
-                    });
-                } catch (final Exception e) {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onLoadError(e);
-                        }
-                    });
-                }
-            }
-        }).start();
+        new amtt.epam.com.amtt.os.Thread<>(callback, params, dataSource, processor, handler).invoke().start();
     }
-
 }
