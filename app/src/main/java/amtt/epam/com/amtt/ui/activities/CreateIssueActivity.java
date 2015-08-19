@@ -65,7 +65,7 @@ import amtt.epam.com.amtt.util.Validator;
 
 
 public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, AttachmentAdapter.ViewHolder.DataChangedListener,
-                                                        SharedPreferences.OnSharedPreferenceChangeListener, GifUtil.ProgressListener {
+                                                        SharedPreferences.OnSharedPreferenceChangeListener, GifUtil.ProgressListener, AttachmentAdapter.ViewHolder.ScreenshotStateListener {
 
     private static final int PAINT_ACTIVITY_REQUEST_CODE = 0;
     private static final int MESSAGE_TEXT_CHANGED = 100;
@@ -596,7 +596,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                     }
 
                     @Override
-                    public void negativeButtonClick() {}
+                    public void negativeButtonClick() {
+                    }
                 }).show();
             }
         });
@@ -692,7 +693,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
                                                      mSteps = result;
                                                      List<Attachment> screenArray = mAttachmentManager.stepsToAttachments(result);
-                                                     mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment, CreateIssueActivity.this);
+                                                     mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment,
+                                                                                        CreateIssueActivity.this, CreateIssueActivity.this);
                                                      if (mRecyclerView != null) {
                                                          mRecyclerView.setAdapter(mAdapter);
                                                      }
@@ -714,6 +716,19 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     @Override
     public void onReloadData() {
         loadSteps();
+    }
+
+    @Override
+    public void onShowMessage() {
+        new AlertDialog.Builder(CreateIssueActivity.this, R.style.Dialog)
+                .setTitle(R.string.title_notes_arent_applied)
+                .setMessage(R.string.message_notes_arent_applied)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
     }
 
     private void removeStepFromDatabase(int position) {

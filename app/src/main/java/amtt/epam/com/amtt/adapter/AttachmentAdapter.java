@@ -24,6 +24,7 @@ import java.util.List;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.adapter.contentobserver.StepScreenshotObserver;
 import amtt.epam.com.amtt.bo.ticket.Step.ScreenshotState;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
@@ -50,6 +51,10 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
             void onReloadData();
         }
 
+        public interface ScreenshotStateListener{
+            void onShowMessage();
+        }
+
         public final ImageView mScreenshotImage;
         public final TextView mScreenshotName;
         public final ImageView mScreenshotClose;
@@ -58,6 +63,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         private final Context mContext;
         private ClickListener mListener;
         private DataChangedListener mDataChangedListener;
+        private ScreenshotStateListener mStateListener;
 
         public ViewHolder(Context context, View itemView) {
             super(itemView);
@@ -78,21 +84,14 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
             mDataChangedListener = dataChangedListener;
         }
 
+        public void setScreenshotStateListener(ScreenshotStateListener screenshotStateListener) {
+            mStateListener = screenshotStateListener;
+        }
+
         @Override
         public void onClick(View v) {
             if (mScreenshotState == ScreenshotState.IS_BEING_WRITTEN) {
-                new AlertDialog.Builder(mContext, R.style.Dialog)
-                        .setTitle(R.string.title_notes_arent_applied)
-                        .setMessage(R.string.message_notes_arent_applied)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .create()
-                        .show();
-                return;
+                mStateListener.onShowMessage();
             }
             if (mListener != null) {
                 switch (v.getId()) {
@@ -105,49 +104,23 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
                 }
             }
         }
-
-    }
-
-    private static class StepScreenshotObserver extends ContentObserver {
-
-        private final AttachmentAdapter mAdapter;
-
-        public StepScreenshotObserver(Handler handler, AttachmentAdapter attachmentAdapter) {
-            super(handler);
-            mAdapter = attachmentAdapter;
-        }
-
-        @Override
-        public boolean deliverSelfNotifications() {
-            return super.deliverSelfNotifications();
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            onChange(selfChange, null);
-        }
-
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            mAdapter.mDataChangedListener.onReloadData();
-        }
-
     }
 
     private final String TAG = this.getClass().getSimpleName();
-
     private final List<Attachment> mAttachments;
     private final int mRowLayout;
     private final Context mContext;
     private final ViewHolder.ClickListener mListener;
-    private final ViewHolder.DataChangedListener mDataChangedListener;
+    public final ViewHolder.DataChangedListener mDataChangedListener;
+    private final ViewHolder.ScreenshotStateListener mStateListener;
 
-    public AttachmentAdapter(Context context, List<Attachment> screenshots, int rowLayout, ViewHolder.DataChangedListener dataChangedListener) {
+    public AttachmentAdapter(Context context, List<Attachment> screenshots, int rowLayout, ViewHolder.DataChangedListener dataChangedListener, ViewHolder.ScreenshotStateListener stateListener) {
         mContext = context;
         mDataChangedListener = dataChangedListener;
         mListener = (ViewHolder.ClickListener) context;
         mAttachments = screenshots;
         mRowLayout = rowLayout;
+        mStateListener = stateListener;
         AmttApplication.getContext().getContentResolver().registerContentObserver(AmttUri.STEP.get(), true, new StepScreenshotObserver(new Handler(), this));
     }
 
@@ -158,6 +131,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         ViewHolder viewHolder = new ViewHolder(mContext, v);
         viewHolder.setClickListener(mListener);
         viewHolder.setDataChangedListener(mDataChangedListener);
+        viewHolder.setScreenshotStateListener(mStateListener);
         return viewHolder;
     }
 
