@@ -1,6 +1,9 @@
 package amtt.epam.com.amtt.os;
 
 import android.os.AsyncTask;
+import android.os.Handler;
+
+import java.util.concurrent.ExecutorService;
 
 import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.processing.Processor;
@@ -9,21 +12,22 @@ import amtt.epam.com.amtt.common.Callback;
 /**
  * Created by Artsiom_Kaliaha on 15.06.2015.
  * Generalized AsyncTask
- * param Param    Type that will be passed to a source as parameter
- * param Progress Type that will be passed to a processor, in other words data returned by DataSource
- * param Result   Type that will be returned from AsyncTask
+ * param Params    Type that will be passed to a source as parameter
+ * param DataSourceResult Type that will be passed to a processor, in other words data returned by DataSource
+ * param ProcessingResult   Type that will be returned from AsyncTask
  */
-public class Task<Param, Progress, Result> extends AsyncTask<Param, Void, Result> {
+public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<Params, Void, ProcessingResult> {
 
-    private final Callback<Result> mCallback;
-    private final DataSource<Progress, Param> mDataSource;
-    private final Param mParam;
-    private final Processor<Result, Progress> mProcessor;
+    private final Callback<ProcessingResult> mCallback;
+    private final DataSource<DataSourceResult, Params> mDataSource;
+    private final Params mParams;
+    private final Processor<ProcessingResult, DataSourceResult> mProcessor;
     private Exception mException;
 
-    public Task(DataSource<Progress, Param> dataSource, Param param, Processor<Result, Progress> processor, Callback<Result> callback) {
+    public Task(DataSource<DataSourceResult, Params> dataSource, Params params,
+                Processor<ProcessingResult, DataSourceResult> processor, Callback<ProcessingResult> callback) {
         mDataSource = dataSource;
-        mParam = param;
+        mParams = params;
         mProcessor = processor;
         mCallback = callback;
     }
@@ -36,21 +40,21 @@ public class Task<Param, Progress, Result> extends AsyncTask<Param, Void, Result
     }
 
     @Override
-    protected Result doInBackground(Param... params) {
-        Result result = null;
+    protected ProcessingResult doInBackground(Params... params) {
+        ProcessingResult processingResult = null;
         try {
-            Progress progress = mDataSource.getData(mParam);
+            DataSourceResult dataSourceResult = mDataSource.getData(mParams);
             if (mProcessor != null) {
-                result = mProcessor.process(progress);
+                processingResult = mProcessor.process(dataSourceResult);
             }
         } catch (Exception e) {
             mException = e;
         }
-        return result;
+        return processingResult;
     }
 
     @Override
-    protected void onPostExecute(Result result) {
+    protected void onPostExecute(ProcessingResult processingResult) {
         if (mCallback == null) {
             return;
         }
@@ -58,7 +62,39 @@ public class Task<Param, Progress, Result> extends AsyncTask<Param, Void, Result
             mCallback.onLoadError(mException);
             return;
         }
-        mCallback.onLoadExecuted(result);
+        mCallback.onLoadExecuted(processingResult);
+    }
+
+    public Task<Params, Void, ProcessingResult> executeCorrectly(final Params... params) {
+        return executeOnThreadExecutor(ThreadExecutor.sExecutor, params);
+    }
+
+    private Task executeOnThreadExecutor(ExecutorService executor, final Params... params) {
+        final Handler handler = new Handler();
+        onPreExecute();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final ProcessingResult processingResult = doInBackground(params);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            onPostExecute(processingResult);
+                        }
+                    });
+                } catch (final Exception e) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mException = e;
+                            onPostExecute(null);
+                        }
+                    });
+                }
+            }
+        });
+        return this;
     }
 
 }

@@ -49,12 +49,12 @@ public class ThreadManager {
     }
 
     private static <ProcessingResult, DataSourceResult, Params> void executeInAsyncTask(final Callback<ProcessingResult> callback, final Params params, final DataSource<DataSourceResult, Params> dataSource, final Processor<ProcessingResult, DataSourceResult> processor) {
-        new Task<>(dataSource, params, processor, callback).execute();
+        new Task<>(dataSource, params, processor, callback).executeCorrectly();
     }
 
     private static <ProcessingResult, DataSourceResult, Params> void executeInThread(final Callback<ProcessingResult> callback, final Params params, final DataSource<DataSourceResult, Params> dataSource, final Processor<ProcessingResult, DataSourceResult> processor) {
         final Handler handler = new Handler();
         callback.onLoadStart();
-        new amtt.epam.com.amtt.os.Thread<>(callback, params, dataSource, processor, handler).invoke().start();
+        new amtt.epam.com.amtt.os.Thread<>(callback, params, dataSource, processor, handler).executeOnThreadExecutor();
     }
 }

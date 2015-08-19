@@ -2,6 +2,8 @@ package amtt.epam.com.amtt.os;
 
 import android.os.Handler;
 
+import java.util.concurrent.ExecutorService;
+
 import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.processing.Processor;
@@ -12,38 +14,39 @@ import amtt.epam.com.amtt.processing.Processor;
  */
 public class Thread<Params, DataSourceResult, ProcessingResult> {
 
-    private final Callback<ProcessingResult> callback;
-    private final Params params;
-    private final DataSource<DataSourceResult, Params> dataSource;
-    private final Processor<ProcessingResult, DataSourceResult> processor;
-    private final Handler handler;
+    private final Callback<ProcessingResult> mCallback;
+    private final Params mParams;
+    private final DataSource<DataSourceResult, Params> mDataSource;
+    private final Processor<ProcessingResult, DataSourceResult> mProcessor;
+    private final Handler mHandler;
 
     public Thread(Callback<ProcessingResult> callback, Params params, DataSource<DataSourceResult, Params> dataSource, Processor<ProcessingResult, DataSourceResult> processor, Handler handler) {
-        this.callback = callback;
-        this.params = params;
-        this.dataSource = dataSource;
-        this.processor = processor;
-        this.handler = handler;
+        this.mCallback = callback;
+        this.mParams = params;
+        this.mDataSource = dataSource;
+        this.mProcessor = processor;
+        this.mHandler = handler;
     }
 
-    public java.lang.Thread invoke() {
-        return new java.lang.Thread(new Runnable() {
+    public void executeOnThreadExecutor() {
+        ExecutorService executor = ThreadExecutor.sExecutor;
+        executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final DataSourceResult result = dataSource.getData(params);
-                    final ProcessingResult processingResult = processor.process(result);
-                    handler.post(new Runnable() {
+                    final DataSourceResult result = mDataSource.getData(mParams);
+                    final ProcessingResult processingResult = mProcessor.process(result);
+                    mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callback.onLoadExecuted(processingResult);
+                            mCallback.onLoadExecuted(processingResult);
                         }
                     });
                 } catch (final Exception e) {
-                    handler.post(new Runnable() {
+                    mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callback.onLoadError(e);
+                            mCallback.onLoadError(e);
                         }
                     });
                 }
