@@ -16,11 +16,11 @@ public class Thread<Params, DataSourceResult, ProcessingResult> {
 
     private final Callback<ProcessingResult> mCallback;
     private final Params mParams;
-    private final DataSource<DataSourceResult, Params> mDataSource;
-    private final Processor<ProcessingResult, DataSourceResult> mProcessor;
+    private final DataSource<Params, DataSourceResult> mDataSource;
+    private final Processor<DataSourceResult, ProcessingResult> mProcessor;
     private final Handler mHandler;
 
-    public Thread(Callback<ProcessingResult> callback, Params params, DataSource<DataSourceResult, Params> dataSource, Processor<ProcessingResult, DataSourceResult> processor, Handler handler) {
+    public Thread(Callback<ProcessingResult> callback, Params params, DataSource<Params, DataSourceResult> dataSource, Processor<DataSourceResult, ProcessingResult> processor, Handler handler) {
         this.mCallback = callback;
         this.mParams = params;
         this.mDataSource = dataSource;

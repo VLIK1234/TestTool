@@ -14,45 +14,59 @@ import amtt.epam.com.amtt.processing.Processor;
  */
 public class ThreadManager {
 
-    public static final boolean IS_ASYNC_TASK = true;
-
-    public static <ProcessingResult, DataSourceResult, Params> void
+    public static <Params, DataSourceResult, ProcessingResult > void
     loadData(
-            final Callback<ProcessingResult> callback,
             final Params params,
-            final DataSource<DataSourceResult, Params> dataSource,
-            final Processor<ProcessingResult, DataSourceResult> processor
+            final DataSource<Params, DataSourceResult> dataSource,
+            final Processor<DataSourceResult, ProcessingResult> processor,
+            final Callback<ProcessingResult> callback
     ) {
-        loadData(callback, params, dataSource, processor, new ThreadLoader<ProcessingResult, DataSourceResult, Params>() {
+        loadData(params, dataSource, processor, callback, new ThreadLoader<Params, DataSourceResult, ProcessingResult>() {
+
             @Override
-            public void load(Callback<ProcessingResult> callback, Params params, DataSource<DataSourceResult, Params> dataSource, Processor<ProcessingResult, DataSourceResult> processor) {
-                if (IS_ASYNC_TASK) {
-                    executeInAsyncTask(callback, params, dataSource, processor);
-                } else {
-                    executeInThread(callback, params, dataSource, processor);
-                }
+            public void load(Params params, DataSource<Params, DataSourceResult> dataSource,
+                             Processor<DataSourceResult, ProcessingResult> processor, Callback<ProcessingResult> callback) {
+                    executeInAsyncTask(params, dataSource, processor, callback);
+                   // executeInThread(callback, params, dataSource, processor);
             }
         });
     }
 
-    public static <ProcessingResult, DataSourceResult, Params> void
+    public static <Params, DataSourceResult, ProcessingResult> void
+    loadData(
+            final Params params,
+            final DataSource<Params, DataSourceResult> dataSource,
+            final Processor<DataSourceResult, ProcessingResult> processor,
+            final Callback<ProcessingResult> callback,
+            final ThreadLoader<Params, DataSourceResult,  ProcessingResult> threadLoader) {
+        if (callback != null) {
+            threadLoader.load(params, dataSource, processor, callback);
+        }
+    }
+
+    public static <ProcessingResult, Params> void
     loadData(
             final Callback<ProcessingResult> callback,
-            final Params params,
-            final DataSource<DataSourceResult, Params> dataSource,
-            final Processor<ProcessingResult, DataSourceResult> processor,
-            final ThreadLoader<ProcessingResult, DataSourceResult, Params> threadLoader) {
-        if (callback == null) {
-            throw new IllegalArgumentException("callback can't be null");
+            final Params params) {
+        if (callback != null) {
+            executeInAsyncTask(params, null, null, callback);
         }
-        threadLoader.load(callback, params, dataSource, processor);
     }
 
-    private static <ProcessingResult, DataSourceResult, Params> void executeInAsyncTask(final Callback<ProcessingResult> callback, final Params params, final DataSource<DataSourceResult, Params> dataSource, final Processor<ProcessingResult, DataSourceResult> processor) {
-        new Task<>(dataSource, params, processor, callback).executeCorrectly();
+
+    private static <ProcessingResult, DataSourceResult, Params> void
+    executeInAsyncTask(final Params params,
+                       final DataSource<Params, DataSourceResult> dataSource,
+                       final Processor<DataSourceResult, ProcessingResult> processor,
+                       final Callback<ProcessingResult> callback) {
+        new Task<>(params, dataSource, processor, callback).executeCorrectly();
     }
 
-    private static <ProcessingResult, DataSourceResult, Params> void executeInThread(final Callback<ProcessingResult> callback, final Params params, final DataSource<DataSourceResult, Params> dataSource, final Processor<ProcessingResult, DataSourceResult> processor) {
+    private static <ProcessingResult, DataSourceResult, Params> void
+    executeInThread(final Params params,
+                    final DataSource<Params, DataSourceResult> dataSource,
+                    final Processor<DataSourceResult, ProcessingResult> processor,
+                    final Callback<ProcessingResult> callback) {
         final Handler handler = new Handler();
         callback.onLoadStart();
         new amtt.epam.com.amtt.os.Thread<>(callback, params, dataSource, processor, handler).executeOnThreadExecutor();

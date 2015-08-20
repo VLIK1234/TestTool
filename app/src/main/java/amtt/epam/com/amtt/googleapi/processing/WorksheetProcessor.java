@@ -18,7 +18,7 @@ import amtt.epam.com.amtt.util.Logger;
  * @author Iryna Monchanka
  * @version on 23.07.2015
  */
-public class WorksheetProcessor implements Processor<GWorksheet, HttpEntity> {
+public class WorksheetProcessor implements Processor<HttpEntity, GWorksheet> {
 
     public static final String NAME = WorksheetProcessor.class.getName();
 

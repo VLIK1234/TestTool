@@ -10,6 +10,7 @@ import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.datasource.Plugin;
 import amtt.epam.com.amtt.os.Task;
 import amtt.epam.com.amtt.processing.Processor;
+import amtt.epam.com.amtt.util.ThreadManager;
 
 /**
  @author Artsiom_Kaliaha
@@ -57,7 +58,8 @@ public abstract class CoreApplication extends Application {
             throw new IllegalArgumentException("Unknown / unregistered processorName " + processorName);
         }
 
-        new Task<>(sDataSources.get(dataSourceName), request.getDataSourceParam(), sProcessors.get(processorName), request.getCallback()).execute();
+        ThreadManager.loadData(request.getDataSourceParam(), sDataSources.get(dataSourceName), sProcessors.get(processorName), request.getCallback());
+        //new Task<>(sDataSources.get(dataSourceName), request.getDataSourceParam(), sProcessors.get(processorName), request.getCallback()).execute();
     }
 
     public static Context getContext() {

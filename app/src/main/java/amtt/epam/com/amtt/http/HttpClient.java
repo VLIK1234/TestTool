@@ -22,7 +22,7 @@ import amtt.epam.com.amtt.util.Logger;
  * Created by Artsiom_Kaliaha on 11.06.2015.
  * HttpClient that prepares Requests to be executed
  */
-public class HttpClient implements DataSource<HttpEntity, Request> {
+public class HttpClient implements DataSource<Request, HttpEntity> {
 
     public static final String NAME = HttpClient.class.getName();
     private final String TAG = getClass().getSimpleName();

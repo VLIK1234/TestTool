@@ -17,7 +17,7 @@ import java.util.ArrayList;
  @author Iryna Monchanka
  @version on 06.05.2015
  */
-public class UsersAssignableProcessor implements Processor<JUserAssignableResponse, HttpEntity> {
+public class UsersAssignableProcessor implements Processor<HttpEntity, JUserAssignableResponse> {
 
     public static final String NAME = UsersAssignableProcessor.class.getName();
     @Override

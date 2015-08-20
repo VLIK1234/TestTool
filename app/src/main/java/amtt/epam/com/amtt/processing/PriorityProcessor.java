@@ -17,7 +17,7 @@ import java.util.ArrayList;
  @version on 06.05.2015
  */
 
-public class PriorityProcessor  implements Processor<JPriorityResponse, HttpEntity> {
+public class PriorityProcessor  implements Processor<HttpEntity, JPriorityResponse> {
 
     public static final String NAME = PriorityProcessor.class.getName();
     @Override

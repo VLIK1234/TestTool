@@ -17,7 +17,7 @@ import amtt.epam.com.amtt.util.Logger;
  * @author Iryna Monchanka
  * @version on 07.07.2015
  */
-public class SpreadsheetProcessor implements Processor<GSpreadsheet, HttpEntity> {
+public class SpreadsheetProcessor implements Processor<HttpEntity, GSpreadsheet> {
 
     public static final String NAME = SpreadsheetProcessor.class.getName();
 

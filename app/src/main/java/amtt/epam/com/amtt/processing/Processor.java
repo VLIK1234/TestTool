@@ -7,8 +7,8 @@ import amtt.epam.com.amtt.datasource.Plugin;
  @version on 26.03.2015
  */
 
-public interface Processor<ProcessingResult, Source> extends Plugin {
+public interface Processor<DataSourceResult, ProcessingResult> extends Plugin {
 
-    ProcessingResult process(Source source) throws Exception;
+    ProcessingResult process(DataSourceResult source) throws Exception;
 
 }

@@ -13,7 +13,7 @@ import amtt.epam.com.amtt.bo.user.JUserInfo;
  @version on 01.04.2015
  */
 
-public class UserInfoProcessor implements Processor<JUserInfo, HttpEntity> {
+public class UserInfoProcessor implements Processor<HttpEntity, JUserInfo> {
 
     public static final String NAME = UserInfoProcessor.class.getName();
     @Override

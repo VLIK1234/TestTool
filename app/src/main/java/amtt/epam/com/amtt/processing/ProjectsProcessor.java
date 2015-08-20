@@ -11,7 +11,7 @@ import amtt.epam.com.amtt.api.loadcontent.JiraContent;
  @author Iryna Monchanka
  @version on 01.04.2015
  */
-public class ProjectsProcessor implements Processor<JProjectsResponse, HttpEntity> {
+public class ProjectsProcessor implements Processor<HttpEntity, JProjectsResponse> {
 
     public static final String NAME = ProjectsProcessor.class.getName();
     @Override

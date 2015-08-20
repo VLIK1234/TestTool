@@ -10,7 +10,7 @@ import org.apache.http.util.EntityUtils;
  * @version on 27.05.2015
  */
 
-public class PostCreateIssueProcessor implements Processor<JCreateIssueResponse, HttpEntity> {
+public class PostCreateIssueProcessor implements Processor<HttpEntity, JCreateIssueResponse> {
 
     public static final String NAME = PostCreateIssueProcessor.class.getName();
     @Override

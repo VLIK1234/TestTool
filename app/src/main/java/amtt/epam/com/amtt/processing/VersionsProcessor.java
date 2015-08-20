@@ -19,7 +19,7 @@ import amtt.epam.com.amtt.api.loadcontent.JiraContent;
  @version on 05.05.2015
  */
 
-public class VersionsProcessor implements Processor<JVersionsResponse, HttpEntity> {
+public class VersionsProcessor implements Processor<HttpEntity, JVersionsResponse> {
 
     public static final String NAME = VersionsProcessor.class.getName();
     @Override

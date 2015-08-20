@@ -18,7 +18,7 @@ import amtt.epam.com.amtt.bo.project.JComponent;
  * @author Iryna Monchanka
  * @version on 23.06.2015
  */
-public class ComponentsProcessor implements Processor<JComponentsResponse, HttpEntity> {
+public class ComponentsProcessor implements Processor<HttpEntity, JComponentsResponse> {
 
     public static final String NAME = ComponentsProcessor.class.getName();
     @Override

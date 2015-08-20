@@ -5,8 +5,8 @@ package amtt.epam.com.amtt.datasource;
  @version on 16.06.2015
  */
 
-public interface DataSource<Source, Param> extends Plugin {
+public interface DataSource<Params, DataSourceResult> extends Plugin {
 
-    Source getData(Param param) throws Exception;
+    DataSourceResult getData(Params params) throws Exception;
 
 }

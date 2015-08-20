@@ -480,7 +480,9 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                             @Override
                             public void resultOfDataLoading(JCreateIssueResponse result) {
                                 if (result != null) {
-                                    AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
+                                    if( mAdapter!=null && mAdapter.getAttachmentFilePathList()!=null) {
+                                        AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
+                                    }
                                     Toast.makeText(CreateIssueActivity.this, R.string.ticket_created, Toast.LENGTH_LONG).show();
                                     TopButtonService.stopRecord(CreateIssueActivity.this);
                                     if (mAssignableUserName != null && !mAssignableUserName.equals("") && !mUser.getLastAssignee().equals(mAssignableUserName)) {
