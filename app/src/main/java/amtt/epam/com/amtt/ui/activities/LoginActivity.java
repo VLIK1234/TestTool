@@ -27,8 +27,6 @@ import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.object.DbObjectManager;
-import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.util.ContentFromDatabase;
 import amtt.epam.com.amtt.database.util.LocalContent;
@@ -136,14 +134,17 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
-        ContentFromDatabase.setUser(user, new IResult<Integer>() {
+        ContentFromDatabase.setUser(user, new Callback<Integer>() {
             @Override
-            public void onResult(Integer result) {
-                mUser.setId(result);
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(Integer integer) {
+                mUser.setId(integer);
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onLoadError(Exception e) {
                 Logger.e(TAG, e.getMessage(), e);
             }
         });
@@ -155,10 +156,15 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         }
         showProgress(true);
         mLoginButton.setEnabled(false);
-        LocalContent.checkUser(mUserNameTextInput.getText().toString(), mUrlTextInput.getText().toString(), new IResult<List<JUserInfo>>() {
+        LocalContent.checkUser(mUserNameTextInput.getText().toString(), mUrlTextInput.getText().toString(), new Callback<List<JUserInfo>>() {
             @Override
-            public void onResult(List<JUserInfo> result) {
-                for (JUserInfo user : result) {
+            public void onLoadStart() {
+
+            }
+
+            @Override
+            public void onLoadExecuted(List<JUserInfo> users) {
+                for (JUserInfo user : users) {
                     if (user.getName().equals(mUserNameTextInput.getText().toString()) &&
                             user.getUrl().equals(mUrlTextInput.getText().toString())) {
                         mIsUserInDatabase = true;
@@ -169,7 +175,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onLoadError(Exception e) {
                 Logger.e(TAG, e.getMessage(), e);
             }
         });

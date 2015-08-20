@@ -27,7 +27,7 @@ import java.util.List;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.ticket.Step;
-import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.database.util.ContentFromDatabase;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -71,15 +71,18 @@ public class PaintActivity extends BaseActivity
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             initPaintView();
-            ContentFromDatabase.getStepById(extra.getInt(KEY_STEP_ID), new IResult<List<Step>>() {
+            ContentFromDatabase.getStepById(extra.getInt(KEY_STEP_ID), new Callback<List<Step>>() {
                 @Override
-                public void onResult(List<Step> result) {
-                    mStep = result.get(0);
+                public void onLoadStart() {}
+
+                @Override
+                public void onLoadExecuted(List<Step> steps) {
+                    mStep = steps.get(0);
                     ImageLoader.getInstance().displayImage("file:///" + mStep.getScreenshotPath(), mPaintView, PaintActivity.this);
                 }
 
                 @Override
-                public void onError(Exception e) {
+                public void onLoadError(Exception e) {
                     Logger.e(TAG, e.getMessage(), e);
                     setErrorState();
                 }

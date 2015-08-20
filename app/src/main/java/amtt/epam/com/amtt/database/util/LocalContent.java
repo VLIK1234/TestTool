@@ -18,7 +18,7 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
-import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.IOUtils;
@@ -42,19 +42,22 @@ public class LocalContent {
         ContentFromDatabase.setStep(step, null);
     }
 
-    public static void getAllSteps(final GetContentCallback<List<Step>> contentCallback){
-        ContentFromDatabase.getAllSteps(new IResult<List<Step>>() {
+    public static void getAllSteps(final GetContentCallback<List<Step>> contentCallback) {
+        ContentFromDatabase.getAllSteps(new Callback<List<Step>>() {
             @Override
-            public void onResult(List<Step> result) {
-                if (result!=null && !result.isEmpty()){
-                    contentCallback.resultOfDataLoading(result);
-                }else{
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(List<Step> steps) {
+                if (steps != null && !steps.isEmpty()) {
+                    contentCallback.resultOfDataLoading(steps);
+                } else {
                     contentCallback.resultOfDataLoading(null);
                 }
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onLoadError(Exception e) {
                 Logger.e(TAG, e.getMessage(), e);
                 contentCallback.resultOfDataLoading(null);
             }
@@ -151,11 +154,11 @@ public class LocalContent {
         }
     }
 
-    public static void checkUser(String userName, String url, IResult<List<JUserInfo>> result) {
+    public static void checkUser(String userName, String url, Callback<List<JUserInfo>> result) {
         ContentFromDatabase.getUserByNameAndUrl(userName, url, result);
     }
 
-    public static void updateUser(int userId, JUserInfo user, IResult<Integer> result) {
+    public static void updateUser(int userId, JUserInfo user, Callback<Integer> result) {
         ContentFromDatabase.updateUser(userId, user, result);
     }
 }

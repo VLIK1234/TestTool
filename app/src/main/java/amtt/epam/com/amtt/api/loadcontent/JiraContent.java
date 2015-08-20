@@ -18,7 +18,7 @@ import amtt.epam.com.amtt.bo.issue.createmeta.JIssueTypes;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.project.JPriority;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
-import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -93,14 +93,17 @@ public class JiraContent{
                     for (int i = 0; i < mPriorityResponse.getPriorities().size(); i++) {
                         mPriorityResponse.getPriorities().get(i).setUrl(userUrl);
                     }
-                    ContentFromDatabase.setPriorities(mPriorityResponse, new IResult<Integer>() {
+                    ContentFromDatabase.setPriorities(mPriorityResponse, new Callback<Integer>() {
                         @Override
-                        public void onResult(Integer result) {
-                            Logger.d(TAG, "Priority " + String.valueOf(result));
+                        public void onLoadStart() {}
+
+                        @Override
+                        public void onLoadExecuted(Integer integer) {
+                            Logger.d(TAG, "Priority " + String.valueOf(integer));
                         }
 
                         @Override
-                        public void onError(Exception e) {
+                        public void onLoadError(Exception e) {
                             Logger.e(TAG, "Priority " + e.getMessage(), e);
                         }
                     });
@@ -113,21 +116,24 @@ public class JiraContent{
     }
 
     private void getPrioritiesFromDB(final String userUrl, final GetContentCallback<HashMap<String, String>> getContentCallback) {
-        ContentFromDatabase.getPriorities(userUrl, new IResult<List<JPriority>>() {
+        ContentFromDatabase.getPriorities(userUrl, new Callback<List<JPriority>>() {
             @Override
-            public void onResult(List<JPriority> result) {
-                if (result.isEmpty()) {
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(List<JPriority> priorities) {
+                if (priorities.isEmpty()) {
                     getPriorities(userUrl, getContentCallback);
                 } else {
                     mPriorityResponse = new JPriorityResponse();
-                    mPriorityResponse.setPriorities(new ArrayList<>(result));
+                    mPriorityResponse.setPriorities(new ArrayList<>(priorities));
                     setPrioritiesNames(mPriorityResponse.getPriorityNames());
                     getContentCallback.resultOfDataLoading(mProjectPrioritiesNames);
                 }
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onLoadError(Exception e) {
                 getPriorities(userUrl, getContentCallback);
                 Logger.e(TAG, e.getMessage(), e);
             }
@@ -185,26 +191,32 @@ public class JiraContent{
                             result.getProjects().get(finalI).getIssueTypes().get(j).setKeyProject(result.getProjects().get(i).getKey());
                         }
 
-                        ContentFromDatabase.setIssueTypes(result.getProjects().get(finalI), new IResult<Integer>() {
+                        ContentFromDatabase.setIssueTypes(result.getProjects().get(finalI), new Callback<Integer>() {
                             @Override
-                            public void onResult(Integer result) {
-                                Logger.d(TAG, "Project " + finalI + ", IssueTypes " + String.valueOf(result));
+                            public void onLoadStart() {}
+
+                            @Override
+                            public void onLoadExecuted(Integer integer) {
+                                Logger.d(TAG, "Project " + finalI + ", IssueTypes " + String.valueOf(integer));
                             }
 
                             @Override
-                            public void onError(Exception e) {
+                            public void onLoadError(Exception e) {
                                 Logger.e(TAG, "Project " + finalI + ", IssueTypes " + e.getMessage(), e);
                             }
                         });
                     }
-                    ContentFromDatabase.setProjects(result, new IResult<Integer>() {
+                    ContentFromDatabase.setProjects(result, new Callback<Integer>() {
                         @Override
-                        public void onResult(Integer result) {
-                            Logger.d(TAG, "Projects " + String.valueOf(result));
+                        public void onLoadStart() {}
+
+                        @Override
+                        public void onLoadExecuted(Integer integer) {
+                            Logger.d(TAG, "Projects " + String.valueOf(integer));
                         }
 
                         @Override
-                        public void onError(Exception e) {
+                        public void onLoadError(Exception e) {
                             Logger.e(TAG, "Projects " + e.getMessage(), e);
                         }
                     });
@@ -218,21 +230,24 @@ public class JiraContent{
     }
 
     private void getProjectsFromDB(final int userId, final GetContentCallback<HashMap<JProjects, String>> getContentCallback) {
-        ContentFromDatabase.getProjects(String.valueOf(userId), new IResult<List<JProjects>>() {
+        ContentFromDatabase.getProjects(String.valueOf(userId), new Callback<List<JProjects>>() {
             @Override
-            public void onResult(List<JProjects> result) {
-                if (result.isEmpty()) {
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(List<JProjects> projects) {
+                if (projects.isEmpty()) {
                     getProjectsFromBackend(userId, getContentCallback);
                 } else {
                     JProjectsResponse projectsResponse = new JProjectsResponse();
-                    projectsResponse.setProjects(new ArrayList<>(result));
+                    projectsResponse.setProjects(new ArrayList<>(projects));
                     mProjectsNames = projectsResponse.getProjectsNames();
                     getContentCallback.resultOfDataLoading(mProjectsNames);
                 }
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onLoadError(Exception e) {
                 Logger.e(TAG, e.getMessage(), e);
                 getProjectsFromBackend(userId, getContentCallback);
             }
@@ -259,21 +274,25 @@ public class JiraContent{
     }
 
     private void getIssueTypesFromDB(final GetContentCallback<List<String>> getContentCallback) {
-        ContentFromDatabase.getIssueTypes(mLastProject.getKey(), new IResult<List<JIssueTypes>>() {
+        ContentFromDatabase.getIssueTypes(mLastProject.getKey(), new Callback<List<JIssueTypes>>() {
             @Override
-            public void onResult(List<JIssueTypes> result) {
-                if (!result.isEmpty()) {
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(List<JIssueTypes> issueTypes) {
+                if (!issueTypes.isEmpty()) {
                     Logger.d(TAG, "ContentFromDatabase.getIssueTypes !result.isEmpty()");
-                    mLastProject.setIssueTypes(new ArrayList<>(result));
+                    mLastProject.setIssueTypes(new ArrayList<>(issueTypes));
                     mIssueTypesNames = mLastProject.getIssueTypesNames();
                     getContentCallback.resultOfDataLoading(mIssueTypesNames);
                 }
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onLoadError(Exception e) {
                 Logger.e(TAG, e.getMessage(), e);
                 getContentCallback.resultOfDataLoading(mIssueTypesNames);
+
             }
         });
     }
@@ -439,21 +458,29 @@ public class JiraContent{
 
     public void setDefaultConfig(final int userId, final String userName, final String userUrl, final String lastProjectKey, final String lastAssignee, final String lastComponentsIds) {
         if (lastProjectKey != null) {
-            LocalContent.checkUser(userName, userUrl, new IResult<List<JUserInfo>>() {
+            LocalContent.checkUser(userName, userUrl, new Callback<List<JUserInfo>>() {
                 @Override
-                public void onResult(List<JUserInfo> result) {
-                    for (JUserInfo userInfo : result) {
+                public void onLoadStart() {
+
+                }
+
+                @Override
+                public void onLoadExecuted(List<JUserInfo> users) {
+                    for (JUserInfo userInfo : users) {
                         if (userInfo.getName().equals(userName) && userInfo.getUrl().equals(userUrl)) {
-                            JUserInfo user = result.get(0);
+                            JUserInfo user = users.get(0);
                             user.setLastProjectKey(lastProjectKey);
                             user.setLastAssigneeName(lastAssignee);
                             user.setLastComponentsIds(lastComponentsIds);
-                            LocalContent.updateUser(userId, user, new IResult<Integer>() {
+                            LocalContent.updateUser(userId, user, new Callback<Integer>() {
                                 @Override
-                                public void onResult(Integer res) {}
+                                public void onLoadStart() {}
 
                                 @Override
-                                public void onError(Exception e) {
+                                public void onLoadExecuted(Integer integer) {}
+
+                                @Override
+                                public void onLoadError(Exception e) {
                                     Logger.e(TAG, e.getMessage(), e);
                                 }
                             });
@@ -462,7 +489,7 @@ public class JiraContent{
                 }
 
                 @Override
-                public void onError(Exception e) {
+                public void onLoadError(Exception e) {
                     Logger.e(TAG, e.getMessage(), e);
                 }
             });

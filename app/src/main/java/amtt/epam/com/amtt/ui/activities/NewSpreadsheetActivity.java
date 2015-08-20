@@ -12,7 +12,7 @@ import java.util.List;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
-import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.googleapi.api.GoogleApiConst;
 import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
@@ -94,19 +94,25 @@ public class NewSpreadsheetActivity extends BaseActivity {
             public void onClick(View v) {
                 if (mIdLink != null) {
                     showProgress(true);
-                    LocalContent.checkUser(mUser.getUserName(), mUser.getUrl(), new IResult<List<JUserInfo>>() {
+                    LocalContent.checkUser(mUser.getUserName(), mUser.getUrl(), new Callback<List<JUserInfo>>() {
                         @Override
-                        public void onResult(List<JUserInfo> result) {
-                            for (JUserInfo userInfo : result) {
+                        public void onLoadStart() {}
+
+                        @Override
+                        public void onLoadExecuted(List<JUserInfo> users) {
+                            for (JUserInfo userInfo : users) {
                                 if (userInfo.getName().equals(mUser.getUserName()) && userInfo.getUrl().equals(mUser.getUrl())) {
-                                    JUserInfo user = result.get(0);
+                                    JUserInfo user = users.get(0);
                                     user.setLastSpreadsheetUrl(mUser.getSpreadsheetLink());
-                                    LocalContent.updateUser(mUser.getId(), user, new IResult<Integer>() {
+                                    LocalContent.updateUser(mUser.getId(), user, new Callback<Integer>() {
                                         @Override
-                                        public void onResult(final Integer res) {
+                                        public void onLoadStart() {}
+
+                                        @Override
+                                        public void onLoadExecuted(final Integer integer) {
                                             NewSpreadsheetActivity.this.runOnUiThread(new Runnable() {
                                                 public void run() {
-                                                    if (res >= 0) {
+                                                    if (integer >= 0) {
                                                         new Handler().postDelayed(new Runnable() {
                                                             @Override
                                                             public void run() {
@@ -124,7 +130,7 @@ public class NewSpreadsheetActivity extends BaseActivity {
                                         }
 
                                         @Override
-                                        public void onError(Exception e) {
+                                        public void onLoadError(Exception e) {
                                             Logger.e(TAG, e.getMessage(), e);
                                         }
                                     });
@@ -133,7 +139,7 @@ public class NewSpreadsheetActivity extends BaseActivity {
                         }
 
                         @Override
-                        public void onError(Exception e) {
+                        public void onLoadError(Exception e) {
                             Logger.e(TAG, e.getMessage(), e);
                         }
                     });

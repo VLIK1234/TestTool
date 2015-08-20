@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.IOUtils;
@@ -49,25 +50,25 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
                 contentValues);
     }
 
-    public synchronized <Entity extends DatabaseEntity> void add(final Entity object, final IResult<Integer> result) {
+    public synchronized <Entity extends DatabaseEntity> void add(final Entity object, final Callback<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 int outcome = add(object);
                 if (result != null) {
-                    result.onResult(outcome);
+                    result.onLoadExecuted(outcome);
                 }
             }
         }).start();
     }
 
-    public synchronized <Entity extends DatabaseEntity> void add(final List<Entity> object, final IResult<Integer> result) {
+    public synchronized <Entity extends DatabaseEntity> void add(final List<Entity> object, final Callback<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 int outcome = add(object);
                 if (result != null) {
-                    result.onResult(outcome);
+                    result.onLoadExecuted(outcome);
                 }
             }
         }).start();
@@ -79,52 +80,52 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
     }
 
     public synchronized <Entity extends DatabaseEntity> void update(final Entity object, final String selection,
-                                                                    final String[] selectionArgs, final IResult<Integer> result) {
+                                                                    final String[] selectionArgs, final Callback<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 int outcome = update(object, selection, selectionArgs);
                 if (result != null) {
-                    result.onResult(outcome);
+                    result.onLoadExecuted(outcome);
                 }
             }
         }).start();
     }
 
     @Override
-    public <Entity extends DatabaseEntity> void remove(final Entity object, final IResult<Integer> result) {
+    public <Entity extends DatabaseEntity> void remove(final Entity object, final Callback<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 int outcome = AmttApplication.getContext().getContentResolver().delete(object.getUri(), BaseColumns._ID + "=?",
                                                                                         new String[]{String.valueOf(object.getId())});
                 if (result != null) {
-                    result.onResult(outcome);
+                    result.onLoadExecuted(outcome);
                 }
             }
         }).start();
     }
 
     @Override
-    public <Entity extends DatabaseEntity> void removeAll(final Entity objectPrototype, final IResult<Integer> result) {
+    public <Entity extends DatabaseEntity> void removeAll(final Entity objectPrototype, final Callback<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 int outcome = AmttApplication.getContext().getContentResolver().delete(objectPrototype.getUri(), null, null);
                 if (result != null) {
-                    result.onResult(outcome);
+                    result.onLoadExecuted(outcome);
                 }
             }
         }).start();
     }
 
     @Override
-    public <Entity extends DatabaseEntity> void getAll(Entity object, IResult<List<Entity>> result) {
+    public <Entity extends DatabaseEntity> void getAll(Entity object, Callback<List<Entity>> result) {
         query(object, null, null, null, result);
     }
 
     public <Entity extends DatabaseEntity> void query(final Entity entity, final String[] projection, final String[] mSelection,
-                                                      final String[] mSelectionArgs, final IResult<List<Entity>> result) {
+                                                      final String[] mSelectionArgs, final Callback<List<Entity>> result) {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
             @Override
@@ -165,7 +166,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        result.onResult(listObject);
+                        result.onLoadExecuted(listObject);
                     }
                 });
             }
@@ -173,7 +174,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
     }
 
     public synchronized <Entity extends DatabaseEntity> void queryDefault(final Entity entity, final String[] projection,
-                                                        final String mSelection, final String[] mSelectionArgs, final IResult<List<Entity>> result) {
+                                                        final String mSelection, final String[] mSelectionArgs, final Callback<List<Entity>> result) {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
             @Override
@@ -196,7 +197,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            result.onResult(listObject);
+                            result.onLoadExecuted(listObject);
                         }
                     });
                 }
