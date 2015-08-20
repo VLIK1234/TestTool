@@ -1,1 +1,1 @@
-include ':app', ':amtttestslib', 'fortest'
+include ':app', ':amtttestslib', ':dtc', 'fortest'

@@ -1,0 +1,17 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.epam.dtc">
+
+    <application>
+        <uses-library android:name="android.test.runner" />
+    </application>
+
+    <instrumentation
+        android:name="com.epam.amtt.test.TestRunner"
+        android:functionalTest="false"
+        android:handleProfiling="false"
+        android:label="Tests"
+        android:targetPackage="${applicationId}"
+        tools:replace="android:targetPackage, android:label">
+    </instrumentation>
+</manifest>
