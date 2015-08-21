@@ -53,7 +53,7 @@ public class TestUtil {
 //                        Log.d(TAG, "BUNDLE "+bundle.toString());
 //                        String myApiKey = bundle.getString(AMTT_TEST_KEY);
 //                        if (AMTT_APP_VALUE.equals(myApiKey)) {
-//                            res.add(instrumentationInfo.targetPackage);
+//                            res.insert(instrumentationInfo.targetPackage);
 //                        }
 //                    }
                 }

@@ -9,7 +9,6 @@ import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.project.JPriority;
 import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
-import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.IssuetypeTable;
 import amtt.epam.com.amtt.database.table.PriorityTable;
 import amtt.epam.com.amtt.database.table.ProjectTable;
