@@ -47,7 +47,7 @@ public class DataBaseApi<Entity extends DatabaseEntity> {
     }
 
     public void query(Entity entity, String[] projection, String mSelection, String[] mSelectionArgs,
-                      String sortOrder, Callback<Entity> callback) {
+                      String sortOrder, Callback<List<Entity>> callback) {
         requestParams = new DbRequestParams<Entity>(entity, projection, mSelection, mSelectionArgs,
                                                     sortOrder, DbRequestType.QUERY);
         execute(requestParams, QueryProcessor.NAME, callback);

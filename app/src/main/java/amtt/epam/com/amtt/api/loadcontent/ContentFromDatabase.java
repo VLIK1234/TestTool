@@ -8,10 +8,11 @@ import amtt.epam.com.amtt.bo.issue.createmeta.JIssueTypes;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.project.JPriority;
 import amtt.epam.com.amtt.common.Callback;
-import amtt.epam.com.amtt.database.object.DbObjectManager;
+import amtt.epam.com.amtt.database.DataBaseApi;
 import amtt.epam.com.amtt.database.table.IssuetypeTable;
 import amtt.epam.com.amtt.database.table.PriorityTable;
 import amtt.epam.com.amtt.database.table.ProjectTable;
+import amtt.epam.com.amtt.database.util.DbSelectionUtil;
 
 /**
  * @author Iryna Monchanka
@@ -20,30 +21,32 @@ import amtt.epam.com.amtt.database.table.ProjectTable;
 
 public class ContentFromDatabase {
 
-    private static DbObjectManager mManager = DbObjectManager.INSTANCE;
+    private static DataBaseApi mDataBaseApi = DataBaseApi.getInstance();
 
     public static void getProjects(String idUser, Callback<List<JProjects>> result) {
-        mManager.query(new JProjects(), null, new String[]{ProjectTable._ID_USER}, new String[]{idUser}, result);
+        String selection = DbSelectionUtil.equal(ProjectTable._ID_USER);
+        mDataBaseApi.query(new JProjects(), null, selection, new String[]{idUser}, null, result);
     }
 
     public static void getIssueTypes(String projectKey, Callback<List<JIssueTypes>> result) {
-        mManager.query(new JIssueTypes(), null, new String[]{IssuetypeTable._KEY_PROJECT}, new String[]{projectKey}, result);
+        String selection = DbSelectionUtil.equal(IssuetypeTable._KEY_PROJECT);
+        mDataBaseApi.query(new JIssueTypes(), null, selection, new String[]{projectKey}, null, result);
     }
 
     public static void getPriorities(String url, Callback<List<JPriority>> result) {
-        mManager.query(new JPriority(), null, new String[]{PriorityTable._URL}, new String[]{url}, result);
+        String selection = DbSelectionUtil.equal(PriorityTable._URL);
+        mDataBaseApi.query(new JPriority(), null, selection, new String[]{url}, null, result);
     }
 
-    public static void setPriorities(JPriorityResponse priorities, Callback<Integer> result){
-        mManager.add(priorities.getPriorities(), result);
+    public static void setPriorities(JPriorityResponse priorities, Callback<Integer> result) {
+        mDataBaseApi.bulkInsert(priorities.getPriorities(), result);
     }
 
-    public static void setProjects(JProjectsResponse projects, Callback<Integer> result){
-        mManager.add(projects.getProjects(), result);
+    public static void setProjects(JProjectsResponse projects, Callback<Integer> result) {
+        mDataBaseApi.bulkInsert(projects.getProjects(), result);
     }
 
-    public static void setIssueTypes(JProjects project, Callback<Integer> result){
-        mManager.add(project.getIssueTypes(), result);
+    public static void setIssueTypes(JProjects project, Callback<Integer> result) {
+        mDataBaseApi.bulkInsert(project.getIssueTypes(), result);
     }
-
 }
