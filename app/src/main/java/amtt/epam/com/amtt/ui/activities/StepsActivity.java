@@ -56,19 +56,14 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
 
             @Override
             public void onLoadExecuted(final List<Step> steps) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (steps != null) {
-                            mAdapter = new StepsAdapter((ArrayList<Step>) steps, StepsActivity.this);
-                            recyclerView.setAdapter(mAdapter);
-                            if (steps.size() == 0) {
-                                recyclerView.setVisibility(View.GONE);
-                                emptyList.setVisibility(View.VISIBLE);
-                            }
-                        }
+                if (steps != null) {
+                    mAdapter = new StepsAdapter((ArrayList<Step>) steps, StepsActivity.this);
+                    recyclerView.setAdapter(mAdapter);
+                    if (steps.size() == 0) {
+                        recyclerView.setVisibility(View.GONE);
+                        emptyList.setVisibility(View.VISIBLE);
                     }
-                });
+                }
             }
 
             @Override

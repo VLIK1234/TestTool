@@ -46,7 +46,7 @@ import amtt.epam.com.amtt.ui.views.TextInput;
  * @author Artsiom_Kaliaha
  * @version on 07.05.2015
  */
-public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, LoaderCallbacks<Cursor> {
+public class LoginActivity extends BaseActivity implements LoaderCallbacks<Cursor> {
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
@@ -130,13 +130,42 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         String password = mPasswordTextInput.getText().toString();
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameTextInput.getText().toString();
         mUser.setCredentials(userName, password, mRequestUrl);
-        JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, this);
+        JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, new Callback<JUserInfo>() {
+            @Override
+            public void onLoadStart() {
+                showProgress(true);
+            }
+
+            @Override
+            public void onLoadExecuted(JUserInfo user) {
+                if (user != null && !mIsUserInDatabase) {
+                    user.setUrl(mUrlTextInput.getText().toString());
+                    setActiveUser();
+                    user.setCredentials(mUser.getCredentials());
+                    insertUserToDatabase(user);
+                    Toast.makeText(LoginActivity.this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
+                } else {
+                    setActiveUser();
+                    Toast.makeText(LoginActivity.this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
+                }
+                showProgress(false);
+            }
+
+            @Override
+            public void onLoadError(Exception e) {
+                Logger.e(TAG, e.getMessage(), e);
+                DialogUtils.createDialog(LoginActivity.this, ExceptionType.valueOf(e)).show();
+                showProgress(false);
+                mLoginButton.setEnabled(true);
+            }
+        });
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
         ContentFromDatabase.setUser(user, new Callback<Integer>() {
             @Override
-            public void onLoadStart() {}
+            public void onLoadStart() {
+            }
 
             @Override
             public void onLoadExecuted(Integer integer) {
@@ -217,36 +246,6 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
 
     private boolean isNewUserAdditionFromUserInfo() {
         return mUser.getUrl() != null;
-    }
-
-    //Callbacks
-    //Jira
-    @Override
-    public void onLoadStart() {
-
-    }
-
-    @Override
-    public void onLoadExecuted(JUserInfo user) {
-        showProgress(false);
-        if (user != null && !mIsUserInDatabase) {
-            user.setUrl(mUrlTextInput.getText().toString());
-            setActiveUser();
-            user.setCredentials(mUser.getCredentials());
-            insertUserToDatabase(user);
-            Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
-        } else {
-            setActiveUser();
-            Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onLoadError(Exception e) {
-        Logger.e(TAG, e.getMessage(), e);
-        DialogUtils.createDialog(LoginActivity.this, ExceptionType.valueOf(e)).show();
-        showProgress(false);
-        mLoginButton.setEnabled(true);
     }
 
     //Loader

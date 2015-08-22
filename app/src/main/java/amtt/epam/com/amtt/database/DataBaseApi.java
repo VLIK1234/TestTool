@@ -37,28 +37,38 @@ public class DataBaseApi<Entity extends DatabaseEntity> {
     }
 
     public void insert(Entity object, Callback<Integer> callback) {
+        AmttApplication.registerPlugin(new DataBaseSource<Entity>());
+        AmttApplication.registerPlugin(new InsertProcessor());
         requestParams = new DbRequestParams<Entity>(object, DbRequestType.INSERT);
         execute(requestParams, InsertProcessor.NAME, callback);
     }
 
     public void bulkInsert(List<Entity> objects, Callback<Integer> callback) {
+        AmttApplication.registerPlugin(new DataBaseSource<Entity>());
+        AmttApplication.registerPlugin(new BulkInsertProcessor());
         requestParams = new DbRequestParams<Entity>(objects, DbRequestType.BULK_INSERT);
         execute(requestParams, BulkInsertProcessor.NAME, callback);
     }
 
     public void query(Entity entity, String[] projection, String mSelection, String[] mSelectionArgs,
                       String sortOrder, Callback<List<Entity>> callback) {
+        AmttApplication.registerPlugin(new DataBaseSource<>());
+        AmttApplication.registerPlugin(new QueryProcessor<Entity>());
         requestParams = new DbRequestParams<Entity>(entity, projection, mSelection, mSelectionArgs,
                                                     sortOrder, DbRequestType.QUERY);
         execute(requestParams, QueryProcessor.NAME, callback);
     }
 
     public void update(Entity object, String selection, String[] selectionArgs, Callback<Integer> callback) {
+        AmttApplication.registerPlugin(new DataBaseSource<Entity>());
+        AmttApplication.registerPlugin(new UpdateProcessor());
         requestParams = new DbRequestParams<Entity>(object, selection, selectionArgs, DbRequestType.UPDATE);
         execute(requestParams, UpdateProcessor.NAME, callback);
     }
 
     public void delete(Entity object, Callback<Integer> callback) {
+        AmttApplication.registerPlugin(new DataBaseSource<Entity>());
+        AmttApplication.registerPlugin(new DeleteProcessor());
         requestParams = new DbRequestParams<Entity>(object, DbRequestType.DELETE);
         execute(requestParams, DeleteProcessor.NAME, callback);
     }

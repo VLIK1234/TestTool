@@ -71,18 +71,14 @@ public class NewSpreadsheetActivity extends BaseActivity {
                     mSpreadsheetContent.getSpreadsheet(mIdLink, new GetContentCallback<GSpreadsheet>() {
                         @Override
                         public void resultOfDataLoading(final GSpreadsheet result) {
-                            NewSpreadsheetActivity.this.runOnUiThread(new Runnable() {
-                                public void run() {
-                                    if (result != null) {
-                                        mUser.setSpreadsheetLink(mIdLink);
-                                        mAddSpreadsheet.setEnabled(true);
-                                    } else {
-                                        Toast.makeText(NewSpreadsheetActivity.this, "Invalide key", Toast.LENGTH_LONG).show();
-                                        mAddSpreadsheet.setEnabled(false);
-                                    }
-                                    showProgress(false);
-                                }
-                            });
+                            if (result != null) {
+                                mUser.setSpreadsheetLink(mIdLink);
+                                mAddSpreadsheet.setEnabled(true);
+                            } else {
+                                Toast.makeText(NewSpreadsheetActivity.this, "Invalide key", Toast.LENGTH_LONG).show();
+                                mAddSpreadsheet.setEnabled(false);
+                            }
+                            showProgress(false);
                         }
                     });
                 }
@@ -110,23 +106,19 @@ public class NewSpreadsheetActivity extends BaseActivity {
 
                                         @Override
                                         public void onLoadExecuted(final Integer integer) {
-                                            NewSpreadsheetActivity.this.runOnUiThread(new Runnable() {
-                                                public void run() {
-                                                    if (integer >= 0) {
-                                                        new Handler().postDelayed(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                Intent intent = new Intent();
-                                                                setResult(RESULT_OK, intent);
-                                                                showProgress(false);
-                                                                finish();
-                                                            }
-                                                        }, 1000);
-                                                    } else {
-                                                        Logger.e(TAG, "Error update user");
+                                            if (integer >= 0) {
+                                                new Handler().postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        Intent intent = new Intent();
+                                                        setResult(RESULT_OK, intent);
+                                                        showProgress(false);
+                                                        finish();
                                                     }
-                                                }
-                                            });
+                                                }, 1000);
+                                            } else {
+                                                Logger.e(TAG, "Error update user");
+                                            }
                                         }
 
                                         @Override

@@ -37,7 +37,7 @@ public abstract class CoreApplication extends Application {
         performRegistration();
     }
 
-    public void registerPlugin(Plugin plugin) {
+    public static void registerPlugin(Plugin plugin) {
         if (plugin.getName() == null) {
             throw new IllegalArgumentException("Method getName() for " + plugin.getClass().getName() + " isn't overridden");
         }
