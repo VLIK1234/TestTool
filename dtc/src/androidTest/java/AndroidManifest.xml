@@ -7,7 +7,7 @@
     </application>
 
     <instrumentation
-        android:name="com.epam.amtt.test.TestRunner"
+        android:name="com.epam.dtc.test.Runner"
         android:functionalTest="false"
         android:handleProfiling="false"
         android:label="Tests"
