@@ -20,7 +20,7 @@ public class QueryProcessor<Entity extends DatabaseEntity> implements Processor<
 
     @Override
     public List<Entity> process(Cursor source) throws Exception {
-        final List<Entity> listObject = new ArrayList<>();
+        final List<Entity> listObject = new ArrayList<Entity>();
         Entity entity = null;
         if (source != null) {
             if (source.moveToFirst()) {

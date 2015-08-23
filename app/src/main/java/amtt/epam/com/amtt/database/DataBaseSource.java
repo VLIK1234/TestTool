@@ -18,25 +18,24 @@ import amtt.epam.com.amtt.datasource.DataSource;
  * @version on 20.08.2015
  */
 
-public class DataBaseSource<T> implements DataSource<DbRequestParams, T> {
+public class DataBaseSource<Entity extends DatabaseEntity, DataSourceResult> implements DataSource<DbRequestParams, DataSourceResult> {
 
     public static final String NAME = DataBaseSource.class.getName();
     private ContentResolver contentResolver = AmttApplication.getContext().getContentResolver();
 
-
     @Override
-    public T getData(DbRequestParams params) throws Exception {
+    public DataSourceResult getData(DbRequestParams params) throws Exception {
         switch (params.getRequestType()) {
             case INSERT:
-                return (T) insert(params.getObject());
+                return (DataSourceResult) insert((Entity) params.getObject());
             case BULK_INSERT:
-                return (T) bulkInsert(params.getObjectList());
+                return  (DataSourceResult) bulkInsert(params.getObjectList());
             case QUERY:
-                return (T) query(params.getObject(), params.getProjection(), params.getSelection(), params.getSelectionArgs());
+                return  (DataSourceResult) query((Entity) params.getObject(), params.getProjection(), params.getSelection(), params.getSelectionArgs());
             case UPDATE:
-                return (T) update(params.getObject(), params.getSelection(), params.getSelectionArgs());
+                return  (DataSourceResult) update((Entity) params.getObject(), params.getSelection(), params.getSelectionArgs());
             case DELETE:
-                return (T) delete(params.getObject());
+                return  (DataSourceResult) delete((Entity) params.getObject());
             default:
                 return null;
         }
@@ -47,7 +46,7 @@ public class DataBaseSource<T> implements DataSource<DbRequestParams, T> {
         return NAME;
     }
 
-    public <Entity extends DatabaseEntity> Integer insert(Entity object) {
+    public Integer insert(Entity object) {
         Uri insertedItemUri = contentResolver.insert(object.getUri(), object.getContentValues());
         if (insertedItemUri != null) {
             return Integer.valueOf(insertedItemUri.getLastPathSegment());
@@ -56,7 +55,7 @@ public class DataBaseSource<T> implements DataSource<DbRequestParams, T> {
         }
     }
 
-    public <Entity extends DatabaseEntity> Integer bulkInsert(final List<Entity> objects) {
+    public Integer bulkInsert(final List<Entity> objects) {
         ContentValues[] contentValues = new ContentValues[objects.size()];
         for (int i = 0; i < objects.size(); i++) {
             contentValues[i] = objects.get(i).getContentValues();
@@ -64,15 +63,15 @@ public class DataBaseSource<T> implements DataSource<DbRequestParams, T> {
         return contentResolver.bulkInsert(objects.get(0).getUri(), contentValues);
     }
 
-    public <Entity extends DatabaseEntity> Integer update(Entity object, String selection, String[] selectionArgs) {
+    public Integer update(Entity object, String selection, String[] selectionArgs) {
         return contentResolver.update(object.getUri(), object.getContentValues(), selection, selectionArgs);
     }
 
-    public <Entity extends DatabaseEntity> Integer delete(Entity object) {
+    public Integer delete(Entity object) {
         return contentResolver.delete(object.getUri(), BaseColumns._ID + "=?", new String[]{String.valueOf(object.getId())});
     }
 
-    public <Entity extends DatabaseEntity> Cursor query(final Entity entity, final String[] projection,
+    public Cursor query(final Entity entity, final String[] projection,
                                                         final String mSelection, final String[] mSelectionArgs) {
         return contentResolver.query(entity.getUri(), projection, mSelection, mSelectionArgs, null);
     }
