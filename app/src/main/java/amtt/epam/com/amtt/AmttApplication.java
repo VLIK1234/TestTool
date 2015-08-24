@@ -6,11 +6,6 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import amtt.epam.com.amtt.common.CoreApplication;
 import amtt.epam.com.amtt.database.DataBaseSource;
-import amtt.epam.com.amtt.database.processing.BulkInsertProcessor;
-import amtt.epam.com.amtt.database.processing.DeleteProcessor;
-import amtt.epam.com.amtt.database.processing.InsertProcessor;
-import amtt.epam.com.amtt.database.processing.QueryProcessor;
-import amtt.epam.com.amtt.database.processing.UpdateProcessor;
 import amtt.epam.com.amtt.googleapi.processing.SpreadsheetProcessor;
 import amtt.epam.com.amtt.googleapi.processing.WorksheetProcessor;
 import amtt.epam.com.amtt.http.HttpClient;
@@ -47,12 +42,6 @@ public class AmttApplication extends CoreApplication {
     public void performRegistration() {
         registerPlugin(new HttpClient());
         registerPlugin(new DataBaseSource<>());
-
-        registerPlugin(new InsertProcessor());
-        registerPlugin(new BulkInsertProcessor());
-        registerPlugin(new QueryProcessor<>());
-        registerPlugin(new UpdateProcessor());
-        registerPlugin(new DeleteProcessor());
 
         registerPlugin(new ComponentsProcessor());
         registerPlugin(new UserInfoProcessor());

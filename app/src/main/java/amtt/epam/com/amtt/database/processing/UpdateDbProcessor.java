@@ -7,9 +7,9 @@ import amtt.epam.com.amtt.processing.Processor;
  * @version on 21.08.2015
  */
 
-public class InsertProcessor implements Processor<Integer, Integer> {
+public class UpdateDbProcessor implements Processor<Integer, Integer> {
 
-    public static final String NAME = InsertProcessor.class.getName();
+    public static final String NAME = UpdateDbProcessor.class.getName();
 
     @Override
     public Integer process(Integer source) throws Exception {

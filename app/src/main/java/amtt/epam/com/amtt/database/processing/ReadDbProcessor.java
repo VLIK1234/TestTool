@@ -14,9 +14,9 @@ import amtt.epam.com.amtt.util.IOUtils;
  * @version on 21.08.2015
  */
 
-public class QueryProcessor<Entity extends DatabaseEntity> implements Processor<Cursor, List<Entity>> {
+public class ReadDbProcessor<Entity extends DatabaseEntity> implements Processor<Cursor, List<Entity>> {
 
-    public static final String NAME = QueryProcessor.class.getName();
+    public static final String NAME = ReadDbProcessor.class.getName();
 
     @Override
     public List<Entity> process(Cursor source) throws Exception {
