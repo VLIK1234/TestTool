@@ -192,17 +192,28 @@ public class PaintActivity extends BaseActivity
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 boolean isEraseMode = checkedId == R.id.rb_eraser;
                 mPaintView.setEraseMode(isEraseMode);
-                if (isEraseMode) {
-                    thicknessBar.setProgress(mPaintView.getEraserThickness());
-                    opacityBar.setEnabled(false);
-                    opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity_disabled));
-                    multilineRadioGroup.clearCheck();
-                } else {
-                    thicknessBar.setProgress(mPaintView.getBrushThickness());
-                    opacityBar.setEnabled(true);
-                    opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity));
-                    multilineRadioGroup.restoreCheck();
-                    multilineRadioGroup.setEnabled(true);
+                switch (checkedId){
+                    case R.id.rb_eraser:
+                        thicknessBar.setProgress(mPaintView.getEraserThickness());
+                        opacityBar.setEnabled(false);
+                        opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity_disabled));
+                        multilineRadioGroup.clearCheck();
+                        break;
+                    case R.id.rb_pencil:
+                        thicknessBar.setProgress(mPaintView.getBrushThickness());
+                        opacityBar.setEnabled(true);
+                        opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity));
+                        multilineRadioGroup.restoreCheck();
+                        multilineRadioGroup.setEnabled(true);
+                        break;
+                    case R.id.rb_text:
+                        thicknessBar.setProgress(mPaintView.getEraserThickness());
+                        opacityBar.setEnabled(false);
+                        opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity_disabled));
+                        multilineRadioGroup.clearCheck();
+                        break;
+                    default:
+                        break;
                 }
             }
         });

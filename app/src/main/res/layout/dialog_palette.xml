@@ -70,6 +70,11 @@
             android:background="@drawable/palette_tool_selector"
             android:button="@drawable/ic_eraser" />
 
+        <RadioButton
+            android:id="@+id/rb_text"
+            style="@style/PaletteButtonNext"
+            android:background="@drawable/palette_tool_selector"
+            android:button="@drawable/ic_draw_text" />
     </RadioGroup>
 
     <amtt.epam.com.amtt.ui.views.MultilineRadioGroup

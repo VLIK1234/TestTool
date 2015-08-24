@@ -11,6 +11,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
@@ -84,10 +85,16 @@ public class PaintView extends ImageView {
     private List<DrawnPath> mDrawnPaths;
     private List<DrawnPath> mUndone;
 
+    private Paint paint = new Paint();
+    private float xText = 0;
+    private float yText = 0;
     public PaintView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setUpDrawingArticles();
         setDrawingCacheEnabled(true);
+
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(20);
     }
 
     @Override
@@ -97,6 +104,18 @@ public class PaintView extends ImageView {
         if (mCacheCanvas != null) {
             canvas.drawBitmap(mCacheCanvasBitmap, 0, 0, mBitmapPaint);
             canvas.drawPath(mDrawPath, mPaint);
+
+            String[] stringsArr = {"Some text", " This arr", "Else arr"};
+            int i = 10;
+            float[] floatArr;
+            for (String s :stringsArr) {
+                floatArr = new float[s.length()];
+                for (float j: floatArr) {
+                    j = 20;
+                }
+                canvas.drawText(s + xText, xText, yText+(i*=3), paint);
+                Log.d("TAG", paint.getTextWidths(s, floatArr)+" size");
+            }
             if (isEraseMode) {
                 canvas.drawPoint(mEraserPoint.x, mEraserPoint.y, mEraserPaint);
             }
@@ -128,6 +147,7 @@ public class PaintView extends ImageView {
             case MotionEvent.ACTION_MOVE:
                 mDrawPath.lineTo(x, y);
                 mCacheCanvas.drawPath(mDrawPath, mPaint);
+
                 if (isEraseMode) {
                     mDrawnPaths.get(mDrawnPaths.size() - 1).addPath(mDrawPath);
                     mDrawPath.reset();
@@ -137,6 +157,8 @@ public class PaintView extends ImageView {
                 break;
             case MotionEvent.ACTION_UP:
                 mCacheCanvas.drawPath(mDrawPath, mPaint);
+                xText = x;
+                yText = y;
                 if (isEraseMode) {
                     mDrawnPaths.get(mDrawnPaths.size() - 1).addPath(mDrawPath);
                     mEraserPoint.set(OUT_OF_SCREEN_COORDINATE, OUT_OF_SCREEN_COORDINATE);
