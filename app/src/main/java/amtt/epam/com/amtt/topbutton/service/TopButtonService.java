@@ -25,6 +25,7 @@ import amtt.epam.com.amtt.ui.activities.SettingActivity;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 import amtt.epam.com.amtt.util.TestUtil;
+import amtt.epam.com.amtt.util.UIUtil;
 
 /**
  @author Ivan_Bakach
@@ -33,6 +34,7 @@ import amtt.epam.com.amtt.util.TestUtil;
 
 public class TopButtonService extends Service{
 
+    private static final String ACTION_CLOSE_APP = "amtt.epam.com.amtt.topbutton.service.CLOSE_APP";
     private static final String ACTION_CLOSE = "amtt.epam.com.amtt.topbutton.service.CLOSE";
     private static final String ACTION_CHANGE_VISIBILITY_TOPBUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_VISIBILITY_TOPBUTTON";
     private static final String ACTION_CHANGE_NOTIFICATION_BUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_NOTIFICATION_BUTTON";
@@ -80,8 +82,13 @@ public class TopButtonService extends Service{
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_START));
     }
 
-    public static void close(Context context) {
+    public static void closeService(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE));
+    }
+
+
+    public static void closeApp(Context context) {
+        context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE_APP));
     }
 
     public static void stopRecord(Context context){
@@ -119,8 +126,6 @@ public class TopButtonService extends Service{
                     checkCountTestProject();
                     break;
                 case ACTION_CLOSE:
-                    TestUtil.closeTest();
-                    LocalContent.removeAllAttachFile();
                     closeService();
                     break;
                 case ACTION_CHANGE_NOTIFICATION_BUTTON:
@@ -141,6 +146,10 @@ public class TopButtonService extends Service{
                     break;
                 case ACTION_STOP_RECORD:
                     stopRecord();
+                    break;
+                case ACTION_CLOSE_APP:
+                    closeService();
+                    UIUtil.killApp(true);
                     break;
             }
         } else {
@@ -180,6 +189,8 @@ public class TopButtonService extends Service{
         stopSelf();
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager.cancelAll();
+        TestUtil.closeTest();
+        LocalContent.removeAllAttachFile();
     }
 
     private void showNotification() {
@@ -201,7 +212,7 @@ public class TopButtonService extends Service{
         NotificationCompat.Action closeService = new NotificationCompat.Action(
                 R.drawable.ic_close_service,
                 getString(R.string.label_close),
-                PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE), PendingIntent.FLAG_CANCEL_CURRENT));
+                PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE_APP), PendingIntent.FLAG_CANCEL_CURRENT));
 
         mBuilderNotificationCompat.addAction(mActionNotificationCompat);
         mBuilderNotificationCompat.addAction(closeService);

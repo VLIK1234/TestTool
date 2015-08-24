@@ -111,7 +111,7 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add: {
-                TopButtonService.close(getBaseContext());
+                TopButtonService.closeService(getBaseContext());
                 startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
             }
             return true;
