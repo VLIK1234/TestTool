@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.ui.views;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,8 +11,13 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -62,13 +68,13 @@ public class PaintView extends ImageView {
         }
     }
 
-    private static final class DrawText extends DrawObject {
+    private static final class DrawnText extends DrawObject {
 
         private final String mStringValue;
         private final float mX;
         private final float mY;
 
-        public DrawText(String stringValue, float x, float y, Paint paint) {
+        public DrawnText(String stringValue, float x, float y, Paint paint) {
             super(paint);
             mStringValue = stringValue;
             mX = x;
@@ -117,6 +123,7 @@ public class PaintView extends ImageView {
 
     private Paint mPaintText = new Paint();
     private PaintMode mPaintMode;
+    private String mDrawString ="";
     private float xText = 0;
     private float yText = 0;
 
@@ -133,6 +140,7 @@ public class PaintView extends ImageView {
         if (mCacheCanvas != null) {
             canvas.drawBitmap(mCacheCanvasBitmap, 0, 0, mBitmapPaint);
             canvas.drawPath(mDrawPath, mPaintPath);
+//            canvas.drawText(mDrawString, xText, yText, mPaintText);
 
 //            String[] stringsArr = {"Some text ", " This arr ", "Else arr "};
 //            int i = 10;
@@ -160,9 +168,9 @@ public class PaintView extends ImageView {
     }
 
     @Override
-    public boolean onTouchEvent(@NonNull MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
+    public boolean onTouchEvent(@NonNull final MotionEvent event) {
+        final float x = event.getX();
+        final float y = event.getY();
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -176,6 +184,28 @@ public class PaintView extends ImageView {
                         mDrawPath.moveTo(x, y);
                         break;
                     case TEXT:
+                        final View view = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_draw_text, null);
+                        final EditText editDrawText = (EditText) view.findViewById(R.id.et_draw_text);
+
+                        new AlertDialog.Builder(getContext())
+                                .setTitle("Draw text")
+                                .setView(view)
+                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mDrawString = editDrawText.getText().toString();
+                                        mCacheCanvas.drawText(mDrawString, x, y, new Paint(mPaintText));
+                                        mDrawObjects.add(new DrawnText(mDrawString, x, y,  new Paint(mPaintText)));
+                                    }
+                                })
+                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mDrawString = "";
+                                    }
+                                })
+                                .create()
+                                .show();
                         break;
                 }
                 break;
@@ -200,6 +230,7 @@ public class PaintView extends ImageView {
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                Log.d("TAG", "UP");
                 switch (mPaintMode){
                     case ERASE:
                         mCacheCanvas.drawPath(mDrawPath, mPaintPath);
@@ -316,6 +347,9 @@ public class PaintView extends ImageView {
                     } else {
                         mCacheCanvas.drawPath(((DrawnPath) drawObject).getPath(), drawObject.getPaint());
                     }
+                } else if(drawObject instanceof DrawnText){
+                    DrawnText drawnText = (DrawnText) drawObject;
+                    mCacheCanvas.drawText(drawnText.getStringValue(), drawnText.getX(), drawnText.getY(), drawnText.getPaint());
                 }
             }
             invalidate();

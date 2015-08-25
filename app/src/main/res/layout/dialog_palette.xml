@@ -169,11 +169,11 @@
                 app:cell_color="@color/indigo_paint" />
 
             <amtt.epam.com.amtt.ui.views.PaletteItem
-                android:id="@+id/pi_violet"
+                android:id="@+id/pi_black"
                 style="@style/PaletteButtonNext"
-                android:background="@drawable/palette_cell_selector_violet"
+                android:background="@drawable/palette_cell_selector_black"
                 android:button="@null"
-                app:cell_color="@color/violet_paint" />
+                app:cell_color="@android:color/black" />
 
             <amtt.epam.com.amtt.ui.views.PaletteItem
                 android:id="@+id/pi_white"

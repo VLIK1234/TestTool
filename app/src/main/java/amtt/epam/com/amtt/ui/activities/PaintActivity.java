@@ -216,10 +216,11 @@ public class PaintActivity extends BaseActivity
                         break;
                     case R.id.rb_text:
                         mPaintView.setPaintMode(PaintView.PaintMode.TEXT);
-                        thicknessBar.setProgress(mPaintView.getEraserThickness());
+                        thicknessBar.setProgress(mPaintView.getBrushThickness());
                         opacityBar.setEnabled(false);
-                        opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity_disabled));
-                        multilineRadioGroup.clearCheck();
+                        opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity));
+                        multilineRadioGroup.restoreCheck();
+                        multilineRadioGroup.setEnabled(true);
                         break;
                     default:
                         break;
