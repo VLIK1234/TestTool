@@ -64,8 +64,10 @@ import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.Validator;
 
 
-public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, AttachmentAdapter.ViewHolder.DataChangedListener,
-                                                        SharedPreferences.OnSharedPreferenceChangeListener, GifUtil.ProgressListener {
+public class CreateIssueActivity extends BaseActivity
+                                implements AttachmentAdapter.ViewHolder.ClickListener, AttachmentAdapter.ViewHolder.DataChangedListener,
+                                           SharedPreferences.OnSharedPreferenceChangeListener, GifUtil.ProgressListener,
+                                            AttachmentAdapter.ViewHolder.ScreenshotStateListener {
 
     private static final int PAINT_ACTIVITY_REQUEST_CODE = 0;
     private static final int MESSAGE_TEXT_CHANGED = 100;
@@ -167,7 +169,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
             String component = mJira.getComponentIdByName((String) mComponents.getSelectedItem());
             mUser.setLastComponentsIds(component);
         }
-        mJira.setDefaultConfig(mUser.getId(), mUser.getUserName(), mUser.getUrl(), mUser.getLastProjectKey(), mUser.getLastAssignee(), mUser.getLastComponentsIds());
+        mJira.setDefaultConfig(mUser.getId(), mUser.getUserName(), mUser.getUrl(),
+                                mUser.getLastProjectKey(), mUser.getLastAssignee(), mUser.getLastComponentsIds());
     }
 
     private void initViews() {
@@ -637,10 +640,12 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 @Override
                 public void resultOfDataLoading(List<String> result) {
                     if (result != null) {
-                        ArrayAdapter<String> assignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
+                        ArrayAdapter<String> assignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this,
+                                                                                            R.layout.spinner_dropdown_item, result);
                         mAssignableAutocompleteView.setThreshold(1);
                         mAssignableAutocompleteView.setAdapter(assignableUsersAdapter);
-                        if (assignableUsersAdapter.getCount() > 0 && !mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
+                        if (assignableUsersAdapter.getCount() > 0
+                                && !mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
                             mAssignableAutocompleteView.showDropDown();
                         }
                     }
@@ -668,30 +673,42 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
     private void loadSteps() {
         LocalContent
                 .getAllSteps(new GetContentCallback<List<Step>>() {
-                                 @Override
-                                 public void resultOfDataLoading(final List<Step> result) {
-                                     if (result != null) {
-                                         mSteps = result;
-                                         List<Attachment> screenArray = mAttachmentManager.stepsToAttachments(result);
-                                         mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment, CreateIssueActivity.this);
-                                         if (mRecyclerView != null) {
-                                             mRecyclerView.setAdapter(mAdapter);
-                                         }
-                                         if (mSteps.size() == 0) {
-                                             mGifCheckBox.setEnabled(false);
-                                         }
-                                     }
-                                     mRequestsQueue.remove(ContentConst.ATTACHMENT_RESPONSE);
-                                     showProgressIfNeed();
-                                 }
-                             }
-                );
+                    @Override
+                    public void resultOfDataLoading(final List<Step> result) {
+                        if (result != null) {
+                            mSteps = result;
+                            List<Attachment> screenArray = mAttachmentManager.stepsToAttachments(result);
+                            mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment,
+                                    CreateIssueActivity.this, CreateIssueActivity.this);
+                            if (mRecyclerView != null) {
+                                mRecyclerView.setAdapter(mAdapter);
+                            }
+                            if (mSteps.size() == 0) {
+                                mGifCheckBox.setEnabled(false);
+                            }
+                        }
+                        mRequestsQueue.remove(ContentConst.ATTACHMENT_RESPONSE);
+                        showProgressIfNeed();
+                    }
+                });
     }
-
 
     @Override
     public void onReloadData() {
         loadSteps();
+    }
+
+    @Override
+    public void onShowMessage() {
+        new AlertDialog.Builder(CreateIssueActivity.this, R.style.Dialog)
+                .setTitle(R.string.title_notes_arent_applied)
+                .setMessage(R.string.message_notes_arent_applied)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
     }
 
     private void removeStepFromDatabase(int position) {
@@ -717,7 +734,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                                          @Override
                                          public void resultOfDataLoading(final List<Step> result) {
                                              if (result != null) {
-                                                 mDescriptionTextInput.setText(mDescriptionTextInput.getText().append(LocalContent.getStepInfo(result)));
+                                                 mDescriptionTextInput.setText(mDescriptionTextInput
+                                                         .getText().append(LocalContent.getStepInfo(result)));
                                              }
                                          }
                                      }
@@ -746,7 +764,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
                 removeStepFromDatabase(position);
             }
         } else if (FileUtil.isText(mAdapter.getAttachments().get(position).getFilePath())) {
-            DialogHelper.getAreYouSureDialog(this, getString(R.string.title_delete_log_dialiog), getString(R.string.label_message_delete_log_dialiog), new DialogHelper.IDialogButtonClick() {
+            DialogHelper.getAreYouSureDialog(this, getString(R.string.title_delete_log_dialiog),
+                    getString(R.string.label_message_delete_log_dialiog), new DialogHelper.IDialogButtonClick() {
                 @Override
                 public void positiveButtonClick() {
                     mAdapter.getAttachments().remove(position);
@@ -840,7 +859,8 @@ public class CreateIssueActivity extends BaseActivity implements AttachmentAdapt
 
     @Override
     public void onBackPressed() {
-        DialogHelper.getAreYouSureDialog(this, getString(R.string.title_exit_dialog), getString(R.string.label_message_exit_dialog), new DialogHelper.IDialogButtonClick() {
+        DialogHelper.getAreYouSureDialog(this, getString(R.string.title_exit_dialog),
+                getString(R.string.label_message_exit_dialog), new DialogHelper.IDialogButtonClick() {
 
             @Override
             public void positiveButtonClick() {

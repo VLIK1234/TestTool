@@ -8,7 +8,6 @@ import java.util.Map;
 
 import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.datasource.Plugin;
-import amtt.epam.com.amtt.os.Task;
 import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.util.ThreadManager;
 
