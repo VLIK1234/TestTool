@@ -13,7 +13,6 @@ import android.graphics.PorterDuffXfermode;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -100,6 +99,10 @@ public class PaintView extends ImageView {
         ERASE
     }
 
+    public interface IDialogButtonClick{
+        void PositiveButtonClick(String valueDrawText, Paint textPaint);
+    }
+
     private static final int OUT_OF_SCREEN_COORDINATE = -999;
     public static final int DEFAULT_OPACITY = 255;
     public static final int DEFAULT_BRUSH_THICKNESS = 20;
@@ -121,11 +124,14 @@ public class PaintView extends ImageView {
     private List<DrawObject> mDrawObjects;
     private List<DrawObject> mUndone;
 
+    public Paint getPaintText() {
+        return mPaintText;
+    }
+
     private Paint mPaintText = new Paint();
     private PaintMode mPaintMode;
     private String mDrawString ="";
-    private float xText = 0;
-    private float yText = 0;
+    private IDialogButtonClick mIDialogButtonClick;
 
     public PaintView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -140,18 +146,6 @@ public class PaintView extends ImageView {
         if (mCacheCanvas != null) {
             canvas.drawBitmap(mCacheCanvasBitmap, 0, 0, mBitmapPaint);
             canvas.drawPath(mDrawPath, mPaintPath);
-//            canvas.drawText(mDrawString, xText, yText, mPaintText);
-
-//            String[] stringsArr = {"Some text ", " This arr ", "Else arr "};
-//            int i = 10;
-//            float[] floatArr;
-//            for (String s :stringsArr) {
-//                floatArr = new float[s.length()];
-//                for (float j: floatArr) {
-//                    j = 20;
-//                }
-//                canvas.drawText(s + xText, xText, yText+(i*=3), mPaintText);
-//            }
             if (mPaintMode == PaintMode.ERASE) {
                 canvas.drawPoint(mEraserPoint.x, mEraserPoint.y, mEraserPaint);
             }
@@ -188,14 +182,16 @@ public class PaintView extends ImageView {
                         final EditText editDrawText = (EditText) view.findViewById(R.id.et_draw_text);
 
                         new AlertDialog.Builder(getContext())
-                                .setTitle("Draw text")
+                                .setTitle(getContext().getString(R.string.label_title_draw_text_dialog))
                                 .setView(view)
                                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         mDrawString = editDrawText.getText().toString();
                                         mCacheCanvas.drawText(mDrawString, x, y, new Paint(mPaintText));
-                                        mDrawObjects.add(new DrawnText(mDrawString, x, y,  new Paint(mPaintText)));
+                                        mDrawObjects.add(new DrawnText(mDrawString, x, y, new Paint(mPaintText)));
+                                        mIDialogButtonClick.PositiveButtonClick(mDrawString, mPaintText);
+
                                     }
                                 })
                                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -230,7 +226,6 @@ public class PaintView extends ImageView {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                Log.d("TAG", "UP");
                 switch (mPaintMode){
                     case ERASE:
                         mCacheCanvas.drawPath(mDrawPath, mPaintPath);
@@ -247,9 +242,6 @@ public class PaintView extends ImageView {
                     case TEXT:
                         break;
                 }
-                xText = x;
-                yText = y;
-
                 break;
             default:
                 return false;
@@ -377,5 +369,9 @@ public class PaintView extends ImageView {
             mPaintPath.setXfermode(null);
             mPaintPath.setStrokeWidth(mLastBrushThickness);
         }
+    }
+
+    public void setIDialogButtonClick(IDialogButtonClick IDialogButtonClick) {
+        mIDialogButtonClick = IDialogButtonClick;
     }
 }

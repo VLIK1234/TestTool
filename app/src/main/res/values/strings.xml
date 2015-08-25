@@ -173,5 +173,7 @@
     <string name="title_activity_new_spreadsheet">NewSpreadsheetActivity</string>
     <string name="label_share_attachment">Share attachment to email</string>
     <string name="error_message_share_attachment">Don\'t have attachment for sharing.</string>
+    <string name="label_title_draw_text_dialog">Draw text</string>
+    <string name="label_description_drag_image">Drag image</string>
 
 </resources>

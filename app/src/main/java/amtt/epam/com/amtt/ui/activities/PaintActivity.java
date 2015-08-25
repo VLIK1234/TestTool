@@ -1,24 +1,33 @@
 package amtt.epam.com.amtt.ui.activities;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnSystemUiVisibilityChangeListener;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -32,11 +41,13 @@ import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.util.ContentFromDatabase;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.ui.views.DragImageView;
 import amtt.epam.com.amtt.ui.views.MultilineRadioGroup;
 import amtt.epam.com.amtt.ui.views.MultilineRadioGroup.OnEntireGroupCheckedChangeListener;
 import amtt.epam.com.amtt.ui.views.PaintView;
 import amtt.epam.com.amtt.ui.views.PaletteItem;
 import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.util.UIUtil;
 
 /**
  @author Artsiom_Kaliaha
@@ -45,7 +56,7 @@ import amtt.epam.com.amtt.util.Logger;
 
 public class PaintActivity extends BaseActivity
                             implements OnSeekBarChangeListener, Handler.Callback, OnSystemUiVisibilityChangeListener,
-                            OnEntireGroupCheckedChangeListener, ImageLoadingListener {
+                            OnEntireGroupCheckedChangeListener, ImageLoadingListener, PaintView.IDialogButtonClick {
 
     private static final String TAG = PaintActivity.class.getSimpleName();
     public static final String KEY_STEP_ID = "key_step_id";
@@ -154,6 +165,7 @@ public class PaintActivity extends BaseActivity
 
     private void initPaintView() {
         mPaintView = (PaintView) findViewById(R.id.paint_view);
+        mPaintView.setIDialogButtonClick(this);
         mPaintView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -358,4 +370,19 @@ public class PaintActivity extends BaseActivity
     @Override
     public void onLoadingCancelled(String imageUri, View view) {}
 
+    @Override
+    public void PositiveButtonClick(String drawValueText, Paint paintText) {
+        RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.rl_paint_activity_main_layout);
+        final View view = ((LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.drag_view, null);
+
+        ImageView imageView= (ImageView) view.findViewById(R.id.iv_drag_image);
+        Bitmap bitmap = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawText(drawValueText, 0, UIUtil.getStatusBarHeight(), paintText);
+        imageView.setImageBitmap(bitmap);
+//        DragImageView dragImage = (DragImageView) view.findViewById(R.id.iv_drag_image);
+//        dragImage.drawTextOnBitmap(paintText);
+//        dragImage.setDrawString(drawValueText);
+        mainLayout.addView(view);
+    }
 }
