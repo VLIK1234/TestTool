@@ -18,15 +18,21 @@ public class ReadDbProcessor<Entity extends DatabaseEntity> implements Processor
 
     public static final String NAME = ReadDbProcessor.class.getName();
 
+    private Class<Entity> mEntityClass;
+
+    public ReadDbProcessor(Class<Entity> entityClass){
+        mEntityClass = entityClass;
+    }
+
+
     @Override
     public List<Entity> process(Cursor source) throws Exception {
         final List<Entity> listObject = new ArrayList<Entity>();
-        Entity entity = null;
         if (source != null) {
             if (source.moveToFirst()) {
                 do {
                     try {
-                        listObject.add((Entity) entity.parse(source));
+                        listObject.add((Entity) mEntityClass.newInstance().parse(source));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

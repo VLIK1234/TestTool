@@ -52,7 +52,7 @@ public class DataBaseApi<Entity extends DatabaseEntity> {
     public void query(Entity entity, String[] projection, String mSelection, String[] mSelectionArgs,
                       String sortOrder, Callback<List<Entity>> callback) {
         AmttApplication.registerPlugin(new DataBaseSource<Entity, Cursor>());
-        AmttApplication.registerPlugin(new ReadDbProcessor<Entity>());
+        AmttApplication.registerPlugin(new ReadDbProcessor<Entity>((Class<Entity>) entity.getClass()));
         requestParams = new DbRequestParams<Entity>(entity, projection, mSelection, mSelectionArgs,
                                                     sortOrder, DbRequestType.QUERY);
         execute(requestParams, ReadDbProcessor.NAME, callback);

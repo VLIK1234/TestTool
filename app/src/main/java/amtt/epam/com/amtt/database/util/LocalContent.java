@@ -34,12 +34,34 @@ public class LocalContent {
 
     public static void saveStep(String title, String activityClassName, String packageName, String mScreenPath, String listFragments) {
         Step step = new Step(title, activityClassName, packageName, mScreenPath, listFragments);
-        ContentFromDatabase.setStep(step, null);
+        ContentFromDatabase.setStep(step, new Callback<Integer>() {
+            @Override
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(Integer integer) {}
+
+            @Override
+            public void onLoadError(Exception e) {
+                Logger.e(TAG, e.getMessage(), e);
+            }
+        });
     }
 
     public static void saveOnlyScreenshot(String mScreenPath) {
         Step step = new Step(null, null, null, mScreenPath, null);
-        ContentFromDatabase.setStep(step, null);
+        ContentFromDatabase.setStep(step, new Callback<Integer>() {
+            @Override
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(Integer integer) {}
+
+            @Override
+            public void onLoadError(Exception e) {
+                Logger.e(TAG, e.getMessage(), e);
+            }
+        });
     }
 
     public static void getAllSteps(final GetContentCallback<List<Step>> contentCallback) {
@@ -65,16 +87,49 @@ public class LocalContent {
     }
 
     public static void removeStep(Step step){
-        ContentFromDatabase.removeStep(step, null);
+        ContentFromDatabase.removeStep(step, new Callback<Integer>() {
+            @Override
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(Integer integer) {}
+
+            @Override
+            public void onLoadError(Exception e) {
+                Logger.e(TAG, e.getMessage(), e);
+            }
+        });
     }
 
     public static void removeAllSteps() {
-        ContentFromDatabase.removeAllSteps(null);
+        ContentFromDatabase.removeAllSteps(new Callback<Integer>() {
+            @Override
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(Integer integer) {}
+
+            @Override
+            public void onLoadError(Exception e) {
+                Logger.e(TAG, e.getMessage(), e);
+            }
+        });
     }
 
     public static void applyNotesToScreenshot(final Bitmap drawingCache, final String screenshotPath, final Step step) {
         step.setScreenshotState(Step.ScreenshotState.IS_BEING_WRITTEN);
-        ContentFromDatabase.updateStep(step, null);
+        ContentFromDatabase.updateStep(step, new Callback<Integer>() {
+            @Override
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(Integer integer) {}
+
+            @Override
+            public void onLoadError(Exception e) {
+                Logger.e(TAG, e.getMessage(), e);
+            }
+        });
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -92,7 +147,18 @@ public class LocalContent {
                 }
 
                 step.setScreenshotState(Step.ScreenshotState.WRITTEN);
-                ContentFromDatabase.updateStep(step, null);
+                ContentFromDatabase.updateStep(step, new Callback<Integer>() {
+                    @Override
+                    public void onLoadStart() {}
+
+                    @Override
+                    public void onLoadExecuted(Integer integer) {}
+
+                    @Override
+                    public void onLoadError(Exception e) {
+                        Logger.e(TAG, e.getMessage(), e);
+                    }
+                });
             }
         }).start();
     }
