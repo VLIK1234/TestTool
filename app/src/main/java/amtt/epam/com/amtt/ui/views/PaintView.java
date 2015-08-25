@@ -11,7 +11,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
@@ -21,21 +20,32 @@ import java.util.List;
 import amtt.epam.com.amtt.R;
 
 /**
- @author Artsiom_Kaliaha
- @version on 25.06.2015
+ * @author Artsiom_Kaliaha
+ * @version on 25.06.2015
  */
 
 public class PaintView extends ImageView {
 
-    private static final class DrawnPath {
+    protected static class DrawObject {
+        private final Paint mPaint;
+
+        protected DrawObject(Paint paint) {
+            mPaint = paint;
+        }
+
+        protected Paint getPaint() {
+            return mPaint;
+        }
+    }
+
+    private static final class DrawnPath extends DrawObject {
 
         private final Path mPath;
-        private final Paint mPaint;
         private final PaintMode mPaintMode;
 
         public DrawnPath(Path path, Paint paint, PaintMode paintMode) {
+            super(paint);
             mPath = path;
-            mPaint = paint;
             mPaintMode = paintMode;
         }
 
@@ -47,21 +57,41 @@ public class PaintView extends ImageView {
             return mPaintMode;
         }
 
-        public Paint getPaint() {
-            return mPaint;
-        }
-
         public void addPath(Path path) {
             mPath.addPath(path);
         }
-
     }
 
-    private enum PaintMode {
+    private static final class DrawText extends DrawObject {
 
+        private final String mStringValue;
+        private final float mX;
+        private final float mY;
+
+        public DrawText(String stringValue, float x, float y, Paint paint) {
+            super(paint);
+            mStringValue = stringValue;
+            mX = x;
+            mY = y;
+        }
+
+        public String getStringValue() {
+            return mStringValue;
+        }
+
+        public float getX() {
+            return mX;
+        }
+
+        public float getY() {
+            return mY;
+        }
+    }
+
+    public enum PaintMode {
         DRAW,
+        TEXT,
         ERASE
-
     }
 
     private static final int OUT_OF_SCREEN_COORDINATE = -999;
@@ -72,7 +102,7 @@ public class PaintView extends ImageView {
     private Canvas mCacheCanvas;
     private Bitmap mCacheCanvasBitmap;
     private Path mDrawPath;
-    private Paint mPaint;
+    private Paint mPaintPath;
     private Paint mEraserPaint;
     private Paint mBitmapPaint;
     private Point mEraserPoint;
@@ -82,19 +112,18 @@ public class PaintView extends ImageView {
     private int mLastBrushThickness;
     private OnTouchListener mOnTouchListener;
 
-    private List<DrawnPath> mDrawnPaths;
-    private List<DrawnPath> mUndone;
+    private List<DrawObject> mDrawObjects;
+    private List<DrawObject> mUndone;
 
-    private Paint paint = new Paint();
+    private Paint mPaintText = new Paint();
+    private PaintMode mPaintMode;
     private float xText = 0;
     private float yText = 0;
+
     public PaintView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setUpDrawingArticles();
         setDrawingCacheEnabled(true);
-
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(20);
     }
 
     @Override
@@ -103,20 +132,19 @@ public class PaintView extends ImageView {
         redrawCache();
         if (mCacheCanvas != null) {
             canvas.drawBitmap(mCacheCanvasBitmap, 0, 0, mBitmapPaint);
-            canvas.drawPath(mDrawPath, mPaint);
+            canvas.drawPath(mDrawPath, mPaintPath);
 
-            String[] stringsArr = {"Some text", " This arr", "Else arr"};
-            int i = 10;
-            float[] floatArr;
-            for (String s :stringsArr) {
-                floatArr = new float[s.length()];
-                for (float j: floatArr) {
-                    j = 20;
-                }
-                canvas.drawText(s + xText, xText, yText+(i*=3), paint);
-                Log.d("TAG", paint.getTextWidths(s, floatArr)+" size");
-            }
-            if (isEraseMode) {
+//            String[] stringsArr = {"Some text ", " This arr ", "Else arr "};
+//            int i = 10;
+//            float[] floatArr;
+//            for (String s :stringsArr) {
+//                floatArr = new float[s.length()];
+//                for (float j: floatArr) {
+//                    j = 20;
+//                }
+//                canvas.drawText(s + xText, xText, yText+(i*=3), mPaintText);
+//            }
+            if (mPaintMode == PaintMode.ERASE) {
                 canvas.drawPoint(mEraserPoint.x, mEraserPoint.y, mEraserPaint);
             }
         }
@@ -138,34 +166,59 @@ public class PaintView extends ImageView {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (isEraseMode) {
-                    mDrawnPaths.add(new DrawnPath(new Path(mDrawPath), new Paint(mPaint), PaintMode.ERASE));
-                    mEraserPoint.set((int) x, (int) y);
+                switch (mPaintMode){
+                    case ERASE:
+                        mDrawObjects.add(new DrawnPath(new Path(mDrawPath), new Paint(mPaintPath), PaintMode.ERASE));
+                        mEraserPoint.set((int) x, (int) y);
+                        mDrawPath.moveTo(x, y);
+                        break;
+                    case DRAW:
+                        mDrawPath.moveTo(x, y);
+                        break;
+                    case TEXT:
+                        break;
                 }
-                mDrawPath.moveTo(x, y);
                 break;
             case MotionEvent.ACTION_MOVE:
-                mDrawPath.lineTo(x, y);
-                mCacheCanvas.drawPath(mDrawPath, mPaint);
-
-                if (isEraseMode) {
-                    mDrawnPaths.get(mDrawnPaths.size() - 1).addPath(mDrawPath);
-                    mDrawPath.reset();
-                    mDrawPath.moveTo(x, y);
-                    mEraserPoint.set((int) x, (int) y);
+                switch (mPaintMode){
+                    case ERASE:
+                        mDrawPath.lineTo(x, y);
+                        mCacheCanvas.drawPath(mDrawPath, mPaintPath);
+                        if (mDrawObjects.get(mDrawObjects.size() - 1) instanceof DrawnPath) {
+                            ((DrawnPath) mDrawObjects.get(mDrawObjects.size() - 1)).addPath(mDrawPath);
+                            mDrawPath.reset();
+                            mDrawPath.moveTo(x, y);
+                            mEraserPoint.set((int) x, (int) y);
+                        }
+                        break;
+                    case DRAW:
+                        mDrawPath.lineTo(x, y);
+                        mCacheCanvas.drawPath(mDrawPath, mPaintPath);
+                        break;
+                    case TEXT:
+                        break;
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                mCacheCanvas.drawPath(mDrawPath, mPaint);
+                switch (mPaintMode){
+                    case ERASE:
+                        mCacheCanvas.drawPath(mDrawPath, mPaintPath);
+                        if (mDrawObjects.get(mDrawObjects.size() - 1) instanceof DrawnPath) {
+                            ((DrawnPath) mDrawObjects.get(mDrawObjects.size() - 1)).addPath(mDrawPath);
+                            mEraserPoint.set(OUT_OF_SCREEN_COORDINATE, OUT_OF_SCREEN_COORDINATE);
+                        }
+                        break;
+                    case DRAW:
+                        mCacheCanvas.drawPath(mDrawPath, mPaintPath);
+                        mDrawObjects.add(new DrawnPath(new Path(mDrawPath), new Paint(mPaintPath), PaintMode.DRAW));
+                        mDrawPath.reset();
+                        break;
+                    case TEXT:
+                        break;
+                }
                 xText = x;
                 yText = y;
-                if (isEraseMode) {
-                    mDrawnPaths.get(mDrawnPaths.size() - 1).addPath(mDrawPath);
-                    mEraserPoint.set(OUT_OF_SCREEN_COORDINATE, OUT_OF_SCREEN_COORDINATE);
-                } else {
-                    mDrawnPaths.add(new DrawnPath(new Path(mDrawPath), new Paint(mPaint), PaintMode.DRAW));
-                }
-                mDrawPath.reset();
+
                 break;
             default:
                 return false;
@@ -182,14 +235,19 @@ public class PaintView extends ImageView {
     }
 
     private void setUpDrawingArticles() {
+        mPaintMode = PaintMode.DRAW;
+
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
         mDrawPath = new Path();
 
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        mPaint.setStrokeWidth(mLastBrushThickness = DEFAULT_BRUSH_THICKNESS);
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeJoin(Paint.Join.ROUND);
+        mPaintPath = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+        mPaintPath.setStrokeWidth(mLastBrushThickness = DEFAULT_BRUSH_THICKNESS);
+        mPaintPath.setStyle(Paint.Style.STROKE);
+        mPaintPath.setStrokeCap(Paint.Cap.ROUND);
+        mPaintPath.setStrokeJoin(Paint.Join.ROUND);
+
+        mPaintText.setColor(Color.BLACK);
+        mPaintText.setTextSize(mLastBrushThickness = DEFAULT_BRUSH_THICKNESS);
 
         mEraserPaint = new Paint();
         mEraserPaint.setStrokeWidth(DEFAULT_ERASER_THICKNESS);
@@ -202,62 +260,29 @@ public class PaintView extends ImageView {
 
         mClearMode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
 
-        mDrawnPaths = new ArrayList<>();
+        mDrawObjects = new ArrayList<>();
         mUndone = new ArrayList<>();
     }
 
     public void setBrushColor(int brushColor) {
-        mPaint.setColor(brushColor);
-        mPaint.setAlpha(mCurrentOpacity);
-    }
-
-    public void setEraseMode(boolean eraseMode) {
-        isEraseMode = eraseMode;
-        if (eraseMode) {
-            mPaint.setXfermode(mClearMode);
-        } else {
-            mPaint.setXfermode(null);
-            mPaint.setStrokeWidth(mLastBrushThickness);
-        }
+        mPaintPath.setColor(brushColor);
+        mPaintPath.setAlpha(mCurrentOpacity);
+        mPaintText.setColor(brushColor);
     }
 
     public void undo() {
-        if (mDrawnPaths.size() != 0) {
-            mUndone.add(mDrawnPaths.remove(mDrawnPaths.size() - 1));
+        if (mDrawObjects.size() != 0) {
+            mUndone.add(mDrawObjects.remove(mDrawObjects.size() - 1));
             redrawCache();
         }
     }
 
     public void redo() {
         if (mUndone.size() != 0) {
-            mDrawnPaths.add(mUndone.remove(mUndone.size() - 1));
-            DrawnPath drawnPath = mDrawnPaths.get(mDrawnPaths.size() - 1);
+            mDrawObjects.add(mUndone.remove(mUndone.size() - 1));
+            if (mDrawObjects.get(mDrawObjects.size() - 1) instanceof DrawnPath) {
+                DrawnPath drawnPath = (DrawnPath) mDrawObjects.get(mDrawObjects.size() - 1);
 
-            if (drawnPath.getPaintMode() == PaintMode.DRAW) {
-                mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
-            } else {
-                mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
-            }
-            invalidate();
-        }
-    }
-
-    public void setThickness(float thickness) {
-        if (isEraseMode) {
-            mEraserPaint.setStrokeWidth(thickness);
-        }
-        mPaint.setStrokeWidth(thickness);
-    }
-
-    public void setBrushOpacity(int opacity) {
-        mPaint.setAlpha(opacity);
-        mCurrentOpacity = opacity;
-    }
-
-    private void redrawCache() {
-        if (mCacheCanvas != null) {
-            mCacheCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            for (DrawnPath drawnPath : mDrawnPaths) {
                 if (drawnPath.getPaintMode() == PaintMode.DRAW) {
                     mCacheCanvas.drawPath(drawnPath.getPath(), drawnPath.getPaint());
                 } else {
@@ -268,8 +293,37 @@ public class PaintView extends ImageView {
         }
     }
 
+    public void setThickness(float thickness) {
+        if (isEraseMode) {
+            mEraserPaint.setStrokeWidth(thickness);
+        }
+        mPaintText.setTextSize(thickness);
+        mPaintPath.setStrokeWidth(thickness);
+    }
+
+    public void setBrushOpacity(int opacity) {
+        mPaintPath.setAlpha(opacity);
+        mCurrentOpacity = opacity;
+    }
+
+    private void redrawCache() {
+        if (mCacheCanvas != null) {
+            mCacheCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            for (DrawObject drawObject : mDrawObjects) {
+                if (drawObject instanceof DrawnPath) {
+                    if (((DrawnPath) drawObject).getPaintMode() == PaintMode.DRAW) {
+                        mCacheCanvas.drawPath(((DrawnPath) drawObject).getPath(), drawObject.getPaint());
+                    } else {
+                        mCacheCanvas.drawPath(((DrawnPath) drawObject).getPath(), drawObject.getPaint());
+                    }
+                }
+            }
+            invalidate();
+        }
+    }
+
     public void clear() {
-        mDrawnPaths.clear();
+        mDrawObjects.clear();
         invalidate();
     }
 
@@ -278,7 +332,16 @@ public class PaintView extends ImageView {
     }
 
     public int getBrushThickness() {
-        return (int) mPaint.getStrokeWidth();
+        return (int) mPaintPath.getStrokeWidth();
     }
 
+    public void setPaintMode(PaintMode paintMode){
+        mPaintMode = paintMode;
+        if (paintMode == PaintMode.ERASE) {
+            mPaintPath.setXfermode(mClearMode);
+        } else {
+            mPaintPath.setXfermode(null);
+            mPaintPath.setStrokeWidth(mLastBrushThickness);
+        }
+    }
 }

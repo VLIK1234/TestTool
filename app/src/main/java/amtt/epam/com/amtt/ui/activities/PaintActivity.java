@@ -18,6 +18,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -61,6 +62,8 @@ public class PaintActivity extends BaseActivity
     private Handler mHandler;
     private View mDecorView;
     private ActionBar mActionBar;
+    public TextView mTextValueThickness;
+    public TextView mTextValueOpacity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,6 +184,11 @@ public class PaintActivity extends BaseActivity
         opacityBar.setProgress(PaintView.DEFAULT_OPACITY);
         opacityBar.setOnSeekBarChangeListener(this);
 
+        mTextValueThickness = (TextView) view.findViewById(R.id.tv_thickness_value);
+        mTextValueOpacity = (TextView) view.findViewById(R.id.tv_opacity_value);
+        mTextValueThickness.setText(Integer.toString(thicknessBar.getProgress()));
+        mTextValueOpacity.setText(Integer.toString(opacityBar.getProgress()));
+
         final ImageView opacityImage = (ImageView) view.findViewById(R.id.iv_opacity);
 
         final MultilineRadioGroup multilineRadioGroup = (MultilineRadioGroup) view.findViewById(R.id.multi_line_radio_group);
@@ -190,16 +198,16 @@ public class PaintActivity extends BaseActivity
         paintToolsGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                boolean isEraseMode = checkedId == R.id.rb_eraser;
-                mPaintView.setEraseMode(isEraseMode);
                 switch (checkedId){
                     case R.id.rb_eraser:
+                        mPaintView.setPaintMode(PaintView.PaintMode.ERASE);
                         thicknessBar.setProgress(mPaintView.getEraserThickness());
                         opacityBar.setEnabled(false);
                         opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity_disabled));
                         multilineRadioGroup.clearCheck();
                         break;
                     case R.id.rb_pencil:
+                        mPaintView.setPaintMode(PaintView.PaintMode.DRAW);
                         thicknessBar.setProgress(mPaintView.getBrushThickness());
                         opacityBar.setEnabled(true);
                         opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity));
@@ -207,6 +215,7 @@ public class PaintActivity extends BaseActivity
                         multilineRadioGroup.setEnabled(true);
                         break;
                     case R.id.rb_text:
+                        mPaintView.setPaintMode(PaintView.PaintMode.TEXT);
                         thicknessBar.setProgress(mPaintView.getEraserThickness());
                         opacityBar.setEnabled(false);
                         opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity_disabled));
@@ -283,9 +292,11 @@ public class PaintActivity extends BaseActivity
         switch (seekBar.getId()) {
             case R.id.sb_opacity:
                 mPaintView.setBrushOpacity(progress);
+                mTextValueOpacity.setText(Integer.toString(progress));
                 break;
             case R.id.sb_thickness:
                 mPaintView.setThickness(progress);
+                mTextValueThickness.setText(Integer.toString(progress));
                 break;
         }
     }
