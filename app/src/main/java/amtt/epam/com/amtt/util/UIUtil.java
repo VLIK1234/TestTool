@@ -1,7 +1,10 @@
 package amtt.epam.com.amtt.util;
 
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.DisplayMetrics;
+import android.view.View;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -85,5 +88,13 @@ public final class UIUtil {
     public static int getInDp(int px) {
         float scale = AmttApplication.getContext().getResources().getDisplayMetrics().density;
         return (int) (px * scale + 0.5f);
+    }
+
+    public static void setBackgroundCompat(View view, Drawable drawable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            view.setBackground(drawable);
+        } else {
+            view.setBackgroundDrawable(drawable);
+        }
     }
 }

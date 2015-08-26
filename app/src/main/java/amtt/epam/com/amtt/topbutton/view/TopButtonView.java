@@ -199,14 +199,6 @@ public class TopButtonView extends FrameLayout {
         }
     }
 
-    private void setBackgroundCompat(View view, Drawable drawable) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            view.setBackground(drawable);
-        } else {
-            view.setBackgroundDrawable(drawable);
-        }
-    }
-
     private void playMainButtonRotateAnimation(int duration, int fromAngle, int toAngle) {
         AnimatorSet expand = new AnimatorSet().setDuration(duration);
         LayerDrawable layerDrawable = (LayerDrawable) getResources().getDrawable(R.drawable.background_main_button);
@@ -216,7 +208,7 @@ public class TopButtonView extends FrameLayout {
         animator.start();
         expand.play(animator);
         layerDrawable.setDrawableByLayerId(R.id.main_button_background, drawable);
-        setBackgroundCompat(mMainImageButton, layerDrawable);
+        UIUtil.setBackgroundCompat(mMainImageButton, layerDrawable);
     }
 
     public TopButtonBarView getButtonsBar() {

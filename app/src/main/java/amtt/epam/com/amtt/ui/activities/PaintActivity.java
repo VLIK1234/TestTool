@@ -3,8 +3,6 @@ package amtt.epam.com.amtt.ui.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
@@ -27,7 +25,6 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -47,7 +44,6 @@ import amtt.epam.com.amtt.ui.views.MultilineRadioGroup.OnEntireGroupCheckedChang
 import amtt.epam.com.amtt.ui.views.PaintView;
 import amtt.epam.com.amtt.ui.views.PaletteItem;
 import amtt.epam.com.amtt.util.Logger;
-import amtt.epam.com.amtt.util.UIUtil;
 
 /**
  @author Artsiom_Kaliaha
@@ -375,14 +371,33 @@ public class PaintActivity extends BaseActivity
         RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.rl_paint_activity_main_layout);
         final View view = ((LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.drag_view, null);
 
-        ImageView imageView= (ImageView) view.findViewById(R.id.iv_drag_image);
-        Bitmap bitmap = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        canvas.drawText(drawValueText, 0, UIUtil.getStatusBarHeight(), paintText);
-        imageView.setImageBitmap(bitmap);
+//        ImageView imageView= (ImageView) view.findViewById(R.id.iv_drag_image);
+//        Bitmap bitmap = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
+//        Canvas canvas = new Canvas(bitmap);
+//        canvas.drawText(drawValueText, 0, UIUtil.getStatusBarHeight(), paintText);
+//        imageView.setImageBitmap(bitmap);
+//        mainLayout.addView(view);
 //        DragImageView dragImage = (DragImageView) view.findViewById(R.id.iv_drag_image);
 //        dragImage.drawTextOnBitmap(paintText);
 //        dragImage.setDrawString(drawValueText);
-        mainLayout.addView(view);
+        DragImageView dragImageView = new DragImageView(getBaseContext());
+        dragImageView.setX(100);
+        dragImageView.setY(100);
+
+        WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        windowManager.addView(dragImageView, initMainLayoutParams());
     }
+
+
+    private WindowManager.LayoutParams initMainLayoutParams() {
+        int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
+
+        WindowManager.LayoutParams mainLayout = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT, 0, 0, WindowManager.LayoutParams.TYPE_APPLICATION,
+                flags, PixelFormat.TRANSLUCENT);
+        mainLayout.gravity = Gravity.TOP | Gravity.START;
+        return mainLayout;
+    }
+
 }
