@@ -5,17 +5,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import amtt.epam.com.amtt.common.CoreApplication;
-import amtt.epam.com.amtt.database.DataBaseSource;
-import amtt.epam.com.amtt.googleapi.processing.SpreadsheetProcessor;
-import amtt.epam.com.amtt.googleapi.processing.WorksheetProcessor;
-import amtt.epam.com.amtt.http.HttpClient;
-import amtt.epam.com.amtt.processing.ComponentsProcessor;
-import amtt.epam.com.amtt.processing.PostCreateIssueProcessor;
-import amtt.epam.com.amtt.processing.PriorityProcessor;
-import amtt.epam.com.amtt.processing.ProjectsProcessor;
-import amtt.epam.com.amtt.processing.UserInfoProcessor;
-import amtt.epam.com.amtt.processing.UsersAssignableProcessor;
-import amtt.epam.com.amtt.processing.VersionsProcessor;
+import amtt.epam.com.amtt.util.ThreadManager;
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -40,18 +30,7 @@ public class AmttApplication extends CoreApplication {
 
     @Override
     public void performRegistration() {
-        registerPlugin(new HttpClient());
-        registerPlugin(new DataBaseSource<>());
-
-        registerPlugin(new ComponentsProcessor());
-        registerPlugin(new UserInfoProcessor());
-        registerPlugin(new VersionsProcessor());
-        registerPlugin(new UsersAssignableProcessor());
-        registerPlugin(new ProjectsProcessor());
-        registerPlugin(new PriorityProcessor());
-        registerPlugin(new PostCreateIssueProcessor());
-        registerPlugin(new SpreadsheetProcessor());
-        registerPlugin(new WorksheetProcessor());
+        ThreadManager.performRegistration();
     }
 
 }

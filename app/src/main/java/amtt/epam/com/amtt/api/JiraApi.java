@@ -8,15 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.common.Callback;
-import amtt.epam.com.amtt.common.CoreApplication;
 import amtt.epam.com.amtt.common.DataRequest;
 import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.http.HttpException;
 import amtt.epam.com.amtt.http.Request;
 import amtt.epam.com.amtt.http.Request.Type;
 import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.ThreadManager;
 
 /**
  * Created by Artsiom_Kaliaha on 12.06.2015.
@@ -38,7 +37,7 @@ public class JiraApi {
         Request.Builder requestBuilder = new Request.Builder()
                 .setType(Type.DELETE)
                 .setUrl(mUser.getUrl() + JiraApiConst.LOGIN_PATH);
-        execute(requestBuilder, CoreApplication.NO_PROCESSOR, null);
+        execute(requestBuilder, ThreadManager.NO_PROCESSOR, null);
     }
 
     public void createIssue(String postEntityString, String processorName, Callback callback) {
@@ -83,7 +82,7 @@ public class JiraApi {
                 .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
                 .setHeaders(headers)
                 .setEntity(filesPaths);
-        execute(requestBuilder, CoreApplication.NO_PROCESSOR, callback);
+        execute(requestBuilder, ThreadManager.NO_PROCESSOR, callback);
     }
 
     public static JiraApi get() {
@@ -92,7 +91,7 @@ public class JiraApi {
 
     private void execute(Request.Builder requestBuilder, String processorName, Callback callback) {
         Request request = requestBuilder.build();
-        AmttApplication.executeRequest(new DataRequest<>(HttpClient.NAME, request, processorName, callback));
+        ThreadManager.executeRequest(new DataRequest<>(HttpClient.NAME, request, processorName, callback));
     }
 
 }
