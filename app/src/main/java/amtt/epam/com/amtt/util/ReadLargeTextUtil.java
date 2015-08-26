@@ -6,12 +6,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Created by Ivan_Bakach on 08.07.2015.
+ @author Ivan_Bakach
+ @version on 08.07.2015
  */
+
 public class ReadLargeTextUtil extends Thread{
     private final File file;
 
-    private ArrayList<CharSequence> lines = new ArrayList<>();
+    private final ArrayList<CharSequence> lines = new ArrayList<>();
 
     public ReadLargeTextUtil(File file) {
         this.file = file;

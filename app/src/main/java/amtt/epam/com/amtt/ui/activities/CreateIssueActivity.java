@@ -1,13 +1,10 @@
 package amtt.epam.com.amtt.ui.activities;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
@@ -16,9 +13,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -31,7 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,13 +41,13 @@ import amtt.epam.com.amtt.api.ContentConst;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
-import amtt.epam.com.amtt.bo.database.Step;
+import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.database.object.DbObjectManager;
-import amtt.epam.com.amtt.database.object.IResult;
-import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
+import amtt.epam.com.amtt.database.util.LocalContent;
+import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
+import amtt.epam.com.amtt.helper.DialogHelper;
+import amtt.epam.com.amtt.helper.SharingToEmailHelper;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -65,46 +61,46 @@ import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.GifUtil;
 import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.PreferenceUtil;
-import amtt.epam.com.amtt.util.TestUtil;
 import amtt.epam.com.amtt.util.Validator;
 
 
-public class CreateIssueActivity extends BaseActivity
-        implements AttachmentAdapter.ViewHolder.ClickListener,
-        IResult<List<DatabaseEntity>>,
-        SharedPreferences.OnSharedPreferenceChangeListener,
-        GifUtil.ProgressListener {
+public class CreateIssueActivity extends BaseActivity implements AttachmentAdapter.ViewHolder.ClickListener, AttachmentAdapter.ViewHolder.DataChangedListener,
+                                                        SharedPreferences.OnSharedPreferenceChangeListener, GifUtil.ProgressListener, AttachmentAdapter.ViewHolder.ScreenshotStateListener {
 
     private static final int PAINT_ACTIVITY_REQUEST_CODE = 0;
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final String DEFAULT_PRIORITY_ID = "3";
-    public static final String BUG = "Bug";
-    public static final String TASK = "Task";
+    private static final String BUG = "Bug";
+    private static final String TASK = "Task";
+    private static final String TAG = CreateIssueActivity.class.getSimpleName();
+    private final Queue<ContentConst> mRequestsQueue = new LinkedList<>();
     private AutocompleteProgressView mAssignableAutocompleteView;
-
     private TextInput mDescriptionTextInput;
     private TextInput mEnvironmentTextInput;
     private TextInput mTitleTextInput;
-
     private String mAssignableUserName = null;
     private String mIssueTypeName;
     private String mPriorityName;
     private String mVersionName;
     private AssigneeHandler mHandler;
     private AttachmentAdapter mAdapter;
-    public Spinner mProjectNamesSpinner;
+    private Spinner mProjectNamesSpinner;
     private RecyclerView mRecyclerView;
     private Spinner mComponents;
-    private Queue<ContentConst> mRequestsQueue = new LinkedList<>();
     private Button mCreateIssueButton;
     private ProgressBar mGifProgress;
+    private CheckBox mGifCheckBox;
     private List<Step> mSteps;
     private ScrollView mScrollView;
     private int[] mTitlePoint;
     private CheckBox mCreateAnotherCheckBox;
     private boolean mCreateAnotherIssue;
-    private LayoutInflater mLayoutInflater;
-    private boolean mDoesTopButtonShouldBeShown;
+    private boolean mIsAssignableSelected;
+    private boolean mIsSelfSigned;
+    private Bundle mBundle;
+    private ActiveUser mUser = ActiveUser.getInstance();
+    private JiraContent mJira = JiraContent.getInstance();
+    private AttachmentManager mAttachmentManager = AttachmentManager.getInstance();
 
     public static class AssigneeHandler extends Handler {
 
@@ -127,31 +123,31 @@ public class CreateIssueActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
         TopButtonService.sendActionChangeTopButtonVisibility(false);
-        PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(CreateIssueActivity.this);
-        mHandler = new AssigneeHandler(this);
+        mBundle = getIntent().getExtras();
         initViews();
         mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
         mRequestsQueue.add(ContentConst.ATTACHMENT_RESPONSE);
-        showProgressIfNeed();
-        initAttachmentsView();
         initAttachLogsCheckBox();
         initDescriptionEditText();
+        initAttachmentsView();
+        PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(CreateIssueActivity.this);
+        mHandler = new AssigneeHandler(this);
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         setDefaultConfigs();
-        if (mDoesTopButtonShouldBeShown) {
-            TopButtonService.sendActionChangeTopButtonVisibility(true);
-        }
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         TopButtonService.sendActionChangeTopButtonVisibility(false);
-        mDoesTopButtonShouldBeShown = true;
+        Intent intentLogs = new Intent();
+        intentLogs.setAction("TAKE_LOGS");
+        getBaseContext().sendBroadcast(intentLogs);
     }
 
     @Override
@@ -168,17 +164,17 @@ public class CreateIssueActivity extends BaseActivity
 
     private void setDefaultConfigs() {
         if (mComponents != null && mComponents.getSelectedItem() != null) {
-            String component = JiraContent.getInstance().getComponentIdByName((String) mComponents.getSelectedItem());
-            ActiveUser.getInstance().setLastComponentsIds(component);
+            String component = mJira.getComponentIdByName((String) mComponents.getSelectedItem());
+            mUser.setLastComponentsIds(component);
         }
-        JiraContent.getInstance().setDefaultConfig(ActiveUser.getInstance().getLastProjectKey(),
-                ActiveUser.getInstance().getLastAssignee(), ActiveUser.getInstance().getLastComponentsIds());
+        mJira.setDefaultConfig(mUser.getId(), mUser.getUserName(), mUser.getUrl(), mUser.getLastProjectKey(), mUser.getLastAssignee(), mUser.getLastComponentsIds());
     }
 
     private void initViews() {
         mRequestsQueue.add(ContentConst.PROJECTS_RESPONSE);
         mRequestsQueue.add(ContentConst.PRIORITIES_RESPONSE);
         initCreateIssueButton();
+        showProgressIfNeed();
         initProjectNamesSpinner();
         initSummaryEditText();
         initEnvironmentEditText();
@@ -189,6 +185,22 @@ public class CreateIssueActivity extends BaseActivity
         initClearEnvironmentButton();
         initGifAttachmentControls();
         mScrollView = (ScrollView) findViewById(R.id.scroll_view);
+        initShareAttachmentButton();
+    }
+
+    private void initShareAttachmentButton() {
+        Button shareButton = (Button) findViewById(R.id.bt_share_attachmnet);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mAdapter.getAttachmentFilePathList().size() > 0) {
+                    SharingToEmailHelper.senAttachmentImage(CreateIssueActivity.this, mEnvironmentTextInput.getText().toString(),
+                            mAdapter.getAttachmentFilePathList());
+                } else {
+                    Toast.makeText(getBaseContext(), R.string.error_message_share_attachment, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void initCreateAnotherCheckBox() {
@@ -215,7 +227,7 @@ public class CreateIssueActivity extends BaseActivity
     private void initProjectNamesSpinner() {
         mProjectNamesSpinner = (Spinner) findViewById(R.id.spin_projects_name);
         mProjectNamesSpinner.setEnabled(false);
-        JiraContent.getInstance().getProjectsNames(new GetContentCallback<HashMap<JProjects, String>>() {
+        mJira.getProjectsNames(mUser.getId(), new GetContentCallback<HashMap<JProjects, String>>() {
             @Override
             public void resultOfDataLoading(final HashMap<JProjects, String> result) {
                 if (result != null) {
@@ -226,8 +238,8 @@ public class CreateIssueActivity extends BaseActivity
                             final ArrayAdapter<String> projectsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, projectNames);
                             projectsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                             mProjectNamesSpinner.setAdapter(projectsAdapter);
-                            if (ActiveUser.getInstance().getLastProjectKey() != null) {
-                                JiraContent.getInstance().getProjectNameByKey(ActiveUser.getInstance().getLastProjectKey(), new GetContentCallback<String>() {
+                            if (mUser.getLastProjectKey() != null) {
+                                mJira.getProjectNameByKey(mUser.getLastProjectKey(), new GetContentCallback<String>() {
                                     @Override
                                     public void resultOfDataLoading(String result) {
                                         if (result != null) {
@@ -249,10 +261,11 @@ public class CreateIssueActivity extends BaseActivity
         mProjectNamesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                JiraContent.getInstance().getProjectKeyByName((String) parent.getItemAtPosition(position), new GetContentCallback<String>() {
+                mJira.getProjectKeyByName((String) parent.getItemAtPosition(position), new GetContentCallback<String>() {
                     @Override
                     public void resultOfDataLoading(String result) {
                         if (result != null) {
+                            mUser.setLastProjectKey(result);
                             reinitRelatedViews(result);
                         }
                     }
@@ -268,7 +281,7 @@ public class CreateIssueActivity extends BaseActivity
     private void initPrioritiesSpinner() {
         final Spinner prioritiesSpinner = (Spinner) findViewById(R.id.spin_priority);
         prioritiesSpinner.setEnabled(false);
-        JiraContent.getInstance().getPrioritiesNames(new GetContentCallback<HashMap<String, String>>() {
+        mJira.getPrioritiesNames(mUser.getUrl(), new GetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(final HashMap<String, String> result) {
                 if (result != null) {
@@ -280,13 +293,13 @@ public class CreateIssueActivity extends BaseActivity
                             mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                             prioritiesSpinner.setAdapter(mPrioritiesAdapter);
                             String defaultPriority;
-                            if (GSpreadsheetContent.getInstance().getLastTestcase() != null) {
-                                defaultPriority = GSpreadsheetContent.getInstance().getLastTestcase().getPriorityGSX();
+                            if (mBundle != null && mBundle.getString(ExpectedResultsActivity.PRIORITY) != null) {
+                                defaultPriority = mBundle.getString(ExpectedResultsActivity.PRIORITY);
                                 if (defaultPriority != null) {
                                     prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
                                 }
                             } else {
-                                defaultPriority = JiraContent.getInstance().getPriorityNameById(DEFAULT_PRIORITY_ID);
+                                defaultPriority = mJira.getPriorityNameById(DEFAULT_PRIORITY_ID);
                                 if (defaultPriority != null) {
                                     prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
                                 }
@@ -306,8 +319,7 @@ public class CreateIssueActivity extends BaseActivity
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
+            public void onNothingSelected(AdapterView<?> arg0) {}
         });
     }
 
@@ -315,7 +327,7 @@ public class CreateIssueActivity extends BaseActivity
         final Spinner versionsSpinner = (Spinner) findViewById(R.id.spin_affects_versions);
         final TextView affectTextView = (TextView) findViewById(R.id.tv_affects_versions);
         versionsSpinner.setEnabled(false);
-        JiraContent.getInstance().getVersionsNames(projectKey, new GetContentCallback<HashMap<String, String>>() {
+        mJira.getVersionsNames(projectKey, new GetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
                 if (result != null && result.size() > 0) {
@@ -351,7 +363,7 @@ public class CreateIssueActivity extends BaseActivity
         final TextView componentsTextView = (TextView) findViewById(R.id.tv_components);
         mComponents = (Spinner) findViewById(R.id.spin_components);
         mComponents.setEnabled(false);
-        JiraContent.getInstance().getComponentsNames(projectKey, new GetContentCallback<HashMap<String, String>>() {
+        mJira.getComponentsNames(projectKey, new GetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(HashMap<String, String> result) {
                 if (result != null && result.size() > 0) {
@@ -363,8 +375,8 @@ public class CreateIssueActivity extends BaseActivity
                     mComponents.setAdapter(componentsAdapter);
                     mComponents.setVisibility(View.VISIBLE);
                     mComponents.setEnabled(true);
-                    if (ActiveUser.getInstance().getLastComponentsIds() != null) {
-                        mComponents.setSelection(componentsAdapter.getPosition(JiraContent.getInstance().getComponentNameById(ActiveUser.getInstance().getLastComponentsIds())));
+                    if (mUser.getLastComponentsIds() != null) {
+                        mComponents.setSelection(componentsAdapter.getPosition(mJira.getComponentNameById(mUser.getLastComponentsIds())));
                     } else {
                         mComponents.setSelection(0);
                     }
@@ -381,7 +393,7 @@ public class CreateIssueActivity extends BaseActivity
     private void initIssueTypesSpinner() {
         final Spinner issueTypesSpinner = (Spinner) findViewById(R.id.spin_issue_name);
         issueTypesSpinner.setEnabled(false);
-        JiraContent.getInstance().getIssueTypesNames(new GetContentCallback<List<String>>() {
+        mJira.getIssueTypesNames(new GetContentCallback<List<String>>() {
             @Override
             public void resultOfDataLoading(final List<String> result) {
                 if (result != null) {
@@ -390,7 +402,7 @@ public class CreateIssueActivity extends BaseActivity
                             ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
                             issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
                             issueTypesSpinner.setAdapter(issueTypesAdapter);
-                            if (ActiveUser.getInstance().getRecord()) {
+                            if (mUser.getRecord()) {
                                 if (issueTypesAdapter.getPosition(BUG) != -1) {
                                     issueTypesSpinner.setSelection(issueTypesAdapter.getPosition(BUG));
                                 }
@@ -399,7 +411,6 @@ public class CreateIssueActivity extends BaseActivity
                                     issueTypesSpinner.setSelection(issueTypesAdapter.getPosition(TASK));
                                 }
                             }
-
                             issueTypesSpinner.setEnabled(true);
                             hideKeyboard();
                         }
@@ -449,7 +460,6 @@ public class CreateIssueActivity extends BaseActivity
         mCreateIssueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TestUtil.restartTest();
                 if (!mTitleTextInput.validate()) {
                     mScrollView.smoothScrollTo(mTitlePoint[0], mTitlePoint[1]);
                     showKeyboard(mTitleTextInput.getEdit());
@@ -462,18 +472,20 @@ public class CreateIssueActivity extends BaseActivity
                 showProgress(true);
                 if (mComponents.getSelectedItem() != null) {
                     String components = (String) mComponents.getSelectedItem();
-                    ActiveUser.getInstance().setLastComponentsIds(JiraContent.getInstance().getComponentIdByName(components));
-
+                    mUser.setLastComponentsIds(mJira.getComponentIdByName(components));
                 }
-                JiraContent.getInstance().createIssue(mIssueTypeName, mPriorityName, mVersionName, mTitleTextInput.getText().toString(),
+                mJira.createIssue(mIssueTypeName, mPriorityName, mVersionName, mTitleTextInput.getText().toString(),
                         mDescriptionTextInput.getText().toString(), mEnvironmentTextInput.getText().toString(),
-                        mAssignableUserName, ActiveUser.getInstance().getLastComponentsIds(), new GetContentCallback<JCreateIssueResponse>() {
+                        mAssignableUserName, mUser.getLastComponentsIds(), new GetContentCallback<JCreateIssueResponse>() {
                             @Override
                             public void resultOfDataLoading(JCreateIssueResponse result) {
                                 if (result != null) {
                                     AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
                                     Toast.makeText(CreateIssueActivity.this, R.string.ticket_created, Toast.LENGTH_LONG).show();
                                     TopButtonService.stopRecord(CreateIssueActivity.this);
+                                    if (mAssignableUserName != null && !mAssignableUserName.equals("") && !mUser.getLastAssignee().equals(mAssignableUserName)) {
+                                        mUser.setLastAssigneeName(mAssignableUserName);
+                                    }
                                     if (mCreateAnotherIssue) {
                                         mCreateAnotherCheckBox.setChecked(false);
                                         mTitleTextInput.setText(Constants.Symbols.EMPTY);
@@ -483,7 +495,7 @@ public class CreateIssueActivity extends BaseActivity
                                         finish();
                                     }
                                 } else {
-                                    Toast.makeText(CreateIssueActivity.this, R.string.error, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(CreateIssueActivity.this, getString(R.string.create_ticket_error, mAssignableUserName), Toast.LENGTH_LONG).show();
                                 }
                                 showProgress(false);
                             }
@@ -499,8 +511,8 @@ public class CreateIssueActivity extends BaseActivity
             add(InputsUtil.getEmptyValidator());
             add(InputsUtil.getEndStartWhitespacesValidator());
         }});
-        if (GSpreadsheetContent.getInstance().getLastTestcase() != null) {
-            mTitleTextInput.setText(GSpreadsheetContent.getInstance().getLastTestcase().getTestcaseNameAndId());
+        if (mBundle != null && mBundle.getString(ExpectedResultsActivity.NAME) != null) {
+            mTitleTextInput.setText(mBundle.getString(ExpectedResultsActivity.NAME));
         }
         mTitlePoint = new int[2];
         mTitleTextInput.getLocationOnScreen(mTitlePoint);
@@ -508,31 +520,44 @@ public class CreateIssueActivity extends BaseActivity
 
     private void initAssigneeAutocompleteView() {
         mAssignableAutocompleteView = (AutocompleteProgressView) findViewById(R.id.atv_assignable_users);
+        mAssignableAutocompleteView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mUser.setLastAssigneeName(mAssignableUserName);
+                mIsAssignableSelected = true;
+            }
+        });
         mAssignableAutocompleteView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) {}
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 2 && before <= count) {
-                    if (InputsUtil.getWhitespacesValidator().validate(mAssignableAutocompleteView)) {
-                        Toast.makeText(CreateIssueActivity.this, getString(R.string.label_tester) + getString(R.string.label_no_whitespaces), Toast.LENGTH_LONG).show();
-                    } else {
-                        mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
-                        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
-                        mAssignableUserName = s.toString();
+                mIsAssignableSelected = false;
+                if (!mIsSelfSigned) {
+                    if (count > 0) {
+                        if (s.length() > 2) {
+                            if (InputsUtil.getWhitespacesValidator().validate(mAssignableAutocompleteView)) {
+                                Toast.makeText(CreateIssueActivity.this, getString(R.string.label_tester) + getString(R.string.label_no_whitespaces), Toast.LENGTH_LONG).show();
+                            } else {
+                                mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
+                                mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
+                            }
+                        }
+                    } else if (count == 0) {
+                        mAssignableAutocompleteView.dismissDropDown();
+                        mAssignableAutocompleteView.setAdapter(null);
                     }
+                    mAssignableUserName = s.toString();
                 }
             }
         });
-        if (ActiveUser.getInstance().getLastAssignee() != null) {
-            mAssignableAutocompleteView.setText(ActiveUser.getInstance().getLastAssignee());
+        if (mUser.getLastAssignee() != null) {
+            mIsAssignableSelected = true;
+            mAssignableAutocompleteView.setText(mUser.getLastAssignee());
         }
         initAssignSelfButton();
     }
@@ -542,14 +567,17 @@ public class CreateIssueActivity extends BaseActivity
         mAssignSelfButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAssignableAutocompleteView.setText(ActiveUser.getInstance().getUserName());
+                mIsSelfSigned = true;
+                String userName = mUser.getUserName();
+                mAssignableAutocompleteView.setText(userName);
+                mUser.setLastAssigneeName(userName);
             }
         });
     }
 
     private void initAttachmentsView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.listScreens);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CreateIssueActivity.this);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CreateIssueActivity.this);
         linearLayoutManager.setOrientation(OrientationHelper.HORIZONTAL);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -561,53 +589,28 @@ public class CreateIssueActivity extends BaseActivity
         clearEnvironmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(CreateIssueActivity.this)
-                        .setTitle(R.string.label_clear_environment)
-                        .setMessage(R.string.message_clear_environment)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mEnvironmentTextInput.setText(Constants.Symbols.EMPTY);
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .create()
-                        .show();
+                DialogHelper.getClearEnvironmentDialog(CreateIssueActivity.this, new DialogHelper.IDialogButtonClick() {
+                    @Override
+                    public void positiveButtonClick() {
+                        mEnvironmentTextInput.setText(Constants.Symbols.EMPTY);
+                    }
+
+                    @Override
+                    public void negativeButtonClick() {
+                    }
+                }).show();
             }
         });
     }
 
     private void initGifAttachmentControls() {
-        CheckBox gifCheckBox = (CheckBox) findViewById(R.id.cb_gif_attachment);
-        gifCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mGifCheckBox = (CheckBox) findViewById(R.id.cb_gif_attachment);
+        mGifCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 if (!PreferenceUtil.getBoolean(getString(R.string.key_gif_info_dialog))) {
-                    new AlertDialog.Builder(CreateIssueActivity.this)
-                            .setTitle(R.string.title_gif_info)
-                            .setMessage(R.string.message_gif_info)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    PreferenceUtil.putBoolean(getString(R.string.key_gif_info_dialog), true);
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                                @Override
-                                public void onCancel(DialogInterface dialog) {
-                                    PreferenceUtil.putBoolean(getString(R.string.key_gif_info_dialog), true);
-                                }
-                            })
-                            .create()
-                            .show();
+                    DialogHelper.getGifInfoDialog(CreateIssueActivity.this).show();
                 }
-
                 int stepsArraySize = mSteps.size();
                 if (isChecked && stepsArraySize != 0) {
                     mGifProgress.setMax(stepsArraySize);
@@ -639,155 +642,162 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     private void setAssignableNames(String s) {
-        mAssignableAutocompleteView.setEnabled(false);
-        mAssignableAutocompleteView.showProgress(true);
-        JiraContent.getInstance().getUsersAssignable(s, new GetContentCallback<List<String>>() {
-            @Override
-            public void resultOfDataLoading(List<String> result) {
-                if (result != null) {
-                    ArrayAdapter<String> assignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
-                    mAssignableAutocompleteView.setThreshold(1);
-                    mAssignableAutocompleteView.setAdapter(assignableUsersAdapter);
-                    if (assignableUsersAdapter.getCount() > 0) {
-                        if (!mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
+        if (!mIsAssignableSelected) {
+            mAssignableAutocompleteView.setEnabled(false);
+            mAssignableAutocompleteView.showProgress(true);
+            mJira.getUsersAssignable(s, new GetContentCallback<List<String>>() {
+                @Override
+                public void resultOfDataLoading(List<String> result) {
+                    if (result != null) {
+                        ArrayAdapter<String> assignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_dropdown_item, result);
+                        mAssignableAutocompleteView.setThreshold(1);
+                        mAssignableAutocompleteView.setAdapter(assignableUsersAdapter);
+                        if (assignableUsersAdapter.getCount() > 0 && !mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
                             mAssignableAutocompleteView.showDropDown();
-                        } else {
-                            ActiveUser.getInstance().setLastAssigneeName(mAssignableAutocompleteView.getText().toString());
                         }
                     }
-
+                    mAssignableAutocompleteView.showProgress(false);
+                    mAssignableAutocompleteView.setEnabled(true);
                 }
-                mAssignableAutocompleteView.showProgress(false);
-                mAssignableAutocompleteView.setEnabled(true);
+            });
+        }
+    }
+
+    private void showProgressIfNeed() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (!mRequestsQueue.isEmpty()) {
+                    showProgress(true);
+                    mCreateIssueButton.setEnabled(false);
+                } else {
+                    showProgress(false);
+                    mCreateIssueButton.setEnabled(true);
+                }
             }
         });
     }
 
-    public void showProgressIfNeed() {
-        if (!mRequestsQueue.isEmpty()) {
-            showProgress(true);
-            mCreateIssueButton.setEnabled(false);
-        } else {
-            showProgress(false);
-            mCreateIssueButton.setEnabled(true);
-        }
+    private void loadAttachments() {
+        loadSteps();
     }
 
-    private void loadAttachments() {
-        DbObjectManager.INSTANCE.getAll(new Step(), this);
+    private void loadSteps() {
+        LocalContent.getAllSteps(new GetContentCallback<List<Step>>() {
+                                     @Override
+                                     public void resultOfDataLoading(final List<Step> result) {
+                                         if (result != null) {
+                                             runOnUiThread(new Runnable() {
+                                                 @Override
+                                                 public void run() {
+
+                                                     mSteps = result;
+                                                     List<Attachment> screenArray = mAttachmentManager.stepsToAttachments(result);
+                                                     mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment,
+                                                                                        CreateIssueActivity.this, CreateIssueActivity.this);
+                                                     if (mRecyclerView != null) {
+                                                         mRecyclerView.setAdapter(mAdapter);
+                                                     }
+                                                     if (mSteps.size() == 0) {
+                                                         mGifCheckBox.setEnabled(false);
+                                                     }
+
+                                                 }
+                                             });
+                                         }
+                                         mRequestsQueue.remove(ContentConst.ATTACHMENT_RESPONSE);
+                                         showProgressIfNeed();
+                                     }
+                                 }
+        );
+    }
+
+
+    @Override
+    public void onReloadData() {
+        loadSteps();
+    }
+
+    @Override
+    public void onShowMessage() {
+        new AlertDialog.Builder(CreateIssueActivity.this, R.style.Dialog)
+                .setTitle(R.string.title_notes_arent_applied)
+                .setMessage(R.string.message_notes_arent_applied)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
     }
 
     private void removeStepFromDatabase(int position) {
         Attachment attachment = mAdapter.getAttachments().get(position);
-        int stepId = attachment.mStepId;
-        FileUtil.delete(attachment.mFilePath);
-        DbObjectManager.INSTANCE.remove(new Step(stepId));
+        int stepId = attachment.getStepId();
+        FileUtil.delete(attachment.getFilePath());
+        LocalContent.removeStep(new Step(stepId));
         mAdapter.getAttachments().remove(position);
         mAdapter.notifyItemRemoved(position);
         getDescription();
     }
 
     private void getDescription() {
-        JiraContent.getInstance().getDescription(new GetContentCallback<Spanned>() {
-            @Override
-            public void resultOfDataLoading(final Spanned result) {
-                if (result != null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mDescriptionTextInput != null) {
-                                mDescriptionTextInput.setText(result);
-                            }
-                        }
-                    });
-                }
-                mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
-                showProgressIfNeed();
+        if (mDescriptionTextInput != null) {
+            if (mBundle != null && mBundle.getString(ExpectedResultsActivity.STEPS) != null &&
+                    mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT) != null) {
+                GEntryWorksheet testcase = new GEntryWorksheet();
+                testcase.setTestStepsGSX(mBundle.getString(ExpectedResultsActivity.STEPS));
+                testcase.setExpectedResultGSX(mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT));
+                mDescriptionTextInput.setText(testcase.getFullTestCaseDescription());
             }
-        });
-    }
-
-    //Callbacks
-    //IResult for attachments
-    @Override
-    public void onResult(final List<DatabaseEntity> result) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (result != null) {
-                    mSteps = (List) result;
-                    List<Attachment> screenArray = AttachmentManager.getInstance().getAttachmentList(result);
-                    File externalCache = new File(Environment.getExternalStorageDirectory(), "Amtt_cache");
-                    String template = externalCache.getPath() + "/%s";
-                    String pathLogCommon = String.format(template, "log_common.txt");
-                    String pathLogException = String.format(template, "log_exception.txt");
-                    final File fileLogCommon = new File(pathLogCommon);
-                    final File fileLogException = new File(pathLogException);
-                    final Attachment attachLogCommon = new Attachment(pathLogCommon);
-                    final Attachment attachLogException = new Attachment(pathLogException);
-                    if (PreferenceUtil.getBoolean(getString(R.string.key_is_attach_logs))) {
-                        if (fileLogCommon.exists() && fileLogException.exists()) {
-                            screenArray.add(attachLogCommon);
-                            screenArray.add(attachLogException);
-                        }
-                    }
-                    mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment);
-                    mRecyclerView.setAdapter(mAdapter);
-                }
-                mRequestsQueue.remove(ContentConst.ATTACHMENT_RESPONSE);
-                showProgressIfNeed();
-            }
-        });
-    }
-
-    @Override
-    public void onError(Exception e) {
-
+            LocalContent.getAllSteps(new GetContentCallback<List<Step>>() {
+                                         @Override
+                                         public void resultOfDataLoading(final List<Step> result) {
+                                             if (result != null) {
+                                                 CreateIssueActivity.this.runOnUiThread(new Runnable() {
+                                                     public void run() {
+                                                         mDescriptionTextInput.setText(mDescriptionTextInput.getText().append(LocalContent.getStepInfo(result)));
+                                                     }
+                                                 });
+                                             }
+                                         }
+                                     }
+            );
+        }
+        mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
+        showProgressIfNeed();
     }
 
     //Recycler
     @Override
     public void onItemRemove(final int position) {
-        if (mLayoutInflater == null) {
-            mLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        }
-        if (FileUtil.isPicture(mAdapter.getAttachments().get(position).mFilePath)) {
+        if (FileUtil.isPicture(mAdapter.getAttachments().get(position).getFilePath())) {
             if (!PreferenceUtil.getBoolean(getString(R.string.key_step_deletion_dialog))) {
-                View dialogView = mLayoutInflater.inflate(R.layout.dialog_step_deletion, null);
-                CheckBox doNotShowAgain = (CheckBox) dialogView.findViewById(R.id.cb_do_not_show_again);
-                doNotShowAgain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                DialogHelper.getStepDeletionDialog(this, new DialogHelper.IDialogButtonClick() {
                     @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        PreferenceUtil.putBoolean(getString(R.string.key_step_deletion_dialog), isChecked);
+                    public void positiveButtonClick() {
+                        mGifCheckBox.setEnabled(true);
+                        removeStepFromDatabase(position);
                     }
-                });
 
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.title_step_deletion)
-                        .setMessage(R.string.message_step_deletion)
-                        .setView(dialogView)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                removeStepFromDatabase(position);
-                                dialog.dismiss();
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .create()
-                        .show();
+                    @Override
+                    public void negativeButtonClick() {}
+                }).show();
             } else {
                 removeStepFromDatabase(position);
             }
-        } else if (FileUtil.isText(mAdapter.getAttachments().get(position).mFilePath)) {
-            removeStepFromDatabase(position);
-        }
+        } else if (FileUtil.isText(mAdapter.getAttachments().get(position).getFilePath())) {
+            DialogHelper.getAreYouSureDialog(this, getString(R.string.title_delete_log_dialiog), getString(R.string.label_message_delete_log_dialiog), new DialogHelper.IDialogButtonClick() {
+                @Override
+                public void positiveButtonClick() {
+                    mAdapter.getAttachments().remove(position);
+                    mAdapter.notifyItemRemoved(position);
+                }
 
+                @Override
+                public void negativeButtonClick() {}
+            }).show();
+        }
     }
 
     @Override
@@ -799,10 +809,11 @@ public class CreateIssueActivity extends BaseActivity
 
     @Override
     public void onItemShow(int position) {
-        mDoesTopButtonShouldBeShown = false;
         Intent intent = null;
-        String filePath = mAdapter.getAttachmentFilePathList().get(position);
-
+        String filePath = Constants.Symbols.EMPTY;
+        if (mAdapter != null && mAdapter.getAttachmentFilePathList() != null && mAdapter.getAttachmentFilePathList().size() > position) {
+            filePath = mAdapter.getAttachmentFilePathList().get(position);
+        }
         if (filePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
                 filePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
                 filePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
@@ -815,24 +826,31 @@ public class CreateIssueActivity extends BaseActivity
             intent.putExtra(LogActivity.FILE_PATH, filePath);
             startActivity(intent);
         } else if (filePath.contains(MimeType.IMAGE_GIF.getFileExtension())) {
-            intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.parse("file:///" + filePath), MimeType.IMAGE_GIF.getType());
-        }
-        if (intent != null) {
+            intent = new Intent(CreateIssueActivity.this, GifPlayerActivity.class);
+            intent.putExtra(GifPlayerActivity.GIF_IMAGE_KEY, filePath);
             startActivity(intent);
+        }
+        if (TextUtils.isEmpty(filePath)) {
+            if (intent != null) {
+                startActivity(intent);
+            }
         }
     }
 
     //Gif processing
     @Override
-    public void onProgress(int progress) {
-        if (mGifProgress != null) {
-            if (mGifProgress.isIndeterminate()) {
-                mGifProgress.setIndeterminate(false);
+    public void onProgress(final int progress) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mGifProgress != null) {
+                    if (mGifProgress.isIndeterminate()) {
+                        mGifProgress.setIndeterminate(false);
+                    }
+                    mGifProgress.setProgress(progress);
+                }
             }
-            mGifProgress.setProgress(progress);
-        }
+        });
     }
 
     @Override
@@ -840,22 +858,43 @@ public class CreateIssueActivity extends BaseActivity
         if (mGifProgress != null && mAdapter != null) {
             mGifProgress.setVisibility(View.GONE);
             mAdapter.addItem(0, new Attachment(GifUtil.FILE_PATH));
+            Toast.makeText(CreateIssueActivity.this, R.string.label_gif_created, Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    public void onSavingError() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.title_gif_isnt_saved)
-                .setMessage(R.string.message_gif_isnt_saved)
+    public void onSavingError(Throwable throwable) {
+        mGifProgress.setVisibility(View.GONE);
+        mGifCheckBox.setChecked(false);
+        mGifCheckBox.setEnabled(false);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                })
-                .create()
-                .show();
+                });
+        if (throwable instanceof IOException) {
+            dialogBuilder.setTitle(R.string.title_gif_isnt_saved).setMessage(R.string.message_gif_isnt_saved);
+        } else if (throwable instanceof OutOfMemoryError) {
+            dialogBuilder.setTitle(R.string.title_gif_cant_be_created).setMessage(R.string.message_gif_cant_be_created);
+        } else {
+            dialogBuilder.setTitle(R.string.title_gif_error).setMessage(R.string.message_gif_error);
+        }
+        dialogBuilder.create().show();
     }
 
+    @Override
+    public void onBackPressed() {
+        DialogHelper.getAreYouSureDialog(this, getString(R.string.title_exit_dialog), getString(R.string.label_message_exit_dialog), new DialogHelper.IDialogButtonClick() {
+
+            @Override
+            public void positiveButtonClick() {
+                finish();
+            }
+
+            @Override
+            public void negativeButtonClick() {}
+        }).show();
+    }
 }

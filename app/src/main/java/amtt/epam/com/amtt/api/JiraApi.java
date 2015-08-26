@@ -25,6 +25,7 @@ import amtt.epam.com.amtt.util.ActiveUser;
 public class JiraApi {
 
     private static final JiraApi INSTANCE;
+    private ActiveUser mUser = ActiveUser.getInstance();
 
     static {
         INSTANCE = new JiraApi();
@@ -36,13 +37,13 @@ public class JiraApi {
     public void signOut() {
         Request.Builder requestBuilder = new Request.Builder()
                 .setType(Type.DELETE)
-                .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.LOGIN_PATH);
+                .setUrl(mUser.getUrl() + JiraApiConst.LOGIN_PATH);
         execute(requestBuilder, CoreApplication.NO_PROCESSOR, null);
     }
 
     public void createIssue(String postEntityString, String processorName, Callback callback) {
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, ActiveUser.getInstance().getCredentials());
+        headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
 
         HttpEntity entity;
@@ -57,39 +58,29 @@ public class JiraApi {
 
         Request.Builder requestBuilder = new Request.Builder()
                 .setType(Type.POST)
-                .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH)
+                .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH)
                 .setHeaders(headers)
                 .setEntity(entity);
         execute(requestBuilder, processorName, callback);
     }
 
-    public void searchData(String requestSuffix, String processorName, String userName, String password, String url, Callback callback) {
-        String credentials;
-        if (userName != null && password != null) {
-            //this code is used when new user is added and we need to getClient all the info about a user and authorize him/her in one request
-            credentials = ActiveUser.getInstance().makeTempCredentials(userName, password);
-        } else {
-            credentials = ActiveUser.getInstance().getCredentials();
-            url = ActiveUser.getInstance().getUrl();
-        }
+    public void searchData(String requestSuffix, String processorName, Callback callback) {
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, credentials);
-
+        headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         Request.Builder requestBuilder = new Request.Builder()
                 .setType(Type.GET)
-                .setUrl(url + requestSuffix)
+                .setUrl(mUser.getUrl() + requestSuffix)
                 .setHeaders(headers);
         execute(requestBuilder, processorName, callback);
     }
 
     public void createAttachment(String issueKey, List<String> filesPaths, Callback callback) {
         Map<String, String> headers = new HashMap<>();
-        headers.put(JiraApiConst.AUTH, ActiveUser.getInstance().getCredentials());
+        headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
-
         Request.Builder requestBuilder = new Request.Builder()
                 .setType(Type.POST)
-                .setUrl(ActiveUser.getInstance().getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
+                .setUrl(mUser.getUrl() + JiraApiConst.ISSUE_PATH + issueKey + JiraApiConst.ATTACHMENTS_PATH)
                 .setHeaders(headers)
                 .setEntity(filesPaths);
         execute(requestBuilder, CoreApplication.NO_PROCESSOR, callback);

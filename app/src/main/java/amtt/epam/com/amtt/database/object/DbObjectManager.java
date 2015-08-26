@@ -26,17 +26,21 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
     * Use this method for updates. Exception won't be thrown, all the conflicts will be replaced.
     * */
 
-    public static final String SIGN_SELECTION = "=?";
-    public static final String SIGN_AND = " AND ";
+    private static final String SIGN_SELECTION = "=?";
+    private static final String SIGN_AND = " AND ";
 
 
     @Override
-    public Integer add(DatabaseEntity object) {
+    public <Entity extends DatabaseEntity> Integer add(Entity object) {
         Uri insertedItemUri = AmttApplication.getContext().getContentResolver().insert(object.getUri(), object.getContentValues());
-        return Integer.valueOf(insertedItemUri.getLastPathSegment());
+        if (insertedItemUri != null) {
+            return Integer.valueOf(insertedItemUri.getLastPathSegment());
+        }else{
+            return -1;
+        }
     }
 
-    public int add(List<DatabaseEntity> objects) {
+    private <Entity extends DatabaseEntity> int add(List<Entity> objects) {
         ContentValues[] contentValues = new ContentValues[objects.size()];
         for (int i = 0; i < objects.size(); i++) {
             contentValues[i] = objects.get(i).getContentValues();
@@ -45,7 +49,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
                 contentValues);
     }
 
-    public synchronized void add(final DatabaseEntity object, final IResult<Integer> result) {
+    public synchronized <Entity extends DatabaseEntity> void add(final Entity object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -57,7 +61,7 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
         }).start();
     }
 
-    public synchronized void add(final List<DatabaseEntity> object, final IResult<Integer> result) {
+    public synchronized <Entity extends DatabaseEntity> void add(final List<Entity> object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -70,11 +74,12 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
     }
 
     @Override
-    public Integer update(DatabaseEntity object, String selection, String[] selectionArgs) {
+    public <Entity extends DatabaseEntity> Integer update(Entity object, String selection, String[] selectionArgs) {
         return AmttApplication.getContext().getContentResolver().update(object.getUri(), object.getContentValues(), selection, selectionArgs);
     }
 
-    public synchronized void update(final DatabaseEntity object, final String selection, final String[] selectionArgs, final IResult<Integer> result) {
+    public synchronized <Entity extends DatabaseEntity> void update(final Entity object, final String selection,
+                                                                    final String[] selectionArgs, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -87,32 +92,39 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
     }
 
     @Override
-    public void remove(final DatabaseEntity object) {
+    public <Entity extends DatabaseEntity> void remove(final Entity object, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                AmttApplication.getContext().getContentResolver().delete(object.getUri(), BaseColumns._ID + "=?", new String[]{String.valueOf(object.getId())});
+                int outcome = AmttApplication.getContext().getContentResolver().delete(object.getUri(), BaseColumns._ID + "=?",
+                                                                                        new String[]{String.valueOf(object.getId())});
+                if (result != null) {
+                    result.onResult(outcome);
+                }
             }
         }).start();
     }
 
     @Override
-    public void removeAll(final DatabaseEntity objectPrototype) {
+    public <Entity extends DatabaseEntity> void removeAll(final Entity objectPrototype, final IResult<Integer> result) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                AmttApplication.getContext().getContentResolver().delete(objectPrototype.getUri(), null, null);
+                int outcome = AmttApplication.getContext().getContentResolver().delete(objectPrototype.getUri(), null, null);
+                if (result != null) {
+                    result.onResult(outcome);
+                }
             }
         }).start();
     }
 
     @Override
-    public void getAll(DatabaseEntity object, IResult<List<DatabaseEntity>> result) {
+    public <Entity extends DatabaseEntity> void getAll(Entity object, IResult<List<Entity>> result) {
         query(object, null, null, null, result);
     }
 
-    public <T extends DatabaseEntity> void query(final T entity, final String[] projection,
-                                                 final String[] mSelection, final String[] mSelectionArgs, final IResult<List<T>> result) {
+    public <Entity extends DatabaseEntity> void query(final Entity entity, final String[] projection, final String[] mSelection,
+                                                      final String[] mSelectionArgs, final IResult<List<Entity>> result) {
         final Handler handler = new Handler();
         new Thread(new Runnable() {
             @Override
@@ -135,13 +147,14 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
                     }
                 }
 
-                Cursor cursor = AmttApplication.getContext().getContentResolver().query(entity.getUri(), projection, selectionString, mSelectionArgs, null);
-                final List<T> listObject = new ArrayList<>();
+                Cursor cursor = AmttApplication.getContext().getContentResolver().query(entity.getUri(), projection,
+                                                                                        selectionString, mSelectionArgs, null);
+                final List<Entity> listObject = new ArrayList<>();
                 if (cursor != null) {
                     if (cursor.moveToFirst()) {
                         do {
                             try {
-                                listObject.add((T) entity.parse(cursor));
+                                listObject.add((Entity) entity.parse(cursor));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -158,4 +171,37 @@ public enum DbObjectManager implements IDbObjectManger<DatabaseEntity> {
             }
         }).start();
     }
+
+    public synchronized <Entity extends DatabaseEntity> void queryDefault(final Entity entity, final String[] projection,
+                                                        final String mSelection, final String[] mSelectionArgs, final IResult<List<Entity>> result) {
+        final Handler handler = new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (mSelectionArgs != null && mSelection != null) {
+                    Cursor cursor = AmttApplication.getContext().getContentResolver().query(entity.getUri(), projection, mSelection, mSelectionArgs, null);
+                    final List<Entity> listObject = new ArrayList<>();
+                    if (cursor != null) {
+                        if (cursor.moveToFirst()) {
+                            do {
+                                try {
+                                    listObject.add((Entity) entity.parse(cursor));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } while (cursor.moveToNext());
+                        }
+                    }
+                    IOUtils.close(cursor);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            result.onResult(listObject);
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
+
 }

@@ -21,7 +21,6 @@ public class WorksheetTable extends Table {
     public static final String _TITLE = "_title";
     public static final String _TOTAL_RESULTS = "_total_results";
     public static final String _START_INDEX = "_start_index";
-    public static final String _LABELS = "_labels";
 
     private static final MultiValueMap<String, String> sColumnsMap;
 
@@ -32,8 +31,7 @@ public class WorksheetTable extends Table {
             _UPDATED,
             _TITLE,
             _TOTAL_RESULTS,
-            _START_INDEX,
-            _LABELS
+            _START_INDEX
     };
 
     static {
@@ -45,7 +43,6 @@ public class WorksheetTable extends Table {
             add(_TITLE);
             add(_TOTAL_RESULTS);
             add(_START_INDEX);
-            add(_LABELS);
         }});
         sColumnsMap.put(BaseColumns.TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);

@@ -8,8 +8,10 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.exception.ExceptionType;
 
 /**
- * Created by Artsiom_Kaliaha on 29.04.2015.
+ @author Artsiom_Kaliaha
+ @version on 29.04.2015
  */
+
 public class DialogUtils {
 
 

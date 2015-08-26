@@ -8,10 +8,11 @@ import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
-import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
+import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.IOUtils;
+import amtt.epam.com.amtt.util.InputsUtil;
 import amtt.epam.com.amtt.util.Logger;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -25,6 +26,7 @@ import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +36,9 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 2;
     private final String TAG = this.getClass().getSimpleName();
+    private ActiveUser mUser = ActiveUser.getInstance();
+    private JiraContent mJira = JiraContent.getInstance();
+    private GSpreadsheetContent mSpreadsheetContent = GSpreadsheetContent.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,21 +91,22 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     }
 
     private void setActiveUser(Cursor data) {
-        ActiveUser.getInstance().clearActiveUser();
+        mUser.clearActiveUser();
         JUserInfo userInfo = new JUserInfo(data);
-        ActiveUser.getInstance().setUrl(userInfo.getUrl());
-        ActiveUser.getInstance().setCredentials(userInfo.getCredentials());
-        ActiveUser.getInstance().setId(userInfo.getId());
-        ActiveUser.getInstance().setUserName(userInfo.getName());
-        ActiveUser.getInstance().setLastProjectKey(userInfo.getLastProjectKey());
-        ActiveUser.getInstance().setLastAssigneeName(userInfo.getLastAssigneeName());
-        ActiveUser.getInstance().setLastComponentsIds(userInfo.getLastComponentsIds());
-        Logger.e(TAG, "ID " + userInfo.getId());
-        Logger.e(TAG, "LastProjectKey " + userInfo.getLastProjectKey());
+        mUser.setUrl(userInfo.getUrl());
+        mUser.setCredentials(userInfo.getCredentials());
+        mUser.setId(userInfo.getId());
+        mUser.setUserName(userInfo.getName());
+        mUser.setLastProjectKey(userInfo.getLastProjectKey());
+        mUser.setLastAssigneeName(userInfo.getLastAssigneeName());
+        mUser.setLastComponentsIds(userInfo.getLastComponentsIds());
+        mUser.setSpreadsheetLink(userInfo.getLastSpreadsheetUrl());
+        Logger.d(TAG, "ID " + userInfo.getId());
+        Logger.d(TAG, "LastProjectKey " + userInfo.getLastProjectKey());
         ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
             public void run() {
-                JiraContent.getInstance().getPrioritiesNames(new GetContentCallback<HashMap<String, String>>() {
+                mJira.getPrioritiesNames(mUser.getUrl(), new GetContentCallback<HashMap<String, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<String, String> result) {
                         if (result != null) {
@@ -108,7 +114,7 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         }
                     }
                 });
-                JiraContent.getInstance().getProjectsNames(new GetContentCallback<HashMap<JProjects, String>>() {
+                mJira.getProjectsNames(mUser.getId(), new GetContentCallback<HashMap<JProjects, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<JProjects, String> result) {
                         if (result != null) {
@@ -116,16 +122,18 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
                         }
                     }
                 });
-                GSpreadsheetContent.getInstance().getSpreadsheet(new GetContentCallback<GSpreadsheet>() {
-                    @Override
-                    public void resultOfDataLoading(GSpreadsheet result) {
-                        if (result != null) {
-                            Logger.d(TAG, "Loading spreadsheet finish");
-                        }else{
-                            Logger.d(TAG, "Loading spreadsheet crashed");
+                if (!InputsUtil.isEmpty(mUser.getSpreadsheetLink())) {
+                    mSpreadsheetContent.getAllTestCases(mUser.getSpreadsheetLink(), new GetContentCallback<List<GEntryWorksheet>>() {
+                        @Override
+                        public void resultOfDataLoading(List<GEntryWorksheet> result) {
+                            if (result != null) {
+                                Logger.d(TAG, "Loading testcases finish");
+                            } else {
+                                Logger.d(TAG, "Loading testcases error");
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         };
         worker.schedule(task, 2, TimeUnit.SECONDS);

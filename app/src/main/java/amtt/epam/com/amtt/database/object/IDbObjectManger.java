@@ -3,17 +3,19 @@ package amtt.epam.com.amtt.database.object;
 import java.util.List;
 
 /**
- * Created by Artsiom_Kaliaha on 11.05.2015.
+ @author Artsiom_Kaliaha
+ @version on 11.05.2015
  */
+
 public interface IDbObjectManger<ObjectType> {
 
-    Integer add(ObjectType object);
+    <Entity extends ObjectType> Integer add(Entity object);
 
-    Integer update(ObjectType object, String selection, String[] selectionArgs);
+    <Entity extends ObjectType> Integer update(Entity object, String selection, String[] selectionArgs);
 
-    void remove(ObjectType object);
+    <Entity extends ObjectType> void remove(Entity object, IResult<Integer> result);
 
-    void removeAll(ObjectType objectPrototype);
+    <Entity extends ObjectType> void removeAll(Entity objectPrototype, IResult<Integer> result);
 
-    void getAll(ObjectType object, IResult<List<ObjectType>> result);
+    <Entity extends ObjectType> void getAll(Entity object, IResult<List<Entity>> result);
 }

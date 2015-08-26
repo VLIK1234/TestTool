@@ -46,6 +46,7 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
     private String mLastAssigneeName;
     private String mLastComponentsIds;
     private List<String> mListLastComponentsIds;
+    private String mLastSpreadsheetUrl;
 
     public JUserInfo() {
     }
@@ -70,6 +71,7 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         mLastProjectKey = cursor.getString(cursor.getColumnIndex(UsersTable._LAST_PROJECT_KEY));
         mLastAssigneeName = cursor.getString(cursor.getColumnIndex(UsersTable._LAST_ASSIGNEE_NAME));
         mLastComponentsIds = cursor.getString(cursor.getColumnIndex(UsersTable._LAST_COMPONENTS_IDS));
+        mLastSpreadsheetUrl = cursor.getString(cursor.getColumnIndex(UsersTable._LAST_SPREADSHEET_URL));
     }
 
     public JUserInfo(String key, String self, String name, JAvatarUrls avatarUrls, String emailAddress, String displayName, String timeZone, String locale) {
@@ -202,6 +204,14 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         }
     }
 
+    public String getLastSpreadsheetUrl() {
+        return mLastSpreadsheetUrl;
+    }
+
+    public void setLastSpreadsheetUrl(String lastSpreadsheetUrl) {
+        mLastSpreadsheetUrl = lastSpreadsheetUrl;
+    }
+
     @Override
     public int getId() {
         return mId;
@@ -230,6 +240,7 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         values.put(UsersTable._LAST_PROJECT_KEY, mLastProjectKey);
         values.put(UsersTable._LAST_ASSIGNEE_NAME, mLastAssigneeName);
         values.put(UsersTable._LAST_COMPONENTS_IDS, mLastComponentsIds);
+        values.put(UsersTable._LAST_SPREADSHEET_URL, mLastSpreadsheetUrl);
         return values;
     }
 

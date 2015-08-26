@@ -11,7 +11,7 @@ import amtt.epam.com.amtt.AmttApplication;
  */
 public final class NetUtil {
 
-    private static ConnectivityManager sConnectivityManager;
+    private final static ConnectivityManager sConnectivityManager;
 
     static {
         sConnectivityManager = (ConnectivityManager) AmttApplication.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);

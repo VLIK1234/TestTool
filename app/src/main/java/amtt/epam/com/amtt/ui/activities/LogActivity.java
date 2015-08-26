@@ -34,19 +34,15 @@ import amtt.epam.com.amtt.util.ReadLargeTextUtil;
 
 public class LogActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
     public static final String FILE_PATH = "filePath";
-    public static final int SEARCH_TOP_OFFSET = 20;
-    public String mFilePath;
-    public ArrayList<CharSequence> mListLogLine = new ArrayList<>();
-    public RecyclerView mRecyclerView;
-    public LogAdapter mLogAdapter;
-    public SearchView mSearchView;
-    public Button mForwardButton;
-    public Button mBackwardButton;
-    public ArrayList<Integer> mAllIndexes = new ArrayList<>();
-    private ArrayList<CharSequence> mOriginLogList = new ArrayList<>();
+    private static final int SEARCH_TOP_OFFSET = 20;
+    private ArrayList<CharSequence> mListLogLine = new ArrayList<>();
+    private RecyclerView mRecyclerView;
+    private LogAdapter mLogAdapter;
+    private final ArrayList<Integer> mAllIndexes = new ArrayList<>();
+    private final ArrayList<CharSequence> mOriginLogList = new ArrayList<>();
     private int mCurrentIndex = 0;
-    public boolean mIsDoneChangeText = false;
-    public LinearLayoutManager mLinearLayoutManager;
+    private boolean mIsDoneChangeText = false;
+    private LinearLayoutManager mLinearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +60,9 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
         String title = Constants.Symbols.EMPTY;
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
-            mFilePath = extra.getString(FILE_PATH);
-            title = FileUtil.getFileName(mFilePath);
-            showLog(mFilePath);
+            String filePath = extra.getString(FILE_PATH);
+            title = FileUtil.getFileName(filePath);
+            showLog(filePath);
         }
         setTitle(title);
     }
@@ -77,7 +73,7 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
         TopButtonService.sendActionChangeTopButtonVisibility(false);
     }
 
-    public void showLog(String filePath) {
+    private void showLog(String filePath) {
         if (FileUtil.isText(filePath)) {
             mListLogLine = readTextLogFromFile(filePath);
             mOriginLogList.addAll(mListLogLine);
@@ -106,13 +102,13 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_preview, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        mSearchView.setQueryHint(getString(R.string.search_view_hint));
-        LinearLayout linearLayoutOfSearchView = (LinearLayout) mSearchView.getChildAt(0);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint(getString(R.string.search_view_hint));
+        LinearLayout linearLayoutOfSearchView = (LinearLayout) searchView.getChildAt(0);
         LayoutInflater factory = LayoutInflater.from(getBaseContext());
         final View view = factory.inflate(R.layout.search_panel, null);
-        mBackwardButton = (Button) view.findViewById(R.id.bt_backward);
-        mBackwardButton.setOnClickListener(new View.OnClickListener() {
+        Button backwardButton = (Button) view.findViewById(R.id.bt_backward);
+        backwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mAllIndexes.size() >= 1) {
@@ -125,8 +121,8 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
                 }
             }
         });
-        mForwardButton = (Button) view.findViewById(R.id.bt_forward);
-        mForwardButton.setOnClickListener(new View.OnClickListener() {
+        Button forwardButton = (Button) view.findViewById(R.id.bt_forward);
+        forwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mAllIndexes.size() >= 1) {
@@ -140,7 +136,7 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
             }
         });
         linearLayoutOfSearchView.addView(view);
-        mSearchView.setOnQueryTextListener(this);
+        searchView.setOnQueryTextListener(this);
         return true;
     }
 

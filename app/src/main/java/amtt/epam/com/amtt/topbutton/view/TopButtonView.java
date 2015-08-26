@@ -57,9 +57,9 @@ public class TopButtonView extends FrameLayout {
     }
 
     private static final int sThreshold = 10;
-    private DisplayMetrics mDisplayMetrics;
-    private WindowManager mWindowManager;
-    private WindowManager.LayoutParams mLayoutParams;
+    private final DisplayMetrics mDisplayMetrics;
+    private final WindowManager mWindowManager;
+    private final WindowManager.LayoutParams mLayoutParams;
     private TopButtonBarView mTopButtonBarView;
     private int mCurrentOrientation;
     private float mWidthProportion;
@@ -70,8 +70,8 @@ public class TopButtonView extends FrameLayout {
     private int mLastY;
     private int mMainButtonHeight;
     private int mMainButtonWidth;
-    public ImageButton mMainImageButton;
-    public boolean isMoving;
+    private ImageButton mMainImageButton;
+    private boolean isMoving;
 
     public TopButtonView(Context context, WindowManager.LayoutParams layoutParams) {
         super(context);

@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.ivan_bakach.testpermission">
+    package="com.example.ivan_bakach.testappamtt">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
-        android:name="com.example.ivan_bakach.testpermission.CoreApplication"
+        android:name="com.example.ivan_bakach.testappamtt.CoreApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:allowBackup="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity"
+            android:name="com.example.ivan_bakach.testappamtt.app.ViewPagerActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             <intent-filter>
@@ -20,26 +19,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.ivan_bakach.testpermission.app.SecondActivity"
+            android:name="com.example.ivan_bakach.testappamtt.app.MultipleFragmentsActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:parentActivityName="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity">
+            android:parentActivityName="com.example.ivan_bakach.testappamtt.app.ViewPagerActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity" />
+                android:value="com.example.ivan_bakach.testappamtt.app.ViewPagerActivity" />
         </activity>
         <activity
-            android:name="com.example.ivan_bakach.testpermission.app.ThirdActivity"
+            android:name="com.example.ivan_bakach.testappamtt.app.ActivityWithoutFragments"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
-            android:parentActivityName="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity">
+            android:parentActivityName="com.example.ivan_bakach.testappamtt.app.ViewPagerActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity" />
+                android:value="com.example.ivan_bakach.testappamtt.app.ViewPagerActivity" />
         </activity>
-        <meta-data
-            android:name="my_api_key"
-            android:value="com.example.ivan_bakach.testpermission.app.PermissionTestClientActivity" />
     </application>
 
 </manifest>

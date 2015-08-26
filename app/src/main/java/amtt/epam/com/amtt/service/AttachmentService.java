@@ -14,7 +14,6 @@ import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.helper.AttachNotificationHelper;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.Logger;
-import amtt.epam.com.amtt.util.TestUtil;
 
 /**
  * @author Iryna Monchanka
@@ -28,6 +27,7 @@ public class AttachmentService extends Service {
     public static final String RESULT = "RESULT";
     private static final String TAG = "Log";
     private static List<String> attachmentList;
+    private JiraContent mJira = JiraContent.getInstance();
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -62,7 +62,7 @@ public class AttachmentService extends Service {
     }
 
     private void checkIssueKey() {
-        JiraContent.getInstance().getRecentIssueKey(new GetContentCallback<String>() {
+        mJira.getRecentIssueKey(new GetContentCallback<String>() {
             @Override
             public void resultOfDataLoading(String result) {
                 if (result != null) {
@@ -81,7 +81,7 @@ public class AttachmentService extends Service {
         if (fileFullName.size() > 0) {
             final int notificationId = AttachNotificationHelper.showNotification(getBaseContext(),
                     AttachNotificationHelper.getInitBuilder(getBaseContext(), issueKey, fileFullName.size()));
-            JiraContent.getInstance().sendAttachment(issueKey, fileFullName, new GetContentCallback<Boolean>() {
+            mJira.sendAttachment(issueKey, fileFullName, new GetContentCallback<Boolean>() {
                 @Override
                 public void resultOfDataLoading(Boolean result) {
                     AttachNotificationHelper.updateNotification(getBaseContext(),

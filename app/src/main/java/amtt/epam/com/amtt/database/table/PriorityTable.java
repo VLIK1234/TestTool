@@ -18,7 +18,7 @@ public class PriorityTable extends Table {
     public static final String _NAME = "_name";
     public static final String _URL = "_url";
 
-    private static MultiValueMap<String, String> sColumnsMap;
+    private final static MultiValueMap<String, String> sColumnsMap;
 
     public static final String[] PROJECTION = {
             _ID,

@@ -5,14 +5,16 @@ import android.database.Cursor;
 import android.net.Uri;
 
 /**
- * Created by Artsiom_Kaliaha on 15.05.2015.
+ @author Artsiom_Kaliaha
+ @version on 15.05.2015
  */
+
 public abstract class DatabaseEntity<B> implements IDatabaseEntityMethod<B>{
 
-    public DatabaseEntity() {
+    protected DatabaseEntity() {
     }
 
-    public DatabaseEntity(Cursor cursor) {
+    protected DatabaseEntity(Cursor cursor) {
     }
 
     @Override

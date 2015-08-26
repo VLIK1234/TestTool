@@ -3,8 +3,10 @@ package amtt.epam.com.amtt.bo.issue;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Irina Monchenko on 30.03.2015.
+ @author Iryna Monchanka
+ @version on 30.03.2015
  */
+
 public class JIssuePriority {
 
     @SerializedName("self")

@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="${applicationTestid}">
+    package="${applicationId}">
 
     <application>
         <uses-library android:name="android.test.runner" />
-
     </application>
 
     <instrumentation
-        android:name="${applicationTestid}.TestRunner"
+        android:name="com.epam.amtt.test.TestRunner"
         android:functionalTest="false"
         android:handleProfiling="false"
-        android:label="Tests for com.example.ivan_bakach.testpermission"
-        android:targetPackage="${applicationTestid}"
+        android:label="Tests"
+        android:targetPackage="${applicationId}"
         tools:replace="android:targetPackage, android:label">
-        <meta-data
-            android:name="amtt_test_key"
-            android:value="amtt_app" />
     </instrumentation>
-
-
 </manifest>

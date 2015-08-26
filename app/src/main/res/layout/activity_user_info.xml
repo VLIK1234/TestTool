@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
     tools:context="amtt.epam.com.amtt.ui.activities.UserInfoActivity">
 
     <android.support.v4.widget.SwipeRefreshLayout
@@ -184,6 +186,30 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/tv_locale"
                         android:text="@string/label_locale" />
+
+                </RelativeLayout>
+                <RelativeLayout
+                    style="@style/UserInfoDescriptor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/abc_dialog_list_padding_vertical_material"
+                    android:paddingTop="@dimen/abc_dialog_list_padding_vertical_material">
+
+                    <TextView
+                        android:id="@+id/tv_spreadsheet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_last_spreadsheet"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/abc_primary_text_material_light" />
+
+                    <TextView
+                        android:id="@+id/user_spreadsheet_subhead"
+                        style="@style/Material.TextViewSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_spreadsheet"
+                        android:text="@string/label_last_spreadsheet" />
 
                 </RelativeLayout>
 

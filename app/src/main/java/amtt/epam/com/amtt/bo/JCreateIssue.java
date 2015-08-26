@@ -17,8 +17,8 @@ import amtt.epam.com.amtt.util.Logger;
 public class JCreateIssue {
 
     private final String TAG = this.getClass().getSimpleName();
-    private JCreatingIssueRequest mBData = new JCreatingIssueRequest();
-    private GsonSerializeProcessor<JCreatingIssueRequest> mGsonSerializeProcessor = new GsonSerializeProcessor<>();
+    private final JCreatingIssueRequest mBData = new JCreatingIssueRequest();
+    private final GsonSerializeProcessor<JCreatingIssueRequest> mGsonSerializeProcessor = new GsonSerializeProcessor<>();
 
     public JCreateIssue(String keyProject, String issueTypeId, String summary, String description,
                         String priorityId, String versionsId, String environment, String userAssigneName, String componentIds) {
@@ -52,9 +52,9 @@ public class JCreateIssue {
         String jsonString = null;
         try {
             jsonString = mGsonSerializeProcessor.process(mBData);
-            Logger.e(TAG, jsonString);
+            Logger.d(TAG, jsonString);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.e(TAG, e.getMessage(), e);
         }
         return jsonString;
     }

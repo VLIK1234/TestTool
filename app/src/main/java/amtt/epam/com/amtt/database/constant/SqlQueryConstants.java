@@ -1,8 +1,10 @@
 package amtt.epam.com.amtt.database.constant;
 
 /**
- * Created by Artsiom_Kaliaha on 31.03.2015.
+ @author Artsiom_Kaliaha
+ @version on 31.03.2015
  */
+
 public final class SqlQueryConstants {
 
     public static final String SELECT = "SELECT ";

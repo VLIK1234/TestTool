@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.example.ivan_bakach.testpermission"
+        applicationId "com.example.ivan_bakach.testappamtt"
         minSdkVersion 14
         targetSdkVersion 22
         versionCode 1
@@ -17,9 +17,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    defaultConfig {
-        manifestPlaceholders = [ applicationTestid:getApplicationId()]
-    }
+
     signingConfigs {
         debug {
             storeFile file("debug.keystore")
@@ -27,14 +25,8 @@ android {
     }
 }
 
-//repositories {
-//    flatDir {
-//        dirs 'libs'
-//    }
-//}
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.0'
-//    compile (name:'injectlibrary-debug', ext:'aar')
+    compile project(':amtttestslib')
+    compile 'com.android.support:appcompat-v7:22.2.1'
 }

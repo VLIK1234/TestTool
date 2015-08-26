@@ -17,15 +17,15 @@ public class TestcaseTable extends Table {
 
     public static final String _TESTCASE_ID_LINK = "_testcase_id_link";
     public static final String _WORKSHEET_ID_LINK = "_worksheet_id_link";
+    public static final String _SPREADSHEET_ID_LINK = "_spreadsheet_id_link";
     public static final String _UPDATED = "_updated";
     public static final String _TITLE = "_title";
-    public static final String _TESTCASE_ID = "_testcase_id";
+    public static final String _PATH = "_path";
     public static final String _PRIORITY = "_priority";
     public static final String _NAME = "_name";
-    public static final String _DESCRIPTION = "_description";
     public static final String _STEPS = "_steps";
-    public static final String _LABEL = "_label";
     public static final String _EXPECTED_RESULTS = "_expected_results";
+    public static final String _STATUS = "_status";
 
     private static final MultiValueMap<String, String> sColumnsMap;
 
@@ -35,13 +35,13 @@ public class TestcaseTable extends Table {
             _WORKSHEET_ID_LINK,
             _UPDATED,
             _TITLE,
-            _TESTCASE_ID,
             _PRIORITY,
             _NAME,
-            _DESCRIPTION,
             _STEPS,
-            _LABEL,
-            _EXPECTED_RESULTS
+            _EXPECTED_RESULTS,
+            _PATH,
+            _STATUS,
+            _SPREADSHEET_ID_LINK
     };
 
     static {
@@ -51,13 +51,13 @@ public class TestcaseTable extends Table {
             add(_WORKSHEET_ID_LINK);
             add(_UPDATED);
             add(_TITLE);
-            add(_TESTCASE_ID);
             add(_PRIORITY);
             add(_NAME);
-            add(_DESCRIPTION);
             add(_STEPS);
-            add(_LABEL);
             add(_EXPECTED_RESULTS);
+            add(_PATH);
+            add(_STATUS);
+            add( _SPREADSHEET_ID_LINK);
         }});
         sColumnsMap.put(BaseColumns.TYPE_INTEGER + BaseColumns.PRIMARY_KEY, new ArrayList<String>() {{
             add(_ID);

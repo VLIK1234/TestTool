@@ -3,7 +3,11 @@ package amtt.epam.com.amtt.util;
 import android.content.res.Configuration;
 import android.util.DisplayMetrics;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 
 /**
  @author Artsiom_Kaliaha
@@ -12,10 +16,20 @@ import amtt.epam.com.amtt.AmttApplication;
 
 public final class UIUtil {
 
-    public static boolean isLandscape() {
-        return AmttApplication.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+    private static final String ORIENTATION_UNDEFINED = "ORIENTATION_UNDEFINED";
+    private static final String ORIENTATION_LANDSCAPE = "ORIENTATION_LANDSCAPE";
+    private static final String ORIENTATION_PORTRAIT = "ORIENTATION_PORTRAIT";
+    private static final Map<Integer, String> sScreenOrientation= new HashMap<>();
+
+    static {
+        sScreenOrientation.put(Configuration.ORIENTATION_UNDEFINED, ORIENTATION_UNDEFINED);
+        sScreenOrientation.put(Configuration.ORIENTATION_LANDSCAPE, ORIENTATION_LANDSCAPE);
+        sScreenOrientation.put(Configuration.ORIENTATION_PORTRAIT, ORIENTATION_PORTRAIT);
     }
 
+    public static String getScreenOrientation(int orientation) {
+        return sScreenOrientation.get(orientation) == null ? ActivityInfoConstants.NOT_AVAILABLE : sScreenOrientation.get(orientation);
+    }
     public static DisplayMetrics getDisplayMetrics() {
         return AmttApplication.getContext().getResources().getDisplayMetrics();
     }

@@ -15,6 +15,7 @@ import android.widget.ListView;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.UserAdapter;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
  @author Artsiom_Kaliaha
@@ -24,14 +25,16 @@ import amtt.epam.com.amtt.contentprovider.AmttUri;
 public class AmttActivity extends BaseActivity implements LoaderCallbacks<Cursor> {
 
     public static final String KEY_USER_ID = "key_user_id";
-
     private ListView mListView;
     private UserAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         setContentView(R.layout.activity_amtt);
         mListView = (ListView) findViewById(android.R.id.list);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -44,6 +47,12 @@ public class AmttActivity extends BaseActivity implements LoaderCallbacks<Cursor
             }
         });
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     @Override

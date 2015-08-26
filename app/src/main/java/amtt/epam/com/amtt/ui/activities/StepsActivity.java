@@ -15,22 +15,26 @@ import java.util.List;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.StepsAdapter;
-import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.database.object.DbObjectManager;
+import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.database.util.ContentFromDatabase;
+import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.Logger;
 import amtt.epam.com.amtt.util.UIUtil;
 
 /**
- * Created by Ivan_Bakach on 10.06.2015.
+ @author Ivan_Bakach
+ @version on 10.06.2015
  */
+
 public class StepsActivity extends AppCompatActivity implements StepsAdapter.ViewHolder.ClickListener {
 
-    public static final int SPAN_COUNT = 3;
+    private static final String TAG = StepsActivity.class.getSimpleName();
+    private static final int SPAN_COUNT = 3;
     private TextView emptyList;
     private StepsAdapter mAdapter;
-    public RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +50,14 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
         ArrayList<Step> listStep = new ArrayList<>();
         StepsAdapter recyclerAdapter = new StepsAdapter(listStep, StepsActivity.this);
         recyclerView.setAdapter(recyclerAdapter);
-
-        DbObjectManager.INSTANCE.getAll(new Step(), new IResult<List<DatabaseEntity>>() {
+        ContentFromDatabase.getAllSteps(new IResult<List<Step>>() {
             @Override
-            public void onResult(final List<DatabaseEntity> result) {
+            public void onResult(final List<Step> result) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (result != null) {
-                            mAdapter = new StepsAdapter((ArrayList) result, StepsActivity.this);
+                            mAdapter = new StepsAdapter((ArrayList<Step>) result, StepsActivity.this);
                             recyclerView.setAdapter(mAdapter);
                             if (result.size() == 0) {
                                 recyclerView.setVisibility(View.GONE);
@@ -67,7 +70,7 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
 
             @Override
             public void onError(Exception e) {
-
+                Logger.e(TAG, e.getMessage(), e);
             }
         });
     }
@@ -84,7 +87,7 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
         TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
-    public RecyclerView.LayoutManager getLayoutManger() {
+    private RecyclerView.LayoutManager getLayoutManger() {
         if (UIUtil.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
             return new LinearLayoutManager(getBaseContext());
         } else {
@@ -94,7 +97,8 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
 
     @Override
     public void onItemRemove(int position) {
-        mAdapter.removeItem(position);
+        Step step = mAdapter.removeItem(position);
+        LocalContent.removeStep(step);
         if (mAdapter.getItemCount() == 0) {
             recyclerView.setVisibility(View.GONE);
             emptyList.setVisibility(View.VISIBLE);

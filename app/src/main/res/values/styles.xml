@@ -17,16 +17,20 @@
         <item name="colorPrimary">@color/primaryTranslucent</item>
     </style>
 
-    <style name="Material.Drawable"></style>
-
-    <style name="Material.Widget"></style>
-
     <style name="Material.AutocompleteProgressView">
         <item name="android:layout_marginLeft">8dp</item>
         <item name="android:layout_marginRight">8dp</item>
         <item name="android:dropDownItemStyle">@style/Material.DropDownItem</item>
         <item name="android:spinnerStyle">@style/Base.Widget.AppCompat.Spinner.Underlined.Custom
         </item>
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
+        <item name="android:inputType">textAutoComplete</item>
+        <item name="android:textColor">@color/primary_text</item>
+    </style>
+
+    <style name="Material.MultyAutocompleteProgressView">
+        <item name="android:dropDownItemStyle">@style/Material.DropDownItem</item>
+        <item name="android:spinnerStyle">@style/Base.Widget.AppCompat.Spinner.Underlined.Custom</item>
         <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Medium</item>
         <item name="android:inputType">textAutoComplete</item>
         <item name="android:textColor">@color/primary_text</item>
@@ -69,7 +73,6 @@
         <item name="android:layout_marginRight">8dp</item>
         <item name="android:layout_height">140dp</item>
         <item name="android:background">@drawable/dotted_border</item>
-        <item name="android:scrollbars">horizontal</item>
     </style>
 
     <style name="Material.SpinnerItem">
@@ -119,6 +122,18 @@
         <item name="android:padding">@dimen/abc_button_padding_horizontal_material</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="DialogActivity" parent="Material">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
 </resources>

@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <!--
@@ -25,7 +24,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Material" >
+        android:theme="@style/Material"
+        android:largeHeap="true">
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="ca8d47b0e2c3c9351a1eec35690b1719ab1aa869" />
@@ -86,7 +86,7 @@
             android:name=".ui.activities.AskExitActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Panel" />
+            android:theme="@style/DialogActivity" />
 
 
         <activity
@@ -106,8 +106,9 @@
             android:exported="true" >
             <intent-filter>
                 <action android:name="REQUEST_TAKE_SCREENSHOT" />
-                <action android:name="LOG_FILE" />
+                <action android:name="SEND_LOG_FILE" />
                 <action android:name="EXCEPTION_ANSWER" />
+                <action android:name="REQUEST_TAKE_ONLY_INFO" />
 
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -123,9 +124,9 @@
                 android:value=".ui.activities.MainActivity"/>
         </activity>
         <activity
-
             android:name=".ui.activities.DetailActivity"
             android:label="@string/title_activity_detail"
+            android:noHistory="true"
             android:parentActivityName=".ui.activities.ExpectedResultsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -134,17 +135,51 @@
         <provider
             android:name=".googleapi.database.contentprovider.GSContentProvider"
             android:authorities="amtt.epam.com.amtt.googleapi.database.contentprovider"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".ui.activities.LogActivity"
             android:launchMode="standard"
             android:noHistory="true"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_log"
+            android:parentActivityName=".ui.activities.CreateIssueActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.CreateIssueActivity"/>
+        </activity>
+
+        <activity
+            android:name=".ui.activities.TakeStepActivity"
+            android:screenOrientation="sensor"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/DialogActivity"
+            android:label="@string/title_activity_take_step" />
+
+        <activity
+            android:name=".ui.activities.GifPlayerActivity"
+            android:label="@string/title_activity_gif_player"
             android:parentActivityName=".ui.activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.MainActivity"/>
+        </activity>
+
+        <activity
+            android:name=".ui.activities.NewSpreadsheetActivity"
+            android:label="@string/title_activity_new_spreadsheet"
+            android:parentActivityName=".ui.activities.ExpectedResultsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.ExpectedResultsActivity"/>
+        </activity>
+
+        <activity
+            android:name=".ui.activities.SpreadsheetActivity"
+            android:label="@string/title_activity_spreadsheet"
+            android:parentActivityName=".ui.activities.ExpectedResultsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.ExpectedResultsActivity"/>
         </activity>
     </application>
 

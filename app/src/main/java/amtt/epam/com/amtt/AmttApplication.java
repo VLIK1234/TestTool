@@ -18,8 +18,10 @@ import amtt.epam.com.amtt.processing.VersionsProcessor;
 import io.fabric.sdk.android.Fabric;
 
 /**
- * Created by Ivan_Bakach on 19.03.2015.
+ @author Ivan_Bakach
+ @version on 19.03.2015
  */
+
 public class AmttApplication extends CoreApplication {
 
     @Override

@@ -24,13 +24,10 @@ import java.util.List;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.bo.database.Step.ScreenshotState;
+import amtt.epam.com.amtt.adapter.contentobserver.StepScreenshotObserver;
+import amtt.epam.com.amtt.bo.ticket.Step.ScreenshotState;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.database.object.DbObjectManager;
-import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -50,13 +47,23 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
         }
 
-        public ImageView mScreenshotImage;
-        public TextView mScreenshotName;
-        public ImageView mScreenshotClose;
-        public ProgressBar mProgress;
+        public interface DataChangedListener{
+            void onReloadData();
+        }
+
+        public interface ScreenshotStateListener{
+            void onShowMessage();
+        }
+
+        public final ImageView mScreenshotImage;
+        public final TextView mScreenshotName;
+        public final ImageView mScreenshotClose;
+        public final ProgressBar mProgress;
         private ScreenshotState mScreenshotState;
-        private Context mContext;
+        private final Context mContext;
         private ClickListener mListener;
+        private DataChangedListener mDataChangedListener;
+        private ScreenshotStateListener mStateListener;
 
         public ViewHolder(Context context, View itemView) {
             super(itemView);
@@ -73,21 +80,18 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
             mListener = clickListener;
         }
 
+        public void setDataChangedListener(DataChangedListener dataChangedListener) {
+            mDataChangedListener = dataChangedListener;
+        }
+
+        public void setScreenshotStateListener(ScreenshotStateListener screenshotStateListener) {
+            mStateListener = screenshotStateListener;
+        }
+
         @Override
         public void onClick(View v) {
             if (mScreenshotState == ScreenshotState.IS_BEING_WRITTEN) {
-                new AlertDialog.Builder(mContext, R.style.Dialog)
-                        .setTitle(R.string.title_notes_arent_applied)
-                        .setMessage(R.string.message_notes_arent_applied)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .create()
-                        .show();
-                return;
+                mStateListener.onShowMessage();
             }
             if (mListener != null) {
                 switch (v.getId()) {
@@ -100,49 +104,23 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
                 }
             }
         }
-
-    }
-
-    private static class StepScreenshotObserver extends ContentObserver {
-
-        private AttachmentAdapter mAdapter;
-
-        public StepScreenshotObserver(Handler handler, AttachmentAdapter attachmentAdapter) {
-            super(handler);
-            mAdapter = attachmentAdapter;
-        }
-
-        @Override
-        public boolean deliverSelfNotifications() {
-            return super.deliverSelfNotifications();
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            onChange(selfChange, null);
-        }
-
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            mAdapter.reloadData();
-        }
-
     }
 
     private final String TAG = this.getClass().getSimpleName();
+    private final List<Attachment> mAttachments;
+    private final int mRowLayout;
+    private final Context mContext;
+    private final ViewHolder.ClickListener mListener;
+    public final ViewHolder.DataChangedListener mDataChangedListener;
+    private final ViewHolder.ScreenshotStateListener mStateListener;
 
-    private List<Attachment> mAttachments;
-    private int mRowLayout;
-    private Context mContext;
-    private ViewHolder.ClickListener mListener;
-    private IResult<List<DatabaseEntity>> mDbResultListener;
-
-    public AttachmentAdapter(Context context, List<Attachment> screenshots, int rowLayout) {
+    public AttachmentAdapter(Context context, List<Attachment> screenshots, int rowLayout, ViewHolder.DataChangedListener dataChangedListener, ViewHolder.ScreenshotStateListener stateListener) {
         mContext = context;
+        mDataChangedListener = dataChangedListener;
         mListener = (ViewHolder.ClickListener) context;
-        mDbResultListener = (IResult<List<DatabaseEntity>>) context;
         mAttachments = screenshots;
         mRowLayout = rowLayout;
+        mStateListener = stateListener;
         AmttApplication.getContext().getContentResolver().registerContentObserver(AmttUri.STEP.get(), true, new StepScreenshotObserver(new Handler(), this));
     }
 
@@ -152,6 +130,8 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(mRowLayout, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder(mContext, v);
         viewHolder.setClickListener(mListener);
+        viewHolder.setDataChangedListener(mDataChangedListener);
+        viewHolder.setScreenshotStateListener(mStateListener);
         return viewHolder;
     }
 
@@ -159,25 +139,23 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     public void onBindViewHolder(final ViewHolder viewHolder, int i) {
         if (mAttachments != null && mAttachments.size() != 0) {
             Attachment attachment = mAttachments.get(i);
-            viewHolder.mScreenshotState = attachment.mScreenshotState;
-            Logger.d(TAG, attachment.mFileName);
-            viewHolder.mScreenshotName.setText(attachment.mFileName);
-            if (attachment.mFilePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
-                    attachment.mFilePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
-                    attachment.mFilePath.contains(MimeType.IMAGE_JPEG.getFileExtension()) ||
-                    attachment.mFilePath.contains(MimeType.IMAGE_GIF.getFileExtension())) {
-                if (attachment.mScreenshotState == ScreenshotState.WRITTEN) {
+            viewHolder.mScreenshotState = attachment.getScreenshotState();
+            Logger.d(TAG, attachment.getFileName());
+            viewHolder.mScreenshotName.setText(attachment.getFileName());
+            if (attachment.getFilePath().contains(MimeType.IMAGE_PNG.getFileExtension()) ||
+                    attachment.getFilePath().contains(MimeType.IMAGE_JPG.getFileExtension()) ||
+                    attachment.getFilePath().contains(MimeType.IMAGE_JPEG.getFileExtension()) ||
+                    attachment.getFilePath().contains(MimeType.IMAGE_GIF.getFileExtension())) {
+                if (attachment.getScreenshotState() == ScreenshotState.WRITTEN) {
                     if (viewHolder.mScreenshotImage.getDrawable() == null) {
-                        ImageLoader.getInstance().displayImage("file:///" + attachment.mFilePath, viewHolder.mScreenshotImage, new ImageLoadingListener() {
+                        ImageLoader.getInstance().displayImage("file:///" + attachment.getFilePath(), viewHolder.mScreenshotImage, new ImageLoadingListener() {
                             @Override
                             public void onLoadingStarted(String imageUri, View view) {
                                 viewHolder.mProgress.setVisibility(View.VISIBLE);
                             }
 
                             @Override
-                            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                            }
+                            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {}
 
                             @Override
                             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
@@ -185,15 +163,13 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
                             }
 
                             @Override
-                            public void onLoadingCancelled(String imageUri, View view) {
-
-                            }
+                            public void onLoadingCancelled(String imageUri, View view) {}
                         });
                     }
                 } else {
                     viewHolder.mProgress.setVisibility(View.VISIBLE);
                 }
-            } else if (attachment.mFilePath.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
+            } else if (attachment.getFilePath().contains(MimeType.TEXT_PLAIN.getFileExtension())) {
                 viewHolder.mScreenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
             }
             viewHolder.mScreenshotClose.setEnabled(true);
@@ -213,7 +189,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     public ArrayList<String> getAttachmentFilePathList() {
         ArrayList<String> filePathList = new ArrayList<>();
         for (Attachment attachment : mAttachments) {
-            filePathList.add(attachment.mFilePath);
+            filePathList.add(attachment.getFilePath());
         }
         return filePathList;
     }
@@ -223,13 +199,6 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     }
 
     public int getStepId(int position) {
-        return mAttachments.get(position).mStepId;
+        return mAttachments.get(position).getStepId();
     }
-
-    private void reloadData() {
-        if (mDbResultListener != null) {
-            DbObjectManager.INSTANCE.getAll(new Step(), mDbResultListener);
-        }
-    }
-
 }

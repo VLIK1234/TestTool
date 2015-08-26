@@ -3,8 +3,10 @@ package amtt.epam.com.amtt.processing;
 import com.google.gson.GsonBuilder;
 
 /**
- * Created by Artsiom_Kaliaha on 24.04.2015.
+ @author Artsiom_Kaliaha
+ @version on 24.04.2015
  */
+
 public class Gson {
 
     private static class GsonSingletonHolder {

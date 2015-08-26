@@ -10,8 +10,8 @@ import amtt.epam.com.amtt.api.JiraApiConst;
  */
 
 public class ActiveUser {
-    private static final ActiveUser INSTANCE = new ActiveUser();
 
+    private static final ActiveUser INSTANCE = new ActiveUser();
     private String mUserName;
     private String mUrl;
     private int mId;
@@ -27,10 +27,6 @@ public class ActiveUser {
 
     public static ActiveUser getInstance() {
         return INSTANCE;
-    }
-
-    public String makeTempCredentials(final String userName, final String password) {
-        return JiraApiConst.BASIC_AUTH + Base64.encodeToString((userName + Constants.Symbols.COLON + password).getBytes(), Base64.NO_WRAP);
     }
 
     public String getUserName() {
@@ -108,7 +104,9 @@ public class ActiveUser {
     }
 
     public void setSpreadsheetLink(String spreadsheetLink) {
-        this.mSpreadsheetLink = spreadsheetLink;
+        if (spreadsheetLink != null) {
+            this.mSpreadsheetLink = spreadsheetLink;
+        }
     }
 
     public void clearActiveUser() {

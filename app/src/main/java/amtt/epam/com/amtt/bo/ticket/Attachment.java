@@ -1,7 +1,6 @@
 package amtt.epam.com.amtt.bo.ticket;
 
-import amtt.epam.com.amtt.bo.database.Step;
-import amtt.epam.com.amtt.bo.database.Step.ScreenshotState;
+import amtt.epam.com.amtt.bo.ticket.Step.ScreenshotState;
 import amtt.epam.com.amtt.util.FileUtil;
 
 /**
@@ -11,10 +10,11 @@ import amtt.epam.com.amtt.util.FileUtil;
 
 public class Attachment {
 
-    public int mStepId;
-    public String mFileName;
-    public String mFilePath;
-    public ScreenshotState mScreenshotState;
+
+    private final int mStepId;
+    private final String mFileName;
+    private final String mFilePath;
+    private final ScreenshotState mScreenshotState;
 
     public Attachment(Step step) {
         mStepId = step.getId();
@@ -29,5 +29,19 @@ public class Attachment {
         mFileName = FileUtil.getFileName(mFilePath);
         mScreenshotState = ScreenshotState.WRITTEN;
     }
+    public int getStepId() {
+        return mStepId;
+    }
 
+    public String getFileName() {
+        return mFileName;
+    }
+
+    public String getFilePath() {
+        return mFilePath;
+    }
+
+    public ScreenshotState getScreenshotState() {
+        return mScreenshotState;
+    }
 }

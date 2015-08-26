@@ -6,10 +6,10 @@ package amtt.epam.com.amtt.common;
  */
 public class DataRequest<Param> {
 
-    private String mDataSourceName;
-    private Param mDataSourceParam;
-    private String mProcessorName;
-    private Callback mCallback;
+    private final String mDataSourceName;
+    private final Param mDataSourceParam;
+    private final String mProcessorName;
+    private final Callback mCallback;
 
     public DataRequest(String dataSourceName, Param dataSourceParam, String processorName, Callback callback) {
         mDataSourceName = dataSourceName;

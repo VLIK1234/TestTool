@@ -7,10 +7,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.util.Constants;
 
 /**
  * @author Iryna Monchanka
@@ -20,10 +18,8 @@ import amtt.epam.com.amtt.util.Constants;
 public class DetailActivity extends BaseActivity {
 
     private TextView mNameTextView;
-    private TextView mLabelTextView;
     private TextView mPriorityTextView;
     private TextView mStepsTextView;
-    private TextView mDescriptionTextView;
     private TextView mExpectedResultsTextView;
     private GEntryWorksheet mTestcase;
 
@@ -31,30 +27,33 @@ public class DetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+        }
         TopButtonService.sendActionChangeTopButtonVisibility(false);
         initViews();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     private void setTestcaseData() {
-        String testCaseId = GSpreadsheetContent.getInstance().getLastTestcaseId();
-        if (testCaseId != null && !testCaseId.equals(Constants.Symbols.EMPTY)) {
-            mTestcase = GSpreadsheetContent.getInstance().getTestcaseByIdGSX(testCaseId);
-            if (mTestcase != null) {
-                if (mTestcase.getTestCaseNameGSX() != null) {
-                    mNameTextView.setText(mTestcase.getTestcaseNameAndId());
-                }
-                mLabelTextView.setText(mTestcase.getLabelGSX());
+        checkIntent();
+        if (mTestcase != null) {
+            if (mTestcase.getTestCaseNameGSX() != null) {
+                mNameTextView.setText(mTestcase.getTestCaseNameGSX());
+            }
+            if (mTestcase.getPriorityGSX() != null) {
                 mPriorityTextView.setText(mTestcase.getPriorityGSX());
+            }
+            if (mTestcase.getTestStepsGSX() != null) {
                 mStepsTextView.setText(mTestcase.getTestStepsGSX());
-                mDescriptionTextView.setText(mTestcase.getTestCaseDescriptionGSX());
+            }
+            if (mTestcase.getExpectedResultGSX() != null) {
                 mExpectedResultsTextView.setText(mTestcase.getExpectedResultGSX());
             }
         }
@@ -62,13 +61,22 @@ public class DetailActivity extends BaseActivity {
 
     private void initViews() {
         mNameTextView = (TextView) findViewById(R.id.tv_testcase_name);
-        mLabelTextView = (TextView) findViewById(R.id.tv_label);
         mPriorityTextView = (TextView) findViewById(R.id.tv_priority);
         mStepsTextView = (TextView) findViewById(R.id.tv_steps);
-        mDescriptionTextView = (TextView) findViewById(R.id.tv_description);
         mExpectedResultsTextView = (TextView) findViewById(R.id.tv_expected_results);
         initBugButton();
         setTestcaseData();
+    }
+
+    private void checkIntent() {
+        Bundle extra = getIntent().getExtras();
+        if (extra != null) {
+            mTestcase = new GEntryWorksheet();
+            mTestcase.setTestCaseNameGSX(extra.getString(ExpectedResultsActivity.NAME));
+            mTestcase.setExpectedResultGSX(extra.getString(ExpectedResultsActivity.EXPECTED_RESULT));
+            mTestcase.setPriorityGSX(extra.getString(ExpectedResultsActivity.PRIORITY));
+            mTestcase.setTestStepsGSX(extra.getString(ExpectedResultsActivity.STEPS));
+        }
     }
 
     private void initBugButton() {
@@ -77,8 +85,11 @@ public class DetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (mTestcase != null) {
-                    GSpreadsheetContent.getInstance().setLastTestCase(mTestcase);
                     Intent loginIntent = new Intent(DetailActivity.this, CreateIssueActivity.class);
+                    loginIntent.putExtra(ExpectedResultsActivity.NAME, mTestcase.getTestCaseNameGSX());
+                    loginIntent.putExtra(ExpectedResultsActivity.PRIORITY, mTestcase.getPriorityGSX());
+                    loginIntent.putExtra(ExpectedResultsActivity.STEPS, mTestcase.getTestStepsGSX());
+                    loginIntent.putExtra(ExpectedResultsActivity.EXPECTED_RESULT, mTestcase.getExpectedResultGSX());
                     startActivity(loginIntent);
                     finish();
                 }

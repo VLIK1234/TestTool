@@ -1,7 +1,8 @@
 package amtt.epam.com.amtt.bo.issue.createmeta.issuetypes;
 
 /**
- * Created by Iryna_Monchanka on 3/31/2015.
+ @author Iryna Monchanka
+ @version on 3/31/2015
  */
 
 /**

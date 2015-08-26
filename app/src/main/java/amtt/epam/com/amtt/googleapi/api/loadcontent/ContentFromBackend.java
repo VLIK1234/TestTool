@@ -1,13 +1,9 @@
 package amtt.epam.com.amtt.googleapi.api.loadcontent;
 
-import amtt.epam.com.amtt.api.ContentConst;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.api.ContentLoadingCallback;
-import amtt.epam.com.amtt.googleapi.api.GoogleApiConst;
 import amtt.epam.com.amtt.googleapi.api.GSpreadsheetApi;
-import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
-import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
 import amtt.epam.com.amtt.googleapi.processing.SpreadsheetProcessor;
 import amtt.epam.com.amtt.googleapi.processing.WorksheetProcessor;
 
@@ -26,23 +22,20 @@ public class ContentFromBackend {
         return ContentFromBackendHolder.INSTANCE;
     }
 
-    public void getSpreadsheetAsynchronously(ContentLoadingCallback<GSpreadsheet> contentLoadingCallback,
-                                          GetContentCallback getContentCallback) {
-        GSpreadsheetApi.get().loadDocument(GoogleApiConst.SPREADSHEET_PATH, SpreadsheetProcessor.NAME,
-                getCallback(ContentConst.SPREADSHEET_RESPONSE, contentLoadingCallback, getContentCallback));
+    public <Response> void getSpreadsheet(String idLink, ContentLoadingCallback<Response, Response> contentLoadingCallback,
+                               GetContentCallback<Response> getContentCallback) {
+        GSpreadsheetApi.get().loadDocument(idLink, SpreadsheetProcessor.NAME,
+                getCallback(contentLoadingCallback, getContentCallback));
     }
 
-    public void getWorksheetAsynchronously(String worksheetKey, ContentLoadingCallback<GWorksheet> contentLoadingCallback,
-                                           GetContentCallback<GWorksheet> spreadsheetContentCallback) {
+    public <Response> void getWorksheet(String worksheetKey, ContentLoadingCallback<Response, Response> contentLoadingCallback,
+                             GetContentCallback<Response> spreadsheetContentCallback) {
         GSpreadsheetApi.get().loadDocument(worksheetKey, WorksheetProcessor.NAME,
-                getCallback(ContentConst.WORKSHEET_RESPONSE, contentLoadingCallback, spreadsheetContentCallback));
+                getCallback(contentLoadingCallback, spreadsheetContentCallback));
     }
 
-    private <Result> Callback getCallback(final ContentConst requestType,
-                                          final Result successResult,
-                                          final Result errorResult,
-                                          final ContentLoadingCallback<Result> contentLoadingCallback,
-                                          final GetContentCallback getContentCallback) {
+    private <Result> Callback getCallback(final ContentLoadingCallback<Result, Result> contentLoadingCallback,
+                                          final GetContentCallback<Result> getContentCallback) {
         return new Callback<Result>() {
             @Override
             public void onLoadStart() {
@@ -50,32 +43,12 @@ public class ContentFromBackend {
 
             @Override
             public void onLoadExecuted(Result result) {
-                contentLoadingCallback.resultFromBackend(successResult, requestType, getContentCallback);
+                contentLoadingCallback.resultFromBackend(result, getContentCallback);
             }
 
             @Override
             public void onLoadError(Exception e) {
-                contentLoadingCallback.resultFromBackend(errorResult, requestType, getContentCallback);
-            }
-        };
-    }
-
-    private <Result> Callback getCallback(final ContentConst requestType,
-                                          final ContentLoadingCallback<Result> contentLoadingCallback,
-                                          final GetContentCallback getContentCallback) {
-        return new Callback<Result>() {
-            @Override
-            public void onLoadStart() {
-            }
-
-            @Override
-            public void onLoadExecuted(Result result) {
-                contentLoadingCallback.resultFromBackend(result, requestType, getContentCallback);
-            }
-
-            @Override
-            public void onLoadError(Exception e) {
-                contentLoadingCallback.resultFromBackend(null, requestType, getContentCallback);
+                contentLoadingCallback.resultFromBackend(null, getContentCallback);
             }
         };
     }

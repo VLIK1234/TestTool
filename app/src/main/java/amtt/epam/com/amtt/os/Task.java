@@ -15,10 +15,10 @@ import amtt.epam.com.amtt.common.Callback;
  */
 public class Task<Param, Progress, Result> extends AsyncTask<Param, Void, Result> {
 
-    private Callback<Result> mCallback;
-    private DataSource<Progress, Param> mDataSource;
-    private Param mParam;
-    private Processor<Result, Progress> mProcessor;
+    private final Callback<Result> mCallback;
+    private final DataSource<Progress, Param> mDataSource;
+    private final Param mParam;
+    private final Processor<Result, Progress> mProcessor;
     private Exception mException;
 
     public Task(DataSource<Progress, Param> dataSource, Param param, Processor<Result, Progress> processor, Callback<Result> callback) {

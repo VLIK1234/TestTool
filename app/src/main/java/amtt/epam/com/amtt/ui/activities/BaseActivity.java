@@ -42,7 +42,7 @@ public class BaseActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (view != null && mInputManager != null) {
+                    if (mInputManager != null) {
                         view.requestFocus();
                         mInputManager.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
                     }

@@ -6,7 +6,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.InputStream;
 
-import amtt.epam.com.amtt.googleapi.XMLParser;
+import amtt.epam.com.amtt.googleapi.XmlParsing;
 import amtt.epam.com.amtt.googleapi.api.GoogleApiConst;
 import amtt.epam.com.amtt.googleapi.bo.GEntrySpreadshet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
@@ -34,38 +34,38 @@ public class SpreadsheetProcessor implements Processor<GSpreadsheet, HttpEntity>
             xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.FEED_TAG);
             xmlPullParser.nextTag();
             while (xmlPullParser.getDepth() != 0) {
-                XMLParser.setXmlPullParser(xmlPullParser);
-                spreadshet.setIdLink(XMLParser.loadIdLink());
-                spreadshet.setUpdated(XMLParser.loadUpdated());
-                XMLParser.skipTag();//category
-                spreadshet.setTitle(XMLParser.loadTitle());
-                spreadshet.setAlternateLink(XMLParser.loadGoogleLink());
-                spreadshet.setFeedLink(XMLParser.loadGoogleLink());
-                spreadshet.setPostLink(XMLParser.loadGoogleLink());
-                spreadshet.setSelfLink(XMLParser.loadGoogleLink());
-                spreadshet.setAuthor(XMLParser.loadAuthor());
-                spreadshet.setOpenSearchTotalResults(XMLParser.loadTotalResults());
-                spreadshet.setOpenSearchStartIndex(XMLParser.loadStartIndex());
+                XmlParsing.setXmlPullParser(xmlPullParser);
+                spreadshet.setIdLink(XmlParsing.loadIdLink());
+                spreadshet.setUpdated(XmlParsing.loadUpdated());
+                XmlParsing.skipTag();//category
+                spreadshet.setTitle(XmlParsing.loadTitle());
+                spreadshet.setAlternateLink(XmlParsing.loadGoogleLink());
+                spreadshet.setFeedLink(XmlParsing.loadGoogleLink());
+                spreadshet.setPostLink(XmlParsing.loadGoogleLink());
+                spreadshet.setSelfLink(XmlParsing.loadGoogleLink());
+                spreadshet.setAuthor(XmlParsing.loadAuthor());
+                spreadshet.setOpenSearchTotalResults(XmlParsing.loadTotalResults());
+                spreadshet.setOpenSearchStartIndex(XmlParsing.loadStartIndex());
                 for (int i = 0; i < spreadshet.getOpenSearchTotalResults(); i++) {
                     GEntrySpreadshet entrySpreadshet = new GEntrySpreadshet();
-                    xmlPullParser = XMLParser.getXmlPullParser();
+                    xmlPullParser = XmlParsing.getXmlPullParser();
                     xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.ENTRY_TAG);
                     xmlPullParser.nextTag();
-                    XMLParser.setXmlPullParser(xmlPullParser);
-                    entrySpreadshet.setIdLink(XMLParser.loadIdLink());
-                    entrySpreadshet.setUpdated(XMLParser.loadUpdated());
-                    XMLParser.skipTag();//category
-                    entrySpreadshet.setTitle(XMLParser.loadTitle());
-                    entrySpreadshet.setContent(XMLParser.loadContent());
-                    entrySpreadshet.setListFeedLink(XMLParser.loadGoogleLink());
-                    entrySpreadshet.setCellsFeedLink(XMLParser.loadGoogleLink());
-                    entrySpreadshet.setVisualisationApiLink(XMLParser.loadGoogleLink());
-                    entrySpreadshet.setExportCSVLink(XMLParser.loadGoogleLink());
-                    entrySpreadshet.setSelfLink(XMLParser.loadGoogleLink());
-                    entrySpreadshet.setGSColCount(XMLParser.loadColCount());
-                    entrySpreadshet.setGSRowCount(XMLParser.loadRowCount());
+                    XmlParsing.setXmlPullParser(xmlPullParser);
+                    entrySpreadshet.setIdLink(XmlParsing.loadIdLink());
+                    entrySpreadshet.setUpdated(XmlParsing.loadUpdated());
+                    XmlParsing.skipTag();//category
+                    entrySpreadshet.setTitle(XmlParsing.loadTitle());
+                    entrySpreadshet.setContent(XmlParsing.loadContent());
+                    entrySpreadshet.setListFeedLink(XmlParsing.loadGoogleLink());
+                    entrySpreadshet.setCellsFeedLink(XmlParsing.loadGoogleLink());
+                    entrySpreadshet.setVisualisationApiLink(XmlParsing.loadGoogleLink());
+                    entrySpreadshet.setExportCSVLink(XmlParsing.loadGoogleLink());
+                    entrySpreadshet.setSelfLink(XmlParsing.loadGoogleLink());
+                    entrySpreadshet.setGSColCount(XmlParsing.loadColCount());
+                    entrySpreadshet.setGSRowCount(XmlParsing.loadRowCount());
                     spreadshet.setEntryItem(entrySpreadshet);
-                    xmlPullParser = XMLParser.getXmlPullParser();
+                    xmlPullParser = XmlParsing.getXmlPullParser();
                     xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.ENTRY_TAG);
                     xmlPullParser.nextTag();
                 }

@@ -1,5 +1,6 @@
 package amtt.epam.com.amtt.util;
 
+import android.os.Environment;
 import android.support.annotation.Nullable;
 
 import java.io.File;
@@ -12,6 +13,9 @@ import amtt.epam.com.amtt.http.MimeType;
  */
 
 public class FileUtil {
+
+    private static final String AMTT_CACHE_DIRECTORY = "amtt_cache";
+    private static String sCacheAmttDir = Environment.getExternalStorageDirectory().toString() + File.separatorChar + AMTT_CACHE_DIRECTORY + File.separatorChar;
 
     public static String getFileName(@Nullable String filePath) {
         if (filePath == null) {
@@ -56,5 +60,11 @@ public class FileUtil {
             resultDelete = delete(file);
         }
         return resultDelete;
+    }
+
+    public static String getCacheAmttDir() {
+        File amttCache = new File(sCacheAmttDir);
+        amttCache.mkdir();
+        return sCacheAmttDir;
     }
 }

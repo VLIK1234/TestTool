@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
@@ -22,8 +23,8 @@ import amtt.epam.com.amtt.util.Validatable;
 import amtt.epam.com.amtt.util.Validator;
 
 /**
- @author Iryna Monchanka
- @version on 5/20/2015
+ * @author Iryna Monchanka
+ * @version on 5/20/2015
  */
 
 public class AutocompleteProgressView extends RelativeLayout implements TextEditable, Validatable {
@@ -72,14 +73,24 @@ public class AutocompleteProgressView extends RelativeLayout implements TextEdit
         mACTextView.showDropDown();
     }
 
+    public void dismissDropDown() {
+        mACTextView.dismissDropDown();
+    }
+
+    public void setText(CharSequence text) {
+        mACTextView.setText(text, TextView.BufferType.NORMAL);
+
+    }
+
+    public void setOnItemClickListener(AdapterView.OnItemClickListener l) {
+        mACTextView.setOnItemClickListener(l);
+    }
+
     @Override
     public Editable getText() {
         return mACTextView.getText();
     }
 
-    public void setText(CharSequence text) {
-        mACTextView.setText(text, TextView.BufferType.NORMAL);
-    }
     @Override
     public void setValidators(List<Validator> validators) {
         mValidators = validators;

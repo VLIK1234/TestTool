@@ -23,6 +23,7 @@ public class InputsUtil {
     private static final String mNoWhitespaceAfterAndBefore = "(\\S)+.+(\\S)";
     private static final String mHaveWhitespaces = ".*(\\s)+.*";
     private static final String mHasAtSymbol = ".*@.*";
+    private static final String mHasComma = ".*"+","+".*";
 
     private static final Validator sEmptyValidator;
     private static final Validator sWhitespacesValidator;
@@ -181,4 +182,7 @@ public class InputsUtil {
         return mMatcher.matches();
     }
 
+    public static Boolean isEmpty(String string) {
+        return string == null || string.equals(Constants.Symbols.EMPTY);
+    }
 }

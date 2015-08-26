@@ -14,7 +14,7 @@ import amtt.epam.com.amtt.database.util.MultiValueMap;
 
 public abstract class Table implements android.provider.BaseColumns {
 
-    public abstract MultiValueMap<String, String> getColumnsMap();
+    protected abstract MultiValueMap<String, String> getColumnsMap();
 
     public abstract String getTableName();
 

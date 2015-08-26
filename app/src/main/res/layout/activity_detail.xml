@@ -5,19 +5,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/margin_activity_detail"
+    android:layout_marginBottom="@dimen/margin_activity_detail"
     android:clickable="true"
     tools:context=".ui.activities.DetailActivity">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:padding="@dimen/abc_action_bar_icon_vertical_padding_material"
-        android:scrollbarStyle="outsideInset">
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_activity_detail"
+            android:layout_marginLeft="@dimen/margin_activity_detail"
+            android:layout_marginEnd="@dimen/margin_activity_detail"
+            android:layout_marginRight="@dimen/margin_activity_detail"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_testcase_name"
@@ -28,19 +32,11 @@
                 android:textSize="@dimen/abc_text_size_subhead_material"/>
 
             <TextView
-                android:id="@+id/tv_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tv_testcase_name"
-                android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
-                android:textSize="@dimen/abc_text_size_caption_material"/>
-
-            <TextView
                 android:id="@+id/tv_priority"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/tv_testcase_name"
+                android:gravity="end"
+                android:layout_gravity="end"
                 android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
                 android:textSize="@dimen/abc_text_size_caption_material"/>
 
@@ -48,7 +44,6 @@
                 android:id="@+id/tv_steps_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_label"
                 android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
                 android:text="@string/label_steps"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
@@ -57,7 +52,6 @@
                 android:id="@+id/tv_steps"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_steps_label"
                 android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
                 android:textSize="@dimen/abc_text_size_body_1_material"/>
 
@@ -66,31 +60,12 @@
                 style="@style/Divider"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_below="@id/tv_steps"
                 android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"/>
-
-            <TextView
-                android:id="@+id/tv_description_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/divider"
-                android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
-                android:text="@string/label_description"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
-
-            <TextView
-                android:id="@+id/tv_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tv_description_label"
-                android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
-                android:textSize="@dimen/abc_text_size_body_1_material"/>
 
             <TextView
                 android:id="@+id/tv_expected_results_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_description"
                 android:layout_marginTop="@dimen/abc_action_bar_icon_vertical_padding_material"
                 android:text="@string/label_expected_result"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"/>
@@ -99,10 +74,9 @@
                 android:id="@+id/tv_expected_results"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_expected_results_label"
                 android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
                 android:textSize="@dimen/abc_text_size_body_1_material"/>
-        </RelativeLayout>
+        </LinearLayout>
     </ScrollView>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn_bug"
@@ -111,11 +85,11 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
         android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
         android:contentDescription="@null"
         android:src="@drawable/button_main"
         app:backgroundTint="@color/primary"
         app:elevation="4dp"
-        app:pressedTranslationZ="12dp"/>
+        app:pressedTranslationZ="8dp"/>
 </RelativeLayout>

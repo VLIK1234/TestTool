@@ -30,9 +30,8 @@ import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.object.DbObjectManager;
 import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.table.UsersTable;
-import amtt.epam.com.amtt.database.util.StepUtil;
-import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
-import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
+import amtt.epam.com.amtt.database.util.ContentFromDatabase;
+import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.exception.ExceptionType;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -51,19 +50,18 @@ import amtt.epam.com.amtt.ui.views.TextInput;
  */
 public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, LoaderCallbacks<Cursor> {
 
+    private final String TAG = this.getClass().getSimpleName();
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 1;
-
     private TextInput mUserNameTextInput;
     private TextInput mPasswordTextInput;
     private TextInput mUrlTextInput;
-
-    private final String TAG = this.getClass().getSimpleName();
     private Button mLoginButton;
     private String mRequestUrl;
     private boolean mIsUserInDatabase;
+    private ActiveUser mUser = ActiveUser.getInstance();
+    private JiraContent mJira = JiraContent.getInstance();
 
     @Override
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -72,7 +70,9 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
 
         if (isNewUserAdditionFromUserInfo()) {
             JiraApi.get().signOut();
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
         }
     }
 
@@ -130,21 +130,21 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         String userName = mUserNameTextInput.getText().toString();
         mRequestUrl = mUrlTextInput.getText().toString();
         String password = mPasswordTextInput.getText().toString();
-        //getClient user info and perform auth in one request
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameTextInput.getText().toString();
-        JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, userName, password, mRequestUrl, this);
+        mUser.setCredentials(userName, password, mRequestUrl);
+        JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, this);
     }
 
     private void insertUserToDatabase(final JUserInfo user) {
-        DbObjectManager.INSTANCE.add(user, new IResult<Integer>() {
+        ContentFromDatabase.setUser(user, new IResult<Integer>() {
             @Override
             public void onResult(Integer result) {
-                ActiveUser.getInstance().setId(result);
-                finish();
+                mUser.setId(result);
             }
 
             @Override
             public void onError(Exception e) {
+                Logger.e(TAG, e.getMessage(), e);
             }
         });
     }
@@ -155,35 +155,39 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         }
         showProgress(true);
         mLoginButton.setEnabled(false);
-        StepUtil.checkUser(mUserNameTextInput.getText().toString(), new IResult<List<JUserInfo>>() {
+        LocalContent.checkUser(mUserNameTextInput.getText().toString(), mUrlTextInput.getText().toString(), new IResult<List<JUserInfo>>() {
             @Override
             public void onResult(List<JUserInfo> result) {
-                mIsUserInDatabase = result.size() > 0;
-                ActiveUser.getInstance().clearActiveUser();
+                for (JUserInfo user : result) {
+                    if (user.getName().equals(mUserNameTextInput.getText().toString()) &&
+                            user.getUrl().equals(mUrlTextInput.getText().toString())) {
+                        mIsUserInDatabase = true;
+                    }
+                }
+                mUser.clearActiveUser();
                 sendAuthRequest();
             }
 
             @Override
             public void onError(Exception e) {
-
+                Logger.e(TAG, e.getMessage(), e);
             }
         });
     }
 
     private void setActiveUser() {
-        ActiveUser.getInstance().clearActiveUser();
-        final ActiveUser activeUser = ActiveUser.getInstance();
+        mUser.clearActiveUser();
         final String userName = mUserNameTextInput.getText().toString();
         final String password = mPasswordTextInput.getText().toString();
-        activeUser.setCredentials(userName, password, mRequestUrl);
-        activeUser.setUserName(userName);
-        activeUser.setUrl(mUrlTextInput.getText().toString());
+        mUser.setCredentials(userName, password, mRequestUrl);
+        mUser.setUserName(userName);
+        mUser.setUrl(mUrlTextInput.getText().toString());
         ScheduledExecutorService worker =
                 Executors.newSingleThreadScheduledExecutor();
         Runnable task = new Runnable() {
             public void run() {
                 TopButtonService.start(getBaseContext());
-                JiraContent.getInstance().getPrioritiesNames(new GetContentCallback<HashMap<String, String>>() {
+                mJira.getPrioritiesNames(mUser.getUrl(), new GetContentCallback<HashMap<String, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<String, String> result) {
                         if (result != null) {
@@ -191,19 +195,11 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
                         }
                     }
                 });
-                JiraContent.getInstance().getProjectsNames(new GetContentCallback<HashMap<JProjects, String>>() {
+                mJira.getProjectsNames(mUser.getId(), new GetContentCallback<HashMap<JProjects, String>>() {
                     @Override
                     public void resultOfDataLoading(HashMap<JProjects, String> result) {
                         if (result != null) {
                             Logger.d(TAG, "Loading projects finish");
-                        }
-                    }
-                });
-                GSpreadsheetContent.getInstance().getSpreadsheet(new GetContentCallback<GSpreadsheet>() {
-                    @Override
-                    public void resultOfDataLoading(GSpreadsheet result) {
-                        if (result != null) {
-                            Logger.d(TAG, "Loading spreadsheet finish");
                         }
                     }
                 });
@@ -214,7 +210,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
     }
 
     private boolean isNewUserAdditionFromUserInfo() {
-        return ActiveUser.getInstance().getUrl() != null;
+        return mUser.getUrl() != null;
     }
 
     //Callbacks
@@ -230,7 +226,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
         if (user != null && !mIsUserInDatabase) {
             user.setUrl(mUrlTextInput.getText().toString());
             setActiveUser();
-            user.setCredentials(ActiveUser.getInstance().getCredentials());
+            user.setCredentials(mUser.getCredentials());
             insertUserToDatabase(user);
             Toast.makeText(this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
         } else {
@@ -241,6 +237,7 @@ public class LoginActivity extends BaseActivity implements Callback<JUserInfo>, 
 
     @Override
     public void onLoadError(Exception e) {
+        Logger.e(TAG, e.getMessage(), e);
         DialogUtils.createDialog(LoginActivity.this, ExceptionType.valueOf(e)).show();
         showProgress(false);
         mLoginButton.setEnabled(true);

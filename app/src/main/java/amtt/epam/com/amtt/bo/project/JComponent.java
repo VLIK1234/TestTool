@@ -12,7 +12,7 @@ import amtt.epam.com.amtt.bo.user.JUser;
 public class JComponent {
 
     @SerializedName("id")
-    private String mId;
+    private final String mId;
     @SerializedName("self")
     private String mSelf;
     @SerializedName("name")

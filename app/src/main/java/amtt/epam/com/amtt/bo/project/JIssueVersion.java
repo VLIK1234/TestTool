@@ -3,8 +3,10 @@ package amtt.epam.com.amtt.bo.project;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Iryna_Monchanka on 4/23/2015.
+ @author Iryna Monchanka
+ @version on 4/23/2015
  */
+
 public class JIssueVersion {
 
     @SerializedName("id")

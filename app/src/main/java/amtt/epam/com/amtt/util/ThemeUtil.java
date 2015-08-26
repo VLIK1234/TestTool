@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.util;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.os.Build;
 import android.util.TypedValue;
 
@@ -15,6 +14,7 @@ import amtt.epam.com.amtt.R;
  */
 public class ThemeUtil {
 
+    private static final String TAG = ThemeUtil.class.getSimpleName();
     private static TypedValue value;
 
     private static int getColor(Context context, int id, int defaultValue) {
@@ -30,17 +30,10 @@ public class ThemeUtil {
                     return context.getResources().getColor(value.resourceId);
             }
         } catch (Exception ex) {
+            Logger.e(TAG, ex.getMessage(), ex);
         }
 
         return defaultValue;
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static int colorAccent(Context context, int defaultValue) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            return getColor(context, android.R.attr.colorAccent, defaultValue);
-
-        return getColor(context, R.attr.colorAccent, defaultValue);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -57,27 +50,5 @@ public class ThemeUtil {
             return getColor(context, android.R.attr.colorControlActivated, defaultValue);
 
         return getColor(context, R.attr.colorControlActivated, defaultValue);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static int colorControlHighlight(Context context, int defaultValue) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            return getColor(context, android.R.attr.colorControlHighlight, defaultValue);
-
-        return getColor(context, R.attr.colorControlHighlight, defaultValue);
-    }
-
-    public static int getType(TypedArray array, int index) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-            return array.getType(index);
-        else {
-            TypedValue value = array.peekValue(index);
-            return value == null ? TypedValue.TYPE_NULL : value.type;
-        }
-    }
-
-    public static CharSequence getCharSequence(TypedArray array, int index, CharSequence defaultValue) {
-        String result = array.getString(index);
-        return result == null ? defaultValue : result;
     }
 }

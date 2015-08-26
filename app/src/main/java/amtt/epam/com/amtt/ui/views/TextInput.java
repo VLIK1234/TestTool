@@ -20,10 +20,13 @@ import amtt.epam.com.amtt.util.Validatable;
 import amtt.epam.com.amtt.util.Validator;
 
 /**
- * Created by Artsiom_Kaliaha on 12.06.2015.
+ @author Artsiom_Kaliaha
+ @version on 12.06.2015
  */
+
 public class TextInput extends TextInputLayout implements TextEditable, Validatable {
 
+    private static final double RATIO_FOR_PADDING = 3.2;
     private EditText mText;
     private CharSequence mLastErrorText;
     private CharSequence mHint;
@@ -81,8 +84,14 @@ public class TextInput extends TextInputLayout implements TextEditable, Validata
 
             }
         });
-
-        Divider mDivider = new Divider(2, mText.getTotalPaddingLeft(), mText.getTotalPaddingRight(), mDividerColors, 0);
+        Divider mDivider;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            mDivider = new Divider(2, mText.getTotalPaddingLeft(), mText.getTotalPaddingRight(), mDividerColors, 0);
+        }else{
+            mDivider = new Divider(2, (int)(mText.getTotalPaddingLeft()* RATIO_FOR_PADDING), (int)(mText.getTotalPaddingRight()*RATIO_FOR_PADDING), mDividerColors, 0);
+            mText.setPadding((int)(mText.getTotalPaddingLeft()*RATIO_FOR_PADDING),(int)(mText.getTotalPaddingLeft()*RATIO_FOR_PADDING),
+                    (int)(mText.getTotalPaddingLeft()*RATIO_FOR_PADDING),(int)(mText.getTotalPaddingLeft()*RATIO_FOR_PADDING));
+        }
         mDivider.setInEditMode(isInEditMode());
         mDivider.setAnimEnable(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {

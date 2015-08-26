@@ -4,13 +4,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.MultiAutoCompleteTextView;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import amtt.epam.com.amtt.R;
@@ -18,45 +27,44 @@ import amtt.epam.com.amtt.adapter.ExpectedResultsAdapter;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.googleapi.api.loadcontent.GSpreadsheetContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
-import amtt.epam.com.amtt.googleapi.bo.GWorksheet;
+import amtt.epam.com.amtt.googleapi.bo.GTag;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.ui.views.MultyAutocompleteProgressView;
+import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.Constants;
+import amtt.epam.com.amtt.util.InputsUtil;
+import amtt.epam.com.amtt.util.Logger;
 
 /**
  * @author Iryna Monchanka
  * @version on 03.06.2015
  */
 
-public class ExpectedResultsActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener, ExpectedResultsAdapter.ViewHolder.ClickListener {
+public class ExpectedResultsActivity extends BaseActivity implements ExpectedResultsAdapter.ViewHolder.ClickListener {
 
-    private static final int MESSAGE_REFRESH = 100;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private ExpectedResultsHandler mHandler;
+    //region Variables
+    private static final int MESSAGE_TEXT_CHANGED = 100;
+    private static final int SPREADSHEET_ACTIVITY_REQUEST_CODE = 55;
+    private static final int NEW_SPREADSHEET_ACTIVITY_REQUEST_CODE = 66;
+    private static final String TAG = ExpectedResultsActivity.class.getSimpleName();
+    public static final String PRIORITY = "PRIORITY";
+    public static final String NAME = "NAME";
+    public static final String STEPS = "STEPS";
+    public static final String EXPECTED_RESULT = "EXPECTED_RESULT";
     private ExpectedResultsAdapter mResultsAdapter;
     private RecyclerView mRecyclerView;
-    private Boolean mIsShowDetail = false;
+    private MultyAutocompleteProgressView mTagsAutocompleteTextView;
+    private List<GTag> mTags;
+    private TagsHandler mHandler;
+    private ActiveUser mUser = ActiveUser.getInstance();
+    private GSpreadsheetContent mSpreadsheetContent = GSpreadsheetContent.getInstance();
+    //endregion
 
-    @Override
-    public void onShowCard(int position) {
-        Intent detail = new Intent(ExpectedResultsActivity.this, DetailActivity.class);
-        GSpreadsheetContent.getInstance().setLastTestcaseId(mResultsAdapter.getIdTestcaseList().get(position));
-        mIsShowDetail = true;
-        startActivity(detail);
-        finish();
-    }
-
-    @Override
-    public void onShowCreationTicket(int position) {
-        Intent creationTicket = new Intent(ExpectedResultsActivity.this, CreateIssueActivity.class);
-        GSpreadsheetContent.getInstance().setLastTestcaseId(mResultsAdapter.getIdTestcaseList().get(position));
-        startActivity(creationTicket);
-        finish();
-    }
-
-    public static class ExpectedResultsHandler extends Handler {
+    public static class TagsHandler extends Handler {
 
         private final WeakReference<ExpectedResultsActivity> mActivity;
 
-        ExpectedResultsHandler(ExpectedResultsActivity activity) {
+        TagsHandler(ExpectedResultsActivity activity) {
             mActivity = new WeakReference<>(activity);
         }
 
@@ -64,7 +72,7 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             ExpectedResultsActivity service = mActivity.get();
-            service.refreshSteps();
+            service.setTags(msg.obj.toString());
         }
     }
 
@@ -72,52 +80,322 @@ public class ExpectedResultsActivity extends BaseActivity implements SwipeRefres
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expected_results);
+        mHandler = new TagsHandler(this);
         TopButtonService.sendActionChangeTopButtonVisibility(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         initViews();
-        mHandler = new ExpectedResultsHandler(ExpectedResultsActivity.this);
-        mSwipeRefreshLayout.setOnRefreshListener(ExpectedResultsActivity.this);
-        refreshSteps();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (!mIsShowDetail) {
-            TopButtonService.sendActionChangeTopButtonVisibility(true);
+    protected void onPause() {
+        super.onPause();
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_expected_result, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add: {
+                startActivityForResult(new Intent(ExpectedResultsActivity.this, NewSpreadsheetActivity.class), NEW_SPREADSHEET_ACTIVITY_REQUEST_CODE);
+            }
+            return true;
+            case R.id.action_list: {
+                startActivityForResult(new Intent(ExpectedResultsActivity.this, SpreadsheetActivity.class), SPREADSHEET_ACTIVITY_REQUEST_CODE);
+            }
+            return true;
+            case android.R.id.home: {
+                TopButtonService.start(this);
+                finish();
+            }
+            return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
-    private void initViews() {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        mRecyclerView = (RecyclerView) findViewById(android.R.id.list);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ExpectedResultsActivity.this);
-        linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case SPREADSHEET_ACTIVITY_REQUEST_CODE:
+                    if (data != null) {
+                        getAllTestcases();
+                    }
+                    break;
+                case NEW_SPREADSHEET_ACTIVITY_REQUEST_CODE: {
+                    getAllTestcases();
+                }
+                break;
+                default:
+            }
+        }/* else if (resultCode == RESULT_CANCELED) {
+
+        }*/
     }
 
     @Override
-    public void onRefresh() {
-        mHandler.removeMessages(MESSAGE_REFRESH);
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_REFRESH), 750);
+    public void onShowCard(final int position) {
+        getExtras(position, DetailActivity.class);
     }
 
-    private void refreshSteps() {
-        GSpreadsheetContent.getInstance().getWorksheet(new GetContentCallback<GWorksheet>() {
-            @Override
-            public void resultOfDataLoading(GWorksheet result) {
-                if (result != null) {
-                    List<GEntryWorksheet> entryWorksheetList = result.getEntry();
-                    if (entryWorksheetList != null && !entryWorksheetList.isEmpty()) {
-                        mResultsAdapter = new ExpectedResultsAdapter(entryWorksheetList, R.layout.adapter_expected_results, ExpectedResultsActivity.this);
-                        mRecyclerView.setAdapter(mResultsAdapter);
+    @Override
+    public void onShowCreationTicket(int position) {
+        getExtras(position, CreateIssueActivity.class);
+    }
+
+    private void initViews() {
+        mRecyclerView = (RecyclerView) findViewById(android.R.id.list);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ExpectedResultsActivity.this);
+        linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        initTagsAutocompleteTextView();
+        if (mUser.getSpreadsheetLink() != null) {
+            getAllTestcases();
+        } else {
+            mSpreadsheetContent.getAllSpreadsheets(new GetContentCallback<Integer>() {
+                @Override
+                public void resultOfDataLoading(Integer result) {
+                    if (result > 0) {
+                        startActivityForResult(new Intent(ExpectedResultsActivity.this, SpreadsheetActivity.class), SPREADSHEET_ACTIVITY_REQUEST_CODE);
+                    } else {
+                        startActivityForResult(new Intent(ExpectedResultsActivity.this, NewSpreadsheetActivity.class), NEW_SPREADSHEET_ACTIVITY_REQUEST_CODE);
                     }
                 }
-                mSwipeRefreshLayout.setRefreshing(false);
+            });
+        }
+
+    }
+
+    private void initTagsAutocompleteTextView() {
+        mTagsAutocompleteTextView = (MultyAutocompleteProgressView) findViewById(R.id.tv_tags);
+        mTagsAutocompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String[] str = mTagsAutocompleteTextView.getText().toString().split(Constants.Symbols.COMMA);
+                ArrayList<String> links = new ArrayList<>();
+                if (str.length == 1 && mTags != null) {
+                    for (int i = 0; i < mTags.size(); i++) {
+                        if (mTags.get(i).getName().equals(parent.getItemAtPosition(position))) {
+                            links.add(mTags.get(i).getIdLinkTestCase());
+                        }
+                    }
+                    getTagsByLinksTestcases(links);
+                } else if (str.length > 1 && mTags != null) {
+                    for (String aStr : str) {
+                        for (int i = 0; i < mTags.size(); i++) {
+                            if (aStr.equals(mTags.get(i).getName())) {
+                                links.add(mTags.get(i).getIdLinkTestCase());
+                            }
+                        }
+                    }
+                    getTagsByLinksTestcases(links);
+                }
+                hideKeyboard();
+            }
+        });
+        mTagsAutocompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (before > count) {
+                    mHandler.removeMessages(MESSAGE_TEXT_CHANGED);
+                    mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_TEXT_CHANGED, s), 750);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
     }
 
+    private void setTags(String text) {
+        String[] str = text.split(Constants.Symbols.COMMA);
+        ArrayList<String> links = new ArrayList<>();
+        if (mTags != null) {
+            for (String aStr : str) {
+                for (int i = 0; i < mTags.size(); i++) {
+                    if (aStr.equals(mTags.get(i).getName())) {
+                        links.add(mTags.get(i).getIdLinkTestCase());
+                    }
+                }
+            }
+            if (links.isEmpty()) {
+                getAllTestcases();
+            } else {
+                getTagsByLinksTestcases(links);
+            }
+        } else {
+            getAllTestcases();
+        }
+    }
+
+    private void getExtras(int position, final Class<?> activity) {
+        mSpreadsheetContent.getTestcaseByIdLink(mResultsAdapter.getIdTestcaseList().get(position), new GetContentCallback<GEntryWorksheet>() {
+            @Override
+            public void resultOfDataLoading(final GEntryWorksheet result) {
+                ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
+                    public void run() {
+                        if (result != null) {
+                            Intent intent = new Intent(ExpectedResultsActivity.this, activity);
+                            intent.putExtra(NAME, result.getTestCaseNameGSX());
+                            intent.putExtra(PRIORITY, result.getPriorityGSX());
+                            intent.putExtra(STEPS, result.getTestStepsGSX());
+                            intent.putExtra(EXPECTED_RESULT, result.getExpectedResultGSX());
+                            startActivity(intent);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void getTagsByLinksTestcases(final ArrayList<String> links) {
+        if (links != null && mUser.getSpreadsheetLink() != null) {
+            mTagsAutocompleteTextView.showProgress(true);
+            showProgress(true);
+            mSpreadsheetContent.getTagsByIdLinksTestcases(mUser.getSpreadsheetLink(), links, new GetContentCallback<List<GTag>>() {
+                @Override
+                public void resultOfDataLoading(final List<GTag> result) {
+                    ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            if (result != null && !result.isEmpty()) {
+                                getTestcasesByLinksTestcases(links);
+                                refreshTagsAdapter(result);
+                            } else {
+                                Logger.d(TAG, Constants.Logs.TAGS_NOT_FOUND);
+                                mTagsAutocompleteTextView.showProgress(false);
+                                showProgress(false);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    private void getTestcasesByLinksTestcases(ArrayList<String> links) {
+        if (links != null && mUser.getSpreadsheetLink() != null) {
+            showProgress(true);
+            mSpreadsheetContent.getTestcasesByIdLinksTestcases(mUser.getSpreadsheetLink(), links, new GetContentCallback<List<GEntryWorksheet>>() {
+                @Override
+                public void resultOfDataLoading(final List<GEntryWorksheet> result) {
+                    ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            if (result != null && !result.isEmpty()) {
+                                refreshSteps(result);
+                            } else {
+                                showProgress(false);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    private void getAllTags() {
+        if (mUser.getSpreadsheetLink() != null) {
+            mTagsAutocompleteTextView.showProgress(true);
+            showProgress(true);
+            mSpreadsheetContent.getAllTags(mUser.getSpreadsheetLink(), new GetContentCallback<List<GTag>>() {
+                @Override
+                public void resultOfDataLoading(final List<GTag> result) {
+                    ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            if (result != null && !result.isEmpty()) {
+                                mTags = result;
+                                refreshTagsAdapter(result);
+                            } else {
+                                mTagsAutocompleteTextView.showProgress(false);
+                                Logger.d(TAG, "Error loading tags");
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            Logger.d(TAG, "Error loading tags, SpreadsheetLink == null");
+        }
+    }
+
+    private void getAllTestcases() {
+        if (!InputsUtil.isEmpty(mUser.getSpreadsheetLink())) {
+            showProgress(true);
+            mSpreadsheetContent.getAllTestCases(mUser.getSpreadsheetLink(), new GetContentCallback<List<GEntryWorksheet>>() {
+                @Override
+                public void resultOfDataLoading(final List<GEntryWorksheet> result) {
+                    ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
+                        public void run() {
+                            if (result != null && !result.isEmpty()) {
+                                refreshSteps(result);
+                                getAllTags();
+                            } else {
+                                showProgress(false);
+                                Logger.d(TAG, "Error loading testcases");
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            Logger.d(TAG, "Error loading testcases, SpreadsheetLink == null");
+        }
+    }
+
+    private void refreshTagsAdapter(List<GTag> result) {
+        hideKeyboard();
+        if (result != null && !result.isEmpty()) {
+            HashSet<String> namesTags = new HashSet<>();
+            for (int i = 1; i < result.size(); i++) {
+                if (result.get(i) != null) {
+                    namesTags.add(result.get(i).getName());
+                }
+            }
+            List<String> tagsNames = new ArrayList<>(namesTags);
+            ArrayAdapter<String> mTagsAdapter = new ArrayAdapter<>(ExpectedResultsActivity.this, R.layout.spinner_dropdown_item, tagsNames);
+            mTagsAutocompleteTextView.setThreshold(1);
+            mTagsAutocompleteTextView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+            mTagsAutocompleteTextView.setAdapter(mTagsAdapter);
+            mTagsAutocompleteTextView.showProgress(false);
+            showProgress(false);
+        } else {
+            Logger.d(TAG, Constants.Logs.TAGS_NOT_FOUND);
+            mTagsAutocompleteTextView.showProgress(false);
+            showProgress(false);
+        }
+    }
+
+    private void refreshSteps(final List<GEntryWorksheet> result) {
+        if (result != null && !result.isEmpty()) {
+            mResultsAdapter = null;
+            mResultsAdapter = new ExpectedResultsAdapter(result, R.layout.adapter_expected_results, ExpectedResultsActivity.this);
+            if (mRecyclerView != null) {
+                mRecyclerView.setAdapter(mResultsAdapter);
+            }
+            showProgress(false);
+        } else {
+            Logger.d(TAG, "List TestCases = null");
+            showProgress(false);
+        }
+    }
 }

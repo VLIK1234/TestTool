@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.database.constant.BaseColumns;
-import amtt.epam.com.amtt.database.constant.SqlQueryConstants;
 import amtt.epam.com.amtt.database.table.Table;
 import amtt.epam.com.amtt.googleapi.database.table.SpreadsheetTable;
+import amtt.epam.com.amtt.googleapi.database.table.TagsTable;
 import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
 import amtt.epam.com.amtt.googleapi.database.table.WorksheetTable;
 
@@ -23,7 +23,7 @@ import amtt.epam.com.amtt.googleapi.database.table.WorksheetTable;
 
 public class DataBaseManager extends SQLiteOpenHelper {
 
-    private static final Integer DATA_BASE_VERSION = 1;
+    private static final Integer DATA_BASE_VERSION = 6;
     private static final String DATA_BASE_NAME = "testcase.db";
     private static final List<Class> sTables;
 
@@ -32,6 +32,7 @@ public class DataBaseManager extends SQLiteOpenHelper {
         sTables.add(SpreadsheetTable.class);
         sTables.add(WorksheetTable.class);
         sTables.add(TestcaseTable.class);
+        sTables.add(TagsTable.class);
     }
 
     public DataBaseManager(Context context) {
@@ -80,38 +81,6 @@ public class DataBaseManager extends SQLiteOpenHelper {
         try {
             database.beginTransaction();
             cursor = getReadableDatabase().query(tableName, projection, selection, selectionArgs, null, null, sortOrder);
-            database.setTransactionSuccessful();
-        } finally {
-            database.endTransaction();
-        }
-        return cursor;
-    }
-
-    public Cursor joinQuery(String[] tablesName, String[] projection, String[] connectionColumns) {
-        StringBuilder rawQueryBuilder = new StringBuilder();
-        rawQueryBuilder.append(SqlQueryConstants.SELECT);
-
-        for (int i = 0; i < projection.length; i++) {
-            rawQueryBuilder.append(projection[i]);
-            if (i != projection.length - 1) {
-                rawQueryBuilder.append(SqlQueryConstants.COMMA);
-            }
-        }
-
-        final String firstTable = tablesName[0];
-        final String secondTable = tablesName[1];
-        rawQueryBuilder.append(SqlQueryConstants.FROM).append(firstTable)
-                .append(SqlQueryConstants.JOIN).append(secondTable)
-                .append(SqlQueryConstants.ON).append(firstTable).append(SqlQueryConstants.DOT).append(connectionColumns[0])
-                .append(SqlQueryConstants.EQUALS)
-                .append(secondTable).append(SqlQueryConstants.DOT).append(connectionColumns[1]);
-
-        Cursor cursor;
-        SQLiteDatabase database = getReadableDatabase();
-
-        try {
-            database.beginTransaction();
-            cursor = getReadableDatabase().rawQuery(rawQueryBuilder.toString(), null);
             database.setTransactionSuccessful();
         } finally {
             database.endTransaction();

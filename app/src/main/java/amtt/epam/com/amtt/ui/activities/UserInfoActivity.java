@@ -44,10 +44,8 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_REFRESH = 100;
-
     private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
     private static final int LOGIN_ACTIVITY_REQUEST_CODE = 2;
-
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 2;
     private TextView mNameTextView;
     private TextView mEmailAddressTextView;
@@ -55,11 +53,12 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     private TextView mTimeZoneTextView;
     private TextView mLocaleTextView;
     private TextView mJiraUrlTextView;
+    private TextView mSpreadsheetUrlTextView;
     private ImageView mUserImageImageView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private UserInfoHandler mHandler;
-    private Boolean isNeedShowingTopButton = true;
-    private Boolean isNewUser = false;
+    private ActiveUser mUser = ActiveUser.getInstance();
+    private JiraContent mJira = JiraContent.getInstance();
 
     public static class UserInfoHandler extends Handler {
 
@@ -80,7 +79,9 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         setContentView(R.layout.activity_user_info);
         initViews();
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, UserInfoActivity.this);
@@ -89,15 +90,15 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (isNeedShowingTopButton) {
-            if (isNewUser) {
-                TopButtonService.start(getBaseContext());
-            } else {
-                TopButtonService.sendActionChangeTopButtonVisibility(true);
-            }
-        }
+    protected void onResume() {
+        super.onResume();
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+            TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     @Override
@@ -111,12 +112,11 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
         switch (item.getItemId()) {
             case R.id.action_add: {
                 TopButtonService.close(getBaseContext());
-                isNeedShowingTopButton = false;
-                startActivityForResult(new Intent(this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
+                startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
             }
             return true;
             case R.id.action_list: {
-                startActivityForResult(new Intent(this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
+                startActivityForResult(new Intent(UserInfoActivity.this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
             }
             return true;
             case android.R.id.home: {
@@ -148,7 +148,6 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
                         getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
                     } else {
                         startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
-                        isNeedShowingTopButton = false;
                     }
                     break;
             }
@@ -161,36 +160,44 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
         }
     }
 
-    public void initViews() {
+    private void initViews() {
         mNameTextView = (TextView) findViewById(R.id.tv_user_name);
         mEmailAddressTextView = (TextView) findViewById(R.id.tv_email);
         mDisplayNameTextView = (TextView) findViewById(R.id.tv_fullname);
         mTimeZoneTextView = (TextView) findViewById(R.id.tv_time_zone);
         mLocaleTextView = (TextView) findViewById(R.id.tv_locale);
         mJiraUrlTextView = (TextView) findViewById(R.id.tv_jira_url);
+        mSpreadsheetUrlTextView = (TextView) findViewById(R.id.tv_spreadsheet_url);
         mUserImageImageView = (ImageView) findViewById(R.id.tv_avatar);
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
     }
 
-    public void setActiveUser(JUserInfo user) {
-        ActiveUser.getInstance().clearActiveUser();
-        ActiveUser.getInstance().setUrl(user.getUrl());
-        ActiveUser.getInstance().setCredentials(user.getCredentials());
-        ActiveUser.getInstance().setId(user.getId());
-        ActiveUser.getInstance().setUserName(user.getName());
+    private void setActiveUser(JUserInfo user) {
+        mUser.clearActiveUser();
+        mUser.setUrl(user.getUrl());
+        mUser.setCredentials(user.getCredentials());
+        mUser.setId(user.getId());
+        mUser.setUserName(user.getName());
+        mUser.setLastProjectKey(user.getLastProjectKey());
+        mUser.setLastAssigneeName(user.getLastAssigneeName());
+        mUser.setLastComponentsIds(user.getLastComponentsIds());
+        mUser.setSpreadsheetLink(user.getLastSpreadsheetUrl());
         mNameTextView.setText(user.getName());
         mEmailAddressTextView.setText(user.getEmailAddress());
         mDisplayNameTextView.setText(user.getDisplayName());
         mTimeZoneTextView.setText(user.getTimeZone());
         mLocaleTextView.setText(user.getLocale());
         mJiraUrlTextView.setText(user.getUrl());
+        if (user.getLastSpreadsheetUrl() != null) {
+            mSpreadsheetUrlTextView.setText(user.getLastSpreadsheetUrl());
+        }
         ImageLoader.getInstance().displayImage(user.getAvatarUrls().getAvatarUrl(), mUserImageImageView);
-        JiraContent.getInstance().clearData();
+        mJira.clearData();
     }
 
     private void refreshUserInfo() {
-        String requestSuffix = JiraApiConst.USER_INFO_PATH + ActiveUser.getInstance().getUserName();
-        JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, null, null, null, this);
+        String requestSuffix = JiraApiConst.USER_INFO_PATH + mUser.getUserName();
+        JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, this);
     }
 
     //Callback
@@ -202,13 +209,14 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
 
     @Override
     public void onLoadExecuted(JUserInfo user) {
-        user.setUrl(ActiveUser.getInstance().getUrl());
+        user.setUrl(mUser.getUrl());
         setActiveUser(user);
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onLoadError(Exception e) {
+        Logger.e(TAG, e.getMessage(), e);
         DialogUtils.createDialog(this, ExceptionType.valueOf(e)).show();
         mSwipeRefreshLayout.setRefreshing(false);
     }
@@ -217,20 +225,13 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader loader = null;
+        String selection = UsersTable._ID + "=?";
         if (id == CURSOR_LOADER_ID) {
-            loader = new CursorLoader(this,
-                    AmttUri.USER.get(),
-                    null,
-                    UsersTable._ID + "=?",
-                    new String[]{String.valueOf(ActiveUser.getInstance().getId())},
-                    null);
+            loader = new CursorLoader(UserInfoActivity.this, AmttUri.USER.get(), null, selection,
+                    new String[]{String.valueOf(mUser.getId())}, null);
         } else if (id == SINGLE_USER_CURSOR_LOADER_ID) {
-            loader = new CursorLoader(UserInfoActivity.this,
-                    AmttUri.USER.get(),
-                    null,
-                    UsersTable._ID + "=?",
-                    new String[]{String.valueOf(args.getLong(AmttActivity.KEY_USER_ID))},
-                    null);
+            loader = new CursorLoader(UserInfoActivity.this, AmttUri.USER.get(), null, selection,
+                    new String[]{String.valueOf(args.getLong(AmttActivity.KEY_USER_ID))}, null);
         }
         return loader;
     }
