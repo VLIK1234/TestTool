@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.ui.views;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.util.DisplayMetrics;
@@ -28,8 +27,9 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
     private ImageView mDragImage;
 
     public interface IDrawCallback{
-        void onDrawClick(String drawValue, int x, int y, Paint paint);
+        void onDrawClick(String drawStringValue, int x, int y, Paint paint);
         void onRemoveClick(View view);
+        void onTapClick(String drawStringValue, Paint paintText);
     }
 
     private String mDrawString = "";
@@ -37,7 +37,7 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
     private Bitmap mCacheCanvasBitmap;
     private Canvas mCacheCanvas;
     private WindowManager.LayoutParams mDragImageLayoutParams;
-    public WindowManager mWindowManager;
+    private WindowManager mWindowManager;
     private DisplayMetrics mDisplayMetrics;
     private IDrawCallback mIDrawCallback;
 
@@ -50,8 +50,6 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
 
     public DragImageView(Context context, String drawStringValue, Paint paintText, IDrawCallback iDrawCallback) {
         super(context);
-        mPaintText = paintText;
-        mDrawString = drawStringValue;
         mIDrawCallback = iDrawCallback;
         this.setOrientation(HORIZONTAL);
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -63,10 +61,7 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
         UIUtil.setBackgroundCompat(mDragImage, getResources().getDrawable(R.drawable.background_drag_image));
         mDragImage.setAdjustViewBounds(true);
         mDragImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        mCacheCanvasBitmap = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
-        mCacheCanvas = new Canvas(mCacheCanvasBitmap);
-        mCacheCanvas.drawText(mDrawString, 0, UIUtil.getStatusBarHeight(), mPaintText);
-        mDragImage.setImageBitmap(mCacheCanvasBitmap);
+        drawTextOnImageView(drawStringValue, paintText);
         addView(mDragImage);
 
         LinearLayout buttonLayout = new LinearLayout(context);
@@ -191,7 +186,18 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
                     && Math.abs(totalDeltaY) < sThreshold;
             if (tap) {
                 Toast.makeText(getContext(), "Just tap!", Toast.LENGTH_SHORT).show();
+                mIDrawCallback.onTapClick(mDrawString, mPaintText);
             }
         }
+    }
+
+    public void drawTextOnImageView(String drawStringValue, Paint paintText){
+        mPaintText = paintText;
+        mDrawString = drawStringValue;
+        mDragImage.setScaleType(ImageView.ScaleType.FIT_XY);
+        mCacheCanvasBitmap = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
+        mCacheCanvas = new Canvas(mCacheCanvasBitmap);
+        mCacheCanvas.drawText(mDrawString, 0, UIUtil.getStatusBarHeight(), mPaintText);
+        mDragImage.setImageBitmap(mCacheCanvasBitmap);
     }
 }

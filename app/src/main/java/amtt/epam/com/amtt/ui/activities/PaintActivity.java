@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnSystemUiVisibilityChangeListener;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -75,6 +76,7 @@ public class PaintActivity extends BaseActivity
     public TextView mTextValueOpacity;
 
     private WindowManager mWindowManager;
+    private DragImageView mDragImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -373,8 +375,8 @@ public class PaintActivity extends BaseActivity
 
     @Override
     public void PositiveButtonClick(String drawValueText, Paint paintText) {
-        DragImageView dragImageView = new DragImageView(getBaseContext(), drawValueText, paintText, this);
-        mWindowManager.addView(dragImageView, initMainLayoutParams());
+        mDragImageView = new DragImageView(getBaseContext(), drawValueText, paintText, this);
+        mWindowManager.addView(mDragImageView, initMainLayoutParams());
     }
 
 
@@ -399,5 +401,29 @@ public class PaintActivity extends BaseActivity
     @Override
     public void onRemoveClick(View view) {
         mWindowManager.removeView(view);
+    }
+
+    @Override
+    public void onTapClick(final String drawStringValue, final Paint paintText) {
+        final View view = ((LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_draw_text, null);
+        final EditText editDrawText = (EditText) view.findViewById(R.id.et_draw_text);
+        editDrawText.setText(drawStringValue);
+
+        new AlertDialog.Builder(PaintActivity.this)
+                .setTitle(getResources().getString(R.string.label_title_draw_text_dialog))
+                .setView(view)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mDragImageView.drawTextOnImageView(editDrawText.getText().toString(), paintText);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .create()
+                .show();
     }
 }
