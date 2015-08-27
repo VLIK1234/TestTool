@@ -1,7 +1,6 @@
 package amtt.epam.com.amtt.ui.views;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
@@ -56,6 +55,7 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
         this.setLayoutParams(mDragImageLayoutParams);
 
         mDragText = new TextView(context);
+        mDragText.setBackground(getResources().getDrawable(R.drawable.background_drag_view));
         setDragText(drawStringValue, paintText);
         addView(mDragText);
 
@@ -194,6 +194,7 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
     public void setDragText(String drawStringValue, Paint paintText){
         mPaintText = paintText;
         mDrawString = drawStringValue;
+        mDragText.setIncludeFontPadding(false);
         mDragText.setText(drawStringValue);
         mDragText.setTextSize(TypedValue.COMPLEX_UNIT_FRACTION, paintText.getTextSize());
         mDragText.setTextColor(paintText.getColor());
