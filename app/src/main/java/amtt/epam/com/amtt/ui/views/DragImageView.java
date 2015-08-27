@@ -87,6 +87,12 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
             }
         });
 
+        int size = (int)getResources().getDimension(R.dimen.drag_view_button_size);
+        LinearLayout.LayoutParams params = new LayoutParams(size, size);
+
+        deleteDragViewButton.setLayoutParams(params);
+        confirmDragViewButton.setLayoutParams(params);
+
         buttonLayout.addView(deleteDragViewButton);
         buttonLayout.addView(confirmDragViewButton);
         addView(buttonLayout);
@@ -195,7 +201,7 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
         mPaintText = paintText;
         mDrawString = drawStringValue;
         mDragImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        mCacheCanvasBitmap = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
+        mCacheCanvasBitmap = Bitmap.createBitmap(300, 170, Bitmap.Config.ARGB_8888);
         mCacheCanvas = new Canvas(mCacheCanvasBitmap);
         mCacheCanvas.drawText(mDrawString, 0, UIUtil.getStatusBarHeight(), mPaintText);
         mDragImage.setImageBitmap(mCacheCanvasBitmap);
