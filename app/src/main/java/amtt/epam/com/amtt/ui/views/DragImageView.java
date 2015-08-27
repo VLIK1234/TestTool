@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.ui.views;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.util.DisplayMetrics;
@@ -24,29 +25,49 @@ import amtt.epam.com.amtt.util.UIUtil;
  */
 public class DragImageView extends LinearLayout implements View.OnTouchListener{
 
+    private ImageView mDragImage;
+
+    public interface IDrawCallback{
+        void onDrawClick(String drawValue, int x, int y, Paint paint);
+        void onRemoveClick(View view);
+    }
+
     private String mDrawString = "";
     private Paint mPaintText = new Paint();
     private Bitmap mCacheCanvasBitmap;
-    private Paint mBitmapPaint = new Paint(Paint.DITHER_FLAG);
     private Canvas mCacheCanvas;
     private WindowManager.LayoutParams mDragImageLayoutParams;
     public WindowManager mWindowManager;
     private DisplayMetrics mDisplayMetrics;
+    private IDrawCallback mIDrawCallback;
 
-    public DragImageView(Context context) {
+    private int mFirstX;
+    private int mFirstY;
+    private int mLastX;
+    private int mLastY;
+    private static final int sThreshold = 10;
+    private boolean isMoving;
+
+    public DragImageView(Context context, String drawStringValue, Paint paintText, IDrawCallback iDrawCallback) {
         super(context);
+        mPaintText = paintText;
+        mDrawString = drawStringValue;
+        mIDrawCallback = iDrawCallback;
         this.setOrientation(HORIZONTAL);
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         mDisplayMetrics = getContext().getResources().getDisplayMetrics();
         mDragImageLayoutParams = initMainLayoutParams();
         this.setLayoutParams(mDragImageLayoutParams);
 
-        ImageView dragImage = new ImageView(context);
-        UIUtil.setBackgroundCompat(dragImage, getResources().getDrawable(R.drawable.background_drag_image));
-        dragImage.setAdjustViewBounds(true);
-        dragImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        dragImage.setImageBitmap(Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888));
-        addView(dragImage);
+        mDragImage = new ImageView(context);
+        UIUtil.setBackgroundCompat(mDragImage, getResources().getDrawable(R.drawable.background_drag_image));
+        mDragImage.setAdjustViewBounds(true);
+        mDragImage.setScaleType(ImageView.ScaleType.FIT_XY);
+        mCacheCanvasBitmap = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
+        mCacheCanvas = new Canvas(mCacheCanvasBitmap);
+        mCacheCanvas.drawText(mDrawString, 0, UIUtil.getStatusBarHeight(), mPaintText);
+        mDragImage.setImageBitmap(mCacheCanvasBitmap);
+        addView(mDragImage);
 
         LinearLayout buttonLayout = new LinearLayout(context);
         buttonLayout.setOrientation(LinearLayout.VERTICAL);
@@ -57,7 +78,7 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
         deleteDragViewButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Delete it!", Toast.LENGTH_SHORT).show();
+                mIDrawCallback.onRemoveClick(DragImageView.this);
             }
         });
 
@@ -66,7 +87,8 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
         confirmDragViewButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Confirm it!", Toast.LENGTH_SHORT).show();
+                mIDrawCallback.onDrawClick(mDrawString, mDragImageLayoutParams.x, mDragImageLayoutParams.y, mPaintText);
+                mIDrawCallback.onRemoveClick(DragImageView.this);
             }
         });
 
@@ -109,13 +131,6 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
         mainLayout.gravity = Gravity.TOP | Gravity.START;
         return mainLayout;
     }
-
-    private int mFirstX;
-    private int mFirstY;
-    private int mLastX;
-    private int mLastY;
-    private static final int sThreshold = 10;
-    private boolean isMoving;
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {

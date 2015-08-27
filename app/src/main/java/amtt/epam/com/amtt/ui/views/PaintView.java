@@ -188,9 +188,7 @@ public class PaintView extends ImageView {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         mDrawString = editDrawText.getText().toString();
-                                        mCacheCanvas.drawText(mDrawString, x, y, new Paint(mPaintText));
-                                        mDrawObjects.add(new DrawnText(mDrawString, x, y, new Paint(mPaintText)));
-                                        mIDialogButtonClick.PositiveButtonClick(mDrawString, mPaintText);
+                                        mIDialogButtonClick.PositiveButtonClick(mDrawString, new Paint(mPaintText));
 
                                     }
                                 })
@@ -373,5 +371,10 @@ public class PaintView extends ImageView {
 
     public void setIDialogButtonClick(IDialogButtonClick IDialogButtonClick) {
         mIDialogButtonClick = IDialogButtonClick;
+    }
+
+    public void drawText(String drawStringValue, int x, int y, Paint paintText) {
+        mCacheCanvas.drawText(drawStringValue, x, y, new Paint(paintText));
+        mDrawObjects.add(new DrawnText(drawStringValue, x, y, new Paint(paintText)));
     }
 }

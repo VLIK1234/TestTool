@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -44,6 +45,7 @@ import amtt.epam.com.amtt.ui.views.MultilineRadioGroup.OnEntireGroupCheckedChang
 import amtt.epam.com.amtt.ui.views.PaintView;
 import amtt.epam.com.amtt.ui.views.PaletteItem;
 import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.util.UIUtil;
 
 /**
  @author Artsiom_Kaliaha
@@ -52,7 +54,7 @@ import amtt.epam.com.amtt.util.Logger;
 
 public class PaintActivity extends BaseActivity
                             implements OnSeekBarChangeListener, Handler.Callback, OnSystemUiVisibilityChangeListener,
-                            OnEntireGroupCheckedChangeListener, ImageLoadingListener, PaintView.IDialogButtonClick {
+                            OnEntireGroupCheckedChangeListener, ImageLoadingListener, PaintView.IDialogButtonClick, DragImageView.IDrawCallback {
 
     private static final String TAG = PaintActivity.class.getSimpleName();
     public static final String KEY_STEP_ID = "key_step_id";
@@ -72,11 +74,14 @@ public class PaintActivity extends BaseActivity
     public TextView mTextValueThickness;
     public TextView mTextValueOpacity;
 
+    private WindowManager mWindowManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setImmersiveUiComponents();
         setContentView(R.layout.activity_paint);
+        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
@@ -368,24 +373,8 @@ public class PaintActivity extends BaseActivity
 
     @Override
     public void PositiveButtonClick(String drawValueText, Paint paintText) {
-        RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.rl_paint_activity_main_layout);
-        final View view = ((LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.drag_view, null);
-
-//        ImageView imageView= (ImageView) view.findViewById(R.id.iv_drag_image);
-//        Bitmap bitmap = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
-//        Canvas canvas = new Canvas(bitmap);
-//        canvas.drawText(drawValueText, 0, UIUtil.getStatusBarHeight(), paintText);
-//        imageView.setImageBitmap(bitmap);
-//        mainLayout.addView(view);
-//        DragImageView dragImage = (DragImageView) view.findViewById(R.id.iv_drag_image);
-//        dragImage.drawTextOnBitmap(paintText);
-//        dragImage.setDrawString(drawValueText);
-        DragImageView dragImageView = new DragImageView(getBaseContext());
-        dragImageView.setX(100);
-        dragImageView.setY(100);
-
-        WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        windowManager.addView(dragImageView, initMainLayoutParams());
+        DragImageView dragImageView = new DragImageView(getBaseContext(), drawValueText, paintText, this);
+        mWindowManager.addView(dragImageView, initMainLayoutParams());
     }
 
 
@@ -400,4 +389,15 @@ public class PaintActivity extends BaseActivity
         return mainLayout;
     }
 
+    @Override
+    public void onDrawClick(String drawValue, int x, int y, Paint paint) {
+        Toast.makeText(getBaseContext(), "Ok callback "+x+" "+y, Toast.LENGTH_SHORT).show();
+        mPaintView.drawText(drawValue, x, y + UIUtil.getStatusBarHeight(), paint);
+
+    }
+
+    @Override
+    public void onRemoveClick(View view) {
+        mWindowManager.removeView(view);
+    }
 }
