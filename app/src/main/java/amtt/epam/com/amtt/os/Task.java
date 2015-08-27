@@ -18,6 +18,7 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
     private final Params mParams;
     private final Processor<DataSourceResult, ProcessingResult> mProcessor;
     private Exception mException;
+    ProcessingResult processingResult;
 
     public Task(Params params, DataSource<Params, DataSourceResult> dataSource,
                 Processor<DataSourceResult, ProcessingResult> processor, Callback<ProcessingResult> callback) {
@@ -64,12 +65,12 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
     }
 
     public Task executeOnThreadExecutor(ExecutorService executor, final Params... params) {
-        onPreExecute();
+
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final ProcessingResult processingResult = doInBackground(params);
+                     processingResult = doInBackground(params);
                     onPostExecute(processingResult);
                 } catch (final Exception e) {
                     mException = e;
@@ -77,6 +78,24 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
                 }
             }
         });
+        onPreExecute();
+        new AsyncTask<Params, DataSourceResult, ProcessingResult>() {
+            @Override
+            protected ProcessingResult doInBackground(Params... param) {
+                try {
+                    processingResult = doInBackground(params);
+                } catch (final Exception e) {
+                    mException = e;
+                    processingResult = null;
+                }
+                return null;
+            }
+
+
+
+
+        }.executeOnExecutor(executor);
+
         return this;
     }
 
