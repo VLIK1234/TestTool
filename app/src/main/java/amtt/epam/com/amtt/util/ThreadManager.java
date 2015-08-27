@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.common.DataRequest;
+import amtt.epam.com.amtt.database.DataBaseSource;
 import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.datasource.Plugin;
 import amtt.epam.com.amtt.datasource.ThreadLoader;
@@ -34,14 +35,14 @@ public class ThreadManager {
 
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     public static final String NO_PROCESSOR = "NO_PROCESSOR";
-    private static final Map<String, DataSource> sDataSources;
-    private static final Map<String, Processor> sProcessors;
+    private static final Map<String, DataSource> sHttpDataSources;
+    private static final Map<String, Processor> sHttpProcessors;
     private static int MAXIMUM_POOL_SIZE = CPU_COUNT;
     public static final ExecutorService sExecutor;
 
     static {
-        sDataSources = new HashMap<>();
-        sProcessors = new HashMap<>();
+        sHttpDataSources = new HashMap<>();
+        sHttpProcessors = new HashMap<>();
         sExecutor = new ThreadPoolExecutor(CPU_COUNT, MAXIMUM_POOL_SIZE, 0L, TimeUnit.MILLISECONDS, new LIFOLinkedBlockingDeque<Runnable>());
     }
 
@@ -50,12 +51,8 @@ public class ThreadManager {
     }
 
     public static <Params, DataSourceResult, ProcessingResult> void
-    loadData(
-            final Params params,
-            final DataSource<Params, DataSourceResult> dataSource,
-            final Processor<DataSourceResult, ProcessingResult> processor,
-            final Callback<ProcessingResult> callback
-    ) {
+    loadData(final Params params, final DataSource<Params, DataSourceResult> dataSource,
+            final Processor<DataSourceResult, ProcessingResult> processor, final Callback<ProcessingResult> callback) {
         loadData(params, dataSource, processor, callback, new ThreadLoader<Params, DataSourceResult, ProcessingResult>() {
 
             @Override
@@ -67,45 +64,49 @@ public class ThreadManager {
     }
 
     public static <Params, DataSourceResult, ProcessingResult> void
-    loadData(
-            final Params params,
-            final DataSource<Params, DataSourceResult> dataSource,
-            final Processor<DataSourceResult, ProcessingResult> processor,
-            final Callback<ProcessingResult> callback,
+    loadData(final Params params, final DataSource<Params, DataSourceResult> dataSource,
+            final Processor<DataSourceResult, ProcessingResult> processor, final Callback<ProcessingResult> callback,
             final ThreadLoader<Params, DataSourceResult,  ProcessingResult> threadLoader) {
             threadLoader.load(params, dataSource, processor, callback);
     }
 
     private static <ProcessingResult, DataSourceResult, Params> void
-    executeInAsyncTask(final Params params,
-                       final DataSource<Params, DataSourceResult> dataSource,
+    executeInAsyncTask(final Params params, final DataSource<Params, DataSourceResult> dataSource,
                        final Processor<DataSourceResult, ProcessingResult> processor,
                        final Callback<ProcessingResult> callback) {
         new Task<>(params, dataSource, processor, callback).executeOnThreadExecutor(sExecutor);
     }
 
-    public static <Param> void executeRequest(DataRequest<Param> request) {
-        String dataSourceName = request.getDataSource();
-        String processorName = request.getProcessor();
-        if (sDataSources.get(dataSourceName) == null) {
-            throw new IllegalArgumentException("Unknown / unregistered data source " + dataSourceName);
-        }
-        if (sProcessors.get(processorName) == null && !processorName.equals(NO_PROCESSOR)) {
-            throw new IllegalArgumentException("Unknown / unregistered processorName " + processorName);
-        }
-        ThreadManager.loadData(request.getDataSourceParam(), sDataSources.get(dataSourceName), sProcessors.get(processorName), request.getCallback());
-        //new Task<>(sDataSources.get(dataSourceName), request.getDataSourceParam(), sProcessors.get(processorName), request.getCallback()).execute();
+    public static <Param> void executeDbRequest(DataRequest<Param> request, DataSource dataSource, Processor processor) {
+            if (dataSource == null) {
+                throw new IllegalArgumentException("Unknown data source");
+            }
+            if (processor == null) {
+                throw new IllegalArgumentException("Unknown processor");
+            }
+            ThreadManager.loadData(request.getDataSourceParam(), dataSource, processor, request.getCallback());
     }
 
+    public static <Param> void executeHttpRequest(DataRequest<Param> request) {
+        String dataSourceName = request.getDataSource();
+        String processorName = request.getProcessor();
+            if (sHttpDataSources.get(dataSourceName) == null) {
+                throw new IllegalArgumentException("Unknown / unregistered data source " + dataSourceName);
+            }
+            if (sHttpProcessors.get(processorName) == null && !processorName.equals(NO_PROCESSOR)) {
+                throw new IllegalArgumentException("Unknown / unregistered processorName " + processorName);
+            }
+            ThreadManager.loadData(request.getDataSourceParam(), sHttpDataSources.get(dataSourceName), sHttpProcessors.get(processorName), request.getCallback());
+    }
 
     public static void registerPlugin(Plugin plugin) {
         if (plugin.getName() == null) {
             throw new IllegalArgumentException("Method getName() for " + plugin.getClass().getName() + " isn't overridden");
         }
         if (plugin instanceof DataSource) {
-            sDataSources.put(plugin.getName(), (DataSource) plugin);
+            sHttpDataSources.put(plugin.getName(), (DataSource) plugin);
         } else {
-            sProcessors.put(plugin.getName(), (Processor) plugin);
+            sHttpProcessors.put(plugin.getName(), (Processor) plugin);
         }
     }
 

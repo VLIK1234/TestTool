@@ -10,10 +10,6 @@ import amtt.epam.com.amtt.common.Callback;
 
 /**
  * Created by Artsiom_Kaliaha on 15.06.2015.
- * Generalized AsyncTask
- * param Params    Type that will be passed to a source as parameter
- * param DataSourceResult Type that will be passed to a processor, in other words data returned by DataSource
- * param ProcessingResult   Type that will be returned from AsyncTask
  */
 public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<Params, Void, ProcessingResult> {
 
@@ -57,11 +53,11 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
 
     @Override
     protected void onPostExecute(ProcessingResult processingResult) {
-        if (mCallback == null) {
-            return;
-        }
         if (mException != null) {
             mCallback.onLoadError(mException);
+            return;
+        }
+        if (mCallback == null) {
             return;
         }
         mCallback.onLoadExecuted(processingResult);

@@ -291,7 +291,7 @@ public class JiraContent{
             @Override
             public void onLoadError(Exception e) {
                 Logger.e(TAG, e.getMessage(), e);
-                getContentCallback.resultOfDataLoading(mIssueTypesNames);
+                getContentCallback.resultOfDataLoading(null);
 
             }
         });

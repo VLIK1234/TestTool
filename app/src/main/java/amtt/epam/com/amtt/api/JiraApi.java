@@ -91,7 +91,7 @@ public class JiraApi {
 
     private void execute(Request.Builder requestBuilder, String processorName, Callback callback) {
         Request request = requestBuilder.build();
-        ThreadManager.executeRequest(new DataRequest<>(HttpClient.NAME, request, processorName, callback));
+        ThreadManager.executeHttpRequest(new DataRequest<>(HttpClient.NAME, request, processorName, callback));
     }
 
 }

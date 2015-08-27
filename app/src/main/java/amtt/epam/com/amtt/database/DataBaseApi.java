@@ -10,6 +10,7 @@ import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbRequestParams;
 import amtt.epam.com.amtt.database.processing.ReadDbProcessor;
 import amtt.epam.com.amtt.database.processing.UpdateDbProcessor;
+import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.util.ThreadManager;
 
 /**
@@ -36,43 +37,35 @@ public class DataBaseApi<Entity extends DatabaseEntity> {
     }
 
     public void insert(Entity object, Callback<Integer> callback) {
-        ThreadManager.registerPlugin(new DataBaseSource<Entity, Integer>());
-        ThreadManager.registerPlugin(new UpdateDbProcessor());
         requestParams = new DbRequestParams<Entity>(object, DbRequestType.INSERT);
-        execute(requestParams, UpdateDbProcessor.NAME, callback);
+        execute(requestParams, new DataBaseSource<Entity, Integer>(), new UpdateDbProcessor(), callback);
     }
 
     public void bulkInsert(List<Entity> objects, Callback<Integer> callback) {
-        ThreadManager.registerPlugin(new DataBaseSource<Entity, Integer>());
-        ThreadManager.registerPlugin(new UpdateDbProcessor());
         requestParams = new DbRequestParams<Entity>(objects, DbRequestType.BULK_INSERT);
-        execute(requestParams, UpdateDbProcessor.NAME, callback);
+        execute(requestParams, new DataBaseSource<Entity, Integer>(),
+                new UpdateDbProcessor(), callback);
     }
 
     public void query(Entity entity, String[] projection, String mSelection, String[] mSelectionArgs,
                       String sortOrder, Callback<List<Entity>> callback) {
-        ThreadManager.registerPlugin(new DataBaseSource<Entity, Cursor>());
-        ThreadManager.registerPlugin(new ReadDbProcessor<Entity>((Class<Entity>) entity.getClass()));
         requestParams = new DbRequestParams<Entity>(entity, projection, mSelection, mSelectionArgs,
                                                     sortOrder, DbRequestType.QUERY);
-        execute(requestParams, ReadDbProcessor.NAME, callback);
+        execute(requestParams,new DataBaseSource<Entity, Cursor>(),
+                new ReadDbProcessor<Entity>((Class<Entity>) entity.getClass()), callback);
     }
 
     public void update(Entity object, String selection, String[] selectionArgs, Callback<Integer> callback) {
-        ThreadManager.registerPlugin(new DataBaseSource<Entity, Integer>());
-        ThreadManager.registerPlugin(new UpdateDbProcessor());
         requestParams = new DbRequestParams<Entity>(object, selection, selectionArgs, DbRequestType.UPDATE);
-        execute(requestParams, UpdateDbProcessor.NAME, callback);
+        execute(requestParams, new DataBaseSource<Entity, Integer>(), new UpdateDbProcessor(), callback);
     }
 
     public void delete(Entity object, Callback<Integer> callback) {
-        ThreadManager.registerPlugin(new DataBaseSource<Entity, Integer>());
-        ThreadManager.registerPlugin(new UpdateDbProcessor());
         requestParams = new DbRequestParams<Entity>(object, DbRequestType.DELETE);
-        execute(requestParams, UpdateDbProcessor.NAME, callback);
+        execute(requestParams, new DataBaseSource<Entity, Integer>(), new UpdateDbProcessor(), callback);
     }
 
-    private void execute(DbRequestParams params, String processorName, Callback callback) {
-        ThreadManager.executeRequest(new DataRequest<>(DataBaseSource.NAME, params, processorName, callback));
+    private void execute(DbRequestParams params, DataBaseSource datasourse, Processor processor, Callback callback) {
+        ThreadManager.executeDbRequest(new DataRequest<>(DataBaseSource.NAME, params, null, callback), datasourse, processor);
     }
 }

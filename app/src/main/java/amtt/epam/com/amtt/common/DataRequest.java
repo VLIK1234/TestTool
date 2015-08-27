@@ -2,8 +2,8 @@ package amtt.epam.com.amtt.common;
 
 /**
  * Created by Artsiom_Kaliaha on 18.06.2015.
- * Request executed by CoreApplication
  */
+
 public class DataRequest<Param> {
 
     private final String mDataSourceName;
