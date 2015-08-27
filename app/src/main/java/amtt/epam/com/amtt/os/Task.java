@@ -18,7 +18,7 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
     private final Params mParams;
     private final Processor<DataSourceResult, ProcessingResult> mProcessor;
     private Exception mException;
-    ProcessingResult processingResult;
+    private ProcessingResult mProcessingResult;
 
     public Task(Params params, DataSource<Params, DataSourceResult> dataSource,
                 Processor<DataSourceResult, ProcessingResult> processor, Callback<ProcessingResult> callback) {
@@ -65,38 +65,25 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
     }
 
     public Task executeOnThreadExecutor(ExecutorService executor, final Params... params) {
-
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                     processingResult = doInBackground(params);
-                    onPostExecute(processingResult);
-                } catch (final Exception e) {
-                    mException = e;
-                    onPostExecute(null);
-                }
-            }
-        });
         onPreExecute();
         new AsyncTask<Params, DataSourceResult, ProcessingResult>() {
             @Override
             protected ProcessingResult doInBackground(Params... param) {
                 try {
-                    processingResult = doInBackground(params);
+                    mProcessingResult = doInBackground(params);
                 } catch (final Exception e) {
                     mException = e;
-                    processingResult = null;
+                    mProcessingResult = null;
                 }
                 return null;
             }
 
-
-
-
+            @Override
+            protected void onPostExecute(ProcessingResult result) {
+                onPostExecute(mProcessingResult);
+            }
         }.executeOnExecutor(executor);
 
         return this;
     }
-
 }
