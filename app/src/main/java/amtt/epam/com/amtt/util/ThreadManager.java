@@ -37,7 +37,7 @@ public class ThreadManager {
     public static final String NO_PROCESSOR = "NO_PROCESSOR";
     private static final Map<String, DataSource> sHttpDataSources;
     private static final Map<String, Processor> sHttpProcessors;
-    private static int MAXIMUM_POOL_SIZE = CPU_COUNT;
+    private static int MAXIMUM_POOL_SIZE = Runtime.getRuntime().availableProcessors();
     public static final ExecutorService sExecutor;
 
     static {
