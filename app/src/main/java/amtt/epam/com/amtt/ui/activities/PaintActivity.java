@@ -22,7 +22,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -40,7 +39,7 @@ import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.database.util.ContentFromDatabase;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.ui.views.DragImageView;
+import amtt.epam.com.amtt.ui.views.DragTextView;
 import amtt.epam.com.amtt.ui.views.MultilineRadioGroup;
 import amtt.epam.com.amtt.ui.views.MultilineRadioGroup.OnEntireGroupCheckedChangeListener;
 import amtt.epam.com.amtt.ui.views.PaintView;
@@ -55,7 +54,7 @@ import amtt.epam.com.amtt.util.UIUtil;
 
 public class PaintActivity extends BaseActivity
                             implements OnSeekBarChangeListener, Handler.Callback, OnSystemUiVisibilityChangeListener,
-                            OnEntireGroupCheckedChangeListener, ImageLoadingListener, PaintView.IDialogButtonClick, DragImageView.IDrawCallback {
+                            OnEntireGroupCheckedChangeListener, ImageLoadingListener, PaintView.IDialogButtonClick, DragTextView.IDrawCallback {
 
     private static final String TAG = PaintActivity.class.getSimpleName();
     public static final String KEY_STEP_ID = "key_step_id";
@@ -76,7 +75,7 @@ public class PaintActivity extends BaseActivity
     public TextView mTextValueOpacity;
 
     private WindowManager mWindowManager;
-    private DragImageView mDragImageView;
+    private DragTextView mDragTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -375,8 +374,8 @@ public class PaintActivity extends BaseActivity
 
     @Override
     public void PositiveButtonClick(String drawValueText, Paint paintText) {
-        mDragImageView = new DragImageView(getBaseContext(), drawValueText, paintText, this);
-        mWindowManager.addView(mDragImageView, initMainLayoutParams());
+        mDragTextView = new DragTextView(getBaseContext(), drawValueText, paintText, this);
+        mWindowManager.addView(mDragTextView, initMainLayoutParams());
     }
 
 
@@ -415,7 +414,7 @@ public class PaintActivity extends BaseActivity
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mDragImageView.drawTextOnImageView(editDrawText.getText().toString(), paintText);
+                        mDragTextView.setDragText(editDrawText.getText().toString(), paintText);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

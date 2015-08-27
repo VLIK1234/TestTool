@@ -6,14 +6,14 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.util.UIUtil;
@@ -22,9 +22,9 @@ import amtt.epam.com.amtt.util.UIUtil;
  * @author IvanBakach
  * @version on 25.08.2015
  */
-public class DragImageView extends LinearLayout implements View.OnTouchListener{
+public class DragTextView extends LinearLayout implements View.OnTouchListener{
 
-    private ImageView mDragImage;
+    private TextView mDragText;
 
     public interface IDrawCallback{
         void onDrawClick(String drawStringValue, int x, int y, Paint paint);
@@ -34,8 +34,6 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
 
     private String mDrawString = "";
     private Paint mPaintText = new Paint();
-    private Bitmap mCacheCanvasBitmap;
-    private Canvas mCacheCanvas;
     private WindowManager.LayoutParams mDragImageLayoutParams;
     private WindowManager mWindowManager;
     private DisplayMetrics mDisplayMetrics;
@@ -48,7 +46,7 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
     private static final int sThreshold = 10;
     private boolean isMoving;
 
-    public DragImageView(Context context, String drawStringValue, Paint paintText, IDrawCallback iDrawCallback) {
+    public DragTextView(Context context, String drawStringValue, Paint paintText, IDrawCallback iDrawCallback) {
         super(context);
         mIDrawCallback = iDrawCallback;
         this.setOrientation(HORIZONTAL);
@@ -57,12 +55,9 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
         mDragImageLayoutParams = initMainLayoutParams();
         this.setLayoutParams(mDragImageLayoutParams);
 
-        mDragImage = new ImageView(context);
-        UIUtil.setBackgroundCompat(mDragImage, getResources().getDrawable(R.drawable.background_drag_image));
-        mDragImage.setAdjustViewBounds(true);
-        mDragImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        drawTextOnImageView(drawStringValue, paintText);
-        addView(mDragImage);
+        mDragText = new TextView(context);
+        setDragText(drawStringValue, paintText);
+        addView(mDragText);
 
         LinearLayout buttonLayout = new LinearLayout(context);
         buttonLayout.setOrientation(LinearLayout.VERTICAL);
@@ -73,7 +68,7 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
         deleteDragViewButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mIDrawCallback.onRemoveClick(DragImageView.this);
+                mIDrawCallback.onRemoveClick(DragTextView.this);
             }
         });
 
@@ -83,7 +78,7 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
             @Override
             public void onClick(View v) {
                 mIDrawCallback.onDrawClick(mDrawString, mDragImageLayoutParams.x, mDragImageLayoutParams.y, mPaintText);
-                mIDrawCallback.onRemoveClick(DragImageView.this);
+                mIDrawCallback.onRemoveClick(DragTextView.this);
             }
         });
 
@@ -191,19 +186,16 @@ public class DragImageView extends LinearLayout implements View.OnTouchListener{
             boolean tap = Math.abs(totalDeltaX) < sThreshold
                     && Math.abs(totalDeltaY) < sThreshold;
             if (tap) {
-                Toast.makeText(getContext(), "Just tap!", Toast.LENGTH_SHORT).show();
                 mIDrawCallback.onTapClick(mDrawString, mPaintText);
             }
         }
     }
 
-    public void drawTextOnImageView(String drawStringValue, Paint paintText){
+    public void setDragText(String drawStringValue, Paint paintText){
         mPaintText = paintText;
         mDrawString = drawStringValue;
-        mDragImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        mCacheCanvasBitmap = Bitmap.createBitmap(300, 170, Bitmap.Config.ARGB_8888);
-        mCacheCanvas = new Canvas(mCacheCanvasBitmap);
-        mCacheCanvas.drawText(mDrawString, 0, UIUtil.getStatusBarHeight(), mPaintText);
-        mDragImage.setImageBitmap(mCacheCanvasBitmap);
+        mDragText.setText(drawStringValue);
+        mDragText.setTextSize(TypedValue.COMPLEX_UNIT_FRACTION, paintText.getTextSize());
+        mDragText.setTextColor(paintText.getColor());
     }
 }
