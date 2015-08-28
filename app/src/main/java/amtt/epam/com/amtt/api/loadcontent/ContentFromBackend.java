@@ -73,13 +73,13 @@ public class ContentFromBackend {
     }
 
     private <Content> Callback getCallbackStatus(final ContentLoadingCallback<Boolean, Content> loadingCallback, final GetContentCallback<Content> contentCallback) {
-        return new Callback<Boolean>() {
+        return new Callback<Void>() {
             @Override
             public void onLoadStart() {
             }
 
             @Override
-            public void onLoadExecuted(Boolean result) {
+            public void onLoadExecuted(Void result) {
                 loadingCallback.resultFromBackend(true, contentCallback);
             }
 
