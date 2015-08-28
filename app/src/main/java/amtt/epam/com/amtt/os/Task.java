@@ -70,7 +70,7 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
             @Override
             protected ProcessingResult doInBackground(Params... param) {
                 try {
-                    mProcessingResult = doInBackground(params);
+                    mProcessingResult = Task.this.doInBackground(params);
                 } catch (final Exception e) {
                     mException = e;
                     mProcessingResult = null;
@@ -80,7 +80,7 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
 
             @Override
             protected void onPostExecute(ProcessingResult result) {
-                onPostExecute(mProcessingResult);
+                Task.this.onPostExecute(mProcessingResult);
             }
         }.executeOnExecutor(executor);
 

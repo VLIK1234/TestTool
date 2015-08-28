@@ -65,9 +65,9 @@ import amtt.epam.com.amtt.util.Validator;
 
 
 public class CreateIssueActivity extends BaseActivity
-                                implements AttachmentAdapter.ViewHolder.ClickListener, AttachmentAdapter.ViewHolder.DataChangedListener,
-                                           SharedPreferences.OnSharedPreferenceChangeListener, GifUtil.ProgressListener,
-                                            AttachmentAdapter.ViewHolder.ScreenshotStateListener {
+        implements AttachmentAdapter.ViewHolder.ClickListener, AttachmentAdapter.ViewHolder.DataChangedListener,
+        SharedPreferences.OnSharedPreferenceChangeListener, GifUtil.ProgressListener,
+        AttachmentAdapter.ViewHolder.ScreenshotStateListener {
 
     private static final int PAINT_ACTIVITY_REQUEST_CODE = 0;
     private static final int MESSAGE_TEXT_CHANGED = 100;
@@ -170,7 +170,7 @@ public class CreateIssueActivity extends BaseActivity
             mUser.setLastComponentsIds(component);
         }
         mJira.setDefaultConfig(mUser.getId(), mUser.getUserName(), mUser.getUrl(),
-                                mUser.getLastProjectKey(), mUser.getLastAssignee(), mUser.getLastComponentsIds());
+                mUser.getLastProjectKey(), mUser.getLastAssignee(), mUser.getLastComponentsIds());
     }
 
     private void initViews() {
@@ -233,37 +233,27 @@ public class CreateIssueActivity extends BaseActivity
         mJira.getProjectsNames(mUser.getId(), new GetContentCallback<HashMap<JProjects, String>>() {
             @Override
             public void resultOfDataLoading(final HashMap<JProjects, String> result) {
-                CreateIssueActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (result != null) {
-                            ArrayList<String> projectNames = new ArrayList<>();
-                            projectNames.addAll(result.values());
-                            final ArrayAdapter<String> projectsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, projectNames);
-                            projectsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                            mProjectNamesSpinner.setAdapter(projectsAdapter);
-                            if (mUser.getLastProjectKey() != null) {
-                                mJira.getProjectNameByKey(mUser.getLastProjectKey(), new GetContentCallback<String>() {
-                                    @Override
-                                    public void resultOfDataLoading(final String result) {
-                                        CreateIssueActivity.this.runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                if (result != null && projectsAdapter.getPosition(result) >= 0) {
-                                                    mProjectNamesSpinner.setSelection(projectsAdapter.getPosition(result));
-                                                }
-                                            }
-                                        });
-                                    }
-                                });
-                            } else {
-                                mProjectNamesSpinner.setSelection(0);
+                if (result != null) {
+                    ArrayList<String> projectNames = new ArrayList<>();
+                    projectNames.addAll(result.values());
+                    final ArrayAdapter<String> projectsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, projectNames);
+                    projectsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                    mProjectNamesSpinner.setAdapter(projectsAdapter);
+                    if (mUser.getLastProjectKey() != null) {
+                        mJira.getProjectNameByKey(mUser.getLastProjectKey(), new GetContentCallback<String>() {
+                            @Override
+                            public void resultOfDataLoading(final String result) {
+                                if (result != null && projectsAdapter.getPosition(result) >= 0) {
+                                    mProjectNamesSpinner.setSelection(projectsAdapter.getPosition(result));
+                                }
                             }
-                            mProjectNamesSpinner.setEnabled(true);
-                        }
-                        mRequestsQueue.remove(ContentConst.PROJECTS_RESPONSE);
+                        });
+                    } else {
+                        mProjectNamesSpinner.setSelection(0);
                     }
-                });
+                    mProjectNamesSpinner.setEnabled(true);
+                }
+                mRequestsQueue.remove(ContentConst.PROJECTS_RESPONSE);
             }
         });
         mProjectNamesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -272,15 +262,10 @@ public class CreateIssueActivity extends BaseActivity
                 mJira.getProjectKeyByName((String) parent.getItemAtPosition(position), new GetContentCallback<String>() {
                     @Override
                     public void resultOfDataLoading(final String result) {
-                        CreateIssueActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (result != null) {
-                                    mUser.setLastProjectKey(result);
-                                    reinitRelatedViews(result);
-                                }
-                            }
-                        });
+                        if (result != null) {
+                            mUser.setLastProjectKey(result);
+                            reinitRelatedViews(result);
+                        }
                     }
                 });
             }
@@ -297,33 +282,28 @@ public class CreateIssueActivity extends BaseActivity
         mJira.getPrioritiesNames(mUser.getUrl(), new GetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(final HashMap<String, String> result) {
-                CreateIssueActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (result != null) {
-                            ArrayList<String> priorityNames = new ArrayList<>();
-                            priorityNames.addAll(result.values());
-                            ArrayAdapter<String> mPrioritiesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, priorityNames);
-                            mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                            prioritiesSpinner.setAdapter(mPrioritiesAdapter);
-                            String defaultPriority;
-                            if (mBundle != null && mBundle.getString(ExpectedResultsActivity.PRIORITY) != null) {
-                                defaultPriority = mBundle.getString(ExpectedResultsActivity.PRIORITY);
-                                if (defaultPriority != null && mPrioritiesAdapter.getPosition(defaultPriority) >= 0) {
-                                    prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
-                                }
-                            } else {
-                                defaultPriority = mJira.getPriorityNameById(DEFAULT_PRIORITY_ID);
-                                if (defaultPriority != null && mPrioritiesAdapter.getPosition(defaultPriority) >= 0) {
-                                    prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
-                                }
-                            }
-                            prioritiesSpinner.setEnabled(true);
+                if (result != null) {
+                    ArrayList<String> priorityNames = new ArrayList<>();
+                    priorityNames.addAll(result.values());
+                    ArrayAdapter<String> mPrioritiesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, priorityNames);
+                    mPrioritiesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                    prioritiesSpinner.setAdapter(mPrioritiesAdapter);
+                    String defaultPriority;
+                    if (mBundle != null && mBundle.getString(ExpectedResultsActivity.PRIORITY) != null) {
+                        defaultPriority = mBundle.getString(ExpectedResultsActivity.PRIORITY);
+                        if (defaultPriority != null && mPrioritiesAdapter.getPosition(defaultPriority) >= 0) {
+                            prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
                         }
-                        mRequestsQueue.remove(ContentConst.PRIORITIES_RESPONSE);
-                        showProgressIfNeed();
+                    } else {
+                        defaultPriority = mJira.getPriorityNameById(DEFAULT_PRIORITY_ID);
+                        if (defaultPriority != null && mPrioritiesAdapter.getPosition(defaultPriority) >= 0) {
+                            prioritiesSpinner.setSelection(mPrioritiesAdapter.getPosition(defaultPriority));
+                        }
                     }
-                });
+                    prioritiesSpinner.setEnabled(true);
+                }
+                mRequestsQueue.remove(ContentConst.PRIORITIES_RESPONSE);
+                showProgressIfNeed();
             }
         });
         prioritiesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -333,7 +313,8 @@ public class CreateIssueActivity extends BaseActivity
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> arg0) {}
+            public void onNothingSelected(AdapterView<?> arg0) {
+            }
         });
     }
 
@@ -344,26 +325,21 @@ public class CreateIssueActivity extends BaseActivity
         mJira.getVersionsNames(projectKey, new GetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(final HashMap<String, String> result) {
-                CreateIssueActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (result != null && result.size() > 0) {
-                            versionsSpinner.setVisibility(View.VISIBLE);
-                            affectTextView.setVisibility(View.VISIBLE);
-                            ArrayList<String> versionNames = new ArrayList<>();
-                            versionNames.addAll(result.values());
-                            ArrayAdapter<String> versionsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, versionNames);
-                            versionsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                            versionsSpinner.setAdapter(versionsAdapter);
-                            versionsSpinner.setEnabled(true);
-                        } else {
-                            versionsSpinner.setVisibility(View.GONE);
-                            affectTextView.setVisibility(View.GONE);
-                        }
-                        mRequestsQueue.remove(ContentConst.VERSIONS_RESPONSE);
-                        showProgressIfNeed();
-                    }
-                });
+                if (result != null && result.size() > 0) {
+                    versionsSpinner.setVisibility(View.VISIBLE);
+                    affectTextView.setVisibility(View.VISIBLE);
+                    ArrayList<String> versionNames = new ArrayList<>();
+                    versionNames.addAll(result.values());
+                    ArrayAdapter<String> versionsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, versionNames);
+                    versionsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                    versionsSpinner.setAdapter(versionsAdapter);
+                    versionsSpinner.setEnabled(true);
+                } else {
+                    versionsSpinner.setVisibility(View.GONE);
+                    affectTextView.setVisibility(View.GONE);
+                }
+                mRequestsQueue.remove(ContentConst.VERSIONS_RESPONSE);
+                showProgressIfNeed();
             }
         });
         versionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -385,33 +361,28 @@ public class CreateIssueActivity extends BaseActivity
         mJira.getComponentsNames(projectKey, new GetContentCallback<HashMap<String, String>>() {
             @Override
             public void resultOfDataLoading(final HashMap<String, String> result) {
-                CreateIssueActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (result != null && result.size() > 0) {
-                            ArrayList<String> componentsNames = new ArrayList<>();
-                            componentsNames.addAll(result.values());
-                            ArrayAdapter<String> componentsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, componentsNames);
-                            componentsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                            componentsTextView.setVisibility(View.VISIBLE);
-                            mComponents.setAdapter(componentsAdapter);
-                            mComponents.setVisibility(View.VISIBLE);
-                            mComponents.setEnabled(true);
-                            if (mUser.getLastComponentsIds() != null
-                                    && mJira.getComponentNameById(mUser.getLastComponentsIds()) != null
-                                    && componentsAdapter.getPosition(mJira.getComponentNameById(mUser.getLastComponentsIds())) >= 0) {
-                                mComponents.setSelection(componentsAdapter.getPosition(mJira.getComponentNameById(mUser.getLastComponentsIds())));
-                            } else {
-                                mComponents.setSelection(0);
-                            }
-                        } else {
-                            componentsTextView.setVisibility(View.GONE);
-                            mComponents.setVisibility(View.GONE);
-                        }
-                        mRequestsQueue.remove(ContentConst.COMPONENTS_RESPONSE);
-                        showProgressIfNeed();
+                if (result != null && result.size() > 0) {
+                    ArrayList<String> componentsNames = new ArrayList<>();
+                    componentsNames.addAll(result.values());
+                    ArrayAdapter<String> componentsAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, componentsNames);
+                    componentsAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                    componentsTextView.setVisibility(View.VISIBLE);
+                    mComponents.setAdapter(componentsAdapter);
+                    mComponents.setVisibility(View.VISIBLE);
+                    mComponents.setEnabled(true);
+                    if (mUser.getLastComponentsIds() != null
+                            && mJira.getComponentNameById(mUser.getLastComponentsIds()) != null
+                            && componentsAdapter.getPosition(mJira.getComponentNameById(mUser.getLastComponentsIds())) >= 0) {
+                        mComponents.setSelection(componentsAdapter.getPosition(mJira.getComponentNameById(mUser.getLastComponentsIds())));
+                    } else {
+                        mComponents.setSelection(0);
                     }
-                });
+                } else {
+                    componentsTextView.setVisibility(View.GONE);
+                    mComponents.setVisibility(View.GONE);
+                }
+                mRequestsQueue.remove(ContentConst.COMPONENTS_RESPONSE);
+                showProgressIfNeed();
             }
         });
     }
@@ -422,29 +393,24 @@ public class CreateIssueActivity extends BaseActivity
         mJira.getIssueTypesNames(new GetContentCallback<List<String>>() {
             @Override
             public void resultOfDataLoading(final List<String> result) {
-                CreateIssueActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (result != null) {
-                            ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
-                            issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
-                            issueTypesSpinner.setAdapter(issueTypesAdapter);
-                            if (mUser.getRecord()) {
-                                if (issueTypesAdapter.getPosition(BUG) != -1) {
-                                    issueTypesSpinner.setSelection(issueTypesAdapter.getPosition(BUG));
-                                }
-                            } else {
-                                if (issueTypesAdapter.getPosition(TASK) != -1) {
-                                    issueTypesSpinner.setSelection(issueTypesAdapter.getPosition(TASK));
-                                }
-                            }
-                            issueTypesSpinner.setEnabled(true);
-                            hideKeyboard();
+                if (result != null) {
+                    ArrayAdapter<String> issueTypesAdapter = new ArrayAdapter<>(CreateIssueActivity.this, R.layout.spinner_layout, result);
+                    issueTypesAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+                    issueTypesSpinner.setAdapter(issueTypesAdapter);
+                    if (mUser.getRecord()) {
+                        if (issueTypesAdapter.getPosition(BUG) != -1) {
+                            issueTypesSpinner.setSelection(issueTypesAdapter.getPosition(BUG));
                         }
-                        mRequestsQueue.remove(ContentConst.ISSUE_TYPES_RESPONSE);
-                        showProgressIfNeed();
+                    } else {
+                        if (issueTypesAdapter.getPosition(TASK) != -1) {
+                            issueTypesSpinner.setSelection(issueTypesAdapter.getPosition(TASK));
+                        }
                     }
-                });
+                    issueTypesSpinner.setEnabled(true);
+                    hideKeyboard();
+                }
+                mRequestsQueue.remove(ContentConst.ISSUE_TYPES_RESPONSE);
+                showProgressIfNeed();
             }
         });
         issueTypesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -506,32 +472,27 @@ public class CreateIssueActivity extends BaseActivity
                         mAssignableUserName, mUser.getLastComponentsIds(), new GetContentCallback<JCreateIssueResponse>() {
                             @Override
                             public void resultOfDataLoading(final JCreateIssueResponse result) {
-                                CreateIssueActivity.this.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (result != null) {
-                                            if (mAdapter != null && mAdapter.getAttachmentFilePathList() != null) {
-                                                AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
-                                            }
-                                            Toast.makeText(CreateIssueActivity.this, R.string.ticket_created, Toast.LENGTH_LONG).show();
-                                            TopButtonService.stopRecord(CreateIssueActivity.this);
-                                            if (mAssignableUserName != null && !mAssignableUserName.equals("") && !mUser.getLastAssignee().equals(mAssignableUserName)) {
-                                                mUser.setLastAssigneeName(mAssignableUserName);
-                                            }
-                                            if (mCreateAnotherIssue) {
-                                                mCreateAnotherCheckBox.setChecked(false);
-                                                mTitleTextInput.setText(Constants.Symbols.EMPTY);
-                                                initAttachmentsView();
-                                                mDescriptionTextInput.setText(Constants.Symbols.EMPTY);
-                                            } else {
-                                                finish();
-                                            }
-                                        } else {
-                                            Toast.makeText(CreateIssueActivity.this, getString(R.string.create_ticket_error, mAssignableUserName), Toast.LENGTH_LONG).show();
-                                        }
-                                        showProgress(false);
+                                if (result != null) {
+                                    if (mAdapter != null && mAdapter.getAttachmentFilePathList() != null) {
+                                        AttachmentService.start(CreateIssueActivity.this, mAdapter.getAttachmentFilePathList());
                                     }
-                                });
+                                    Toast.makeText(CreateIssueActivity.this, R.string.ticket_created, Toast.LENGTH_LONG).show();
+                                    TopButtonService.stopRecord(CreateIssueActivity.this);
+                                    if (mAssignableUserName != null && !mAssignableUserName.equals("") && !mUser.getLastAssignee().equals(mAssignableUserName)) {
+                                        mUser.setLastAssigneeName(mAssignableUserName);
+                                    }
+                                    if (mCreateAnotherIssue) {
+                                        mCreateAnotherCheckBox.setChecked(false);
+                                        mTitleTextInput.setText(Constants.Symbols.EMPTY);
+                                        initAttachmentsView();
+                                        mDescriptionTextInput.setText(Constants.Symbols.EMPTY);
+                                    } else {
+                                        finish();
+                                    }
+                                } else {
+                                    Toast.makeText(CreateIssueActivity.this, getString(R.string.create_ticket_error, mAssignableUserName), Toast.LENGTH_LONG).show();
+                                }
+                                showProgress(false);
                             }
                         }
                 );
@@ -563,10 +524,12 @@ public class CreateIssueActivity extends BaseActivity
         });
         mAssignableAutocompleteView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -682,23 +645,18 @@ public class CreateIssueActivity extends BaseActivity
             mJira.getUsersAssignable(s, new GetContentCallback<List<String>>() {
                 @Override
                 public void resultOfDataLoading(final List<String> result) {
-                    CreateIssueActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (result != null) {
-                                ArrayAdapter<String> assignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this,
-                                        R.layout.spinner_dropdown_item, result);
-                                mAssignableAutocompleteView.setThreshold(1);
-                                mAssignableAutocompleteView.setAdapter(assignableUsersAdapter);
-                                if (assignableUsersAdapter.getCount() > 0
-                                        && !mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
-                                    mAssignableAutocompleteView.showDropDown();
-                                }
-                            }
-                            mAssignableAutocompleteView.showProgress(false);
-                            mAssignableAutocompleteView.setEnabled(true);
+                    if (result != null) {
+                        ArrayAdapter<String> assignableUsersAdapter = new ArrayAdapter<>(CreateIssueActivity.this,
+                                R.layout.spinner_dropdown_item, result);
+                        mAssignableAutocompleteView.setThreshold(1);
+                        mAssignableAutocompleteView.setAdapter(assignableUsersAdapter);
+                        if (assignableUsersAdapter.getCount() > 0
+                                && !mAssignableAutocompleteView.getText().toString().equals(assignableUsersAdapter.getItem(0))) {
+                            mAssignableAutocompleteView.showDropDown();
                         }
-                    });
+                    }
+                    mAssignableAutocompleteView.showProgress(false);
+                    mAssignableAutocompleteView.setEnabled(true);
                 }
             });
         }
@@ -706,18 +664,13 @@ public class CreateIssueActivity extends BaseActivity
 
     private void showProgressIfNeed() {
         if (mCreateIssueButton != null) {
-            CreateIssueActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (!mRequestsQueue.isEmpty()) {
-                        showProgress(true);
-                        mCreateIssueButton.setEnabled(false);
-                    } else {
-                        showProgress(false);
-                        mCreateIssueButton.setEnabled(true);
-                    }
-                }
-            });
+            if (!mRequestsQueue.isEmpty()) {
+                showProgress(true);
+                mCreateIssueButton.setEnabled(false);
+            } else {
+                showProgress(false);
+                mCreateIssueButton.setEnabled(true);
+            }
         }
     }
 
@@ -813,7 +766,8 @@ public class CreateIssueActivity extends BaseActivity
                     }
 
                     @Override
-                    public void negativeButtonClick() {}
+                    public void negativeButtonClick() {
+                    }
                 }).show();
             } else {
                 removeStepFromDatabase(position);
@@ -821,15 +775,16 @@ public class CreateIssueActivity extends BaseActivity
         } else if (FileUtil.isText(mAdapter.getAttachments().get(position).getFilePath())) {
             DialogHelper.getAreYouSureDialog(this, getString(R.string.title_delete_log_dialiog),
                     getString(R.string.label_message_delete_log_dialiog), new DialogHelper.IDialogButtonClick() {
-                @Override
-                public void positiveButtonClick() {
-                    mAdapter.getAttachments().remove(position);
-                    mAdapter.notifyItemRemoved(position);
-                }
+                        @Override
+                        public void positiveButtonClick() {
+                            mAdapter.getAttachments().remove(position);
+                            mAdapter.notifyItemRemoved(position);
+                        }
 
-                @Override
-                public void negativeButtonClick() {}
-            }).show();
+                        @Override
+                        public void negativeButtonClick() {
+                        }
+                    }).show();
         }
     }
 
@@ -917,13 +872,14 @@ public class CreateIssueActivity extends BaseActivity
         DialogHelper.getAreYouSureDialog(this, getString(R.string.title_exit_dialog),
                 getString(R.string.label_message_exit_dialog), new DialogHelper.IDialogButtonClick() {
 
-            @Override
-            public void positiveButtonClick() {
-                finish();
-            }
+                    @Override
+                    public void positiveButtonClick() {
+                        finish();
+                    }
 
-            @Override
-            public void negativeButtonClick() {}
-        }).show();
+                    @Override
+                    public void negativeButtonClick() {
+                    }
+                }).show();
     }
 }
