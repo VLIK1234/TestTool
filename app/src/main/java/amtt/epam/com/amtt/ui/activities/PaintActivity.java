@@ -393,7 +393,7 @@ public class PaintActivity extends BaseActivity
     @Override
     public void onDrawClick(String drawValue, int x, int y, Paint paint) {
         Toast.makeText(getBaseContext(), "Ok callback "+x+" "+y, Toast.LENGTH_SHORT).show();
-        mPaintView.drawText(drawValue, x, y + UIUtil.getStatusBarHeight(), paint);
+        mPaintView.drawText(drawValue, x, y, paint);
 
     }
 
