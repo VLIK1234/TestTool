@@ -1,0 +1,45 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        applicationId "com.epam.itweek"
+        minSdkVersion 14
+        targetSdkVersion 22
+        testInstrumentationRunner "com.epam.amtt.test.TestRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+            storePassword "android123"
+            keyAlias "androiddebugkey"
+            keyPassword "android123"
+        }
+        release {
+            storeFile file("debug.keystore")
+            storePassword "android123"
+            keyAlias "androiddebugkey"
+            keyPassword "android123"
+        }
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile(name:'amtttestslib-1.0', ext:'aar')
+    compile 'com.android.support:appcompat-v7:22.2.1'
+}
