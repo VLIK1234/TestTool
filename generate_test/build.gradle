@@ -5,16 +5,29 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.epam.dtc"
+        applicationId "com.epam.itweek"
         minSdkVersion 14
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        testInstrumentationRunner "com.epam.amtt.test.TestRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+            storePassword "android123"
+            keyAlias "androiddebugkey"
+            keyPassword "android123"
+        }
+        release {
+            storeFile file("debug.keystore")
+            storePassword "android123"
+            keyAlias "androiddebugkey"
+            keyPassword "android123"
         }
     }
 }

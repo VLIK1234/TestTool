@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.util;
 
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.io.File;
 import java.util.List;
@@ -64,7 +65,13 @@ public class FileUtil {
 
     public static String getCacheAmttDir() {
         File amttCache = new File(sCacheAmttDir);
-        amttCache.mkdir();
+        if (!amttCache.canWrite()) {
+            if (amttCache.mkdir()) {
+                Log.d(FileUtil.class.getSimpleName(),"Was created "+amttCache.getName() +" folder" );
+            }else{
+                Log.d(FileUtil.class.getSimpleName(),"Failed created "+amttCache.getName() +" folder" );
+            };
+        }
         return sCacheAmttDir;
     }
 }

@@ -91,6 +91,12 @@ public class TakeStepActivity extends AppCompatActivity {
         takeStepDialog.show();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
+    }
+
     private void saveCheckboxValue(boolean activityInfoIsChecked, boolean screenIsChecked) {
         PreferenceUtil.putBoolean(getString(R.string.checkbox_activity_info_key), activityInfoIsChecked);
         PreferenceUtil.putBoolean(getString(R.string.checkbox_screen_key), screenIsChecked);
