@@ -10,6 +10,7 @@ import android.text.Spanned;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,10 +53,12 @@ public class LocalContent {
         Step step = new Step(null, null, null, mScreenPath, null);
         ContentFromDatabase.setStep(step, new Callback<Integer>() {
             @Override
-            public void onLoadStart() {}
+            public void onLoadStart() {
+            }
 
             @Override
-            public void onLoadExecuted(Integer integer) {}
+            public void onLoadExecuted(Integer integer) {
+            }
 
             @Override
             public void onLoadError(Exception e) {
@@ -67,7 +70,8 @@ public class LocalContent {
     public static void getAllSteps(final GetContentCallback<List<Step>> contentCallback) {
         ContentFromDatabase.getAllSteps(new Callback<List<Step>>() {
             @Override
-            public void onLoadStart() {}
+            public void onLoadStart() {
+            }
 
             @Override
             public void onLoadExecuted(List<Step> steps) {
@@ -89,10 +93,12 @@ public class LocalContent {
     public static void removeStep(Step step){
         ContentFromDatabase.removeStep(step, new Callback<Integer>() {
             @Override
-            public void onLoadStart() {}
+            public void onLoadStart() {
+            }
 
             @Override
-            public void onLoadExecuted(Integer integer) {}
+            public void onLoadExecuted(Integer integer) {
+            }
 
             @Override
             public void onLoadError(Exception e) {
@@ -104,10 +110,12 @@ public class LocalContent {
     public static void removeAllSteps() {
         ContentFromDatabase.removeAllSteps(new Callback<Integer>() {
             @Override
-            public void onLoadStart() {}
+            public void onLoadStart() {
+            }
 
             @Override
-            public void onLoadExecuted(Integer integer) {}
+            public void onLoadExecuted(Integer integer) {
+            }
 
             @Override
             public void onLoadError(Exception e) {
@@ -138,14 +146,21 @@ public class LocalContent {
                 FileOutputStream outputStream = null;
                 try {
                     outputStream = IOUtils.openFileOutput(screenshotPath, true);
+                    if (outputStream != null) {
+                        drawingCache.compress(compressFormat, 100, outputStream);
+                    }
                 } catch (FileNotFoundException e) {
                     //ignored in this implementation, because exception won't be thrown as we need to create new file
                     //look through IOUtils.openFileOutput method for more information
+                } finally {
+                    if (outputStream != null) {
+                        try {
+                            outputStream.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
-                if (outputStream != null) {
-                    drawingCache.compress(compressFormat, 100, outputStream);
-                }
-
                 step.setScreenshotState(Step.ScreenshotState.WRITTEN);
                 ContentFromDatabase.updateStep(step, new Callback<Integer>() {
                     @Override

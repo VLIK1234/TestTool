@@ -35,6 +35,6 @@ public class GSpreadsheetApi {
 
     private void execute(Request.Builder requestBuilder, String processorName, Callback callback) {
         Request request = requestBuilder.build();
-        ThreadManager.executeHttpRequest(new DataRequest<>(HttpClient.NAME, request, processorName, callback));
+        ThreadManager.execute(new DataRequest<>(HttpClient.NAME, request, processorName, callback));
     }
 }

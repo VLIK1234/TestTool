@@ -77,7 +77,7 @@ public class ThreadManager {
         new Task<>(params, dataSource, processor, callback).executeOnThreadExecutor(sExecutor);
     }
 
-    public static <Param> void executeDbRequest(DataRequest<Param> request, DataSource dataSource, Processor processor) {
+    public static <Param> void execute(DataRequest<Param> request, DataSource dataSource, Processor processor) {
             if (dataSource == null) {
                 throw new IllegalArgumentException("Unknown data source");
             }
@@ -87,7 +87,7 @@ public class ThreadManager {
             ThreadManager.loadData(request.getDataSourceParam(), dataSource, processor, request.getCallback());
     }
 
-    public static <Param> void executeHttpRequest(DataRequest<Param> request) {
+    public static <Param> void execute(DataRequest<Param> request) {
         String dataSourceName = request.getDataSource();
         String processorName = request.getProcessor();
             if (sHttpDataSources.get(dataSourceName) == null) {

@@ -66,6 +66,6 @@ public class DataBaseApi<Entity extends DatabaseEntity> {
     }
 
     private void execute(DbRequestParams params, DataBaseSource datasourse, Processor processor, Callback callback) {
-        ThreadManager.executeDbRequest(new DataRequest<>(DataBaseSource.NAME, params, null, callback), datasourse, processor);
+        ThreadManager.execute(new DataRequest<>(DataBaseSource.NAME, params, null, callback), datasourse, processor);
     }
 }

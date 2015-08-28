@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.database;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
@@ -49,7 +50,7 @@ public class DataBaseSource<Entity extends DatabaseEntity, DataSourceResult> imp
     public Integer insert(Entity object) {
         Uri insertedItemUri = contentResolver.insert(object.getUri(), object.getContentValues());
         if (insertedItemUri != null) {
-            return Integer.valueOf(insertedItemUri.getLastPathSegment());
+            return (int) ContentUris.parseId(insertedItemUri);
         } else {
             return -1;
         }

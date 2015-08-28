@@ -9,7 +9,8 @@ import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.common.Callback;
 
 /**
- * Created by Artsiom_Kaliaha on 15.06.2015.
+ @author Iryna Monchanka
+ @version on 28.08.2015
  */
 public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<Params, Void, ProcessingResult> {
 
@@ -66,9 +67,9 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
 
     public Task executeOnThreadExecutor(ExecutorService executor, final Params... params) {
         onPreExecute();
-        new AsyncTask<Params, DataSourceResult, ProcessingResult>() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            protected ProcessingResult doInBackground(Params... param) {
+            protected Void doInBackground(Void... param) {
                 try {
                     mProcessingResult = Task.this.doInBackground(params);
                 } catch (final Exception e) {
@@ -79,7 +80,7 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
             }
 
             @Override
-            protected void onPostExecute(ProcessingResult result) {
+            protected void onPostExecute(Void result) {
                 Task.this.onPostExecute(mProcessingResult);
             }
         }.executeOnExecutor(executor);
