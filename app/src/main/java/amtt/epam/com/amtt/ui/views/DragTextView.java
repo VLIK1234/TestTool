@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.support.annotation.IntDef;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -55,6 +56,7 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
     private boolean isMoving;
     private LinearLayout mLeftButtonLayout;
     private LinearLayout mRightButtonLayout;
+    private LinearLayout mUnderButtonLayout;
 
     private DragTextView(Context context){
         super(context);
@@ -72,14 +74,19 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
         mDisplayMetrics = getContext().getResources().getDisplayMetrics();
         mDragImageLayoutParams = initMainLayoutParams();
         this.setLayoutParams(mDragImageLayoutParams);
-        mLeftButtonLayout = initDragButtons(GONE);
-        mRightButtonLayout = initDragButtons(VISIBLE);
+        mLeftButtonLayout = initDragButtonsLayout(GONE);
+        mRightButtonLayout = initDragButtonsLayout(VISIBLE);
+        mUnderButtonLayout = initDragButtonsLayout(GONE, HORIZONTAL);
         addView(mLeftButtonLayout);
 
         mDragText = new TextView(context);
         UIUtil.setBackgroundCompat(mDragText, getResources().getDrawable(R.drawable.background_drag_view));
         setDragText(drawStringValue, paintText);
-        addView(mDragText);
+        LinearLayout verticalLayout = new LinearLayout(getContext());
+        verticalLayout.setOrientation(VERTICAL);
+        verticalLayout.addView(mUnderButtonLayout);
+        verticalLayout.addView(mDragText);
+        addView(verticalLayout);
 
         addView(mRightButtonLayout);
 
@@ -98,17 +105,6 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
     }
 
     private WindowManager.LayoutParams initMainLayoutParams() {
-        int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-                | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
-
-        WindowManager.LayoutParams mainLayout = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT, 0, 0, WindowManager.LayoutParams.TYPE_APPLICATION,
-                flags, PixelFormat.TRANSLUCENT);
-        mainLayout.gravity = Gravity.TOP | Gravity.START;
-        return mainLayout;
-    }
-
-    private WindowManager.LayoutParams initButtonLayoutParams() {
         int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
 
@@ -165,13 +161,21 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
                     mDragImageLayoutParams.y += deltaY;
                 }
                 int valueToChangePosition = 50;
-                if((mDragImageLayoutParams.x + deltaX)+ valueToChangePosition < (mDisplayMetrics.widthPixels - getWidth())){
+                if (!((mDragImageLayoutParams.y + deltaY)+valueToChangePosition < (mDisplayMetrics.heightPixels - getHeight() - UIUtil.getStatusBarHeight()))) {
+                    mLeftButtonLayout.setVisibility(GONE);
+                    mRightButtonLayout.setVisibility(GONE);
+                    mUnderButtonLayout.setVisibility(VISIBLE);
+                } else if((mDragImageLayoutParams.x + deltaX)+ valueToChangePosition < (mDisplayMetrics.widthPixels - getWidth())){
                     mLeftButtonLayout.setVisibility(GONE);
                     mRightButtonLayout.setVisibility(VISIBLE);
+                    mUnderButtonLayout.setVisibility(GONE);
                 } else {
                     mLeftButtonLayout.setVisibility(VISIBLE);
                     mRightButtonLayout.setVisibility(GONE);
-
+                    mUnderButtonLayout.setVisibility(GONE);
+                    if (!((mDragImageLayoutParams.x + deltaX) < (mDisplayMetrics.widthPixels - getWidth()))) {
+                        mDragImageLayoutParams.x -= mDragImageLayoutParams.x + getWidth() - mDisplayMetrics.widthPixels;
+                    }
                 }
             }
             mWindowManager.updateViewLayout(this, mDragImageLayoutParams);
@@ -200,10 +204,13 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
         mDragText.setTextColor(paintText.getColor());
     }
 
-    public LinearLayout initDragButtons(@Visibility int visibility){
+    public LinearLayout initDragButtonsLayout(@Visibility int visibility){
+        return initDragButtonsLayout(visibility, VERTICAL);
+    }
+
+    public LinearLayout initDragButtonsLayout(@Visibility int visibility, @LinearLayoutCompat.OrientationMode int orientation){
         LinearLayout buttonLayout = new LinearLayout(getContext());
-        buttonLayout.setOrientation(LinearLayout.VERTICAL);
-        buttonLayout.setLayoutParams(initButtonLayoutParams());
+        buttonLayout.setOrientation(orientation);
         buttonLayout.setVisibility(visibility);
 
         ImageButton deleteDragViewButton = new ImageButton(getContext());
@@ -221,7 +228,8 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
             @Override
             public void onClick(View v) {
                 int yRightIndent = (int)(mPaintText.getTextSize()-mPaintText.getTextSize()/10);
-                mIDrawCallback.onDrawClick(mDrawString, mDragImageLayoutParams.x+(int)mDragText.getX(), mDragImageLayoutParams.y+yRightIndent, mPaintText);
+                int leftXIndent = mLeftButtonLayout.getVisibility() == VISIBLE ? mLeftButtonLayout.getWidth():0;
+                mIDrawCallback.onDrawClick(mDrawString, mDragImageLayoutParams.x + leftXIndent, mDragImageLayoutParams.y+(int)mDragText.getY()+yRightIndent, mPaintText);
                 mIDrawCallback.onRemoveClick(DragTextView.this);
             }
         });
