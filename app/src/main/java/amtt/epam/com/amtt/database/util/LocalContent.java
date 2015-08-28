@@ -20,10 +20,13 @@ import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.common.Callback;
+import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.http.MimeType;
+import amtt.epam.com.amtt.os.Task;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.util.ThreadManager;
 
 /**
  * @author Artsiom_Kaliaha
@@ -35,43 +38,18 @@ public class LocalContent {
 
     public static void saveStep(String title, String activityClassName, String packageName, String mScreenPath, String listFragments) {
         Step step = new Step(title, activityClassName, packageName, mScreenPath, listFragments);
-        ContentFromDatabase.setStep(step, new Callback<Integer>() {
-            @Override
-            public void onLoadStart() {}
-
-            @Override
-            public void onLoadExecuted(Integer integer) {}
-
-            @Override
-            public void onLoadError(Exception e) {
-                Logger.e(TAG, e.getMessage(), e);
-            }
-        });
+        ContentFromDatabase.setStep(step, null);
     }
 
     public static void saveOnlyScreenshot(String mScreenPath) {
         Step step = new Step(null, null, null, mScreenPath, null);
-        ContentFromDatabase.setStep(step, new Callback<Integer>() {
-            @Override
-            public void onLoadStart() {
-            }
-
-            @Override
-            public void onLoadExecuted(Integer integer) {
-            }
-
-            @Override
-            public void onLoadError(Exception e) {
-                Logger.e(TAG, e.getMessage(), e);
-            }
-        });
+        ContentFromDatabase.setStep(step, null);
     }
 
     public static void getAllSteps(final GetContentCallback<List<Step>> contentCallback) {
         ContentFromDatabase.getAllSteps(new Callback<List<Step>>() {
             @Override
-            public void onLoadStart() {
-            }
+            public void onLoadStart() {}
 
             @Override
             public void onLoadExecuted(List<Step> steps) {
@@ -91,58 +69,22 @@ public class LocalContent {
     }
 
     public static void removeStep(Step step){
-        ContentFromDatabase.removeStep(step, new Callback<Integer>() {
-            @Override
-            public void onLoadStart() {
-            }
-
-            @Override
-            public void onLoadExecuted(Integer integer) {
-            }
-
-            @Override
-            public void onLoadError(Exception e) {
-                Logger.e(TAG, e.getMessage(), e);
-            }
-        });
+        ContentFromDatabase.removeStep(step, null);
     }
 
     public static void removeAllSteps() {
-        ContentFromDatabase.removeAllSteps(new Callback<Integer>() {
-            @Override
-            public void onLoadStart() {
-            }
-
-            @Override
-            public void onLoadExecuted(Integer integer) {
-            }
-
-            @Override
-            public void onLoadError(Exception e) {
-                Logger.e(TAG, e.getMessage(), e);
-            }
-        });
+        ContentFromDatabase.removeAllSteps(null);
     }
 
     public static void applyNotesToScreenshot(final Bitmap drawingCache, final String screenshotPath, final Step step) {
         step.setScreenshotState(Step.ScreenshotState.IS_BEING_WRITTEN);
-        ContentFromDatabase.updateStep(step, new Callback<Integer>() {
-            @Override
-            public void onLoadStart() {}
+        ContentFromDatabase.updateStep(step, null);
+        Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals(MimeType.IMAGE_PNG.getFileExtension()) ?
+                Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
+        ThreadManager.execute(compressFormat, new DataSource<Bitmap.CompressFormat, Void>() {
 
             @Override
-            public void onLoadExecuted(Integer integer) {}
-
-            @Override
-            public void onLoadError(Exception e) {
-                Logger.e(TAG, e.getMessage(), e);
-            }
-        });
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals(MimeType.IMAGE_PNG.getFileExtension()) ?
-                        Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
+            public Void getData(Bitmap.CompressFormat compressFormat) throws Exception {
                 FileOutputStream outputStream = null;
                 try {
                     outputStream = IOUtils.openFileOutput(screenshotPath, true);
@@ -161,21 +103,29 @@ public class LocalContent {
                         }
                     }
                 }
-                step.setScreenshotState(Step.ScreenshotState.WRITTEN);
-                ContentFromDatabase.updateStep(step, new Callback<Integer>() {
-                    @Override
-                    public void onLoadStart() {}
-
-                    @Override
-                    public void onLoadExecuted(Integer integer) {}
-
-                    @Override
-                    public void onLoadError(Exception e) {
-                        Logger.e(TAG, e.getMessage(), e);
-                    }
-                });
+                return null;
             }
-        }).start();
+
+            @Override
+            public String getName() {
+                return null;
+            }
+        }, new Callback<Void>() {
+            @Override
+            public void onLoadStart() {
+            }
+
+            @Override
+            public void onLoadExecuted(Void aVoid) {
+                step.setScreenshotState(Step.ScreenshotState.WRITTEN);
+                ContentFromDatabase.updateStep(step, null);
+            }
+
+            @Override
+            public void onLoadError(Exception e) {
+                Logger.e(TAG, e.getMessage(), e);
+            }
+        });
     }
 
     public static Spanned getStepInfo(Step step) {

@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 
 import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.common.DataRequest;
-import amtt.epam.com.amtt.database.DataBaseSource;
 import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.datasource.Plugin;
 import amtt.epam.com.amtt.datasource.ThreadLoader;
@@ -51,30 +50,42 @@ public class ThreadManager {
     }
 
     public static <Params, DataSourceResult, ProcessingResult> void
-    loadData(final Params params, final DataSource<Params, DataSourceResult> dataSource,
-            final Processor<DataSourceResult, ProcessingResult> processor, final Callback<ProcessingResult> callback) {
-        loadData(params, dataSource, processor, callback, new ThreadLoader<Params, DataSourceResult, ProcessingResult>() {
+    loadData(final Params params,
+             final DataSource<Params, DataSourceResult> dataSource,
+             final Processor<DataSourceResult, ProcessingResult> processor,
+             final Callback<ProcessingResult> callback) {
 
+        loadData(params, dataSource, processor, callback, new ThreadLoader<Params, DataSourceResult, ProcessingResult>() {
             @Override
-            public void load(Params params, DataSource<Params, DataSourceResult> dataSource,
-                             Processor<DataSourceResult, ProcessingResult> processor, Callback<ProcessingResult> callback) {
+            public void load(Params params,
+                             DataSource<Params, DataSourceResult> dataSource,
+                             Processor<DataSourceResult, ProcessingResult> processor,
+                             Callback<ProcessingResult> callback) {
                 executeInAsyncTask(params, dataSource, processor, callback);
             }
         });
+
     }
 
     public static <Params, DataSourceResult, ProcessingResult> void
-    loadData(final Params params, final DataSource<Params, DataSourceResult> dataSource,
-            final Processor<DataSourceResult, ProcessingResult> processor, final Callback<ProcessingResult> callback,
-            final ThreadLoader<Params, DataSourceResult,  ProcessingResult> threadLoader) {
+    loadData(final Params params,
+             final DataSource<Params, DataSourceResult> dataSource,
+             final Processor<DataSourceResult, ProcessingResult> processor,
+             final Callback<ProcessingResult> callback,
+             final ThreadLoader<Params, DataSourceResult,  ProcessingResult> threadLoader) {
+
             threadLoader.load(params, dataSource, processor, callback);
+
     }
 
     private static <ProcessingResult, DataSourceResult, Params> void
-    executeInAsyncTask(final Params params, final DataSource<Params, DataSourceResult> dataSource,
+    executeInAsyncTask(final Params params,
+                       final DataSource<Params, DataSourceResult> dataSource,
                        final Processor<DataSourceResult, ProcessingResult> processor,
                        final Callback<ProcessingResult> callback) {
+
         new Task<>(params, dataSource, processor, callback).executeOnThreadExecutor(sExecutor);
+
     }
 
     public static <Param> void execute(DataRequest<Param> request, DataSource dataSource, Processor processor) {
@@ -87,7 +98,7 @@ public class ThreadManager {
             ThreadManager.loadData(request.getDataSourceParam(), dataSource, processor, request.getCallback());
     }
 
-    public static <Param> void execute(DataRequest<Param> request) {
+    public static <Params> void execute(DataRequest<Params> request) {
         String dataSourceName = request.getDataSource();
         String processorName = request.getProcessor();
             if (sHttpDataSources.get(dataSourceName) == null) {
@@ -97,6 +108,10 @@ public class ThreadManager {
                 throw new IllegalArgumentException("Unknown / unregistered processorName " + processorName);
             }
             ThreadManager.loadData(request.getDataSourceParam(), sHttpDataSources.get(dataSourceName), sHttpProcessors.get(processorName), request.getCallback());
+    }
+
+    public static <Params, DataSourceResult, ProcessingResult>  void execute(Params param, DataSource<Params, DataSourceResult>  dataSource, Callback<ProcessingResult> callback) {
+        new Task<>(param, dataSource, callback).executeOnExecutor(sExecutor);
     }
 
     public static void registerPlugin(Plugin plugin) {
