@@ -25,7 +25,6 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -45,7 +44,6 @@ import amtt.epam.com.amtt.ui.views.MultilineRadioGroup.OnEntireGroupCheckedChang
 import amtt.epam.com.amtt.ui.views.PaintView;
 import amtt.epam.com.amtt.ui.views.PaletteItem;
 import amtt.epam.com.amtt.util.Logger;
-import amtt.epam.com.amtt.util.UIUtil;
 
 /**
  @author Artsiom_Kaliaha
@@ -215,26 +213,18 @@ public class PaintActivity extends BaseActivity
                 switch (checkedId){
                     case R.id.rb_eraser:
                         mPaintView.setPaintMode(PaintView.PaintMode.ERASE);
-                        thicknessBar.setProgress(mPaintView.getEraserThickness());
                         opacityBar.setEnabled(false);
                         opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity_disabled));
-                        multilineRadioGroup.clearCheck();
                         break;
                     case R.id.rb_pencil:
                         mPaintView.setPaintMode(PaintView.PaintMode.DRAW);
-                        thicknessBar.setProgress(mPaintView.getBrushThickness());
                         opacityBar.setEnabled(true);
                         opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity));
-                        multilineRadioGroup.restoreCheck();
-                        multilineRadioGroup.setEnabled(true);
                         break;
                     case R.id.rb_text:
                         mPaintView.setPaintMode(PaintView.PaintMode.TEXT);
-                        thicknessBar.setProgress(mPaintView.getBrushThickness());
                         opacityBar.setEnabled(false);
                         opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity));
-                        multilineRadioGroup.restoreCheck();
-                        multilineRadioGroup.setEnabled(true);
                         break;
                     default:
                         break;
@@ -392,7 +382,6 @@ public class PaintActivity extends BaseActivity
 
     @Override
     public void onDrawClick(String drawValue, int x, int y, Paint paint) {
-        Toast.makeText(getBaseContext(), "Ok callback "+x+" "+y, Toast.LENGTH_SHORT).show();
         mPaintView.drawText(drawValue, x, y, paint);
 
     }

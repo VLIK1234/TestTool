@@ -61,16 +61,6 @@ public class MultilineRadioGroup extends RadioGroup {
         }
     }
 
-    public void restoreCheck() {
-        for (int i = 0; i < mRadioGroups.size(); i++) {
-            if (i == mLastCheckedGroupIndex) {
-                mRadioGroups.get(mLastCheckedGroupIndex).restoreCheck();
-            } else {
-                mRadioGroups.get(i).setEnabled(true);
-            }
-        }
-    }
-
     public void setOnEntireGroupCheckedListener(OnEntireGroupCheckedChangeListener listener) {
         mListener = listener;
     }
@@ -79,18 +69,6 @@ public class MultilineRadioGroup extends RadioGroup {
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
         super.addView(child, index, params);
         addRadioGroup(child);
-    }
-
-    @Override
-    public void clearCheck() {
-        for (int i = 0; i < mRadioGroups.size(); i++) {
-            RadioGroupLine radioGroup = mRadioGroups.get(i);
-            if (radioGroup.isGroupChecked()) {
-                mLastCheckedGroupIndex = i;
-            }
-            radioGroup.clearCheck();
-            radioGroup.setEnabled(false);
-        }
     }
 
 }
