@@ -21,7 +21,7 @@ import amtt.epam.com.amtt.util.IOUtils;
  */
 public class ScreenshotHelper {
 
-    private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.png";
+    private static final String SCREENSHOT_FILE_NAME_TEMPLATE = "Screenshot_%s.jpeg";
     private static final String SCREENSHOT_DATETIME_FORMAT = "yyyy-MM-dd-HH-mm-ss";
     private static final int QUALITY_COMPRESS_SCREENSHOT = 90;
 
@@ -38,7 +38,7 @@ public class ScreenshotHelper {
                 File imageFile = new File(path);
                 try {
                     fout = new FileOutputStream(imageFile);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, QUALITY_COMPRESS_SCREENSHOT, fout);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, QUALITY_COMPRESS_SCREENSHOT, fout);
                     fout.close();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();

@@ -32,7 +32,7 @@ public class ScreenshotHelper {
         rootView.setDrawingCacheEnabled(false);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
-            bitmap.compress(Bitmap.CompressFormat.PNG, QUALITY_COMPRESS_SCREENSHOT, stream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, QUALITY_COMPRESS_SCREENSHOT, stream);
             Intent intent = new Intent();
             intent.setAction(REQUEST_TAKE_SCREENSHOT_ACTION);
             byte[] bytes = stream.toByteArray();
