@@ -175,5 +175,6 @@
     <string name="error_message_share_attachment">Don\'t have attachment for sharing.</string>
     <string name="label_title_draw_text_dialog">Draw text</string>
     <string name="label_description_drag_image">Drag image</string>
+    <string name="label_xiaomi_brand">XIAOMI</string>
 
 </resources>

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -162,8 +163,9 @@ public class TopButtonService extends Service{
         int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
 
+        int windowType = Build.BRAND.toUpperCase().equals(getResources().getString(R.string.label_xiaomi_brand))?WindowManager.LayoutParams.TYPE_TOAST:WindowManager.LayoutParams.TYPE_PHONE;
         mLayoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT, mXInitPosition, mYInitPosition, WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.WRAP_CONTENT, mXInitPosition, mYInitPosition, windowType,
                 flags, PixelFormat.TRANSLUCENT);
         mLayoutParams.gravity = Gravity.TOP | Gravity.START;
     }
