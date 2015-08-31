@@ -5,7 +5,6 @@ import android.database.Cursor;
 import java.util.List;
 
 import amtt.epam.com.amtt.common.Callback;
-import amtt.epam.com.amtt.common.DataRequest;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbRequestParams;
 import amtt.epam.com.amtt.database.processing.ReadDbProcessor;
@@ -66,6 +65,6 @@ public class DataBaseApi<Entity extends DatabaseEntity> {
     }
 
     private void execute(DbRequestParams params, DataBaseSource datasourse, Processor processor, Callback callback) {
-        ThreadManager.execute(new DataRequest<>(datasourse, params, processor, callback));
+        ThreadManager.execute(params, datasourse, processor, callback);
     }
 }

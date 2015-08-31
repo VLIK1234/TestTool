@@ -21,7 +21,7 @@ import amtt.epam.com.amtt.database.util.DbSelectionUtil;
 
 public class ContentFromDatabase {
 
-    private static DataBaseApi mDataBaseApi = DataBaseApi.getInstance();
+    private static final DataBaseApi mDataBaseApi = DataBaseApi.getInstance();
 
     public static void getProjects(String idUser, Callback<List<JProjects>> result) {
         String selection = DbSelectionUtil.equal(ProjectTable._ID_USER);

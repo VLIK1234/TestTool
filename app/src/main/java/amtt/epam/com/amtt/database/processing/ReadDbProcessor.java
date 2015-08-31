@@ -18,7 +18,7 @@ public class ReadDbProcessor<Entity extends DatabaseEntity> implements Processor
 
     public static final String NAME = ReadDbProcessor.class.getName();
 
-    private Class<Entity> mEntityClass;
+    private final Class<Entity> mEntityClass;
 
     public ReadDbProcessor(Class<Entity> entityClass){
         mEntityClass = entityClass;

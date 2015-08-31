@@ -57,8 +57,8 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
     private ImageView mUserImageImageView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private UserInfoHandler mHandler;
-    private ActiveUser mUser = ActiveUser.getInstance();
-    private JiraContent mJira = JiraContent.getInstance();
+    private final ActiveUser mUser = ActiveUser.getInstance();
+    private final JiraContent mJira = JiraContent.getInstance();
 
     public static class UserInfoHandler extends Handler {
 

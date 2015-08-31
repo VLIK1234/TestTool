@@ -25,7 +25,7 @@ import amtt.epam.com.amtt.util.Logger;
 public class ContentFromDatabase {
 
     private static final String TAG = ContentFromDatabase.class.getSimpleName();
-    private static DataBaseApi mDataBaseApi = DataBaseApi.getInstance();
+    private static final DataBaseApi mDataBaseApi = DataBaseApi.getInstance();
 
     public static void setSpreadsheet(GSpreadsheet spreadsheet, Callback<Integer> result) {
         mDataBaseApi.insert(spreadsheet, result);

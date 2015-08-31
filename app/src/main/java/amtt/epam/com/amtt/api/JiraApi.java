@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import amtt.epam.com.amtt.common.Callback;
-import amtt.epam.com.amtt.common.DataRequest;
 import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.http.HttpException;
@@ -94,7 +93,7 @@ public class JiraApi {
     private <ProcessingResult>void execute(Request.Builder requestBuilder, Processor<HttpEntity, ProcessingResult> processor, Callback<ProcessingResult> callback) {
         Request request = requestBuilder.build();
         DataSource<Request, HttpEntity> dataSource = new HttpClient();
-        ThreadManager.execute(new DataRequest<Request, HttpEntity, ProcessingResult>(dataSource, request, processor, callback));
+        ThreadManager.execute(request, dataSource, processor, callback);
     }
 
 }

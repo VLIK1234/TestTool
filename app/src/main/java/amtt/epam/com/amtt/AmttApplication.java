@@ -7,7 +7,6 @@ import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import amtt.epam.com.amtt.util.ThreadManager;
 import io.fabric.sdk.android.Fabric;
 
 /**

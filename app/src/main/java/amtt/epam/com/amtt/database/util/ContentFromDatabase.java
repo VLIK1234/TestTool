@@ -18,7 +18,7 @@ import amtt.epam.com.amtt.util.Constants;
 
 public class ContentFromDatabase {
 
-    private static DataBaseApi mDataBaseApi = DataBaseApi.getInstance();
+    private static final DataBaseApi mDataBaseApi = DataBaseApi.getInstance();
 
     public static void setStep(Step step, Callback<Integer> result) {
         mDataBaseApi.insert(step, result);

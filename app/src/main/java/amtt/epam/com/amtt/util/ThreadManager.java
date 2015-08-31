@@ -2,35 +2,15 @@ package amtt.epam.com.amtt.util;
 
 import com.nostra13.universalimageloader.core.assist.deque.LIFOLinkedBlockingDeque;
 
-import org.apache.http.HttpEntity;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import amtt.epam.com.amtt.bo.JComponentsResponse;
-import amtt.epam.com.amtt.bo.JProjectsResponse;
-import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.common.Callback;
-import amtt.epam.com.amtt.common.DataRequest;
 import amtt.epam.com.amtt.datasource.DataSource;
-import amtt.epam.com.amtt.datasource.Plugin;
 import amtt.epam.com.amtt.datasource.ThreadLoader;
-import amtt.epam.com.amtt.googleapi.processing.SpreadsheetProcessor;
-import amtt.epam.com.amtt.googleapi.processing.WorksheetProcessor;
-import amtt.epam.com.amtt.http.HttpClient;
-import amtt.epam.com.amtt.http.Request;
 import amtt.epam.com.amtt.os.Task;
-import amtt.epam.com.amtt.processing.ComponentsProcessor;
-import amtt.epam.com.amtt.processing.PostCreateIssueProcessor;
-import amtt.epam.com.amtt.processing.PriorityProcessor;
 import amtt.epam.com.amtt.processing.Processor;
-import amtt.epam.com.amtt.processing.ProjectsProcessor;
-import amtt.epam.com.amtt.processing.UserInfoProcessor;
-import amtt.epam.com.amtt.processing.UsersAssignableProcessor;
-import amtt.epam.com.amtt.processing.VersionsProcessor;
 
 /**
  * @author Iryna Monchanka
@@ -91,11 +71,18 @@ public class ThreadManager {
 
     }
 
-    public static <Params, DataSourceResult, ProcessingResult> void execute(DataRequest<Params, DataSourceResult, ProcessingResult> request) {
-            ThreadManager.loadData(request.getDataSourceParam(), request.getDataSource(), request.getProcessor(), request.getCallback());
+    public static <Params, DataSourceResult, ProcessingResult> void
+    execute(Params param,
+            DataSource<Params, DataSourceResult>  dataSource,
+            Processor<DataSourceResult, ProcessingResult> processor,
+            Callback<ProcessingResult> callback) {
+            ThreadManager.loadData(param, dataSource, processor, callback);
     }
 
-    public static <Params, DataSourceResult, ProcessingResult>  void execute(Params param, DataSource<Params, DataSourceResult>  dataSource, Callback<ProcessingResult> callback) {
+    public static <Params, DataSourceResult, ProcessingResult>  void
+    execute(Params param,
+            DataSource<Params, DataSourceResult>  dataSource,
+            Callback<ProcessingResult> callback) {
         new Task<>(param, dataSource, callback).executeOnExecutor(sExecutor);
     }
 

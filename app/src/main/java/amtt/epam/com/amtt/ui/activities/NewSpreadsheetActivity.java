@@ -34,8 +34,8 @@ public class NewSpreadsheetActivity extends BaseActivity {
     private TextInput mSpreadsheetKeyTextInput;
     private Button mAddSpreadsheet;
     private String mIdLink;
-    private ActiveUser mUser = ActiveUser.getInstance();
-    private GSpreadsheetContent mSpreadsheetContent = GSpreadsheetContent.getInstance();
+    private final ActiveUser mUser = ActiveUser.getInstance();
+    private final GSpreadsheetContent mSpreadsheetContent = GSpreadsheetContent.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
