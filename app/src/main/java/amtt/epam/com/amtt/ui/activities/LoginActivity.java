@@ -3,7 +3,6 @@ package amtt.epam.com.amtt.ui.activities;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Loader;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -89,11 +88,6 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
     }
 
     private void initViews() {

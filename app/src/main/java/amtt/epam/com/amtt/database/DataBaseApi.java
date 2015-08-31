@@ -36,31 +36,31 @@ public class DataBaseApi<Entity extends DatabaseEntity> {
     }
 
     public void insert(Entity object, Callback<Integer> callback) {
-        requestParams = new DbRequestParams<Entity>(object, DbRequestType.INSERT);
+        requestParams = new DbRequestParams<>(object, DbRequestType.INSERT);
         execute(requestParams, new DataBaseSource<Entity, Integer>(), new UpdateDbProcessor(), callback);
     }
 
     public void bulkInsert(List<Entity> objects, Callback<Integer> callback) {
-        requestParams = new DbRequestParams<Entity>(objects, DbRequestType.BULK_INSERT);
+        requestParams = new DbRequestParams<>(objects, DbRequestType.BULK_INSERT);
         execute(requestParams, new DataBaseSource<Entity, Integer>(),
                 new UpdateDbProcessor(), callback);
     }
 
     public void query(Entity entity, String[] projection, String mSelection, String[] mSelectionArgs,
                       String sortOrder, Callback<List<Entity>> callback) {
-        requestParams = new DbRequestParams<Entity>(entity, projection, mSelection, mSelectionArgs,
+        requestParams = new DbRequestParams<>(entity, projection, mSelection, mSelectionArgs,
                                                     sortOrder, DbRequestType.QUERY);
         execute(requestParams,new DataBaseSource<Entity, Cursor>(),
-                new ReadDbProcessor<Entity>((Class<Entity>) entity.getClass()), callback);
+                new ReadDbProcessor<>((Class<Entity>) entity.getClass()), callback);
     }
 
     public void update(Entity object, String selection, String[] selectionArgs, Callback<Integer> callback) {
-        requestParams = new DbRequestParams<Entity>(object, selection, selectionArgs, DbRequestType.UPDATE);
+        requestParams = new DbRequestParams<>(object, selection, selectionArgs, DbRequestType.UPDATE);
         execute(requestParams, new DataBaseSource<Entity, Integer>(), new UpdateDbProcessor(), callback);
     }
 
     public void delete(Entity object, Callback<Integer> callback) {
-        requestParams = new DbRequestParams<Entity>(object, DbRequestType.DELETE);
+        requestParams = new DbRequestParams<>(object, DbRequestType.DELETE);
         execute(requestParams, new DataBaseSource<Entity, Integer>(), new UpdateDbProcessor(), callback);
     }
 

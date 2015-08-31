@@ -48,7 +48,8 @@ public class LocalContent {
     public static void getAllSteps(final GetContentCallback<List<Step>> contentCallback) {
         ContentFromDatabase.getAllSteps(new Callback<List<Step>>() {
             @Override
-            public void onLoadStart() {}
+            public void onLoadStart() {
+            }
 
             @Override
             public void onLoadExecuted(List<Step> steps) {
@@ -158,13 +159,18 @@ public class LocalContent {
     }
 
     public static List<Bitmap> getStepBitmaps(List<Step> stepsList) throws Throwable {
-        List<Bitmap> bitmaps = new ArrayList<>();
-        for (Step step : stepsList) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 3;
-            bitmaps.add(BitmapFactory.decodeFile(step.getScreenshotPath(), options));
+        try {
+            List<Bitmap> bitmaps = new ArrayList<>();
+            for (Step step : stepsList) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 3;
+                bitmaps.add(BitmapFactory.decodeFile(step.getScreenshotPath(), options));
+            }
+            return bitmaps;
+        } catch (Exception e) {
+            e.getStackTrace();
+            return null;
         }
-        return bitmaps;
     }
 
     public static void removeAllAttachFile() {

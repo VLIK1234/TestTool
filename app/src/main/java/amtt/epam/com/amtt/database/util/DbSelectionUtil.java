@@ -15,7 +15,4 @@ public class DbSelectionUtil {
         return first + " AND " + second;
     }
 
-
-
-
 }

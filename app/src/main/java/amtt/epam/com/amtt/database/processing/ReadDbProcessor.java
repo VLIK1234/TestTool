@@ -23,7 +23,7 @@ public class ReadDbProcessor<Entity extends DatabaseEntity> implements Processor
 
     @Override
     public List<Entity> process(Cursor source) throws Exception {
-        final List<Entity> listObject = new ArrayList<Entity>();
+        final List<Entity> listObject = new ArrayList<>();
         if (source != null) {
             if (source.moveToFirst()) {
                 do {

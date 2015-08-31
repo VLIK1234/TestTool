@@ -43,8 +43,9 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
         }
     }
 
+    @SafeVarargs
     @Override
-    protected ProcessingResult doInBackground(Params... params) {
+    protected final ProcessingResult doInBackground(Params... params) {
         ProcessingResult processingResult;
         try {
             DataSourceResult dataSourceResult = mDataSource.getData(mParams);
@@ -72,7 +73,8 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
         mCallback.onLoadExecuted(processingResult);
     }
 
-    public Task executeOnThreadExecutor(ExecutorService executor, final Params... params) {
+    @SafeVarargs
+    public final Task executeOnThreadExecutor(ExecutorService executor, final Params... params) {
         onPreExecute();
         new AsyncTask<Void, Void, Void>() {
             @Override
