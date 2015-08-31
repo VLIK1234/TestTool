@@ -89,9 +89,4 @@ public class OldWorksheetProcessor implements Processor<HttpEntity, GWorksheet> 
             return null;
         }
     }
-
-    @Override
-    public String getPluginName() {
-        return NAME;
-    }
 }

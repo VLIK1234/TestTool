@@ -19,7 +19,6 @@ import amtt.epam.com.amtt.processing.Processor;
 public class ThreadManager {
 
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
-    public static final String NO_PROCESSOR = "NO_PROCESSOR";
     private static int MAXIMUM_POOL_SIZE = Runtime.getRuntime().availableProcessors();
     public static ExecutorService sExecutor;
 

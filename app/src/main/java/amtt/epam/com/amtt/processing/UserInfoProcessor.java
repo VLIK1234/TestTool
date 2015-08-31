@@ -15,7 +15,6 @@ import amtt.epam.com.amtt.bo.user.JUserInfo;
 
 public class UserInfoProcessor implements Processor<HttpEntity, JUserInfo> {
 
-    public static final String NAME = UserInfoProcessor.class.getName();
     @Override
     public JUserInfo process(HttpEntity httpEntity) {
         String _response = null;
@@ -27,11 +26,4 @@ public class UserInfoProcessor implements Processor<HttpEntity, JUserInfo> {
         }
         return Gson.getInstance().fromJson(_response, JUserInfo.class);
     }
-
-
-    @Override
-    public String getPluginName() {
-        return NAME;
-    }
-
 }

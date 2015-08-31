@@ -9,8 +9,6 @@ import com.google.gson.Gson;
 
 public class GsonSerializeProcessor<T> implements Processor<T, String> {
 
-    public static final String NAME = GsonSerializeProcessor.class.getName();
-
     @Override
     public String process(T inputObject){
         Gson gson = amtt.epam.com.amtt.processing.Gson.getInstance();
@@ -22,11 +20,6 @@ public class GsonSerializeProcessor<T> implements Processor<T, String> {
             e.printStackTrace();
         }
         return issue;
-    }
-
-    @Override
-    public String getPluginName() {
-        return getClass().getName();
     }
 
 }

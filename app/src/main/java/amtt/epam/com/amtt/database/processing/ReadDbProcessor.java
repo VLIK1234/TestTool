@@ -16,14 +16,10 @@ import amtt.epam.com.amtt.util.IOUtils;
 
 public class ReadDbProcessor<Entity extends DatabaseEntity> implements Processor<Cursor, List<Entity>> {
 
-    public static final String NAME = ReadDbProcessor.class.getName();
-
     private final Class<Entity> mEntityClass;
-
     public ReadDbProcessor(Class<Entity> entityClass){
         mEntityClass = entityClass;
     }
-
 
     @Override
     public List<Entity> process(Cursor source) throws Exception {
@@ -43,8 +39,4 @@ public class ReadDbProcessor<Entity extends DatabaseEntity> implements Processor
         return listObject;
     }
 
-    @Override
-    public String getPluginName() {
-        return NAME;
-    }
 }

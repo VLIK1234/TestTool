@@ -19,16 +19,14 @@ import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.util.Logger;
 
 /**
- * Created by Artsiom_Kaliaha on 11.06.2015.
- * HttpClient that prepares Requests to be executed
+ @author Artsiom_Kaliaha
+ @version on 11.06.2015
  */
+
 public class HttpClient implements DataSource<Request, HttpEntity> {
 
-    public static final String NAME = HttpClient.class.getName();
     private final String TAG = getClass().getSimpleName();
-
     public static final int EMPTY_STATUS_CODE = -1;
-
     private final DefaultHttpClient mHttpClient;
 
     public HttpClient() {
@@ -75,23 +73,14 @@ public class HttpClient implements DataSource<Request, HttpEntity> {
         if (request == null) {
             throw new IllegalArgumentException("Illegal request for HttpClient");
         }
-
         request.setHttpRequestBase(getRequestBase(request.getType(), request.getUrl(), request.getEntity()));
         setHeaders(request);
-
         HttpResponse httpResponse = mHttpClient.execute(request.getHttpRequestBase());
         int statusCode = httpResponse.getStatusLine().getStatusCode();
-
         if (statusCode < HttpStatus.SC_OK || statusCode >= HttpStatus.SC_MULTIPLE_CHOICES) {
             throw new HttpException(statusCode);
         }
-
         return httpResponse.getEntity();
-    }
-
-    @Override
-    public String getPluginName() {
-        return NAME;
     }
 
 }

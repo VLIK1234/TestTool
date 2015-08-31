@@ -79,9 +79,4 @@ public class SpreadsheetProcessor implements Processor<HttpEntity, GSpreadsheet>
             return null;
         }
     }
-
-    @Override
-    public String getPluginName() {
-        return NAME;
-    }
 }

@@ -12,17 +12,10 @@ import org.apache.http.util.EntityUtils;
 
 public class PostCreateIssueProcessor implements Processor<HttpEntity, JCreateIssueResponse> {
 
-    public static final String NAME = PostCreateIssueProcessor.class.getName();
     @Override
     public JCreateIssueResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
         inputStream.consumeContent();
         return Gson.getInstance().fromJson(_response, JCreateIssueResponse.class);
     }
-
-    @Override
-    public String getPluginName() {
-        return NAME;
-    }
-
 }

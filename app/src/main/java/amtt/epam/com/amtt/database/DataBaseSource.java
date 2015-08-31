@@ -21,7 +21,6 @@ import amtt.epam.com.amtt.datasource.DataSource;
 
 public class DataBaseSource<Entity extends DatabaseEntity, DataSourceResult> implements DataSource<DbRequestParams, DataSourceResult> {
 
-    public static final String NAME = DataBaseSource.class.getName();
     private ContentResolver contentResolver = AmttApplication.getContext().getContentResolver();
 
     @Override
@@ -40,11 +39,6 @@ public class DataBaseSource<Entity extends DatabaseEntity, DataSourceResult> imp
             default:
                 return null;
         }
-    }
-
-    @Override
-    public String getPluginName() {
-        return NAME;
     }
 
     public Integer insert(Entity object) {
