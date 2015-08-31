@@ -21,7 +21,7 @@ public class PostCreateIssueProcessor implements Processor<HttpEntity, JCreateIs
     }
 
     @Override
-    public String getName() {
+    public String getPluginName() {
         return NAME;
     }
 

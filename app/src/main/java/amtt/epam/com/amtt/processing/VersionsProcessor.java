@@ -40,7 +40,7 @@ public class VersionsProcessor implements Processor<HttpEntity, JVersionsRespons
     }
 
     @Override
-    public String getName() {
+    public String getPluginName() {
         return NAME;
     }
 

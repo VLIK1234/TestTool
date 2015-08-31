@@ -44,7 +44,7 @@ public class ReadDbProcessor<Entity extends DatabaseEntity> implements Processor
     }
 
     @Override
-    public String getName() {
+    public String getPluginName() {
         return NAME;
     }
 }

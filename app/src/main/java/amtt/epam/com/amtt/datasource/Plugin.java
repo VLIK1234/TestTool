@@ -6,6 +6,6 @@ package amtt.epam.com.amtt.datasource;
  */
 public interface Plugin {
 
-    String getName();
+    String getPluginName();
 
 }

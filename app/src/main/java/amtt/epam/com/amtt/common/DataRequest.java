@@ -1,36 +1,40 @@
 package amtt.epam.com.amtt.common;
 
+import amtt.epam.com.amtt.datasource.DataSource;
+import amtt.epam.com.amtt.processing.Processor;
+
 /**
- * Created by Artsiom_Kaliaha on 18.06.2015.
+ @author Artsiom_Kaliaha
+ @version on 18.06.2015
  */
 
-public class DataRequest<Param> {
+public class DataRequest<Param, DataSourceResult, ProcessingResult> {
 
-    private final String mDataSourceName;
+    private final DataSource<Param, DataSourceResult> mDataSource;
     private final Param mDataSourceParam;
-    private final String mProcessorName;
-    private final Callback mCallback;
+    private final Processor<DataSourceResult, ProcessingResult> mProcessor;
+    private final Callback<ProcessingResult> mCallback;
 
-    public DataRequest(String dataSourceName, Param dataSourceParam, String processorName, Callback callback) {
-        mDataSourceName = dataSourceName;
+    public DataRequest(DataSource<Param, DataSourceResult> dataSource, Param dataSourceParam, Processor<DataSourceResult, ProcessingResult> processor, Callback<ProcessingResult> callback) {
+        mDataSource = dataSource;
         mDataSourceParam = dataSourceParam;
-        mProcessorName = processorName;
+        mProcessor = processor;
         mCallback = callback;
     }
 
-    public String getDataSource() {
-        return mDataSourceName;
+    public DataSource<Param, DataSourceResult> getDataSource() {
+        return mDataSource;
     }
 
     public Param getDataSourceParam() {
         return mDataSourceParam;
     }
 
-    public String getProcessor() {
-        return mProcessorName;
+    public Processor<DataSourceResult, ProcessingResult> getProcessor() {
+        return mProcessor;
     }
 
-    public Callback getCallback() {
+    public Callback<ProcessingResult> getCallback() {
         return mCallback;
     }
 

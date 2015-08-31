@@ -43,7 +43,7 @@ public class DataBaseSource<Entity extends DatabaseEntity, DataSourceResult> imp
     }
 
     @Override
-    public String getName() {
+    public String getPluginName() {
         return NAME;
     }
 

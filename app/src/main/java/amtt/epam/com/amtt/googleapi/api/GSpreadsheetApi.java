@@ -4,6 +4,7 @@ import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.common.DataRequest;
 import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.http.Request;
+import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.util.ThreadManager;
 
 /**
@@ -26,15 +27,15 @@ public class GSpreadsheetApi {
         return INSTANCE;
     }
 
-    public void loadDocument(String url, String processorName, Callback callback) {
+    public void loadDocument(String url, Processor processor, Callback callback) {
         Request.Builder requestBuilder = new Request.Builder()
                 .setType(Request.Type.GET)
                 .setUrl(url);
-        execute(requestBuilder, processorName, callback);
+        execute(requestBuilder, processor, callback);
     }
 
-    private void execute(Request.Builder requestBuilder, String processorName, Callback callback) {
+    private void execute(Request.Builder requestBuilder, Processor processor, Callback callback) {
         Request request = requestBuilder.build();
-        ThreadManager.execute(new DataRequest<>(HttpClient.NAME, request, processorName, callback));
+        ThreadManager.execute(new DataRequest<>(new HttpClient(), request, processor, callback));
     }
 }

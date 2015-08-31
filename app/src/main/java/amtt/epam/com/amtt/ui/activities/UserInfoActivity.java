@@ -197,7 +197,7 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
 
     private void refreshUserInfo() {
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUser.getUserName();
-        JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, new Callback<JUserInfo>() {
+        JiraApi.get().searchData(requestSuffix, new UserInfoProcessor(), new Callback<JUserInfo>() {
             @Override
             public void onLoadStart() {}
 

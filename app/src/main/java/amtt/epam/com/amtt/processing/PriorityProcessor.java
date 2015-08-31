@@ -39,7 +39,7 @@ public class PriorityProcessor  implements Processor<HttpEntity, JPriorityRespon
 
 
     @Override
-    public String getName() {
+    public String getPluginName() {
         return NAME;
     }
 

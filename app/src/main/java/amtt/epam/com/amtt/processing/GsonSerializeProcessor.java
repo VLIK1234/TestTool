@@ -25,7 +25,7 @@ public class GsonSerializeProcessor<T> implements Processor<T, String> {
     }
 
     @Override
-    public String getName() {
+    public String getPluginName() {
         return getClass().getName();
     }
 

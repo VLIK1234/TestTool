@@ -107,7 +107,7 @@ public class LocalContent {
             }
 
             @Override
-            public String getName() {
+            public String getPluginName() {
                 return null;
             }
         }, new Callback<Void>() {

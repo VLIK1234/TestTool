@@ -39,7 +39,7 @@ public class ComponentsProcessor implements Processor<HttpEntity, JComponentsRes
     }
 
     @Override
-    public String getName() {
+    public String getPluginName() {
         return NAME;
     }
 }

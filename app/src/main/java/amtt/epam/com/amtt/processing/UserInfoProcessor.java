@@ -30,7 +30,7 @@ public class UserInfoProcessor implements Processor<HttpEntity, JUserInfo> {
 
 
     @Override
-    public String getName() {
+    public String getPluginName() {
         return NAME;
     }
 

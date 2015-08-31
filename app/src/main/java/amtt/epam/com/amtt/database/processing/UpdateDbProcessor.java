@@ -17,7 +17,7 @@ public class UpdateDbProcessor implements Processor<Integer, Integer> {
     }
 
     @Override
-    public String getName() {
+    public String getPluginName() {
         return NAME;
     }
 }

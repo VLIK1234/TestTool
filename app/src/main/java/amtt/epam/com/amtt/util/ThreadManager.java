@@ -2,12 +2,17 @@ package amtt.epam.com.amtt.util;
 
 import com.nostra13.universalimageloader.core.assist.deque.LIFOLinkedBlockingDeque;
 
+import org.apache.http.HttpEntity;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import amtt.epam.com.amtt.bo.JComponentsResponse;
+import amtt.epam.com.amtt.bo.JProjectsResponse;
+import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.common.DataRequest;
 import amtt.epam.com.amtt.datasource.DataSource;
@@ -16,6 +21,7 @@ import amtt.epam.com.amtt.datasource.ThreadLoader;
 import amtt.epam.com.amtt.googleapi.processing.SpreadsheetProcessor;
 import amtt.epam.com.amtt.googleapi.processing.WorksheetProcessor;
 import amtt.epam.com.amtt.http.HttpClient;
+import amtt.epam.com.amtt.http.Request;
 import amtt.epam.com.amtt.os.Task;
 import amtt.epam.com.amtt.processing.ComponentsProcessor;
 import amtt.epam.com.amtt.processing.PostCreateIssueProcessor;
@@ -34,7 +40,7 @@ public class ThreadManager {
 
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     public static final String NO_PROCESSOR = "NO_PROCESSOR";
-    private static final Map<String, DataSource> sHttpDataSources;
+    public static final Map<String, DataSource> sHttpDataSources;
     private static final Map<String, Processor> sHttpProcessors;
     private static int MAXIMUM_POOL_SIZE = Runtime.getRuntime().availableProcessors();
     public static final ExecutorService sExecutor;
@@ -88,26 +94,8 @@ public class ThreadManager {
 
     }
 
-    public static <Param> void execute(DataRequest<Param> request, DataSource dataSource, Processor processor) {
-            if (dataSource == null) {
-                throw new IllegalArgumentException("Unknown data source");
-            }
-            if (processor == null) {
-                throw new IllegalArgumentException("Unknown processor");
-            }
-            ThreadManager.loadData(request.getDataSourceParam(), dataSource, processor, request.getCallback());
-    }
-
-    public static <Params> void execute(DataRequest<Params> request) {
-        String dataSourceName = request.getDataSource();
-        String processorName = request.getProcessor();
-            if (sHttpDataSources.get(dataSourceName) == null) {
-                throw new IllegalArgumentException("Unknown / unregistered data source " + dataSourceName);
-            }
-            if (sHttpProcessors.get(processorName) == null && !processorName.equals(NO_PROCESSOR)) {
-                throw new IllegalArgumentException("Unknown / unregistered processorName " + processorName);
-            }
-            ThreadManager.loadData(request.getDataSourceParam(), sHttpDataSources.get(dataSourceName), sHttpProcessors.get(processorName), request.getCallback());
+    public static <Params, DataSourceResult, ProcessingResult> void execute(DataRequest<Params, DataSourceResult, ProcessingResult> request) {
+            ThreadManager.loadData(request.getDataSourceParam(), request.getDataSource(), request.getProcessor(), request.getCallback());
     }
 
     public static <Params, DataSourceResult, ProcessingResult>  void execute(Params param, DataSource<Params, DataSourceResult>  dataSource, Callback<ProcessingResult> callback) {
@@ -115,23 +103,23 @@ public class ThreadManager {
     }
 
     public static void registerPlugin(Plugin plugin) {
-        if (plugin.getName() == null) {
+        if (plugin.getPluginName() == null) {
             throw new IllegalArgumentException("Method getName() for " + plugin.getClass().getName() + " isn't overridden");
         }
         if (plugin instanceof DataSource) {
-            sHttpDataSources.put(plugin.getName(), (DataSource) plugin);
+            sHttpDataSources.put(plugin.getPluginName(), (DataSource) plugin);
         } else {
-            sHttpProcessors.put(plugin.getName(), (Processor) plugin);
+            sHttpProcessors.put(plugin.getPluginName(), (Processor) plugin);
         }
     }
 
     public static void performRegistration() {
-        registerPlugin(new HttpClient());
-        registerPlugin(new ComponentsProcessor());
-        registerPlugin(new UserInfoProcessor());
+        registerPlugin(new <Request, HttpEntity>HttpClient());
+        registerPlugin(new <HttpEntity, JComponentsResponse>ComponentsProcessor());
+        registerPlugin(new <HttpEntity, JUserInfo>UserInfoProcessor());
         registerPlugin(new VersionsProcessor());
         registerPlugin(new UsersAssignableProcessor());
-        registerPlugin(new ProjectsProcessor());
+        registerPlugin(new <HttpEntity, JProjectsResponse> ProjectsProcessor());
         registerPlugin(new PriorityProcessor());
         registerPlugin(new PostCreateIssueProcessor());
         registerPlugin(new SpreadsheetProcessor());

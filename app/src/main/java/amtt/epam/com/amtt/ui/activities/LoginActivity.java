@@ -130,7 +130,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         String password = mPasswordTextInput.getText().toString();
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameTextInput.getText().toString();
         mUser.setCredentials(userName, password, mRequestUrl);
-        JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, new Callback<JUserInfo>() {
+        JiraApi.get().searchData(requestSuffix, new UserInfoProcessor(), new Callback<JUserInfo>() {
             @Override
             public void onLoadStart() {
                 showProgress(true);

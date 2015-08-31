@@ -81,7 +81,7 @@ public class SpreadsheetProcessor implements Processor<HttpEntity, GSpreadsheet>
     }
 
     @Override
-    public String getName() {
+    public String getPluginName() {
         return NAME;
     }
 }

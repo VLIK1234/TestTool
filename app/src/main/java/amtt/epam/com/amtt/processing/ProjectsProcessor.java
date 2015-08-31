@@ -25,7 +25,7 @@ public class ProjectsProcessor implements Processor<HttpEntity, JProjectsRespons
 
 
     @Override
-    public String getName() {
+    public String getPluginName() {
         return NAME;
     }
 

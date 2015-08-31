@@ -90,7 +90,7 @@ public class HttpClient implements DataSource<Request, HttpEntity> {
     }
 
     @Override
-    public String getName() {
+    public String getPluginName() {
         return NAME;
     }
 
