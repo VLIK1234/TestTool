@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.http.HttpClient;
@@ -92,7 +93,7 @@ public class JiraApi {
 
     private <ProcessingResult>void execute(Request.Builder requestBuilder, Processor<HttpEntity, ProcessingResult> processor, Callback<ProcessingResult> callback) {
         Request request = requestBuilder.build();
-        DataSource<Request, HttpEntity> dataSource = new HttpClient();
+        DataSource<Request, HttpEntity> dataSource = AmttApplication.getHttpClient();
         ThreadManager.execute(request, dataSource, processor, callback);
     }
 

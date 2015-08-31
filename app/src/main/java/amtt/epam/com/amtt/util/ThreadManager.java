@@ -21,15 +21,20 @@ public class ThreadManager {
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     public static final String NO_PROCESSOR = "NO_PROCESSOR";
     private static int MAXIMUM_POOL_SIZE = Runtime.getRuntime().availableProcessors();
-    public static final ExecutorService sExecutor;
+    public static ExecutorService sExecutor;
 
     static {
-
-        sExecutor = new ThreadPoolExecutor(CPU_COUNT, MAXIMUM_POOL_SIZE, 0L, TimeUnit.MILLISECONDS, new LIFOLinkedBlockingDeque<Runnable>());
+       setExecutor();
     }
 
-    public void setMaximumPoolSize(int size){
+    public static void setMaximumPoolSize(int size){
         MAXIMUM_POOL_SIZE = size;
+        setExecutor();
+    }
+
+
+    private static void setExecutor() {
+        sExecutor = new ThreadPoolExecutor(CPU_COUNT, MAXIMUM_POOL_SIZE, 0L, TimeUnit.MILLISECONDS, new LIFOLinkedBlockingDeque<Runnable>());
     }
 
     public static <Params, DataSourceResult, ProcessingResult> void

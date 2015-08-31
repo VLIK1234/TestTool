@@ -1,7 +1,7 @@
 package amtt.epam.com.amtt.googleapi.api;
 
+import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.common.Callback;
-import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.http.Request;
 import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.util.ThreadManager;
@@ -35,6 +35,6 @@ public class GSpreadsheetApi {
 
     private void execute(Request.Builder requestBuilder, Processor processor, Callback callback) {
         Request request = requestBuilder.build();
-        ThreadManager.execute(request, new HttpClient(), processor, callback);
+        ThreadManager.execute(request, AmttApplication.getHttpClient(), processor, callback);
     }
 }

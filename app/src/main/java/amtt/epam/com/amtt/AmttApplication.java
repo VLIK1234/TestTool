@@ -7,6 +7,7 @@ import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import amtt.epam.com.amtt.http.HttpClient;
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -17,7 +18,7 @@ import io.fabric.sdk.android.Fabric;
 public class AmttApplication extends Application {
 
     private static Context sContext;
-
+    private static HttpClient mHttpClient = new HttpClient();
     public static Context getContext() {
         return sContext;
     }
@@ -34,6 +35,10 @@ public class AmttApplication extends Application {
 
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
+    }
+
+    public static HttpClient getHttpClient(){
+        return mHttpClient;
     }
 
 }
