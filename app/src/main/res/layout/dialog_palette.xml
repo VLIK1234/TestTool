@@ -3,15 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_horizontal_margin"
-    android:paddingLeft="@dimen/navigation_icon_padding"
-    android:paddingRight="@dimen/navigation_icon_padding"
-    android:paddingTop="@dimen/activity_horizontal_margin">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="@dimen/dialog_palette_internal_margin"
+        android:layout_marginLeft="@dimen/dialog_palette_internal_margin"
+        android:layout_marginRight="@dimen/dialog_palette_internal_margin"
+        android:layout_marginEnd="@dimen/dialog_palette_internal_margin"
         android:orientation="horizontal">
 
         <ImageView
@@ -46,7 +47,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/navigation_padding_bottom"
+        android:layout_marginStart="@dimen/dialog_palette_internal_margin"
+        android:layout_marginLeft="@dimen/dialog_palette_internal_margin"
+        android:layout_marginRight="@dimen/dialog_palette_internal_margin"
+        android:layout_marginEnd="@dimen/dialog_palette_internal_margin"
         android:orientation="horizontal">
 
         <ImageView
@@ -82,7 +88,12 @@
         android:id="@+id/rg_paint_tools"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/navigation_padding_bottom"
+        android:layout_marginStart="@dimen/dialog_palette_internal_margin"
+        android:layout_marginLeft="@dimen/dialog_palette_internal_margin"
+        android:layout_marginRight="@dimen/dialog_palette_internal_margin"
+        android:layout_marginEnd="@dimen/dialog_palette_internal_margin"
         android:orientation="horizontal">
 
         <RadioButton
@@ -108,6 +119,12 @@
         android:id="@+id/multi_line_radio_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="@dimen/dialog_palette_internal_margin"
+        android:layout_marginLeft="@dimen/dialog_palette_internal_margin"
+        android:layout_marginRight="@dimen/dialog_palette_internal_margin"
+        android:layout_marginEnd="@dimen/dialog_palette_internal_margin"
+        android:layout_marginBottom="@dimen/dialog_palette_internal_margin"
         android:orientation="vertical">
 
         <amtt.epam.com.amtt.ui.views.RadioGroupLine

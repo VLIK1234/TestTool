@@ -37,4 +37,5 @@
     <dimen name="fab_content_size">48dp</dimen>
     <dimen name="margin_activity_detail">16dp</dimen>
     <dimen name="drag_view_button_size">48dp</dimen>
+    <dimen name="dialog_palette_internal_margin">16dp</dimen>
 </resources>
