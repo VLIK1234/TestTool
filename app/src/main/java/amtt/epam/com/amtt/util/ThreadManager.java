@@ -40,14 +40,11 @@ public class ThreadManager {
 
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     public static final String NO_PROCESSOR = "NO_PROCESSOR";
-    public static final Map<String, DataSource> sHttpDataSources;
-    private static final Map<String, Processor> sHttpProcessors;
     private static int MAXIMUM_POOL_SIZE = Runtime.getRuntime().availableProcessors();
     public static final ExecutorService sExecutor;
 
     static {
-        sHttpDataSources = new HashMap<>();
-        sHttpProcessors = new HashMap<>();
+
         sExecutor = new ThreadPoolExecutor(CPU_COUNT, MAXIMUM_POOL_SIZE, 0L, TimeUnit.MILLISECONDS, new LIFOLinkedBlockingDeque<Runnable>());
     }
 
@@ -100,30 +97,6 @@ public class ThreadManager {
 
     public static <Params, DataSourceResult, ProcessingResult>  void execute(Params param, DataSource<Params, DataSourceResult>  dataSource, Callback<ProcessingResult> callback) {
         new Task<>(param, dataSource, callback).executeOnExecutor(sExecutor);
-    }
-
-    public static void registerPlugin(Plugin plugin) {
-        if (plugin.getPluginName() == null) {
-            throw new IllegalArgumentException("Method getName() for " + plugin.getClass().getName() + " isn't overridden");
-        }
-        if (plugin instanceof DataSource) {
-            sHttpDataSources.put(plugin.getPluginName(), (DataSource) plugin);
-        } else {
-            sHttpProcessors.put(plugin.getPluginName(), (Processor) plugin);
-        }
-    }
-
-    public static void performRegistration() {
-        registerPlugin(new <Request, HttpEntity>HttpClient());
-        registerPlugin(new <HttpEntity, JComponentsResponse>ComponentsProcessor());
-        registerPlugin(new <HttpEntity, JUserInfo>UserInfoProcessor());
-        registerPlugin(new VersionsProcessor());
-        registerPlugin(new UsersAssignableProcessor());
-        registerPlugin(new <HttpEntity, JProjectsResponse> ProjectsProcessor());
-        registerPlugin(new PriorityProcessor());
-        registerPlugin(new PostCreateIssueProcessor());
-        registerPlugin(new SpreadsheetProcessor());
-        registerPlugin(new WorksheetProcessor());
     }
 
 }

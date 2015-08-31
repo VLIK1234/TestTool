@@ -27,7 +27,6 @@ public class AmttApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sContext = getApplicationContext();
-        performRegistration();
 
         Fabric.with(new Fabric.Builder(this)
                 .kits(new Crashlytics())
@@ -36,10 +35,6 @@ public class AmttApplication extends Application {
 
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
-    }
-
-    public void performRegistration() {
-        ThreadManager.performRegistration();
     }
 
 }
