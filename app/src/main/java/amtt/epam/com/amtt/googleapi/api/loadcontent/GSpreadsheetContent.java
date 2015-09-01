@@ -5,8 +5,8 @@ import java.util.List;
 
 import amtt.epam.com.amtt.api.ContentLoadingCallback;
 import amtt.epam.com.amtt.api.GetContentCallback;
+import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
-import amtt.epam.com.amtt.database.object.IResult;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.googleapi.bo.GSpreadsheet;
 import amtt.epam.com.amtt.googleapi.bo.GTag;
@@ -41,33 +41,41 @@ public class GSpreadsheetContent {
     }
 
     private void setSpreadsheetInDB(final GSpreadsheet result) {
-        ContentFromDatabase.setSpreadsheet(result, new IResult<Integer>() {
+        ContentFromDatabase.setSpreadsheet(result, new Callback<Integer>() {
             @Override
-            public void onResult(Integer res) {
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(Integer integer) {
                 setWorksheets(result);
-                Logger.d(TAG, mSpreadsheet.getTitle() + Constants.Logs.S_SHEET_ADDED + String.valueOf(res));
+                Logger.d(TAG, mSpreadsheet.getTitle() + Constants.Logs.S_SHEET_ADDED + String.valueOf(integer));
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onLoadError(Exception e) {
                 Logger.e(TAG, mSpreadsheet.getTitle() + Constants.Logs.S_SHEET_ERR, e);
             }
         });
     }
 
     public void getSpreadsheet(final String idLink, final GetContentCallback<GSpreadsheet> getContentCallback) {
-        ContentFromDatabase.getSpreadsheet(idLink, new IResult<List<GSpreadsheet>>() {
+        ContentFromDatabase.getSpreadsheet(idLink, new Callback<List<GSpreadsheet>>() {
             @Override
-            public void onResult(List<GSpreadsheet> result) {
-                if (result != null && !result.isEmpty()) {
-                    getContentCallback.resultOfDataLoading(result.get(0));
+            public void onLoadStart() {
+
+            }
+
+            @Override
+            public void onLoadExecuted(List<GSpreadsheet> spreadsheets) {
+                if (spreadsheets != null && !spreadsheets.isEmpty()) {
+                    getContentCallback.resultOfDataLoading(spreadsheets.get(0));
                 } else {
                     getSpreadsheetFromBackend(idLink, getContentCallback);
                 }
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onLoadError(Exception e) {
                 Logger.e(TAG, e.getMessage(), e);
                 getSpreadsheetFromBackend(idLink, getContentCallback);
             }
@@ -75,16 +83,19 @@ public class GSpreadsheetContent {
     }
 
     public void getAllSpreadsheets(final GetContentCallback<Integer> getContentCallback) {
-        ContentFromDatabase.getAllSpreadsheets(new IResult<List<DatabaseEntity>>() {
+        ContentFromDatabase.getAllSpreadsheets(new Callback<List<DatabaseEntity>>() {
             @Override
-            public void onResult(List<DatabaseEntity> result) {
-                if (result != null) {
-                    getContentCallback.resultOfDataLoading(result.size());
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(List<DatabaseEntity> databaseEntities) {
+                if (databaseEntities != null) {
+                    getContentCallback.resultOfDataLoading(databaseEntities.size());
                 }
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onLoadError(Exception e) {
                 Logger.e(TAG, e.getMessage(), e);
                 getContentCallback.resultOfDataLoading(-1);
             }
@@ -109,14 +120,17 @@ public class GSpreadsheetContent {
 
     //region Worksheet
     private void setWorksheetFromDB(final GWorksheet worksheet) {
-        ContentFromDatabase.setWorksheet(worksheet, new IResult<Integer>() {
+        ContentFromDatabase.setWorksheet(worksheet, new Callback<Integer>() {
             @Override
-            public void onResult(Integer result) {
-                Logger.d(TAG, worksheet.getTitle() + Constants.Logs.W_SHEET_ADDED + String.valueOf(result));
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(Integer integer) {
+                Logger.d(TAG, worksheet.getTitle() + Constants.Logs.W_SHEET_ADDED + String.valueOf(integer));
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onLoadError(Exception e) {
                 Logger.e(TAG, worksheet.getTitle() + Constants.Logs.W_SHEET_ERR, e);
             }
         });
@@ -156,18 +170,21 @@ public class GSpreadsheetContent {
 
     //region TestCase
     public void getTestcaseByIdLink(String idLink, final GetContentCallback<GEntryWorksheet> getContentCallback) {
-        ContentFromDatabase.getTestcaseByIdLink(idLink, new IResult<List<GEntryWorksheet>>() {
+        ContentFromDatabase.getTestcaseByIdLink(idLink, new Callback<List<GEntryWorksheet>>() {
             @Override
-            public void onResult(List<GEntryWorksheet> result) {
-                if (result != null && !result.isEmpty()) {
-                    getContentCallback.resultOfDataLoading(result.get(0));
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(List<GEntryWorksheet> entryWorksheets) {
+                if (entryWorksheets != null && !entryWorksheets.isEmpty()) {
+                    getContentCallback.resultOfDataLoading(entryWorksheets.get(0));
                 } else {
                     getContentCallback.resultOfDataLoading(null);
                 }
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onLoadError(Exception e) {
                 getContentCallback.resultOfDataLoading(null);
                 Logger.e(TAG, e.getMessage(), e);
             }
@@ -186,14 +203,17 @@ public class GSpreadsheetContent {
     }
 
     private void setTestCaseInDB(GEntryWorksheet testcase) {
-        ContentFromDatabase.setTestCase(testcase, new IResult<Integer>() {
+        ContentFromDatabase.setTestCase(testcase, new Callback<Integer>() {
             @Override
-            public void onResult(Integer result) {
-                Logger.d(TAG, Constants.Logs.TC_ADDED + String.valueOf(result));
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(Integer integer) {
+                Logger.d(TAG, Constants.Logs.TC_ADDED + String.valueOf(integer));
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onLoadError(Exception e) {
                 Logger.e(TAG, Constants.Logs.TC_ERR, e);
             }
         });
@@ -205,18 +225,21 @@ public class GSpreadsheetContent {
 
     private void getAllTestCasesInDB(final String idSpreadsheetLink, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
         if (!InputsUtil.isEmpty(idSpreadsheetLink)) {
-            ContentFromDatabase.getTestCasesByLinkSpreadsheet(idSpreadsheetLink, new IResult<List<GEntryWorksheet>>() {
+            ContentFromDatabase.getTestCasesByLinkSpreadsheet(idSpreadsheetLink, new Callback<List<GEntryWorksheet>>() {
                 @Override
-                public void onResult(List<GEntryWorksheet> result) {
-                    if (result != null && !result.isEmpty()) {
-                        getContentCallback.resultOfDataLoading(result);
+                public void onLoadStart() {}
+
+                @Override
+                public void onLoadExecuted(List<GEntryWorksheet> entryWorksheets) {
+                    if (entryWorksheets != null && !entryWorksheets.isEmpty()) {
+                        getContentCallback.resultOfDataLoading(entryWorksheets);
                     } else {
                         getContentCallback.resultOfDataLoading(null);
                     }
                 }
 
                 @Override
-                public void onError(Exception e) {
+                public void onLoadError(Exception e) {
                     Logger.e(TAG, e.getMessage(), e);
                     getContentCallback.resultOfDataLoading(null);
                 }
@@ -229,11 +252,14 @@ public class GSpreadsheetContent {
 
     public void getTestcasesByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, final GetContentCallback<List<GEntryWorksheet>> getContentCallback) {
         if (!InputsUtil.isEmpty(spreadsheetLink) && testcasesIdLinks != null && !testcasesIdLinks.isEmpty()) {
-            ContentFromDatabase.getTestcasesByIdLinksTestcases(spreadsheetLink, testcasesIdLinks, new IResult<List<GEntryWorksheet>>() {
+            ContentFromDatabase.getTestcasesByIdLinksTestcases(spreadsheetLink, testcasesIdLinks, new Callback<List<GEntryWorksheet>>() {
                 @Override
-                public void onResult(List<GEntryWorksheet> result) {
-                    if (result != null && !result.isEmpty()) {
-                        getContentCallback.resultOfDataLoading(result);
+                public void onLoadStart() {}
+
+                @Override
+                public void onLoadExecuted(List<GEntryWorksheet> entryWorksheets) {
+                    if (entryWorksheets != null && !entryWorksheets.isEmpty()) {
+                        getContentCallback.resultOfDataLoading(entryWorksheets);
                     } else {
                         Logger.d(TAG, Constants.Logs.TC_NOT_FOUND);
                         getContentCallback.resultOfDataLoading(null);
@@ -241,7 +267,7 @@ public class GSpreadsheetContent {
                 }
 
                 @Override
-                public void onError(Exception e) {
+                public void onLoadError(Exception e) {
                     getContentCallback.resultOfDataLoading(null);
                     Logger.e(TAG, e.getMessage(), e);
                 }
@@ -266,14 +292,17 @@ public class GSpreadsheetContent {
                 gTag.setIdLinkSpreadsheet(spreadsheetIdLink);
                 mTags.add(gTag);
             }
-            ContentFromDatabase.setTags(mTags, new IResult<Integer>() {
+            ContentFromDatabase.setTags(mTags, new Callback<Integer>() {
                 @Override
-                public void onResult(Integer result) {
-                    Logger.d(TAG, Constants.Logs.TAGS_ADDED + String.valueOf(result));
+                public void onLoadStart() {}
+
+                @Override
+                public void onLoadExecuted(Integer integer) {
+                    Logger.d(TAG, Constants.Logs.TAGS_ADDED + String.valueOf(integer));
                 }
 
                 @Override
-                public void onError(Exception e) {
+                public void onLoadError(Exception e) {
                     Logger.e(TAG, Constants.Logs.TAGS_ERR, e);
                 }
             });
@@ -282,11 +311,16 @@ public class GSpreadsheetContent {
 
     public void getAllTags(String spreadsheetIdLink, final GetContentCallback<List<GTag>> getContentCallback) {
         if (!InputsUtil.isEmpty(spreadsheetIdLink)) {
-            ContentFromDatabase.getTagsByIdLinkSpreadsheet(spreadsheetIdLink, new IResult<List<GTag>>() {
+            ContentFromDatabase.getTagsByIdLinkSpreadsheet(spreadsheetIdLink, new Callback<List<GTag>>() {
                 @Override
-                public void onResult(List<GTag> result) {
-                    if (result != null) {
-                        getContentCallback.resultOfDataLoading(result);
+                public void onLoadStart() {
+
+                }
+
+                @Override
+                public void onLoadExecuted(List<GTag> tags) {
+                    if (tags != null) {
+                        getContentCallback.resultOfDataLoading(tags);
                     } else {
                         getContentCallback.resultOfDataLoading(null);
                         Logger.d(TAG, Constants.Logs.TAGS_NOT_FOUND);
@@ -294,7 +328,7 @@ public class GSpreadsheetContent {
                 }
 
                 @Override
-                public void onError(Exception e) {
+                public void onLoadError(Exception e) {
                     Logger.e(TAG, e.getMessage(), e);
                     getContentCallback.resultOfDataLoading(null);
                 }
@@ -307,11 +341,14 @@ public class GSpreadsheetContent {
 
     public void getTagsByIdLinksTestcases(String spreadsheetLink, ArrayList<String> testcasesIdLinks, final GetContentCallback<List<GTag>> getContentCallback) {
         if (!InputsUtil.isEmpty(spreadsheetLink) && testcasesIdLinks != null && !testcasesIdLinks.isEmpty()) {
-            ContentFromDatabase.getTagsByIdLinksTestcases(spreadsheetLink, testcasesIdLinks, new IResult<List<GTag>>() {
+            ContentFromDatabase.getTagsByIdLinksTestcases(spreadsheetLink, testcasesIdLinks, new Callback<List<GTag>>() {
                 @Override
-                public void onResult(List<GTag> result) {
-                    if (result != null) {
-                        getContentCallback.resultOfDataLoading(result);
+                public void onLoadStart() {}
+
+                @Override
+                public void onLoadExecuted(List<GTag> tags) {
+                    if (tags != null) {
+                        getContentCallback.resultOfDataLoading(tags);
                     } else {
                         Logger.d(TAG, Constants.Logs.TAGS_NOT_FOUND);
                         getContentCallback.resultOfDataLoading(null);
@@ -319,7 +356,7 @@ public class GSpreadsheetContent {
                 }
 
                 @Override
-                public void onError(Exception e) {
+                public void onLoadError(Exception e) {
                     Logger.e(TAG, e.getMessage(), e);
                     getContentCallback.resultOfDataLoading(null);
                 }

@@ -24,13 +24,13 @@ public class ContentFromBackend {
 
     public <Response> void getSpreadsheet(String idLink, ContentLoadingCallback<Response, Response> contentLoadingCallback,
                                GetContentCallback<Response> getContentCallback) {
-        GSpreadsheetApi.get().loadDocument(idLink, SpreadsheetProcessor.NAME,
+        GSpreadsheetApi.get().loadDocument(idLink, new SpreadsheetProcessor(),
                 getCallback(contentLoadingCallback, getContentCallback));
     }
 
     public <Response> void getWorksheet(String worksheetKey, ContentLoadingCallback<Response, Response> contentLoadingCallback,
                              GetContentCallback<Response> spreadsheetContentCallback) {
-        GSpreadsheetApi.get().loadDocument(worksheetKey, WorksheetProcessor.NAME,
+        GSpreadsheetApi.get().loadDocument(worksheetKey, new WorksheetProcessor(),
                 getCallback(contentLoadingCallback, spreadsheetContentCallback));
     }
 

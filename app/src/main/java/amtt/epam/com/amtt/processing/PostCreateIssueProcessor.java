@@ -10,19 +10,12 @@ import org.apache.http.util.EntityUtils;
  * @version on 27.05.2015
  */
 
-public class PostCreateIssueProcessor implements Processor<JCreateIssueResponse, HttpEntity> {
+public class PostCreateIssueProcessor implements Processor<HttpEntity, JCreateIssueResponse> {
 
-    public static final String NAME = PostCreateIssueProcessor.class.getName();
     @Override
     public JCreateIssueResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
         inputStream.consumeContent();
         return Gson.getInstance().fromJson(_response, JCreateIssueResponse.class);
     }
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
 }

@@ -16,7 +16,7 @@ import java.util.List;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.StepsAdapter;
 import amtt.epam.com.amtt.bo.ticket.Step;
-import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.database.util.ContentFromDatabase;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -50,26 +50,24 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
         ArrayList<Step> listStep = new ArrayList<>();
         StepsAdapter recyclerAdapter = new StepsAdapter(listStep, StepsActivity.this);
         recyclerView.setAdapter(recyclerAdapter);
-        ContentFromDatabase.getAllSteps(new IResult<List<Step>>() {
+        ContentFromDatabase.getAllSteps(new Callback<List<Step>>() {
             @Override
-            public void onResult(final List<Step> result) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (result != null) {
-                            mAdapter = new StepsAdapter((ArrayList<Step>) result, StepsActivity.this);
-                            recyclerView.setAdapter(mAdapter);
-                            if (result.size() == 0) {
-                                recyclerView.setVisibility(View.GONE);
-                                emptyList.setVisibility(View.VISIBLE);
-                            }
-                        }
+            public void onLoadStart() {}
+
+            @Override
+            public void onLoadExecuted(final List<Step> steps) {
+                if (steps != null) {
+                    mAdapter = new StepsAdapter((ArrayList<Step>) steps, StepsActivity.this);
+                    recyclerView.setAdapter(mAdapter);
+                    if (steps.size() == 0) {
+                        recyclerView.setVisibility(View.GONE);
+                        emptyList.setVisibility(View.VISIBLE);
                     }
-                });
+                }
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onLoadError(Exception e) {
                 Logger.e(TAG, e.getMessage(), e);
             }
         });

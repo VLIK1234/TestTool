@@ -17,9 +17,8 @@ import java.util.ArrayList;
  @author Iryna Monchanka
  @version on 06.05.2015
  */
-public class UsersAssignableProcessor implements Processor<JUserAssignableResponse, HttpEntity> {
+public class UsersAssignableProcessor implements Processor<HttpEntity, JUserAssignableResponse> {
 
-    public static final String NAME = UsersAssignableProcessor.class.getName();
     @Override
     public JUserAssignableResponse process(HttpEntity inputStream) throws Exception {
         String _response = EntityUtils.toString(inputStream, HTTP.UTF_8);
@@ -37,10 +36,4 @@ public class UsersAssignableProcessor implements Processor<JUserAssignableRespon
         JiraContent.getInstance().setUsersAssignableNames(userAssignableResponse.getAssignableUsersNames());
         return userAssignableResponse;
     }
-
-    @Override
-    public String getName() {
-        return NAME;
-    }
-
 }

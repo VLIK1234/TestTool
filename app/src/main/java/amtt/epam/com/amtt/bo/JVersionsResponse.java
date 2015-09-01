@@ -16,10 +16,6 @@ public class JVersionsResponse {
 
     public JVersionsResponse(){}
 
-    public JVersionsResponse(List<JIssueVersion> versions) {
-        this.mVersions = versions;
-    }
-
     public HashMap<String, String> getVersionsNames(){
         HashMap<String, String> mVersionsNames;
         if (mVersions != null) {

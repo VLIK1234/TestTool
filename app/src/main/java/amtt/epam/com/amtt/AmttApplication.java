@@ -1,20 +1,13 @@
 package amtt.epam.com.amtt;
 
+import android.app.Application;
+import android.content.Context;
+
 import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import amtt.epam.com.amtt.common.CoreApplication;
-import amtt.epam.com.amtt.googleapi.processing.SpreadsheetProcessor;
-import amtt.epam.com.amtt.googleapi.processing.WorksheetProcessor;
 import amtt.epam.com.amtt.http.HttpClient;
-import amtt.epam.com.amtt.processing.ComponentsProcessor;
-import amtt.epam.com.amtt.processing.PostCreateIssueProcessor;
-import amtt.epam.com.amtt.processing.PriorityProcessor;
-import amtt.epam.com.amtt.processing.ProjectsProcessor;
-import amtt.epam.com.amtt.processing.UserInfoProcessor;
-import amtt.epam.com.amtt.processing.UsersAssignableProcessor;
-import amtt.epam.com.amtt.processing.VersionsProcessor;
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -22,11 +15,18 @@ import io.fabric.sdk.android.Fabric;
  @version on 19.03.2015
  */
 
-public class AmttApplication extends CoreApplication {
+public class AmttApplication extends Application {
+
+    private static Context sContext;
+    private static HttpClient mHttpClient = new HttpClient();
+    public static Context getContext() {
+        return sContext;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        sContext = getApplicationContext();
 
         Fabric.with(new Fabric.Builder(this)
                 .kits(new Crashlytics())
@@ -37,19 +37,8 @@ public class AmttApplication extends CoreApplication {
         ImageLoader.getInstance().init(config);
     }
 
-    @Override
-    public void performRegistration() {
-        registerPlugin(new HttpClient());
-
-        registerPlugin(new ComponentsProcessor());
-        registerPlugin(new UserInfoProcessor());
-        registerPlugin(new VersionsProcessor());
-        registerPlugin(new UsersAssignableProcessor());
-        registerPlugin(new ProjectsProcessor());
-        registerPlugin(new PriorityProcessor());
-        registerPlugin(new PostCreateIssueProcessor());
-        registerPlugin(new SpreadsheetProcessor());
-        registerPlugin(new WorksheetProcessor());
+    public static HttpClient getHttpClient(){
+        return mHttpClient;
     }
 
 }

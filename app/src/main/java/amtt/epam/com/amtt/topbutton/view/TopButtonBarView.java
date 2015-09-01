@@ -52,7 +52,7 @@ public class TopButtonBarView extends FrameLayout {
     private TopUnitView mButtonStopRecord;
     private TopUnitView mButtonShowSteps;
     private TopUnitView mButtonCloseApp;
-    private ActiveUser mUser = ActiveUser.getInstance();
+    private final ActiveUser mUser = ActiveUser.getInstance();
 
     static {
         isRecordStarted = false;

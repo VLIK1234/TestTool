@@ -2,30 +2,37 @@ package amtt.epam.com.amtt.os;
 
 import android.os.AsyncTask;
 
+import java.util.concurrent.ExecutorService;
+
 import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.processing.Processor;
 import amtt.epam.com.amtt.common.Callback;
 
 /**
- * Created by Artsiom_Kaliaha on 15.06.2015.
- * Generalized AsyncTask
- * param Param    Type that will be passed to a source as parameter
- * param Progress Type that will be passed to a processor, in other words data returned by DataSource
- * param Result   Type that will be returned from AsyncTask
+ @author Iryna Monchanka
+ @version on 28.08.2015
  */
-public class Task<Param, Progress, Result> extends AsyncTask<Param, Void, Result> {
+public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<Void, Void, ProcessingResult> {
 
-    private final Callback<Result> mCallback;
-    private final DataSource<Progress, Param> mDataSource;
-    private final Param mParam;
-    private final Processor<Result, Progress> mProcessor;
+    private final Callback<ProcessingResult> mCallback;
+    private final DataSource<Params, DataSourceResult> mDataSource;
+    private final Params mParams;
+    private final Processor<DataSourceResult, ProcessingResult> mProcessor;
     private Exception mException;
 
-    public Task(DataSource<Progress, Param> dataSource, Param param, Processor<Result, Progress> processor, Callback<Result> callback) {
+    public Task(Params params, DataSource<Params, DataSourceResult> dataSource,
+                Processor<DataSourceResult, ProcessingResult> processor, Callback<ProcessingResult> callback) {
         mDataSource = dataSource;
-        mParam = param;
+        mParams = params;
         mProcessor = processor;
         mCallback = callback;
+    }
+
+    public Task(Params params,DataSource<Params, DataSourceResult> dataSource, Callback<ProcessingResult> callback) {
+        mParams = params;
+        mDataSource = dataSource;
+        mCallback = callback;
+        mProcessor = null;
     }
 
     @Override
@@ -35,23 +42,25 @@ public class Task<Param, Progress, Result> extends AsyncTask<Param, Void, Result
         }
     }
 
-    @SafeVarargs
     @Override
-    protected final Result doInBackground(Param... params) {
-        Result result = null;
+    protected final ProcessingResult doInBackground(Void... params) {
+        ProcessingResult processingResult;
         try {
-            Progress progress = mDataSource.getData(mParam);
+            DataSourceResult dataSourceResult = mDataSource.getData(mParams);
             if (mProcessor != null) {
-                result = mProcessor.process(progress);
+                processingResult = mProcessor.process(dataSourceResult);
+                return processingResult;
+            } else {
+                return (ProcessingResult) dataSourceResult;
             }
         } catch (Exception e) {
             mException = e;
+            return null;
         }
-        return result;
     }
 
     @Override
-    protected void onPostExecute(Result result) {
+    protected void onPostExecute(ProcessingResult result) {
         if (mCallback == null) {
             return;
         }
@@ -62,4 +71,8 @@ public class Task<Param, Progress, Result> extends AsyncTask<Param, Void, Result
         mCallback.onLoadExecuted(result);
     }
 
+    public final Task executeOnThreadExecutor(ExecutorService executor) {
+        Task.this.executeOnExecutor(executor);
+        return this;
+    }
 }

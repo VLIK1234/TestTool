@@ -18,7 +18,7 @@ import amtt.epam.com.amtt.util.Logger;
  * @author Iryna Monchanka
  * @version on 07.07.2015
  */
-public class OldWorksheetProcessor implements Processor<GWorksheet, HttpEntity> {
+public class OldWorksheetProcessor implements Processor<HttpEntity, GWorksheet> {
 
     private static final String NAME = OldWorksheetProcessor.class.getName();
 
@@ -88,10 +88,5 @@ public class OldWorksheetProcessor implements Processor<GWorksheet, HttpEntity> 
             Logger.e(NAME, "Error loading xml : " + t.toString(), t);
             return null;
         }
-    }
-
-    @Override
-    public String getName() {
-        return NAME;
     }
 }
