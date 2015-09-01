@@ -36,13 +36,6 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
         mProcessor = null;
     }
 
-    @Override
-    protected void onPreExecute() {
-        if (mCallback != null) {
-            mCallback.onLoadStart();
-        }
-    }
-
     @SafeVarargs
     @Override
     protected final ProcessingResult doInBackground(Params... params) {
@@ -61,22 +54,18 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
         }
     }
 
-    @Override
-    protected void onPostExecute(ProcessingResult processingResult) {
-        if (mException != null) {
-            mCallback.onLoadError(mException);
-            return;
-        }
-        if (mCallback == null) {
-            return;
-        }
-        mCallback.onLoadExecuted(processingResult);
-    }
-
     @SafeVarargs
     public final Task executeOnThreadExecutor(ExecutorService executor, final Params... params) {
         onPreExecute();
         new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected void onPreExecute() {
+                if (mCallback != null) {
+                    mCallback.onLoadStart();
+                }
+            }
+
             @Override
             protected Void doInBackground(Void... param) {
                 try {
@@ -90,7 +79,14 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
 
             @Override
             protected void onPostExecute(Void result) {
-                Task.this.onPostExecute(mProcessingResult);
+                if (mException != null) {
+                    mCallback.onLoadError(mException);
+                    return;
+                }
+                if (mCallback == null) {
+                    return;
+                }
+                mCallback.onLoadExecuted(mProcessingResult);
             }
         }.executeOnExecutor(executor);
 

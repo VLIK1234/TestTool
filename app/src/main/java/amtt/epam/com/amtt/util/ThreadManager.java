@@ -87,7 +87,7 @@ public class ThreadManager {
     execute(Params param,
             DataSource<Params, DataSourceResult>  dataSource,
             Callback<ProcessingResult> callback) {
-        new Task<>(param, dataSource, callback).executeOnExecutor(sExecutor);
+        new Task<>(param, dataSource, callback).executeOnThreadExecutor(sExecutor);
     }
 
 }
