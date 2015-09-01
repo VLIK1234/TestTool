@@ -16,7 +16,7 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
 
     private final Callback<ProcessingResult> mCallback;
     private final DataSource<Params, DataSourceResult> mDataSource;
-    private final Params mParams;
+    private Params mParams;
     private final Processor<DataSourceResult, ProcessingResult> mProcessor;
     private Exception mException;
     private ProcessingResult mProcessingResult;
@@ -74,8 +74,7 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
         mCallback.onLoadExecuted(mProcessingResult);
     }
 
-    @SafeVarargs
-    public final Task executeOnThreadExecutor(ExecutorService executor, final Params... params) {
+    public final Task executeOnThreadExecutor(ExecutorService executor) {
         Task.this.executeOnExecutor(executor);
         return this;
     }
