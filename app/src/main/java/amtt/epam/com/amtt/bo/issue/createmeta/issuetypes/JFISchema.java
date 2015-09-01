@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  @version on 3/31/2015
  */
 
-public class JFieldsItemSchema {
+public class JFISchema {
 
     @SerializedName("items")
     private String mItems;
@@ -16,11 +16,11 @@ public class JFieldsItemSchema {
     @SerializedName("type")
     private String mType;
 
-    public JFieldsItemSchema() {
+    public JFISchema() {
 
     }
 
-    public JFieldsItemSchema(String items, String system, String type) {
+    public JFISchema(String items, String system, String type) {
 
         this.mItems = items;
         this.mSystem = system;

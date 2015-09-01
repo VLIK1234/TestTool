@@ -14,7 +14,7 @@ public abstract class JFieldsItem {
     @SerializedName("required")
     private Boolean mRequired;
     @SerializedName("schema")
-    private JFieldsItemSchema mSchema;
+    private JFISchema mSchema;
     @SerializedName("hasDefaultValue")
     private Boolean mHasDefaultValue;
     @SerializedName("name")
@@ -22,18 +22,9 @@ public abstract class JFieldsItem {
     @SerializedName("operations")
     private List<String> mOperations;
     @SerializedName("allowedValues")
-    private JFieldsItemAllowedValues mAllowedValues;
+    private JFIAllowedValues mAllowedValues;
 
     protected JFieldsItem() {
-    }
-
-    protected JFieldsItem(Boolean required, JFieldsItemSchema schema, Boolean hasDefaultValue, String name, List<String> operations, JFieldsItemAllowedValues allowedValues) {
-        this.mRequired = required;
-        this.mSchema = schema;
-        this.mHasDefaultValue = hasDefaultValue;
-        this.mName = name;
-        this.mOperations = operations;
-        this.mAllowedValues = allowedValues;
     }
 
     public Boolean getRequired() {
@@ -44,11 +35,11 @@ public abstract class JFieldsItem {
         this.mRequired = required;
     }
 
-    public JFieldsItemSchema getSchema() {
+    public JFISchema getSchema() {
         return mSchema;
     }
 
-    public void setSchema(JFieldsItemSchema schema) {
+    public void setSchema(JFISchema schema) {
         this.mSchema = schema;
     }
 
@@ -76,11 +67,11 @@ public abstract class JFieldsItem {
         this.mOperations = operations;
     }
 
-    public JFieldsItemAllowedValues getAllowedValues() {
+    public JFIAllowedValues getAllowedValues() {
         return mAllowedValues;
     }
 
-    public void setAllowedValues(JFieldsItemAllowedValues allowedValues) {
+    public void setAllowedValues(JFIAllowedValues allowedValues) {
         this.mAllowedValues = allowedValues;
     }
 }

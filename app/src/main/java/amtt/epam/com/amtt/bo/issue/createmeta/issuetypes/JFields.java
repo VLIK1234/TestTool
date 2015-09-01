@@ -40,16 +40,6 @@ public class JFields {
     private JPriority mPriority;
 
     public JFields() {
-
-    }
-
-    public JFields(JSummary summary, JAttachment attachment, JDescription description, JProject project, JIssueType issueType, JPriority priority) {
-        this.mSummary = summary;
-        this.mAttachment = attachment;
-        this.mDescription = description;
-        this.mProject = project;
-        this.mIssueType = issueType;
-        this.mPriority = priority;
     }
 
     public JSummary getSummary() {

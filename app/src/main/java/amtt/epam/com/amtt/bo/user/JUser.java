@@ -1,6 +1,9 @@
 package amtt.epam.com.amtt.bo.user;
 
-import amtt.epam.com.amtt.bo.issue.JAvatarUrls;
+import android.database.Cursor;
+
+import amtt.epam.com.amtt.bo.JBaseObject;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,68 +11,22 @@ import com.google.gson.annotations.SerializedName;
  @version on 30.03.2015
  */
 
-public class JUser {
+public class JUser<T> extends JBaseObject {
 
-    @SerializedName("key")
-    private String mKey;
-    @SerializedName("self")
-    private String mSelf;
-    @SerializedName("name")
-    private String mName;
-    @SerializedName("avatarUrls")
-    private JAvatarUrls mAvatarUrls;
     @SerializedName("emailAddress")
-    private String mEmailAddress;
+    protected String mEmailAddress;
     @SerializedName("displayName")
-    private String mDisplayName;
+    protected String mDisplayName;
     @SerializedName("active")
     private Boolean mActive;
     @SerializedName("timeZone")
-    private String mTimeZone;
+    protected String mTimeZone;
 
     public JUser(){}
 
-    public JUser(String key, String self, String name, JAvatarUrls avatarUrls, String emailAddress, String displayName, Boolean active, String timeZone) {
-        this.mKey = key;
-        this.mSelf = self;
-        this.mName = name;
-        this.mAvatarUrls = avatarUrls;
-        this.mEmailAddress = emailAddress;
-        this.mDisplayName = displayName;
-        this.mActive = active;
-        this.mTimeZone = timeZone;
-    }
-
-    public String getKey() {
-        return mKey;
-    }
-
-    public void setKey(String key) {
-        this.mKey = key;
-    }
-
-    public String getSelf() {
-        return mSelf;
-    }
-
-    public void setSelf(String self) {
-        this.mSelf = self;
-    }
-
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String name) {
-        this.mName = name;
-    }
-
-    public JAvatarUrls getAvatarUrls() {
-        return mAvatarUrls;
-    }
-
-    public void setAvatarUrls(JAvatarUrls avatarUrls) {
-        this.mAvatarUrls = avatarUrls;
+    @Override
+    public T parse(Cursor cursor) {
+        return null;
     }
 
     public String getEmailAddress() {
@@ -103,4 +60,5 @@ public class JUser {
     public void setTimeZone(String timeZone) {
         this.mTimeZone = timeZone;
     }
+
 }

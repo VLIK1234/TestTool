@@ -2,21 +2,17 @@ package amtt.epam.com.amtt.bo.project;
 
 import com.google.gson.annotations.SerializedName;
 
+import amtt.epam.com.amtt.bo.JBase;
+
 /**
  @author Iryna Monchanka
  @version on 4/23/2015
  */
 
-public class JIssueVersion {
+public class JIssueVersion extends JBase{
 
-    @SerializedName("id")
-    private String mId;
-    @SerializedName("self")
-    private String mSelf;
     @SerializedName("description")
     private String mDescription;
-    @SerializedName("name")
-    private String mName;
     @SerializedName("archived")
     private Boolean mArchived;
     @SerializedName("released")
@@ -30,52 +26,12 @@ public class JIssueVersion {
 
     public JIssueVersion(){}
 
-    public JIssueVersion(String id) {
-        this.mId = id;
-    }
-
-    public JIssueVersion(String id, String self, String description, String name, Boolean archived, Boolean released, String releaseDate, Boolean overdue, String userReleaseDate) {
-        this.mId = id;
-        this.mSelf = self;
-        this.mDescription = description;
-        this.mName = name;
-        this.mArchived = archived;
-        this.mReleased = released;
-        this.mReleaseDate = releaseDate;
-        this.mOverdue = overdue;
-        this.mUserReleaseDate = userReleaseDate;
-    }
-
-    public String getId() {
-        return mId;
-    }
-
-    public void setId(String id) {
-        this.mId = id;
-    }
-
-    public String getSelf() {
-        return mSelf;
-    }
-
-    public void setSelf(String self) {
-        this.mSelf = self;
-    }
-
     public String getDescription() {
         return mDescription;
     }
 
     public void setDescription(String description) {
         this.mDescription = description;
-    }
-
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String name) {
-        this.mName = name;
     }
 
     public Boolean getArchived() {
