@@ -12,14 +12,13 @@ import amtt.epam.com.amtt.common.Callback;
  @author Iryna Monchanka
  @version on 28.08.2015
  */
-public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<Params, Void, ProcessingResult> {
+public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<Void, Void, ProcessingResult> {
 
     private final Callback<ProcessingResult> mCallback;
     private final DataSource<Params, DataSourceResult> mDataSource;
     private final Params mParams;
     private final Processor<DataSourceResult, ProcessingResult> mProcessor;
     private Exception mException;
-    private ProcessingResult mProcessingResult;
 
     public Task(Params params, DataSource<Params, DataSourceResult> dataSource,
                 Processor<DataSourceResult, ProcessingResult> processor, Callback<ProcessingResult> callback) {
@@ -43,9 +42,8 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
         }
     }
 
-    @SafeVarargs
     @Override
-    protected final ProcessingResult doInBackground(Params... params) {
+    protected final ProcessingResult doInBackground(Void... params) {
         ProcessingResult processingResult;
         try {
             DataSourceResult dataSourceResult = mDataSource.getData(mParams);
@@ -57,7 +55,6 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
             }
         } catch (Exception e) {
             mException = e;
-            mProcessingResult = null;
             return null;
         }
     }
@@ -71,7 +68,7 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
         if (mCallback == null) {
             return;
         }
-        mCallback.onLoadExecuted(mProcessingResult);
+        mCallback.onLoadExecuted(result);
     }
 
     public final Task executeOnThreadExecutor(ExecutorService executor) {
