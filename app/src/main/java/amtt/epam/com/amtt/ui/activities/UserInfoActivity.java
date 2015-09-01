@@ -40,7 +40,7 @@ import amtt.epam.com.amtt.util.Logger;
  * @version on 07.05.2015
  */
 @SuppressWarnings("unchecked")
-public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo>, LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
+public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_REFRESH = 100;
@@ -57,8 +57,8 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
     private ImageView mUserImageImageView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private UserInfoHandler mHandler;
-    private ActiveUser mUser = ActiveUser.getInstance();
-    private JiraContent mJira = JiraContent.getInstance();
+    private final ActiveUser mUser = ActiveUser.getInstance();
+    private final JiraContent mJira = JiraContent.getInstance();
 
     public static class UserInfoHandler extends Handler {
 
@@ -197,28 +197,24 @@ public class UserInfoActivity extends BaseActivity implements Callback<JUserInfo
 
     private void refreshUserInfo() {
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUser.getUserName();
-        JiraApi.get().searchData(requestSuffix, UserInfoProcessor.NAME, this);
-    }
+        JiraApi.get().searchData(requestSuffix, new UserInfoProcessor(), new Callback<JUserInfo>() {
+            @Override
+            public void onLoadStart() {}
 
-    //Callback
-    //Jira
-    @Override
-    public void onLoadStart() {
+            @Override
+            public void onLoadExecuted(JUserInfo user) {
+                user.setUrl(mUser.getUrl());
+                setActiveUser(user);
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
 
-    }
-
-    @Override
-    public void onLoadExecuted(JUserInfo user) {
-        user.setUrl(mUser.getUrl());
-        setActiveUser(user);
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    @Override
-    public void onLoadError(Exception e) {
-        Logger.e(TAG, e.getMessage(), e);
-        DialogUtils.createDialog(this, ExceptionType.valueOf(e)).show();
-        mSwipeRefreshLayout.setRefreshing(false);
+            @Override
+            public void onLoadError(Exception e) {
+                Logger.e(TAG, e.getMessage(), e);
+                DialogUtils.createDialog(UserInfoActivity.this, ExceptionType.valueOf(e)).show();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     //Loader

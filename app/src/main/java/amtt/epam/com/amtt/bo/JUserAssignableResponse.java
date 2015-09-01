@@ -16,14 +16,6 @@ public class JUserAssignableResponse {
 
     public JUserAssignableResponse(){}
 
-    public JUserAssignableResponse(List<JUser> assignableUsers) {
-        this.mAssignableUsers = assignableUsers;
-    }
-
-    public List<JUser> getAssignableUsers() {
-        return mAssignableUsers;
-    }
-
     public void setAssignableUsers(List<JUser> assignableUsers) {
         this.mAssignableUsers = assignableUsers;
     }

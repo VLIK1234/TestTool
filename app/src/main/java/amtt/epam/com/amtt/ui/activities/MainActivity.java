@@ -36,9 +36,9 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 2;
     private final String TAG = this.getClass().getSimpleName();
-    private ActiveUser mUser = ActiveUser.getInstance();
-    private JiraContent mJira = JiraContent.getInstance();
-    private GSpreadsheetContent mSpreadsheetContent = GSpreadsheetContent.getInstance();
+    private final ActiveUser mUser = ActiveUser.getInstance();
+    private final JiraContent mJira = JiraContent.getInstance();
+    private final GSpreadsheetContent mSpreadsheetContent = GSpreadsheetContent.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

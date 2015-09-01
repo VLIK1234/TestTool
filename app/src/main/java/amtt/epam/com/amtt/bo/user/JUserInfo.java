@@ -6,8 +6,6 @@ import android.net.Uri;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import amtt.epam.com.amtt.bo.issue.JAvatarUrls;
@@ -185,23 +183,6 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
 
     public void setLastComponentsIds(String lastComponents) {
         this.mLastComponentsIds = lastComponents;
-    }
-
-    public List<String> getListLastComponentsIds() {
-        if (mListLastComponentsIds == null && mLastComponentsIds != null) {
-            mListLastComponentsIds = new ArrayList<>(Arrays.asList(mLastComponentsIds.split("$&")));
-        }
-        return mListLastComponentsIds;
-    }
-
-    public void setListLastComponentsIds(List<String> listLastComponentsIds) {
-        if (listLastComponentsIds != null) {
-            if (!listLastComponentsIds.isEmpty()) {
-                for (int i = 0; i < listLastComponentsIds.size(); i++) {
-                    setLastComponent(listLastComponentsIds.get(i));
-                }
-            }
-        }
     }
 
     public String getLastSpreadsheetUrl() {

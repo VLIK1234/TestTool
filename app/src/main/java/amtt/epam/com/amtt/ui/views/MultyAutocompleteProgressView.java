@@ -28,10 +28,10 @@ public class MultyAutocompleteProgressView extends RelativeLayout {
     public MultyAutocompleteProgressView(Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.multyautocomplete_progress_layout, this, true);
-        initViews(context, attrs);
+        initViews();
     }
 
-    private void initViews(Context context, AttributeSet attrs) {
+    private void initViews() {
         mMACTextView = (MultiAutoCompleteTextView) findViewById(R.id.multyautocomplete_text_view);
         mProgress = (ProgressBar) findViewById(R.id.progress);
     }

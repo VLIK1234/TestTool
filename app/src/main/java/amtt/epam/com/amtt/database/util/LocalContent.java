@@ -10,6 +10,7 @@ import android.text.Spanned;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +19,13 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
-import amtt.epam.com.amtt.database.object.IResult;
+import amtt.epam.com.amtt.common.Callback;
+import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.IOUtils;
 import amtt.epam.com.amtt.util.Logger;
+import amtt.epam.com.amtt.util.ThreadManager;
 
 /**
  * @author Artsiom_Kaliaha
@@ -42,19 +45,23 @@ public class LocalContent {
         ContentFromDatabase.setStep(step, null);
     }
 
-    public static void getAllSteps(final GetContentCallback<List<Step>> contentCallback){
-        ContentFromDatabase.getAllSteps(new IResult<List<Step>>() {
+    public static void getAllSteps(final GetContentCallback<List<Step>> contentCallback) {
+        ContentFromDatabase.getAllSteps(new Callback<List<Step>>() {
             @Override
-            public void onResult(List<Step> result) {
-                if (result!=null && !result.isEmpty()){
-                    contentCallback.resultOfDataLoading(result);
-                }else{
+            public void onLoadStart() {
+            }
+
+            @Override
+            public void onLoadExecuted(List<Step> steps) {
+                if (steps != null && !steps.isEmpty()) {
+                    contentCallback.resultOfDataLoading(steps);
+                } else {
                     contentCallback.resultOfDataLoading(null);
                 }
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onLoadError(Exception e) {
                 Logger.e(TAG, e.getMessage(), e);
                 contentCallback.resultOfDataLoading(null);
             }
@@ -72,26 +79,48 @@ public class LocalContent {
     public static void applyNotesToScreenshot(final Bitmap drawingCache, final String screenshotPath, final Step step) {
         step.setScreenshotState(Step.ScreenshotState.IS_BEING_WRITTEN);
         ContentFromDatabase.updateStep(step, null);
-        new Thread(new Runnable() {
+        Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals(MimeType.IMAGE_PNG.getFileExtension()) ?
+                Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
+        ThreadManager.execute(compressFormat, new DataSource<Bitmap.CompressFormat, Void>() {
+
             @Override
-            public void run() {
-                Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals(MimeType.IMAGE_PNG.getFileExtension()) ?
-                        Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
+            public Void getData(Bitmap.CompressFormat compressFormat) throws Exception {
                 FileOutputStream outputStream = null;
                 try {
                     outputStream = IOUtils.openFileOutput(screenshotPath, true);
+                    if (outputStream != null) {
+                        drawingCache.compress(compressFormat, 100, outputStream);
+                    }
                 } catch (FileNotFoundException e) {
                     //ignored in this implementation, because exception won't be thrown as we need to create new file
                     //look through IOUtils.openFileOutput method for more information
+                } finally {
+                    if (outputStream != null) {
+                        try {
+                            outputStream.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
-                if (outputStream != null) {
-                    drawingCache.compress(compressFormat, 100, outputStream);
-                }
+                return null;
+            }
+        }, new Callback<Void>() {
+            @Override
+            public void onLoadStart() {
+            }
 
+            @Override
+            public void onLoadExecuted(Void aVoid) {
                 step.setScreenshotState(Step.ScreenshotState.WRITTEN);
                 ContentFromDatabase.updateStep(step, null);
             }
-        }).start();
+
+            @Override
+            public void onLoadError(Exception e) {
+                Logger.e(TAG, e.getMessage(), e);
+            }
+        });
     }
 
     public static Spanned getStepInfo(Step step) {
@@ -130,13 +159,18 @@ public class LocalContent {
     }
 
     public static List<Bitmap> getStepBitmaps(List<Step> stepsList) throws Throwable {
-        List<Bitmap> bitmaps = new ArrayList<>();
-        for (Step step : stepsList) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 3;
-            bitmaps.add(BitmapFactory.decodeFile(step.getScreenshotPath(), options));
+        try {
+            List<Bitmap> bitmaps = new ArrayList<>();
+            for (Step step : stepsList) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 3;
+                bitmaps.add(BitmapFactory.decodeFile(step.getScreenshotPath(), options));
+            }
+            return bitmaps;
+        } catch (Exception e) {
+            e.getStackTrace();
+            return null;
         }
-        return bitmaps;
     }
 
     public static void removeAllAttachFile() {
@@ -151,11 +185,11 @@ public class LocalContent {
         }
     }
 
-    public static void checkUser(String userName, String url, IResult<List<JUserInfo>> result) {
+    public static void checkUser(String userName, String url, Callback<List<JUserInfo>> result) {
         ContentFromDatabase.getUserByNameAndUrl(userName, url, result);
     }
 
-    public static void updateUser(int userId, JUserInfo user, IResult<Integer> result) {
+    public static void updateUser(int userId, JUserInfo user, Callback<Integer> result) {
         ContentFromDatabase.updateUser(userId, user, result);
     }
 }

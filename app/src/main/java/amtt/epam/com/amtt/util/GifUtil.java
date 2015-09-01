@@ -436,6 +436,7 @@ public final class GifUtil {
                         p[1] -= (a * (p[1] - g)) / alpharadbias;
                         p[2] -= (a * (p[2] - r)) / alpharadbias;
                     } catch (Exception e) {
+                        e.getStackTrace();
                     } // prevents 1.3 miscompilation
                 }
                 if (k > lo) {
@@ -445,6 +446,7 @@ public final class GifUtil {
                         p[1] -= (a * (p[1] - g)) / alpharadbias;
                         p[2] -= (a * (p[2] - r)) / alpharadbias;
                     } catch (Exception e) {
+                        e.getStackTrace();
                     }
                 }
             }

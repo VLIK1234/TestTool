@@ -253,18 +253,14 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         mSpreadsheetContent.getTestcaseByIdLink(mResultsAdapter.getIdTestcaseList().get(position), new GetContentCallback<GEntryWorksheet>() {
             @Override
             public void resultOfDataLoading(final GEntryWorksheet result) {
-                ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
-                    public void run() {
-                        if (result != null) {
-                            Intent intent = new Intent(ExpectedResultsActivity.this, activity);
-                            intent.putExtra(NAME, result.getTestCaseNameGSX());
-                            intent.putExtra(PRIORITY, result.getPriorityGSX());
-                            intent.putExtra(STEPS, result.getTestStepsGSX());
-                            intent.putExtra(EXPECTED_RESULT, result.getExpectedResultGSX());
-                            startActivity(intent);
-                        }
-                    }
-                });
+                if (result != null) {
+                    Intent intent = new Intent(ExpectedResultsActivity.this, activity);
+                    intent.putExtra(NAME, result.getTestCaseNameGSX());
+                    intent.putExtra(PRIORITY, result.getPriorityGSX());
+                    intent.putExtra(STEPS, result.getTestStepsGSX());
+                    intent.putExtra(EXPECTED_RESULT, result.getExpectedResultGSX());
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -276,18 +272,14 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             mSpreadsheetContent.getTagsByIdLinksTestcases(mUser.getSpreadsheetLink(), links, new GetContentCallback<List<GTag>>() {
                 @Override
                 public void resultOfDataLoading(final List<GTag> result) {
-                    ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
-                        public void run() {
-                            if (result != null && !result.isEmpty()) {
-                                getTestcasesByLinksTestcases(links);
-                                refreshTagsAdapter(result);
-                            } else {
-                                Logger.d(TAG, Constants.Logs.TAGS_NOT_FOUND);
-                                mTagsAutocompleteTextView.showProgress(false);
-                                showProgress(false);
-                            }
-                        }
-                    });
+                    if (result != null && !result.isEmpty()) {
+                        getTestcasesByLinksTestcases(links);
+                        refreshTagsAdapter(result);
+                    } else {
+                        Logger.d(TAG, Constants.Logs.TAGS_NOT_FOUND);
+                        mTagsAutocompleteTextView.showProgress(false);
+                        showProgress(false);
+                    }
                 }
             });
         }
@@ -299,15 +291,11 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             mSpreadsheetContent.getTestcasesByIdLinksTestcases(mUser.getSpreadsheetLink(), links, new GetContentCallback<List<GEntryWorksheet>>() {
                 @Override
                 public void resultOfDataLoading(final List<GEntryWorksheet> result) {
-                    ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
-                        public void run() {
-                            if (result != null && !result.isEmpty()) {
-                                refreshSteps(result);
-                            } else {
-                                showProgress(false);
-                            }
-                        }
-                    });
+                    if (result != null && !result.isEmpty()) {
+                        refreshSteps(result);
+                    } else {
+                        showProgress(false);
+                    }
                 }
             });
         }
@@ -320,17 +308,13 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             mSpreadsheetContent.getAllTags(mUser.getSpreadsheetLink(), new GetContentCallback<List<GTag>>() {
                 @Override
                 public void resultOfDataLoading(final List<GTag> result) {
-                    ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
-                        public void run() {
-                            if (result != null && !result.isEmpty()) {
-                                mTags = result;
-                                refreshTagsAdapter(result);
-                            } else {
-                                mTagsAutocompleteTextView.showProgress(false);
-                                Logger.d(TAG, "Error loading tags");
-                            }
-                        }
-                    });
+                    if (result != null && !result.isEmpty()) {
+                        mTags = result;
+                        refreshTagsAdapter(result);
+                    } else {
+                        mTagsAutocompleteTextView.showProgress(false);
+                        Logger.d(TAG, "Error loading tags");
+                    }
                 }
             });
         } else {
@@ -344,17 +328,13 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
             mSpreadsheetContent.getAllTestCases(mUser.getSpreadsheetLink(), new GetContentCallback<List<GEntryWorksheet>>() {
                 @Override
                 public void resultOfDataLoading(final List<GEntryWorksheet> result) {
-                    ExpectedResultsActivity.this.runOnUiThread(new Runnable() {
-                        public void run() {
-                            if (result != null && !result.isEmpty()) {
-                                refreshSteps(result);
-                                getAllTags();
-                            } else {
-                                showProgress(false);
-                                Logger.d(TAG, "Error loading testcases");
-                            }
-                        }
-                    });
+                    if (result != null && !result.isEmpty()) {
+                        refreshSteps(result);
+                        getAllTags();
+                    } else {
+                        showProgress(false);
+                        Logger.d(TAG, "Error loading testcases");
+                    }
                 }
             });
         } else {
