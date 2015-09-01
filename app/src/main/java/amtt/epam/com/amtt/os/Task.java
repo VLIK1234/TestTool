@@ -61,11 +61,11 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
 
     @Override
     protected void onPostExecute(ProcessingResult result) {
-        if (mException != null) {
-            mCallback.onLoadError(mException);
+        if (mCallback == null) {
             return;
         }
-        if (mCallback == null) {
+        if (mException != null) {
+            mCallback.onLoadError(mException);
             return;
         }
         mCallback.onLoadExecuted(result);
