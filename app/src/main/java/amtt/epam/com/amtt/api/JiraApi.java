@@ -10,6 +10,7 @@ import java.util.Map;
 
 import amtt.epam.com.amtt.AmttApplication;
 import amtt.epam.com.amtt.common.Callback;
+import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.datasource.DataSource;
 import amtt.epam.com.amtt.http.HttpClient;
 import amtt.epam.com.amtt.http.HttpException;
@@ -23,7 +24,7 @@ import amtt.epam.com.amtt.util.ThreadManager;
  * Created by Artsiom_Kaliaha on 12.06.2015.
  * Updated api implementation
  */
-public class JiraApi {
+public class JiraApi<Entity extends DatabaseEntity>  {
 
     private static final JiraApi INSTANCE;
     private ActiveUser mUser = ActiveUser.getInstance();
@@ -42,7 +43,7 @@ public class JiraApi {
         execute(requestBuilder, null, null);
     }
 
-    public void createIssue(String postEntityString, Processor processor, Callback callback) {
+    public void createIssue(String postEntityString, Processor<HttpEntity, Entity> processor, Callback<Entity>  callback) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         headers.put(JiraApiConst.CONTENT_TYPE, JiraApiConst.APPLICATION_JSON);
@@ -65,7 +66,7 @@ public class JiraApi {
         execute(requestBuilder, processor, callback);
     }
 
-    public void searchData(String requestSuffix, Processor processor, Callback callback) {
+    public void searchData(String requestSuffix, Processor<HttpEntity, Entity> processor, Callback<Entity>  callback) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         Request.Builder requestBuilder = new Request.Builder()
@@ -75,7 +76,7 @@ public class JiraApi {
         execute(requestBuilder, processor, callback);
     }
 
-    public void createAttachment(String issueKey, List<String> filesPaths, Callback callback) {
+    public void createAttachment(String issueKey, List<String> filesPaths, Callback<Entity>  callback) {
         Map<String, String> headers = new HashMap<>();
         headers.put(JiraApiConst.AUTH, mUser.getCredentials());
         headers.put(JiraApiConst.ATLASSIAN_TOKEN, JiraApiConst.NO_CHECK);
@@ -91,7 +92,7 @@ public class JiraApi {
         return INSTANCE;
     }
 
-    private <ProcessingResult>void execute(Request.Builder requestBuilder, Processor<HttpEntity, ProcessingResult> processor, Callback<ProcessingResult> callback) {
+    private void execute(Request.Builder requestBuilder, Processor<HttpEntity, Entity> processor, Callback<Entity> callback) {
         Request request = requestBuilder.build();
         DataSource<Request, HttpEntity> dataSource = AmttApplication.getHttpClient();
         ThreadManager.execute(request, dataSource, processor, callback);
