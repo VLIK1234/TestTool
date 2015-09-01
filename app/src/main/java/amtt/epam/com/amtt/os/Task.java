@@ -12,7 +12,7 @@ import amtt.epam.com.amtt.common.Callback;
  @author Iryna Monchanka
  @version on 28.08.2015
  */
-public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<Params, Void, ProcessingResult> {
+public class Task<Params, DataSourceResult, ProcessingResult>{
 
     private final Callback<ProcessingResult> mCallback;
     private final DataSource<Params, DataSourceResult> mDataSource;
@@ -37,8 +37,7 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
     }
 
     @SafeVarargs
-    @Override
-    protected final ProcessingResult doInBackground(Params... params) {
+    private final ProcessingResult doInBackground(Params... params) {
         ProcessingResult processingResult;
         try {
             DataSourceResult dataSourceResult = mDataSource.getData(mParams);
@@ -56,7 +55,6 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
 
     @SafeVarargs
     public final Task executeOnThreadExecutor(ExecutorService executor, final Params... params) {
-        onPreExecute();
         new AsyncTask<Void, Void, Void>() {
 
             @Override
