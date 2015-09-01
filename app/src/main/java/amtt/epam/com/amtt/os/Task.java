@@ -16,7 +16,7 @@ public class Task<Params, DataSourceResult, ProcessingResult> extends AsyncTask<
 
     private final Callback<ProcessingResult> mCallback;
     private final DataSource<Params, DataSourceResult> mDataSource;
-    private Params mParams;
+    private final Params mParams;
     private final Processor<DataSourceResult, ProcessingResult> mProcessor;
     private Exception mException;
     private ProcessingResult mProcessingResult;
