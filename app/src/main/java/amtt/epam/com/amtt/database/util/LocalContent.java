@@ -7,6 +7,7 @@ import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -191,5 +192,42 @@ public class LocalContent {
 
     public static void updateUser(int userId, JUserInfo user, Callback<Integer> result) {
         ContentFromDatabase.updateUser(userId, user, result);
+    }
+
+    public static void readTextLogFromFile(String filePath, final GetContentCallback<ArrayList<CharSequence>> contentCallback) {
+        ThreadManager.execute(filePath, new DataSource<String, ArrayList<CharSequence>>() {
+
+            @Override
+            public ArrayList<CharSequence> getData(String filePath) throws Exception {
+                File file = new File(filePath);
+                ArrayList<CharSequence> lines = new ArrayList<>();
+                String line;
+                try {
+                    BufferedReader br = new BufferedReader(new java.io.FileReader(file));
+                    while ((line = br.readLine()) != null) {
+                        lines.add(line);
+                    }
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return lines;
+            }
+        }, new Callback<ArrayList<CharSequence>>() {
+            @Override
+            public void onLoadStart() {
+
+            }
+
+            @Override
+            public void onLoadExecuted(ArrayList<CharSequence> charSequences) {
+                contentCallback.resultOfDataLoading(charSequences);
+            }
+
+            @Override
+            public void onLoadError(Exception e) {
+                contentCallback.resultOfDataLoading(null);
+            }
+        });
     }
 }
