@@ -63,7 +63,13 @@ public class DataBaseSource<Entity extends DatabaseEntity, DataSourceResult> imp
     }
 
     public Integer delete(Entity object) {
-        return contentResolver.delete(object.getUri(), BaseColumns._ID + "=?", new String[]{String.valueOf(object.getId())});
+        if (object != null && object.getId() >= 0) {
+            return contentResolver.delete(object.getUri(), BaseColumns._ID + "=?", new String[]{String.valueOf(object.getId())});
+        } else if (object != null) {
+            return contentResolver.delete(object.getUri(), null, null);
+        } else {
+            return -1;
+        }
     }
 
     public Cursor query(final Entity entity, final String[] projection,
