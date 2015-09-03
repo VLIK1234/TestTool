@@ -41,9 +41,9 @@ import amtt.epam.com.amtt.api.ContentConst;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
-import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
+import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.helper.DialogHelper;
@@ -605,18 +605,24 @@ public class CreateIssueActivity extends BaseActivity
         mGifCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                if (!PreferenceUtil.getBoolean(getString(R.string.key_gif_info_dialog))) {
-                    DialogHelper.getGifInfoDialog(CreateIssueActivity.this).show();
-                }
-                int stepsArraySize = mSteps.size();
-                if (isChecked && stepsArraySize != 0) {
-                    mGifProgress.setMax(stepsArraySize);
-                    mGifProgress.setIndeterminate(true);
-                    mGifProgress.setVisibility(View.VISIBLE);
-                    GifUtil.createGif(CreateIssueActivity.this, mSteps);
-                } else {
-                    GifUtil.cancelGifCreating();
-                    mGifProgress.setVisibility(View.GONE);
+
+                if (mSteps!=null) {
+//                    if (!PreferenceUtil.getBoolean(getString(R.string.key_gif_info_dialog))) {
+//                        DialogHelper.getGifInfoDialog(CreateIssueActivity.this).show();
+//                    }
+                    int stepsArraySize = mSteps.size();
+                    if (isChecked && stepsArraySize != 0) {
+                        mGifProgress.setMax(stepsArraySize);
+                        mGifProgress.setIndeterminate(true);
+                        mGifProgress.setVisibility(View.VISIBLE);
+                        GifUtil.createGif(CreateIssueActivity.this, mSteps);
+                    } else {
+                        GifUtil.cancelGifCreating();
+                        mGifProgress.setVisibility(View.GONE);
+                    }
+                } else{
+                    mGifCheckBox.setChecked(false);
+                    Toast.makeText(getBaseContext(),"Don't have step for make gif", Toast.LENGTH_LONG).show();
                 }
             }
         });
