@@ -16,11 +16,6 @@ public class JIssueTimeTracking {
 
     public JIssueTimeTracking(){}
 
-    public JIssueTimeTracking(int originalEstimate, int remainingEstimate) {
-        this.mOriginalEstimate = originalEstimate;
-        this.mRemainingEstimate = remainingEstimate;
-    }
-
     public int getOriginalEstimate() {
         return mOriginalEstimate;
     }

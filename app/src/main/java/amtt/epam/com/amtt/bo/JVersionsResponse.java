@@ -21,7 +21,7 @@ public class JVersionsResponse {
         if (mVersions != null) {
             mVersionsNames = new HashMap<>();
             for (int i = 0; i < mVersions.size(); i++) {
-                mVersionsNames.put(mVersions.get(i).getId(), mVersions.get(i).getName());
+                mVersionsNames.put(mVersions.get(i).getJiraId(), mVersions.get(i).getName());
             }
             return mVersionsNames;
         } else {
