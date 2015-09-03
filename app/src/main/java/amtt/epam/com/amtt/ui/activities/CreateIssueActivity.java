@@ -195,7 +195,7 @@ public class CreateIssueActivity extends BaseActivity
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mAdapter.getAttachmentFilePathList().size() > 0) {
+                if (mAdapter!= null && mAdapter.getAttachmentFilePathList()!=null && mAdapter.getAttachmentFilePathList().size() > 0) {
                     SharingToEmailHelper.senAttachmentImage(CreateIssueActivity.this, mEnvironmentTextInput.getText().toString(),
                             mAdapter.getAttachmentFilePathList());
                 } else {
