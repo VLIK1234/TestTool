@@ -43,7 +43,12 @@ public class AttachmentManager {
     }
 
     public List<Attachment> stepsToAttachments(List<Step> result){
-        List<Attachment> screenArray = getAttachmentList(result);
+        List<Attachment> screenArray;
+        if (result != null) {
+            screenArray = getAttachmentList(result);
+        } else {
+            screenArray = new ArrayList<>();
+        }
         File externalCache = new File(FileUtil.getCacheAmttDir());
         String template = externalCache.getPath() + "/%s";
         String pathLogCommon = String.format(template, "log_common.txt");

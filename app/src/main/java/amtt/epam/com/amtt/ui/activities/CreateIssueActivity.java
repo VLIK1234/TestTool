@@ -514,13 +514,6 @@ public class CreateIssueActivity extends BaseActivity
 
     private void initAssigneeAutocompleteView() {
         mAssignableAutocompleteView = (AutocompleteProgressView) findViewById(R.id.atv_assignable_users);
-        if (mUser.getLastAssignee() != null) {
-            mIsAssignableSelected = true;
-            if (mUser.getLastAssignee().equals(mUser.getUserName())) {
-                mIsSelfSigned = true;
-            }
-            mAssignableAutocompleteView.setText(mUser.getLastAssignee());
-        }
         mAssignableAutocompleteView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -561,6 +554,15 @@ public class CreateIssueActivity extends BaseActivity
                 }
             }
         });
+
+        if (mUser.getLastAssignee() != null) {
+            mIsAssignableSelected = true;
+            if (mUser.getLastAssignee().equals(mUser.getUserName())) {
+                mIsSelfSigned = true;
+            }
+            mAssignableAutocompleteView.setText(mUser.getLastAssignee());
+        }
+
         initAssignSelfButton();
     }
 

@@ -36,4 +36,6 @@
 
     <dimen name="fab_content_size">48dp</dimen>
     <dimen name="margin_activity_detail">16dp</dimen>
+    <dimen name="navigation_icon_padding">32dp</dimen>
+    <dimen name="navigation_padding_bottom">8dp</dimen>
 </resources>
