@@ -93,6 +93,10 @@ public class Step extends DatabaseEntity<Step> {
         return values;
     }
 
+    public void setId(int id) {
+        mStepNumber = id;
+    }
+
     public String getTitle() {
         return mTitle;
     }

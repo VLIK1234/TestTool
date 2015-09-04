@@ -44,6 +44,8 @@ public class ContentFromDatabase {
     }
 
     public static void removeAllSteps(Callback<Integer> result) {
+        Step step = new Step();
+        step.setId(-1);
         mDataBaseApi.delete(new Step(), result);
     }
 
