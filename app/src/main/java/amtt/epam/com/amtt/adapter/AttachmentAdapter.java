@@ -166,9 +166,9 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
                     viewHolder.mProgress.setVisibility(View.VISIBLE);
                 }
             } else if (attachment.getFilePath().contains(MimeType.TEXT_PLAIN.getFileExtension())) {
-                viewHolder.mScreenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
+                viewHolder.mScreenshotImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.text_file_preview));
             } else if (attachment.getFilePath().contains(MimeType.TEXT_HTML.getFileExtension())) {
-                viewHolder.mScreenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.html_file_preview));
+                viewHolder.mScreenshotImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.html_file_preview));
             }
             viewHolder.mScreenshotClose.setEnabled(true);
         }

@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -47,10 +48,8 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
         Step step = mStepList.get(position);
         holder.step.setText(AmttApplication.getContext().getString(R.string.label_step) + (position + 1));
         if (step.getActivity() != null) {
-            SpannableStringBuilder info = new SpannableStringBuilder();
-            info.append(LocalContent.getStepInfo(step));
             holder.activityInfo.setVisibility(View.VISIBLE);
-            holder.activityInfo.setText(info);
+            holder.activityInfo.setText(Html.fromHtml(LocalContent.getStepInfo(step)));
         }
         if (!TextUtils.isEmpty(step.getScreenshotPath())) {
             ImageLoader.getInstance().displayImage("file:///" + step.getScreenshotPath(), holder.screenshotView);
