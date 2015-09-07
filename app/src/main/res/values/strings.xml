@@ -173,5 +173,8 @@
     <string name="title_activity_new_spreadsheet">NewSpreadsheetActivity</string>
     <string name="label_share_attachment">Share attachment to email</string>
     <string name="error_message_share_attachment">Don\'t have attachment for sharing.</string>
+    <string name="preff_category_description">Description</string>
+    <string name="key_description">description</string>
+    <string name="title_preff_description_template">Description template</string>
 
 </resources>

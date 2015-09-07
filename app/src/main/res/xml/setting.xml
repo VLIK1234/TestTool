@@ -14,4 +14,11 @@
             android:title="@string/title_preff_test_project"
             />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preff_category_description">
+        <EditTextPreference
+            android:inputType="textMultiLine"
+            android:key="@string/key_description"
+            android:title="@string/title_preff_description_template"
+            />
+    </PreferenceCategory>
 </PreferenceScreen>
