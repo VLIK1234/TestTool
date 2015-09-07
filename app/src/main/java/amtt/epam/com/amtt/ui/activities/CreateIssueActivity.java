@@ -690,7 +690,6 @@ public class CreateIssueActivity extends BaseActivity
                 .getAllSteps(new GetContentCallback<List<Step>>() {
                     @Override
                     public void resultOfDataLoading(final List<Step> result) {
-                        if (result != null) {
                             mSteps = result;
                             List<Attachment> screenArray = mAttachmentManager.stepsToAttachments(result);
                             mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment,
@@ -698,10 +697,9 @@ public class CreateIssueActivity extends BaseActivity
                             if (mRecyclerView != null) {
                                 mRecyclerView.setAdapter(mAdapter);
                             }
-                            if (mSteps.size() == 0) {
+                            if (mSteps==null || mSteps.size() == 0) {
                                 mGifCheckBox.setEnabled(false);
                             }
-                        }
                         mRequestsQueue.remove(ContentConst.ATTACHMENT_RESPONSE);
                         showProgressIfNeed();
                     }
