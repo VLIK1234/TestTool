@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +27,9 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
     private static final int WARNING_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.holo_orange_light);
     private static final int INFO_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.holo_green_light);
     private static final int DEBUG_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.black);
-    private ArrayList<CharSequence> mListLog = new ArrayList<>();
+    private ArrayList<Spanned> mListLog = new ArrayList<>();
 
-    public LogAdapter(ArrayList<CharSequence> listLog) {
+    public LogAdapter(ArrayList<Spanned> listLog) {
         this.mListLog = listLog;
     }
 

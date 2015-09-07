@@ -1,13 +1,15 @@
 package amtt.epam.com.amtt.util;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
+import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
+import amtt.epam.com.amtt.database.util.LocalContent;
 
 /**
  * @author Iryna Monchanka
@@ -70,5 +72,25 @@ public class AttachmentManager {
             }
         }
         return screenArray;
+    }
+
+    public   File stepsDescriptionToAttachments(List<Step> result){
+        String template = FileUtil.getCacheAmttDir() + "/%s";
+        String stepsDescription = String.format(template, "steps_description.html");
+        final File stepsDescriptionFile = new File(stepsDescription);
+        if (result != null) {
+            FileWriter f;
+            try {
+                f = new FileWriter(stepsDescriptionFile);
+                f.write(LocalContent.getStepInfo(result).toString());
+                f.flush();
+                f.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return stepsDescriptionFile;
+        } else{
+            return null;
+        }
     }
 }

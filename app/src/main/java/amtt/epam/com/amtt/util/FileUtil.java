@@ -46,7 +46,7 @@ public class FileUtil {
     }
 
     public static boolean isText(String filePath) {
-        return filePath.endsWith(MimeType.TEXT_PLAIN.getFileExtension());
+        return filePath.endsWith(MimeType.TEXT_PLAIN.getFileExtension())||filePath.endsWith(MimeType.TEXT_HTML.getFileExtension());
     }
 
     public static boolean delete(String filePath) {

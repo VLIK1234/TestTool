@@ -62,6 +62,8 @@ public class Request {
                     multipartEntityBuilder.addBinaryBody(MediaType.FILE_TYPE, fileToUpload, ContentType.create(MimeType.IMAGE_GIF.getType()), fileToUpload.getName());
                 } else if (file.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
                     multipartEntityBuilder.addBinaryBody(MediaType.FILE_TYPE, fileToUpload, ContentType.create(MimeType.TEXT_PLAIN.getType()), fileToUpload.getName());
+                } else if (file.contains(MimeType.TEXT_HTML.getFileExtension())) {
+                    multipartEntityBuilder.addBinaryBody(MediaType.FILE_TYPE, fileToUpload, ContentType.create(MimeType.TEXT_HTML.getType()), fileToUpload.getName());
                 }
             }
             mEntity = multipartEntityBuilder.build();

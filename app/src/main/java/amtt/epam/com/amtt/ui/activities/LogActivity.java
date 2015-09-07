@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
@@ -35,11 +36,11 @@ import amtt.epam.com.amtt.util.FileUtil;
 public class LogActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
     public static final String FILE_PATH = "filePath";
     private static final int SEARCH_TOP_OFFSET = 20;
-    private ArrayList<CharSequence> mListLogLine = new ArrayList<>();
+    private ArrayList<Spanned> mListLogLine = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private LogAdapter mLogAdapter;
     private final ArrayList<Integer> mAllIndexes = new ArrayList<>();
-    private final ArrayList<CharSequence> mOriginLogList = new ArrayList<>();
+    private final ArrayList<Spanned> mOriginLogList = new ArrayList<>();
     private int mCurrentIndex = 0;
     private boolean mIsDoneChangeText = false;
     private LinearLayoutManager mLinearLayoutManager;
@@ -78,7 +79,9 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
             LocalContent.readTextLogFromFile(filePath, new GetContentCallback<ArrayList<CharSequence>>() {
                 @Override
                 public void resultOfDataLoading(ArrayList<CharSequence> result) {
-                    mListLogLine = result;
+                    for (CharSequence sequence : result) {
+                        mListLogLine.add(Html.fromHtml(sequence.toString()));
+                    }
                     mOriginLogList.addAll(mListLogLine);
                     mLogAdapter = new LogAdapter(mListLogLine);
                     mRecyclerView.setAdapter(mLogAdapter);

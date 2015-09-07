@@ -24,5 +24,6 @@
     <color name="indigo_paint">#0000FF</color>
     <color name="violet_paint">#4B0082</color>
     <color name="material_light">#FFEEEEEE</color>
+    <color name="black_with_alpha">#7F000000</color>
 
 </resources>

@@ -7,6 +7,7 @@ package amtt.epam.com.amtt.http;
 public enum MimeType {
 
     TEXT_PLAIN(MediaType.TEXT_TYPE, "plain", "txt"),
+    TEXT_HTML(MediaType.TEXT_TYPE, "html"),
     IMAGE_JPEG(MediaType.IMAGE_TYPE, "jpeg"),
     IMAGE_JPG(MediaType.IMAGE_TYPE, "jpg"),
     IMAGE_PNG(MediaType.IMAGE_TYPE, "png"),

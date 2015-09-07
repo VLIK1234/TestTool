@@ -41,9 +41,9 @@ import amtt.epam.com.amtt.api.ContentConst;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
-import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
+import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.helper.DialogHelper;
@@ -694,6 +694,9 @@ public class CreateIssueActivity extends BaseActivity
                             List<Attachment> screenArray = mAttachmentManager.stepsToAttachments(result);
                             mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment,
                                     CreateIssueActivity.this, CreateIssueActivity.this);
+                            if (mAttachmentManager.stepsDescriptionToAttachments(result)!=null) {
+                                mAdapter.addItem(mAdapter.getItemCount(), new Attachment(mAttachmentManager.stepsDescriptionToAttachments(result).getPath()));
+                            }
                             if (mRecyclerView != null) {
                                 mRecyclerView.setAdapter(mAdapter);
                             }
@@ -743,16 +746,6 @@ public class CreateIssueActivity extends BaseActivity
                 testcase.setExpectedResultGSX(mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT));
                 mDescriptionTextInput.setText(testcase.getFullTestCaseDescription());
             }
-            LocalContent.getAllSteps(new GetContentCallback<List<Step>>() {
-                                         @Override
-                                         public void resultOfDataLoading(final List<Step> result) {
-                                             if (result != null) {
-                                                 mDescriptionTextInput.setText(mDescriptionTextInput
-                                                         .getText().append(LocalContent.getStepInfo(result)));
-                                             }
-                                         }
-                                     }
-            );
         }
         mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
         showProgressIfNeed();
@@ -814,7 +807,7 @@ public class CreateIssueActivity extends BaseActivity
             intent.putExtra(PaintActivity.KEY_STEP_ID, mAdapter.getStepId(position));
             startActivityForResult(intent, PAINT_ACTIVITY_REQUEST_CODE);
             return;
-        } else if (filePath.contains(MimeType.TEXT_PLAIN.getFileExtension())) {
+        } else if (filePath.contains(MimeType.TEXT_PLAIN.getFileExtension())||filePath.contains(MimeType.TEXT_HTML.getFileExtension())) {
             intent = new Intent(this, LogActivity.class);
             intent.putExtra(LogActivity.FILE_PATH, filePath);
             startActivity(intent);

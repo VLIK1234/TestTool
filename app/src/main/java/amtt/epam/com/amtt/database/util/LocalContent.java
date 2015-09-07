@@ -124,39 +124,39 @@ public class LocalContent {
         });
     }
 
-    public static Spanned getStepInfo(Step step) {
+    public static String getStepInfo(Step step) {
         Context context = AmttApplication.getContext();
-        return Html.fromHtml(
+        return 
                 "<b>" + context.getString(R.string.label_title) + "</b>" + "<small>" + step.getTitle() + "</small>" + "<br />" +
                         "<b>" + context.getString(R.string.label_activity) + "</b>" + "<small>" + step.getActivity() + "</small>" + "<br />" +
                         "<b>" + context.getString(R.string.lable_list_fragments) + "</b>" + "<small>" + step.getListFragments() + "</small>" + "<br />" +
                         "<b>" + context.getString(R.string.label_screen_orientation) + "</b>" + "<small>" + step.getOrientation() + "</small>" + "<br />" +
-                        "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>");
+                        "<b>" + context.getString(R.string.label_package_name) + "</b>" + "<small>" + step.getPackageName() + "</small>";
     }
 
-    public static Spanned getStepInfo(List<Step> listStep) {
+    public static String getStepInfo(List<Step> listStep) {
         ArrayList<Step> list = (ArrayList<Step>) listStep;
-        SpannableStringBuilder builder = new SpannableStringBuilder();
+        StringBuilder builder = new StringBuilder();
         Context context = AmttApplication.getContext();
         if (list.size() > 0) {
-            builder.append(Html.fromHtml("<br/>" + "<br/>" + "<h5>" + "New steps : "
-                    + "</h5>"));
+            builder.append("<h5>" + "New steps : "
+                    + "</h5>");
         }
         for (int i = 0; i < list.size(); i++) {
             Step step = list.get(i);
-            builder.append(Html.fromHtml("<h5>" + context.getString(R.string.label_step) + String.valueOf(i + 1) + "</h5>"));
+            builder.append("<h5>").append(context.getString(R.string.label_step)).append(String.valueOf(i + 1)).append("</h5>");
             if (step.isStepWithScreenshot()) {
-                builder.append(Html.fromHtml("<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(step.getScreenshotPath()) + "</small>"));
+                builder.append("<b>").append(context.getString(R.string.label_file_name)).append("</b>").append("<small>").append(FileUtil.getFileName(step.getScreenshotPath())).append("</small>");
             }
             if (step.isStepWithActivityInfo()) {
                 if (step.isStepWithScreenshot()) {
-                    builder.append(Html.fromHtml("<br />"));
+                    builder.append("<br />");
                 }
                 builder.append(getStepInfo(step));
             }
-            builder.append(Html.fromHtml("<br />" + "<br />"));
+            builder.append("<br />" + "<br />");
         }
-        return builder;
+        return builder.toString();
     }
 
     public static List<Bitmap> getStepBitmaps(List<Step> stepsList) throws Throwable {
