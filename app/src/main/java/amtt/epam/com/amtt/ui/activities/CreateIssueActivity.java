@@ -746,8 +746,9 @@ public class CreateIssueActivity extends BaseActivity
                 testcase.setExpectedResultGSX(mBundle.getString(ExpectedResultsActivity.EXPECTED_RESULT));
                 mDescriptionTextInput.setText(testcase.getFullTestCaseDescription());
             }
-            mDescriptionTextInput.setText(PreferenceUtil.getString(getResources().getString(R.string.key_description)) + "\n"
-                    + mDescriptionTextInput.getText());
+            String descriptionTemplate = PreferenceUtil.getString(getResources().getString(R.string.key_description))+"\n";
+                    mDescriptionTextInput.setText(!TextUtils.isEmpty(descriptionTemplate)?descriptionTemplate:""
+                            + mDescriptionTextInput.getText());
         }
         mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
         showProgressIfNeed();
