@@ -9,5 +9,5 @@ public enum DbRequestType {
     BULK_INSERT,
     QUERY,
     UPDATE,
-    DELETE
+    DELETE_ALL, DELETE
 }

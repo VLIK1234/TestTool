@@ -44,9 +44,7 @@ public class ContentFromDatabase {
     }
 
     public static void removeAllSteps(Callback<Integer> result) {
-        Step step = new Step();
-        step.setId(-1);
-        mDataBaseApi.delete(step, result);
+        mDataBaseApi.deleteAll(new Step(), result);
     }
 
     public static void setUser(JUserInfo user, Callback<Integer> result) {

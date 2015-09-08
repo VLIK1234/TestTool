@@ -36,6 +36,8 @@ public class DataBaseSource<Entity extends DatabaseEntity, DataSourceResult> imp
                 return  (DataSourceResult) update((Entity) params.getObject(), params.getSelection(), params.getSelectionArgs());
             case DELETE:
                 return  (DataSourceResult) delete((Entity) params.getObject());
+            case DELETE_ALL:
+                return  (DataSourceResult) deleteAll((Entity) params.getObject());
             default:
                 return null;
         }
@@ -63,13 +65,11 @@ public class DataBaseSource<Entity extends DatabaseEntity, DataSourceResult> imp
     }
 
     public Integer delete(Entity object) {
-        if (object != null && object.getId() >= 0) {
-            return contentResolver.delete(object.getUri(), BaseColumns._ID + "=?", new String[]{String.valueOf(object.getId())});
-        } else if (object != null) {
-            return contentResolver.delete(object.getUri(), null, null);
-        } else {
-            return -1;
-        }
+        return contentResolver.delete(object.getUri(), BaseColumns._ID + "=?", new String[]{String.valueOf(object.getId())});
+    }
+
+    public Integer deleteAll(Entity object) {
+        return contentResolver.delete(object.getUri(), null, null);
     }
 
     public Cursor query(final Entity entity, final String[] projection,

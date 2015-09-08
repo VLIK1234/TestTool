@@ -23,7 +23,7 @@ public class Step extends DatabaseEntity<Step> {
 
     }
 
-    private int mStepNumber;
+    private int mId;
 
     private String mTitle;
     private String mActivity;
@@ -37,8 +37,8 @@ public class Step extends DatabaseEntity<Step> {
 
     }
 
-    public Step(int stepNumber) {
-        mStepNumber = stepNumber;
+    public Step(int id) {
+        mId = id;
     }
 
     public Step(String title, String activityClassName, String packageName, String screenPath, String listFragments) {
@@ -53,7 +53,7 @@ public class Step extends DatabaseEntity<Step> {
 
     private Step(Cursor cursor) {
         super(cursor);
-        mStepNumber = cursor.getInt(cursor.getColumnIndex(StepsTable._ID));
+        mId = cursor.getInt(cursor.getColumnIndex(StepsTable._ID));
         mScreenPath = cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH));
         mListFragments =  cursor.getString(cursor.getColumnIndex(StepsTable._LIST_FRAGMENTS));
         mTitle = cursor.getString(cursor.getColumnIndex(StepsTable._TITLE));
@@ -65,7 +65,7 @@ public class Step extends DatabaseEntity<Step> {
 
     @Override
     public int getId() {
-        return mStepNumber;
+        return mId;
     }
 
     @Override
@@ -91,10 +91,6 @@ public class Step extends DatabaseEntity<Step> {
             values.put(StepsTable._PACKAGE_NAME, mPackageName);
         }
         return values;
-    }
-
-    public void setId(int id) {
-        mStepNumber = id;
     }
 
     public String getTitle() {
