@@ -10,7 +10,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.ui.activities.SettingActivity;
 
@@ -26,20 +26,20 @@ public class TestUtil {
 
     private static InstrumentationInfo getInstrumentationInfo(final String packageName) {
         final List<InstrumentationInfo> list =
-                AmttApplication.getContext().getPackageManager()
+                CoreApplication.getContext().getPackageManager()
                         .queryInstrumentation(packageName, 0);
         return (!list.isEmpty()) ? list.get(0) : null;
     }
 
     public static String[][] getTestedApps() {
         ArrayList<PackageInfo> res = new ArrayList<>();
-        List<PackageInfo> packs = AmttApplication.getContext().getPackageManager().getInstalledPackages(PackageManager.GET_INSTRUMENTATION);
+        List<PackageInfo> packs = CoreApplication.getContext().getPackageManager().getInstalledPackages(PackageManager.GET_INSTRUMENTATION);
         for (PackageInfo packageInfo : packs) {
             try {
                 InstrumentationInfo info = TestUtil.getInstrumentationInfo(packageInfo.packageName);
                 if (info != null) {
                     ComponentName componentName = new ComponentName(info.packageName, info.name);
-                    InstrumentationInfo instrumentationInfo = AmttApplication.getContext().getPackageManager().getInstrumentationInfo(componentName, PackageManager.GET_META_DATA);
+                    InstrumentationInfo instrumentationInfo = CoreApplication.getContext().getPackageManager().getInstrumentationInfo(componentName, PackageManager.GET_META_DATA);
                     Logger.d(TAG, instrumentationInfo.name + " " + 1);
                     if (!res.contains(packageInfo.packageName)) {
                         res.add(packageInfo);
@@ -68,7 +68,7 @@ public class TestUtil {
         String[] arrayEntries = new String[res.size()];
         String[] arrayEntriesValues = new String[res.size()];
         for (int i=0; i<res.size();i++) {
-            arrayEntries[i]=res.get(i).applicationInfo.loadLabel(AmttApplication.getContext().getPackageManager()).toString();
+            arrayEntries[i]=res.get(i).applicationInfo.loadLabel(CoreApplication.getContext().getPackageManager()).toString();
             arrayEntriesValues[i]=res.get(i).packageName;
         }
         String[][] resultArrays = new String[2][];
@@ -78,31 +78,31 @@ public class TestUtil {
     }
 
     private static void runTests() {
-        final String pn = PreferenceUtil.getString(AmttApplication.getContext().getString(R.string.key_test_project));
+        final String pn = PreferenceUtil.getString(CoreApplication.getContext().getString(R.string.key_test_project));
         final InstrumentationInfo info = getInstrumentationInfo(pn);
         if (info != null) {
             final ComponentName cn = new ComponentName(info.packageName,
                     info.name);
             try{
-                AmttApplication.getContext().startInstrumentation(cn, null, null);
+                CoreApplication.getContext().startInstrumentation(cn, null, null);
             }catch (SecurityException e){
-                Toast.makeText(AmttApplication.getContext(), R.string.error_message_signature_run_test, Toast.LENGTH_LONG).show();
+                Toast.makeText(CoreApplication.getContext(), R.string.error_message_signature_run_test, Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(AmttApplication.getContext(),
+            Toast.makeText(CoreApplication.getContext(),
                     "Cannot find instrumentation for " + pn, Toast.LENGTH_SHORT)
                     .show();
-            Intent intent = new Intent(AmttApplication.getContext(), SettingActivity.class);
+            Intent intent = new Intent(CoreApplication.getContext(), SettingActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            AmttApplication.getContext().startActivity(intent);
-            Toast.makeText(AmttApplication.getContext(), "Please choose tested project",Toast.LENGTH_LONG).show();
+            CoreApplication.getContext().startActivity(intent);
+            Toast.makeText(CoreApplication.getContext(), "Please choose tested project",Toast.LENGTH_LONG).show();
         }
     }
 
     public static void closeTest() {
         Intent in = new Intent();
         in.setAction(CLOSE_TEST);
-        AmttApplication.getContext().sendBroadcast(in);
+        CoreApplication.getContext().sendBroadcast(in);
     }
 
     public static void restartTest(){

@@ -25,7 +25,7 @@ import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.common.Callback;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.contentprovider.LocalUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.util.ContentFromDatabase;
 import amtt.epam.com.amtt.database.util.LocalContent;
@@ -248,10 +248,10 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         CursorLoader loader = null;
         if (id == SINGLE_USER_CURSOR_LOADER_ID) {
             loader = new CursorLoader(LoginActivity.this,
-                    AmttUri.USER.get(),
+                    LocalUri.USER.get(),
                     null,
                     UsersTable._ID + "=?",
-                    new String[]{String.valueOf(args.getLong(AmttActivity.KEY_USER_ID))},
+                    new String[]{String.valueOf(args.getLong(AccountsActivity.KEY_USER_ID))},
                     null);
         }
         return loader;

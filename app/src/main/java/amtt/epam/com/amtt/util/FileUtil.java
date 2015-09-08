@@ -15,8 +15,8 @@ import amtt.epam.com.amtt.http.MimeType;
 
 public class FileUtil {
 
-    private static final String AMTT_CACHE_DIRECTORY = "amtt_cache";
-    private static String sCacheAmttDir = Environment.getExternalStorageDirectory().toString() + File.separatorChar + AMTT_CACHE_DIRECTORY + File.separatorChar;
+    private static final String LOCAL_CACHE_DIRECTORY = "amtt_cache";
+    private static String sCacheLocalDir = Environment.getExternalStorageDirectory().toString() + File.separatorChar + LOCAL_CACHE_DIRECTORY + File.separatorChar;
 
     public static String getFileName(@Nullable String filePath) {
         if (filePath == null) {
@@ -63,15 +63,15 @@ public class FileUtil {
         return resultDelete;
     }
 
-    public static String getCacheAmttDir() {
-        File amttCache = new File(sCacheAmttDir);
-        if (!amttCache.canWrite()) {
-            if (amttCache.mkdir()) {
-                Log.d(FileUtil.class.getSimpleName(),"Was created "+amttCache.getName() +" folder" );
+    public static String getCacheLocalDir() {
+        File localCache = new File(sCacheLocalDir);
+        if (!localCache.canWrite()) {
+            if (localCache.mkdir()) {
+                Log.d(FileUtil.class.getSimpleName(),"Was created "+localCache.getName() +" folder" );
             }else{
-                Log.d(FileUtil.class.getSimpleName(),"Failed created "+amttCache.getName() +" folder" );
-            };
+                Log.d(FileUtil.class.getSimpleName(),"Failed created "+localCache.getName() +" folder" );
+            }
         }
-        return sCacheAmttDir;
+        return sCacheLocalDir;
     }
 }

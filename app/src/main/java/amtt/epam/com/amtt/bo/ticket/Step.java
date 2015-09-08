@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.contentprovider.LocalUri;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.util.UIUtil;
@@ -70,7 +70,7 @@ public class Step extends DatabaseEntity<Step> {
 
     @Override
     public Uri getUri() {
-        return AmttUri.STEP.get();
+        return LocalUri.STEP.get();
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import amtt.epam.com.amtt.bo.JBaseObject;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.contentprovider.LocalUri;
 import amtt.epam.com.amtt.database.table.ProjectTable;
 
 /**
@@ -102,7 +102,7 @@ public class JProjects extends JBaseObject {
 
     @Override
     public Uri getUri() {
-        return AmttUri.PROJECT.get();
+        return LocalUri.PROJECT.get();
     }
 
     @Override

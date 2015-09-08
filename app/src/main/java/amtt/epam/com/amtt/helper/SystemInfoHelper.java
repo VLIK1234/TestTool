@@ -12,7 +12,7 @@ import android.view.WindowManager;
 
 import java.lang.reflect.Field;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.util.RootUtil;
 
 /**
@@ -37,11 +37,11 @@ public class SystemInfoHelper {
     }
 
     private static String getInfoSizeDisplay() {
-        WindowManager wm = (WindowManager) AmttApplication.getContext().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager wm = (WindowManager) CoreApplication.getContext().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        DisplayMetrics metrics = AmttApplication.getContext().getResources().getDisplayMetrics();
+        DisplayMetrics metrics = CoreApplication.getContext().getResources().getDisplayMetrics();
 
         StringBuilder infoDensity = new StringBuilder();
 

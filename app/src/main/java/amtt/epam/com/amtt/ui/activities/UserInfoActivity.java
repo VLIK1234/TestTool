@@ -25,7 +25,7 @@ import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.common.Callback;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.contentprovider.LocalUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.exception.ExceptionType;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
@@ -44,7 +44,7 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_REFRESH = 100;
-    private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
+    private static final int ACCOUNTS_ACTIVITY_REQUEST_CODE = 1;
     private static final int LOGIN_ACTIVITY_REQUEST_CODE = 2;
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 2;
     private TextView mNameTextView;
@@ -116,7 +116,7 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
             }
             return true;
             case R.id.action_list: {
-                startActivityForResult(new Intent(UserInfoActivity.this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
+                startActivityForResult(new Intent(UserInfoActivity.this, AccountsActivity.class), ACCOUNTS_ACTIVITY_REQUEST_CODE);
             }
             return true;
             case android.R.id.home: {
@@ -140,11 +140,11 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case AMTT_ACTIVITY_REQUEST_CODE:
+                case ACCOUNTS_ACTIVITY_REQUEST_CODE:
                     if (data != null) {
                         Bundle args = new Bundle();
-                        long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
-                        args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
+                        long selectedUserId = data.getLongExtra(AccountsActivity.KEY_USER_ID, 0);
+                        args.putLong(AccountsActivity.KEY_USER_ID, selectedUserId);
                         getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
                     } else {
                         startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
@@ -223,11 +223,11 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
         CursorLoader loader = null;
         String selection = UsersTable._ID + "=?";
         if (id == CURSOR_LOADER_ID) {
-            loader = new CursorLoader(UserInfoActivity.this, AmttUri.USER.get(), null, selection,
+            loader = new CursorLoader(UserInfoActivity.this, LocalUri.USER.get(), null, selection,
                     new String[]{String.valueOf(mUser.getId())}, null);
         } else if (id == SINGLE_USER_CURSOR_LOADER_ID) {
-            loader = new CursorLoader(UserInfoActivity.this, AmttUri.USER.get(), null, selection,
-                    new String[]{String.valueOf(args.getLong(AmttActivity.KEY_USER_ID))}, null);
+            loader = new CursorLoader(UserInfoActivity.this, LocalUri.USER.get(), null, selection,
+                    new String[]{String.valueOf(args.getLong(AccountsActivity.KEY_USER_ID))}, null);
         }
         return loader;
     }

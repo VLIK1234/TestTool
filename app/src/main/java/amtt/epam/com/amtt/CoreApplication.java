@@ -15,7 +15,7 @@ import io.fabric.sdk.android.Fabric;
  @version on 19.03.2015
  */
 
-public class AmttApplication extends Application {
+public class CoreApplication extends Application {
 
     private static Context sContext;
     private static HttpClient mHttpClient = new HttpClient();

@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 
 /**
@@ -22,10 +22,10 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ViewHolder> {
     private static final String FATAL_TAG = "F/";
     private static final String WARNING_TAG = "W/";
     private static final String INFO_TAG = "I/";
-    private static final int ERROR_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.holo_red_light);
-    private static final int WARNING_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.holo_orange_light);
-    private static final int INFO_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.holo_green_light);
-    private static final int DEBUG_COLOR = AmttApplication.getContext().getResources().getColor(android.R.color.black);
+    private static final int ERROR_COLOR = CoreApplication.getContext().getResources().getColor(android.R.color.holo_red_light);
+    private static final int WARNING_COLOR = CoreApplication.getContext().getResources().getColor(android.R.color.holo_orange_light);
+    private static final int INFO_COLOR = CoreApplication.getContext().getResources().getColor(android.R.color.holo_green_light);
+    private static final int DEBUG_COLOR = CoreApplication.getContext().getResources().getColor(android.R.color.black);
     private ArrayList<CharSequence> mListLog = new ArrayList<>();
 
     public LogAdapter(ArrayList<CharSequence> listLog) {

@@ -8,7 +8,7 @@ import android.net.Uri;
 
 import java.util.List;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.database.constant.BaseColumns;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.object.DbRequestParams;
@@ -21,7 +21,7 @@ import amtt.epam.com.amtt.datasource.DataSource;
 
 public class DataBaseSource<Entity extends DatabaseEntity, DataSourceResult> implements DataSource<DbRequestParams, DataSourceResult> {
 
-    private ContentResolver contentResolver = AmttApplication.getContext().getContentResolver();
+    private ContentResolver contentResolver = CoreApplication.getContext().getContentResolver();
 
     @Override
     public DataSourceResult getData(DbRequestParams params) throws Exception {
