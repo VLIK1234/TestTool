@@ -134,55 +134,59 @@ public class XmlParsing {
         }
     }
 
-    public static GLink loadGoogleLink() {
-        GLink gLink = new GLink();
+    public static GLink loadLink() {
         try {
-            xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
-
-            String tag = xmlPullParser.getName();
-            String relType = xmlPullParser.getAttributeValue(null, GoogleApiConst.REL_ATTR);
-            if (tag.equals(GoogleApiConst.LINK_TAG)) {
-                switch (relType) {
-                    case GoogleApiConst.FEED_ATTR:
-                        gLink.setRel(relType);
-                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        break;
-                    case GoogleApiConst.POST_ATTR:
-                        gLink.setRel(relType);
-                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        break;
-                    case GoogleApiConst.SELF_ATTR:
-                        gLink.setRel(relType);
-                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        break;
-                    case GoogleApiConst.ALTERNATE_ATTR:
-                        gLink.setRel(relType);
-                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        break;
-                    case GoogleApiConst.LISTFEED_ATTR:
-                        gLink.setRel(relType);
-                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        break;
-                    case GoogleApiConst.CELLSFEED_ATTR:
-                        gLink.setRel(relType);
-                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        break;
-                    case GoogleApiConst.VISUALISATION_API_ATTR:
-                        gLink.setRel(relType);
-                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        break;
-                    case GoogleApiConst.EXPORTCSV_ATTR:
-                        gLink.setRel(relType);
-                        gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
-                        break;
-                }
-            }
-            xmlPullParser.nextTag();
-            xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.LINK_TAG);
-            xmlPullParser.nextTag();
+            return loadGoogleLink();
         } catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
+            return null;
         }
+    }
+
+    private static GLink loadGoogleLink() throws XmlPullParserException, IOException{
+        GLink gLink = new GLink();
+        xmlPullParser.require(XmlPullParser.START_TAG, null, GoogleApiConst.LINK_TAG);
+        String tag = xmlPullParser.getName();
+        String relType = xmlPullParser.getAttributeValue(null, GoogleApiConst.REL_ATTR);
+        if (tag.equals(GoogleApiConst.LINK_TAG)) {
+            switch (relType) {
+                case GoogleApiConst.FEED_ATTR:
+                    gLink.setRel(relType);
+                    gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                    break;
+                case GoogleApiConst.POST_ATTR:
+                    gLink.setRel(relType);
+                    gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                    break;
+                case GoogleApiConst.SELF_ATTR:
+                    gLink.setRel(relType);
+                    gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                    break;
+                case GoogleApiConst.ALTERNATE_ATTR:
+                    gLink.setRel(relType);
+                    gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                    break;
+                case GoogleApiConst.LISTFEED_ATTR:
+                    gLink.setRel(relType);
+                    gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                    break;
+                case GoogleApiConst.CELLSFEED_ATTR:
+                    gLink.setRel(relType);
+                    gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                    break;
+                case GoogleApiConst.VISUALISATION_API_ATTR:
+                    gLink.setRel(relType);
+                    gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                    break;
+                case GoogleApiConst.EXPORTCSV_ATTR:
+                    gLink.setRel(relType);
+                    gLink.setHref(xmlPullParser.getAttributeValue(null, GoogleApiConst.HREF_ATTR));
+                    break;
+            }
+        }
+        xmlPullParser.nextTag();
+        xmlPullParser.require(XmlPullParser.END_TAG, null, GoogleApiConst.LINK_TAG);
+        xmlPullParser.nextTag();
         return gLink;
     }
 

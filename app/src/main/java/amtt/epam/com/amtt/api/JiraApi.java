@@ -88,7 +88,7 @@ public class JiraApi<Entity extends DatabaseEntity>  {
         execute(requestBuilder, null, callback);
     }
 
-    public static JiraApi get() {
+    public static JiraApi getInstance() {
         return INSTANCE;
     }
 

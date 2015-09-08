@@ -59,6 +59,7 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
     private UserInfoHandler mHandler;
     private final ActiveUser mUser = ActiveUser.getInstance();
     private final JiraContent mJira = JiraContent.getInstance();
+    private final JiraApi mJiraApi = JiraApi.getInstance();
 
     public static class UserInfoHandler extends Handler {
 
@@ -138,25 +139,17 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case ACCOUNTS_ACTIVITY_REQUEST_CODE:
-                    if (data != null) {
-                        Bundle args = new Bundle();
-                        long selectedUserId = data.getLongExtra(AccountsActivity.KEY_USER_ID, 0);
-                        args.putLong(AccountsActivity.KEY_USER_ID, selectedUserId);
-                        getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
-                    } else {
-                        startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
-                    }
-                    break;
+        if (resultCode == RESULT_OK && requestCode == ACCOUNTS_ACTIVITY_REQUEST_CODE) {
+            if (data != null) {
+                Bundle args = new Bundle();
+                long selectedUserId = data.getLongExtra(AccountsActivity.KEY_USER_ID, 0);
+                args.putLong(AccountsActivity.KEY_USER_ID, selectedUserId);
+                getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
+            } else {
+                startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
             }
-        } else if (resultCode == RESULT_CANCELED) {
-            switch (requestCode) {
-                case LOGIN_ACTIVITY_REQUEST_CODE:
-                    getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, UserInfoActivity.this);
-                    break;
-            }
+        } else if (resultCode == RESULT_CANCELED && requestCode == LOGIN_ACTIVITY_REQUEST_CODE) {
+            getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, UserInfoActivity.this);
         }
     }
 
@@ -197,7 +190,7 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
 
     private void refreshUserInfo() {
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUser.getUserName();
-        JiraApi.get().searchData(requestSuffix, new UserInfoProcessor(), new Callback<JUserInfo>() {
+        mJiraApi.searchData(requestSuffix, new UserInfoProcessor(), new Callback<JUserInfo>() {
             @Override
             public void onLoadStart() {}
 
@@ -235,21 +228,10 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         try {
-            switch (loader.getId()) {
-                case CURSOR_LOADER_ID:
-                    if (data != null) {
-                        if (data.getCount() > 0) {
-                            reloadData(data);
-                        } else {
-                            Logger.d(TAG, "data==0");
-                        }
-                    } else {
-                        Logger.d(TAG, "data==null");
-                    }
-                    break;
-                case SINGLE_USER_CURSOR_LOADER_ID:
+            if (loader.getId() == CURSOR_LOADER_ID || loader.getId() == SINGLE_USER_CURSOR_LOADER_ID) {
+                if (data != null && data.getCount() > 0) {
                     reloadData(data);
-                    break;
+                }
             }
         } finally {
             IOUtils.close(data);
@@ -262,8 +244,6 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
+    public void onLoaderReset(Loader<Cursor> loader) {}
 
 }
