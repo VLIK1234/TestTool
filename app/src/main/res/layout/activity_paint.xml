@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".app.PreviewActivity">
 
-    <amtt.epam.com.amtt.ui.views.PaintView
+    <amtt.epam.com.amtt.ui.views.paintview.PaintView
         android:id="@+id/paint_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

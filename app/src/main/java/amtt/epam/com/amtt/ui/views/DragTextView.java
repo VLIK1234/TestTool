@@ -31,7 +31,7 @@ import amtt.epam.com.amtt.util.UIUtil;
 public class DragTextView extends LinearLayout implements View.OnTouchListener{
 
     public interface IDrawCallback{
-        void onDrawClick(String drawStringValue, int x, int y, Paint paint);
+        void onDrawClick(String drawStringValue, int x, int y, int width, int height, int rightY, Paint paint);
         void onRemoveClick(View view);
         void onTapClick(String drawStringValue, Paint paintText);
     }
@@ -229,7 +229,7 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
             public void onClick(View v) {
                 int yRightIndent = (int)(mPaintText.getTextSize()-mPaintText.getTextSize()/10);
                 int leftXIndent = mLeftButtonLayout.getVisibility() == VISIBLE ? mLeftButtonLayout.getWidth():0;
-                mIDrawCallback.onDrawClick(mDrawString, mDragImageLayoutParams.x + leftXIndent, mDragImageLayoutParams.y+(int)mDragText.getY()+yRightIndent, mPaintText);
+                mIDrawCallback.onDrawClick(mDrawString, mDragImageLayoutParams.x + leftXIndent, mDragImageLayoutParams.y+(int)mDragText.getY()+yRightIndent, mDragText.getWidth(), mDragText.getHeight(), mDragImageLayoutParams.y,  mPaintText);
                 mIDrawCallback.onRemoveClick(DragTextView.this);
             }
         });

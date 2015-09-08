@@ -41,7 +41,9 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.views.DragTextView;
 import amtt.epam.com.amtt.ui.views.MultilineRadioGroup;
 import amtt.epam.com.amtt.ui.views.MultilineRadioGroup.OnEntireGroupCheckedChangeListener;
-import amtt.epam.com.amtt.ui.views.PaintView;
+import amtt.epam.com.amtt.ui.views.paintview.ITextDialogButtonClick;
+import amtt.epam.com.amtt.ui.views.paintview.PaintMode;
+import amtt.epam.com.amtt.ui.views.paintview.PaintView;
 import amtt.epam.com.amtt.ui.views.PaletteItem;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -52,7 +54,7 @@ import amtt.epam.com.amtt.util.Logger;
 
 public class PaintActivity extends BaseActivity
                             implements OnSeekBarChangeListener, Handler.Callback, OnSystemUiVisibilityChangeListener,
-                            OnEntireGroupCheckedChangeListener, ImageLoadingListener, PaintView.IDialogButtonClick, DragTextView.IDrawCallback {
+                            OnEntireGroupCheckedChangeListener, ImageLoadingListener, ITextDialogButtonClick, DragTextView.IDrawCallback {
 
     private static final String TAG = PaintActivity.class.getSimpleName();
     public static final String KEY_STEP_ID = "key_step_id";
@@ -168,7 +170,7 @@ public class PaintActivity extends BaseActivity
 
     private void initPaintView() {
         mPaintView = (PaintView) findViewById(R.id.paint_view);
-        mPaintView.setIDialogButtonClick(this);
+        mPaintView.setITextDialogButtonClick(this);
         mPaintView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -213,19 +215,19 @@ public class PaintActivity extends BaseActivity
         paintToolsGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
                     case R.id.rb_eraser:
-                        mPaintView.setPaintMode(PaintView.PaintMode.ERASE);
+                        mPaintView.setPaintMode(PaintMode.ERASE);
                         opacityBar.setEnabled(false);
                         opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity_disabled));
                         break;
                     case R.id.rb_pencil:
-                        mPaintView.setPaintMode(PaintView.PaintMode.DRAW);
+                        mPaintView.setPaintMode(PaintMode.DRAW);
                         opacityBar.setEnabled(true);
                         opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity));
                         break;
                     case R.id.rb_text:
-                        mPaintView.setPaintMode(PaintView.PaintMode.TEXT);
+                        mPaintView.setPaintMode(PaintMode.TEXT);
                         opacityBar.setEnabled(false);
                         opacityImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_opacity));
                         break;
@@ -239,6 +241,12 @@ public class PaintActivity extends BaseActivity
         mPaletteDialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.title_drawing_customization)
                 .setView(view)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
                 .create();
     }
 
@@ -384,8 +392,8 @@ public class PaintActivity extends BaseActivity
     }
 
     @Override
-    public void onDrawClick(String drawValue, int x, int y, Paint paint) {
-        mPaintView.drawText(drawValue, x, y, paint);
+    public void onDrawClick(String drawValue, int x, int y, int width, int height, int rightY, Paint paint) {
+        mPaintView.drawText(drawValue, x, y, width, height, rightY, paint);
 
     }
 
