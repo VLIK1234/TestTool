@@ -22,7 +22,7 @@ public class JComponentsResponse {
         if (mComponents != null) {
             mComponentsNames = new HashMap<>();
             for (int i = 0; i < mComponents.size(); i++) {
-                mComponentsNames.put(mComponents.get(i).getId(), mComponents.get(i).getName());
+                mComponentsNames.put(mComponents.get(i).getJiraId(), mComponents.get(i).getName());
             }
             return mComponentsNames;
         } else {

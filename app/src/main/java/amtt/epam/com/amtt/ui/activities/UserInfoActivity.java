@@ -188,7 +188,7 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
         mTimeZoneTextView.setText(user.getTimeZone());
         mLocaleTextView.setText(user.getLocale());
         mJiraUrlTextView.setText(user.getUrl());
-        if (user.getLastSpreadsheetUrl() != null) {
+        if (mSpreadsheetUrlTextView!=null && user.getLastSpreadsheetUrl() != null) {
             mSpreadsheetUrlTextView.setText(user.getLastSpreadsheetUrl());
         }
         ImageLoader.getInstance().displayImage(user.getAvatarUrls().getAvatarUrl(), mUserImageImageView);

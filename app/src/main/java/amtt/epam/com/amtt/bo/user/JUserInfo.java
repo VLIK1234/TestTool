@@ -6,11 +6,8 @@ import android.net.Uri;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 import amtt.epam.com.amtt.bo.issue.JAvatarUrls;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.UsersTable;
 
 /**
@@ -18,22 +15,8 @@ import amtt.epam.com.amtt.database.table.UsersTable;
  @version on 3/31/2015
  */
 
-public class JUserInfo extends DatabaseEntity<JUserInfo> {
+public class JUserInfo extends JUser{
 
-    @SerializedName("key")
-    private String mKey;
-    @SerializedName("self")
-    private String mSelf;
-    @SerializedName("name")
-    private String mName;
-    @SerializedName("avatarUrls")
-    private JAvatarUrls mAvatarUrls;
-    @SerializedName("emailAddress")
-    private String mEmailAddress;
-    @SerializedName("displayName")
-    private String mDisplayName;
-    @SerializedName("timeZone")
-    private String mTimeZone;
     @SerializedName("locale")
     private String mLocale;
 
@@ -43,7 +26,6 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
     private String mLastProjectKey;
     private String mLastAssigneeName;
     private String mLastComponentsIds;
-    private List<String> mListLastComponentsIds;
     private String mLastSpreadsheetUrl;
 
     public JUserInfo() {
@@ -72,60 +54,9 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
         mLastSpreadsheetUrl = cursor.getString(cursor.getColumnIndex(UsersTable._LAST_SPREADSHEET_URL));
     }
 
-    public JUserInfo(String key, String self, String name, JAvatarUrls avatarUrls, String emailAddress, String displayName, String timeZone, String locale) {
-        this.mKey = key;
-        this.mSelf = self;
-        this.mName = name;
-        this.mAvatarUrls = avatarUrls;
-        this.mEmailAddress = emailAddress;
-        this.mDisplayName = displayName;
-        this.mTimeZone = timeZone;
-        this.mLocale = locale;
-    }
-
     @Override
     public JUserInfo parse(Cursor cursor) {
         return new JUserInfo(cursor);
-    }
-
-    public String getKey() {
-        return mKey;
-    }
-
-    public void setKey(String key) {
-        this.mKey = key;
-    }
-
-    public String getSelf() {
-        return mSelf;
-    }
-
-    public void setSelf(String self) {
-        this.mSelf = self;
-    }
-
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String name) {
-        this.mName = name;
-    }
-
-    public JAvatarUrls getAvatarUrls() {
-        return mAvatarUrls;
-    }
-
-    public String getEmailAddress() {
-        return mEmailAddress;
-    }
-
-    public String getDisplayName() {
-        return mDisplayName;
-    }
-
-    public String getTimeZone() {
-        return mTimeZone;
     }
 
     public String getLocale() {
@@ -166,19 +97,6 @@ public class JUserInfo extends DatabaseEntity<JUserInfo> {
 
     public String getLastComponentsIds() {
         return mLastComponentsIds;
-    }
-
-    public void setLastComponent(String lastComponentId) {
-        if (lastComponentId != null) {
-            if (mListLastComponentsIds == null || mListLastComponentsIds.isEmpty()) {
-                setLastComponentsIds(lastComponentId);
-            } else {
-                mLastComponentsIds = mLastComponentsIds.concat(lastComponentId);
-            }
-            if (mLastComponentsIds != null) {
-                mLastComponentsIds = mLastComponentsIds.concat("$&");
-            }
-        }
     }
 
     public void setLastComponentsIds(String lastComponents) {

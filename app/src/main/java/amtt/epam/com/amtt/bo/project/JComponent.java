@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.bo.project;
 
 import com.google.gson.annotations.SerializedName;
 
+import amtt.epam.com.amtt.bo.JBase;
 import amtt.epam.com.amtt.bo.user.JUser;
 
 /**
@@ -9,14 +10,8 @@ import amtt.epam.com.amtt.bo.user.JUser;
  @version on 4/23/2015
  */
 
-public class JComponent {
+public class JComponent extends JBase {
 
-    @SerializedName("id")
-    private final String mId;
-    @SerializedName("self")
-    private String mSelf;
-    @SerializedName("name")
-    private String mName;
     @SerializedName("description")
     private String mDescription;
     @SerializedName("lead")
@@ -37,14 +32,7 @@ public class JComponent {
     private String mProjectId;
 
     public JComponent(String id) {
-        this.mId = id;
+         this.mJiraId = id;
     }
 
-    public String getId() {
-        return mId;
-    }
-
-    public String getName() {
-        return mName;
-    }
 }

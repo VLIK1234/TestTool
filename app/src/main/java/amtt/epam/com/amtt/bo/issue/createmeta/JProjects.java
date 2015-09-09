@@ -9,9 +9,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.bo.issue.JAvatarUrls;
+import amtt.epam.com.amtt.bo.JBaseObject;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.ProjectTable;
 
 /**
@@ -19,20 +18,10 @@ import amtt.epam.com.amtt.database.table.ProjectTable;
  @version on 3/31/2015
  */
 
-public class JProjects extends DatabaseEntity<JProjects> {
+public class JProjects extends JBaseObject {
 
     @SerializedName("expand")
     private String mExpand;
-    @SerializedName("self")
-    private String mSelf;
-    @SerializedName("id")
-    private String mJiraId;
-    @SerializedName("key")
-    private String mKey;
-    @SerializedName("name")
-    private String mName;
-    @SerializedName("avatarUrls")
-    private JAvatarUrls mAvatarUrls;
     @SerializedName("issuetypes")
     private List<JIssueTypes> mIssueTypes;
 
@@ -60,7 +49,7 @@ public class JProjects extends DatabaseEntity<JProjects> {
 
     public List<String> getIssueTypesNames() {
         List<String> issueTypesNames;
-        if (mIssueTypes==null) {
+        if (mIssueTypes == null) {
             issueTypesNames = null;
         } else {
             issueTypesNames = new ArrayList<>();
@@ -78,46 +67,6 @@ public class JProjects extends DatabaseEntity<JProjects> {
 
     public void setExpand(String expand) {
         this.mExpand = expand;
-    }
-
-    public String getSelf() {
-        return mSelf;
-    }
-
-    public void setSelf(String self) {
-        this.mSelf = self;
-    }
-
-    public String getJiraId() {
-        return mJiraId;
-    }
-
-    public void setJiraId(String jiraId) {
-        this.mJiraId = jiraId;
-    }
-
-    public String getKey() {
-        return mKey;
-    }
-
-    public void setKey(String key) {
-        this.mKey = key;
-    }
-
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String name) {
-        this.mName = name;
-    }
-
-    public JAvatarUrls getAvatarUrls() {
-        return mAvatarUrls;
-    }
-
-    public void setAvatarUrls(JAvatarUrls avatarUrls) {
-        this.mAvatarUrls = avatarUrls;
     }
 
     public List<JIssueTypes> getIssueTypes() {

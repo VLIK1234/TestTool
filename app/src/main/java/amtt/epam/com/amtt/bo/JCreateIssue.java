@@ -3,7 +3,7 @@ package amtt.epam.com.amtt.bo;
 import amtt.epam.com.amtt.bo.issue.JIssueFields;
 import amtt.epam.com.amtt.bo.issue.JIssuePriority;
 import amtt.epam.com.amtt.bo.issue.JIssueProject;
-import amtt.epam.com.amtt.bo.issue.JIssueTypesIssueType;
+import amtt.epam.com.amtt.bo.issue.JIFIssueType;
 import amtt.epam.com.amtt.bo.project.JIssueVersion;
 import amtt.epam.com.amtt.bo.user.JUser;
 import amtt.epam.com.amtt.processing.GsonSerializeProcessor;
@@ -24,12 +24,12 @@ public class JCreateIssue {
                         String priorityId, String versionsId, String environment, String userAssigneName, String componentIds) {
         JIssueProject mProject = new JIssueProject();
         mProject.setKey(keyProject);
-        JIssueTypesIssueType mIssueType = new JIssueTypesIssueType();
-        mIssueType.setId(issueTypeId);
+        JIFIssueType mIssueType = new JIFIssueType();
+        mIssueType.setJiraId(issueTypeId);
         JIssuePriority mPriority = new JIssuePriority();
-        mPriority.setId(priorityId);
+        mPriority.setJiraId(priorityId);
         JIssueVersion mVersion = new JIssueVersion();
-        mVersion.setId(versionsId);
+        mVersion.setJiraId(versionsId);
         JIssueFields mFields = new JIssueFields();
         if (userAssigneName != null) {
             JUser mAssignee = new JUser();

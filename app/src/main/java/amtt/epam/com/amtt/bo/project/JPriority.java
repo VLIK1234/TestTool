@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import com.google.gson.annotations.SerializedName;
 
+import amtt.epam.com.amtt.bo.JBase;
 import amtt.epam.com.amtt.contentprovider.AmttUri;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.PriorityTable;
@@ -15,20 +16,14 @@ import amtt.epam.com.amtt.database.table.PriorityTable;
  @version on 04.05.2015
  */
 
-public class JPriority extends DatabaseEntity<JPriority> {
+public class JPriority extends JBase {
 
-    @SerializedName("self")
-    private String mSelf;
     @SerializedName("statusColor")
     private String mStatusColor;
     @SerializedName("description")
     private String mDescription;
     @SerializedName("iconUrl")
     private String mIconUrl;
-    @SerializedName("name")
-    private String mName;
-    @SerializedName("id")
-    private String mJiraId;
 
     private String mUrl;
     private int mId;
@@ -59,14 +54,6 @@ public class JPriority extends DatabaseEntity<JPriority> {
         return new JPriority(cursor);
     }
 
-    public String getSelf() {
-        return mSelf;
-    }
-
-    public void setSelf(String self) {
-        this.mSelf = self;
-    }
-
     public String getStatusColor() {
         return mStatusColor;
     }
@@ -89,22 +76,6 @@ public class JPriority extends DatabaseEntity<JPriority> {
 
     public void setIconUrl(String iconUrl) {
         this.mIconUrl = iconUrl;
-    }
-
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String name) {
-        this.mName = name;
-    }
-
-    public String getJiraId() {
-        return mJiraId;
-    }
-
-    public void setJiraId(String jiraId) {
-        this.mJiraId = jiraId;
     }
 
     public String getUrl() {

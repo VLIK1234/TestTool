@@ -14,10 +14,6 @@ public class JIssueSecurity {
 
     public JIssueSecurity(){}
 
-    public JIssueSecurity(String id) {
-        this.mId = id;
-    }
-
     public String getId() {
         return mId;
     }

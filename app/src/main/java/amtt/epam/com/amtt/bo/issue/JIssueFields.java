@@ -21,7 +21,7 @@ public class JIssueFields {
     @SerializedName("description")
     private String mSummary;
     @SerializedName("issuetype")
-    private JIssueTypesIssueType mIssueType;
+    private JIFIssueType mIssueType;
     @SerializedName("assignee")
     private JUser mAssignee;
     @SerializedName("reporter")
@@ -72,34 +72,6 @@ public class JIssueFields {
     public JIssueFields() {
     }
 
-    public JIssueFields(JIssueProject project, String summary, String description, JIssueTypesIssueType issueType) {
-        this.mProject = project;
-        this.mSummary = summary;
-        this.mDescription = description;
-        this.mIssueType = issueType;
-    }
-
-    public JIssueFields(JIssueProject mProject, String mSummary, JIssueTypesIssueType mIssueType, JUser mAssignee,
-                        JUser mReporter, JIssuePriority mPriority, List<String> labels, JIssueTimeTracking jIssueTimeTracking,
-                        JIssueSecurity jIssueSecurity, List<JIssueVersion> jIssueVersions, String mEnvironment, String mDescription,
-                        String mDueDate, List<JIssueVersion> jiraIssueFixVersions, List<JComponent> jComponents) {
-        this.mProject = mProject;
-        this.mSummary = mSummary;
-        this.mIssueType = mIssueType;
-        this.mAssignee = mAssignee;
-        this.mReporter = mReporter;
-        this.mPriority = mPriority;
-        this.mLabels = labels;
-        this.mJIssueTimeTracking = jIssueTimeTracking;
-        this.mJIssueSecurity = jIssueSecurity;
-        this.mJIssueVersions = jIssueVersions;
-        this.mEnvironment = mEnvironment;
-        this.mDescription = mDescription;
-        this.mDueDate = mDueDate;
-        this.mJiraIssueFixVersions = jiraIssueFixVersions;
-        this.mJComponents = jComponents;
-    }
-
     public JIssueProject getProject() {
         return mProject;
     }
@@ -116,11 +88,11 @@ public class JIssueFields {
         this.mSummary = summary;
     }
 
-    public JIssueTypesIssueType getIssueType() {
+    public JIFIssueType getIssueType() {
         return mIssueType;
     }
 
-    public void setIssueType(JIssueTypesIssueType issueType) {
+    public void setIssueType(JIFIssueType issueType) {
         this.mIssueType = issueType;
     }
 
