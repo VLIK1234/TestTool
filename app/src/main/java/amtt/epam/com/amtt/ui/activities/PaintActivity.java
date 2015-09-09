@@ -373,19 +373,12 @@ public class PaintActivity extends BaseActivity
     @Override
     public void onLoadingCancelled(String imageUri, View view) {}
 
-    @Override
-    public void PositiveButtonClick(String drawValueText, Paint paintText) {
-        mDragTextView = new DragTextView(getBaseContext(), drawValueText, paintText, this);
-        mWindowManager.addView(mDragTextView, initMainLayoutParams());
-    }
-
-
-    private WindowManager.LayoutParams initMainLayoutParams() {
+    private WindowManager.LayoutParams initMainLayoutParams(int x, int y) {
         int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
 
         WindowManager.LayoutParams mainLayout = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT, 0, 0, WindowManager.LayoutParams.TYPE_APPLICATION,
+                WindowManager.LayoutParams.WRAP_CONTENT, x, y, WindowManager.LayoutParams.TYPE_APPLICATION,
                 flags, PixelFormat.TRANSLUCENT);
         mainLayout.gravity = Gravity.TOP | Gravity.START;
         return mainLayout;
@@ -424,5 +417,11 @@ public class PaintActivity extends BaseActivity
                 })
                 .create()
                 .show();
+    }
+
+    @Override
+    public void CreateDragViewCallback(String valueDrawText, Paint textPaint, int xPositionDragView, int yPosiotionDragView) {
+        mDragTextView = new DragTextView(getBaseContext(), valueDrawText, textPaint, xPositionDragView, yPosiotionDragView, this);
+        mWindowManager.addView(mDragTextView, initMainLayoutParams(xPositionDragView, yPosiotionDragView));
     }
 }

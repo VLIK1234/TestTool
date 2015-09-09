@@ -29,4 +29,13 @@ public final class DrawnPath extends DrawObject {
     public void addPath(Path path) {
         mPath.addPath(path);
     }
+
+    public boolean equals(DrawnPath compareDrawnPath) {
+        return mPath.equals(compareDrawnPath.getPath()) && mPaintMode.equals(compareDrawnPath.getPaintMode());
+    }
+
+    @Override
+    protected boolean equals(DrawObject drawObject) {
+        return drawObject instanceof DrawnPath && ((DrawnPath) drawObject).getPath().equals(mPath) && ((DrawnPath) drawObject).getPaintMode().equals(mPaintMode);
+    }
 }

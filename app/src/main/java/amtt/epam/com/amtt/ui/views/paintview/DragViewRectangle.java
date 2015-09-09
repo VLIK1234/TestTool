@@ -6,11 +6,11 @@ import android.graphics.Point;
  * @author IvanBakach
  * @version on 08.09.2015
  */
-public class ViewRectangle {
+public class DragViewRectangle {
     private Point mLeftTop;
     private Point mRightBottom;
 
-    public ViewRectangle(int x, int y, int width, int height) {
+    public DragViewRectangle(int x, int y, int width, int height) {
         mLeftTop = new Point(x, y);
         mRightBottom = new Point(x + width, y + height);
     }

@@ -5,29 +5,43 @@ import android.graphics.Paint;
 public final class DrawnText extends DrawObject {
 
     private final String mStringValue;
-    private final float mX;
-    private final float mY;
+    private final int mX;
+    private final int mY;
+    private final int mYForDragView;
+    private DragViewRectangle mDragViewRectangle;
 
-    public DrawnText(String stringValue, float x, float y, Paint paint) {
+    public DrawnText(String stringValue, int x, int y, int yForDragView, int widthDragView, int heightDragView, Paint paint) {
         super(paint);
         mStringValue = stringValue;
         mX = x;
         mY = y;
+        mYForDragView = yForDragView;
+        mDragViewRectangle = new DragViewRectangle(x, mYForDragView, widthDragView, heightDragView);
+    }
+
+    public int getYForDragView() {
+        return mYForDragView;
+    }
+
+    public DragViewRectangle getDragViewRectangle() {
+        return mDragViewRectangle;
     }
 
     public String getStringValue() {
         return mStringValue;
     }
 
-    public float getX() {
+    public int getX() {
         return mX;
     }
 
-    public float getY() {
+    public int getY() {
         return mY;
     }
 
-    public boolean equals(DrawnText drawnText) {
-        return drawnText.getStringValue().equals(mStringValue)&&drawnText.getX()==mX;
+    @Override
+    protected boolean equals(DrawObject drawObject) {
+        return drawObject instanceof DrawnText && ((DrawnText) drawObject).getStringValue().equals(mStringValue)
+                && ((DrawnText) drawObject).getX() == mX && ((DrawnText) drawObject).getYForDragView() == mYForDragView;
     }
 }

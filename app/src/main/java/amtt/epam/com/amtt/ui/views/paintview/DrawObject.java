@@ -6,7 +6,7 @@ import android.graphics.Paint;
  * @author IvanBakach
  * @version on 08.09.2015
  */
-class DrawObject {
+abstract class DrawObject {
     private final Paint mPaint;
 
     protected DrawObject(Paint paint) {
@@ -16,4 +16,6 @@ class DrawObject {
     protected Paint getPaint() {
         return mPaint;
     }
+
+    protected abstract boolean equals(DrawObject drawObject);
 }

@@ -13,13 +13,11 @@ import android.graphics.PorterDuffXfermode;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +51,6 @@ public class PaintView extends ImageView {
 
     private List<DrawObject> mDrawObjects;
     private List<DrawObject> mUndone;
-    private List<DrawTextInfo> mDrawTextInfos;
 
     public Paint getPaintText() {
         return mPaintText;
@@ -112,12 +109,15 @@ public class PaintView extends ImageView {
                         final View view = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_draw_text, null);
                         final EditText editDrawText = (EditText) view.findViewById(R.id.et_draw_text);
                         boolean isExistedText = false;
-                        for (DrawTextInfo info: mDrawTextInfos) {
-                            if (info.getViewRectangle().isIncludeInRegion((int) x, (int) y)) {
-                                isExistedText= true;
-                                deleteDrawText(new DrawnText(info.getTextValue(), info.getXPoint(), info.getYPoint(), info.getPaint())); break;
-                            } else{
-                                isExistedText= false;
+                        for (DrawObject object: mDrawObjects) {
+                            if (object instanceof DrawnText) {
+                                if (((DrawnText)object).getDragViewRectangle().isIncludeInRegion((int) x, (int) y)) {
+                                    isExistedText = true;
+                                    undo((DrawnText)object);
+                                    break;
+                                } else {
+                                    isExistedText = false;
+                                }
                             }
                         }
                         if (!isExistedText) {
@@ -128,7 +128,7 @@ public class PaintView extends ImageView {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             mDrawString = editDrawText.getText().toString();
-                                            mITextDialogButtonClick.PositiveButtonClick(mDrawString, new Paint(mPaintText));
+                                            mITextDialogButtonClick.CreateDragViewCallback(mDrawString, new Paint(mPaintText), 0, 0);
 
                                         }
                                     })
@@ -224,7 +224,6 @@ public class PaintView extends ImageView {
 
         mDrawObjects = new ArrayList<>();
         mUndone = new ArrayList<>();
-        mDrawTextInfos = new ArrayList<>();
     }
 
     public void setBrushColor(int brushColor) {
@@ -240,26 +239,26 @@ public class PaintView extends ImageView {
         }
     }
 
-    public void deleteDrawText(DrawnText compareValue) {
+    public void undo(DrawObject compareObject) {
         if (mDrawObjects.size() != 0) {
             for (int i = 0; i < mDrawObjects.size(); i++) {
-                if (mDrawObjects.get(i) instanceof DrawnText) {
-                    if (((DrawnText)mDrawObjects.get(i)).equals(compareValue)) {
-
-                        mITextDialogButtonClick.PositiveButtonClick(((DrawnText) mDrawObjects.get(i)).getStringValue(), mDrawObjects.get(i).getPaint());
-
-                        for (int j = 0; j< mDrawTextInfos.size(); j++) {
-                            if (mDrawTextInfos.get(j).equals(new DrawTextInfo((int)((DrawnText) mDrawObjects.get(i)).getX(),
-                                    0, 0, 0, ((DrawnText) mDrawObjects.get(i)).getStringValue(), new Paint()))) {
-                                mDrawTextInfos.remove(j);
-                                Log.d("TAG", mDrawTextInfos.size() + " size");
-                            }
+                if (compareObject instanceof DrawnPath) {
+                    if (mDrawObjects.get(i) instanceof DrawnPath) {
+                        if ((mDrawObjects.get(i)).equals(compareObject)) {
+                            mUndone.add(mDrawObjects.remove(i));
+                            redrawCache();
                         }
-                        mUndone.add(mDrawObjects.remove(i));
-                        redrawCache();
+                    }
+                }else if (compareObject instanceof DrawnText) {
+                    if (mDrawObjects.get(i) instanceof DrawnText) {
+                        if ((mDrawObjects.get(i)).equals(compareObject)) {
+                            mITextDialogButtonClick.CreateDragViewCallback(((DrawnText) mDrawObjects.get(i)).getStringValue(),
+                                    mDrawObjects.get(i).getPaint(), ((DrawnText) mDrawObjects.get(i)).getX(), ((DrawnText) mDrawObjects.get(i)).getYForDragView());
+                            mUndone.add(mDrawObjects.remove(i));
+                            redrawCache();
+                        }
                     }
                 }
-                break;
             }
         }
     }
@@ -341,7 +340,6 @@ public class PaintView extends ImageView {
 
     public void drawText(String drawStringValue, int x, int y, int width, int height, int rightY, Paint paintText) {
         mCacheCanvas.drawText(drawStringValue, x, y, new Paint(paintText));
-        mDrawObjects.add(new DrawnText(drawStringValue, x, y, new Paint(paintText)));
-        mDrawTextInfos.add(new DrawTextInfo(x, rightY, width, height, drawStringValue, paintText));
+        mDrawObjects.add(new DrawnText(drawStringValue, x, y, rightY, width, height, new Paint(paintText)));
     }
 }

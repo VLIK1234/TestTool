@@ -66,13 +66,13 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
         super(context, attributeSet);
     }
 
-    public DragTextView(Context context, String drawStringValue, Paint paintText, IDrawCallback iDrawCallback) {
+    public DragTextView(Context context, String drawStringValue, Paint paintText, int x, int y, IDrawCallback iDrawCallback) {
         super(context);
         mIDrawCallback = iDrawCallback;
         this.setOrientation(HORIZONTAL);
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         mDisplayMetrics = getContext().getResources().getDisplayMetrics();
-        mDragImageLayoutParams = initMainLayoutParams();
+        mDragImageLayoutParams = initMainLayoutParams(x, y);
         this.setLayoutParams(mDragImageLayoutParams);
         mLeftButtonLayout = initDragButtonsLayout(GONE);
         mRightButtonLayout = initDragButtonsLayout(VISIBLE);
@@ -104,12 +104,12 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
-    private WindowManager.LayoutParams initMainLayoutParams() {
+    private WindowManager.LayoutParams initMainLayoutParams(int x, int y) {
         int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
 
         WindowManager.LayoutParams mainLayout = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT, 0, 0, WindowManager.LayoutParams.TYPE_APPLICATION,
+                WindowManager.LayoutParams.WRAP_CONTENT, x, y, WindowManager.LayoutParams.TYPE_APPLICATION,
                 flags, PixelFormat.TRANSLUCENT);
         mainLayout.gravity = Gravity.TOP | Gravity.START;
         return mainLayout;
