@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 
 /**
  @author Artsiom_Kaliaha
@@ -50,7 +50,7 @@ public class IOUtils {
 
     public static void byteArrayToFile(final byte[] byteArray, final File file){
 
-        AsyncTaskLoader loader = new AsyncTaskLoader(AmttApplication.getContext()) {
+        AsyncTaskLoader loader = new AsyncTaskLoader(CoreApplication.getContext()) {
             @Override
             public Object loadInBackground() {
                 try {

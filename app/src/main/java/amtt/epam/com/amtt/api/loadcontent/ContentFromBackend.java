@@ -21,6 +21,8 @@ import amtt.epam.com.amtt.processing.VersionsProcessor;
 
 public class ContentFromBackend {
 
+    private final JiraApi mJiraApi = JiraApi.getInstance();
+
     private static class ContentFromBackendHolder {
         public static final ContentFromBackend INSTANCE = new ContentFromBackend();
     }
@@ -31,52 +33,49 @@ public class ContentFromBackend {
 
     public <Response, Content> void getProjects(final ContentLoadingCallback<Response, Content> loadingCallback,
                             final GetContentCallback<Content> contentCallback) {
-        JiraApi.get().searchData(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor(),
+        mJiraApi.searchData(JiraApiConst.USER_PROJECTS_PATH, new ProjectsProcessor(),
                 getCallback(loadingCallback, contentCallback));
     }
 
     public <Response, Content> void getVersions(String projectsKey, final ContentLoadingCallback<Response, Content> loadingCallback,
                             final GetContentCallback<Content> contentCallback) {
         String path = JiraApiConst.PROJECT_VERSIONS_PATH + projectsKey + JiraApiConst.PROJECT_VERSIONS_PATH_V;
-        JiraApi.get().searchData(path, new VersionsProcessor(), getCallback(loadingCallback, contentCallback));
+        mJiraApi.searchData(path, new VersionsProcessor(), getCallback(loadingCallback, contentCallback));
     }
 
     public <Response, Content> void getComponents(String projectsKey, final ContentLoadingCallback<Response, Content> loadingCallback,
                               final GetContentCallback<Content> contentCallback) {
         String path = JiraApiConst.PROJECT_COMPONENTS_PATH + projectsKey + JiraApiConst.PROJECT_COMPONENTS_PATH_C;
-        JiraApi.get().searchData(path, new ComponentsProcessor(),
-                getCallback(loadingCallback, contentCallback));
+        mJiraApi.searchData(path, new ComponentsProcessor(), getCallback(loadingCallback, contentCallback));
     }
 
     public <Response, Content> void getUsersAssignable(String projectKey, String userName, final ContentLoadingCallback<Response, Content> loadingCallback,
                                    final GetContentCallback<Content> contentCallback) {
         String path = JiraApiConst.USERS_ASSIGNABLE_PATH + projectKey + JiraApiConst.USERS_ASSIGNABLE_PATH_UN + userName + JiraApiConst.USERS_ASSIGNABLE_PATH_MR;
-        JiraApi.get().searchData(path, new UsersAssignableProcessor(),
-                getCallback(loadingCallback, contentCallback));
+        mJiraApi.searchData(path, new UsersAssignableProcessor(), getCallback(loadingCallback, contentCallback));
     }
 
     public <Response, Content> void getPriority(final ContentLoadingCallback<Response, Content> loadingCallback,
                             final GetContentCallback<Content> contentCallback) {
         String path = JiraApiConst.PROJECT_PRIORITY_PATH;
-        JiraApi.get().searchData(path, new PriorityProcessor(), getCallback(loadingCallback, contentCallback));
+        mJiraApi.searchData(path, new PriorityProcessor(), getCallback(loadingCallback, contentCallback));
     }
 
 
     public <Response> void createIssue(String issueJson, final ContentLoadingCallback<Response, Response> loadingCallback,
                             final GetContentCallback<Response> contentCallback) {
-        JiraApi.get().createIssue(issueJson, new PostCreateIssueProcessor(), getCallback(loadingCallback, contentCallback));
+        mJiraApi.createIssue(issueJson, new PostCreateIssueProcessor(), getCallback(loadingCallback, contentCallback));
     }
 
     public void sendAttachment(String issueKey, List<String> fullFileName, final ContentLoadingCallback<Boolean, Boolean> loadingCallback,
                                final GetContentCallback<Boolean> contentCallback) {
-        JiraApi.get().createAttachment(issueKey, fullFileName, getCallbackStatus(loadingCallback, contentCallback));
+        mJiraApi.createAttachment(issueKey, fullFileName, getCallbackStatus(loadingCallback, contentCallback));
     }
 
     private <Content> Callback getCallbackStatus(final ContentLoadingCallback<Boolean, Content> loadingCallback, final GetContentCallback<Content> contentCallback) {
         return new Callback<Content>() {
             @Override
-            public void onLoadStart() {
-            }
+            public void onLoadStart() {}
 
             @Override
             public void onLoadExecuted(Content result) {
@@ -94,8 +93,7 @@ public class ContentFromBackend {
                                           final GetContentCallback<Content> contentCallback) {
         return new Callback<Result>() {
             @Override
-            public void onLoadStart() {
-            }
+            public void onLoadStart() {}
 
             @Override
             public void onLoadExecuted(Result result) {

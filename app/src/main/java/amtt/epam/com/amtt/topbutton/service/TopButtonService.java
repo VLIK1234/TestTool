@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import java.io.File;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.helper.NotificationIdConstant;
 import amtt.epam.com.amtt.ui.activities.SettingActivity;
@@ -63,17 +63,17 @@ public class TopButtonService extends Service{
     }
 
     private static void sendActionChangeNotificationButton() {
-        Intent intentHideView = new Intent(AmttApplication.getContext(), TopButtonService.class).setAction(TopButtonService.ACTION_CHANGE_NOTIFICATION_BUTTON);
+        Intent intentHideView = new Intent(CoreApplication.getContext(), TopButtonService.class).setAction(TopButtonService.ACTION_CHANGE_NOTIFICATION_BUTTON);
         intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        AmttApplication.getContext().startService(intentHideView);
+        CoreApplication.getContext().startService(intentHideView);
     }
 
     public static void sendActionChangeTopButtonVisibility(boolean visible) {
-        Intent intentHideView = new Intent(AmttApplication.getContext(), TopButtonService.class);
+        Intent intentHideView = new Intent(CoreApplication.getContext(), TopButtonService.class);
         intentHideView.setAction(TopButtonService.ACTION_CHANGE_VISIBILITY_TOPBUTTON);
         intentHideView.putExtra(VISIBILITY_TOP_BUTTON, visible);
         intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        AmttApplication.getContext().startService(intentHideView);
+        CoreApplication.getContext().startService(intentHideView);
     }
 
     public static void start(Context context) {

@@ -7,7 +7,7 @@ import android.net.Uri;
 import com.google.gson.annotations.SerializedName;
 
 import amtt.epam.com.amtt.bo.issue.JAvatarUrls;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.contentprovider.LocalUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
 
 /**
@@ -118,7 +118,7 @@ public class JUserInfo extends JUser{
 
     @Override
     public Uri getUri() {
-        return AmttUri.USER.get();
+        return LocalUri.USER.get();
     }
 
     @Override

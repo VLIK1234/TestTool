@@ -14,7 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.database.util.LocalContent;
@@ -45,7 +45,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Step step = mStepList.get(position);
-        holder.step.setText(AmttApplication.getContext().getString(R.string.label_step) + (position + 1));
+        holder.step.setText(CoreApplication.getContext().getString(R.string.label_step) + (position + 1));
         if (step.getActivity() != null) {
             SpannableStringBuilder info = new SpannableStringBuilder();
             info.append(LocalContent.getStepInfo(step));
@@ -87,7 +87,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder> 
             super(itemView);
             this.listener = listener;
             screenshotView = (ImageView) itemView.findViewById(R.id.screenshot_image);
-            DisplayMetrics metrics = AmttApplication.getContext().getResources().getDisplayMetrics();
+            DisplayMetrics metrics = CoreApplication.getContext().getResources().getDisplayMetrics();
             screenshotView.setMaxWidth(metrics.widthPixels / IMAGE_SIZE_RATIO);
             screenshotView.setMaxHeight(metrics.heightPixels / IMAGE_SIZE_RATIO);
             screenshotView.setOnClickListener(this);

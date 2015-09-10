@@ -18,12 +18,12 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.contentobserver.StepScreenshotObserver;
 import amtt.epam.com.amtt.bo.ticket.Step.ScreenshotState;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.contentprovider.LocalUri;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.util.Logger;
 
@@ -117,7 +117,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         mAttachments = screenshots;
         mRowLayout = rowLayout;
         mStateListener = stateListener;
-        AmttApplication.getContext().getContentResolver().registerContentObserver(AmttUri.STEP.get(), true, new StepScreenshotObserver(new Handler(), this));
+        CoreApplication.getContext().getContentResolver().registerContentObserver(LocalUri.STEP.get(), true, new StepScreenshotObserver(new Handler(), this));
     }
 
     @Override
@@ -166,7 +166,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
                     viewHolder.mProgress.setVisibility(View.VISIBLE);
                 }
             } else if (attachment.getFilePath().contains(MimeType.TEXT_PLAIN.getFileExtension())) {
-                viewHolder.mScreenshotImage.setImageDrawable(AmttApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
+                viewHolder.mScreenshotImage.setImageDrawable(CoreApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
             }
             viewHolder.mScreenshotClose.setEnabled(true);
         }

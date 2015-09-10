@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
-import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.contentprovider.LocalUri;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.database.table.StepsTable;
 import amtt.epam.com.amtt.util.UIUtil;
@@ -23,7 +23,7 @@ public class Step extends DatabaseEntity<Step> {
 
     }
 
-    private int mStepNumber;
+    private int mId;
 
     private String mTitle;
     private String mActivity;
@@ -37,8 +37,8 @@ public class Step extends DatabaseEntity<Step> {
 
     }
 
-    public Step(int stepNumber) {
-        mStepNumber = stepNumber;
+    public Step(int id) {
+        mId = id;
     }
 
     public Step(String title, String activityClassName, String packageName, String screenPath, String listFragments) {
@@ -53,7 +53,7 @@ public class Step extends DatabaseEntity<Step> {
 
     private Step(Cursor cursor) {
         super(cursor);
-        mStepNumber = cursor.getInt(cursor.getColumnIndex(StepsTable._ID));
+        mId = cursor.getInt(cursor.getColumnIndex(StepsTable._ID));
         mScreenPath = cursor.getString(cursor.getColumnIndex(StepsTable._SCREEN_PATH));
         mListFragments =  cursor.getString(cursor.getColumnIndex(StepsTable._LIST_FRAGMENTS));
         mTitle = cursor.getString(cursor.getColumnIndex(StepsTable._TITLE));
@@ -65,12 +65,12 @@ public class Step extends DatabaseEntity<Step> {
 
     @Override
     public int getId() {
-        return mStepNumber;
+        return mId;
     }
 
     @Override
     public Uri getUri() {
-        return AmttUri.STEP.get();
+        return LocalUri.STEP.get();
     }
 
     @Override
