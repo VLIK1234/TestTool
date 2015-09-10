@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.datasource.DataSource;
@@ -88,13 +88,13 @@ public class JiraApi<Entity extends DatabaseEntity>  {
         execute(requestBuilder, null, callback);
     }
 
-    public static JiraApi get() {
+    public static JiraApi getInstance() {
         return INSTANCE;
     }
 
     private void execute(Request.Builder requestBuilder, Processor<HttpEntity, Entity> processor, Callback<Entity> callback) {
         Request request = requestBuilder.build();
-        DataSource<Request, HttpEntity> dataSource = AmttApplication.getHttpClient();
+        DataSource<Request, HttpEntity> dataSource = CoreApplication.getHttpClient();
         ThreadManager.execute(request, dataSource, processor, callback);
     }
 

@@ -9,7 +9,7 @@ import android.view.View;
 import java.util.HashMap;
 import java.util.Map;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 
 /**
@@ -34,20 +34,20 @@ public final class UIUtil {
         return sScreenOrientation.get(orientation) == null ? ActivityInfoConstants.NOT_AVAILABLE : sScreenOrientation.get(orientation);
     }
     public static DisplayMetrics getDisplayMetrics() {
-        return AmttApplication.getContext().getResources().getDisplayMetrics();
+        return CoreApplication.getContext().getResources().getDisplayMetrics();
     }
 
     public static int getStatusBarHeight() {
         int result = 0;
-        int resourceId = AmttApplication.getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int resourceId = CoreApplication.getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
-            result = AmttApplication.getContext().getResources().getDimensionPixelSize(resourceId);
+            result = CoreApplication.getContext().getResources().getDimensionPixelSize(resourceId);
         }
         return result;
     }
 
     public static int getOrientation() {
-        return AmttApplication.getContext().getResources().getConfiguration().orientation;
+        return CoreApplication.getContext().getResources().getConfiguration().orientation;
     }
 
     public static void killApp(boolean killSafely) {
@@ -86,7 +86,7 @@ public final class UIUtil {
     }
 
     public static int getInDp(int px) {
-        float scale = AmttApplication.getContext().getResources().getDisplayMetrics().density;
+        float scale = CoreApplication.getContext().getResources().getDisplayMetrics().density;
         return (int) (px * scale + 0.5f);
     }
 

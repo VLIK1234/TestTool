@@ -514,13 +514,6 @@ public class CreateIssueActivity extends BaseActivity
 
     private void initAssigneeAutocompleteView() {
         mAssignableAutocompleteView = (AutocompleteProgressView) findViewById(R.id.atv_assignable_users);
-        if (mUser.getLastAssignee() != null) {
-            mIsAssignableSelected = true;
-            if (mUser.getLastAssignee().equals(mUser.getUserName())) {
-                mIsSelfSigned = true;
-            }
-            mAssignableAutocompleteView.setText(mUser.getLastAssignee());
-        }
         mAssignableAutocompleteView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -561,6 +554,15 @@ public class CreateIssueActivity extends BaseActivity
                 }
             }
         });
+
+        if (mUser.getLastAssignee() != null) {
+            mIsAssignableSelected = true;
+            if (mUser.getLastAssignee().equals(mUser.getUserName())) {
+                mIsSelfSigned = true;
+            }
+            mAssignableAutocompleteView.setText(mUser.getLastAssignee());
+        }
+
         initAssignSelfButton();
     }
 
@@ -694,7 +696,6 @@ public class CreateIssueActivity extends BaseActivity
                 .getAllSteps(new GetContentCallback<List<Step>>() {
                     @Override
                     public void resultOfDataLoading(final List<Step> result) {
-                        if (result != null) {
                             mSteps = result;
                             List<Attachment> screenArray = mAttachmentManager.stepsToAttachments(result);
                             mAdapter = new AttachmentAdapter(CreateIssueActivity.this, screenArray, R.layout.adapter_attachment,
@@ -702,10 +703,9 @@ public class CreateIssueActivity extends BaseActivity
                             if (mRecyclerView != null) {
                                 mRecyclerView.setAdapter(mAdapter);
                             }
-                            if (mSteps.size() == 0) {
+                            if (mSteps==null || mSteps.size() == 0) {
                                 mGifCheckBox.setEnabled(false);
                             }
-                        }
                         mRequestsQueue.remove(ContentConst.ATTACHMENT_RESPONSE);
                         showProgressIfNeed();
                     }

@@ -7,7 +7,7 @@ import android.util.Patterns;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 
 /**
@@ -36,7 +36,7 @@ public class InputsUtil {
         sEmptyValidator = new Validator() {
             @Override
             public String getMessage(CharSequence viewHint) {
-                return AmttApplication.getContext().getString(R.string.enter_prefix, viewHint.toString().toLowerCase());
+                return CoreApplication.getContext().getString(R.string.enter_prefix, viewHint.toString().toLowerCase());
             }
 
             @Override
@@ -46,7 +46,7 @@ public class InputsUtil {
                     return true;
                 }
                 String text = editableText.toString();
-                String urlPrefix = AmttApplication.getContext().getString(R.string.url_prefix);
+                String urlPrefix = CoreApplication.getContext().getString(R.string.url_prefix);
                 if (text.equals(urlPrefix)) {
                     return text.length() == urlPrefix.length();
                 }
@@ -56,7 +56,7 @@ public class InputsUtil {
         sWhitespacesValidator = new Validator() {
             @Override
             public String getMessage(CharSequence viewHint) {
-                return viewHint.toString() + AmttApplication.getContext().getString(R.string.label_no_whitespaces);
+                return viewHint.toString() + CoreApplication.getContext().getString(R.string.label_no_whitespaces);
             }
 
             @Override
@@ -67,7 +67,7 @@ public class InputsUtil {
         sEndStartWhitespacesValidator = new Validator() {
             @Override
             public String getMessage(CharSequence viewHint) {
-                return viewHint.toString() + AmttApplication.getContext().getString(R.string.label_no_whitespace_margins);
+                return viewHint.toString() + CoreApplication.getContext().getString(R.string.label_no_whitespace_margins);
             }
 
             @Override
@@ -78,7 +78,7 @@ public class InputsUtil {
         sNoEmailValidator = new Validator() {
             @Override
             public String getMessage(CharSequence viewHint) {
-                return AmttApplication.getContext().getString(R.string.enter_prefix, AmttApplication.getContext().getString(R.string.label_no_email));
+                return CoreApplication.getContext().getString(R.string.enter_prefix, CoreApplication.getContext().getString(R.string.label_no_email));
             }
 
             @Override
@@ -89,7 +89,7 @@ public class InputsUtil {
         sCorrectUrlValidator = new Validator() {
             @Override
             public String getMessage(CharSequence viewHint) {
-                return AmttApplication.getContext().getString(R.string.enter_prefix, viewHint.toString().toLowerCase()) + AmttApplication.getContext().getString(R.string.label_no_email);
+                return CoreApplication.getContext().getString(R.string.enter_prefix, viewHint.toString().toLowerCase()) + CoreApplication.getContext().getString(R.string.label_no_email);
             }
 
             @Override
@@ -100,12 +100,12 @@ public class InputsUtil {
         sEpamUrlValidator = new Validator() {
             @Override
             public String getMessage(CharSequence viewHint) {
-                return AmttApplication.getContext().getString(R.string.enter_prefix, AmttApplication.getContext().getString(R.string.enter_postfix_jira));
+                return CoreApplication.getContext().getString(R.string.enter_prefix, CoreApplication.getContext().getString(R.string.enter_postfix_jira));
             }
 
             @Override
             public boolean validate(TextEditable editable) {
-                return AmttApplication.getContext().getString(R.string.epam_url).equals(editable.getText().toString());
+                return CoreApplication.getContext().getString(R.string.epam_url).equals(editable.getText().toString());
             }
         };
     }

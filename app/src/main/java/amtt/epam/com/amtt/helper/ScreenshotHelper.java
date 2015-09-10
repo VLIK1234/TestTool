@@ -11,7 +11,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.IOUtils;
 
@@ -29,9 +29,9 @@ public class ScreenshotHelper {
         long imageTime = System.currentTimeMillis();
         String imageDate = new SimpleDateFormat(SCREENSHOT_DATETIME_FORMAT).format(new Date(imageTime));
         String imageFileName = String.format(SCREENSHOT_FILE_NAME_TEMPLATE, imageDate);
-        final String path = FileUtil.getCacheAmttDir() + imageFileName;
+        final String path = FileUtil.getCacheLocalDir() + imageFileName;
         // create bitmap screen capture
-        AsyncTaskLoader loader = new AsyncTaskLoader(AmttApplication.getContext()) {
+        AsyncTaskLoader loader = new AsyncTaskLoader(CoreApplication.getContext()) {
             @Override
             public Object loadInBackground() {
                 OutputStream fout = null;

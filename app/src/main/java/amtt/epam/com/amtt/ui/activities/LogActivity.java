@@ -17,15 +17,15 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.LogAdapter;
+import amtt.epam.com.amtt.api.GetContentCallback;
+import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.util.Constants;
 import amtt.epam.com.amtt.util.FileUtil;
-import amtt.epam.com.amtt.util.ReadLargeTextUtil;
 
 /**
  @author Ivan_Bakach
@@ -75,27 +75,17 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
 
     private void showLog(String filePath) {
         if (FileUtil.isText(filePath)) {
-            mListLogLine = readTextLogFromFile(filePath);
-            mOriginLogList.addAll(mListLogLine);
-            mLogAdapter = new LogAdapter(mListLogLine);
-            mRecyclerView.setAdapter(mLogAdapter);
-        }
-    }
+            LocalContent.readTextLogFromFile(filePath, new GetContentCallback<ArrayList<CharSequence>>() {
+                @Override
+                public void resultOfDataLoading(ArrayList<CharSequence> result) {
+                    mListLogLine = result;
+                    mOriginLogList.addAll(mListLogLine);
+                    mLogAdapter = new LogAdapter(mListLogLine);
+                    mRecyclerView.setAdapter(mLogAdapter);
+                }
+            });
 
-    private ArrayList<CharSequence> readTextLogFromFile(String filePath) {
-        File file = new File(filePath);
-        ReadLargeTextUtil fileReader = new ReadLargeTextUtil(file);
-        try {
-            fileReader.start();
-            fileReader.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            if (!fileReader.isAlive()) {
-                fileReader.interrupt();
-            }
         }
-        return fileReader.getLines();
     }
 
     @Override

@@ -13,7 +13,7 @@ import com.google.gson.annotations.SerializedName;
 
 import amtt.epam.com.amtt.bo.JBaseType;
 import amtt.epam.com.amtt.bo.issue.createmeta.issuetypes.JFields;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.contentprovider.LocalUri;
 import amtt.epam.com.amtt.database.table.IssuetypeTable;
 
 /**
@@ -88,7 +88,7 @@ public class JIssueTypes extends JBaseType {
 
     @Override
     public Uri getUri() {
-        return AmttUri.ISSUETYPE.get();
+        return LocalUri.ISSUETYPE.get();
     }
 
     @Override

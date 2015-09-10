@@ -56,7 +56,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                 if (extras != null) {
                     fileName = extras.getString(FILE_NAME_KEY);
                     bytesArray = extras.getByteArray(BYTE_ARRAY_DATA_KEY);
-                    File transferFile = new File(FileUtil.getCacheAmttDir(),fileName);
+                    File transferFile = new File(FileUtil.getCacheLocalDir(),fileName);
                     IOUtils.byteArrayToFile(bytesArray, transferFile);
 //                    Toast.makeText(context, "Create log in file " + bytesArray.length, Toast.LENGTH_LONG).show();
                     break;

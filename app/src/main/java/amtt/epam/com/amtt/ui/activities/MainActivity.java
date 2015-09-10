@@ -3,7 +3,7 @@ package amtt.epam.com.amtt.ui.activities;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.contentprovider.LocalUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.api.GetContentCallback;
@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
+    private static final int ACCOUNTS_ACTIVITY_REQUEST_CODE = 1;
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 2;
     private final String TAG = this.getClass().getSimpleName();
     private final ActiveUser mUser = ActiveUser.getInstance();
@@ -52,13 +52,13 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader loader = null;
         if (id == CURSOR_LOADER_ID) {
-            loader = new CursorLoader(MainActivity.this, AmttUri.USER.get(), null, null, null, null);
+            loader = new CursorLoader(MainActivity.this, LocalUri.USER.get(), null, null, null, null);
         } else if (id == SINGLE_USER_CURSOR_LOADER_ID) {
             loader = new CursorLoader(MainActivity.this,
-                AmttUri.USER.get(),
+                LocalUri.USER.get(),
                 null,
                 UsersTable._ID + "=?",
-                new String[]{String.valueOf(args.getLong(AmttActivity.KEY_USER_ID))},
+                new String[]{String.valueOf(args.getLong(AccountsActivity.KEY_USER_ID))},
                 null);
         }
         return loader;
@@ -69,16 +69,12 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         try {
             switch (loader.getId()) {
                 case CURSOR_LOADER_ID:
-                    if (data != null) {
-                        if (data.getCount() > 1) {
-                            showAmttActivity();
-                        } else if (data.getCount() == 1) {
-                            setActiveUser(data);
-                        } else {
-                            Logger.d(TAG, String.valueOf(data.getCount()));
-                            showLoginActivity();}
-                    } else {
+                    if (data == null || data.getCount() < 1) {
                         showLoginActivity();
+                    } else if (data.getCount() > 1) {
+                        showAccountsActivity();
+                    } else {
+                        setActiveUser(data);
                     }
                     break;
                 case SINGLE_USER_CURSOR_LOADER_ID:
@@ -152,8 +148,8 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         finish();
     }
 
-    private void showAmttActivity() {
-        startActivityForResult(new Intent(MainActivity.this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
+    private void showAccountsActivity() {
+        startActivityForResult(new Intent(MainActivity.this, AccountsActivity.class), ACCOUNTS_ACTIVITY_REQUEST_CODE);
     }
 
     @Override
@@ -161,11 +157,11 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case AMTT_ACTIVITY_REQUEST_CODE:
+                case ACCOUNTS_ACTIVITY_REQUEST_CODE:
                     if (data != null) {
                         Bundle args = new Bundle();
-                        long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
-                        args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
+                        long selectedUserId = data.getLongExtra(AccountsActivity.KEY_USER_ID, 0);
+                        args.putLong(AccountsActivity.KEY_USER_ID, selectedUserId);
                         getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, this);
                     }
                     else{

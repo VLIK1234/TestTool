@@ -7,6 +7,7 @@ import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -14,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.bo.ticket.Step;
@@ -124,7 +125,7 @@ public class LocalContent {
     }
 
     public static Spanned getStepInfo(Step step) {
-        Context context = AmttApplication.getContext();
+        Context context = CoreApplication.getContext();
         return Html.fromHtml(
                 "<b>" + context.getString(R.string.label_title) + "</b>" + "<small>" + step.getTitle() + "</small>" + "<br />" +
                         "<b>" + context.getString(R.string.label_activity) + "</b>" + "<small>" + step.getActivity() + "</small>" + "<br />" +
@@ -136,7 +137,7 @@ public class LocalContent {
     public static Spanned getStepInfo(List<Step> listStep) {
         ArrayList<Step> list = (ArrayList<Step>) listStep;
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        Context context = AmttApplication.getContext();
+        Context context = CoreApplication.getContext();
         if (list.size() > 0) {
             builder.append(Html.fromHtml("<br/>" + "<br/>" + "<h5>" + "New steps : "
                     + "</h5>"));
@@ -174,7 +175,7 @@ public class LocalContent {
     }
 
     public static void removeAllAttachFile() {
-        File folderPath = new File(FileUtil.getCacheAmttDir());
+        File folderPath = new File(FileUtil.getCacheLocalDir());
         File[] allAttachFile = folderPath.listFiles();
         if (allAttachFile != null) {
             for (File file : allAttachFile) {
@@ -191,5 +192,42 @@ public class LocalContent {
 
     public static void updateUser(int userId, JUserInfo user, Callback<Integer> result) {
         ContentFromDatabase.updateUser(userId, user, result);
+    }
+
+    public static void readTextLogFromFile(String filePath, final GetContentCallback<ArrayList<CharSequence>> contentCallback) {
+        ThreadManager.execute(filePath, new DataSource<String, ArrayList<CharSequence>>() {
+
+            @Override
+            public ArrayList<CharSequence> getData(String filePath) throws Exception {
+                File file = new File(filePath);
+                ArrayList<CharSequence> lines = new ArrayList<>();
+                String line;
+                try {
+                    BufferedReader br = new BufferedReader(new java.io.FileReader(file));
+                    while ((line = br.readLine()) != null) {
+                        lines.add(line);
+                    }
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return lines;
+            }
+        }, new Callback<ArrayList<CharSequence>>() {
+            @Override
+            public void onLoadStart() {
+
+            }
+
+            @Override
+            public void onLoadExecuted(ArrayList<CharSequence> charSequences) {
+                contentCallback.resultOfDataLoading(charSequences);
+            }
+
+            @Override
+            public void onLoadError(Exception e) {
+                contentCallback.resultOfDataLoading(null);
+            }
+        });
     }
 }

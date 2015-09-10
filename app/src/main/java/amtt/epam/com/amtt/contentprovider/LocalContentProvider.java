@@ -8,15 +8,15 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import amtt.epam.com.amtt.database.DataBaseManager;
+
 /**
  @author Artsiom_Kaliaha
  @version on 23.03.2015
  */
 
-public class AmttContentProvider extends ContentProvider {
+public class LocalContentProvider extends ContentProvider {
 
     public static final String AUTHORITY = "amtt.epam.com.amtt.contentprovider";
-
     private static DataBaseManager mDataBaseManager;
 
     @Override
@@ -34,7 +34,7 @@ public class AmttContentProvider extends ContentProvider {
 
     @Override
     public String getType(@NonNull Uri uri) {
-        return AmttUri.matchType(uri);
+        return LocalUri.matchType(uri);
     }
 
     @Override

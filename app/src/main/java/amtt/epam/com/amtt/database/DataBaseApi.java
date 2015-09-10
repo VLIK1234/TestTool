@@ -64,7 +64,12 @@ public class DataBaseApi<Entity extends DatabaseEntity> {
         execute(requestParams, new DataBaseSource<Entity, Integer>(), new UpdateDbProcessor(), callback);
     }
 
-    private void execute(DbRequestParams params, DataBaseSource datasourse, Processor processor, Callback callback) {
-        ThreadManager.execute(params, datasourse, processor, callback);
+    public void deleteAll(Entity object, Callback<Integer> callback) {
+        requestParams = new DbRequestParams<>(object, DbRequestType.DELETE_ALL);
+        execute(requestParams, new DataBaseSource<Entity, Integer>(), new UpdateDbProcessor(), callback);
+    }
+
+    private void execute(DbRequestParams params, DataBaseSource dataSource, Processor processor, Callback callback) {
+        ThreadManager.execute(params, dataSource, processor, callback);
     }
 }

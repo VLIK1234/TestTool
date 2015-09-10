@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
@@ -43,8 +42,13 @@ public class AttachmentManager {
     }
 
     public List<Attachment> stepsToAttachments(List<Step> result){
-        List<Attachment> screenArray = getAttachmentList(result);
-        File externalCache = new File(FileUtil.getCacheAmttDir());
+        List<Attachment> screenArray;
+        if (result != null) {
+            screenArray = getAttachmentList(result);
+        } else {
+            screenArray = new ArrayList<>();
+        }
+        File externalCache = new File(FileUtil.getCacheLocalDir());
         String template = externalCache.getPath() + "/%s";
         String pathLogCommon = String.format(template, "log_common.txt");
         String pathLogException = String.format(template, "log_exception.txt");

@@ -2,7 +2,7 @@ package amtt.epam.com.amtt.googleapi.api;
 
 import org.apache.http.HttpEntity;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.database.object.DatabaseEntity;
 import amtt.epam.com.amtt.http.Request;
@@ -38,6 +38,6 @@ public class GSpreadsheetApi<Entity extends DatabaseEntity> {
 
     private void execute(Request.Builder requestBuilder, Processor<HttpEntity, Entity> processor, Callback<Entity> callback) {
         Request request = requestBuilder.build();
-        ThreadManager.execute(request, AmttApplication.getHttpClient(), processor, callback);
+        ThreadManager.execute(request, CoreApplication.getHttpClient(), processor, callback);
     }
 }

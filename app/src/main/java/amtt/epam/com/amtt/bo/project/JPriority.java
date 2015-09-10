@@ -7,8 +7,7 @@ import android.net.Uri;
 import com.google.gson.annotations.SerializedName;
 
 import amtt.epam.com.amtt.bo.JBase;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
-import amtt.epam.com.amtt.database.object.DatabaseEntity;
+import amtt.epam.com.amtt.contentprovider.LocalUri;
 import amtt.epam.com.amtt.database.table.PriorityTable;
 
 /**
@@ -92,7 +91,7 @@ public class JPriority extends JBase {
 
     @Override
     public Uri getUri() {
-        return AmttUri.PRIORITY.get();
+        return LocalUri.PRIORITY.get();
     }
 
     @Override
