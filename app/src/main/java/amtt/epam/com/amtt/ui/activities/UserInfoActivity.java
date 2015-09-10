@@ -114,17 +114,17 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
             case R.id.action_add: {
                 TopButtonService.close(getBaseContext());
                 startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
+                return true;
             }
-            return true;
             case R.id.action_list: {
                 startActivityForResult(new Intent(UserInfoActivity.this, AccountsActivity.class), ACCOUNTS_ACTIVITY_REQUEST_CODE);
+                return true;
             }
-            return true;
             case android.R.id.home: {
                 TopButtonService.start(this);
                 finish();
+                return true;
             }
-            return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -192,7 +192,8 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUser.getUserName();
         mJiraApi.searchData(requestSuffix, new UserInfoProcessor(), new Callback<JUserInfo>() {
             @Override
-            public void onLoadStart() {}
+            public void onLoadStart() {
+            }
 
             @Override
             public void onLoadExecuted(JUserInfo user) {
