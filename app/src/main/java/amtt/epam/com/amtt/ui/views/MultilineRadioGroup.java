@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import java.util.ArrayList;
@@ -69,6 +70,18 @@ public class MultilineRadioGroup extends RadioGroup {
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
         super.addView(child, index, params);
         addRadioGroup(child);
+    }
+
+    public PaletteItem getChekedItem() {
+        for (RadioGroupLine line: mRadioGroups) {
+            for (int i = 0; i < line.getChildCount(); i++) {
+                if (((PaletteItem) line.getChildAt(i)).isChecked()) {
+                    return ((PaletteItem) line.getChildAt(i));
+                }
+
+            }
+        }
+        return null;
     }
 
 }
