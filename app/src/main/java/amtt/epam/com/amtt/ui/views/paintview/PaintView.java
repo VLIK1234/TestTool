@@ -41,18 +41,11 @@ public class PaintView extends ImageView {
     private Paint mPaintPath;
     private Paint mBitmapPaint;
     private Point mEraserPoint;
-    private PorterDuffXfermode mClearMode;
-    private boolean isEraseMode;
     private int mCurrentOpacity = DEFAULT_THICKNESS;
-    private int mLastBrushThickness;
     private OnTouchListener mOnTouchListener;
 
     private List<DrawObject> mDrawObjects;
     private List<DrawObject> mUndone;
-
-    public Paint getPaintText() {
-        return mPaintText;
-    }
 
     private Paint mPaintText = new Paint();
     private PaintMode mPaintMode;

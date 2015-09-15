@@ -3,12 +3,14 @@ package amtt.epam.com.amtt.ui.dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Shader;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -86,7 +88,7 @@ public class DialogPalette extends AlertDialog implements SeekBar.OnSeekBarChang
             @Override
             public boolean onPreDraw() {
                 mPaint = getCurrentPaint();
-                drawPreview(mPaint);
+                drawPreview(getCurrentPaint());
                 return true;
             }
         });
@@ -173,15 +175,19 @@ public class DialogPalette extends AlertDialog implements SeekBar.OnSeekBarChang
             case R.id.rb_text:
                 int border = 30;
                 canvas.drawText(getContext().getString(R.string.label_preview_text_dialog_palette),
-                        mPreviewImage.getMeasuredWidth() / 4, mPreviewImage.getMeasuredHeight() - border, mPaint);
+                        mPreviewImage.getMeasuredWidth() / 4, mPreviewImage.getMeasuredHeight() - border, paint);
                 break;
             case R.id.rb_pencil:
                 canvas.drawLine(0, mPreviewImage.getMeasuredHeight() / 2,
-                        mPreviewImage.getMeasuredWidth(), mPreviewImage.getMeasuredHeight() / 2, mPaint);
+                        mPreviewImage.getMeasuredWidth(), mPreviewImage.getMeasuredHeight() / 2, paint);
                 break;
             case R.id.rb_eraser:
+                paint.setXfermode(null);
+                Bitmap textureBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.alpha_erase_texture);
+                BitmapShader shader = new BitmapShader(textureBitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+                paint.setShader(shader);
                 canvas.drawLine(0, mPreviewImage.getMeasuredHeight() / 2,
-                        mPreviewImage.getMeasuredWidth(), mPreviewImage.getMeasuredHeight() / 2, mPaint);
+                        mPreviewImage.getMeasuredWidth(), mPreviewImage.getMeasuredHeight() / 2, paint);
                 break;
         }
         mPreviewImage.setImageBitmap(cacheCanvasBitmap);
@@ -207,6 +213,7 @@ public class DialogPalette extends AlertDialog implements SeekBar.OnSeekBarChang
                 paint.setStyle(Paint.Style.STROKE);
                 paint.setStrokeCap(Paint.Cap.ROUND);
                 paint.setStrokeJoin(Paint.Join.ROUND);
+                paint.setStrokeWidth(mThicknessBar.getProgress());
                 PorterDuffXfermode porterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
                 paint.setXfermode(porterDuffXfermode);
                 break;
