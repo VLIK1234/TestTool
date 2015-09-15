@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -35,6 +36,8 @@ import amtt.epam.com.amtt.util.PreferenceUtil;
 public class DialogPalette extends AlertDialog implements SeekBar.OnSeekBarChangeListener, RadioGroup.OnCheckedChangeListener,
         MultilineRadioGroup.OnEntireGroupCheckedChangeListener {
 
+    public static final int _50_PERCENT_ALPHA = 128;
+    public static final int PREVIEW_MARKER_TEXT_SIZE = 130;
     private Paint mPaint = new Paint();
     private PaintMode mPaintMode;
     private TextView mTextValueThickness;
@@ -115,7 +118,6 @@ public class DialogPalette extends AlertDialog implements SeekBar.OnSeekBarChang
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         switch (seekBar.getId()) {
             case R.id.sb_thickness:
-//                mPaintView.setThickness(progress);
                 mTextValueThickness.setText(Integer.toString(progress));
                 break;
         }
@@ -135,15 +137,15 @@ public class DialogPalette extends AlertDialog implements SeekBar.OnSeekBarChang
         PreferenceUtil.putInt(getContext().getString(R.string.key_instrument_for_draw_dialog_palette), checkedId);
         switch (checkedId) {
             case R.id.rb_eraser:
-//                mPaintView.setPaintMode(PaintMode.ERASE);
                 mPaintMode = PaintMode.ERASE;
                 break;
-            case R.id.rb_pencil:
-//                mPaintView.setPaintMode(PaintMode.DRAW);
+            case R.id.rb_brush:
+                mPaintMode = PaintMode.DRAW;
+                break;
+            case R.id.rb_marker:
                 mPaintMode = PaintMode.DRAW;
                 break;
             case R.id.rb_text:
-//                mPaintView.setPaintMode(PaintMode.TEXT);
                 mPaintMode = PaintMode.TEXT;
                 break;
             default:
@@ -177,7 +179,17 @@ public class DialogPalette extends AlertDialog implements SeekBar.OnSeekBarChang
                 canvas.drawText(getContext().getString(R.string.label_preview_text_dialog_palette),
                         mPreviewImage.getMeasuredWidth() / 4, mPreviewImage.getMeasuredHeight() - border, paint);
                 break;
-            case R.id.rb_pencil:
+            case R.id.rb_brush:
+                canvas.drawLine(0, mPreviewImage.getMeasuredHeight() / 2,
+                        mPreviewImage.getMeasuredWidth(), mPreviewImage.getMeasuredHeight() / 2, paint);
+                break;
+            case R.id.rb_marker:
+                Paint textPaint = new Paint();
+                textPaint.setTextSize(PREVIEW_MARKER_TEXT_SIZE);
+                textPaint.setColor(Color.BLACK);
+                int borderPreviewText = 70;
+                canvas.drawText(getContext().getString(R.string.label_preview_text_dialog_palette),
+                        mPreviewImage.getMeasuredWidth() / 4, mPreviewImage.getMeasuredHeight() - borderPreviewText, textPaint);
                 canvas.drawLine(0, mPreviewImage.getMeasuredHeight() / 2,
                         mPreviewImage.getMeasuredWidth(), mPreviewImage.getMeasuredHeight() / 2, paint);
                 break;
@@ -202,10 +214,18 @@ public class DialogPalette extends AlertDialog implements SeekBar.OnSeekBarChang
             case R.id.rb_text:
                 paint.setTextSize(mThicknessBar.getProgress());
                 break;
-            case R.id.rb_pencil:
+            case R.id.rb_brush:
                 paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
                 paint.setStyle(Paint.Style.STROKE);
                 paint.setStrokeCap(Paint.Cap.ROUND);
+                paint.setStrokeJoin(Paint.Join.ROUND);
+                paint.setStrokeWidth(mThicknessBar.getProgress());
+                break;
+            case R.id.rb_marker:
+                paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeCap(Paint.Cap.ROUND);
+                paint.setAlpha(_50_PERCENT_ALPHA);
                 paint.setStrokeJoin(Paint.Join.ROUND);
                 paint.setStrokeWidth(mThicknessBar.getProgress());
                 break;

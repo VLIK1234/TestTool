@@ -41,13 +41,11 @@ public class PaintView extends ImageView {
     private Paint mPaintPath;
     private Paint mBitmapPaint;
     private Point mEraserPoint;
-    private int mCurrentOpacity = DEFAULT_THICKNESS;
     private OnTouchListener mOnTouchListener;
 
     private List<DrawObject> mDrawObjects;
     private List<DrawObject> mUndone;
 
-    private Paint mPaintText = new Paint();
     private PaintMode mPaintMode;
     private String mDrawString ="";
     private ITextDialogButtonClick mITextDialogButtonClick;
@@ -197,12 +195,6 @@ public class PaintView extends ImageView {
         mUndone = new ArrayList<>();
     }
 
-    public void setBrushColor(int brushColor) {
-        mPaintPath.setColor(brushColor);
-        mPaintPath.setAlpha(mCurrentOpacity);
-        mPaintText.setColor(brushColor);
-    }
-
     public void undo() {
         if (mDrawObjects.size() != 0) {
             mUndone.add(mDrawObjects.remove(mDrawObjects.size() - 1));
@@ -276,12 +268,6 @@ public class PaintView extends ImageView {
 
     public void setPaintMode(PaintMode paintMode){
         mPaintMode = paintMode;
-//        if (paintMode == PaintMode.ERASE) {
-//            mPaintPath.setXfermode(mClearMode);
-//        } else {
-//            mPaintPath.setXfermode(null);
-//            mPaintPath.setStrokeWidth(mLastBrushThickness);
-//        }
     }
 
     public void setPaintPath(Paint paintPath) {

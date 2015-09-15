@@ -63,10 +63,16 @@
         android:orientation="horizontal">
 
         <RadioButton
-            android:id="@+id/rb_pencil"
+            android:id="@+id/rb_brush"
             style="@style/PaletteButtonFirst"
             android:background="@drawable/palette_tool_selector"
-            android:button="@drawable/ic_pencil" />
+            android:button="@drawable/ic_brush" />
+
+        <RadioButton
+            android:id="@+id/rb_marker"
+            style="@style/PaletteButtonFirst"
+            android:background="@drawable/palette_tool_selector"
+            android:button="@drawable/ic_marker" />
 
         <RadioButton
             android:id="@+id/rb_eraser"

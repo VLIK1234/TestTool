@@ -190,8 +190,6 @@ public class PaintActivity extends BaseActivity
                 return true;
             }
         });
-
-        mPaintView.setBrushColor(getResources().getColor(R.color.red_paint));
     }
 
     private void showSavingDialog() {
