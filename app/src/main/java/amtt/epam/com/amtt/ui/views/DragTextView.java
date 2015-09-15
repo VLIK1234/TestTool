@@ -8,7 +8,6 @@ import android.support.annotation.IntDef;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -31,9 +30,9 @@ import amtt.epam.com.amtt.util.UIUtil;
 public class DragTextView extends LinearLayout implements View.OnTouchListener{
 
     public interface IDrawCallback{
-        void onDrawClick(String drawStringValue, int x, int y, int width, int height, int rightY, Paint paint);
+        void onDrawTextClick(String drawStringValue, int x, int y, int width, int height, int rightY, Paint paint);
         void onRemoveClick(View view);
-        void onTapClick(String drawStringValue, Paint paintText);
+        void onDrawTextClick(String drawStringValue, Paint paintText);
     }
 
     @IntDef({VISIBLE, INVISIBLE, GONE})
@@ -190,7 +189,7 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
             boolean tap = Math.abs(totalDeltaX) < sThreshold
                     && Math.abs(totalDeltaY) < sThreshold;
             if (tap) {
-                mIDrawCallback.onTapClick(mDrawString, mPaintText);
+                mIDrawCallback.onDrawTextClick(mDrawString, mPaintText);
             }
         }
     }
@@ -229,7 +228,7 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
             public void onClick(View v) {
                 int yRightIndent = (int)(mPaintText.getTextSize()-mPaintText.getTextSize()/10);
                 int leftXIndent = mLeftButtonLayout.getVisibility() == VISIBLE ? mLeftButtonLayout.getWidth():0;
-                mIDrawCallback.onDrawClick(mDrawString, mDragImageLayoutParams.x + leftXIndent, mDragImageLayoutParams.y+(int)mDragText.getY()+yRightIndent, mDragText.getWidth(), mDragText.getHeight(), mDragImageLayoutParams.y,  mPaintText);
+                mIDrawCallback.onDrawTextClick(mDrawString, mDragImageLayoutParams.x + leftXIndent, mDragImageLayoutParams.y + (int) mDragText.getY() + yRightIndent, mDragText.getWidth(), mDragText.getHeight(), mDragImageLayoutParams.y, mPaintText);
                 mIDrawCallback.onRemoveClick(DragTextView.this);
             }
         });

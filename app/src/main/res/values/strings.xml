@@ -176,5 +176,9 @@
     <string name="label_title_draw_text_dialog">Draw text</string>
     <string name="label_description_drag_image">Drag image</string>
     <string name="label_xiaomi_brand">XIAOMI</string>
+    <string name="label_preview_text_dialog_palette">Text</string>
+    <string name="key_thickness_progress_dialog_palette">seekbar_progress_key</string>
+    <string name="key_checked_palette_item">key_checked_palette_item</string>
+    <string name="key_instrument_for_draw_dialog_palette">key_instrument_for_draw_dialog_palette</string>
 
 </resources>

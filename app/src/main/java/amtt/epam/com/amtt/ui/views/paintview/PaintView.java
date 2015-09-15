@@ -32,20 +32,18 @@ import amtt.epam.com.amtt.R;
 public class PaintView extends ImageView {
 
     private static final int OUT_OF_SCREEN_COORDINATE = -999;
-    public static final int DEFAULT_OPACITY = 255;
-    public static final int DEFAULT_BRUSH_THICKNESS = 20;
-    private static final int DEFAULT_ERASER_THICKNESS = 100;
+    public static final int DEFAULT_THICKNESS = 255;
 
     private Canvas mCacheCanvas;
     private Bitmap mCacheCanvasBitmap;
     private Path mDrawPath;
+
     private Paint mPaintPath;
-    private Paint mEraserPaint;
     private Paint mBitmapPaint;
     private Point mEraserPoint;
     private PorterDuffXfermode mClearMode;
     private boolean isEraseMode;
-    private int mCurrentOpacity = DEFAULT_OPACITY;
+    private int mCurrentOpacity = DEFAULT_THICKNESS;
     private int mLastBrushThickness;
     private OnTouchListener mOnTouchListener;
 
@@ -75,7 +73,7 @@ public class PaintView extends ImageView {
             canvas.drawBitmap(mCacheCanvasBitmap, 0, 0, mBitmapPaint);
             canvas.drawPath(mDrawPath, mPaintPath);
             if (mPaintMode == PaintMode.ERASE) {
-                canvas.drawPoint(mEraserPoint.x, mEraserPoint.y, mEraserPaint);
+                canvas.drawPoint(mEraserPoint.x, mEraserPoint.y, mPaintPath);
             }
         }
     }
@@ -128,7 +126,7 @@ public class PaintView extends ImageView {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             mDrawString = editDrawText.getText().toString();
-                                            mITextDialogButtonClick.CreateDragViewCallback(mDrawString, new Paint(mPaintText), 0, 0);
+                                            mITextDialogButtonClick.CreateDragViewCallback(mDrawString, new Paint(mPaintPath), 0, 0);
 
                                         }
                                     })
@@ -198,30 +196,10 @@ public class PaintView extends ImageView {
 
     private void setUpDrawingArticles() {
         mPaintMode = PaintMode.DRAW;
-
         mBitmapPaint = new Paint(Paint.DITHER_FLAG);
         mDrawPath = new Path();
-
-        mPaintPath = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
-        mPaintPath.setStrokeWidth(mLastBrushThickness = DEFAULT_BRUSH_THICKNESS);
-        mPaintPath.setStyle(Paint.Style.STROKE);
-        mPaintPath.setStrokeCap(Paint.Cap.ROUND);
-        mPaintPath.setStrokeJoin(Paint.Join.ROUND);
-
-        mPaintText.setColor(Color.BLACK);
-        mPaintText.setTextSize(mLastBrushThickness = DEFAULT_BRUSH_THICKNESS);
-
-        mEraserPaint = new Paint();
-        mEraserPaint.setStrokeWidth(DEFAULT_ERASER_THICKNESS);
-        mEraserPaint.setStyle(Paint.Style.STROKE);
-        mEraserPaint.setStrokeCap(Paint.Cap.ROUND);
-        mEraserPaint.setStrokeJoin(Paint.Join.ROUND);
-        mEraserPaint.setColor(getResources().getColor(R.color.primaryTranslucent));
-
+        mPaintPath = new Paint();
         mEraserPoint = new Point();
-
-        mClearMode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
-
         mDrawObjects = new ArrayList<>();
         mUndone = new ArrayList<>();
     }
@@ -279,19 +257,6 @@ public class PaintView extends ImageView {
         }
     }
 
-    public void setThickness(float thickness) {
-        if (isEraseMode) {
-            mEraserPaint.setStrokeWidth(thickness);
-        }
-        mPaintText.setTextSize(thickness);
-        mPaintPath.setStrokeWidth(thickness);
-    }
-
-    public void setBrushOpacity(int opacity) {
-        mPaintPath.setAlpha(opacity);
-        mCurrentOpacity = opacity;
-    }
-
     private void redrawCache() {
         if (mCacheCanvas != null) {
             mCacheCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
@@ -316,22 +281,18 @@ public class PaintView extends ImageView {
         invalidate();
     }
 
-    public int getEraserThickness() {
-        return (int) mEraserPaint.getStrokeWidth();
-    }
-
-    public int getBrushThickness() {
-        return (int) mPaintPath.getStrokeWidth();
-    }
-
     public void setPaintMode(PaintMode paintMode){
         mPaintMode = paintMode;
-        if (paintMode == PaintMode.ERASE) {
-            mPaintPath.setXfermode(mClearMode);
-        } else {
-            mPaintPath.setXfermode(null);
-            mPaintPath.setStrokeWidth(mLastBrushThickness);
-        }
+//        if (paintMode == PaintMode.ERASE) {
+//            mPaintPath.setXfermode(mClearMode);
+//        } else {
+//            mPaintPath.setXfermode(null);
+//            mPaintPath.setStrokeWidth(mLastBrushThickness);
+//        }
+    }
+
+    public void setPaintPath(Paint paintPath) {
+        mPaintPath = paintPath;
     }
 
     public void setITextDialogButtonClick(ITextDialogButtonClick ITextDialogButtonClick) {

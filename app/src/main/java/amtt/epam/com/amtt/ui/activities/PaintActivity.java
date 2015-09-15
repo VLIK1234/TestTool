@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -59,8 +60,8 @@ import amtt.epam.com.amtt.util.UIUtil;
  */
 
 public class PaintActivity extends BaseActivity
-                            implements OnSeekBarChangeListener, Handler.Callback, OnSystemUiVisibilityChangeListener,
-                            OnEntireGroupCheckedChangeListener, ImageLoadingListener, ITextDialogButtonClick, DragTextView.IDrawCallback, RadioGroup.OnCheckedChangeListener {
+                            implements Handler.Callback, OnSystemUiVisibilityChangeListener,
+        ImageLoadingListener, ITextDialogButtonClick, DragTextView.IDrawCallback, DialogInterface.OnDismissListener{
 
     private static final String TAG = PaintActivity.class.getSimpleName();
     public static final String KEY_STEP_ID = "key_step_id";
@@ -76,12 +77,9 @@ public class PaintActivity extends BaseActivity
     private Handler mHandler;
     private View mDecorView;
     private ActionBar mActionBar;
-    public TextView mTextValueThickness;
-    public TextView mTextValueOpacity;
 
     private WindowManager mWindowManager;
     private DragTextView mDragTextView;
-    private Paint mPaint;
     private DialogPalette mDialogPalette;
 
     @Override
@@ -113,7 +111,9 @@ public class PaintActivity extends BaseActivity
         } else {
             setErrorState();
         }
-        mDialogPalette = new DialogPalette(PaintActivity.this, this, this, this);
+        mDialogPalette = new DialogPalette(PaintActivity.this, this);
+        mPaintView.setPaintMode(mDialogPalette.getPaintMode());
+        mPaintView.setPaintPath(mDialogPalette.getPaint());
     }
 
     @Override
@@ -136,8 +136,6 @@ public class PaintActivity extends BaseActivity
                 showSavingDialog();
                 return true;
             case R.id.action_palette:
-//                if (mPaletteDialog == null) {
-//                }
                 mDialogPalette.show();
                 return true;
             case R.id.action_undo:
@@ -247,24 +245,6 @@ public class PaintActivity extends BaseActivity
         hasSomethingGoneWrong = true;
     }
 
-    //Callbacks
-    //SeekBar
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        switch (seekBar.getId()) {
-            case R.id.sb_thickness:
-                mPaintView.setThickness(progress);
-//                mDialogPalette.setThickness(progress);
-                break;
-        }
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {}
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {}
-
     //Handler
     @Override
     public boolean handleMessage(Message msg) {
@@ -288,12 +268,6 @@ public class PaintActivity extends BaseActivity
             mHandler.sendEmptyMessageDelayed(HIDE_UI, HIDE_UI_DELAY);
             mActionBar.show();
         }
-    }
-
-    //Palette items (colors)
-    @Override
-    public void onCheckedChanged(PaletteItem paletteItem) {
-        mPaintView.setBrushColor(paletteItem.getColor());
     }
 
     //ImageLoader
@@ -327,7 +301,7 @@ public class PaintActivity extends BaseActivity
     }
 
     @Override
-    public void onDrawClick(String drawValue, int x, int y, int width, int height, int rightY, Paint paint) {
+    public void onDrawTextClick(String drawValue, int x, int y, int width, int height, int rightY, Paint paint) {
         mPaintView.drawText(drawValue, x, y, width, height, rightY, paint);
 
     }
@@ -338,7 +312,7 @@ public class PaintActivity extends BaseActivity
     }
 
     @Override
-    public void onTapClick(final String drawStringValue, final Paint paintText) {
+    public void onDrawTextClick(final String drawStringValue, final Paint paintText) {
         final View view = ((LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_draw_text, null);
         final EditText editDrawText = (EditText) view.findViewById(R.id.et_draw_text);
         editDrawText.setText(drawStringValue);
@@ -368,19 +342,8 @@ public class PaintActivity extends BaseActivity
     }
 
     @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        switch (checkedId) {
-            case R.id.rb_eraser:
-                mPaintView.setPaintMode(PaintMode.ERASE);
-                break;
-            case R.id.rb_pencil:
-                mPaintView.setPaintMode(PaintMode.DRAW);
-                break;
-            case R.id.rb_text:
-                mPaintView.setPaintMode(PaintMode.TEXT);
-                break;
-            default:
-                break;
-        }
+    public void onDismiss(DialogInterface dialog) {
+        mPaintView.setPaintMode(mDialogPalette.getPaintMode());
+        mPaintView.setPaintPath(mDialogPalette.getPaint());
     }
 }

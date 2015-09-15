@@ -23,7 +23,6 @@ public class MultilineRadioGroup extends RadioGroup {
 
     }
 
-    private int mLastCheckedGroupIndex;
     private List<RadioGroupLine> mRadioGroups;
     private OnEntireGroupCheckedChangeListener mListener;
 
@@ -52,9 +51,9 @@ public class MultilineRadioGroup extends RadioGroup {
                     }
                 }
             });
-            if (getChildCount() == 1) {
-                ((PaletteItem) ((RadioGroupLine) child).getChildAt(0)).setChecked(true);
-            }
+//            if (getChildCount() == 1) {
+//                ((PaletteItem) ((RadioGroupLine) child).getChildAt(0)).setChecked(true);
+//            }
             if (mRadioGroups == null) {
                 mRadioGroups = new ArrayList<>();
             }

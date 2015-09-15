@@ -20,6 +20,14 @@ public class PreferenceUtil {
         getPref().edit().putString(key, value).apply();
     }
 
+    public static void putInt(String key, int value) {
+        getPref().edit().putInt(key, value).apply();
+    }
+
+    public static int getInt(String key, int value) {
+        return getPref().getInt(key, value);
+    }
+
     public static boolean getBoolean(String key) {
         return getPref().getBoolean(key, false);
     }
