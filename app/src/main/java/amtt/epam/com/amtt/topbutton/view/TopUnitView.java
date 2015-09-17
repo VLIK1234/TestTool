@@ -3,8 +3,6 @@ package amtt.epam.com.amtt.topbutton.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.view.Gravity;
@@ -82,17 +80,9 @@ public class TopUnitView extends LinearLayout {
         this.setLayoutParams(params);
     }
 
-    private void setBackgroundCompat(View view, Drawable drawable) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            view.setBackground(drawable);
-        } else {
-            view.setBackgroundDrawable(drawable);
-        }
-    }
-
     private Button getButton() {
         Button button = new Button(getContext());
-        setBackgroundCompat(button, getResources().getDrawable(mBackgroundIconId));
+        UIUtil.setBackgroundCompat(button, getResources().getDrawable(mBackgroundIconId));
         button.setClickable(false);
         button.setLayoutParams(new LinearLayout.LayoutParams(
                 (int) getResources().getDimension(R.dimen.button_small_size),
