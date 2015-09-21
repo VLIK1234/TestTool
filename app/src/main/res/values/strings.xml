@@ -13,6 +13,7 @@
     <string name="title_activity_paint">Notes</string>
     <string name="title_activity_detail">Detail</string>
     <string name="title_activity_take_step">Take step</string>
+    <string name="title_activity_task_name">Task name</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
 
@@ -180,5 +181,8 @@
     <string name="key_thickness_progress_dialog_palette">seekbar_progress_key</string>
     <string name="key_checked_palette_item">key_checked_palette_item</string>
     <string name="key_instrument_for_draw_dialog_palette">key_instrument_for_draw_dialog_palette</string>
+    <string name="titke_task_name_dialog">Task name</string>
+    <string name="message_resolved_char_task_name_dialog"><![CDATA[Please don\'t use in task name |, \\, ?, *, <, \", :, >.]]></string>
+    <string name="message_empty_task_name_dialog">Please write task name. It can not be empty.</string>
 
 </resources>

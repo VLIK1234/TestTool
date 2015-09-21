@@ -3,17 +3,13 @@ package amtt.epam.com.amtt.ui.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,15 +17,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnSystemUiVisibilityChangeListener;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -43,16 +32,11 @@ import amtt.epam.com.amtt.common.Callback;
 import amtt.epam.com.amtt.database.util.ContentFromDatabase;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
-import amtt.epam.com.amtt.ui.dialog.DialogPalette;
+import amtt.epam.com.amtt.ui.dialog.PaletteDialog;
 import amtt.epam.com.amtt.ui.views.DragTextView;
-import amtt.epam.com.amtt.ui.views.MultilineRadioGroup;
-import amtt.epam.com.amtt.ui.views.MultilineRadioGroup.OnEntireGroupCheckedChangeListener;
-import amtt.epam.com.amtt.ui.views.PaletteItem;
 import amtt.epam.com.amtt.ui.views.paintview.ITextDialogButtonClick;
-import amtt.epam.com.amtt.ui.views.paintview.PaintMode;
 import amtt.epam.com.amtt.ui.views.paintview.PaintView;
 import amtt.epam.com.amtt.util.Logger;
-import amtt.epam.com.amtt.util.UIUtil;
 
 /**
  @author Artsiom_Kaliaha
@@ -80,7 +64,7 @@ public class PaintActivity extends BaseActivity
 
     private WindowManager mWindowManager;
     private DragTextView mDragTextView;
-    private DialogPalette mDialogPalette;
+    private PaletteDialog mPaletteDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,9 +95,9 @@ public class PaintActivity extends BaseActivity
         } else {
             setErrorState();
         }
-        mDialogPalette = new DialogPalette(PaintActivity.this, this);
-        mPaintView.setPaintMode(mDialogPalette.getPaintMode());
-        mPaintView.setPaintPath(mDialogPalette.getPaint());
+        mPaletteDialog = new PaletteDialog(PaintActivity.this, this);
+        mPaintView.setPaintMode(mPaletteDialog.getPaintMode());
+        mPaintView.setPaintPath(mPaletteDialog.getPaint());
     }
 
     @Override
@@ -136,7 +120,7 @@ public class PaintActivity extends BaseActivity
                 showSavingDialog();
                 return true;
             case R.id.action_palette:
-                mDialogPalette.show();
+                mPaletteDialog.show();
                 return true;
             case R.id.action_undo:
                 mPaintView.undo();
@@ -311,7 +295,7 @@ public class PaintActivity extends BaseActivity
 
     @Override
     public void onDrawTextClick(final String drawStringValue, final Paint paintText) {
-        final View view = ((LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_draw_text, null);
+        final View view = ((LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_edit_text, null);
         final EditText editDrawText = (EditText) view.findViewById(R.id.et_draw_text);
         editDrawText.setText(drawStringValue);
 
@@ -341,7 +325,7 @@ public class PaintActivity extends BaseActivity
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        mPaintView.setPaintMode(mDialogPalette.getPaintMode());
-        mPaintView.setPaintPath(mDialogPalette.getPaint());
+        mPaintView.setPaintMode(mPaletteDialog.getPaintMode());
+        mPaintView.setPaintPath(mPaletteDialog.getPaint());
     }
 }

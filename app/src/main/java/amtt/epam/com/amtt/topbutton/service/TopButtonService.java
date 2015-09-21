@@ -22,6 +22,7 @@ import java.io.File;
 import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.helper.NotificationIdConstant;
+import amtt.epam.com.amtt.topbutton.view.TopButtonBarView;
 import amtt.epam.com.amtt.ui.activities.SettingActivity;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
@@ -183,7 +184,7 @@ public class TopButtonService extends Service{
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancelAll();
             isViewAdd = false;
-            mTopButtonView.getButtonsBar().setIsRecordStarted(false);
+            TopButtonBarView.setIsRecordStarted(false);
             mWindowManager.removeViewImmediate(mTopButtonView);
             mWindowManager.removeViewImmediate(mTopButtonView.getButtonsBar());
             mTopButtonView = null;
@@ -192,7 +193,6 @@ public class TopButtonService extends Service{
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager.cancelAll();
         TestUtil.closeTest();
-        LocalContent.removeAllAttachFile();
     }
 
     private void showNotification() {
@@ -252,7 +252,7 @@ public class TopButtonService extends Service{
     }
 
     private void stopRecord(){
-        mTopButtonView.getButtonsBar().setIsRecordStarted(false);
+        TopButtonBarView.setIsRecordStarted(false);
         LocalContent.removeAllSteps();
     }
 

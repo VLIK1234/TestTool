@@ -26,6 +26,7 @@ import amtt.epam.com.amtt.ui.activities.ExpectedResultsActivity;
 import amtt.epam.com.amtt.ui.activities.StepsActivity;
 import amtt.epam.com.amtt.ui.activities.TakeStepActivity;
 import amtt.epam.com.amtt.ui.activities.UserInfoActivity;
+import amtt.epam.com.amtt.ui.activities.TaskNameActivity;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.UIUtil;
 
@@ -53,7 +54,6 @@ public class TopButtonBarView extends FrameLayout {
     private TopUnitView mButtonStopRecord;
     private TopUnitView mButtonShowSteps;
     private TopUnitView mButtonCloseApp;
-    private final ActiveUser mUser = ActiveUser.getInstance();
 
     static {
         isRecordStarted = false;
@@ -100,15 +100,10 @@ public class TopButtonBarView extends FrameLayout {
         mButtonStartRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), R.drawable.background_start_record, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                isRecordStarted = true;
-                mUser.setRecord(true);
+                Intent taskNameActivityIntent = new Intent(getContext(), TaskNameActivity.class);
+                taskNameActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(taskNameActivityIntent);
                 hide();
-                LocalContent.removeAllSteps();
-
-                Intent intentLogs = new Intent();
-                intentLogs.setAction("TAKE_LOGS");
-                getContext().sendOrderedBroadcast(intentLogs, null);
-                Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_SHORT).show();
                 mTopButtonListener.onTouch();
             }
         });
@@ -163,7 +158,7 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 isRecordStarted = false;
-                mUser.setRecord(false);
+                ActiveUser.getInstance().setRecord(false);
                 hide();
                 LocalContent.removeAllSteps();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_SHORT).show();
@@ -264,9 +259,9 @@ public class TopButtonBarView extends FrameLayout {
         mButtonsBar.startAnimation(translateUp);
     }
 
-    public void setIsRecordStarted(boolean isRecordStarted) {
+    public static void setIsRecordStarted(boolean isRecordStarted) {
         TopButtonBarView.isRecordStarted = isRecordStarted;
-        mUser.setRecord(isRecordStarted);
+        ActiveUser.getInstance().setRecord(isRecordStarted);
     }
 
     public void move(int x, int y) {

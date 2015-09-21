@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import amtt.epam.com.amtt.http.MimeType;
@@ -16,7 +18,15 @@ import amtt.epam.com.amtt.http.MimeType;
 public class FileUtil {
 
     private static final String LOCAL_CACHE_DIRECTORY = "amtt_cache";
-    private static String sCacheLocalDir = Environment.getExternalStorageDirectory().toString() + File.separatorChar + LOCAL_CACHE_DIRECTORY + File.separatorChar;
+    private static char slash = File.separatorChar;
+    private static String taskName = "default";
+    private static final String TASK_NAME_DATETIME_FORMAT = "dd-MM-HH-mm";
+
+    public static void setTaskName(String taskName) {
+        long imageTime = System.currentTimeMillis();
+        String taskNameDate = "_" + new SimpleDateFormat(TASK_NAME_DATETIME_FORMAT).format(new Date(imageTime));
+        FileUtil.taskName = taskName.replaceAll("[ ]+","_")+ taskNameDate;
+    }
 
     public static String getFileName(@Nullable String filePath) {
         if (filePath == null) {
@@ -64,14 +74,28 @@ public class FileUtil {
     }
 
     public static String getCacheLocalDir() {
-        File localCache = new File(sCacheLocalDir);
-        if (!localCache.canWrite()) {
-            if (localCache.mkdir()) {
-                Log.d(FileUtil.class.getSimpleName(),"Was created "+localCache.getName() +" folder" );
-            }else{
-                Log.d(FileUtil.class.getSimpleName(),"Failed created "+localCache.getName() +" folder" );
+        String amttCacheDir = Environment.getExternalStorageDirectory().toString() + slash
+                + LOCAL_CACHE_DIRECTORY + slash;
+        createFolder(amttCacheDir);
+
+        String userCacheDir = Environment.getExternalStorageDirectory().toString() + slash
+                + LOCAL_CACHE_DIRECTORY + slash + ActiveUser.getInstance().getUserName()+ slash;
+        createFolder(userCacheDir);
+
+        String taskDir = Environment.getExternalStorageDirectory().toString() + slash
+                + LOCAL_CACHE_DIRECTORY + slash + ActiveUser.getInstance().getUserName()+ slash + taskName + slash;
+        createFolder(taskDir);
+        return taskDir;
+    }
+
+    public static void createFolder(String folderPath){
+        File folder = new File(folderPath);
+        if (!folder.canWrite()) {
+            if (folder.mkdir()) {
+                Log.d(FileUtil.class.getSimpleName(), "Was created " + folder.getName() + " folder");
+            } else {
+                Log.d(FileUtil.class.getSimpleName(), "Failed created " + folder.getName() + " folder");
             }
         }
-        return sCacheLocalDir;
     }
 }

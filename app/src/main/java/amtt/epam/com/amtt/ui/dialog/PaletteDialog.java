@@ -33,7 +33,7 @@ import amtt.epam.com.amtt.util.PreferenceUtil;
  * @author Ivan Bakach
  * @version on 13.09.2015
  */
-public class DialogPalette extends AlertDialog implements SeekBar.OnSeekBarChangeListener, RadioGroup.OnCheckedChangeListener,
+public class PaletteDialog extends AlertDialog implements SeekBar.OnSeekBarChangeListener, RadioGroup.OnCheckedChangeListener,
         MultilineRadioGroup.OnEntireGroupCheckedChangeListener {
 
     public static final int _50_PERCENT_ALPHA = 128;
@@ -48,7 +48,7 @@ public class DialogPalette extends AlertDialog implements SeekBar.OnSeekBarChang
     private RadioGroup mPaintToolsGroup;
     private OnDismissListener mDismissListener;
 
-    public DialogPalette(Context context, OnDismissListener dismissListener) {
+    public PaletteDialog(Context context, OnDismissListener dismissListener) {
         super(context);
         mDismissListener = dismissListener;
         initPaletteDialog(context, mDismissListener);

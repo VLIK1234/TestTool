@@ -181,6 +181,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.ExpectedResultsActivity"/>
         </activity>
+
+        <activity
+            android:name=".ui.activities.TaskNameActivity"
+            android:screenOrientation="sensor"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/DialogActivity"
+            android:label="@string/title_activity_task_name" />
     </application>
 
 </manifest>

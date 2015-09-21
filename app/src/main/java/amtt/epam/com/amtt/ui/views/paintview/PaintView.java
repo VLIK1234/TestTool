@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
@@ -95,14 +94,14 @@ public class PaintView extends ImageView {
                         mDrawPath.moveTo(x, y);
                         break;
                     case TEXT:
-                        final View view = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_draw_text, null);
+                        final View view = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_edit_text, null);
                         final EditText editDrawText = (EditText) view.findViewById(R.id.et_draw_text);
                         boolean isExistedText = false;
                         for (DrawObject object: mDrawObjects) {
                             if (object instanceof DrawnText) {
                                 if (((DrawnText)object).getDragViewRectangle().isIncludeInRegion((int) x, (int) y)) {
                                     isExistedText = true;
-                                    undo((DrawnText)object);
+                                    undo(object);
                                     break;
                                 } else {
                                     isExistedText = false;
