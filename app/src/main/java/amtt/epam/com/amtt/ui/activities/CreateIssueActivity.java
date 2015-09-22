@@ -191,6 +191,14 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     private void initShareAttachmentButton() {
+        Button shareFileObserver = (Button) findViewById(R.id.bt_share_file_observer);
+        shareFileObserver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent shareFileActivity = new Intent(CreateIssueActivity.this, ShareFileActivity.class);
+                startActivity(shareFileActivity);
+            }
+        });
         Button shareButton = (Button) findViewById(R.id.bt_share_attachmnet);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override

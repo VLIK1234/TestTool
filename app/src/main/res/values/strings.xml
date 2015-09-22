@@ -186,5 +186,7 @@
     <string name="message_resolved_char_task_name_dialog"><![CDATA[Please don\'t use in task name |, \\, ?, *, <, \", :, >.]]></string>
     <string name="message_empty_task_name_dialog">Please write task name. It can not be empty.</string>
     <string name="message_empty_test_project_for_cache_subfolder">Please choose Test project into setting before start record.</string>
+    <string name="label_share_file_observer">Share files</string>
+    <string name="label_content_description_file_icon">File icon</string>
 
 </resources>
