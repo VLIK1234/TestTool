@@ -188,6 +188,12 @@
             android:configChanges="orientation|screenSize"
             android:theme="@style/DialogActivity"
             android:label="@string/title_activity_task_name" />
+
+        <activity
+            android:name=".ui.activities.ShareFileActivity"
+            android:screenOrientation="sensor"
+            android:launchMode="standard"
+            android:label="@string/title_activity_share_file" />
     </application>
 
 </manifest>

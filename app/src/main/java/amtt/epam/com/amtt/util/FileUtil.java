@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import amtt.epam.com.amtt.CoreApplication;
+import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.http.MimeType;
 /**
  * @author Ivan_Bakach
@@ -78,13 +80,15 @@ public class FileUtil {
                 + LOCAL_CACHE_DIRECTORY + slash;
         createFolder(amttCacheDir);
 
-        String userCacheDir = Environment.getExternalStorageDirectory().toString() + slash
-                + LOCAL_CACHE_DIRECTORY + slash + ActiveUser.getInstance().getUserName()+ slash;
+        String userCacheDir = amttCacheDir + ActiveUser.getInstance().getUserName()+ slash;
         createFolder(userCacheDir);
 
-        String taskDir = Environment.getExternalStorageDirectory().toString() + slash
-                + LOCAL_CACHE_DIRECTORY + slash + ActiveUser.getInstance().getUserName()+ slash + taskName + slash;
+        String projectCacheDir = userCacheDir + PreferenceUtil.getString(CoreApplication.getContext().getString(R.string.key_test_project))+slash;
+        createFolder(projectCacheDir);
+
+        String taskDir = projectCacheDir + taskName + slash;
         createFolder(taskDir);
+
         return taskDir;
     }
 

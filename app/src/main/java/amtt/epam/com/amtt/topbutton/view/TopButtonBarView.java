@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.os.Environment;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +30,9 @@ import amtt.epam.com.amtt.ui.activities.TakeStepActivity;
 import amtt.epam.com.amtt.ui.activities.UserInfoActivity;
 import amtt.epam.com.amtt.ui.activities.TaskNameActivity;
 import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.UIUtil;
+import amtt.epam.com.amtt.util.ZipUtil;
 
 /**
  * @author Artsiom_Kaliaha
@@ -100,9 +104,13 @@ public class TopButtonBarView extends FrameLayout {
         mButtonStartRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), R.drawable.background_start_record, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                Intent taskNameActivityIntent = new Intent(getContext(), TaskNameActivity.class);
-                taskNameActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().startActivity(taskNameActivityIntent);
+                if (!TextUtils.isEmpty(PreferenceUtil.getString(getContext().getString(R.string.key_test_project)))) {
+                    Intent taskNameActivityIntent = new Intent(getContext(), TaskNameActivity.class);
+                    taskNameActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().startActivity(taskNameActivityIntent);
+                } else {
+                    Toast.makeText(getContext(), R.string.message_empty_test_project_for_cache_subfolder, Toast.LENGTH_SHORT).show();
+                }
                 hide();
                 mTopButtonListener.onTouch();
             }

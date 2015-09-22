@@ -14,6 +14,7 @@
     <string name="title_activity_detail">Detail</string>
     <string name="title_activity_take_step">Take step</string>
     <string name="title_activity_task_name">Task name</string>
+    <string name="title_activity_share_file">Share file</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
 
@@ -184,5 +185,6 @@
     <string name="titke_task_name_dialog">Task name</string>
     <string name="message_resolved_char_task_name_dialog"><![CDATA[Please don\'t use in task name |, \\, ?, *, <, \", :, >.]]></string>
     <string name="message_empty_task_name_dialog">Please write task name. It can not be empty.</string>
+    <string name="message_empty_test_project_for_cache_subfolder">Please choose Test project into setting before start record.</string>
 
 </resources>
