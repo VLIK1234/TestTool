@@ -103,7 +103,6 @@ public class PaintActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
         mHandler.sendEmptyMessageDelayed(HIDE_UI, HIDE_UI_DELAY);
     }
 

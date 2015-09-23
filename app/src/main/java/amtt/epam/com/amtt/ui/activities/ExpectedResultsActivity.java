@@ -81,23 +81,10 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expected_results);
         mHandler = new TagsHandler(this);
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         initViews();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
     }
 
     @Override
@@ -150,7 +137,7 @@ public class ExpectedResultsActivity extends BaseActivity implements ExpectedRes
 
     @Override
     public void onShowCard(final int position) {
-        getExtras(position, DetailActivity.class);
+        getExtras(position, ExpectedResultsDetailActivity.class);
     }
 
     @Override

@@ -124,7 +124,7 @@
                 android:value=".ui.activities.MainActivity"/>
         </activity>
         <activity
-            android:name=".ui.activities.DetailActivity"
+            android:name=".ui.activities.ExpectedResultsDetailActivity"
             android:label="@string/title_activity_detail"
             android:noHistory="true"
             android:parentActivityName=".ui.activities.ExpectedResultsActivity">

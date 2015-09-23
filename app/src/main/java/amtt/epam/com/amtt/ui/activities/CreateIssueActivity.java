@@ -124,7 +124,6 @@ public class CreateIssueActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
         mBundle = getIntent().getExtras();
         initViews();
         mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
@@ -140,13 +139,11 @@ public class CreateIssueActivity extends BaseActivity
     protected void onPause() {
         super.onPause();
         setDefaultConfigs();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
         Intent intentLogs = new Intent();
         intentLogs.setAction("TAKE_LOGS");
         getBaseContext().sendBroadcast(intentLogs);

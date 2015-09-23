@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+
 /**
  * @author Ivan_Bakach
  * @version on 26.03.2015
@@ -20,7 +22,20 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
         mInputManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     public void showProgress(boolean show) {

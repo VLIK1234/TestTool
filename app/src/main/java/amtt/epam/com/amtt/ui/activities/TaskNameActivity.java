@@ -24,12 +24,11 @@ import amtt.epam.com.amtt.util.FileUtil;
  * @author IvanBakach
  * @version on 21.09.2015
  */
-public class TaskNameActivity extends AppCompatActivity{
+public class TaskNameActivity extends BaseActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
         final View view = ((LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_edit_text, null);
         final EditText editDrawText = (EditText) view.findViewById(R.id.et_draw_text);
         final AlertDialog alertDialog = new AlertDialog.Builder(TaskNameActivity.this)
@@ -87,11 +86,5 @@ public class TaskNameActivity extends AppCompatActivity{
             }
         });
         alertDialog.show();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 }

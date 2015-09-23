@@ -31,7 +31,6 @@ public class AccountsActivity extends BaseActivity implements LoaderCallbacks<Cu
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -47,12 +46,6 @@ public class AccountsActivity extends BaseActivity implements LoaderCallbacks<Cu
             }
         });
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     @Override

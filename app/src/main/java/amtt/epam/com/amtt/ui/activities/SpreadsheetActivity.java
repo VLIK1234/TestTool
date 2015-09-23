@@ -30,7 +30,6 @@ public class SpreadsheetActivity extends BaseActivity implements LoaderManager.L
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spreadsheet);
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -45,18 +44,6 @@ public class SpreadsheetActivity extends BaseActivity implements LoaderManager.L
             }
         });
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, SpreadsheetActivity.this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
     }
 
     //Callback

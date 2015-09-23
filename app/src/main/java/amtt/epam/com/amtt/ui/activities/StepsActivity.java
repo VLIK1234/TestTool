@@ -28,7 +28,7 @@ import amtt.epam.com.amtt.util.UIUtil;
  @version on 10.06.2015
  */
 
-public class StepsActivity extends AppCompatActivity implements StepsAdapter.ViewHolder.ClickListener {
+public class StepsActivity extends BaseActivity implements StepsAdapter.ViewHolder.ClickListener {
 
     private static final String TAG = StepsActivity.class.getSimpleName();
     private static final int SPAN_COUNT = 3;
@@ -71,18 +71,6 @@ public class StepsActivity extends AppCompatActivity implements StepsAdapter.Vie
                 Logger.e(TAG, e.getMessage(), e);
             }
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     private RecyclerView.LayoutManager getLayoutManger() {

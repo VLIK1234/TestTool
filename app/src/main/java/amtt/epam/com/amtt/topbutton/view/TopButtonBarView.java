@@ -126,7 +126,6 @@ public class TopButtonBarView extends FrameLayout {
         mButtonOpenUserInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), R.drawable.background_user_info, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                TopButtonService.sendActionChangeTopButtonVisibility(false);
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
                 userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(userInfoIntent);
@@ -136,7 +135,6 @@ public class TopButtonBarView extends FrameLayout {
         mButtonExpectedResult = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                TopButtonService.sendActionChangeTopButtonVisibility(false);
                 Intent intent = new Intent(getContext(), ExpectedResultsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intent);
@@ -176,7 +174,6 @@ public class TopButtonBarView extends FrameLayout {
         mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.label_close), R.drawable.background_close, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                TopButtonService.sendActionChangeTopButtonVisibility(false);
                 Intent intentAsk = new Intent(getContext(), AskExitActivity.class);
                 intentAsk.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentAsk);

@@ -6,6 +6,8 @@ import android.util.Log;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -75,15 +77,18 @@ public class FileUtil {
         return resultDelete;
     }
 
-    public static String getCacheLocalDir() {
+    public static String getUsersCacheDir(){
         String amttCacheDir = Environment.getExternalStorageDirectory().toString() + slash
                 + LOCAL_CACHE_DIRECTORY + slash;
         createFolder(amttCacheDir);
 
         String userCacheDir = amttCacheDir + ActiveUser.getInstance().getUserName()+ slash;
         createFolder(userCacheDir);
+        return userCacheDir;
+    }
 
-        String projectCacheDir = userCacheDir + PreferenceUtil.getString(CoreApplication.getContext().getString(R.string.key_test_project))+slash;
+    public static String getCacheLocalDir() {
+        String projectCacheDir = FileUtil.getUsersCacheDir() + PreferenceUtil.getString(CoreApplication.getContext().getString(R.string.key_test_project))+slash;
         createFolder(projectCacheDir);
 
         String taskDir = projectCacheDir + taskName + slash;
@@ -101,5 +106,31 @@ public class FileUtil {
                 Log.d(FileUtil.class.getSimpleName(), "Failed created " + folder.getName() + " folder");
             }
         }
+    }
+
+    public static File[] sortArray(final File[] inputFiles){
+        ArrayList<File> sortFilesAndDirs = new ArrayList<>();
+        ArrayList<File> dirsArrayList = new ArrayList<>();
+        ArrayList<File> filesArrayList = new ArrayList<>();
+
+        for (File file : inputFiles) {
+            if (file.isDirectory()) {
+                dirsArrayList.add(file);
+            } else {
+                filesArrayList.add(file);
+            }
+        }
+        Collections.sort(filesArrayList);
+        Collections.sort(dirsArrayList);
+
+        sortFilesAndDirs.addAll(dirsArrayList);
+        sortFilesAndDirs.addAll(filesArrayList);
+
+        File[] outSortFileArray = new File[sortFilesAndDirs.size()];
+        for (int i = 0; i < outSortFileArray.length; i++) {
+            outSortFileArray[i] = sortFilesAndDirs.get(i);
+        }
+
+        return outSortFileArray;
     }
 }

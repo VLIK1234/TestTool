@@ -91,18 +91,6 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-            TopButtonService.sendActionChangeTopButtonVisibility(true);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_user_info, menu);
         return true;

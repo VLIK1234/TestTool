@@ -8,14 +8,13 @@ import android.widget.TextView;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
-import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
  * @author Iryna Monchanka
  * @version on 7/13/2015
  */
 
-public class DetailActivity extends BaseActivity {
+public class ExpectedResultsDetailActivity extends BaseActivity {
 
     private TextView mNameTextView;
     private TextView mPriorityTextView;
@@ -26,19 +25,12 @@ public class DetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        setContentView(R.layout.activity_expected_results_detail);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(false);
         }
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
         initViews();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     private void setTestcaseData() {
@@ -85,7 +77,7 @@ public class DetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (mTestcase != null) {
-                    Intent loginIntent = new Intent(DetailActivity.this, CreateIssueActivity.class);
+                    Intent loginIntent = new Intent(ExpectedResultsDetailActivity.this, CreateIssueActivity.class);
                     loginIntent.putExtra(ExpectedResultsActivity.NAME, mTestcase.getTestCaseNameGSX());
                     loginIntent.putExtra(ExpectedResultsActivity.PRIORITY, mTestcase.getPriorityGSX());
                     loginIntent.putExtra(ExpectedResultsActivity.STEPS, mTestcase.getTestStepsGSX());
