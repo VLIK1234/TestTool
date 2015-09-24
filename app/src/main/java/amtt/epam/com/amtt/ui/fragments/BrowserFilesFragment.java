@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.io.File;
 
@@ -29,6 +30,7 @@ public class BrowserFilesFragment extends Fragment implements FileObserverAdapte
     public static final String FOLDER_PATH_KEY = "folder_path_key";
     private FileObserverAdapter mFileObserverAdapter;
     private RecyclerView mRecyclerView;
+    private TextView mEmptyView;
     private IOpenFolder mIOpenFolder;
 
 
@@ -38,6 +40,7 @@ public class BrowserFilesFragment extends Fragment implements FileObserverAdapte
         View view = inflater.inflate(R.layout.fragment_browser, container, false);
         mRecyclerView = (RecyclerView)view.findViewById(R.id.rv_file_browser);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
+        mEmptyView = (TextView) view.findViewById(R.id.tv_empty_view);
         return view;
     }
     @Override
@@ -47,6 +50,11 @@ public class BrowserFilesFragment extends Fragment implements FileObserverAdapte
         final File[] sortedFiles = FileUtil.sortArray(browserFolder.listFiles());
         mFileObserverAdapter = new FileObserverAdapter(sortedFiles, this);
         mRecyclerView.setAdapter(mFileObserverAdapter);
+        if (mFileObserverAdapter.getItemCount()==0) {
+            mEmptyView.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+        }
     }
 
     public void setIOpenFolder(IOpenFolder IOpenFolder) {

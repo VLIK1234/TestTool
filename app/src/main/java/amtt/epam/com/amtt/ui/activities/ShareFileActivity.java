@@ -4,22 +4,19 @@ import android.os.Environment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.ui.fragments.BrowserFilesFragment;
-import amtt.epam.com.amtt.util.FileUtil;
 
 /**
  * @author IvanBakach
  * @version on 22.09.2015
  */
 public class ShareFileActivity extends BaseActivity implements BrowserFilesFragment.IOpenFolder{
-    ArrayList<String> mFilesFragments = new ArrayList<>();
+    LinkedList<String> mFolderPaths = new LinkedList<>();
     private ScreenSlidePagerAdapter mPagerAdapter;
     private ViewPager mPager;
 
@@ -35,9 +32,17 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
     }
 
     private void addBrowserFilesFragment(String folderPath) {
-        mFilesFragments.add(folderPath);
+        int addIndex = mFolderPaths.size()<1?mPager.getCurrentItem():mPager.getCurrentItem() + 1;
+        mFolderPaths.add(addIndex, folderPath);
         mPagerAdapter.notifyDataSetChanged();
-        mPager.setCurrentItem(mPager.getChildCount() - 1, true);
+        //remove all item after addIndex if addIndex isn't last
+        mPager.setCurrentItem(mPager.getCurrentItem() + 1, true);
+        if (mPager.getCurrentItem()+1<=mFolderPaths.size()-1) {
+            for (int i = mPager.getCurrentItem()+1; i < mFolderPaths.size();i++) {
+                mFolderPaths.remove(i);
+            }
+        }
+        mPagerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -51,13 +56,18 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
         }
 
         @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+
+        @Override
         public BrowserFilesFragment getItem(int position) {
-            return BrowserFilesFragment.newInstance(mFilesFragments.get(position), ShareFileActivity.this);
+            return BrowserFilesFragment.newInstance(mFolderPaths.get(position), ShareFileActivity.this);
         }
 
         @Override
         public int getCount() {
-            return mFilesFragments.size();
+            return mFolderPaths.size();
         }
     }
 }
