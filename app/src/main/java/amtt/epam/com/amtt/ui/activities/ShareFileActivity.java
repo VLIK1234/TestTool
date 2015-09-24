@@ -31,6 +31,15 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
         addBrowserFilesFragment(Environment.getExternalStorageDirectory().getPath());
     }
 
+    @Override
+    public void onBackPressed() {
+        if(mPager.getCurrentItem()!=0) {
+            mPager.setCurrentItem(mPager.getCurrentItem()-1, true);
+        } else {
+            super.onBackPressed(); // This will pop the Activity from the stack.
+        }
+    }
+
     private void addBrowserFilesFragment(String folderPath) {
         int addIndex = mFolderPaths.size()<1?mPager.getCurrentItem():mPager.getCurrentItem() + 1;
         mFolderPaths.add(addIndex, folderPath);
