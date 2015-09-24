@@ -19,7 +19,7 @@ import amtt.epam.com.amtt.util.FileUtil;
  * @version on 22.09.2015
  */
 public class ShareFileActivity extends BaseActivity implements BrowserFilesFragment.IOpenFolder{
-    ArrayList<BrowserFilesFragment> mFilesFragments = new ArrayList<>();
+    ArrayList<String> mFilesFragments = new ArrayList<>();
     private ScreenSlidePagerAdapter mPagerAdapter;
     private ViewPager mPager;
 
@@ -35,10 +35,9 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
     }
 
     private void addBrowserFilesFragment(String folderPath) {
-        BrowserFilesFragment fragment = BrowserFilesFragment.newInstance(folderPath, this);
-        mFilesFragments.add(fragment);
+        mFilesFragments.add(folderPath);
         mPagerAdapter.notifyDataSetChanged();
-        mPager.setCurrentItem(mPager.getChildCount()-1, true);
+        mPager.setCurrentItem(mPager.getChildCount() - 1, true);
     }
 
     @Override
@@ -53,7 +52,7 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
 
         @Override
         public BrowserFilesFragment getItem(int position) {
-            return mFilesFragments.get(position);
+            return BrowserFilesFragment.newInstance(mFilesFragments.get(position), ShareFileActivity.this);
         }
 
         @Override
