@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.File;
@@ -61,13 +61,13 @@ public class FileObserverAdapter extends RecyclerView.Adapter<FileObserverAdapte
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final LinearLayout rootView;
+        public final RelativeLayout rootView;
         public final TextView fileName;
         public final ImageView fileIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            rootView = (LinearLayout) itemView.findViewById(R.id.ll_root_view);
+            rootView = (RelativeLayout) itemView.findViewById(R.id.rl_root_view);
             fileName = (TextView) itemView.findViewById(R.id.tv_file_name);
             fileIcon = (ImageView) itemView.findViewById(R.id.iv_file_icon);
         }

@@ -19,6 +19,7 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
     LinkedList<String> mFolderPaths = new LinkedList<>();
     private ScreenSlidePagerAdapter mPagerAdapter;
     private ViewPager mPager;
+    private ViewPager.OnPageChangeListener mOnPageChangeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +28,31 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
         mPager = (ViewPager) findViewById(R.id.vp_folders_layout);
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
+        mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setTitle(mFolderPaths.get(position));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
+        mPager.addOnPageChangeListener(mOnPageChangeListener);
 //        addBrowserFilesFragment(FileUtil.getUsersCacheDir());
         addBrowserFilesFragment(Environment.getExternalStorageDirectory().getPath());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPager.removeOnPageChangeListener(mOnPageChangeListener);
     }
 
     @Override
