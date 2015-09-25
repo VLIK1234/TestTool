@@ -5,18 +5,25 @@ import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.ui.fragments.BrowserFilesFragment;
+import amtt.epam.com.amtt.util.FileUtil;
 
 /**
  * @author IvanBakach
  * @version on 22.09.2015
  */
-public class ShareFileActivity extends BaseActivity implements BrowserFilesFragment.IOpenFolder{
-    LinkedList<String> mFolderPaths = new LinkedList<>();
+public class ShareFileActivity extends BaseActivity implements BrowserFilesFragment.IFileShareBrowser {
+    private LinkedList<String> mFolderPaths = new LinkedList<>();
+    private ArrayList<String> mSharedFilePaths = new ArrayList<>();
     private ScreenSlidePagerAdapter mPagerAdapter;
     private ViewPager mPager;
     private ViewPager.OnPageChangeListener mOnPageChangeListener;
@@ -78,10 +85,36 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
         mPagerAdapter.notifyDataSetChanged();
     }
 
+
+
     @Override
     public void openFolder(String folderPath) {
         addBrowserFilesFragment(folderPath);
     }
+
+    @Override
+    public void shareFile(File sharedFile, boolean isChecked) {
+        if (sharedFile.isDirectory()) {
+            if (isChecked) {
+                mSharedFilePaths.add(sharedFile.getPath());
+                for (File file : FileUtil.getListFiles(sharedFile)) {
+                    mSharedFilePaths.add(file.getPath());
+                }
+            } else {
+                mSharedFilePaths.remove(sharedFile.getPath());
+                for (File file : FileUtil.getListFiles(sharedFile)) {
+                    mSharedFilePaths.remove(file.getPath());
+                }
+            }
+        } else {
+            if (isChecked) {
+                mSharedFilePaths.add(sharedFile.getPath());
+            } else {
+                mSharedFilePaths.remove(sharedFile.getPath());
+            }
+        }
+    }
+
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         public ScreenSlidePagerAdapter(FragmentManager fm) {
@@ -95,7 +128,7 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
 
         @Override
         public BrowserFilesFragment getItem(int position) {
-            return BrowserFilesFragment.newInstance(mFolderPaths.get(position), ShareFileActivity.this);
+            return BrowserFilesFragment.newInstance(mFolderPaths.get(position), mSharedFilePaths, ShareFileActivity.this);
         }
 
         @Override

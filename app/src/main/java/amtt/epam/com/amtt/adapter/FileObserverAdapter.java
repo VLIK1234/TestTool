@@ -4,11 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
@@ -19,15 +22,18 @@ import amtt.epam.com.amtt.R;
  */
 public class FileObserverAdapter extends RecyclerView.Adapter<FileObserverAdapter.ViewHolder>{
 
-    public interface IClickListener {
-        void onItemClick(File chooseFile);
+    public interface IItemClickListener {
+        void onFolderClick(File chooseFile);
+        void onCheckFile(File checkedFile, boolean isChecked);
     }
 
     private File[] mListFile;
-    private IClickListener mListener;
+    private ArrayList<String> mSharedFiles;
+    private IItemClickListener mListener;
 
-    public FileObserverAdapter(File[] listFile, IClickListener listener) {
+    public FileObserverAdapter(File[] listFile, ArrayList<String> sharedFiles, IItemClickListener listener) {
         mListFile = listFile;
+        mSharedFiles = sharedFiles;
         mListener = listener;
     }
 
@@ -49,7 +55,20 @@ public class FileObserverAdapter extends RecyclerView.Adapter<FileObserverAdapte
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onItemClick(mListFile[position]);
+                mListener.onFolderClick(mListFile[position]);
+            }
+        });
+
+        for (String shareFilePath : mSharedFiles) {
+            if (shareFilePath.equals(mListFile[position].getPath())) {
+                holder.checkFile.setChecked(true);break;
+            }
+        }
+
+        holder.checkFile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mListener.onCheckFile(mListFile[position], isChecked);
             }
         });
     }
@@ -64,12 +83,14 @@ public class FileObserverAdapter extends RecyclerView.Adapter<FileObserverAdapte
         public final RelativeLayout rootView;
         public final TextView fileName;
         public final ImageView fileIcon;
+        public final CheckBox checkFile;
 
         public ViewHolder(View itemView) {
             super(itemView);
             rootView = (RelativeLayout) itemView.findViewById(R.id.rl_root_view);
             fileName = (TextView) itemView.findViewById(R.id.tv_file_name);
             fileIcon = (ImageView) itemView.findViewById(R.id.iv_file_icon);
+            checkFile = (CheckBox) itemView.findViewById(R.id.cb_share_this);
         }
     }
 

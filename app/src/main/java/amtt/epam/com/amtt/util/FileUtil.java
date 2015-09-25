@@ -133,4 +133,18 @@ public class FileUtil {
 
         return outSortFileArray;
     }
+
+    public static ArrayList<File> getListFiles(File parentDir) {
+        ArrayList<File> outputFilesList = new ArrayList<>();
+        File[] files = parentDir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                outputFilesList.add(file);
+                outputFilesList.addAll(getListFiles(file));
+            } else {
+                outputFilesList.add(file);
+            }
+        }
+        return outputFilesList;
+    }
 }
