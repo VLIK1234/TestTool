@@ -12,17 +12,16 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import amtt.epam.com.amtt.R;
-import amtt.epam.com.amtt.adapter.FileObserverAdapter;
+import amtt.epam.com.amtt.adapter.FileBrowserAdapter;
 import amtt.epam.com.amtt.util.FileUtil;
 
 /**
  * @author IvanBakach
  * @version on 22.09.2015
  */
-public class BrowserFilesFragment extends Fragment implements FileObserverAdapter.IItemClickListener {
+public class BrowserFilesFragment extends Fragment implements FileBrowserAdapter.IItemClickListener {
 
     public static final String SHARE_FILE_LIST_KEY = "share_file_list";
 
@@ -33,7 +32,7 @@ public class BrowserFilesFragment extends Fragment implements FileObserverAdapte
 
     private static final int SPAN_COUNT = 3;
     public static final String FOLDER_PATH_KEY = "folder_path_key";
-    private FileObserverAdapter mFileObserverAdapter;
+    private FileBrowserAdapter mFileObserverAdapter;
     private RecyclerView mRecyclerView;
     private TextView mEmptyView;
     private IFileShareBrowser mIFileShareBrowser;
@@ -53,7 +52,7 @@ public class BrowserFilesFragment extends Fragment implements FileObserverAdapte
         super.onActivityCreated(savedInstanceState);
         final File browserFolder = new File(getFolderPath());
         final File[] sortedFiles = FileUtil.sortArray(browserFolder.listFiles());
-        mFileObserverAdapter = new FileObserverAdapter(sortedFiles, getShareFileList(), this);
+        mFileObserverAdapter = new FileBrowserAdapter(sortedFiles, getShareFileList(), this);
         mRecyclerView.setAdapter(mFileObserverAdapter);
         if (mFileObserverAdapter.getItemCount()==0) {
             mEmptyView.setVisibility(View.VISIBLE);
@@ -87,7 +86,7 @@ public class BrowserFilesFragment extends Fragment implements FileObserverAdapte
     @Override
     public void onFolderClick(File chooseFile) {
         if (chooseFile.isDirectory()) {
-            mFileObserverAdapter = new FileObserverAdapter(chooseFile.listFiles(), getShareFileList(), this);
+            mFileObserverAdapter = new FileBrowserAdapter(chooseFile.listFiles(), getShareFileList(), this);
             mRecyclerView.setAdapter(mFileObserverAdapter);
             mIFileShareBrowser.openFolder(chooseFile.getPath());
         }

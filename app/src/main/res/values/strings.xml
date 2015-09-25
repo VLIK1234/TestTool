@@ -188,5 +188,6 @@
     <string name="message_empty_test_project_for_cache_subfolder">Please choose Test project into setting before start record.</string>
     <string name="label_share_file_observer">Share files</string>
     <string name="label_content_description_file_icon">File icon</string>
+    <string name="label_share_files_action">Share files</string>
 
 </resources>

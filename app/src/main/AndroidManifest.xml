@@ -190,7 +190,7 @@
             android:label="@string/title_activity_task_name" />
 
         <activity
-            android:name=".ui.activities.ShareFileActivity"
+            android:name=".ui.activities.ShareFilesActivity"
             android:screenOrientation="sensor"
             android:launchMode="standard"
             android:label="@string/title_activity_share_file" />

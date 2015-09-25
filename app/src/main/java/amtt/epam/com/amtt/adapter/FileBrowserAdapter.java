@@ -20,7 +20,7 @@ import amtt.epam.com.amtt.R;
  * @author IvanBakach
  * @version on 22.09.2015
  */
-public class FileObserverAdapter extends RecyclerView.Adapter<FileObserverAdapter.ViewHolder>{
+public class FileBrowserAdapter extends RecyclerView.Adapter<FileBrowserAdapter.ViewHolder>{
 
     public interface IItemClickListener {
         void onFolderClick(File chooseFile);
@@ -31,7 +31,7 @@ public class FileObserverAdapter extends RecyclerView.Adapter<FileObserverAdapte
     private ArrayList<String> mSharedFiles;
     private IItemClickListener mListener;
 
-    public FileObserverAdapter(File[] listFile, ArrayList<String> sharedFiles, IItemClickListener listener) {
+    public FileBrowserAdapter(File[] listFile, ArrayList<String> sharedFiles, IItemClickListener listener) {
         mListFile = listFile;
         mSharedFiles = sharedFiles;
         mListener = listener;

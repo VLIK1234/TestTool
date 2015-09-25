@@ -1,19 +1,27 @@
 package amtt.epam.com.amtt.ui.activities;
 
-import android.os.Environment;
-import android.support.v4.app.FragmentManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.adapter.SharedFileAdapter;
 import amtt.epam.com.amtt.ui.fragments.BrowserFilesFragment;
 import amtt.epam.com.amtt.util.FileUtil;
 
@@ -21,7 +29,7 @@ import amtt.epam.com.amtt.util.FileUtil;
  * @author IvanBakach
  * @version on 22.09.2015
  */
-public class ShareFileActivity extends BaseActivity implements BrowserFilesFragment.IFileShareBrowser {
+public class ShareFilesActivity extends BaseActivity implements BrowserFilesFragment.IFileShareBrowser, SharedFileAdapter.IItemClickListener {
     private LinkedList<String> mFolderPaths = new LinkedList<>();
     private ArrayList<String> mSharedFilePaths = new ArrayList<>();
     private ScreenSlidePagerAdapter mPagerAdapter;
@@ -32,6 +40,10 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_file);
+        String initFolderPath = FileUtil.getUsersCacheDir();
+        final TextView folderPathView = (TextView) findViewById(R.id.tv_folder_path);
+        folderPathView.setText(initFolderPath.replace(FileUtil.getUsersCacheDir(), "/"));
+
         mPager = (ViewPager) findViewById(R.id.vp_folders_layout);
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
@@ -43,7 +55,7 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
 
             @Override
             public void onPageSelected(int position) {
-                setTitle(mFolderPaths.get(position));
+                folderPathView.setText(mFolderPaths.get(position).replace(FileUtil.getUsersCacheDir(), "/"));
             }
 
             @Override
@@ -52,14 +64,51 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
             }
         };
         mPager.addOnPageChangeListener(mOnPageChangeListener);
-//        addBrowserFilesFragment(FileUtil.getUsersCacheDir());
-        addBrowserFilesFragment(Environment.getExternalStorageDirectory().getPath());
+
+        Button backButton = (Button) findViewById(R.id.bt_back_folder);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPager.getCurrentItem()!=0) {
+                    mPager.setCurrentItem(mPager.getCurrentItem()-1 ,true);
+                }
+            }
+        });
+        addBrowserFilesFragment(initFolderPath);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mPager.removeOnPageChangeListener(mOnPageChangeListener);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_share_files, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_share: {
+                final View view = ((LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_share_files, null);
+                RecyclerView listShareFile = (RecyclerView) view.findViewById(R.id.rv_list_share);
+                listShareFile.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+                listShareFile.setAdapter(new SharedFileAdapter(deleteFoldersPath(mSharedFilePaths), this));
+
+                new AlertDialog.Builder(ShareFilesActivity.this)
+                        .setTitle("Share files")
+                        .setView(view)
+                        .setNegativeButton(getString(R.string.cancel), null)
+                        .setPositiveButton(getString(R.string.ok), null)
+                        .create().show();
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -85,6 +134,18 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
         mPagerAdapter.notifyDataSetChanged();
     }
 
+    private ArrayList<String> deleteFoldersPath(final ArrayList<String> sharedFiles) {
+        ArrayList<String> sharedFilesWithoutFolder = new ArrayList<>(sharedFiles);
+//        for (String filePath : sharedFiles) {
+//            sharedFilesWithoutFolder.add(filePath);
+//        }
+        for (String filePath : sharedFiles) {
+            if (new File(filePath).isDirectory()) {
+                sharedFilesWithoutFolder.remove(filePath);
+            }
+        }
+        return sharedFilesWithoutFolder;
+    }
 
 
     @Override
@@ -94,25 +155,31 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
 
     @Override
     public void shareFile(File sharedFile, boolean isChecked) {
-        if (sharedFile.isDirectory()) {
-            if (isChecked) {
+
+        if (isChecked) {
+            if (sharedFile.isDirectory()) {
                 mSharedFilePaths.add(sharedFile.getPath());
                 for (File file : FileUtil.getListFiles(sharedFile)) {
                     mSharedFilePaths.add(file.getPath());
                 }
             } else {
+                mSharedFilePaths.add(sharedFile.getPath());
+            }
+        } else {
+            if (sharedFile.isDirectory()) {
                 mSharedFilePaths.remove(sharedFile.getPath());
                 for (File file : FileUtil.getListFiles(sharedFile)) {
                     mSharedFilePaths.remove(file.getPath());
                 }
-            }
-        } else {
-            if (isChecked) {
-                mSharedFilePaths.add(sharedFile.getPath());
             } else {
                 mSharedFilePaths.remove(sharedFile.getPath());
             }
         }
+    }
+
+    @Override
+    public void onCheckFile(String checkedFile, boolean isChecked) {
+        Toast.makeText(getBaseContext(), checkedFile + " " + isChecked + " isChecked", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -128,7 +195,7 @@ public class ShareFileActivity extends BaseActivity implements BrowserFilesFragm
 
         @Override
         public BrowserFilesFragment getItem(int position) {
-            return BrowserFilesFragment.newInstance(mFolderPaths.get(position), mSharedFilePaths, ShareFileActivity.this);
+            return BrowserFilesFragment.newInstance(mFolderPaths.get(position), mSharedFilePaths, ShareFilesActivity.this);
         }
 
         @Override

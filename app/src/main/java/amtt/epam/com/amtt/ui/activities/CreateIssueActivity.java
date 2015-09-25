@@ -192,7 +192,7 @@ public class CreateIssueActivity extends BaseActivity
         shareFileObserver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent shareFileActivity = new Intent(CreateIssueActivity.this, ShareFileActivity.class);
+                Intent shareFileActivity = new Intent(CreateIssueActivity.this, ShareFilesActivity.class);
                 startActivity(shareFileActivity);
             }
         });
