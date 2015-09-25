@@ -180,7 +180,7 @@ public class LocalContent {
         if (allAttachFile != null) {
             for (File file : allAttachFile) {
                 if (file.exists()) {
-                    FileUtil.delete(file.getPath());
+                    FileUtil.deleteRecursive(file.getPath());
                 }
             }
         }

@@ -5,6 +5,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,18 +68,71 @@ public class FileUtil {
         return filePath.endsWith(MimeType.TEXT_PLAIN.getFileExtension());
     }
 
-    public static boolean delete(String filePath) {
-        File file = new File(filePath);
-        return file.delete();
-    }
-
     public static boolean deleteListFile(List<String> listFile){
         boolean resultDelete = false;
 
         for (String file:listFile) {
-            resultDelete = delete(file);
+            resultDelete = deleteRecursive(file);
         }
         return resultDelete;
+    }
+
+    public static boolean deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                deleteRecursive(child);
+            }
+        }
+        return fileOrDirectory.delete();
+    }
+
+    public static boolean deleteRecursive(String fileOrFolderPath) {
+        File fileOrDirectory = new File(fileOrFolderPath);
+        if (fileOrDirectory.isDirectory()) {
+            for (File child : fileOrDirectory.listFiles()) {
+                deleteRecursive(child);
+            }
+        }
+        return fileOrDirectory.delete();
+    }
+
+    public static void copyFile(String inputPath, String inputFileName, String outputPath) {
+
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+
+            //create output directory if it doesn't exist
+            File dir = new File (outputPath);
+            if (!dir.exists())
+            {
+                dir.mkdirs();
+            }
+
+
+            in = new FileInputStream(inputPath + "/" + inputFileName);
+            out = new FileOutputStream(outputPath +"/" + inputFileName);
+
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+            in.close();
+            in = null;
+
+            // write the output file (You have now copied the file)
+            out.flush();
+            out.close();
+            out = null;
+
+        }  catch (FileNotFoundException e) {
+            Log.e("FileUtil.copyFile", e.getMessage());
+        }
+        catch (Exception e) {
+            Log.e("FileUtil.copyFile", e.getMessage());
+        }
+
     }
 
     public static String getUsersCacheDir(){
@@ -134,13 +192,27 @@ public class FileUtil {
         return outSortFileArray;
     }
 
-    public static ArrayList<File> getListFiles(File parentDir) {
+    public static ArrayList<File> getListWithDirFiles(File parentDir) {
         ArrayList<File> outputFilesList = new ArrayList<>();
         File[] files = parentDir.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {
                 outputFilesList.add(file);
-                outputFilesList.addAll(getListFiles(file));
+                outputFilesList.addAll(getListWithDirFiles(file));
+            } else {
+                outputFilesList.add(file);
+            }
+        }
+        return outputFilesList;
+    }
+
+    public static ArrayList<String> getListFilePaths(File parentDir) {
+        ArrayList<String> outputFilesList = new ArrayList<>();
+        String[] files = parentDir.list();
+        for (String file : files) {
+            Log.d("GetList", file);
+            if (new File(file).isDirectory()) {
+                outputFilesList.addAll(getListFilePaths(new File(file)));
             } else {
                 outputFilesList.add(file);
             }

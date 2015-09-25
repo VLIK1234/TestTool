@@ -1,6 +1,7 @@
 package amtt.epam.com.amtt.ui.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -14,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,17 +24,20 @@ import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.SharedFileAdapter;
 import amtt.epam.com.amtt.ui.fragments.BrowserFilesFragment;
 import amtt.epam.com.amtt.util.FileUtil;
+import amtt.epam.com.amtt.util.ZipUtil;
 
 /**
  * @author IvanBakach
  * @version on 22.09.2015
  */
 public class ShareFilesActivity extends BaseActivity implements BrowserFilesFragment.IFileShareBrowser, SharedFileAdapter.IItemClickListener {
+    public static final String SHARE_FOLDER_NAME = "Share";
     private LinkedList<String> mFolderPaths = new LinkedList<>();
     private ArrayList<String> mSharedFilePaths = new ArrayList<>();
     private ScreenSlidePagerAdapter mPagerAdapter;
     private ViewPager mPager;
     private ViewPager.OnPageChangeListener mOnPageChangeListener;
+    private ArrayList<String> mSharedFiles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,13 +99,26 @@ public class ShareFilesActivity extends BaseActivity implements BrowserFilesFrag
                 final View view = ((LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_share_files, null);
                 RecyclerView listShareFile = (RecyclerView) view.findViewById(R.id.rv_list_share);
                 listShareFile.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-                listShareFile.setAdapter(new SharedFileAdapter(deleteFoldersPath(mSharedFilePaths), this));
+                mSharedFiles = deleteFoldersPath(mSharedFilePaths);
+                listShareFile.setAdapter(new SharedFileAdapter((ArrayList<String>)mSharedFiles.clone(), this));
 
                 new AlertDialog.Builder(ShareFilesActivity.this)
                         .setTitle("Share files")
                         .setView(view)
                         .setNegativeButton(getString(R.string.cancel), null)
-                        .setPositiveButton(getString(R.string.ok), null)
+                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                for (String filePath : mSharedFiles) {
+                                    File shareFile = new File(filePath);
+                                    final String parentPath = shareFile.getParent();
+                                    FileUtil.copyFile(parentPath, shareFile.getName(), parentPath.replace(FileUtil.getUsersCacheDir(), FileUtil.getUsersCacheDir() + SHARE_FOLDER_NAME +"/"));
+                                }
+                                String shareFolderPath = FileUtil.getUsersCacheDir() + SHARE_FOLDER_NAME;
+                                ZipUtil.zipFileAtPath(shareFolderPath, shareFolderPath+".zip");
+                                FileUtil.deleteRecursive(shareFolderPath);
+                            }
+                        })
                         .create().show();
                 return true;
             }
@@ -155,11 +171,10 @@ public class ShareFilesActivity extends BaseActivity implements BrowserFilesFrag
 
     @Override
     public void shareFile(File sharedFile, boolean isChecked) {
-
-        if (isChecked) {
+        if (isChecked&&!mSharedFilePaths.contains(sharedFile.getPath())) {
             if (sharedFile.isDirectory()) {
                 mSharedFilePaths.add(sharedFile.getPath());
-                for (File file : FileUtil.getListFiles(sharedFile)) {
+                for (File file : FileUtil.getListWithDirFiles(sharedFile)) {
                     mSharedFilePaths.add(file.getPath());
                 }
             } else {
@@ -168,7 +183,7 @@ public class ShareFilesActivity extends BaseActivity implements BrowserFilesFrag
         } else {
             if (sharedFile.isDirectory()) {
                 mSharedFilePaths.remove(sharedFile.getPath());
-                for (File file : FileUtil.getListFiles(sharedFile)) {
+                for (File file : FileUtil.getListWithDirFiles(sharedFile)) {
                     mSharedFilePaths.remove(file.getPath());
                 }
             } else {
@@ -179,9 +194,12 @@ public class ShareFilesActivity extends BaseActivity implements BrowserFilesFrag
 
     @Override
     public void onCheckFile(String checkedFile, boolean isChecked) {
-        Toast.makeText(getBaseContext(), checkedFile + " " + isChecked + " isChecked", Toast.LENGTH_SHORT).show();
+        if (isChecked && !mSharedFiles.contains(checkedFile)) {
+            mSharedFiles.add(checkedFile);
+        } else {
+            mSharedFiles.remove(checkedFile);
+        }
     }
-
 
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         public ScreenSlidePagerAdapter(FragmentManager fm) {

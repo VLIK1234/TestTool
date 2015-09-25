@@ -1,11 +1,13 @@
 package amtt.epam.com.amtt.util;
 
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
@@ -14,54 +16,83 @@ import java.util.zip.ZipOutputStream;
  */
 public class ZipUtil {
 
-    public static final int BUFFER = 8388608;//8 kilobyte buffer
+    /*
+     *
+     * Zips a file at a location and places the resulting zip file at the toLocation
+     * Example: zipFileAtPath("downloads/myfolder", "downloads/myFolder.zip");
+     */
+    public static boolean zipFileAtPath(String sourcePath, String toLocation) {
+        final int BUFFER = 2048;
 
-    public static void zip(final String[] filePaths, final String zipFilePath) {
+
+        File sourceFile = new File(sourcePath);
         try {
-            BufferedInputStream origin;
-            FileOutputStream dest = new FileOutputStream(zipFilePath);
+            BufferedInputStream origin = null;
+            FileOutputStream dest = new FileOutputStream(toLocation);
             ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(
                     dest));
-            byte data[] = new byte[BUFFER];
-
-            for (String _file : filePaths) {
-                FileInputStream fi = new FileInputStream(_file);
+            if (sourceFile.isDirectory()) {
+                zipSubFolder(out, sourceFile, sourceFile.getParent().length());
+            } else {
+                byte data[] = new byte[BUFFER];
+                FileInputStream fi = new FileInputStream(sourcePath);
                 origin = new BufferedInputStream(fi, BUFFER);
-
-                ZipEntry entry = new ZipEntry(_file.substring(_file.lastIndexOf("/") + 1));
+                ZipEntry entry = new ZipEntry(getLastPathComponent(sourcePath));
                 out.putNextEntry(entry);
                 int count;
+                while ((count = origin.read(data, 0, BUFFER)) != -1) {
+                    out.write(data, 0, count);
+                }
+            }
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 
+/*
+ *
+ * Zips a subfolder
+ *
+ */
+
+    private static void zipSubFolder(ZipOutputStream out, File folder, int basePathLength) throws IOException {
+        final int BUFFER = 2048;
+
+        File[] fileList = folder.listFiles();
+        BufferedInputStream origin = null;
+        for (File file : fileList) {
+            if (file.isDirectory()) {
+                zipSubFolder(out, file, basePathLength);
+            } else {
+                byte data[] = new byte[BUFFER];
+                String unmodifiedFilePath = file.getPath();
+                String relativePath = unmodifiedFilePath
+                        .substring(basePathLength);
+//                Log.i("ZIP SUBFOLDER", "Relative Path : " + relativePath);
+                FileInputStream fi = new FileInputStream(unmodifiedFilePath);
+                origin = new BufferedInputStream(fi, BUFFER);
+                ZipEntry entry = new ZipEntry(relativePath);
+                out.putNextEntry(entry);
+                int count;
                 while ((count = origin.read(data, 0, BUFFER)) != -1) {
                     out.write(data, 0, count);
                 }
                 origin.close();
             }
-
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
-    public static void unzip(String zipFile, String targetLocation) {
-        try {
-            FileInputStream fin = new FileInputStream(zipFile);
-            ZipInputStream zin = new ZipInputStream(fin);
-            ZipEntry zipEntry;
-            while ((zipEntry = zin.getNextEntry()) != null) {
-                FileOutputStream fout = new FileOutputStream(targetLocation + zipEntry.getName());
-                for (int c = zin.read(); c != -1; c = zin.read()) {
-                    fout.write(c);
-                }
-
-                zin.closeEntry();
-                fout.close();
-
-            }
-            zin.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    /*
+     * gets the last path component
+     *
+     * Example: getLastPathComponent("downloads/example/fileToZip");
+     * Result: "fileToZip"
+     */
+    public static String getLastPathComponent(String filePath) {
+        String[] segments = filePath.split("/");
+        return segments[segments.length - 1];
     }
 }

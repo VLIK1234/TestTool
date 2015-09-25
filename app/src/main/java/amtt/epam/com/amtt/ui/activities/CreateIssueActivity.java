@@ -738,7 +738,7 @@ public class CreateIssueActivity extends BaseActivity
     private void removeStepFromDatabase(int position) {
         Attachment attachment = mAdapter.getAttachments().get(position);
         int stepId = attachment.getStepId();
-        FileUtil.delete(attachment.getFilePath());
+        FileUtil.deleteRecursive(attachment.getFilePath());
         LocalContent.removeStep(new Step(stepId));
         mAdapter.getAttachments().remove(position);
         mAdapter.notifyItemRemoved(position);
