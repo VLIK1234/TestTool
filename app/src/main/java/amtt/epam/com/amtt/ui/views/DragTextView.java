@@ -12,6 +12,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -29,6 +30,8 @@ import amtt.epam.com.amtt.util.UIUtil;
  */
 public class DragTextView extends LinearLayout implements View.OnTouchListener{
 
+    private boolean mIsRealSize;
+
     public interface IDrawCallback{
         void onDrawTextClick(String drawStringValue, int x, int y, int width, int height, int rightY, Paint paint);
         void onRemoveClick(View view);
@@ -42,7 +45,7 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
     private TextView mDragText;
     private String mDrawString = "";
     private Paint mPaintText = new Paint();
-    private WindowManager.LayoutParams mDragImageLayoutParams;
+    private WindowManager.LayoutParams mDragViewLayoutParams;
     private WindowManager mWindowManager;
     private DisplayMetrics mDisplayMetrics;
     private IDrawCallback mIDrawCallback;
@@ -71,11 +74,29 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
         this.setOrientation(HORIZONTAL);
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         mDisplayMetrics = getContext().getResources().getDisplayMetrics();
-        mDragImageLayoutParams = initMainLayoutParams(x, y);
-        this.setLayoutParams(mDragImageLayoutParams);
-        mLeftButtonLayout = initDragButtonsLayout(GONE);
-        mRightButtonLayout = initDragButtonsLayout(VISIBLE);
-        mUnderButtonLayout = initDragButtonsLayout(GONE, HORIZONTAL);
+        mDragViewLayoutParams = initMainLayoutParams(x, y);
+        this.setLayoutParams(mDragViewLayoutParams);
+        //set side buttons, before get real width and height view after draw, like
+        //______________
+        //|Right |Left  |
+        //|      |      |
+        //|      |      |
+        //|______|______|
+        //|Up         Up|
+        //|_____________|
+        if (x < (mDisplayMetrics.widthPixels/2)&& y < (mDisplayMetrics.heightPixels*2/3)) {
+            mLeftButtonLayout = initDragButtonsLayout(GONE);
+            mRightButtonLayout = initDragButtonsLayout(VISIBLE);
+            mUnderButtonLayout = initDragButtonsLayout(GONE, HORIZONTAL);
+        } else if (y > (mDisplayMetrics.heightPixels * 2/3)) {
+            mLeftButtonLayout = initDragButtonsLayout(GONE);
+            mRightButtonLayout = initDragButtonsLayout(GONE);
+            mUnderButtonLayout = initDragButtonsLayout(VISIBLE, HORIZONTAL);
+        } else {
+            mLeftButtonLayout = initDragButtonsLayout(VISIBLE);
+            mRightButtonLayout = initDragButtonsLayout(GONE);
+            mUnderButtonLayout = initDragButtonsLayout(GONE, HORIZONTAL);
+        }
         addView(mLeftButtonLayout);
 
         mDragText = new TextView(context);
@@ -90,6 +111,25 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
         addView(mRightButtonLayout);
 
         this.setOnTouchListener(this);
+        this.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                if (!mIsRealSize && getWidth()!=0 && getHeight()!=0) {
+                    mIsRealSize =true;
+                    int width = getWidth();
+                    int height = getHeight();
+                    if (mDragViewLayoutParams.x + width > mDisplayMetrics.widthPixels) {
+                        mDragViewLayoutParams.x -= ((mDragViewLayoutParams.x + width)- mDisplayMetrics.widthPixels);
+                    }
+                    if ((mDragViewLayoutParams.y + height) > (mDisplayMetrics.heightPixels - UIUtil.getStatusBarHeight())) {
+                        mDragViewLayoutParams.y -= ((mDragViewLayoutParams.y + height) - mDisplayMetrics.heightPixels
+                                - UIUtil.getStatusBarHeight()+UIUtil.getSoftbuttonsbarHeight(mWindowManager));
+                    }
+                    mWindowManager.updateViewLayout(DragTextView.this, mDragViewLayoutParams);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -153,18 +193,18 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
 
             // update the position of the view
             if (event.getPointerCount() == 1) {
-                if ((mDragImageLayoutParams.x + deltaX) > 0 && (mDragImageLayoutParams.x + deltaX) < (mDisplayMetrics.widthPixels - getWidth())) {
-                    mDragImageLayoutParams.x += deltaX;
+                if ((mDragViewLayoutParams.x + deltaX) > 0 && (mDragViewLayoutParams.x + deltaX) < (mDisplayMetrics.widthPixels - getWidth())) {
+                    mDragViewLayoutParams.x += deltaX;
                 }
-                if ((mDragImageLayoutParams.y + deltaY) > 0 && (mDragImageLayoutParams.y + deltaY) < (mDisplayMetrics.heightPixels - getHeight() - UIUtil.getStatusBarHeight())) {
-                    mDragImageLayoutParams.y += deltaY;
+                if ((mDragViewLayoutParams.y + deltaY) > 0 && (mDragViewLayoutParams.y + deltaY) < (mDisplayMetrics.heightPixels - getHeight() - UIUtil.getStatusBarHeight())) {
+                    mDragViewLayoutParams.y += deltaY;
                 }
                 int valueToChangePosition = 50;
-                if (!((mDragImageLayoutParams.y + deltaY)+valueToChangePosition < (mDisplayMetrics.heightPixels - getHeight() - UIUtil.getStatusBarHeight()))) {
+                if (!((mDragViewLayoutParams.y + deltaY)+valueToChangePosition < (mDisplayMetrics.heightPixels - getHeight() - UIUtil.getStatusBarHeight()))) {
                     mLeftButtonLayout.setVisibility(GONE);
                     mRightButtonLayout.setVisibility(GONE);
                     mUnderButtonLayout.setVisibility(VISIBLE);
-                } else if((mDragImageLayoutParams.x + deltaX)+ valueToChangePosition < (mDisplayMetrics.widthPixels - getWidth())){
+                } else if((mDragViewLayoutParams.x + deltaX)+ valueToChangePosition < (mDisplayMetrics.widthPixels - getWidth())){
                     mLeftButtonLayout.setVisibility(GONE);
                     mRightButtonLayout.setVisibility(VISIBLE);
                     mUnderButtonLayout.setVisibility(GONE);
@@ -172,12 +212,12 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
                     mLeftButtonLayout.setVisibility(VISIBLE);
                     mRightButtonLayout.setVisibility(GONE);
                     mUnderButtonLayout.setVisibility(GONE);
-                    if (!((mDragImageLayoutParams.x + deltaX) < (mDisplayMetrics.widthPixels - getWidth()))) {
-                        mDragImageLayoutParams.x -= mDragImageLayoutParams.x + getWidth() - mDisplayMetrics.widthPixels;
+                    if (!((mDragViewLayoutParams.x + deltaX) < (mDisplayMetrics.widthPixels - getWidth()))) {
+                        mDragViewLayoutParams.x -= mDragViewLayoutParams.x + getWidth() - mDisplayMetrics.widthPixels;
                     }
                 }
             }
-            mWindowManager.updateViewLayout(this, mDragImageLayoutParams);
+            mWindowManager.updateViewLayout(this, mDragViewLayoutParams);
         }
     }
 
@@ -208,7 +248,7 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
     }
 
     public LinearLayout initDragButtonsLayout(@Visibility int visibility, @LinearLayoutCompat.OrientationMode int orientation){
-        LinearLayout buttonLayout = new LinearLayout(getContext());
+        final LinearLayout buttonLayout = new LinearLayout(getContext());
         buttonLayout.setOrientation(orientation);
         buttonLayout.setVisibility(visibility);
 
@@ -228,7 +268,7 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
             public void onClick(View v) {
                 int yRightIndent = (int)(mPaintText.getTextSize()-mPaintText.getTextSize()/10);
                 int leftXIndent = mLeftButtonLayout.getVisibility() == VISIBLE ? mLeftButtonLayout.getWidth():0;
-                mIDrawCallback.onDrawTextClick(mDrawString, mDragImageLayoutParams.x + leftXIndent, mDragImageLayoutParams.y + (int) mDragText.getY() + yRightIndent, mDragText.getWidth(), mDragText.getHeight(), mDragImageLayoutParams.y, mPaintText);
+                mIDrawCallback.onDrawTextClick(mDrawString, mDragViewLayoutParams.x + leftXIndent, mDragViewLayoutParams.y + (int) mDragText.getY() + yRightIndent, mDragText.getWidth(), mDragText.getHeight(), mDragViewLayoutParams.y, mPaintText);
                 mIDrawCallback.onRemoveClick(DragTextView.this);
             }
         });
@@ -243,4 +283,6 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
         buttonLayout.addView(confirmDragViewButton);
         return buttonLayout;
     }
+
+
 }

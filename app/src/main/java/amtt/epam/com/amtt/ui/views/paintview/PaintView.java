@@ -116,7 +116,7 @@ public class PaintView extends ImageView {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             mDrawString = editDrawText.getText().toString();
-                                            mITextDialogButtonClick.CreateDragViewCallback(mDrawString, new Paint(mPaintPath), 0, 0);
+                                            mITextDialogButtonClick.CreateDragViewCallback(mDrawString, new Paint(mPaintPath), (int)x, (int)y);
 
                                         }
                                     })

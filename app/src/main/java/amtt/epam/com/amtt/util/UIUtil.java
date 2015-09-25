@@ -1,10 +1,12 @@
 package amtt.epam.com.amtt.util;
 
+import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.WindowManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +46,23 @@ public final class UIUtil {
             result = CoreApplication.getContext().getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    @SuppressLint("NewApi")
+    public static int getSoftbuttonsbarHeight(WindowManager windowManager) {
+        // getRealMetrics is only available with API 17 and +
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            windowManager.getDefaultDisplay().getMetrics(metrics);
+            int usableHeight = metrics.heightPixels;
+            windowManager.getDefaultDisplay().getRealMetrics(metrics);
+            int realHeight = metrics.heightPixels;
+            if (realHeight > usableHeight)
+                return realHeight - usableHeight;
+            else
+                return 0;
+        }
+        return 0;
     }
 
     public static int getOrientation() {
