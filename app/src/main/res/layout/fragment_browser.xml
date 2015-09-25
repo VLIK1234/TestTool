@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone"
-        android:text="No files"
+        android:text="@string/label_no_files"
         android:textSize="36sp"/>
 
 </RelativeLayout>

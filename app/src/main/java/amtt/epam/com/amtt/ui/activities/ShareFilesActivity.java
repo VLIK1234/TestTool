@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.LinkedList;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.SharedFileAdapter;
+import amtt.epam.com.amtt.helper.SharingToEmailHelper;
 import amtt.epam.com.amtt.ui.fragments.BrowserFilesFragment;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.ZipUtil;
@@ -31,7 +33,9 @@ import amtt.epam.com.amtt.util.ZipUtil;
  * @version on 22.09.2015
  */
 public class ShareFilesActivity extends BaseActivity implements BrowserFilesFragment.IFileShareBrowser, SharedFileAdapter.IItemClickListener {
-    public static final String SHARE_FOLDER_NAME = "Share";
+
+    private static final String SHARE_FOLDER_NAME = "Share";
+    private String mShareFolderName;
     private LinkedList<String> mFolderPaths = new LinkedList<>();
     private ArrayList<String> mSharedFilePaths = new ArrayList<>();
     private ScreenSlidePagerAdapter mPagerAdapter;
@@ -100,7 +104,15 @@ public class ShareFilesActivity extends BaseActivity implements BrowserFilesFrag
                 RecyclerView listShareFile = (RecyclerView) view.findViewById(R.id.rv_list_share);
                 listShareFile.setLayoutManager(new LinearLayoutManager(getBaseContext()));
                 mSharedFiles = deleteFoldersPath(mSharedFilePaths);
-                listShareFile.setAdapter(new SharedFileAdapter((ArrayList<String>)mSharedFiles.clone(), this));
+                final SharedFileAdapter sharedFileAdapter = new SharedFileAdapter((ArrayList<String>) mSharedFiles.clone(), this);
+                listShareFile.setAdapter(sharedFileAdapter);
+
+                TextView emptyView = (TextView) view.findViewById(R.id.tv_empty_view);
+                if (sharedFileAdapter.getItemCount() > 0) {
+                    emptyView.setVisibility(View.GONE);
+                } else {
+                    emptyView.setVisibility(View.VISIBLE);
+                }
 
                 new AlertDialog.Builder(ShareFilesActivity.this)
                         .setTitle("Share files")
@@ -109,14 +121,25 @@ public class ShareFilesActivity extends BaseActivity implements BrowserFilesFrag
                         .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                for (String filePath : mSharedFiles) {
-                                    File shareFile = new File(filePath);
-                                    final String parentPath = shareFile.getParent();
-                                    FileUtil.copyFile(parentPath, shareFile.getName(), parentPath.replace(FileUtil.getUsersCacheDir(), FileUtil.getUsersCacheDir() + SHARE_FOLDER_NAME +"/"));
+                                if (sharedFileAdapter.getItemCount() > 0) {
+                                    mShareFolderName = SHARE_FOLDER_NAME + FileUtil.getCurrentTimeInFormat();
+                                    for (String filePath : mSharedFiles) {
+                                        File shareFile = new File(filePath);
+                                        final String parentPath = shareFile.getParent();
+                                        FileUtil.copyFile(parentPath, shareFile.getName(), parentPath.replace(FileUtil.getUsersCacheDir(), FileUtil.getUsersCacheDir() + mShareFolderName +"/"));
+                                    }
+
+                                    String shareFolderPath = FileUtil.getUsersCacheDir() + mShareFolderName;
+                                    String zipFilePath = shareFolderPath + ".zip";
+                                    ZipUtil.zipFileAtPath(shareFolderPath, zipFilePath);
+                                    FileUtil.deleteRecursive(shareFolderPath);
+
+                                    SharingToEmailHelper.senAttachmentFile(ShareFilesActivity.this, "",
+                                            zipFilePath);
+                                    finish();
+                                } else {
+                                    Toast.makeText(getBaseContext(), R.string.error_message_share_file, Toast.LENGTH_SHORT).show();
                                 }
-                                String shareFolderPath = FileUtil.getUsersCacheDir() + SHARE_FOLDER_NAME;
-                                ZipUtil.zipFileAtPath(shareFolderPath, shareFolderPath+".zip");
-                                FileUtil.deleteRecursive(shareFolderPath);
                             }
                         })
                         .create().show();

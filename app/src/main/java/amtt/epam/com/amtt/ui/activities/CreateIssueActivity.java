@@ -201,10 +201,10 @@ public class CreateIssueActivity extends BaseActivity
             @Override
             public void onClick(View v) {
                 if (mAdapter!= null && mAdapter.getAttachmentFilePathList()!=null && mAdapter.getAttachmentFilePathList().size() > 0) {
-                    SharingToEmailHelper.senAttachmentImage(CreateIssueActivity.this, mEnvironmentTextInput.getText().toString(),
+                    SharingToEmailHelper.senAttachmentFiles(CreateIssueActivity.this, mEnvironmentTextInput.getText().toString(),
                             mAdapter.getAttachmentFilePathList());
                 } else {
-                    Toast.makeText(getBaseContext(), R.string.error_message_share_attachment, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), R.string.error_message_share_file, Toast.LENGTH_SHORT).show();
                 }
             }
         });

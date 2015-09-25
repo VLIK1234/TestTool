@@ -32,9 +32,12 @@ public class FileUtil {
     private static final String TASK_NAME_DATETIME_FORMAT = "dd-MM-HH-mm";
 
     public static void setTaskName(String taskName) {
-        long imageTime = System.currentTimeMillis();
-        String taskNameDate = "_" + new SimpleDateFormat(TASK_NAME_DATETIME_FORMAT).format(new Date(imageTime));
-        FileUtil.taskName = taskName.replaceAll("[ ]+","_")+ taskNameDate;
+        FileUtil.taskName = taskName.replaceAll("[ ]+","_")+ getCurrentTimeInFormat();
+    }
+
+    public static String getCurrentTimeInFormat(){
+        long currentTime = System.currentTimeMillis();
+        return "_" + new SimpleDateFormat(TASK_NAME_DATETIME_FORMAT).format(new Date(currentTime));
     }
 
     public static String getFileName(@Nullable String filePath) {
