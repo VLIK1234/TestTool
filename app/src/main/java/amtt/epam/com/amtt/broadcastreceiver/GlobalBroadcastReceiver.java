@@ -85,7 +85,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                             LocalContent.saveStep(title, activtyClassName, packageName, screenPath, listFragments);
                         }
                         TopButtonService.sendActionChangeTopButtonVisibility(true);
-                        Toast.makeText(context, "Create screenshot in " + screenPath, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Create screenshot in " + screenPath.replace(FileUtil.getUsersCacheDir(),"/"), Toast.LENGTH_SHORT).show();
                         break;
                     } else {
                         final String failScreen = extrasScreenshot.getString("failScreen");

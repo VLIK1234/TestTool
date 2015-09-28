@@ -41,9 +41,9 @@ import amtt.epam.com.amtt.api.ContentConst;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.bo.JCreateIssueResponse;
-import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
+import amtt.epam.com.amtt.bo.ticket.Step;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.helper.DialogHelper;
@@ -124,7 +124,6 @@ public class CreateIssueActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_issue);
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
         mBundle = getIntent().getExtras();
         initViews();
         mRequestsQueue.add(ContentConst.DESCRIPTION_RESPONSE);
@@ -140,13 +139,11 @@ public class CreateIssueActivity extends BaseActivity
     protected void onPause() {
         super.onPause();
         setDefaultConfigs();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
         Intent intentLogs = new Intent();
         intentLogs.setAction("TAKE_LOGS");
         getBaseContext().sendBroadcast(intentLogs);
@@ -191,15 +188,23 @@ public class CreateIssueActivity extends BaseActivity
     }
 
     private void initShareAttachmentButton() {
+        Button shareFileObserver = (Button) findViewById(R.id.bt_share_file_observer);
+        shareFileObserver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent shareFileActivity = new Intent(CreateIssueActivity.this, ShareFilesActivity.class);
+                startActivity(shareFileActivity);
+            }
+        });
         Button shareButton = (Button) findViewById(R.id.bt_share_attachmnet);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mAdapter!= null && mAdapter.getAttachmentFilePathList()!=null && mAdapter.getAttachmentFilePathList().size() > 0) {
-                    SharingToEmailHelper.senAttachmentImage(CreateIssueActivity.this, mEnvironmentTextInput.getText().toString(),
+                    SharingToEmailHelper.senAttachmentFiles(CreateIssueActivity.this, mEnvironmentTextInput.getText().toString(),
                             mAdapter.getAttachmentFilePathList());
                 } else {
-                    Toast.makeText(getBaseContext(), R.string.error_message_share_attachment, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), R.string.error_message_share_file, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -612,18 +617,24 @@ public class CreateIssueActivity extends BaseActivity
         mGifCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                if (!PreferenceUtil.getBoolean(getString(R.string.key_gif_info_dialog))) {
-                    DialogHelper.getGifInfoDialog(CreateIssueActivity.this).show();
-                }
-                int stepsArraySize = mSteps.size();
-                if (isChecked && stepsArraySize != 0) {
-                    mGifProgress.setMax(stepsArraySize);
-                    mGifProgress.setIndeterminate(true);
-                    mGifProgress.setVisibility(View.VISIBLE);
-                    GifUtil.createGif(CreateIssueActivity.this, mSteps);
-                } else {
-                    GifUtil.cancelGifCreating();
-                    mGifProgress.setVisibility(View.GONE);
+
+                if (mSteps!=null) {
+//                    if (!PreferenceUtil.getBoolean(getString(R.string.key_gif_info_dialog))) {
+//                        DialogHelper.getGifInfoDialog(CreateIssueActivity.this).show();
+//                    }
+                    int stepsArraySize = mSteps.size();
+                    if (isChecked && stepsArraySize != 0) {
+                        mGifProgress.setMax(stepsArraySize);
+                        mGifProgress.setIndeterminate(true);
+                        mGifProgress.setVisibility(View.VISIBLE);
+                        GifUtil.createGif(CreateIssueActivity.this, mSteps);
+                    } else {
+                        GifUtil.cancelGifCreating();
+                        mGifProgress.setVisibility(View.GONE);
+                    }
+                } else{
+                    mGifCheckBox.setChecked(false);
+                    Toast.makeText(getBaseContext(),"Don't have step for make gif", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -727,7 +738,7 @@ public class CreateIssueActivity extends BaseActivity
     private void removeStepFromDatabase(int position) {
         Attachment attachment = mAdapter.getAttachments().get(position);
         int stepId = attachment.getStepId();
-        FileUtil.delete(attachment.getFilePath());
+        FileUtil.deleteRecursive(attachment.getFilePath());
         LocalContent.removeStep(new Step(stepId));
         mAdapter.getAttachments().remove(position);
         mAdapter.notifyItemRemoved(position);

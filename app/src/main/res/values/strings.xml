@@ -13,6 +13,8 @@
     <string name="title_activity_paint">Notes</string>
     <string name="title_activity_detail">Detail</string>
     <string name="title_activity_take_step">Take step</string>
+    <string name="title_activity_task_name">Task name</string>
+    <string name="title_activity_share_file">Share file</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
 
@@ -172,6 +174,21 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_new_spreadsheet">NewSpreadsheetActivity</string>
     <string name="label_share_attachment">Share attachment to email</string>
-    <string name="error_message_share_attachment">Don\'t have attachment for sharing.</string>
+    <string name="error_message_share_file">Don\'t have file for sharing.</string>
+    <string name="label_title_draw_text_dialog">Draw text</string>
+    <string name="label_description_drag_image">Drag image</string>
+    <string name="label_xiaomi_brand">XIAOMI</string>
+    <string name="label_preview_text_dialog_palette">Text</string>
+    <string name="key_thickness_progress_dialog_palette">seekbar_progress_key</string>
+    <string name="key_checked_palette_item">key_checked_palette_item</string>
+    <string name="key_instrument_for_draw_dialog_palette">key_instrument_for_draw_dialog_palette</string>
+    <string name="titke_task_name_dialog">Task name</string>
+    <string name="message_resolved_char_task_name_dialog"><![CDATA[Please don\'t use in task name |, \\, ?, *, <, \", :, >.]]></string>
+    <string name="message_empty_task_name_dialog">Please write task name. It can not be empty.</string>
+    <string name="message_empty_test_project_for_cache_subfolder">Please choose Test project into setting before start record.</string>
+    <string name="label_share_file_observer">Share files</string>
+    <string name="label_content_description_file_icon">File icon</string>
+    <string name="label_share_files_action">Share files</string>
+    <string name="label_no_files">No files</string>
 
 </resources>

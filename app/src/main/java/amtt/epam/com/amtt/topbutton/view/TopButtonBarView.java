@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
+import android.os.Build;
+import android.os.Environment;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +28,11 @@ import amtt.epam.com.amtt.ui.activities.ExpectedResultsActivity;
 import amtt.epam.com.amtt.ui.activities.StepsActivity;
 import amtt.epam.com.amtt.ui.activities.TakeStepActivity;
 import amtt.epam.com.amtt.ui.activities.UserInfoActivity;
+import amtt.epam.com.amtt.ui.activities.TaskNameActivity;
 import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.UIUtil;
+import amtt.epam.com.amtt.util.ZipUtil;
 
 /**
  * @author Artsiom_Kaliaha
@@ -52,7 +58,6 @@ public class TopButtonBarView extends FrameLayout {
     private TopUnitView mButtonStopRecord;
     private TopUnitView mButtonShowSteps;
     private TopUnitView mButtonCloseApp;
-    private final ActiveUser mUser = ActiveUser.getInstance();
 
     static {
         isRecordStarted = false;
@@ -73,7 +78,8 @@ public class TopButtonBarView extends FrameLayout {
     private void initLayout() {
         int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
-        mLayout = new WindowManager.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0, 0, WindowManager.LayoutParams.TYPE_PHONE,
+        int windowType = Build.BRAND.toUpperCase().equals(getResources().getString(R.string.label_xiaomi_brand))?WindowManager.LayoutParams.TYPE_TOAST:WindowManager.LayoutParams.TYPE_PHONE;
+        mLayout = new WindowManager.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 0, 0, windowType,
                 flags, PixelFormat.TRANSPARENT);
         mLayout.gravity = Gravity.TOP | Gravity.START;
         mWindowManager.addView(this, mLayout);
@@ -98,15 +104,14 @@ public class TopButtonBarView extends FrameLayout {
         mButtonStartRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_start_record), R.drawable.background_start_record, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                isRecordStarted = true;
-                mUser.setRecord(true);
+                if (!TextUtils.isEmpty(PreferenceUtil.getString(getContext().getString(R.string.key_test_project)))) {
+                    Intent taskNameActivityIntent = new Intent(getContext(), TaskNameActivity.class);
+                    taskNameActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().startActivity(taskNameActivityIntent);
+                } else {
+                    Toast.makeText(getContext(), R.string.message_empty_test_project_for_cache_subfolder, Toast.LENGTH_SHORT).show();
+                }
                 hide();
-                LocalContent.removeAllSteps();
-
-                Intent intentLogs = new Intent();
-                intentLogs.setAction("TAKE_LOGS");
-                getContext().sendOrderedBroadcast(intentLogs, null);
-                Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_SHORT).show();
                 mTopButtonListener.onTouch();
             }
         });
@@ -121,7 +126,6 @@ public class TopButtonBarView extends FrameLayout {
         mButtonOpenUserInfo = new TopUnitView(getContext(), getContext().getString(R.string.label_open_amtt), R.drawable.background_user_info, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                TopButtonService.sendActionChangeTopButtonVisibility(false);
                 Intent userInfoIntent = new Intent(getContext(), UserInfoActivity.class);
                 userInfoIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(userInfoIntent);
@@ -131,7 +135,6 @@ public class TopButtonBarView extends FrameLayout {
         mButtonExpectedResult = new TopUnitView(getContext(), getContext().getString(R.string.label_expected_result), R.drawable.background_expected_result, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                TopButtonService.sendActionChangeTopButtonVisibility(false);
                 Intent intent = new Intent(getContext(), ExpectedResultsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intent);
@@ -161,7 +164,7 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 isRecordStarted = false;
-                mUser.setRecord(false);
+                ActiveUser.getInstance().setRecord(false);
                 hide();
                 LocalContent.removeAllSteps();
                 Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_SHORT).show();
@@ -171,7 +174,6 @@ public class TopButtonBarView extends FrameLayout {
         mButtonCloseApp = new TopUnitView(getContext(), getContext().getString(R.string.label_close), R.drawable.background_close, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                TopButtonService.sendActionChangeTopButtonVisibility(false);
                 Intent intentAsk = new Intent(getContext(), AskExitActivity.class);
                 intentAsk.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getContext().getApplicationContext().startActivity(intentAsk);
@@ -262,9 +264,9 @@ public class TopButtonBarView extends FrameLayout {
         mButtonsBar.startAnimation(translateUp);
     }
 
-    public void setIsRecordStarted(boolean isRecordStarted) {
+    public static void setIsRecordStarted(boolean isRecordStarted) {
         TopButtonBarView.isRecordStarted = isRecordStarted;
-        mUser.setRecord(isRecordStarted);
+        ActiveUser.getInstance().setRecord(isRecordStarted);
     }
 
     public void move(int x, int y) {

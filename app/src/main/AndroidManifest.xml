@@ -124,7 +124,7 @@
                 android:value=".ui.activities.MainActivity"/>
         </activity>
         <activity
-            android:name=".ui.activities.DetailActivity"
+            android:name=".ui.activities.ExpectedResultsDetailActivity"
             android:label="@string/title_activity_detail"
             android:noHistory="true"
             android:parentActivityName=".ui.activities.ExpectedResultsActivity">
@@ -181,6 +181,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.activities.ExpectedResultsActivity"/>
         </activity>
+
+        <activity
+            android:name=".ui.activities.TaskNameActivity"
+            android:screenOrientation="sensor"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/DialogActivity"
+            android:label="@string/title_activity_task_name" />
+
+        <activity
+            android:name=".ui.activities.ShareFilesActivity"
+            android:screenOrientation="sensor"
+            android:launchMode="standard"
+            android:label="@string/title_activity_share_file" />
     </application>
 
 </manifest>

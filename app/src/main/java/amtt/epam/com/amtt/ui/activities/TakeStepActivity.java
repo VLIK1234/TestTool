@@ -20,7 +20,7 @@ import amtt.epam.com.amtt.util.PreferenceUtil;
  * @author Ivan_Bakach
  * @version on 29.07.2015
  */
-public class TakeStepActivity extends AppCompatActivity {
+public class TakeStepActivity extends BaseActivity {
 
     private static final String EXTERNAL_ACTION_TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
     private static final String TAKE_ONLY_INFO = "TAKE_ONLY_INFO";
@@ -28,7 +28,6 @@ public class TakeStepActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
         LinearLayout rootLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.activity_take_screen, null);
         final CheckBox takeActivityInfo = (CheckBox) rootLayout.findViewById(R.id.cb_take_activity_info);
         final CheckBox takeScreen = (CheckBox) rootLayout.findViewById(R.id.cb_take_screen);
@@ -89,12 +88,6 @@ public class TakeStepActivity extends AppCompatActivity {
             }
         });
         takeStepDialog.show();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 
     private void saveCheckboxValue(boolean activityInfoIsChecked, boolean screenIsChecked) {

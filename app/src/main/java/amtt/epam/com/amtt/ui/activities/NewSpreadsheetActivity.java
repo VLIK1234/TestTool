@@ -41,20 +41,7 @@ public class NewSpreadsheetActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_spreadsheet);
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
         initViews();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
     }
 
     private void initViews(){

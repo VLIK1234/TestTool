@@ -32,7 +32,6 @@ public class MonitorTest extends InstrumentationTestCase implements Application.
     public void testMonitor() {
         final Context context = getInstrumentation().getTargetContext();
         LogManager.writeMultipleLogs(getInstrumentation().getTargetContext());
-        LogManager.transferLogsToAmtt(context);
         Application application = (Application) getInstrumentation().getTargetContext().getApplicationContext();
         final Thread.UncaughtExceptionHandler exceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {

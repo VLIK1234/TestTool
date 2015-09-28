@@ -91,18 +91,6 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-            TopButtonService.sendActionChangeTopButtonVisibility(true);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_user_info, menu);
         return true;
@@ -112,7 +100,7 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add: {
-                TopButtonService.close(getBaseContext());
+                TopButtonService.closeService(getBaseContext());
                 startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
                 return true;
             }

@@ -15,7 +15,7 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
  * @author Ivan_Bakach
  * @version on 30.07.2015
  */
-public class GifPlayerActivity extends AppCompatActivity {
+public class GifPlayerActivity extends BaseActivity {
 
     public static final String GIF_IMAGE_KEY = "gifeFilePath";
 
@@ -23,7 +23,6 @@ public class GifPlayerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gif_player);
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -43,11 +42,5 @@ public class GifPlayerActivity extends AppCompatActivity {
             webView.setVisibility(View.GONE);
             errorMessage.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
     }
 }
