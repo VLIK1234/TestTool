@@ -1,7 +1,6 @@
 package amtt.epam.com.amtt.ui.views;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.support.annotation.IntDef;
@@ -30,7 +29,7 @@ import amtt.epam.com.amtt.util.UIUtil;
  */
 public class DragTextView extends LinearLayout implements View.OnTouchListener{
 
-    private boolean mIsRealSize;
+    private boolean mDraw;
 
     public interface IDrawCallback{
         void onDrawTextClick(String drawStringValue, int x, int y, int width, int height, int rightY, Paint paint);
@@ -114,10 +113,15 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
         this.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                if (!mIsRealSize && getWidth()!=0 && getHeight()!=0) {
-                    mIsRealSize =true;
+                if (!mDraw && getWidth()!=0 && getHeight()!=0) {
+                    mDraw = true;
                     int width = getWidth();
                     int height = getHeight();
+                    //Correct x, y position DragTextView relatively TextView
+                    mDragViewLayoutParams.x-=mLeftButtonLayout.getWidth();
+                    mDragViewLayoutParams.y-=mDragText.getY();
+                    mWindowManager.updateViewLayout(DragTextView.this, mDragViewLayoutParams);
+
                     if (mDragViewLayoutParams.x + width > mDisplayMetrics.widthPixels) {
                         mDragViewLayoutParams.x -= ((mDragViewLayoutParams.x + width)- mDisplayMetrics.widthPixels);
                     }
@@ -130,17 +134,6 @@ public class DragTextView extends LinearLayout implements View.OnTouchListener{
                 return true;
             }
         });
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-    }
-
-    @Override
-        protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
     }
 
     private WindowManager.LayoutParams initMainLayoutParams(int x, int y) {
