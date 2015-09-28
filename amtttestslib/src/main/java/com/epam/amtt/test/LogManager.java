@@ -17,7 +17,7 @@ public class LogManager {
     private static final String TAG = LogManager.class.getSimpleName();
     private static final String LOGS_CACHE_DIR = "logs";
     private static final String LOGCAT_WRITE_IN_FILE = "logcat -f ";
-    private static final String ROTATE_LOG = " -r 1000";
+    private static final String ROTATE_LOG = " -r 512";
     private static final String EXCEPTION_FILTER = " *:e";
     private static final String TEMPLATE_EXCEPION = "%s/log_exception.txt";
     private static final String TEMPLATE_COMMON = "%s/log_common.txt";

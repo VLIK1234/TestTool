@@ -14,7 +14,7 @@ import android.widget.ListView;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.adapter.UserAdapter;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.contentprovider.LocalUri;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 
 /**
@@ -22,7 +22,7 @@ import amtt.epam.com.amtt.topbutton.service.TopButtonService;
  @version on 18.05.2015
  */
 
-public class AmttActivity extends BaseActivity implements LoaderCallbacks<Cursor> {
+public class AccountsActivity extends BaseActivity implements LoaderCallbacks<Cursor> {
 
     public static final String KEY_USER_ID = "key_user_id";
     private ListView mListView;
@@ -31,11 +31,10 @@ public class AmttActivity extends BaseActivity implements LoaderCallbacks<Cursor
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        setContentView(R.layout.activity_amtt);
+        setContentView(R.layout.activity_accounts);
         mListView = (ListView) findViewById(android.R.id.list);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -50,14 +49,8 @@ public class AmttActivity extends BaseActivity implements LoaderCallbacks<Cursor
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        TopButtonService.sendActionChangeTopButtonVisibility(true);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_amtt, menu);
+        getMenuInflater().inflate(R.menu.menu_accounts, menu);
         return true;
     }
 
@@ -80,7 +73,7 @@ public class AmttActivity extends BaseActivity implements LoaderCallbacks<Cursor
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         showProgress(true);
-        return new CursorLoader(this, AmttUri.USER.get(), null, null, null, null);
+        return new CursorLoader(this, LocalUri.USER.get(), null, null, null, null);
     }
 
     @Override

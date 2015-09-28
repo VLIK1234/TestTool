@@ -33,7 +33,7 @@ import amtt.epam.com.amtt.util.FileUtil;
  @version on 10.07.2015
  */
 
-public class LogActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+public class LogActivity extends BaseActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
     public static final String FILE_PATH = "filePath";
     private static final int SEARCH_TOP_OFFSET = 20;
     private ArrayList<Spanned> mListLogLine = new ArrayList<>();
@@ -66,12 +66,6 @@ public class LogActivity extends AppCompatActivity implements SearchView.OnQuery
             showLog(filePath);
         }
         setTitle(title);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
     }
 
     private void showLog(String filePath) {

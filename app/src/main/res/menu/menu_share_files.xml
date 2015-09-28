@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="amtt.epam.com.amtt.ui.activities.ShareFilesActivity">
+
+    <item android:id="@+id/action_share"
+          android:title="@string/label_share_files_action"
+          android:icon="@drawable/ic_share_files"
+          app:showAsAction="always"/>
+</menu>

@@ -3,7 +3,7 @@ package amtt.epam.com.amtt.util;
 import android.content.Context;
 import android.net.ConnectivityManager;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 
 /**
  * Created by Artsiom_Kaliaha on 24.06.2015.
@@ -14,7 +14,7 @@ public final class NetUtil {
     private final static ConnectivityManager sConnectivityManager;
 
     static {
-        sConnectivityManager = (ConnectivityManager) AmttApplication.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        sConnectivityManager = (ConnectivityManager) CoreApplication.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
     public static boolean isAnyConnection() {

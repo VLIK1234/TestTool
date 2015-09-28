@@ -25,7 +25,7 @@ import amtt.epam.com.amtt.api.JiraApiConst;
 import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.common.Callback;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.contentprovider.LocalUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.exception.ExceptionType;
 import amtt.epam.com.amtt.processing.UserInfoProcessor;
@@ -44,7 +44,7 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MESSAGE_REFRESH = 100;
-    private static final int AMTT_ACTIVITY_REQUEST_CODE = 1;
+    private static final int ACCOUNTS_ACTIVITY_REQUEST_CODE = 1;
     private static final int LOGIN_ACTIVITY_REQUEST_CODE = 2;
     private static final int SINGLE_USER_CURSOR_LOADER_ID = 2;
     private TextView mNameTextView;
@@ -59,6 +59,7 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
     private UserInfoHandler mHandler;
     private final ActiveUser mUser = ActiveUser.getInstance();
     private final JiraContent mJira = JiraContent.getInstance();
+    private final JiraApi mJiraApi = JiraApi.getInstance();
 
     public static class UserInfoHandler extends Handler {
 
@@ -90,18 +91,6 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        TopButtonService.sendActionChangeTopButtonVisibility(false);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-            TopButtonService.sendActionChangeTopButtonVisibility(true);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_user_info, menu);
         return true;
@@ -111,19 +100,19 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add: {
-                TopButtonService.close(getBaseContext());
+                TopButtonService.closeService(getBaseContext());
                 startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
+                return true;
             }
-            return true;
             case R.id.action_list: {
-                startActivityForResult(new Intent(UserInfoActivity.this, AmttActivity.class), AMTT_ACTIVITY_REQUEST_CODE);
+                startActivityForResult(new Intent(UserInfoActivity.this, AccountsActivity.class), ACCOUNTS_ACTIVITY_REQUEST_CODE);
+                return true;
             }
-            return true;
             case android.R.id.home: {
                 TopButtonService.start(this);
                 finish();
+                return true;
             }
-            return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -138,25 +127,17 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case AMTT_ACTIVITY_REQUEST_CODE:
-                    if (data != null) {
-                        Bundle args = new Bundle();
-                        long selectedUserId = data.getLongExtra(AmttActivity.KEY_USER_ID, 0);
-                        args.putLong(AmttActivity.KEY_USER_ID, selectedUserId);
-                        getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
-                    } else {
-                        startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
-                    }
-                    break;
+        if (resultCode == RESULT_OK && requestCode == ACCOUNTS_ACTIVITY_REQUEST_CODE) {
+            if (data != null) {
+                Bundle args = new Bundle();
+                long selectedUserId = data.getLongExtra(AccountsActivity.KEY_USER_ID, 0);
+                args.putLong(AccountsActivity.KEY_USER_ID, selectedUserId);
+                getLoaderManager().restartLoader(SINGLE_USER_CURSOR_LOADER_ID, args, UserInfoActivity.this);
+            } else {
+                startActivityForResult(new Intent(UserInfoActivity.this, LoginActivity.class), LOGIN_ACTIVITY_REQUEST_CODE);
             }
-        } else if (resultCode == RESULT_CANCELED) {
-            switch (requestCode) {
-                case LOGIN_ACTIVITY_REQUEST_CODE:
-                    getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, UserInfoActivity.this);
-                    break;
-            }
+        } else if (resultCode == RESULT_CANCELED && requestCode == LOGIN_ACTIVITY_REQUEST_CODE) {
+            getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, UserInfoActivity.this);
         }
     }
 
@@ -197,9 +178,10 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
 
     private void refreshUserInfo() {
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUser.getUserName();
-        JiraApi.get().searchData(requestSuffix, new UserInfoProcessor(), new Callback<JUserInfo>() {
+        mJiraApi.searchData(requestSuffix, new UserInfoProcessor(), new Callback<JUserInfo>() {
             @Override
-            public void onLoadStart() {}
+            public void onLoadStart() {
+            }
 
             @Override
             public void onLoadExecuted(JUserInfo user) {
@@ -223,11 +205,11 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
         CursorLoader loader = null;
         String selection = UsersTable._ID + "=?";
         if (id == CURSOR_LOADER_ID) {
-            loader = new CursorLoader(UserInfoActivity.this, AmttUri.USER.get(), null, selection,
+            loader = new CursorLoader(UserInfoActivity.this, LocalUri.USER.get(), null, selection,
                     new String[]{String.valueOf(mUser.getId())}, null);
         } else if (id == SINGLE_USER_CURSOR_LOADER_ID) {
-            loader = new CursorLoader(UserInfoActivity.this, AmttUri.USER.get(), null, selection,
-                    new String[]{String.valueOf(args.getLong(AmttActivity.KEY_USER_ID))}, null);
+            loader = new CursorLoader(UserInfoActivity.this, LocalUri.USER.get(), null, selection,
+                    new String[]{String.valueOf(args.getLong(AccountsActivity.KEY_USER_ID))}, null);
         }
         return loader;
     }
@@ -235,21 +217,10 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         try {
-            switch (loader.getId()) {
-                case CURSOR_LOADER_ID:
-                    if (data != null) {
-                        if (data.getCount() > 0) {
-                            reloadData(data);
-                        } else {
-                            Logger.d(TAG, "data==0");
-                        }
-                    } else {
-                        Logger.d(TAG, "data==null");
-                    }
-                    break;
-                case SINGLE_USER_CURSOR_LOADER_ID:
+            if (loader.getId() == CURSOR_LOADER_ID || loader.getId() == SINGLE_USER_CURSOR_LOADER_ID) {
+                if (data != null && data.getCount() > 0) {
                     reloadData(data);
-                    break;
+                }
             }
         } finally {
             IOUtils.close(data);
@@ -262,8 +233,6 @@ public class UserInfoActivity extends BaseActivity implements LoaderCallbacks<Cu
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
+    public void onLoaderReset(Loader<Cursor> loader) {}
 
 }

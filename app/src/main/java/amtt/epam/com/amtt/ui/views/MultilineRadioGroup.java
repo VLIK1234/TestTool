@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import java.util.ArrayList;
@@ -22,7 +23,6 @@ public class MultilineRadioGroup extends RadioGroup {
 
     }
 
-    private int mLastCheckedGroupIndex;
     private List<RadioGroupLine> mRadioGroups;
     private OnEntireGroupCheckedChangeListener mListener;
 
@@ -51,23 +51,13 @@ public class MultilineRadioGroup extends RadioGroup {
                     }
                 }
             });
-            if (getChildCount() == 1) {
-                ((PaletteItem) ((RadioGroupLine) child).getChildAt(0)).setChecked(true);
-            }
+//            if (getChildCount() == 1) {
+//                ((PaletteItem) ((RadioGroupLine) child).getChildAt(0)).setChecked(true);
+//            }
             if (mRadioGroups == null) {
                 mRadioGroups = new ArrayList<>();
             }
             mRadioGroups.add(radioGroup);
-        }
-    }
-
-    public void restoreCheck() {
-        for (int i = 0; i < mRadioGroups.size(); i++) {
-            if (i == mLastCheckedGroupIndex) {
-                mRadioGroups.get(mLastCheckedGroupIndex).restoreCheck();
-            } else {
-                mRadioGroups.get(i).setEnabled(true);
-            }
         }
     }
 
@@ -81,16 +71,16 @@ public class MultilineRadioGroup extends RadioGroup {
         addRadioGroup(child);
     }
 
-    @Override
-    public void clearCheck() {
-        for (int i = 0; i < mRadioGroups.size(); i++) {
-            RadioGroupLine radioGroup = mRadioGroups.get(i);
-            if (radioGroup.isGroupChecked()) {
-                mLastCheckedGroupIndex = i;
+    public PaletteItem getChekedItem() {
+        for (RadioGroupLine line: mRadioGroups) {
+            for (int i = 0; i < line.getChildCount(); i++) {
+                if (((PaletteItem) line.getChildAt(i)).isChecked()) {
+                    return ((PaletteItem) line.getChildAt(i));
+                }
+
             }
-            radioGroup.clearCheck();
-            radioGroup.setEnabled(false);
         }
+        return null;
     }
 
 }

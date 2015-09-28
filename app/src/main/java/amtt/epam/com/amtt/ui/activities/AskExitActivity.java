@@ -20,6 +20,7 @@ public class AskExitActivity  extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Dialog);
         builder.setTitle(R.string.dialog_exit)
                 .setNegativeButton(getResources().getString(R.string.label_return), new DialogInterface.OnClickListener() {
@@ -31,7 +32,7 @@ public class AskExitActivity  extends Activity {
                 .setPositiveButton(getResources().getString(R.string.label_close), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        TopButtonService.close(getBaseContext());
+                        TopButtonService.closeApp(getBaseContext());
                         mIsDismiss = false;
                     }
                 })

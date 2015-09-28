@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.api.GetContentCallback;
 import amtt.epam.com.amtt.bo.ticket.Step;
@@ -125,7 +125,7 @@ public class LocalContent {
     }
 
     public static String getStepInfo(Step step) {
-        Context context = AmttApplication.getContext();
+        Context context = CoreApplication.getContext();
         return 
                 "<b>" + context.getString(R.string.label_title) + "</b>" + "<small>" + step.getTitle() + "</small>" + "<br />" +
                         "<b>" + context.getString(R.string.label_activity) + "</b>" + "<small>" + step.getActivity() + "</small>" + "<br />" +
@@ -137,7 +137,7 @@ public class LocalContent {
     public static String getStepInfo(List<Step> listStep) {
         ArrayList<Step> list = (ArrayList<Step>) listStep;
         StringBuilder builder = new StringBuilder();
-        Context context = AmttApplication.getContext();
+        Context context = CoreApplication.getContext();
         if (list.size() > 0) {
             builder.append("<h5>" + "New steps : "
                     + "</h5>");
@@ -175,12 +175,12 @@ public class LocalContent {
     }
 
     public static void removeAllAttachFile() {
-        File folderPath = new File(FileUtil.getCacheAmttDir());
+        File folderPath = new File(FileUtil.getCacheLocalDir());
         File[] allAttachFile = folderPath.listFiles();
         if (allAttachFile != null) {
             for (File file : allAttachFile) {
                 if (file.exists()) {
-                    FileUtil.delete(file.getPath());
+                    FileUtil.deleteRecursive(file.getPath());
                 }
             }
         }

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -18,13 +19,15 @@ import android.widget.Toast;
 
 import java.io.File;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.helper.NotificationIdConstant;
+import amtt.epam.com.amtt.topbutton.view.TopButtonBarView;
 import amtt.epam.com.amtt.ui.activities.SettingActivity;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 import amtt.epam.com.amtt.util.TestUtil;
+import amtt.epam.com.amtt.util.UIUtil;
 
 /**
  @author Ivan_Bakach
@@ -33,6 +36,7 @@ import amtt.epam.com.amtt.util.TestUtil;
 
 public class TopButtonService extends Service{
 
+    private static final String ACTION_CLOSE_APP = "amtt.epam.com.amtt.topbutton.service.CLOSE_APP";
     private static final String ACTION_CLOSE = "amtt.epam.com.amtt.topbutton.service.CLOSE";
     private static final String ACTION_CHANGE_VISIBILITY_TOPBUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_VISIBILITY_TOPBUTTON";
     private static final String ACTION_CHANGE_NOTIFICATION_BUTTON = "amtt.epam.com.amtt.topbutton.service.ACTION_CHANGE_NOTIFICATION_BUTTON";
@@ -63,25 +67,30 @@ public class TopButtonService extends Service{
     }
 
     private static void sendActionChangeNotificationButton() {
-        Intent intentHideView = new Intent(AmttApplication.getContext(), TopButtonService.class).setAction(TopButtonService.ACTION_CHANGE_NOTIFICATION_BUTTON);
+        Intent intentHideView = new Intent(CoreApplication.getContext(), TopButtonService.class).setAction(TopButtonService.ACTION_CHANGE_NOTIFICATION_BUTTON);
         intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        AmttApplication.getContext().startService(intentHideView);
+        CoreApplication.getContext().startService(intentHideView);
     }
 
     public static void sendActionChangeTopButtonVisibility(boolean visible) {
-        Intent intentHideView = new Intent(AmttApplication.getContext(), TopButtonService.class);
+        Intent intentHideView = new Intent(CoreApplication.getContext(), TopButtonService.class);
         intentHideView.setAction(TopButtonService.ACTION_CHANGE_VISIBILITY_TOPBUTTON);
         intentHideView.putExtra(VISIBILITY_TOP_BUTTON, visible);
         intentHideView.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        AmttApplication.getContext().startService(intentHideView);
+        CoreApplication.getContext().startService(intentHideView);
     }
 
     public static void start(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_START));
     }
 
-    public static void close(Context context) {
+    public static void closeService(Context context) {
         context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE));
+    }
+
+
+    public static void closeApp(Context context) {
+        context.startService(new Intent(context, TopButtonService.class).setAction(ACTION_CLOSE_APP));
     }
 
     public static void stopRecord(Context context){
@@ -119,8 +128,6 @@ public class TopButtonService extends Service{
                     checkCountTestProject();
                     break;
                 case ACTION_CLOSE:
-                    TestUtil.closeTest();
-                    LocalContent.removeAllAttachFile();
                     closeService();
                     break;
                 case ACTION_CHANGE_NOTIFICATION_BUTTON:
@@ -142,6 +149,10 @@ public class TopButtonService extends Service{
                 case ACTION_STOP_RECORD:
                     stopRecord();
                     break;
+                case ACTION_CLOSE_APP:
+                    closeService();
+                    UIUtil.killApp(true);
+                    break;
             }
         } else {
             stopSelf();
@@ -153,8 +164,9 @@ public class TopButtonService extends Service{
         int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                 | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FORMAT_CHANGED;
 
+        int windowType = Build.BRAND.toUpperCase().equals(getResources().getString(R.string.label_xiaomi_brand))?WindowManager.LayoutParams.TYPE_TOAST:WindowManager.LayoutParams.TYPE_PHONE;
         mLayoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT, mXInitPosition, mYInitPosition, WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.WRAP_CONTENT, mXInitPosition, mYInitPosition, windowType,
                 flags, PixelFormat.TRANSLUCENT);
         mLayoutParams.gravity = Gravity.TOP | Gravity.START;
     }
@@ -172,7 +184,7 @@ public class TopButtonService extends Service{
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancelAll();
             isViewAdd = false;
-            mTopButtonView.getButtonsBar().setIsRecordStarted(false);
+            TopButtonBarView.setIsRecordStarted(false);
             mWindowManager.removeViewImmediate(mTopButtonView);
             mWindowManager.removeViewImmediate(mTopButtonView.getButtonsBar());
             mTopButtonView = null;
@@ -180,6 +192,7 @@ public class TopButtonService extends Service{
         stopSelf();
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager.cancelAll();
+        TestUtil.closeTest();
     }
 
     private void showNotification() {
@@ -201,7 +214,7 @@ public class TopButtonService extends Service{
         NotificationCompat.Action closeService = new NotificationCompat.Action(
                 R.drawable.ic_close_service,
                 getString(R.string.label_close),
-                PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE), PendingIntent.FLAG_CANCEL_CURRENT));
+                PendingIntent.getService(getBaseContext(), REQUEST_CODE, new Intent(getBaseContext(), TopButtonService.class).setAction(ACTION_CLOSE_APP), PendingIntent.FLAG_CANCEL_CURRENT));
 
         mBuilderNotificationCompat.addAction(mActionNotificationCompat);
         mBuilderNotificationCompat.addAction(closeService);
@@ -239,7 +252,7 @@ public class TopButtonService extends Service{
     }
 
     private void stopRecord(){
-        mTopButtonView.getButtonsBar().setIsRecordStarted(false);
+        TopButtonBarView.setIsRecordStarted(false);
         LocalContent.removeAllSteps();
     }
 

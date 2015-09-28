@@ -3,7 +3,7 @@ package amtt.epam.com.amtt.util;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 
 public class PreferenceUtil {
 
@@ -20,6 +20,14 @@ public class PreferenceUtil {
         getPref().edit().putString(key, value).apply();
     }
 
+    public static void putInt(String key, int value) {
+        getPref().edit().putInt(key, value).apply();
+    }
+
+    public static int getInt(String key, int value) {
+        return getPref().getInt(key, value);
+    }
+
     public static boolean getBoolean(String key) {
         return getPref().getBoolean(key, false);
     }
@@ -30,7 +38,7 @@ public class PreferenceUtil {
 
     public static SharedPreferences getPref() {
         if (mSharedPreferences == null) {
-            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(AmttApplication.getContext());
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(CoreApplication.getContext());
         }
         return mSharedPreferences;
     }

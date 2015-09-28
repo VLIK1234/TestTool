@@ -38,4 +38,7 @@
     <dimen name="margin_activity_detail">16dp</dimen>
     <dimen name="navigation_icon_padding">32dp</dimen>
     <dimen name="navigation_padding_bottom">8dp</dimen>
+    <dimen name="drag_view_button_size">48dp</dimen>
+    <dimen name="dialog_palette_internal_margin">16dp</dimen>
+    <dimen name="dialog_palette_seekbar_text_size">18sp</dimen>
 </resources>

@@ -11,7 +11,7 @@ import android.text.Spanned;
 import java.util.ArrayList;
 import java.util.List;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.googleapi.database.contentprovider.GSUri;
 import amtt.epam.com.amtt.googleapi.database.table.TestcaseTable;
@@ -124,7 +124,7 @@ public class GEntryWorksheet extends GEntry<GEntryWorksheet> {
     }
 
     public SpannableStringBuilder getFullTestCaseDescription(){
-        Context context = AmttApplication.getContext();
+        Context context = CoreApplication.getContext();
         SpannableStringBuilder fullDescription = new SpannableStringBuilder();
         fullDescription.append(Html.fromHtml("<h5>" + context.getString(R.string.label_steps) + "</h5>"));
         fullDescription.append(Html.fromHtml(mTestStepsGSX.replaceAll("\n","<br/>")));

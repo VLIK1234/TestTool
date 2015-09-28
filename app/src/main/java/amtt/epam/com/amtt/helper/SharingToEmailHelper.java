@@ -20,14 +20,20 @@ import amtt.epam.com.amtt.util.Constants;
  */
 public class SharingToEmailHelper {
 
-    public static void senAttachmentImage(Activity activity, String message, ArrayList<String> listUri){
+    public static void senAttachmentFiles(Activity activity, String message, ArrayList<String> listUri){
         Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         emailIntent.setType("*/*");
         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{getCurrentUsersEmail(activity)});
         emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Attachment from amtt");
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, message);
         emailIntent.putExtra(Intent.EXTRA_STREAM, convertListFileToListUri(listUri));
-        activity.startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        activity.startActivity(Intent.createChooser(emailIntent, "Send e-mail..."));
+    }
+    public static void senAttachmentFile(Activity activity, String message, String filePath){
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("*/*");
+        emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));
+        activity.startActivity(Intent.createChooser(emailIntent, "Send to..."));
     }
 
     private static String getCurrentUsersEmail(Context context){

@@ -1,12 +1,17 @@
 package amtt.epam.com.amtt.util;
 
+import android.annotation.SuppressLint;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.WindowManager;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import amtt.epam.com.amtt.AmttApplication;
+import amtt.epam.com.amtt.CoreApplication;
 import amtt.epam.com.amtt.database.constant.ActivityInfoConstants;
 
 /**
@@ -31,24 +36,84 @@ public final class UIUtil {
         return sScreenOrientation.get(orientation) == null ? ActivityInfoConstants.NOT_AVAILABLE : sScreenOrientation.get(orientation);
     }
     public static DisplayMetrics getDisplayMetrics() {
-        return AmttApplication.getContext().getResources().getDisplayMetrics();
+        return CoreApplication.getContext().getResources().getDisplayMetrics();
     }
 
     public static int getStatusBarHeight() {
         int result = 0;
-        int resourceId = AmttApplication.getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int resourceId = CoreApplication.getContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
-            result = AmttApplication.getContext().getResources().getDimensionPixelSize(resourceId);
+            result = CoreApplication.getContext().getResources().getDimensionPixelSize(resourceId);
         }
         return result;
     }
 
+    @SuppressLint("NewApi")
+    public static int getSoftbuttonsbarHeight(WindowManager windowManager) {
+        // getRealMetrics is only available with API 17 and +
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            windowManager.getDefaultDisplay().getMetrics(metrics);
+            int usableHeight = metrics.heightPixels;
+            windowManager.getDefaultDisplay().getRealMetrics(metrics);
+            int realHeight = metrics.heightPixels;
+            if (realHeight > usableHeight)
+                return realHeight - usableHeight;
+            else
+                return 0;
+        }
+        return 0;
+    }
+
     public static int getOrientation() {
-        return AmttApplication.getContext().getResources().getConfiguration().orientation;
+        return CoreApplication.getContext().getResources().getConfiguration().orientation;
+    }
+
+    public static void killApp(boolean killSafely) {
+        if (killSafely) {
+            /*
+             * Notify the system to finalize and collect all objects of the app
+             * on exit so that the virtual machine running the app can be killed
+             * by the system without causing issues. NOTE: If this is set to
+             * true then the virtual machine will not be killed until all of its
+             * threads have closed.
+             */
+            System.runFinalizersOnExit(true);
+
+            /*
+             * Force the system to close the app down completely instead of
+             * retaining it in the background. The virtual machine that runs the
+             * app will be killed. The app will be completely created as a new
+             * app in a new virtual machine running in a new process if the user
+             * starts the app again.
+             */
+            System.exit(0);
+        } else {
+            /*
+             * Alternatively the process that runs the virtual machine could be
+             * abruptly killed. This is the quickest way to remove the app from
+             * the device but it could cause problems since resources will not
+             * be finalized first. For example, all threads running under the
+             * process will be abruptly killed when the process is abruptly
+             * killed. If one of those threads was making multiple related
+             * changes to the database, then it may have committed some of those
+             * changes but not all of those changes when it was abruptly killed.
+             */
+            android.os.Process.killProcess(android.os.Process.myPid());
+        }
+
     }
 
     public static int getInDp(int px) {
-        float scale = AmttApplication.getContext().getResources().getDisplayMetrics().density;
+        float scale = CoreApplication.getContext().getResources().getDisplayMetrics().density;
         return (int) (px * scale + 0.5f);
+    }
+
+    public static void setBackgroundCompat(View view, Drawable drawable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            view.setBackground(drawable);
+        } else {
+            view.setBackgroundDrawable(drawable);
+        }
     }
 }

@@ -25,7 +25,7 @@ import amtt.epam.com.amtt.api.loadcontent.JiraContent;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.user.JUserInfo;
 import amtt.epam.com.amtt.common.Callback;
-import amtt.epam.com.amtt.contentprovider.AmttUri;
+import amtt.epam.com.amtt.contentprovider.LocalUri;
 import amtt.epam.com.amtt.database.table.UsersTable;
 import amtt.epam.com.amtt.database.util.ContentFromDatabase;
 import amtt.epam.com.amtt.database.util.LocalContent;
@@ -55,8 +55,9 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
     private Button mLoginButton;
     private String mRequestUrl;
     private boolean mIsUserInDatabase;
-    private ActiveUser mUser = ActiveUser.getInstance();
-    private JiraContent mJira = JiraContent.getInstance();
+    private final ActiveUser mUser = ActiveUser.getInstance();
+    private final JiraContent mJira = JiraContent.getInstance();
+    private final JiraApi mJiraApi = JiraApi.getInstance();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
         if (isNewUserAdditionFromUserInfo()) {
-            JiraApi.get().signOut();
+            mJiraApi.signOut();
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
@@ -124,7 +125,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         String password = mPasswordTextInput.getText().toString();
         String requestSuffix = JiraApiConst.USER_INFO_PATH + mUserNameTextInput.getText().toString();
         mUser.setCredentials(userName, password, mRequestUrl);
-        JiraApi.get().searchData(requestSuffix, new UserInfoProcessor(), new Callback<JUserInfo>() {
+        mJiraApi.searchData(requestSuffix, new UserInfoProcessor(), new Callback<JUserInfo>() {
             @Override
             public void onLoadStart() {
                 showProgress(true);
@@ -248,10 +249,10 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         CursorLoader loader = null;
         if (id == SINGLE_USER_CURSOR_LOADER_ID) {
             loader = new CursorLoader(LoginActivity.this,
-                    AmttUri.USER.get(),
+                    LocalUri.USER.get(),
                     null,
                     UsersTable._ID + "=?",
-                    new String[]{String.valueOf(args.getLong(AmttActivity.KEY_USER_ID))},
+                    new String[]{String.valueOf(args.getLong(AccountsActivity.KEY_USER_ID))},
                     null);
         }
         return loader;

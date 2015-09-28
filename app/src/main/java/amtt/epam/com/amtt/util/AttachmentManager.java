@@ -51,7 +51,7 @@ public class AttachmentManager {
         } else {
             screenArray = new ArrayList<>();
         }
-        File externalCache = new File(FileUtil.getCacheAmttDir());
+        File externalCache = new File(FileUtil.getCacheLocalDir());
         String template = externalCache.getPath() + "/%s";
         String pathLogCommon = String.format(template, "log_common.txt");
         String pathLogException = String.format(template, "log_exception.txt");
@@ -75,7 +75,7 @@ public class AttachmentManager {
     }
 
     public   File stepsDescriptionToAttachments(List<Step> result){
-        String template = FileUtil.getCacheAmttDir() + "/%s";
+        String template = FileUtil.getCacheLocalDir() + "/%s";
         String stepsDescription = String.format(template, "steps_description.html");
         final File stepsDescriptionFile = new File(stepsDescription);
         if (result != null) {
