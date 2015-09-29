@@ -149,7 +149,7 @@ public class FileUtil {
     }
 
     public static String getCacheLocalDir() {
-        String projectCacheDir = FileUtil.getUsersCacheDir() + PreferenceUtil.getString(CoreApplication.getContext().getString(R.string.key_test_project))+slash;
+        String projectCacheDir = FileUtil.getUsersCacheDir() + PreferenceUtil.getString(CoreApplication.getContext().getString(R.string.key_test_project_entry))+slash;
         createFolder(projectCacheDir);
 
         String taskDir = projectCacheDir + taskName + slash;

@@ -40,6 +40,6 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile(name:'amtttestslib-1.0', ext:'aar')
+    androidTestCompile(name:'amtttestslib-1.1', ext:'aar')
     compile 'com.android.support:appcompat-v7:22.2.1'
 }

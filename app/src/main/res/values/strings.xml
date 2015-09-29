@@ -193,5 +193,6 @@
     <string name="preff_category_description">Description</string>
     <string name="key_description">description</string>
     <string name="title_preff_description_template">Description template</string>
+    <string name="key_test_project_entry">test_project_entry</string>
 
 </resources>

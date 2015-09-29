@@ -62,6 +62,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     return true;
                 }
             });
+            PreferenceUtil.putString(getString(R.string.key_test_project_entry), projectName.getEntry().toString());
             TestUtil.restartTest();
             projectName.setSummary(projectName.getEntry());
         }
