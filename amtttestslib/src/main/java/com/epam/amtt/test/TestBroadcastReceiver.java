@@ -85,7 +85,8 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
 
     public void setActivity(Activity activity) {
         mActivity = activity;
-        FragmentInfoHelper.initFragmentsInfo(activity);
+        InjectionHelper.setWindowCallback(mActivity);
+        FragmentInfoHelper.initFragmentsInfo(mActivity);
     }
 
     public boolean needCloseUnitTest() {

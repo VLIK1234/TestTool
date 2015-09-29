@@ -18,10 +18,7 @@ public class MonitorTest extends InstrumentationTestCase{
     public void testMonitor() {
         Application application = (Application) getInstrumentation().getTargetContext().getApplicationContext();
         LogManager.writeMultipleLogs(application);
-        InjectionHelper injectionHelper = InjectionHelper.getInstance(application);
-        injectionHelper.setUncaughtExceptionHandler();
-        injectionHelper.registerActivityLifecycleCallbacks();
-        injectionHelper.setBroadcastReceiver();
+        InjectionHelper.initInjection(application);
 
     }
 }
