@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.epam.itweek"
+        applicationId "com.example.ivan_bakach.myapplication"
         minSdkVersion 14
         targetSdkVersion 22
         testInstrumentationRunner "com.epam.amtt.test.TestRunner"

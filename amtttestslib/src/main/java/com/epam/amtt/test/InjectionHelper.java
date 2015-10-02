@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -13,11 +14,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.WindowManagerGlobal;
 import android.view.accessibility.AccessibilityEvent;
 
 import junit.framework.Assert;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author IvanBakach
@@ -262,5 +271,60 @@ public class InjectionHelper{
                 e.printStackTrace();
             }
         }
+    }
+
+    public static View getTopWindowView() {
+        View view = null;
+        try {
+            Class aClass = Class.forName("android.view.WindowManagerGlobal");
+            WindowManagerGlobal global = WindowManagerGlobal.getInstance();
+            Method methodGetName = aClass.getDeclaredMethod("getViewRootNames");
+            methodGetName.setAccessible(true);
+            String[] array = (String[]) methodGetName.invoke(global);
+            for (String item : array) {
+                Log.d("ViewName", item);
+            }
+            for (Method item : aClass.getDeclaredMethods()) {
+                if (item.getName().equals("getRootView")) {
+                    item.setAccessible(true);
+                    view = (View) item.invoke(global, array[array.length - 1]);
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            Log.e("Amtt_error", e.toString());
+        } catch (NoSuchMethodException e){
+            Log.e("Amtt_error", e.toString());
+
+        } catch (InvocationTargetException e){
+            Log.e("Amtt_error", e.toString());
+
+        }catch (IllegalAccessException e){
+            Log.e("Amtt_error", e.toString());
+
+        }
+        return view;
+    }
+
+    public static Bitmap writeViewScreenshot(final View drawView) {
+        final Bitmap[] bitmap = {null};
+        final ViewTreeObserver.OnPreDrawListener listener = new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                drawView.setDrawingCacheEnabled(true);
+                bitmap[0] = Bitmap.createBitmap(drawView.getDrawingCache());
+                drawView.setDrawingCacheEnabled(false);
+                return true;
+            }
+        };
+        drawView.getViewTreeObserver().addOnPreDrawListener(listener);
+        ScheduledExecutorService worker = Executors.newSingleThreadScheduledExecutor();
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                drawView.getViewTreeObserver().removeOnPreDrawListener(listener);
+            }
+        };
+        worker.schedule(task, 1, TimeUnit.SECONDS);
+        return bitmap[0];
     }
 }
