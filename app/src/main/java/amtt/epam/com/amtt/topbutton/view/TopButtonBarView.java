@@ -30,6 +30,7 @@ import amtt.epam.com.amtt.ui.activities.TakeStepActivity;
 import amtt.epam.com.amtt.ui.activities.UserInfoActivity;
 import amtt.epam.com.amtt.ui.activities.TaskNameActivity;
 import amtt.epam.com.amtt.util.ActiveUser;
+import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.UIUtil;
 import amtt.epam.com.amtt.util.ZipUtil;
@@ -105,9 +106,18 @@ public class TopButtonBarView extends FrameLayout {
             @Override
             public void onTouch() {
                 if (!TextUtils.isEmpty(PreferenceUtil.getString(getContext().getString(R.string.key_test_project)))) {
-                    Intent taskNameActivityIntent = new Intent(getContext(), TaskNameActivity.class);
-                    taskNameActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    getContext().startActivity(taskNameActivityIntent);
+//                    Intent taskNameActivityIntent = new Intent(getContext(), TaskNameActivity.class);
+//                    taskNameActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    getContext().startActivity(taskNameActivityIntent);
+                    TopButtonBarView.setIsRecordStarted(true);
+                    FileUtil.setTaskName("Task");
+                    ActiveUser.getInstance().setRecord(true);
+                    LocalContent.removeAllSteps();
+
+                    Intent intentLogs = new Intent();
+                    intentLogs.setAction("TAKE_LOGS");
+                    getContext().sendOrderedBroadcast(intentLogs, null);
+                    Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), R.string.message_empty_test_project_for_cache_subfolder, Toast.LENGTH_SHORT).show();
                 }
@@ -185,19 +195,20 @@ public class TopButtonBarView extends FrameLayout {
     private void setInitialButtons() {
         mButtonsBar.removeAllViews();
         mButtonsBar.addView(mButtonStartRecord);
+        mButtonsBar.addView(mButtonStep);
         mButtonsBar.addView(mButtonCreateTicket);
-        mButtonsBar.addView(mButtonExpectedResult);
+//        mButtonsBar.addView(mButtonExpectedResult);
         mButtonsBar.addView(mButtonOpenUserInfo);
         mButtonsBar.addView(mButtonCloseApp);
     }
 
     private void setRecordButtons() {
         mButtonsBar.removeAllViews();
-        mButtonsBar.addView(mButtonStep);
-        mButtonsBar.addView(mButtonExpectedResult);
-        mButtonsBar.addView(mButtonShowSteps);
-        mButtonsBar.addView(mButtonCreateTicket);
         mButtonsBar.addView(mButtonStopRecord);
+        mButtonsBar.addView(mButtonStep);
+//        mButtonsBar.addView(mButtonExpectedResult);
+//        mButtonsBar.addView(mButtonShowSteps);
+        mButtonsBar.addView(mButtonCreateTicket);
         mButtonsBar.addView(mButtonOpenUserInfo);
     }
 

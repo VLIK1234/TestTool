@@ -31,13 +31,17 @@
             android:value="ca8d47b0e2c3c9351a1eec35690b1719ab1aa869" />
 
         <activity
-            android:name=".ui.activities.MainActivity"
+            android:name=".ui.activities.SplashScreenActivity"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.activities.MainActivity"
+            android:screenOrientation="portrait" >
         </activity>
 
         <service

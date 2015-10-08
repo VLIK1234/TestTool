@@ -3,6 +3,7 @@ package amtt.epam.com.amtt.ui.activities;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.fragments.SettingsFragment;
 
 /**
@@ -14,13 +15,15 @@ public class SettingActivity extends PreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TopButtonService.sendActionChangeTopButtonVisibility(false);
         getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        finish();
+        TopButtonService.sendActionChangeTopButtonVisibility(true);
+//        finish();
     }
 
 }

@@ -76,10 +76,10 @@
     <string name="label_screen_orientation">"Screen orientation: "</string>
     <string name="label_show">Show</string>
     <string name="label_show_steps">Show recorded steps</string>
-    <string name="label_start_record">Start record</string>
+    <string name="label_start_record">Record bug</string>
     <string name="label_step">"Step "</string>
     <string name="label_steps">"Steps"</string>
-    <string name="label_step_button">Take step</string>
+    <string name="label_step_button">Take screenshot</string>
     <string name="label_summary">Title</string>
     <string name="label_tags">Tags</string>
     <string name="label_tester">Assignee</string>
