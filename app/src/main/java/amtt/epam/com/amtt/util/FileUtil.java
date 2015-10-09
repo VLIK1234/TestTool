@@ -207,13 +207,12 @@ public class FileUtil {
         return outputFilesList;
     }
 
-    public static ArrayList<String> getListFilePaths(File parentDir) {
-        ArrayList<String> outputFilesList = new ArrayList<>();
-        String[] files = parentDir.list();
-        for (String file : files) {
-            Log.d("GetList", file);
-            if (new File(file).isDirectory()) {
-                outputFilesList.addAll(getListFilePaths(new File(file)));
+    public static ArrayList<File> getListFilePaths(File parentDir) {
+        ArrayList<File> outputFilesList = new ArrayList<>();
+        File[] files = parentDir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                outputFilesList.addAll(getListWithDirFiles(file));
             } else {
                 outputFilesList.add(file);
             }
@@ -221,8 +220,11 @@ public class FileUtil {
         return outputFilesList;
     }
 
-    public static boolean cleanAllUsersArtifacts() {
-        ArrayList<String> listArtifacts = getListFilePaths(new File(getUsersCacheDir()));
-        return deleteListFile(listArtifacts);
+    public static void cleanAllUsersArtifacts() {
+        ArrayList<File> listFiles = getListWithDirFiles(new File(getUsersCacheDir()));
+        for (File filePath : listFiles) {
+            deleteRecursive(filePath);
+
+        }
     }
 }

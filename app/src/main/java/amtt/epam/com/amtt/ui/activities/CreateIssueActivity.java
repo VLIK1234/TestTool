@@ -196,18 +196,6 @@ public class CreateIssueActivity extends BaseActivity
                 startActivity(shareFileActivity);
             }
         });
-        Button shareButton = (Button) findViewById(R.id.bt_share_attachmnet);
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mAdapter!= null && mAdapter.getAttachmentFilePathList()!=null && mAdapter.getAttachmentFilePathList().size() > 0) {
-                    SharingToEmailHelper.senAttachmentFiles(CreateIssueActivity.this, mEnvironmentTextInput.getText().toString(),
-                            mAdapter.getAttachmentFilePathList());
-                } else {
-                    Toast.makeText(getBaseContext(), R.string.error_message_share_file, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 
     private void initCreateAnotherCheckBox() {

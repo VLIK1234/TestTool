@@ -38,7 +38,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Snackbar.make(getActivity().findViewById(android.R.id.content), getColorString(getString(R.string.message_question_delete_artifacts)), Snackbar.LENGTH_LONG)
-                        .setActionTextColor(Color.WHITE)
+                        .setActionTextColor(Color.RED)
                         .setAction(R.string.label_sure_delete_artifacts, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

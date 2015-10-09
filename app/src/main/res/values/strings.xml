@@ -206,5 +206,6 @@
     <string name="label_sure_delete_artifacts">Sure</string>
     <string name="message_question_delete_artifacts">ALL files will be delete. You sure?</string>
     <string name="message_done_delete_artifacts">All files delete.</string>
+    <string name="summary_preff_go_to_testing">Close setting and show view</string>
 
 </resources>

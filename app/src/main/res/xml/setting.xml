@@ -38,6 +38,7 @@
             android:defaultValue="false"
             android:key="@string/key_go_to_testing"
             android:title="@string/title_preff_go_to_testing"
+            android:summary="@string/summary_preff_go_to_testing"
             />
     </PreferenceCategory>
 </PreferenceScreen>

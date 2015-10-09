@@ -18,8 +18,9 @@ public class LogManager {
     private static final String LOGS_CACHE_DIR = "logs";
     private static final String LOGCAT_WRITE_IN_FILE = "logcat -f ";
     private static final String ROTATE_LOG = " -r 512";
+    private static final String FORMAT_LOG = " -v time";
     private static final String EXCEPTION_FILTER = " *:e";
-    private static final String TEMPLATE_EXCEPION = "%s/log_exception.txt";
+    private static final String TEMPLATE_EXCEPTION = "%s/log_exception.txt";
     private static final String TEMPLATE_COMMON = "%s/log_common.txt";
     private static final String TEMPLATE_ARGUMENTS_FRAGMENTS = "%s/log_arguments.txt";
     private static final String FILE_NAME_KEY = "fileName";
@@ -36,12 +37,12 @@ public class LogManager {
         File logCacheDir = new File(externalCacheDir, LOGS_CACHE_DIR);
         logCacheDir.mkdir();
         sArgumentsFragments = String.format(TEMPLATE_ARGUMENTS_FRAGMENTS, logCacheDir.getPath());
-        sExceptionLog = String.format(TEMPLATE_EXCEPION, logCacheDir.getPath());
+        sExceptionLog = String.format(TEMPLATE_EXCEPTION, logCacheDir.getPath());
         sCommonLog = String.format(TEMPLATE_COMMON, logCacheDir.getPath());
         IOUtils.deleteFiles(logCacheDir.listFiles());
         try {
-            sProcessWriteCommonLog = Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sExceptionLog + ROTATE_LOG + EXCEPTION_FILTER);//write exception log
-            sProcessWriteExceptionLog = Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sCommonLog + ROTATE_LOG);//write all log
+            sProcessWriteCommonLog = Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sExceptionLog + ROTATE_LOG + FORMAT_LOG + EXCEPTION_FILTER);//write exception log
+            sProcessWriteExceptionLog = Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sCommonLog + ROTATE_LOG + FORMAT_LOG);//write all log
         } catch (IOException e) {
             Log.e(TAG, e.getMessage(), e);
         }

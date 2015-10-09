@@ -158,14 +158,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/label_share_file_observer"/>
-                <Button
-                    android:id="@+id/bt_share_attachmnet"
-                    style="@style/Material.CreateIssueButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:layout_gravity="end"
-                    android:text="@string/label_share_attachment"/>
             </LinearLayout>
             <!-- *******ATTACHMENT END*************************************************-->
 
