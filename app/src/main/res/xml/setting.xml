@@ -1,44 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/title_activity_settings">
-    <PreferenceCategory android:title="@string/preff_category_topbutton">
-        <SwitchPreference
-            android:icon="@drawable/ic_setting_visbility"
-            android:defaultValue="true"
-            android:key="@string/key_topbutton_show"
-            android:title="@string/title_preff_topbutton_show" />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preff_category_test_project">
-        <ListPreference
-            android:id="@+id/etp_project_name"
-            android:icon="@drawable/ic_setting_project_name"
-            android:key="@string/key_test_project"
-            android:title="@string/title_preff_test_project"
-            />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preff_category_description">
-        <EditTextPreference
-            android:icon="@drawable/ic_setting_description"
-            android:inputType="textMultiLine"
-            android:key="@string/key_description"
-            android:title="@string/title_preff_description_template"
-            />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preff_category_artifacts">
-        <Preference
-            android:icon="@drawable/ic_setting_delete"
-            android:defaultValue="false"
-            android:key="@string/key_remove_artifacts"
-            android:title="@string/title_preff_remove_all_artifacts"
-            />
-    </PreferenceCategory>
-    <PreferenceCategory android:title="@string/preff_category_go_to_testing">
-        <Preference
-            android:icon="@drawable/ic_setting_go_testing"
-            android:defaultValue="false"
-            android:key="@string/key_go_to_testing"
-            android:title="@string/title_preff_go_to_testing"
-            android:summary="@string/summary_preff_go_to_testing"
-            />
-    </PreferenceCategory>
+    <SwitchPreference
+        android:icon="@drawable/ic_setting_visbility"
+        android:defaultValue="true"
+        android:key="@string/key_topbutton_show"
+        android:title="@string/title_preff_topbutton_show" />
+    <ListPreference
+        android:id="@+id/etp_project_name"
+        android:icon="@drawable/ic_setting_project_name"
+        android:key="@string/key_test_project"
+        android:title="@string/title_preff_test_project"
+        />
+    <EditTextPreference
+        android:icon="@drawable/ic_setting_description"
+        android:inputType="textMultiLine"
+        android:key="@string/key_description"
+        android:title="@string/title_preff_description_template"
+        />
 </PreferenceScreen>

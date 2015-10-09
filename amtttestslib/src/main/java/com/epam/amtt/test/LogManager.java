@@ -16,6 +16,7 @@ public class LogManager {
 
     private static final String TAG = LogManager.class.getSimpleName();
     private static final String LOGS_CACHE_DIR = "logs";
+    private static final String LOGCAT_CLEAR = "logcat -c";
     private static final String LOGCAT_WRITE_IN_FILE = "logcat -f ";
     private static final String ROTATE_LOG = " -r 512";
     private static final String FORMAT_LOG = " -v time";
@@ -26,6 +27,7 @@ public class LogManager {
     private static final String FILE_NAME_KEY = "fileName";
     private static final String BYTE_ARRAY_DATA_KEY = "byteArrayData";
     private static final String SEND_LOG_FILE_ACTION = "SEND_LOG_FILE";
+    private static Process sProcessClearLog;
     private static Process sProcessWriteCommonLog;
     private static Process sProcessWriteExceptionLog;
     public static String sArgumentsFragments;
@@ -33,14 +35,15 @@ public class LogManager {
     public static String sCommonLog;
 
     public static void writeMultipleLogs(Context context) {
-        File externalCacheDir = context.getCacheDir();
-        File logCacheDir = new File(externalCacheDir, LOGS_CACHE_DIR);
+        File internalCacheDir = context.getCacheDir();
+        File logCacheDir = new File(internalCacheDir, LOGS_CACHE_DIR);
         logCacheDir.mkdir();
         sArgumentsFragments = String.format(TEMPLATE_ARGUMENTS_FRAGMENTS, logCacheDir.getPath());
         sExceptionLog = String.format(TEMPLATE_EXCEPTION, logCacheDir.getPath());
         sCommonLog = String.format(TEMPLATE_COMMON, logCacheDir.getPath());
         IOUtils.deleteFiles(logCacheDir.listFiles());
         try {
+            sProcessClearLog = Runtime.getRuntime().exec(LOGCAT_CLEAR);//clear log
             sProcessWriteCommonLog = Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sExceptionLog + ROTATE_LOG + FORMAT_LOG + EXCEPTION_FILTER);//write exception log
             sProcessWriteExceptionLog = Runtime.getRuntime().exec(LOGCAT_WRITE_IN_FILE + sCommonLog + ROTATE_LOG + FORMAT_LOG);//write all log
         } catch (IOException e) {
@@ -49,6 +52,9 @@ public class LogManager {
     }
 
     public static void closeLogsWriter() {
+        if (sProcessClearLog!=null) {
+            sProcessClearLog.destroy();
+        }
         if (sProcessWriteCommonLog!=null) {
             sProcessWriteCommonLog.destroy();
         }

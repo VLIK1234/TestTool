@@ -42,7 +42,7 @@
     <string name="label_clear_notes">Clear notes</string>
     <string name="label_close">Close</string>
     <string name="label_setting">Settings</string>
-    <string name="label_file_share">Share artifacts</string>
+    <string name="label_file_share">Artifacts</string>
     <string name="label_components">Component/s</string>
     <string name="label_create">Create</string>
     <string name="label_create_ticket">Create Ticket</string>
@@ -78,11 +78,11 @@
     <string name="label_screen_orientation">"Screen orientation: "</string>
     <string name="label_show">Show</string>
     <string name="label_show_steps">Show recorded steps</string>
-    <string name="label_start_record">Record bug</string>
+    <string name="label_start_record">Record Bug</string>
     <string name="label_step">"Step "</string>
     <string name="label_steps">"Steps"</string>
-    <string name="label_step_button">Take screenshot</string>
-    <string name="label_step_for_bug_button">Take screenshot for bug</string>
+    <string name="label_step_button">Take Screenshot</string>
+    <string name="label_step_for_record_button">Take Screenshot for Record</string>
     <string name="label_summary">Title</string>
     <string name="label_tags">Tags</string>
     <string name="label_tester">Assignee</string>
@@ -111,7 +111,7 @@
 
     <string name="key_topbutton_show">topbutton_show</string>
     <string name="key_test_project">test_project</string>
-    <string name="title_preff_topbutton_show">Show</string>
+    <string name="title_preff_topbutton_show">Widget</string>
     <string name="title_preff_test_project">Project name</string>
     <string name="preff_category_topbutton">Top button</string>
     <string name="preff_category_test_project">Test project</string>

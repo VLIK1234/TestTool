@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReceiver;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.topbutton.view.TopButtonBarView;
@@ -70,8 +70,8 @@ public class TaskNameActivity extends BaseActivity{
                             LocalContent.removeAllSteps();
 
                             Intent intentLogs = new Intent();
-                            intentLogs.setAction("TAKE_LOGS");
-                            getBaseContext().sendOrderedBroadcast(intentLogs, null);
+                            intentLogs.setAction(GlobalBroadcastReceiver.EXTERNAL_LOGS_TAKE);
+                            getBaseContext().sendBroadcast(intentLogs);
                             Toast.makeText(getBaseContext(), getString(R.string.label_start_record), Toast.LENGTH_SHORT).show();
                             alertDialog.dismiss();
                         } else if (haveReservedChars!=-1) {

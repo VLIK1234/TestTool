@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReceiver;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.ui.activities.AskExitActivity;
 import amtt.epam.com.amtt.ui.activities.CreateIssueActivity;
@@ -115,8 +116,8 @@ public class TopButtonBarView extends FrameLayout {
                     LocalContent.removeAllSteps();
 
                     Intent intentLogs = new Intent();
-                    intentLogs.setAction("TAKE_LOGS");
-                    getContext().sendOrderedBroadcast(intentLogs, null);
+                    intentLogs.setAction(GlobalBroadcastReceiver.EXTERNAL_LOGS_TAKE);
+                    getContext().sendBroadcast(intentLogs);
                     Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), R.string.message_empty_test_project_for_cache_subfolder, Toast.LENGTH_SHORT).show();
@@ -151,7 +152,7 @@ public class TopButtonBarView extends FrameLayout {
                 mTopButtonListener.onTouch();
             }
         });
-        mButtonStep = new TopUnitView(getContext(), getContext().getString(R.string.label_step_button), R.drawable.background_step_with_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
+        mButtonStep = new TopUnitView(getContext(), getContext().getString(R.string.label_step_button), R.drawable.background_step_without_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
                 Intent intent = new Intent(getContext(), TakeStepActivity.class);
@@ -218,7 +219,7 @@ public class TopButtonBarView extends FrameLayout {
         mButtonsBar.addView(mButtonSetting);
         mButtonsBar.addView(mButtonSharingFile);
 //        mButtonsBar.addView(mButtonExpectedResult);
-        mButtonsBar.addView(mButtonOpenUserInfo);
+//        mButtonsBar.addView(mButtonOpenUserInfo);
         mButtonsBar.addView(mButtonCloseApp);
     }
 
@@ -226,14 +227,15 @@ public class TopButtonBarView extends FrameLayout {
         mButtonsBar.removeAllViews();
         mButtonsBar.addView(mButtonStopRecord);
 
-        mButtonStep.setTitle(getContext().getString(R.string.label_step_for_bug_button));
+        mButtonStep.setTitle(getContext().getString(R.string.label_step_for_record_button));
         mButtonsBar.addView(mButtonStep);
 //        mButtonsBar.addView(mButtonExpectedResult);
 //        mButtonsBar.addView(mButtonShowSteps);
         mButtonsBar.addView(mButtonCreateTicket);
         mButtonsBar.addView(mButtonSetting);
         mButtonsBar.addView(mButtonSharingFile);
-        mButtonsBar.addView(mButtonOpenUserInfo);
+//        mButtonsBar.addView(mButtonOpenUserInfo);
+        mButtonsBar.addView(mButtonCloseApp);
     }
 
 

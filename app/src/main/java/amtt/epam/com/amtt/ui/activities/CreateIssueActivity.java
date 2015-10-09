@@ -44,10 +44,10 @@ import amtt.epam.com.amtt.bo.JCreateIssueResponse;
 import amtt.epam.com.amtt.bo.issue.createmeta.JProjects;
 import amtt.epam.com.amtt.bo.ticket.Attachment;
 import amtt.epam.com.amtt.bo.ticket.Step;
+import amtt.epam.com.amtt.broadcastreceiver.GlobalBroadcastReceiver;
 import amtt.epam.com.amtt.database.util.LocalContent;
 import amtt.epam.com.amtt.googleapi.bo.GEntryWorksheet;
 import amtt.epam.com.amtt.helper.DialogHelper;
-import amtt.epam.com.amtt.helper.SharingToEmailHelper;
 import amtt.epam.com.amtt.helper.SystemInfoHelper;
 import amtt.epam.com.amtt.http.MimeType;
 import amtt.epam.com.amtt.service.AttachmentService;
@@ -145,7 +145,15 @@ public class CreateIssueActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         Intent intentLogs = new Intent();
-        intentLogs.setAction("TAKE_LOGS");
+        intentLogs.setAction(GlobalBroadcastReceiver.EXTERNAL_LOGS_TAKE);
+        getBaseContext().sendBroadcast(intentLogs);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Intent intentLogs = new Intent();
+        intentLogs.setAction(GlobalBroadcastReceiver.EXTERNAL_LOGS_TAKE);
         getBaseContext().sendBroadcast(intentLogs);
     }
 
@@ -419,6 +427,7 @@ public class CreateIssueActivity extends BaseActivity
 
     private void initDescriptionEditText() {
         mDescriptionTextInput = (TextInput) findViewById(R.id.description_input);
+        mDescriptionTextInput.setText(SystemInfoHelper.getDeviceOsInfo());
         getDescription();
     }
 
@@ -436,7 +445,7 @@ public class CreateIssueActivity extends BaseActivity
 
     private void initEnvironmentEditText() {
         mEnvironmentTextInput = (TextInput) findViewById(R.id.environment_input);
-        mEnvironmentTextInput.setText(SystemInfoHelper.getDeviceOsInfo());
+//        mEnvironmentTextInput.setText(SystemInfoHelper.getDeviceOsInfo());
     }
 
     private void initCreateIssueButton() {
@@ -746,8 +755,7 @@ public class CreateIssueActivity extends BaseActivity
                 mDescriptionTextInput.setText(testcase.getFullTestCaseDescription());
             }
             String descriptionTemplate = PreferenceUtil.getString(getResources().getString(R.string.key_description))+"\n";
-                    mDescriptionTextInput.setText(!TextUtils.isEmpty(descriptionTemplate)?descriptionTemplate:""
-                            + mDescriptionTextInput.getText());
+                    mDescriptionTextInput.setText(mDescriptionTextInput.getText()+(!TextUtils.isEmpty(descriptionTemplate)?descriptionTemplate:""));
         }
         mRequestsQueue.remove(ContentConst.DESCRIPTION_RESPONSE);
         showProgressIfNeed();

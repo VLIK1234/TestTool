@@ -35,6 +35,7 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
     private static final String REQUEST_TAKE_SCREENSHOT = "REQUEST_TAKE_SCREENSHOT";
     private static final String EXCEPTION_ANSWER = "EXCEPTION_ANSWER";
     private static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
+    public static final String EXTERNAL_LOGS_TAKE = "TAKE_LOGS";
     private static final String FILE_NAME_KEY = "fileName";
     private static final String BYTE_ARRAY_DATA_KEY = "byteArrayData";
     private static final String TITLE_KEY = "title";

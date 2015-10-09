@@ -19,6 +19,5 @@ public class MonitorTest extends InstrumentationTestCase{
         Application application = (Application) getInstrumentation().getTargetContext().getApplicationContext();
         LogManager.writeMultipleLogs(application);
         InjectionHelper.initInjection(application);
-
     }
 }
