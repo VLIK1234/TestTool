@@ -28,6 +28,9 @@ public class TopUnitView extends LinearLayout {
     private final int mBackgroundIconId;
     private CardView mCardView;
 
+    private String mTitle;
+    private TextView mTextView;
+
     public TopUnitView(Context context, String title, int backgroundIconId, amtt.epam.com.amtt.topbutton.view.OnTouchListener touchAction) {
         super(context);
         this.mTouchAction = touchAction;
@@ -35,7 +38,8 @@ public class TopUnitView extends LinearLayout {
         setOrientation(HORIZONTAL);
         setMargin((int) getResources().getDimension(R.dimen.margin_buttons_bar), 0, 0, 0);
         addView(getButton());
-        addCardView(context, title);
+        mTitle = title;
+        addCardView(context, mTitle);
         addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
@@ -56,7 +60,8 @@ public class TopUnitView extends LinearLayout {
         mCardView.setLayoutParams(params);
         mCardView.setUseCompatPadding(true);
         mCardView.setRadius((int) getResources().getDimension(R.dimen.card_corner_radius));
-        mCardView.addView(getTextView(title));
+        mTextView = getTextView(title);
+        mCardView.addView(mTextView);
         mCardView.setCardElevation((int) getResources().getDimension(R.dimen.card_elevation));
         addView(mCardView);
     }
@@ -108,4 +113,12 @@ public class TopUnitView extends LinearLayout {
         return super.onTouchEvent(event);
     }
 
+    public void setTitle(String title) {
+        mTitle = title;
+        mTextView.setText(mTitle);
+    }
+
+    public String getTitle() {
+        return mTitle;
+    }
 }

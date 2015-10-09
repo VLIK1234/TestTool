@@ -12,7 +12,7 @@ import amtt.epam.com.amtt.R;
  * @version on 08.10.2015
  */
 public class SplashScreenActivity extends Activity {
-    private static final int SPLASH_DISPLAY_LENGTH = 2000;
+    private static final int SPLASH_DISPLAY_LENGTH = 1000;
 
     @Override
     public void onCreate(Bundle icicle) {

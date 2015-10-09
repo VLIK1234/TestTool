@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.os.Build;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,19 +20,18 @@ import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.database.util.LocalContent;
-import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.activities.AskExitActivity;
 import amtt.epam.com.amtt.ui.activities.CreateIssueActivity;
 import amtt.epam.com.amtt.ui.activities.ExpectedResultsActivity;
+import amtt.epam.com.amtt.ui.activities.SettingActivity;
+import amtt.epam.com.amtt.ui.activities.ShareFilesActivity;
 import amtt.epam.com.amtt.ui.activities.StepsActivity;
 import amtt.epam.com.amtt.ui.activities.TakeStepActivity;
 import amtt.epam.com.amtt.ui.activities.UserInfoActivity;
-import amtt.epam.com.amtt.ui.activities.TaskNameActivity;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.UIUtil;
-import amtt.epam.com.amtt.util.ZipUtil;
 
 /**
  * @author Artsiom_Kaliaha
@@ -59,6 +57,8 @@ public class TopButtonBarView extends FrameLayout {
     private TopUnitView mButtonStopRecord;
     private TopUnitView mButtonShowSteps;
     private TopUnitView mButtonCloseApp;
+    private TopUnitView mButtonSetting;
+    private TopUnitView mButtonSharingFile;
 
     static {
         isRecordStarted = false;
@@ -190,6 +190,24 @@ public class TopButtonBarView extends FrameLayout {
                 mTopButtonListener.onTouch();
             }
         });
+        mButtonSetting = new TopUnitView(getContext(), getContext().getString(R.string.label_setting), R.drawable.background_setting, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
+            @Override
+            public void onTouch() {
+                Intent intentAsk = new Intent(getContext(), SettingActivity.class);
+                intentAsk.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intentAsk);
+                mTopButtonListener.onTouch();
+            }
+        });
+        mButtonSharingFile = new TopUnitView(getContext(), getContext().getString(R.string.label_file_share), R.drawable.background_file_share, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
+            @Override
+            public void onTouch() {
+                Intent intentAsk = new Intent(getContext(), ShareFilesActivity.class);
+                intentAsk.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().getApplicationContext().startActivity(intentAsk);
+                mTopButtonListener.onTouch();
+            }
+        });
     }
 
     private void setInitialButtons() {
@@ -197,6 +215,8 @@ public class TopButtonBarView extends FrameLayout {
         mButtonsBar.addView(mButtonStartRecord);
         mButtonsBar.addView(mButtonStep);
         mButtonsBar.addView(mButtonCreateTicket);
+        mButtonsBar.addView(mButtonSetting);
+        mButtonsBar.addView(mButtonSharingFile);
 //        mButtonsBar.addView(mButtonExpectedResult);
         mButtonsBar.addView(mButtonOpenUserInfo);
         mButtonsBar.addView(mButtonCloseApp);
@@ -205,10 +225,14 @@ public class TopButtonBarView extends FrameLayout {
     private void setRecordButtons() {
         mButtonsBar.removeAllViews();
         mButtonsBar.addView(mButtonStopRecord);
+
+        mButtonStep.setTitle(getContext().getString(R.string.label_step_for_bug_button));
         mButtonsBar.addView(mButtonStep);
 //        mButtonsBar.addView(mButtonExpectedResult);
 //        mButtonsBar.addView(mButtonShowSteps);
         mButtonsBar.addView(mButtonCreateTicket);
+        mButtonsBar.addView(mButtonSetting);
+        mButtonsBar.addView(mButtonSharingFile);
         mButtonsBar.addView(mButtonOpenUserInfo);
     }
 

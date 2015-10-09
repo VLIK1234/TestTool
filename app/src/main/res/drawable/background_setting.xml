@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/background_circle"/>
+    <item android:drawable="@drawable/ic_settings"
+          android:top="@dimen/list_top_padding_drawable"
+          android:bottom="@dimen/list_bottom_padding_drawable"
+          android:left="@dimen/list_left_padding_drawable"
+          android:right="@dimen/list_right_padding_drawable"/>
+</layer-list>

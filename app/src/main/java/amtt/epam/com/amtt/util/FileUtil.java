@@ -73,7 +73,6 @@ public class FileUtil {
 
     public static boolean deleteListFile(List<String> listFile){
         boolean resultDelete = false;
-
         for (String file:listFile) {
             resultDelete = deleteRecursive(file);
         }
@@ -100,7 +99,6 @@ public class FileUtil {
     }
 
     public static void copyFile(String inputPath, String inputFileName, String outputPath) {
-
         InputStream in = null;
         OutputStream out = null;
         try {
@@ -221,5 +219,10 @@ public class FileUtil {
             }
         }
         return outputFilesList;
+    }
+
+    public static boolean cleanAllUsersArtifacts() {
+        ArrayList<String> listArtifacts = getListFilePaths(new File(getUsersCacheDir()));
+        return deleteListFile(listArtifacts);
     }
 }

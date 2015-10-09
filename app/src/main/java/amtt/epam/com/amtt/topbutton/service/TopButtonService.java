@@ -105,7 +105,7 @@ public class TopButtonService extends Service{
     @Override
     public void onCreate() {
         super.onCreate();
-        showNotification();
+//        showNotification();
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
         mXInitPosition = displayMetrics.widthPixels / 2;
@@ -222,20 +222,20 @@ public class TopButtonService extends Service{
     }
 
     private void changeStateNotificationAction() {
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (mTopButtonView.getVisibility() == View.VISIBLE) {
             if (mTopButtonView.getButtonsBar()!=null) {
                 mTopButtonView.getButtonsBar().hide();
             }
             mTopButtonView.setVisibility(View.GONE);
-            mActionNotificationCompat.icon = R.drawable.ic_stat_action_visibility;
-            mActionNotificationCompat.title = getString(R.string.label_show);
-            notificationManager.notify(NotificationIdConstant.MAIN_AMTT, mBuilderNotificationCompat.build());
+//            mActionNotificationCompat.icon = R.drawable.ic_stat_action_visibility;
+//            mActionNotificationCompat.title = getString(R.string.label_show);
+//            notificationManager.notify(NotificationIdConstant.MAIN_AMTT, mBuilderNotificationCompat.build());
         } else {
             mTopButtonView.setVisibility(View.VISIBLE);
-            mActionNotificationCompat.icon = R.drawable.ic_stat_action_visibility_off;
-            mActionNotificationCompat.title = getString(R.string.label_hide);
-            notificationManager.notify(NotificationIdConstant.MAIN_AMTT, mBuilderNotificationCompat.build());
+//            mActionNotificationCompat.icon = R.drawable.ic_stat_action_visibility_off;
+//            mActionNotificationCompat.title = getString(R.string.label_hide);
+//            notificationManager.notify(NotificationIdConstant.MAIN_AMTT, mBuilderNotificationCompat.build());
         }
     }
 

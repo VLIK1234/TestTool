@@ -41,6 +41,8 @@
     <string name="label_clear_environment">Clear environment</string>
     <string name="label_clear_notes">Clear notes</string>
     <string name="label_close">Close</string>
+    <string name="label_setting">Settings</string>
+    <string name="label_file_share">Share artifacts</string>
     <string name="label_components">Component/s</string>
     <string name="label_create">Create</string>
     <string name="label_create_ticket">Create Ticket</string>
@@ -80,6 +82,7 @@
     <string name="label_step">"Step "</string>
     <string name="label_steps">"Steps"</string>
     <string name="label_step_button">Take screenshot</string>
+    <string name="label_step_for_bug_button">Take screenshot for bug</string>
     <string name="label_summary">Title</string>
     <string name="label_tags">Tags</string>
     <string name="label_tester">Assignee</string>
@@ -194,5 +197,14 @@
     <string name="key_description">description</string>
     <string name="title_preff_description_template">Description template</string>
     <string name="key_test_project_entry">test_project_entry</string>
+    <string name="preff_category_artifacts">Artifacts</string>
+    <string name="key_remove_artifacts">remove_artifacts</string>
+    <string name="title_preff_remove_all_artifacts">Remove ALL artifacts</string>
+    <string name="preff_category_go_to_testing">Go to testing</string>
+    <string name="key_go_to_testing">go_to_testing</string>
+    <string name="title_preff_go_to_testing">Go to testing</string>
+    <string name="label_sure_delete_artifacts">Sure</string>
+    <string name="message_question_delete_artifacts">ALL files will be delete. You sure?</string>
+    <string name="message_done_delete_artifacts">All files delete.</string>
 
 </resources>
