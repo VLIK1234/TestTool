@@ -264,4 +264,8 @@ public class TopButtonService extends Service{
             Toast.makeText(getBaseContext(), "You have many project. Please choose right tested project",Toast.LENGTH_LONG).show();
         }
     }
+
+    public static boolean getStateVisibilityButton() {
+        return mTopButtonView.getVisibility()==View.VISIBLE;
+    }
 }

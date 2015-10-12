@@ -112,7 +112,7 @@
     <string name="key_topbutton_show">topbutton_show</string>
     <string name="key_test_project">test_project</string>
     <string name="title_preff_topbutton_show">Widget</string>
-    <string name="title_preff_test_project">Project name</string>
+    <string name="title_preff_test_project">Application to Connect</string>
     <string name="preff_category_topbutton">Top button</string>
     <string name="preff_category_test_project">Test project</string>
 

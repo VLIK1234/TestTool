@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
 import android.support.design.widget.Snackbar;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -14,6 +15,7 @@ import android.view.View;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.topbutton.view.TopButtonView;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.PreferenceUtil;
 import amtt.epam.com.amtt.util.TestUtil;
@@ -33,33 +35,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         addPreferencesFromResource(R.xml.setting);
         projectName = (ListPreference) findPreference(getActivity().getString(R.string.key_test_project));
         PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(this);
-//        Preference removeArtifacts = findPreference(getActivity().getString(R.string.key_remove_artifacts));
-//        removeArtifacts.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-//            @Override
-//            public boolean onPreferenceClick(Preference preference) {
-//                Snackbar.make(getActivity().findViewById(android.R.id.content), getColorString(getString(R.string.message_question_delete_artifacts)), Snackbar.LENGTH_LONG)
-//                        .setActionTextColor(Color.RED)
-//                        .setAction(R.string.label_sure_delete_artifacts, new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                FileUtil.cleanAllUsersArtifacts();
-//                                Snackbar.make(getActivity().findViewById(android.R.id.content), getColorString(getString(R.string.message_done_delete_artifacts)), Snackbar.LENGTH_LONG)
-//                                        .setActionTextColor(Color.WHITE)
-//                                        .show();
-//                            }
-//                        })
-//                        .show();
-//                return true;
-//            }
-//        });
-//        Preference goToTesting = findPreference(getActivity().getString(R.string.key_go_to_testing));
-//        goToTesting.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-//            @Override
-//            public boolean onPreferenceClick(Preference preference) {
-//                getActivity().finish();
-//                return true;
-//            }
-//        });
+        SwitchPreference widgetPreff = (SwitchPreference) findPreference(getResources().getString(R.string.key_topbutton_show));
+        widgetPreff.setChecked(TopButtonService.getStateVisibilityButton());
     }
 
     @Override
@@ -101,11 +78,5 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             TestUtil.restartTest();
             projectName.setSummary(projectName.getEntry());
         }
-    }
-
-    private SpannableString getColorString(String value) {
-        SpannableString spannableValue = new SpannableString(value);
-        spannableValue.setSpan(new ForegroundColorSpan(Color.WHITE), 0, spannableValue.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return spannableValue;
     }
 }
