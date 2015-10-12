@@ -7,7 +7,9 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -35,7 +37,18 @@ public class HttpClient implements DataSource<Request, HttpEntity> {
         int timeoutSocket = 10000;
         HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
         HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-        mHttpClient = new DefaultHttpClient(httpParameters);
+//        mHttpClient = new DefaultHttpClient(httpParameters);
+        mHttpClient = getThreadSafeClient();
+    }
+
+    public static DefaultHttpClient getThreadSafeClient()  {
+        DefaultHttpClient client = new DefaultHttpClient();
+        ClientConnectionManager mgr = client.getConnectionManager();
+        HttpParams params = client.getParams();
+        client = new DefaultHttpClient(new ThreadSafeClientConnManager(params,
+
+                mgr.getSchemeRegistry()), params);
+        return client;
     }
 
     private void setHeaders(Request request) {

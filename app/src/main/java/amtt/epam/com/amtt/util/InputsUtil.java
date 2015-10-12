@@ -154,7 +154,7 @@ public class InputsUtil {
         String string = editableText.toString();
         mPattern = Pattern.compile(mNoWhitespaceAfterAndBefore);
         mMatcher = mPattern.matcher(string.toLowerCase());
-        Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": not passed.");
+        Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": hasEndStartWhitespaces not passed.");
         return !mMatcher.matches();
     }
 
@@ -166,7 +166,7 @@ public class InputsUtil {
         String string = editableText.toString();
         mPattern = Pattern.compile(mHasAtSymbol);
         mMatcher = mPattern.matcher(string.toLowerCase());
-        Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": not passed.");
+        Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": isEmail not passed.");
         return mMatcher.matches();
     }
 
@@ -178,7 +178,7 @@ public class InputsUtil {
         String string = editableText.toString();
         mPattern = Pattern.compile(mHaveWhitespaces);
         mMatcher = mPattern.matcher(string.toLowerCase());
-        Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": not passed.");
+        Logger.d(TAG, mMatcher.matches() ? string + ": passed." : string + ": hasWhitespaces not passed.");
         return mMatcher.matches();
     }
 
