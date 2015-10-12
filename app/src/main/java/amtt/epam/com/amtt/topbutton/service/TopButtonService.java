@@ -266,6 +266,6 @@ public class TopButtonService extends Service{
     }
 
     public static boolean getStateVisibilityButton() {
-        return mTopButtonView.getVisibility()==View.VISIBLE;
+        return mTopButtonView != null && mTopButtonView.getVisibility() == View.VISIBLE;
     }
 }

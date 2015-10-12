@@ -198,6 +198,12 @@
             android:screenOrientation="sensor"
             android:launchMode="standard"
             android:label="@string/title_activity_share_file" />
+        <activity
+            android:name=".ui.activities.AuthMethodActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="standard"
+            android:label="@string/title_activity_auth_method"
+            android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"/>
     </application>
 
 </manifest>

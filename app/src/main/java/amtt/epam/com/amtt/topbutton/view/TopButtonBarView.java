@@ -214,13 +214,16 @@ public class TopButtonBarView extends FrameLayout {
     private void setInitialButtons() {
         mButtonsBar.removeAllViews();
         mButtonsBar.addView(mButtonStartRecord);
+        mButtonStep.setTitle(getContext().getString(R.string.label_step_button));
         mButtonsBar.addView(mButtonStep);
-        mButtonsBar.addView(mButtonCreateTicket);
+        if (ActiveUser.getInstance().getUserName()!=null) {
+            mButtonsBar.addView(mButtonCreateTicket);
+        }
         mButtonsBar.addView(mButtonSetting);
         mButtonsBar.addView(mButtonSharingFile);
 //        mButtonsBar.addView(mButtonExpectedResult);
 //        mButtonsBar.addView(mButtonOpenUserInfo);
-        mButtonsBar.addView(mButtonCloseApp);
+//        mButtonsBar.addView(mButtonCloseApp);
     }
 
     private void setRecordButtons() {
@@ -231,11 +234,13 @@ public class TopButtonBarView extends FrameLayout {
         mButtonsBar.addView(mButtonStep);
 //        mButtonsBar.addView(mButtonExpectedResult);
 //        mButtonsBar.addView(mButtonShowSteps);
-        mButtonsBar.addView(mButtonCreateTicket);
+        if (ActiveUser.getInstance().getUserName()!=null) {
+            mButtonsBar.addView(mButtonCreateTicket);
+        }
         mButtonsBar.addView(mButtonSetting);
         mButtonsBar.addView(mButtonSharingFile);
 //        mButtonsBar.addView(mButtonOpenUserInfo);
-        mButtonsBar.addView(mButtonCloseApp);
+//        mButtonsBar.addView(mButtonCloseApp);
     }
 
 

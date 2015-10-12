@@ -69,13 +69,14 @@ public class MainActivity extends BaseActivity implements LoaderManager.LoaderCa
         try {
             switch (loader.getId()) {
                 case CURSOR_LOADER_ID:
-                    if (data == null || data.getCount() < 1) {
-                        showLoginActivity();
-                    } else if (data.getCount() > 1) {
-                        showAccountsActivity();
-                    } else {
-                        setActiveUser(data);
-                    }
+                    showLoginActivity();
+//                    if (data == null || data.getCount() < 1) {
+//                        showLoginActivity();
+//                    } else if (data.getCount() > 1) {
+//                        showAccountsActivity();
+//                    } else {
+//                        setActiveUser(data);
+//                    }
                     break;
                 case SINGLE_USER_CURSOR_LOADER_ID:
                     setActiveUser(data);

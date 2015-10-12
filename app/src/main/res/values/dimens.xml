@@ -41,4 +41,5 @@
     <dimen name="drag_view_button_size">48dp</dimen>
     <dimen name="dialog_palette_internal_margin">16dp</dimen>
     <dimen name="dialog_palette_seekbar_text_size">18sp</dimen>
+    <dimen name="button_parent_bottom_margin">16dp</dimen>
 </resources>

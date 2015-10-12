@@ -15,6 +15,7 @@
     <string name="title_activity_take_step">Take step</string>
     <string name="title_activity_task_name">Task name</string>
     <string name="title_activity_share_file">Share file</string>
+    <string name="title_activity_auth_method">Auth method</string>
 
     <string name="empty_list_view">There is no saved steps =(</string>
 
@@ -207,5 +208,12 @@
     <string name="message_question_delete_artifacts">ALL files will be delete. You sure?</string>
     <string name="message_done_delete_artifacts">All files delete.</string>
     <string name="summary_preff_go_to_testing">Close setting and show view</string>
+    <string name="key_jira_project_name">key_jira_project_name</string>
+    <string name="title_jira_project_name">Default JIRA Project</string>
+    <string name="label_login_button">LogIn</string>
+    <string name="label_not_now_button">Not Now</string>
+    <string name="label_lets_test_button">Let\'s TEST!</string>
+    <string name="label_remove_artifacts">Remove artifacts</string>
+    <string name="label_logout_button">Log Out</string>
 
 </resources>

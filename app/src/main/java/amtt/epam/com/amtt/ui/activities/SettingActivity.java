@@ -12,7 +12,9 @@ import android.view.View;
 import android.widget.Button;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.topbutton.service.TopButtonService;
 import amtt.epam.com.amtt.ui.fragments.SettingsFragment;
+import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.FileUtil;
 
 /**
@@ -21,6 +23,9 @@ import amtt.epam.com.amtt.util.FileUtil;
  */
 
 public class SettingActivity extends AppCompatActivity {
+
+    private Button mBtLogOut;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,14 +58,30 @@ public class SettingActivity extends AppCompatActivity {
                 finish();
             }
         });
-        Button btLogOut = (Button) findViewById(R.id.bt_log_out);
-        btLogOut.setOnClickListener(new View.OnClickListener() {
+        mBtLogOut = (Button) findViewById(R.id.bt_log_out);
+        mBtLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentUserInfo = new Intent(SettingActivity.this, UserInfoActivity.class);
-                startActivity(intentUserInfo);
+                if (ActiveUser.getInstance().getUserName() != null) {
+                    finish();
+                    Intent intentUserInfo = new Intent(SettingActivity.this, AskExitActivity.class);
+                    startActivity(intentUserInfo);
+                } else {
+                    Intent intentLogin = new Intent(SettingActivity.this, LoginActivity.class);
+                    startActivity(intentLogin);
+                }
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ActiveUser.getInstance().getUserName() == null) {
+            mBtLogOut.setText(R.string.label_login_button);
+        } else {
+            mBtLogOut.setText(R.string.label_logout_button);
+        }
     }
 
     private SpannableString getColorString(String value) {

@@ -141,7 +141,9 @@ public class FileUtil {
                 + LOCAL_CACHE_DIRECTORY + slash;
         createFolder(amttCacheDir);
 
-        String userCacheDir = amttCacheDir + ActiveUser.getInstance().getUserName()+ slash;
+        String userName = ActiveUser.getInstance().getUserName() != null
+                ? ActiveUser.getInstance().getUserName() : "non_auth";
+        String userCacheDir = amttCacheDir + userName + slash;
         createFolder(userCacheDir);
         return userCacheDir;
     }

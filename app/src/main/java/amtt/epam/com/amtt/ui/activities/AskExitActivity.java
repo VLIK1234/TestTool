@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
+import amtt.epam.com.amtt.util.ActiveUser;
 
 /**
  * @author Iryna Monchanka
@@ -23,15 +24,16 @@ public class AskExitActivity  extends Activity {
         TopButtonService.sendActionChangeTopButtonVisibility(false);
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Dialog);
         builder.setTitle(R.string.dialog_exit)
-                .setNegativeButton(getResources().getString(R.string.label_return), new DialogInterface.OnClickListener() {
+                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         TopButtonService.sendActionChangeTopButtonVisibility(true);
                     }
                 })
-                .setPositiveButton(getResources().getString(R.string.label_close), new DialogInterface.OnClickListener() {
+                .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        ActiveUser.getInstance().clearActiveUser();
                         TopButtonService.closeApp(getBaseContext());
                         mIsDismiss = false;
                     }
