@@ -4,13 +4,23 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.util.ArrayList;
 
 import amtt.epam.com.amtt.R;
+import amtt.epam.com.amtt.adapter.SharedFileAdapter;
+import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.PreferenceUtil;
+import amtt.epam.com.amtt.util.ZipUtil;
 
 /**
  * @author Ivan_Bakach
@@ -21,6 +31,10 @@ public class DialogHelper {
     public interface IDialogButtonClick{
         void positiveButtonClick();
         void negativeButtonClick();
+    }
+
+    public interface IShareAction {
+        void shareTo(String shareFolderName, ArrayList<String> sharedFilesWithoutFolder);
     }
     public static AlertDialog getAreYouSureDialog(final Activity activity, CharSequence title, CharSequence message, final IDialogButtonClick iDialogButtonClick){
         return new AlertDialog.Builder(activity)
@@ -124,5 +138,49 @@ public class DialogHelper {
                 })
                 .create();
         return dialog;
+    }
+
+    public static AlertDialog getShareFileDialog(final Activity activity, final ArrayList<String> sharedFiles, final IShareAction shareAction) {
+        final View view = ((LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.dialog_share_files, null);
+        RecyclerView listShareFile = (RecyclerView) view.findViewById(R.id.rv_list_share);
+        listShareFile.setLayoutManager(new LinearLayoutManager(activity));
+        final ArrayList<String> sharedFilesWithoutFolder = new ArrayList<>(sharedFiles);
+        final SharedFileAdapter sharedFileAdapter = new SharedFileAdapter((ArrayList<String>) sharedFiles.clone(), new SharedFileAdapter.IItemClickListener() {
+            @Override
+            public void onCheckFile(String checkedFile, boolean isChecked) {
+                if (isChecked && !sharedFilesWithoutFolder.contains(checkedFile)) {
+                    sharedFilesWithoutFolder.add(checkedFile);
+                } else {
+                    sharedFilesWithoutFolder.remove(checkedFile);
+                }
+            }
+        });
+        listShareFile.setAdapter(sharedFileAdapter);
+
+        TextView emptyView = (TextView) view.findViewById(R.id.tv_empty_view);
+        if (sharedFileAdapter.getItemCount() > 0) {
+            emptyView.setVisibility(View.GONE);
+        } else {
+            emptyView.setVisibility(View.VISIBLE);
+        }
+
+        return new AlertDialog.Builder(activity)
+                .setTitle(activity.getString(R.string.title_share_dialog))
+                .setView(view)
+                .setNegativeButton(activity.getString(R.string.cancel), null)
+                .setPositiveButton(activity.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (sharedFileAdapter.getItemCount() > 0) {
+                            String folderName = "Share";
+                            String shareFolderName = folderName + FileUtil.getCurrentTimeInFormat();
+                            shareAction.shareTo(shareFolderName, sharedFilesWithoutFolder);
+                            activity.finish();
+                        } else {
+                            Toast.makeText(activity, R.string.error_message_share_file, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .create();
     }
 }

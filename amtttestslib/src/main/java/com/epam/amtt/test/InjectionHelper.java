@@ -252,8 +252,10 @@ public class InjectionHelper{
         filterReceiver.addCategory(Intent.CATEGORY_DEFAULT);
         filterReceiver.addAction(TestBroadcastReceiver.PING_ANSWER);
         filterReceiver.addAction(TestBroadcastReceiver.CLOSE_TEST);
-        filterReceiver.addAction(TestBroadcastReceiver.TAKE_SCREENSHOT);
-        filterReceiver.addAction(TestBroadcastReceiver.TAKE_LOGS);
+        filterReceiver.addAction(TestBroadcastReceiver.TAKE_SCREENSHOT);;
+        filterReceiver.addAction(TestBroadcastReceiver.START_WRITE_LOGS);
+        filterReceiver.addAction(TestBroadcastReceiver.TAKE_LOGS);;
+        filterReceiver.addAction(TestBroadcastReceiver.STOP_WRITE_LOGS);
         filterReceiver.addAction(TestBroadcastReceiver.TAKE_ONLY_INFO);
         sApplication.registerReceiver(receiver, filterReceiver);
         receiver.setCloseUnitTest(false);

@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -71,13 +72,14 @@ public class CreateIssueActivity extends BaseActivity
         AttachmentAdapter.ViewHolder.ScreenshotStateListener {
 
     private static final int PAINT_ACTIVITY_REQUEST_CODE = 0;
-    private static final int ADD_ATTACHE_FILE_ACTIVITY_REQUEST_CODE = 1;
+    public static final int ADD_ATTACHE_FILE_ACTIVITY_REQUEST_CODE = 1;
     private static final int MESSAGE_TEXT_CHANGED = 100;
     private static final String DEFAULT_PRIORITY_ID = "3";
     private static final String BUG = "Bug";
     private static final String TASK = "Task";
     private static final String TAG = CreateIssueActivity.class.getSimpleName();
     public static final String KEY_LIST_ADD_SHARED_FILE = "key_list_add_shared_file";
+    public static final String KEY_START_ACTIVITY_FOR_RESULT = "key_start_activity_for_result";
     private final Queue<ContentConst> mRequestsQueue = new LinkedList<>();
     private AutocompleteProgressView mAssignableAutocompleteView;
     private TextInput mDescriptionTextInput;
@@ -157,31 +159,28 @@ public class CreateIssueActivity extends BaseActivity
     @Override
     protected void onStop() {
         super.onStop();
-        Intent intentLogs = new Intent();
-        intentLogs.setAction(GlobalBroadcastReceiver.EXTERNAL_LOGS_TAKE);
-        getBaseContext().sendBroadcast(intentLogs);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case PAINT_ACTIVITY_REQUEST_CODE:
-                if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PAINT_ACTIVITY_REQUEST_CODE:
                     loadAttachments();
-                }
-                break;
-            case ADD_ATTACHE_FILE_ACTIVITY_REQUEST_CODE:
-                if (resultCode == RESULT_OK) {
+                    break;
+                case ADD_ATTACHE_FILE_ACTIVITY_REQUEST_CODE:
                     Bundle extra = data.getExtras();
-                    if (extra!=null) {
-                        if (extra.getStringArrayList(KEY_LIST_ADD_SHARED_FILE)!=null) {
-                            mListSharedFile = extra.getStringArrayList(KEY_LIST_ADD_SHARED_FILE);
-                        }
-                        for (String filePath : mListSharedFile) {
-                            mAdapter.addItem(mAdapter.getItemCount(), new Attachment(filePath));
+                    if (extra != null) {
+                        mListSharedFile = extra.getStringArrayList(KEY_LIST_ADD_SHARED_FILE);
+                        if (mListSharedFile != null) {
+                            for (String filePath : mListSharedFile) {
+                                mAdapter.addItem(mAdapter.getItemCount(), new Attachment(filePath));
+                            }
+                            mRecyclerView.setAdapter(mAdapter);
+                            mAdapter.notifyDataSetChanged();
                         }
                     }
-                }
+            }
         }
         PreferenceUtil.getPref().unregisterOnSharedPreferenceChangeListener(CreateIssueActivity.this);
     }
@@ -218,7 +217,8 @@ public class CreateIssueActivity extends BaseActivity
             @Override
             public void onClick(View v) {
                 Intent shareFileActivity = new Intent(CreateIssueActivity.this, ShareFilesActivity.class);
-                startActivity(shareFileActivity);
+                shareFileActivity.putExtra(KEY_START_ACTIVITY_FOR_RESULT, "startForResult");
+                startActivityForResult(shareFileActivity, ADD_ATTACHE_FILE_ACTIVITY_REQUEST_CODE);
             }
         });
     }
@@ -718,6 +718,17 @@ public class CreateIssueActivity extends BaseActivity
         for (File attachmentFile : fileList) {
             screenArray.add(new Attachment(attachmentFile.getPath()));
         }
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            ArrayList<String> extraShareFiles = extras.getStringArrayList(ShareFilesActivity.KEY_EXTRA_SHARE_FILES);
+            if (extraShareFiles != null) {
+                for (String filePath : extraShareFiles) {
+                    if (!mAdapter.contains(filePath)) {
+                        screenArray.add(new Attachment(filePath));
+                    }
+                }
+            }
+        }
         mAdapter.notifyDataSetChanged();
         if (mRecyclerView != null) {
             mRecyclerView.setAdapter(mAdapter);
@@ -795,21 +806,23 @@ public class CreateIssueActivity extends BaseActivity
     @Override
     public void onItemRemove(final int position) {
         if (FileUtil.isPicture(mAdapter.getAttachments().get(position).getFilePath())) {
-            if (!PreferenceUtil.getBoolean(getString(R.string.key_step_deletion_dialog))) {
-                DialogHelper.getStepDeletionDialog(this, new DialogHelper.IDialogButtonClick() {
-                    @Override
-                    public void positiveButtonClick() {
-                        mGifCheckBox.setEnabled(true);
-                        removeStepFromDatabase(position);
-                    }
-
-                    @Override
-                    public void negativeButtonClick() {
-                    }
-                }).show();
-            } else {
-                removeStepFromDatabase(position);
-            }
+            mAdapter.getAttachments().remove(position);
+            mAdapter.notifyDataSetChanged();
+//            if (!PreferenceUtil.getBoolean(getString(R.string.key_step_deletion_dialog))) {
+//                DialogHelper.getStepDeletionDialog(this, new DialogHelper.IDialogButtonClick() {
+//                    @Override
+//                    public void positiveButtonClick() {
+//                        mGifCheckBox.setEnabled(true);
+//                        removeStepFromDatabase(position);
+//                    }
+//
+//                    @Override
+//                    public void negativeButtonClick() {
+//                    }
+//                }).show();
+//            } else {
+//                removeStepFromDatabase(position);
+//            }
         } else if (FileUtil.isText(mAdapter.getAttachments().get(position).getFilePath())) {
             DialogHelper.getAreYouSureDialog(this, getString(R.string.title_delete_log_dialiog),
                     getString(R.string.label_message_delete_log_dialiog), new DialogHelper.IDialogButtonClick() {
@@ -840,18 +853,18 @@ public class CreateIssueActivity extends BaseActivity
         if (mAdapter != null && mAdapter.getAttachmentFilePathList() != null && mAdapter.getAttachmentFilePathList().size() > position) {
             filePath = mAdapter.getAttachmentFilePathList().get(position);
         }
-        if (filePath.contains(MimeType.IMAGE_PNG.getFileExtension()) ||
-                filePath.contains(MimeType.IMAGE_JPG.getFileExtension()) ||
-                filePath.contains(MimeType.IMAGE_JPEG.getFileExtension())) {
+        if (filePath.endsWith(MimeType.IMAGE_PNG.getFileExtension()) ||
+                filePath.endsWith(MimeType.IMAGE_JPG.getFileExtension()) ||
+                filePath.endsWith(MimeType.IMAGE_JPEG.getFileExtension())) {
             intent = new Intent(this, PaintActivity.class);
             intent.putExtra(PaintActivity.KEY_SCREEN_PATH, mAdapter.getAttachments().get(position).getFilePath());
             startActivityForResult(intent, PAINT_ACTIVITY_REQUEST_CODE);
             return;
-        } else if (filePath.contains(MimeType.TEXT_PLAIN.getFileExtension()) || filePath.contains(MimeType.TEXT_HTML.getFileExtension())) {
+        } else if (filePath.endsWith(MimeType.TEXT_PLAIN.getFileExtension()) || filePath.endsWith(MimeType.TEXT_HTML.getFileExtension())) {
             intent = new Intent(this, LogActivity.class);
             intent.putExtra(LogActivity.FILE_PATH, filePath);
             startActivity(intent);
-        } else if (filePath.contains(MimeType.IMAGE_GIF.getFileExtension())) {
+        } else if (filePath.endsWith(MimeType.IMAGE_GIF.getFileExtension())) {
             intent = new Intent(CreateIssueActivity.this, GifPlayerActivity.class);
             intent.putExtra(GifPlayerActivity.GIF_IMAGE_KEY, filePath);
             startActivity(intent);

@@ -7,7 +7,6 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,14 +39,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(this);
         SwitchPreference widgetPreff = (SwitchPreference) findPreference(getResources().getString(R.string.key_topbutton_show));
         widgetPreff.setChecked(TopButtonService.getStateVisibilityButton());
-        EditTextPreference descriptionTemplate = (EditTextPreference) findPreference(getString(R.string.key_description));
-        if (ActiveUser.getInstance().getUserName() == null) {
-            mProjectJiraName.setEnabled(false);
-            descriptionTemplate.setEnabled(false);
-        } else {
-            mProjectJiraName.setEnabled(true);
-            descriptionTemplate.setEnabled(true);
-        }
     }
 
     @Override
@@ -58,6 +49,19 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         initListJiraProjects(mProjectJiraName);
         mProjectJiraName.setSummary(mProjectJiraName.getEntry());
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        EditTextPreference descriptionTemplate = (EditTextPreference) findPreference(getString(R.string.key_description));
+        if (ActiveUser.getInstance().getUserName() == null) {
+            mProjectJiraName.setEnabled(false);
+            descriptionTemplate.setEnabled(false);
+        } else {
+            mProjectJiraName.setEnabled(true);
+            descriptionTemplate.setEnabled(true);
+        }
     }
 
     @Override

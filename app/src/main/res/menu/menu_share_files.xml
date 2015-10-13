@@ -4,8 +4,16 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context="amtt.epam.com.amtt.ui.activities.ShareFilesActivity">
 
-    <item android:id="@+id/action_share"
-          android:title="@string/label_share_files_action"
-          android:icon="@drawable/ic_share_files"
-          app:showAsAction="always"/>
-</menu>
+    <item
+        android:id="@+id/action_add_share_to_issue"
+        android:icon="@drawable/ic_create_ticket"
+        android:title="@string/label_share_to_issue_action"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_share"
+        android:icon="@drawable/ic_share_files"
+        android:title="@string/label_share_files_action"
+        app:showAsAction="always"/>
+
+    </menu>

@@ -116,7 +116,8 @@
                 style="@style/CreateIssueRelativeContainer"
                 android:layout_marginTop="@dimen/abc_button_padding_horizontal_material"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
                 <CheckBox
                     android:id="@+id/cb_gif_attachment"
@@ -148,17 +149,13 @@
 
             </RelativeLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/bt_share_file_observer"
+                style="@style/Material.CreateIssueButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/bt_share_file_observer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_share_file_observer"/>
-            </LinearLayout>
+                android:layout_gravity="end"
+                android:text="@string/label_add_attachment_files"/>
             <!-- *******ATTACHMENT END*************************************************-->
 
             <!-- *******AFFECTS VERSIONS BEGIN****************************************-->

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -94,5 +95,20 @@ public class ZipUtil {
     public static String getLastPathComponent(String filePath) {
         String[] segments = filePath.split("/");
         return segments[segments.length - 1];
+    }
+
+    public static String createZipFile(String shareFolderName, ArrayList<String> sharedFilesWithoutFolder) {
+        for (String filePath : sharedFilesWithoutFolder) {
+            File shareFile = new File(filePath);
+            final String parentPath = shareFile.getParent();
+            FileUtil.copyFile(parentPath, shareFile.getName(), parentPath.replace(FileUtil.getUsersCacheDir(), FileUtil.getUsersCacheDir() + shareFolderName + "/"));
+        }
+
+        String zipExtension = ".zip";
+        String shareFolderPath = FileUtil.getUsersCacheDir() + shareFolderName;
+        String zipFilePath = shareFolderPath + zipExtension;
+        ZipUtil.zipFileAtPath(shareFolderPath, zipFilePath);
+        FileUtil.deleteRecursive(shareFolderPath);
+        return zipFilePath;
     }
 }

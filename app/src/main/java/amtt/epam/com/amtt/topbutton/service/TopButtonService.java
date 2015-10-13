@@ -125,7 +125,7 @@ public class TopButtonService extends Service{
                 case ACTION_START:
                     addView();
                     TestUtil.restartTest();
-                    checkCountTestProject();
+//                    checkCountTestProject();
                     break;
                 case ACTION_CLOSE:
                     closeService();

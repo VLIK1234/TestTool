@@ -114,9 +114,12 @@ public class TopButtonBarView extends FrameLayout {
                     ActiveUser.getInstance().setRecord(true);
                     LocalContent.removeAllSteps();
 
-                    Intent intentLogs = new Intent();
-                    intentLogs.setAction(GlobalBroadcastReceiver.EXTERNAL_LOGS_TAKE);
-                    getContext().sendBroadcast(intentLogs);
+                    Intent intentStartLogWrite = new Intent();
+                    intentStartLogWrite.setAction(GlobalBroadcastReceiver.EXTERNAL_START_WRITE_LOGS);
+                    getContext().sendBroadcast(intentStartLogWrite);
+                    Intent intentTransferLogs = new Intent();
+                    intentTransferLogs.setAction(GlobalBroadcastReceiver.EXTERNAL_LOGS_TAKE);
+                    getContext().sendBroadcast(intentTransferLogs);
                     Toast.makeText(getContext(), getContext().getString(R.string.label_start_record), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getContext(), R.string.message_empty_test_project_for_cache_subfolder, Toast.LENGTH_SHORT).show();
@@ -181,6 +184,9 @@ public class TopButtonBarView extends FrameLayout {
                 ActiveUser.getInstance().setRecord(false);
                 hide();
                 LocalContent.removeAllSteps();
+                Intent intentLogs = new Intent();
+                intentLogs.setAction(GlobalBroadcastReceiver.EXTERNAL_STOP_WRITE_LOGS);
+                getContext().sendBroadcast(intentLogs);
                 Toast.makeText(getContext(), getContext().getString(R.string.label_stop_record), Toast.LENGTH_SHORT).show();
                 mTopButtonListener.onTouch();
             }

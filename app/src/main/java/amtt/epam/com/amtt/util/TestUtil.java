@@ -89,13 +89,13 @@ public class TestUtil {
                 Toast.makeText(CoreApplication.getContext(), R.string.error_message_signature_run_test, Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(CoreApplication.getContext(),
-                    "Cannot find instrumentation for " + pn, Toast.LENGTH_SHORT)
-                    .show();
+//            Toast.makeText(CoreApplication.getContext(),
+//                    "Cannot find instrumentation for " + pn, Toast.LENGTH_SHORT)
+//                    .show();
             Intent intent = new Intent(CoreApplication.getContext(), SettingActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             CoreApplication.getContext().startActivity(intent);
-            Toast.makeText(CoreApplication.getContext(), "Please choose tested project",Toast.LENGTH_LONG).show();
+            Toast.makeText(CoreApplication.getContext(), R.string.message_empty_app_to_connect,Toast.LENGTH_LONG).show();
         }
     }
 

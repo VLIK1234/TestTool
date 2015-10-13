@@ -26,6 +26,8 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
     private static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
     public static final String TAKE_LOGS = "TAKE_LOGS";
     public static final String TITLE_KEY = "title";
+    public static final String START_WRITE_LOGS = "START_WRITE_LOGS";
+    public static final String STOP_WRITE_LOGS = "STOP_WRITE_LOGS";
     private boolean mCloseUnitTest;
     public Activity mActivity;
 
@@ -47,8 +49,14 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
                 IOUtils.deleteFileIfExist(LogManager.sCommonLog);
                 mCloseUnitTest = true;
                 break;
+            case START_WRITE_LOGS:
+                LogManager.writeMultipleLogs(context);
+                break;
             case TAKE_LOGS:
                 LogManager.transferLogsToAmtt(context);
+                break;
+            case STOP_WRITE_LOGS:
+                LogManager.closeLogsWriter();
                 break;
             case TAKE_SCREENSHOT:
                 if (mActivity != null) {

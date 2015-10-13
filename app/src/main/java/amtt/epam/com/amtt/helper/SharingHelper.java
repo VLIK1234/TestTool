@@ -18,7 +18,7 @@ import amtt.epam.com.amtt.util.Constants;
  * @author IvanBakach
  * @version on 07.08.2015
  */
-public class SharingToEmailHelper {
+public class SharingHelper {
 
     public static void senAttachmentFiles(Activity activity, String message, ArrayList<String> listUri){
         Intent emailIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
@@ -29,7 +29,7 @@ public class SharingToEmailHelper {
         emailIntent.putExtra(Intent.EXTRA_STREAM, convertListFileToListUri(listUri));
         activity.startActivity(Intent.createChooser(emailIntent, "Send e-mail..."));
     }
-    public static void senAttachmentFile(Activity activity, String message, String filePath){
+    public static void senAttachmentFile(Activity activity, String filePath){
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setType("*/*");
         emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(filePath)));

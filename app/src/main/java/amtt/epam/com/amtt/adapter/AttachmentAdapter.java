@@ -138,10 +138,10 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
             viewHolder.mScreenshotState = attachment.getScreenshotState();
             Logger.d(TAG, attachment.getFileName());
             viewHolder.mScreenshotName.setText(attachment.getFileName());
-            if (attachment.getFilePath().contains(MimeType.IMAGE_PNG.getFileExtension()) ||
-                    attachment.getFilePath().contains(MimeType.IMAGE_JPG.getFileExtension()) ||
-                    attachment.getFilePath().contains(MimeType.IMAGE_JPEG.getFileExtension()) ||
-                    attachment.getFilePath().contains(MimeType.IMAGE_GIF.getFileExtension())) {
+            if (attachment.getFilePath().endsWith(MimeType.IMAGE_PNG.getFileExtension()) ||
+                    attachment.getFilePath().endsWith(MimeType.IMAGE_JPG.getFileExtension()) ||
+                    attachment.getFilePath().endsWith(MimeType.IMAGE_JPEG.getFileExtension()) ||
+                    attachment.getFilePath().endsWith(MimeType.IMAGE_GIF.getFileExtension())) {
                 if (attachment.getScreenshotState() == ScreenshotState.WRITTEN) {
                     if (viewHolder.mScreenshotImage.getDrawable() == null) {
                         ImageLoader.getInstance().displayImage("file:///" + attachment.getFilePath(), viewHolder.mScreenshotImage, new ImageLoadingListener() {
@@ -165,11 +165,10 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
                 } else {
                     viewHolder.mProgress.setVisibility(View.VISIBLE);
                 }
-            } else if (attachment.getFilePath().contains(MimeType.TEXT_PLAIN.getFileExtension())) {
+            } else if (attachment.getFilePath().endsWith(MimeType.TEXT_PLAIN.getFileExtension())) {
                 viewHolder.mScreenshotImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.text_file_preview));
-            } else if (attachment.getFilePath().contains(MimeType.TEXT_HTML.getFileExtension())) {
+            } else if (attachment.getFilePath().endsWith(MimeType.TEXT_HTML.getFileExtension())) {
                 viewHolder.mScreenshotImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.html_file_preview));
-                viewHolder.mScreenshotImage.setImageDrawable(CoreApplication.getContext().getResources().getDrawable(R.drawable.text_file_preview));
             }
             viewHolder.mScreenshotClose.setEnabled(true);
         }
@@ -181,8 +180,10 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     }
 
     public void addItem(int position, Attachment data) {
-        mAttachments.add(position, data);
-        notifyItemInserted(position);
+        if (!contains(data)) {
+            mAttachments.add(position, data);
+            notifyItemInserted(position);
+        }
     }
 
     public ArrayList<String> getAttachmentFilePathList() {
@@ -199,5 +200,23 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
     public int getStepId(int position) {
         return mAttachments.get(position).getStepId();
+    }
+
+    public boolean contains(Attachment value) {
+        for (Attachment item : mAttachments) {
+            if (item.getFilePath().equals(value.getFilePath())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean contains(String filePath) {
+        for (Attachment item : mAttachments) {
+            if (item.getFilePath().equals(filePath)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

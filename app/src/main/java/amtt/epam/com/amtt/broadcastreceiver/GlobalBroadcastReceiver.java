@@ -36,6 +36,8 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
     private static final String REQUEST_TAKE_SCREENSHOT = "REQUEST_TAKE_SCREENSHOT";
     private static final String EXCEPTION_ANSWER = "EXCEPTION_ANSWER";
     private static final String REQUEST_TAKE_ONLY_INFO = "REQUEST_TAKE_ONLY_INFO";
+    public static final String EXTERNAL_START_WRITE_LOGS = "START_WRITE_LOGS";
+    public static final String EXTERNAL_STOP_WRITE_LOGS = "STOP_WRITE_LOGS";
     public static final String EXTERNAL_LOGS_TAKE = "TAKE_LOGS";
     private static final String FILE_NAME_KEY = "fileName";
     private static final String BYTE_ARRAY_DATA_KEY = "byteArrayData";
@@ -112,6 +114,9 @@ public class GlobalBroadcastReceiver extends BroadcastReceiver {
                     PreferenceUtil.putBoolean(context.getString(R.string.key_is_attach_logs), true);
                     managerCompat.notify(NotificationIdConstant.CAUGHT_EXCEPTION, builder.build());
                     TestUtil.restartTest();
+                    Intent intentLogs = new Intent();
+                    intentLogs.setAction(GlobalBroadcastReceiver.EXTERNAL_START_WRITE_LOGS);
+                    context.sendBroadcast(intentLogs);
                     break;
                 }
                 break;
