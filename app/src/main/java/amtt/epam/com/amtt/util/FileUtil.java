@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -226,7 +228,19 @@ public class FileUtil {
         ArrayList<File> listFiles = getListWithDirFiles(new File(getUsersCacheDir()));
         for (File filePath : listFiles) {
             deleteRecursive(filePath);
+        }
+    }
 
+    public static void writeFile(String filePath, String str) {
+        final File stepsDescriptionFile = new File(filePath);
+        FileWriter f;
+        try {
+            f = new FileWriter(stepsDescriptionFile);
+            f.write(str);
+            f.flush();
+            f.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

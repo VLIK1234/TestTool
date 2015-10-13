@@ -3,16 +3,16 @@ package amtt.epam.com.amtt.database.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.text.Html;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import amtt.epam.com.amtt.CoreApplication;
@@ -37,8 +37,14 @@ public class LocalContent {
     private static final String TAG =  LocalContent.class.getSimpleName();
 
     public static void saveStep(String title, String activityClassName, String packageName, String mScreenPath, String listFragments) {
+        String template = FileUtil.getCacheLocalDir() + "/%s";
+        String stepDescription;
+        File screenshot = new File(mScreenPath);
+        stepDescription = String.format(template, screenshot.getName()+".html");
+
         Step step = new Step(title, activityClassName, packageName, mScreenPath, listFragments);
-        ContentFromDatabase.setStep(step, null);
+        FileUtil.writeFile(stepDescription, LocalContent.getStepInfo(step));
+//        ContentFromDatabase.setStep(step, null);
     }
 
     public static void saveOnlyScreenshot(String mScreenPath) {
@@ -128,6 +134,7 @@ public class LocalContent {
         Context context = CoreApplication.getContext();
         return 
                 "<b>" + context.getString(R.string.label_title) + "</b>" + "<small>" + step.getTitle() + "</small>" + "<br />" +
+                        "<b>" + context.getString(R.string.label_file_name) + "</b>" + "<small>" + FileUtil.getFileName(step.getScreenshotPath())+ "</small>" + "<br />"+
                         "<b>" + context.getString(R.string.label_activity) + "</b>" + "<small>" + step.getActivity() + "</small>" + "<br />" +
                         "<b>" + context.getString(R.string.lable_list_fragments) + "</b>" + "<small>" + step.getListFragments() + "</small>" + "<br />" +
                         "<b>" + context.getString(R.string.label_screen_orientation) + "</b>" + "<small>" + step.getOrientation() + "</small>" + "<br />" +

@@ -74,7 +74,7 @@ public class AttachmentManager {
         return screenArray;
     }
 
-    public   File stepsDescriptionToAttachments(List<Step> result){
+    public File stepsDescriptionToAttachments(List<Step> result){
         String template = FileUtil.getCacheLocalDir() + "/%s";
         String stepsDescription = String.format(template, "steps_description.html");
         final File stepsDescriptionFile = new File(stepsDescription);

@@ -31,6 +31,7 @@ import amtt.epam.com.amtt.util.TestUtil;
 
 public class GlobalBroadcastReceiver extends BroadcastReceiver {
 
+    public static final String EXTERNAL_ACTION_TAKE_SCREENSHOT = "TAKE_SCREENSHOT";
     private static final String SEND_LOG_FILE = "SEND_LOG_FILE";
     private static final String REQUEST_TAKE_SCREENSHOT = "REQUEST_TAKE_SCREENSHOT";
     private static final String EXCEPTION_ANSWER = "EXCEPTION_ANSWER";

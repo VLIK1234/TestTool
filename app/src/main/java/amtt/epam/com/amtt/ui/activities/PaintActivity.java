@@ -53,6 +53,7 @@ public class PaintActivity extends BaseActivity
     private static final int HIDE_UI_DELAY = 4000;
     private static final int HIDE_UI = 0;
     private static final int SHOW_UI = 1;
+    public static final String KEY_SCREEN_PATH = "key_screen_path";
 
     private Step mStep;
     private PaintView mPaintView;
@@ -76,22 +77,25 @@ public class PaintActivity extends BaseActivity
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
             initPaintView();
-            ContentFromDatabase.getStepById(extra.getInt(KEY_STEP_ID), new Callback<List<Step>>() {
-                @Override
-                public void onLoadStart() {}
 
-                @Override
-                public void onLoadExecuted(List<Step> steps) {
-                    mStep = steps.get(0);
-                    ImageLoader.getInstance().displayImage("file:///" + mStep.getScreenshotPath(), mPaintView, PaintActivity.this);
-                }
+            ImageLoader.getInstance().displayImage("file:///" + extra.getString(KEY_SCREEN_PATH), mPaintView, PaintActivity.this);
 
-                @Override
-                public void onLoadError(Exception e) {
-                    Logger.e(TAG, e.getMessage(), e);
-                    setErrorState();
-                }
-            });
+//            ContentFromDatabase.getStepById(extra.getInt(KEY_STEP_ID), new Callback<List<Step>>() {
+//                @Override
+//                public void onLoadStart() {}
+//
+//                @Override
+//                public void onLoadExecuted(List<Step> steps) {
+//                    mStep = steps.get(0);
+//                    ImageLoader.getInstance().displayImage("file:///" + mStep.getScreenshotPath(), mPaintView, PaintActivity.this);
+//                }
+//
+//                @Override
+//                public void onLoadError(Exception e) {
+//                    Logger.e(TAG, e.getMessage(), e);
+//                    setErrorState();
+//                }
+//            });
         } else {
             setErrorState();
         }

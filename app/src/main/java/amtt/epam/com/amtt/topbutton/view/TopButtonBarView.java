@@ -27,7 +27,6 @@ import amtt.epam.com.amtt.ui.activities.ExpectedResultsActivity;
 import amtt.epam.com.amtt.ui.activities.SettingActivity;
 import amtt.epam.com.amtt.ui.activities.ShareFilesActivity;
 import amtt.epam.com.amtt.ui.activities.StepsActivity;
-import amtt.epam.com.amtt.ui.activities.TakeStepActivity;
 import amtt.epam.com.amtt.ui.activities.UserInfoActivity;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.FileUtil;
@@ -155,9 +154,13 @@ public class TopButtonBarView extends FrameLayout {
         mButtonStep = new TopUnitView(getContext(), getContext().getString(R.string.label_step_button), R.drawable.background_step_without_screen, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
-                Intent intent = new Intent(getContext(), TakeStepActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getContext().startActivity(intent);
+//                Intent intent = new Intent(getContext(), TakeStepActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                getContext().startActivity(intent);
+
+                Intent intent = new Intent();
+                intent.setAction(GlobalBroadcastReceiver.EXTERNAL_ACTION_TAKE_SCREENSHOT);
+                getContext().sendBroadcast(intent);
                 mTopButtonListener.onTouch();
             }
         });
@@ -171,14 +174,14 @@ public class TopButtonBarView extends FrameLayout {
                 mTopButtonListener.onTouch();
             }
         });
-        mButtonStopRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_cancel_record), R.drawable.background_stop_record, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
+        mButtonStopRecord = new TopUnitView(getContext(), getContext().getString(R.string.label_stop_record), R.drawable.background_stop_record, new amtt.epam.com.amtt.topbutton.view.OnTouchListener() {
             @Override
             public void onTouch() {
                 isRecordStarted = false;
                 ActiveUser.getInstance().setRecord(false);
                 hide();
                 LocalContent.removeAllSteps();
-                Toast.makeText(getContext(), getContext().getString(R.string.label_cancel_record), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getContext().getString(R.string.label_stop_record), Toast.LENGTH_SHORT).show();
                 mTopButtonListener.onTouch();
             }
         });

@@ -38,7 +38,7 @@
     <string name="label_affects_versions">Affects Version/s</string>
     <string name="label_attachment">Attachment</string>
     <string name="label_button_main">Main button</string>
-    <string name="label_cancel_record">Cancel record</string>
+    <string name="label_stop_record">Stop record</string>
     <string name="label_clear_environment">Clear environment</string>
     <string name="label_clear_notes">Clear notes</string>
     <string name="label_close">Close</string>
