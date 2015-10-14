@@ -195,6 +195,7 @@
     <string name="label_add_attachment_files">Add attachment files</string>
     <string name="label_content_description_file_icon">File icon</string>
     <string name="label_share_files_action">Share files</string>
+    <string name="label_delete_action">Delete files</string>
     <string name="label_share_to_issue_action">Share to issue</string>
     <string name="label_no_files">No files</string>
     <string name="preff_category_description">Description</string>
@@ -220,5 +221,7 @@
     <string name="label_logout_button">Log Out</string>
     <string name="title_share_dialog">Share files</string>
     <string name="message_empty_app_to_connect">Please choose Application to connect</string>
+    <string name="description_tutorial_screen">Tutorial screen</string>
+    <string name="title_delete_select_files">Delete select files?</string>
 
 </resources>

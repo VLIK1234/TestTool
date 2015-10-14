@@ -47,6 +47,7 @@ public class ShareFilesActivity extends BaseActivity implements BrowserFilesFrag
     private ViewPager mPager;
     private ViewPager.OnPageChangeListener mOnPageChangeListener;
     private ArrayList<String> mSharedFiles;
+    private Button mBackButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +68,11 @@ public class ShareFilesActivity extends BaseActivity implements BrowserFilesFrag
 
             @Override
             public void onPageSelected(int position) {
+                if (position == 0) {
+                    mBackButton.setVisibility(View.GONE);
+                } else {
+                    mBackButton.setVisibility(View.VISIBLE);
+                }
                 folderPathView.setText(mFolderPaths.get(position).replace(FileUtil.getUsersCacheDir(), "/"));
             }
 
@@ -77,12 +83,13 @@ public class ShareFilesActivity extends BaseActivity implements BrowserFilesFrag
         };
         mPager.addOnPageChangeListener(mOnPageChangeListener);
 
-        Button backButton = (Button) findViewById(R.id.bt_back_folder);
-        backButton.setOnClickListener(new View.OnClickListener() {
+        mBackButton = (Button) findViewById(R.id.bt_back_folder);
+        mBackButton.setVisibility(View.GONE);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mPager.getCurrentItem()!=0) {
-                    mPager.setCurrentItem(mPager.getCurrentItem()-1 ,true);
+                if (mPager.getCurrentItem() != 0) {
+                    mPager.setCurrentItem(mPager.getCurrentItem() - 1, true);
                 }
             }
         });
@@ -112,6 +119,31 @@ public class ShareFilesActivity extends BaseActivity implements BrowserFilesFrag
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_delete: {
+                new AlertDialog.Builder(ShareFilesActivity.this)
+                        .setTitle(getString(R.string.title_delete_select_files))
+                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mSharedFiles = mSharedFilePaths;
+                                ArrayList<String> removeFolderPaths = new ArrayList<>();
+                                for (String filePath : mSharedFiles) {
+                                    if (new File(filePath).isDirectory()) {
+                                        removeFolderPaths.add(filePath);
+                                    }
+                                    FileUtil.deleteRecursive(filePath);
+                                }
+                                for (String folderPath : removeFolderPaths) {
+                                    mFolderPaths.remove(folderPath);
+                                }
+                                mPagerAdapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.cancel), null)
+                        .create()
+                        .show();
+                return true;
+            }
             case R.id.action_share: {
                 mSharedFiles = deleteFoldersPath(mSharedFilePaths);
                 DialogHelper.getShareFileDialog(ShareFilesActivity.this, mSharedFiles, new DialogHelper.IShareAction() {

@@ -2,6 +2,7 @@ package amtt.epam.com.amtt.ui.activities;
 
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -139,6 +140,10 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
                     user.setCredentials(mUser.getCredentials());
                     insertUserToDatabase(user);
                     Toast.makeText(LoginActivity.this, R.string.auth_passed, Toast.LENGTH_SHORT).show();
+
+                    Intent intentSettings = new Intent(LoginActivity.this, SettingActivity.class);
+                    intentSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intentSettings);
                 } else {
                     setActiveUser();
                     Toast.makeText(LoginActivity.this, R.string.auth_passed, Toast.LENGTH_SHORT).show();

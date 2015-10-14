@@ -37,6 +37,9 @@ public class AuthMethodActivity extends Activity {
             public void onClick(View v) {
                 TopButtonService.start(getBaseContext());
                 ActiveUser.getInstance().clearActiveUser();
+                Intent intentSettings = new Intent(AuthMethodActivity.this, SettingActivity.class);
+                intentSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intentSettings);
                 finish();
             }
         });

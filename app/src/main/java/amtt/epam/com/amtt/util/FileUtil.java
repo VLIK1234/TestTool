@@ -171,30 +171,34 @@ public class FileUtil {
         }
     }
 
-    public static File[] sortArray(final File[] inputFiles){
-        ArrayList<File> sortFilesAndDirs = new ArrayList<>();
-        ArrayList<File> dirsArrayList = new ArrayList<>();
-        ArrayList<File> filesArrayList = new ArrayList<>();
+    public static File[] sortArray(final File[] inputFiles) {
+        if (inputFiles != null) {
+            ArrayList<File> sortFilesAndDirs = new ArrayList<>();
+            ArrayList<File> dirsArrayList = new ArrayList<>();
+            ArrayList<File> filesArrayList = new ArrayList<>();
 
-        for (File file : inputFiles) {
-            if (file.isDirectory()) {
-                dirsArrayList.add(file);
-            } else {
-                filesArrayList.add(file);
+            for (File file : inputFiles) {
+                if (file.isDirectory()) {
+                    dirsArrayList.add(file);
+                } else {
+                    filesArrayList.add(file);
+                }
             }
+            Collections.sort(filesArrayList);
+            Collections.sort(dirsArrayList);
+
+            sortFilesAndDirs.addAll(dirsArrayList);
+            sortFilesAndDirs.addAll(filesArrayList);
+
+            File[] outSortFileArray = new File[sortFilesAndDirs.size()];
+            for (int i = 0; i < outSortFileArray.length; i++) {
+                outSortFileArray[i] = sortFilesAndDirs.get(i);
+            }
+            return outSortFileArray;
+        } else {
+            return null;
         }
-        Collections.sort(filesArrayList);
-        Collections.sort(dirsArrayList);
 
-        sortFilesAndDirs.addAll(dirsArrayList);
-        sortFilesAndDirs.addAll(filesArrayList);
-
-        File[] outSortFileArray = new File[sortFilesAndDirs.size()];
-        for (int i = 0; i < outSortFileArray.length; i++) {
-            outSortFileArray[i] = sortFilesAndDirs.get(i);
-        }
-
-        return outSortFileArray;
     }
 
     public static ArrayList<File> getListWithDirFiles(File parentDir) {

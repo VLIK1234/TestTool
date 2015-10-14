@@ -47,8 +47,9 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         initListAppToConnect(mProjectName);
         mProjectName.setSummary(mProjectName.getEntry());
         initListJiraProjects(mProjectJiraName);
-        mProjectJiraName.setSummary(mProjectJiraName.getEntry());
-
+        if (ActiveUser.getInstance().getUserName()!=null) {
+            mProjectJiraName.setSummary(PreferenceUtil.getString(getString(R.string.key_jira_project_name)));
+        }
     }
 
     @Override
@@ -119,6 +120,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             TestUtil.restartTest();
             projectName.setSummary(projectName.getEntry());
         } else if (key.equals(getString(R.string.key_jira_project_name))) {
+            mProjectJiraName.setSummary(mProjectJiraName.getEntry());
             if (ActiveUser.getInstance().getUserName() !=null) {
                 JiraContent.getInstance().getProjectKeyByName(PreferenceUtil.getString(getString(R.string.key_jira_project_name)), new GetContentCallback<String>() {
                     @Override
