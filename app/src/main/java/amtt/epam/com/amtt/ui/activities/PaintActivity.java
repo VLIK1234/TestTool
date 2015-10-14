@@ -66,6 +66,7 @@ public class PaintActivity extends BaseActivity
     private WindowManager mWindowManager;
     private DragTextView mDragTextView;
     private PaletteDialog mPaletteDialog;
+    private String mScreenPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +79,8 @@ public class PaintActivity extends BaseActivity
         if (extra != null) {
             initPaintView();
 
-            ImageLoader.getInstance().displayImage("file:///" + extra.getString(KEY_SCREEN_PATH), mPaintView, PaintActivity.this);
+            mScreenPath = extra.getString(KEY_SCREEN_PATH);
+            ImageLoader.getInstance().displayImage("file:///" + mScreenPath, mPaintView, PaintActivity.this);
 
 //            ContentFromDatabase.getStepById(extra.getInt(KEY_STEP_ID), new Callback<List<Step>>() {
 //                @Override
@@ -190,7 +192,7 @@ public class PaintActivity extends BaseActivity
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            LocalContent.applyNotesToScreenshot(Bitmap.createBitmap(mPaintView.getDrawingCache()), mStep.getScreenshotPath(), mStep);
+                            LocalContent.applyNotesToScreenshot(Bitmap.createBitmap(mPaintView.getDrawingCache()), mScreenPath);
                             setResult(RESULT_OK);
                             finish();
                         }

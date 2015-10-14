@@ -6,7 +6,9 @@
     <TextView
         android:id="@+id/tv_folder_path"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_left_share_folder_path"
+        android:layout_marginLeft="@dimen/margin_left_share_folder_path"/>
 
     <Button
         android:id="@+id/bt_back_folder"

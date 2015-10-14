@@ -16,6 +16,8 @@
     <string name="title_activity_task_name">Task name</string>
     <string name="title_activity_share_file">Share file</string>
     <string name="title_activity_auth_method">Auth method</string>
+    <string name="title_activity_tutorial">Tutorial</string>
+
 
     <string name="empty_list_view">There is no saved steps =(</string>
 

@@ -10,9 +10,9 @@
     <amtt.epam.com.amtt.ui.views.paintview.PaintView
         android:id="@+id/paint_view"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:scaleType="fitXY" />
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@android:id/empty"

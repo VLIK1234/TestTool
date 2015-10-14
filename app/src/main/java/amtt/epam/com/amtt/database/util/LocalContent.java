@@ -83,9 +83,9 @@ public class LocalContent {
         ContentFromDatabase.removeAllSteps(null);
     }
 
-    public static void applyNotesToScreenshot(final Bitmap drawingCache, final String screenshotPath, final Step step) {
-        step.setScreenshotState(Step.ScreenshotState.IS_BEING_WRITTEN);
-        ContentFromDatabase.updateStep(step, null);
+    public static void applyNotesToScreenshot(final Bitmap drawingCache, final String screenshotPath) {
+//        step.setScreenshotState(Step.ScreenshotState.IS_BEING_WRITTEN);
+//        ContentFromDatabase.updateStep(step, null);
         Bitmap.CompressFormat compressFormat = FileUtil.getExtension(screenshotPath).equals(MimeType.IMAGE_PNG.getFileExtension()) ?
                 Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
         ThreadManager.execute(compressFormat, new DataSource<Bitmap.CompressFormat, Void>() {
@@ -119,8 +119,8 @@ public class LocalContent {
 
             @Override
             public void onLoadExecuted(Void aVoid) {
-                step.setScreenshotState(Step.ScreenshotState.WRITTEN);
-                ContentFromDatabase.updateStep(step, null);
+//                step.setScreenshotState(Step.ScreenshotState.WRITTEN);
+//                ContentFromDatabase.updateStep(step, null);
             }
 
             @Override
