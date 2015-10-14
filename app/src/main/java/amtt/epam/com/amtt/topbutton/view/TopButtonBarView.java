@@ -164,7 +164,7 @@ public class TopButtonBarView extends FrameLayout {
                 Intent intent = new Intent();
                 intent.setAction(GlobalBroadcastReceiver.EXTERNAL_ACTION_TAKE_SCREENSHOT);
                 getContext().sendBroadcast(intent);
-                mTopButtonListener.onTouch();
+//                mTopButtonListener.onTouch();
             }
         });
 
