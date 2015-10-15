@@ -1,1 +1,2 @@
 include ':app', ':amtttestslib', 'generate_test'
+include ':view_pager_indicator'

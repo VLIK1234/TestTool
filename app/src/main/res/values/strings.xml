@@ -223,5 +223,7 @@
     <string name="message_empty_app_to_connect">Please choose Application to connect</string>
     <string name="description_tutorial_screen">Tutorial screen</string>
     <string name="title_delete_select_files">Delete select files?</string>
+    <string name="label_tutorial_button">Tutorial</string>
+    <string name="label_button_got_it">Got It!</string>
 
 </resources>

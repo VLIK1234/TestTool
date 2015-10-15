@@ -208,8 +208,7 @@
             android:name=".ui.activities.TutorialActivity"
             android:screenOrientation="portrait"
             android:launchMode="standard"
-            android:label="@string/title_activity_tutorial"
-            android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen"/>
+            android:label="@string/title_activity_tutorial"/>
     </application>
 
 </manifest>
