@@ -7,7 +7,6 @@
         android:key="@string/key_topbutton_show"
         android:title="@string/title_preff_topbutton_show" />
     <ListPreference
-        android:id="@+id/lp_project_name"
         android:icon="@drawable/ic_setting_project_name"
         android:key="@string/key_test_project"
         android:title="@string/title_preff_test_project"
@@ -18,10 +17,17 @@
         android:key="@string/key_jira_project_name"
         android:title="@string/title_jira_project_name"
         />
-    <EditTextPreference
+    <Preference
         android:icon="@drawable/ic_setting_description"
-        android:inputType="textMultiLine"
         android:key="@string/key_description"
-        android:title="@string/title_preff_description_template"
-        />
+        android:title="@string/title_preff_description_template"/>
+    <!--<EditTextPreference-->
+        <!--android:icon="@drawable/ic_setting_description"-->
+        <!--android:inputType="textLongMessage"-->
+        <!--android:key="@string/key_description"-->
+        <!--android:title="@string/title_preff_description_template"/>-->
+    <Preference
+        android:icon="@drawable/ic_setting_delete"
+        android:key="@string/key_remove_artifacts"
+        android:title="@string/title_preff_remove_all_artifacts"/>
 </PreferenceScreen>

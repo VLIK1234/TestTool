@@ -200,11 +200,12 @@
     <string name="label_no_files">No files</string>
     <string name="preff_category_description">Description</string>
     <string name="key_description">description</string>
+    <string name="key_description_template">description_template</string>
     <string name="title_preff_description_template">Description template</string>
     <string name="key_test_project_entry">test_project_entry</string>
     <string name="preff_category_artifacts">Artifacts</string>
     <string name="key_remove_artifacts">remove_artifacts</string>
-    <string name="title_preff_remove_all_artifacts">Remove ALL artifacts</string>
+    <string name="title_preff_remove_all_artifacts">Remove artifacts</string>
     <string name="preff_category_go_to_testing">Go to testing</string>
     <string name="key_go_to_testing">go_to_testing</string>
     <string name="title_preff_go_to_testing">Go to testing</string>
@@ -225,5 +226,6 @@
     <string name="title_delete_select_files">Delete select files?</string>
     <string name="label_tutorial_button">Tutorial</string>
     <string name="label_button_got_it">Got It!</string>
+    <string name="title_activity_description_preference">Description preference</string>
 
 </resources>

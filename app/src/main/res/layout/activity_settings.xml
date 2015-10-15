@@ -20,12 +20,12 @@
         android:orientation="vertical"
         android:layout_alignParentBottom="true">
 
-        <Button
-            android:id="@+id/bt_remove_artifacts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_remove_artifacts"
-            android:layout_gravity="center_horizontal"/>
+        <!--<Button-->
+            <!--android:id="@+id/bt_remove_artifacts"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/label_remove_artifacts"-->
+            <!--android:layout_gravity="center_horizontal"/>-->
         <Button
             android:id="@+id/bt_log_out"
             android:layout_width="wrap_content"

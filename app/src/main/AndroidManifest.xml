@@ -209,6 +209,15 @@
             android:screenOrientation="portrait"
             android:launchMode="standard"
             android:label="@string/title_activity_tutorial"/>
+        <activity
+            android:name=".ui.activities.DescriptionPreferenceActivity"
+            android:label="@string/title_activity_description_preference"
+            android:noHistory="true"
+            android:parentActivityName=".ui.activities.SettingActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.activities.SettingActivity"/>
+        </activity>
     </application>
 
 </manifest>
