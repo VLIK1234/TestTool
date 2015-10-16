@@ -229,5 +229,6 @@
     <string name="title_activity_description_preference">Description preference</string>
     <string name="message_empty_test_app">Please choose Application to Connect before start.</string>
     <string name="message_anonym_deny_setting">Login first!</string>
+    <string name="default_description_template">Steps to reproduce:\n1.\n\n\nActual result:\n\nExpected result:\n</string>
 
 </resources>

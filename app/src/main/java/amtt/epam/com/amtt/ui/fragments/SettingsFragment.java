@@ -4,14 +4,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Toast;
@@ -44,6 +45,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.setting);
+        setDefaultDescriptionTemplate();
         mProjectName = (ListPreference) findPreference(getActivity().getString(R.string.key_test_project));
         mProjectJiraName = (ListPreference) findPreference(getActivity().getString(R.string.key_jira_project_name));
         PreferenceUtil.getPref().registerOnSharedPreferenceChangeListener(this);
@@ -78,7 +80,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     return false;
                 } else {
                     Intent descriptionPrefActivity = new Intent(getActivity(), DescriptionPreferenceActivity.class);
-                    startActivity(descriptionPrefActivity);
+                    Bundle animationBundle = ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.anim_entre_activity, R.anim.anim_exit_activity).toBundle();
+                    startActivity(descriptionPrefActivity, animationBundle);
                     return true;
                 }
             }
@@ -183,5 +186,12 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         SpannableString spannableValue = new SpannableString(value);
         spannableValue.setSpan(new ForegroundColorSpan(Color.WHITE), 0, spannableValue.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannableValue;
+    }
+
+    private void setDefaultDescriptionTemplate() {
+        String descriptionTemplateKey = getString(R.string.key_description_template);
+        if (TextUtils.isEmpty(PreferenceUtil.getString(descriptionTemplateKey))) {
+            PreferenceUtil.putString(descriptionTemplateKey, getActivity().getString(R.string.default_description_template));
+        }
     }
 }
