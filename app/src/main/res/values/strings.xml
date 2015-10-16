@@ -227,5 +227,6 @@
     <string name="label_tutorial_button">Tutorial</string>
     <string name="label_button_got_it">Got It!</string>
     <string name="title_activity_description_preference">Description preference</string>
+    <string name="message_empty_test_app">Please choose Application to Connect before start.</string>
 
 </resources>

@@ -9,9 +9,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import amtt.epam.com.amtt.R;
 import amtt.epam.com.amtt.topbutton.service.TopButtonService;
@@ -19,6 +21,7 @@ import amtt.epam.com.amtt.ui.fragments.SettingsFragment;
 import amtt.epam.com.amtt.util.ActiveUser;
 import amtt.epam.com.amtt.util.FileUtil;
 import amtt.epam.com.amtt.util.PreferenceUtil;
+import amtt.epam.com.amtt.util.TestUtil;
 
 /**
  * @author Ivan_Bakach
@@ -58,9 +61,14 @@ public class SettingActivity extends AppCompatActivity {
         btLetsTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent launchIntent = getPackageManager().getLaunchIntentForPackage(PreferenceUtil.getString(getString(R.string.key_test_project)));
-                startActivity(launchIntent);
-                finish();
+                String testAppName = PreferenceUtil.getString(getString(R.string.key_test_project));
+                if (!TextUtils.isEmpty(testAppName)) {
+                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage(testAppName);
+                    startActivity(launchIntent);
+                    finish();
+                } else {
+                    Toast.makeText(getBaseContext(), R.string.message_empty_test_app, Toast.LENGTH_LONG).show();
+                }
             }
         });
         mBtLogOut = (Button) findViewById(R.id.bt_log_out);
