@@ -69,13 +69,18 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 return true;
             }
         });
-        Preference descreptionTemplate = findPreference(getString(R.string.key_description));
-        descreptionTemplate.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        Preference descriptionTemplate = findPreference(getString(R.string.key_description));
+        descriptionTemplate.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent descriptionPrefActivity = new Intent(getActivity(), DescriptionPreferenceActivity.class);
-                startActivity(descriptionPrefActivity);
-                return true;
+                if (ActiveUser.getInstance().getUserName() == null) {
+                    Toast.makeText(getActivity(), R.string.message_anonym_deny_setting, Toast.LENGTH_LONG).show();
+                    return false;
+                } else {
+                    Intent descriptionPrefActivity = new Intent(getActivity(), DescriptionPreferenceActivity.class);
+                    startActivity(descriptionPrefActivity);
+                    return true;
+                }
             }
         });
     }
@@ -89,25 +94,32 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         if (ActiveUser.getInstance().getUserName()!=null) {
             mProjectJiraName.setSummary(PreferenceUtil.getString(getString(R.string.key_jira_project_name)));
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Preference descriptionTemplate = findPreference(getString(R.string.key_description));
-        if (ActiveUser.getInstance().getUserName() == null) {
-            mProjectJiraName.setEnabled(false);
-            descriptionTemplate.setEnabled(false);
-        } else {
-            mProjectJiraName.setEnabled(true);
-            descriptionTemplate.setEnabled(true);
-        }
+        showHintProjectJiraName();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         PreferenceUtil.getPref().unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    private void showHintProjectJiraName() {
+        if (ActiveUser.getInstance().getUserName() == null) {
+            mProjectJiraName.setEntryValues(new String[0]);
+            mProjectJiraName.setEntries(new String[0]);
+        }
+        mProjectJiraName.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                if (ActiveUser.getInstance().getUserName() == null) {
+                    mProjectJiraName.getDialog().dismiss();
+                    Toast.makeText(getActivity(), R.string.message_anonym_deny_setting, Toast.LENGTH_LONG).show();
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        });
     }
 
     private void initListAppToConnect(ListPreference listPreference) {
@@ -135,12 +147,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                 }
             });
         }
-//        else {
-//            String[] emptyArray = new String[0];
-//            listPreference.setEnabled(false);
-//            listPreference.setEntryValues(emptyArray);
-//            listPreference.setEntryValues(emptyArray);
-//        }
     }
 
     @Override

@@ -228,5 +228,6 @@
     <string name="label_button_got_it">Got It!</string>
     <string name="title_activity_description_preference">Description preference</string>
     <string name="message_empty_test_app">Please choose Application to Connect before start.</string>
+    <string name="message_anonym_deny_setting">Login first!</string>
 
 </resources>
