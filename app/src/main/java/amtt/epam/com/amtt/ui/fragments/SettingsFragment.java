@@ -74,7 +74,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 if (ActiveUser.getInstance().getUserName() == null) {
-                    Toast.makeText(getActivity(), R.string.message_anonym_deny_setting, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.message_anonym_deny_setting, Toast.LENGTH_SHORT).show();
                     return false;
                 } else {
                     Intent descriptionPrefActivity = new Intent(getActivity(), DescriptionPreferenceActivity.class);
@@ -113,7 +113,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             public boolean onPreferenceClick(Preference preference) {
                 if (ActiveUser.getInstance().getUserName() == null) {
                     mProjectJiraName.getDialog().dismiss();
-                    Toast.makeText(getActivity(), R.string.message_anonym_deny_setting, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.message_anonym_deny_setting, Toast.LENGTH_SHORT).show();
                     return false;
                 } else {
                     return true;
