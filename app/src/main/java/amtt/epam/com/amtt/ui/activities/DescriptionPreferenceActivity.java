@@ -22,6 +22,7 @@ public class DescriptionPreferenceActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_description_preference);
+        overridePendingTransition(R.anim.anim_entre_activity, R.anim.anim_exit_activity);
         mKeyDescriptionTemplate = getString(R.string.key_description_template);
 
         mDescriptionTemplate = (EditText) findViewById(R.id.et_descreption_template);

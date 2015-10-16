@@ -80,8 +80,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
                     return false;
                 } else {
                     Intent descriptionPrefActivity = new Intent(getActivity(), DescriptionPreferenceActivity.class);
-                    Bundle animationBundle = ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.anim_entre_activity, R.anim.anim_exit_activity).toBundle();
-                    startActivity(descriptionPrefActivity, animationBundle);
+                    startActivity(descriptionPrefActivity);
                     return true;
                 }
             }
