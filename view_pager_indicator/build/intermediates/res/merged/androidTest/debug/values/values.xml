@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/D:/Projects/Ivan_Bakach/amtt/view_pager_indicator/build/intermediates/bundles/debug/res/values/values.xml -->
+    <!-- From: file:/D:/Android/amtt/view_pager_indicator/build/intermediates/bundles/debug/res/values/values.xml -->
     <eat-comment/>
     <attr format="boolean" name="centered"/>
     <attr format="color" name="selectedColor"/>

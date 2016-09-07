@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="D:\Projects\Ivan_Bakach\amtt\view_pager_indicator\src\main\assets"/></dataSet><dataSet config="debug"><source path="D:\Projects\Ivan_Bakach\amtt\view_pager_indicator\src\debug\assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="D:\Android\amtt\view_pager_indicator\src\main\assets"/></dataSet><dataSet config="debug"><source path="D:\Android\amtt\view_pager_indicator\src\debug\assets"/></dataSet></merger>
